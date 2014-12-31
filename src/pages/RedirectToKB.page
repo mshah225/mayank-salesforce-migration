@@ -1,0 +1,8 @@
+<apex:page showHeader="false" sidebar="false"> 
+<head> 
+<meta HTTP-EQUIV="REFRESH" content="0; url=https://asu.secure.force.com/kb"/> 
+</head> 
+<body> 
+&nbsp; 
+</body> 
+</apex:page>

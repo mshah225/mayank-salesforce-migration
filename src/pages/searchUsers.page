@@ -1,0 +1,159 @@
+<!--
+* Name: searchUsers.page
+* Written by: Mathew Ruff
+* Date Created: Oct. 2nd 2014
+* 
+* Last Updated: Oct. 20 2014
+* What was Changed: Working on sortTable() method running after rerender of results table
+-->
+
+<apex:page sidebar="false"
+    showHeader="true"
+    standardStylesheets="true"
+    tabStyle="Search_Users__tab"
+    controller="SearchUsers"
+    docType="html-5.0">
+    <head>
+        <style>
+            .even td, .odds td, .even th, .odds th {
+                padding-top: 5px;
+                padding-left: 3px;
+                padding-bottom: 5px;
+                font-size: 11pt;
+            }
+            
+            .odds td a:hover, .even td a:hover{
+                color: #990033 !important;
+            }
+            
+            .even {
+                background-color: #f0f0f0 !important;
+            }
+            
+            small {
+                font-size: 9pt;
+                font-weight: 400;
+            }
+            
+            .myBtn {
+                background: #990033 !important;
+                color: #fff !important;
+                border: none !important;
+                padding: 6px !important;
+                font-weight: 400 !important;
+                border-radius: 0px !important;
+                width: 50px;
+            }
+            
+            .myBtn:hover {
+                background: #8A002E !important;
+                color: #fff !important;
+                border: none !important;
+                padding: 6px !important;
+                font-weight: 300 !important;
+                border-radius: 0px !important;
+            }
+            
+            .tablesorter-blue th, .tablesorter-blue thead td {
+                color: #000 !important;
+                background-color: #d2d2d2 !important;
+            }
+            
+            .clearBtn {
+                position: absolute !important;
+                left: 395px !important;
+                background: transparent !important;
+                border: none !important;
+                margin-top: 3px !important;
+            }
+        </style>
+        
+        <!--<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+        <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" />
+        <apex:stylesheet value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/css/theme.blue.css" />-->
+        
+        <apex:includeScript value="{!$Resource.jQuery_1_11_1_Min}"/>
+        <apex:includeScript value="{!$Resource.tablesorter_min_js}"/>
+        <apex:stylesheet value="{!$Resource.Theme_Blue_css}"/>
+    </head>
+    <body>
+        <apex:form >
+            <apex:pageBlock mode="maindetail">
+                <apex:inputText id="searchBox" value="{!searchString}" style="border-radius:2px;width:100%;max-width:400px;height:20px;" html-placeholder="Enter Search Terms Here" styleClass="form-control">
+                    <apex:actionSupport event="onkeyup" action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()"/>
+                </apex:inputText>
+                
+                <!--<apex:commandButton action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()" value="Search" id="submitButton" styleClass="myBtn"/>
+                <apex:commandButton value="Reset" action="{!clear}" reRender="list" status="actStatusId" styleClass="myBtn" oncomplete="tableSort()"/>-->
+                
+                <apex:commandButton id="clearBox" styleClass="clearBtn" onclick="this.form.reset()" value="X" reRender="clearBox"/>
+                <br /><br /><small><i>Search for User Id, Name, Profile Name, Contact Name, Contact Id, EmplId, ASURITE Id, Alias, Federation Id, or ASU User Type</i></small>
+                <div style="margin-right:auto;margin-left:auto;">
+                    <apex:actionStatus id="actStatusId" onstop="tableSort()">
+                        <apex:facet name="start" >
+                           <img src="/img/loading.gif" />
+                        </apex:facet>
+                    </apex:actionStatus>
+                </div>
+                <!-- Debug Javascript
+                <button onclick="tableSort()">Sort</button>-->
+                <br />
+                <apex:outputText rendered="{!searchString != null}">
+                    You searched for: {!searchString}
+                </apex:outputText>
+                <apex:outputPanel id="userTable">
+                    <apex:pageBlockSection id="init" title="First 50 results" collapsible="false" columns="1">
+                        <apex:commandButton onclick="tableSort()" value="Sort Table"/>
+                        <apex:dataTable value="{!uList}" var="u" id="list" width="100%" columns="9" columnsWidth="11.8%,11.8%,11.8%,11.8%,11.8%,11.8%,11.8%,11.8%,5%" rowClasses="even,odds">
+                            <apex:column headerValue="User"><apex:outputLink styleClass="nameLink" value="/{!u.Id}?noredirect=1" target="_blank">{!u.Name}</apex:outputLink></apex:column>
+                            
+                            <apex:column headerValue="Alias">
+                                <apex:outputText rendered="{!NOT(ISNULL(u.Alias))}" value="{!u.Alias}"/>
+                                <apex:outputText rendered="{!ISNULL(u.Alias)}">--</apex:outputText>
+                            </apex:column>
+                            
+                            <apex:column headerValue="ASURITE Id">
+                                <apex:outputText rendered="{!NOT(ISNULL(u.Contact.ASURite_ID__c))}">{!u.Contact.ASURite_ID__c}</apex:outputText>
+                                <apex:outputText rendered="{!ISNULL(u.Contact.ASURite_ID__c)}">--</apex:outputText>
+                            </apex:column>
+                            
+                            <apex:column headerValue="Contact">
+                                <apex:outputLink rendered="{!NOT(ISNULL(u.Contact.Name))}" styleClass="clickLink" value="/{!u.ContactId}?noredirect=1" target="_blank">{!u.Contact.Name}</apex:outputLink>
+                                <apex:outputText rendered="{!ISNULL(u.Contact.Name)}">--</apex:outputText>
+                            </apex:column>
+                            
+                            <apex:column headerValue="User Id" value="{!u.Id}" />
+                            
+                            <apex:column headerValue="Federation Id">
+                                <apex:outputText rendered="{!NOT(ISNULL(u.FederationIdentifier))}" value="{!u.FederationIdentifier}" />
+                                <apex:outputText rendered="{!ISNULL(u.FederationIdentifier)}">--</apex:outputText>
+                            </apex:column>
+                            
+                            <apex:column headerValue="ASU User Type">
+                                <apex:outputText rendered="{!NOT(ISNULL(u.asu_user_type__c))}" value="{!u.asu_user_type__c}"/>
+                                <apex:outputText rendered="{!ISNULL(u.asu_user_type__c)}">--</apex:outputText>
+                            </apex:column>
+                            
+                            <apex:column headerValue="Profile" value="{!u.Profile.Name}" />
+                            
+                            <apex:column headerValue="Active?" value="{!u.isActive}"/>
+                        </apex:dataTable>
+                        <apex:outputPanel rendered="{!NoResults}">
+                            No results found
+                        </apex:outputPanel>
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+                
+            </apex:pageBlock>
+        </apex:form>
+        <script>
+            window.$j = jQuery.noConflict();
+        
+            $j(document).ready(function tableSort()
+            {
+                $j("[id$='list']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+            });
+           
+        </script>
+    </body>
+</apex:page>

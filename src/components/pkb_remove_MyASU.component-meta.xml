@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexComponent xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>29.0</apiVersion>
+    <description>Javascript to remove &quot;My ASU&quot; from Data Category names on category dropdown lists.</description>
+    <label>pkb_remove_MyASU</label>
+</ApexComponent>

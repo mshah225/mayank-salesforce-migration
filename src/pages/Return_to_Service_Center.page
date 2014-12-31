@@ -1,0 +1,4 @@
+<apex:page >
+    <meta http-equiv="refresh" content="0; url=https://myasu.force.com/" />
+    <a href="https://myasu.force.com/">Return to the My ASU Service Center</a>
+</apex:page>

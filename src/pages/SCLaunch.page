@@ -1,0 +1,10 @@
+<apex:page showHeader="false" sidebar="false" controller="SCLaunchController" action="{!init}">
+  <head>
+    <meta http-equiv="refresh" content="0; url=https://myasu.force.com/" />
+  </head>
+<!--
+  <apex:repeat value="{!linkList}" var="link" id="linkRepeater">
+    <apex:outputLink value="{!link.url}">{!link.name}</apex:outputLink><br/>
+  </apex:repeat>  
+-->
+</apex:page>

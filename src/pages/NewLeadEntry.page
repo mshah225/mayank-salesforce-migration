@@ -1,0 +1,88 @@
+<apex:page controller="NewLeadEntryController"> 
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+           $('#id_radioYes').click(function () {
+              $('#commentsDiv').show();
+           });
+           $('#id_radioNo').click(function () {
+              $('#commentsDiv').hide();
+            });
+           $('input:radio[name=name_radio1][value=NoComments]').click();  
+         });
+     </script>
+    <apex:form >
+        <apex:pageBlock title="New Lead Entry" mode="edit">
+        	<apex:pageMessages />
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!extSave}" value="Save"/>
+                <apex:commandButton action="{!extSaveAndNew}" value="Save and New"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Lead Information" columns="2">
+                <apex:inputField value="{!extLead.Salutation}" tabOrderHint="5"/>
+                &nbsp;
+                <apex:inputField value="{!extLead.FirstName}" required="true" tabOrderHint="10"/>
+                <apex:inputField value="{!extLead.Email}" required="true" tabOrderHint="100"/>
+                <apex:inputField value="{!extLead.LastName}" tabOrderHint="15"/>
+                <apex:inputField value="{!extLead.Secondary_Email__c}" tabOrderHint="105"/>
+                <apex:inputField value="{!extLead.LeadSource}" required="true" tabOrderHint="20" id="LeadSource"/>
+                <apex:inputField value="{!extLead.ASU_Student__c}" tabOrderHint="107"/>
+                <apex:inputField value="{!extLead.Lead_Source_Subtype__c}" required="true" tabOrderHint="22" id="LeadSourceSub" onchange="copyLeadSourceSub()" />
+                <apex:inputField value="{!extLead.EMPLID__c}" tabOrderHint="108"/>
+                <apex:inputField value="{!extLead.Degree_Type__c}" tabOrderHint="25"/>
+                <apex:inputField value="{!extLead.Phone}" tabOrderHint="110"/>                
+                <apex:inputField value="{!extLead.Enrollment_Term_OLD__c}" tabOrderHint="30" id="LeadTerm"/>
+                <apex:inputField value="{!extLead.MobilePhone}" tabOrderHint="115"/>
+                <apex:inputField value="{!extLead.Online__c}" tabOrderHint="35"/>
+                <apex:inputField value="{!extLead.Contact_Preference__c}" tabOrderHint="120"/>
+                &nbsp;
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Address Information">
+                <apex:inputField value="{!extLead.CountryCode}" tabOrderHint="200"/>
+                <apex:inputField value="{!extLead.Country_of_Citizenship_OLD__c}" tabOrderHint="300"/>
+                <apex:inputField value="{!extLead.Street}" tabOrderHint="205"/>
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <apex:inputField value="{!extLead.City}" tabOrderHint="210"/>
+                &nbsp;
+                <apex:inputField value="{!extLead.StateCode}" tabOrderHint="215"/>
+                &nbsp;
+                <apex:inputField value="{!extLead.PostalCode}" tabOrderHint="220"/>
+            </apex:pageBlockSection>                    
+            <apex:pageBlockSection title="Additional Information">
+                <apex:inputField value="{!extLead.Research_Experience__c}" tabOrderHint="400"/>
+                <apex:inputField value="{!extLead.Gender__c}" tabOrderHint="500"/>
+                <apex:inputField value="{!extLead.Course_Load__c}" tabOrderHint="405"/>
+                <apex:inputField value="{!extLead.Date_of_Birth__c}" tabOrderHint="505"/>
+                <apex:inputField value="{!extLead.Undergraduate_GPA__c}" tabOrderHint="410"/>
+                <apex:inputField value="{!extLead.Veteran_Status__c}" tabOrderHint="510"/>
+                <apex:inputField value="{!extLead.Undergraduate_GPA_Scale__c}" tabOrderHint="415"/>
+                <apex:inputField value="{!extLead.Ethnicity__c}" tabOrderHint="515"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Lead Interest">
+                <apex:inputField value="{!leadInterest.Term__c}" id="LeadInterestTerm" rendered="False"/>
+                <!-- apex:inputField value="{!leadInterest.Primary_Source__c}" required="true" tabOrderHint="700" id="LeadInterestSource"/ -->
+                <!-- apex:inputField value="{!leadInterest.Academic_Interest__c}" tabOrderHint="605"/ -->
+                <apex:inputField value="{!leadInterest.College__c}" required="true" tabOrderHint="610"/>
+                <!-- apex:inputField value="{!leadInterest.Secondary_Source__c}" tabOrderHint="705" id="LeadInterestSourceSub" onchange="copyLeadIntSourceSub()"/ -->
+                &nbsp;
+                <apex:inputField value="{!leadInterest.Plan__c}" tabOrderHint="615"/>
+                &nbsp;
+            </apex:pageBlockSection>
+            <br/>
+            <br/>
+            &nbsp;<i><b>Do you have any additional comments?</b></i>&nbsp;&nbsp;&nbsp;&nbsp;
+                   <input id="id_radioYes" type="radio" name="name_radio1" value="YesComments" />Yes
+                   <input id="id_radioNo" type="radio" name="name_radio1" value="NoComments" selected="true" />No        
+            <div id="commentsDiv">
+	            <apex:pageBlockSection title="Additional Comments" columns="1" id="additionalCommentsSection">
+	                <apex:inputField value="{!leadTask.Type}" required="true"/>
+	                <apex:inputField value="{!leadTask.Subject}" required="true"/>
+	                <apex:inputField value="{!leadTask.Description}" style="width: 500px; height: 100px" />
+	            </apex:pageBlockSection>
+	        </div>
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

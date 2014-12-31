@@ -1,0 +1,57 @@
+<apex:component >
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
+    <!-- START /asuthemes/4.0-rsp.1/heads/default.shtml -->
+
+<link type="text/css" rel="stylesheet" media="all" href="//www.asu.edu/asuthemes/4.0-rsp.1/css/asu_header.min.css" />
+<!--[if lte IE 8]>
+<style type="text/css">
+    #asu_hdr.asu_responsive {min-width:938px;}
+  #asu_search_module input.asu_search_box { line-height: 19px; }
+  #asu_universal_nav ul li:hover > ul {top: 25px;}
+</style>
+<![endif]-->
+<!--[if lte IE 7]>
+<style type="text/css">
+  #asu_search_module {height:17px;float:none; text-align:right; top:3px;}
+  .asu_search_selection {position:relative; top:-2px;}
+  #asu_universal_nav ul li.parent ul {display: none;}
+  #asu_universal_nav > ul > li.parent > a {background-image: none; padding-right: 8px;}
+  #asu_universal_nav > ul > li.parent:hover > a {background-image: none; background-color: transparent; color: #903; filter: none;}
+</style>
+</style>
+<![endif]-->
+<!--[if lte IE 6]>
+<style type="text/css">
+  #asu_hdr.asu_hdr_maroon {background: #903;}
+</style>
+<![endif]-->
+
+<!--[if IE 9]>
+<style type="text/css">
+  #asu_universal_nav ul ul {filter: none; box-shadow: 0px 6px 6px 0px #999;}
+  #asu_universal_nav > ul > li.parent:hover > a {filter: none; box-shadow: 6px 0px 6px -6px #999, -6px 0px 6px -6px #999;}
+</style>
+<![endif]-->
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-47141114-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+var ASUHeader = ASUHeader || {};
+//--><!]]>
+</script>
+
+<script type="text/javascript" src="//www.asu.edu/asuthemes/4.0-rsp.1/js/asu_header.min.js"></script>
+
+<!-- END /asuthemes/4.0-rsp.1/heads/default.shtml -->
+</apex:component>

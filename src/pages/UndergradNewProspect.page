@@ -1,0 +1,294 @@
+<!--
+* Name: UndergradNewProspect.page
+* Written by: Mathew Ruff
+* Date Created: Oct. 2, 2014
+*
+* Last Updated: Nov. 26, 2014
+* Updated By: Mathew Ruff
+* What was Changed: service console not working, reverting to VF tab.
+-->
+
+<apex:page controller="UndergradNewProspectController"
+    tabStyle="New_Undergrad_Prospect__tab"
+    docType="html-5.0"
+    sidebar="false"
+    showHeader="true"
+    standardStylesheets="false">
+<head>
+
+    <style>
+        body .bPageBlock, body .bPageBlock .pbBody, body .bPageBlock .pbBottomButtons {
+            background-color: transparent !important;
+        }
+        
+        .Custom3Tab .primaryPalette, .individualPalette .Custom3Block .primaryPalette {
+            background-color: #a30046 !important;
+        }
+
+        .Custom3Tab .listViewport .subNav .linkBar, .Custom3Tab .mComponent .cHeader, .Custom3Tab .genericTable, .Custom3Tab .bSubBlock, .Custom3Tab .bPageBlock {
+            border-top: 6px solid #353535 !important;
+            border-radius: 0px !important;
+        }
+
+        .Custom3Tab .brdPalette {
+            border-top-color: #990033 !important;
+        }
+
+        .Custom3Tab .tertiaryPalette, .individualPalette .Custom3Block .tertiaryPalette, .layoutEdit .individualPalette .Custom3Block .tertiaryPalette {
+            background-color: #353535 !important;
+            border-color: #353535 !important;
+        }
+
+        .even {
+            background-color: #fff !important;
+        }
+
+        .button {
+            transition: background-color 0.5s ease;
+            background: #a30046 !important;
+            color: #fff !important;
+            border: none !important;
+            padding: 7px !important;
+            font-weight: 400 !important;
+            border-radius: 4px !important;
+            min-width: 70px;
+            width: auto;
+        }
+
+        .button:hover {
+            background: #d23153 !important;
+            color: #fff !important;
+            border: none !important;
+            padding: 7px !important;
+            font-weight: 300 !important;
+            border-radius: 4px !important;
+        }
+
+        .activeTab {
+            background-color: #a30046;
+            color: #fff !important;
+            background-image:none;
+            width: 200px;
+            height: 15px;
+            padding: 8px;
+            font-size: 9pt;
+            border-top-radius: 4px !important;
+        }
+
+        .inactiveTab {
+            transition: background-color 0.5s ease;
+            background-color: lightgrey;
+            color: #000 !important;
+            background-image:none;
+            width: 200px;
+            height: 15px;
+            padding-top: 5px;
+        }
+
+        .inactiveTab:hover {
+            background-color: #d23153;
+            color: #fff !important;
+            background-image:none;
+            width: 200px;
+            height: 15px;
+            padding-top: 5px;
+        }
+    </style>
+
+    <!--<apex:includeScript value="/support/console/31.0/integration.js"/>
+    <script type="text/javascript">
+        function openPrimaryTab(oppid, oppname) {
+            console.log("function was called with" + oppid + oppname);
+            if(!sforce.console.isInConsole()) {
+                console.log("trying to redirect to opp page");
+                window.parent.location.replace('/' + recid);
+            }
+            else {
+                console.log("trying to open primary tab");
+                sforce.console.openPrimaryTab(null, '/' + oppid, true, oppname, 'UGTab');
+                sforce.console.refreshNavigationTab();
+            }
+        }
+    </script>-->
+</head>
+
+<body id="contentBody" class="content">
+    <apex:form id="underGradForm" >
+    <!--<apex:outputText id="myInt" value="{!selectedInterestId}"/>-->
+        <apex:pageBlock title="ASU New Undergraduate Prospect Entry Form" id="undergradBlock">
+            <apex:pageBlockButtons >
+                <apex:commandButton styleClass="button" action="{!savePage}" value="Save" status="saveStatus"/>
+                <apex:actionStatus id="saveStatus">
+                    <apex:facet name="start">
+                        <img src="/img/loading.gif" style="margin-bottom:-4px;"/>
+                    </apex:facet>
+                </apex:actionStatus>
+            </apex:pageBlockButtons>
+            <apex:pageMessages />
+            
+            <apex:pageBlockSection id="contactInfo" title="Contact Information" collapsible="false" columns="2">
+                <apex:inputField value="{!contact.FirstName}" required="true" id="firstname"/>
+                <apex:inputField value="{!contact.LastName}" required="true" id="lastname"/>
+                <apex:inputField value="{!contact.Lead_Email__c}" required="true" id="email" label="Email" type="email"/>
+                <apex:inputField value="{!contact.Phone}" id="phone" type="tel"/>
+                <apex:inputField value="{!contact.MobilePhone}" id="mobilephone" label="Mobile Phone" type="tel"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="smsTextCheck">SMS Permission</apex:outputLabel>
+                    <apex:inputCheckbox id="smsTextCheck" value="{!smsText}"/>
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!contact.MailingStreet}" id="streetaddress" style="width:144px;height:30px;"/>
+                <apex:inputField value="{!contact.MailingCity}" id="city"/>
+                <apex:inputField value="{!contact.MailingCountryCode}" id="country"/>
+                <apex:inputField value="{!contact.MailingStateCode}" id="state"/>
+                <apex:inputField value="{!contact.MailingPostalCode}" id="zip"/>
+                <apex:inputField value="{!contact.Birthdate}" id="birthdate" type="date" style="width:130px;"/>
+                <apex:inputField value="{!contact.Gender__c}" id="gender"/>
+                <apex:inputField value="{!contact.Country_of_Citizenship__c}" id="citizenship"/>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Prospect Information" collapsible="false" columns="2">
+                <apex:inputField value="{!opportunity.Term__c}" id="term" required="true"/>
+                <apex:inputField value="{!opportunity.Type}" id="degreetype" required="true"/>
+                <apex:inputField value="{!opportunity.International_Student__c}" id="international"/>
+                <apex:inputField value="{!opportunity.Military_Status__c}" id="military"/>
+                <apex:inputField value="{!previousEducation.Account__c}" id="institution" required="false"/>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection id="sourceEventBlock" title="Select a Source or Event" collapsible="false" columns="1">
+                <apex:tabPanel switchType="client" selectedTab="source" id="theTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab" width="100%">
+                    <apex:tab label="Source" name="source" id="sourceTab" >
+                    <apex:outputPanel layout="block" style="overflow:auto;height:260px">
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="padding-right:20px;width:20%;">
+                                    <apex:outputLabel for="cOrigin">Origin:</apex:outputLabel><br />
+                                    <apex:selectList id="originPickList" value="{!originSelection}" size="1" multiselect="false">
+                                        <apex:selectOption itemValue="--Select--" />
+                                        <apex:selectOption itemValue="Email" />
+                                        <apex:selectOption itemValue="In Person" />
+                                        <apex:selectOption itemValue="Incoming Call" />
+                                    </apex:selectList><br /><br />
+
+                                    <apex:outputLabel for="cFuncGroup">Functional Group:</apex:outputLabel><br />
+                                    <apex:inputField id="cFuncGroup" value="{!c.Functional_Group__c}"/><br /><br />
+                                    
+                                    <apex:inputField id="cStatus" value="{!c.Status}" style="display:none;"/>
+
+                                    <apex:outputLabel for="cCate">Category:</apex:outputLabel><br />
+                                    <apex:inputField id="cCate" value="{!c.Category__c}"/><br /><br />
+
+                                    <apex:outputLabel for="cSubCate">Sub-Category:</apex:outputLabel><br />
+                                    <apex:inputField id="cSubCate" value="{!c.Sub_Category__c}"/><br /><br />
+                                </td>
+                                <td style="padding-left:20px;border-left:solid 1px #ccc;width:80%;">
+                                    <apex:outputText ><b>Notes (Optional):</b></apex:outputText><br /><br />
+
+                                    <apex:outputLabel for="cSub">Subject:</apex:outputLabel><br />
+                                    <apex:inputField id="cSub" value="{!c.Subject}" style="width:250px;padding:5px;"/><br /><br />
+
+                                    <apex:outputLabel for="cDesc">Description:</apex:outputLabel><br />
+                                    <apex:inputField id="cDesc" value="{!c.Description}" style="width:250px;height:150px;padding:5px;"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </apex:outputPanel>
+                    </apex:tab>
+
+                    <apex:tab label="Event" name="event" id="eventTab">
+                    <apex:outputPanel layout="block" style="overflow:hidden;height:260px">
+                        <apex:actionRegion >
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="padding-right:20px;width:20%;">
+                                    <apex:outputLabel for="elIdInput"><b>Selected Event:</b></apex:outputLabel><br /><br />
+                                    <apex:inputText id="elIdInput" value="{!eventName}" html-placeholder="Selected event will appear here" style="width:250px;padding:5px;color:#990033;" disabled="true"/>
+                                    <apex:actionStatus id="actStatusEvent1">
+                                        <apex:facet name="start" >
+                                            <img src="/img/loading.gif" />
+                                        </apex:facet>
+                                    </apex:actionStatus>
+                                    <br />
+                                    <apex:outputText id="eventSelectedHelpText"><i>Search for an event on the right and click 'Select'</i></apex:outputText>
+                                </td>
+                                <td style="padding-left:20px;border-left:solid 1px #ccc;width:80%;">
+                                    <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                                        <apex:outputLabel for="eventSearchInput"><b>Search:</b></apex:outputLabel><br /><br />
+                                        <apex:inputText id="eventSearchInput" value="{!eventSearchString}" html-placeholder="Enter search terms" style="width:250px;padding:5px;">
+                                            <apex:actionSupport event="onkeyup" action="{!eventSearch}" reRender="eventList,eventPanel" status="actStatusEvent"/>
+                                            <apex:actionSupport event="onchange" action="{!eventSearch}" reRender="eventList,eventPanel" status="actStatusEvent"/>
+                                        </apex:inputText>
+                                        <apex:actionStatus id="actStatusEvent">
+                                            <apex:facet name="start" >
+                                                <img src="/img/loading.gif" />
+                                            </apex:facet>
+                                        </apex:actionStatus>
+                                        <br />
+                                        <apex:outputText id="eventHelpText"><i>Search by Name, Type, or Category</i></apex:outputText>
+                                        <br />
+                                        <apex:outputPanel id="eventPanel">
+                                            <apex:dataTable id="eventList" value="{!eventList}" var="el" width="100%" cellpadding="8" rowClasses="even,odds" rendered="{!IF(eventSearchString != null,true,false)}">
+                                                <apex:column >
+                                                    <apex:commandLink value="Select" reRender="elIdInput" status="actStatusEvent1">
+                                                        <apex:param name="elId" value="{!el.Id}" assignTo="{!elId}"/>
+                                                        <apex:param name="eventName" value="{!el.Name}" assignTo="{!eventName}"/>
+                                                    </apex:commandLink>
+                                                </apex:column>
+                                                <apex:column headerValue="Name" value="{!el.Name}"/>
+                                                <apex:column headerValue="Start Date" value="{!el.Event_Start_Date__c}"/>
+                                                <apex:column headerValue="Start Time" value="{!el.Event_Start_Time__c}"/>
+                                                <apex:column headerValue="Campus" value="{!el.Campus_Location__c}"/>
+                                                <apex:column headerValue="Location" value="{!el.Event_Location__c}"/>
+                                            </apex:dataTable>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                        </table>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                    </apex:tab>
+                </apex:tabPanel>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="interestBlock" title="Interests (Optional)" columns="1">
+                <apex:actionRegion >
+                    <h1>Interest - Select a type, and then an interest:</h1>
+                    <br /><br />
+                    <apex:outputLabel value="Select an option: " for="asuLocationIntList"/>
+                    <apex:selectList id="interestPickList" value="{!pickSelection}" size="1" multiselect="false">
+                         <apex:selectOption itemValue="--Select--" />
+                         <apex:selectOption itemValue="ASU Location" />
+                         <apex:selectOption itemValue="ASU Colleges" />
+                         <apex:selectOption itemValue="Academic" />
+                         <apex:actionSupport event="onchange" reRender="interestsPicks" status="intEvent"/>
+                    </apex:selectList>
+                    <apex:actionStatus id="intEvent">
+                        <apex:facet name="start" >
+                            <img src="/img/loading.gif" />
+                        </apex:facet>
+                    </apex:actionStatus>
+                    <br /><br />
+
+                    <apex:outputPanel id="interestsPicks">
+                        <apex:outputLabel value="ASU Location: " for="asuLocationIntList" rendered="{!IF(pickSelection == 'ASU Location',true,false)}"/>
+                        <apex:selectList id="asuLocationIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'ASU Location',true,false)}">
+                             <apex:selectOptions value="{!asuLocationIntList}"/>
+                        </apex:selectList>
+
+                        <apex:outputLabel value="College Interest: " for="asuCollegesIntList" rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}"/>
+                        <apex:selectList id="asuCollegesIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}">
+                             <apex:selectOptions value="{!asuCollegesIntList}"/>
+                        </apex:selectList>
+
+                        <apex:outputLabel value="Academic Interest: " for="academicIntList" rendered="{!IF(pickSelection == 'Academic',true,false)}"/>
+                        <apex:selectList id="academicIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'Academic',true,false)}">
+                             <apex:selectOptions value="{!academicIntList}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:actionRegion>
+            </apex:pageBlockSection>
+            <script>twistSection(document.getElementById("{!$Component.interestBlock}").childNodes[0].childNodes[0]); </script>
+        </apex:pageBlock>
+    </apex:form>
+</body>
+</apex:page>

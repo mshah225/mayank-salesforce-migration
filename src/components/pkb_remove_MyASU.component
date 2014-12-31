@@ -1,0 +1,15 @@
+<apex:component allowDML="true">
+<!-- apex:attribute name="pkbCon" type="pkb_Controller" required="true" description="handle to the pkb controller" /-->
+
+<script type="text/javascript">
+
+var $$ = jQuery.noConflict();
+
+$$( document ).ready(function() {
+    $$('[id^="categorySelect"] > option').each(function() {
+        $$(this).text(this.text.replace('My ASU ', ''));
+    });
+}); 
+
+</script>
+</apex:component>

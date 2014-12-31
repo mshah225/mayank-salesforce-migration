@@ -1,0 +1,17 @@
+<apex:page showHeader="false" sidebar="false" doctype="html-5.0" standardController="Case">
+    <!--<style>
+        #ps_fa_btn a {
+            display: inline-block;
+            padding: 5px;
+            background-color: #1797C0;
+            border: 2px solid #000;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>-->
+    <div id='ps_fa_btn'>
+        <a target='_blank' href='https://go.oasis.asu.edu/cs/ss/?mc=ASU_FINANCIAL_AID.ASU_FA_SRVC_CENTER.GBL&qs=EMPLID={!case.Contact.EMPLID__c}'>Link to Financial Aid Information</a>
+    </div>
+</apex:page>

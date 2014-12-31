@@ -1,0 +1,33 @@
+<apex:page standardController="Case" extensions="CaseShowAllAttachmentsControllerExt">
+  <script src="/support/console/28.0/integration.js" type="text/javascript"></script>
+  <script>
+	function openTab(recid, recname) {
+	  if(!sforce.console.isInConsole())
+	    window.parent.location.replace('/'+recid);
+	  else
+	    sforce.console.getEnclosingPrimaryTabId(function(result) {
+	      sforce.console.openSubtab(result.id, '/'+recid , true, recname, null);
+	    });
+	}  
+  </script>
+  <apex:pageBlock title="All Attachments" >
+  	  <apex:pageBlockButtons location="top">
+  	   <apex:form >
+  	  	<apex:commandButton value="Attach File" onclick="openTab('p/attach/NoteAttach?pid={!Case.Id}&parentname={!Case.CaseNumber}&retURL=%2F{!Case.Id}%3Fisdtp%3Dvw','Attach a File to Case {!Case.CaseNumber}')"/>
+  	   </apex:form>
+  	  </apex:pageBlockButtons>
+		<apex:pageBlockTable value="{!allAttachments}" var="a">
+			<apex:column headerValue="Action" width="80px" styleClass="actionColumn">
+  				<a href="#" onClick="openTab('{!a.Id}/e', 'Attached File')">Edit</a>
+  				&nbsp;|&nbsp; 
+  				<a href="/servlet/servlet.FileDownload?file={!a.Id}" target="_blank">View</a>
+			</apex:column>
+			<apex:column headerValue="File Name">
+  				<a href="#" onClick="openTab('{!a.Id}', 'Attached File')">{!a.Name}</a> 
+			</apex:column>
+			<apex:column value="{! ROUND((a.BodyLength / 1024), 0)} {!'KB'}" headerValue="Size"/>		
+			<apex:column value="{!a.LastModifiedDate}" headerValue="Last Modified"/>		
+			<apex:column value="{!a.CreatedBy.Name}" headerValue="Created By"/>		
+		</apex:pageBlockTable>
+  </apex:pageBlock>
+</apex:page>

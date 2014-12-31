@@ -1,0 +1,11 @@
+#Ignore all IDE specific files
+salesforce.schema
+.project
+/Referenced Packages/
+/.settings/
+/config/
+/debug/
+/deploy/
+asu-salesforce-metadata.sublime-project
+asu-salesforce-metadata.sublime-settings
+asu-salesforce-metadata.sublime-workspace

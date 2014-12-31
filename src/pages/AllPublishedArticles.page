@@ -1,0 +1,8 @@
+<apex:page controller="AllPublishedArticlesController" showHeader="false" sideBar="false">
+	<apex:repeat value="{!articleMap}" var="key" >
+    	<apex:repeat value="{!articleMap[key]}" var="keyvalue" >
+			<apex:outputLink value="{!key}">{!keyvalue}</apex:outputLink>
+        	<br/>
+   		</apex:repeat>
+	</apex:repeat>
+</apex:page>

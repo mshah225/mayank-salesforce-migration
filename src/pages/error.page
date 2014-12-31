@@ -1,0 +1,63 @@
+<apex:page sidebar="false" showHeader="false">
+<html>
+    <head>
+    
+    <c:asu_responsive_header_section />
+    
+    <c:myasustyles />
+    
+    <!-- Bootstrap -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <!-- jQuery for Autocomplete/Bootstrap -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+    
+    <style>
+        .container {
+            margin-top: 20px !important;
+        }
+    </style>
+    
+    </head>
+    
+    <body>
+        <div height="100px" width="100%">
+            <iframe frameborder="0" height="100px" scrolling="no" src="https://www.asu.edu/asuthemes/3.1/headers/default_myasu_iframe.shtml" width="100%"></iframe>
+        </div>
+        
+        <div class="container">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>ASU was unable to process your request. We apologize for the inconvenience.<br /><br />
+                    
+                    Please return to the Service Center in <a href="https://webapp4.asu.edu/myasu" style="color:#990033;">My ASU</a> to ask questions, report an issue, and get help.<br /><br />
+                    
+                    If you’re unable to access the My ASU Service Center or need immediate assistance, please call 1-855-ASU-5080.</p>
+                </div>
+            </div>
+        </div>
+        
+        <br />
+
+        <div id="main-bottom" class="row-fluid main-bottom"> 
+            <div class="region region-main-bottom clearfix">
+                <div id="block-asu-brand-asu-brand-footer" class="clearfix block block-asu-brand">       
+                    <div class="content1"> 
+                    <!-- START FOOTER /asuthemes/3.1/includes/footer.html -->   
+                        <ul id="asu_footer" class="asu_black_footer">
+                          <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
+                          <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>
+                          <li><a href="http://www.asu.edu/privacy/">Privacy</a></li>
+                          <li><a href="http://www.asu.edu/emergency/">Emergency</a></li>
+                          <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
+                        </ul>
+                    <!-- END FOOTER -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+</apex:page>

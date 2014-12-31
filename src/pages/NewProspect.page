@@ -1,0 +1,69 @@
+<apex:page controller="NewProspectController" standardStylesheets="true" tabStyle="Opportunity" sidebar="true">
+<!-- 
+ASU New Prospect Page
+Author: CedarCrestone
+Created 1/29/2014
+Last Updated 04/30/2014 
+-->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>
+    $j = jQuery.noConflict();
+    $j(document).ready(function() {
+    });
+    </script>
+
+<apex:form >
+        <apex:pageBlock title="New Prospect Form" id="NewProspectForm">
+          <apex:pageBlockSection title="Contact">
+              <apex:inputField value="{!contact.Salutation}" id="salutation" label="Salutation"/>
+              <apex:outputText ></apex:outputText>
+              <apex:inputField value="{!contact.firstName}" id="firstname" label="First Name" onChange="$j('[id$=searchFirstName]:first').val($j(this).val());" required="true"/>
+              <apex:outputText ></apex:outputText>
+              <apex:inputField value="{!contact.lastName}" id="lastname" label="Last Name" onChange="$j('[id$=searchLastName]:first').val($j(this).val());" required="true"/>
+              <apex:outputText ></apex:outputText>
+              <apex:inputField value="{!contact.Lead_Email__c}" id="email" label="Email Address" onChange="$j('[id$=searchLeadEmail]:first').val($j(this).val());" required="true"/>
+              <apex:inputField value="{!contact.phone}" id="primaryphone" label="Primary Phone Number" onChange="$j('[id$=searchPhone]:first').val($j(this).val());"/>
+              <apex:inputField value="{!contact.MobilePhone}" id="mobilephone" label="Mobile Phone Number"/>
+              <apex:outputText ></apex:outputText>
+              <apex:inputField value="{!contact.mailingStreet}" id="street" label="Address"/>
+              <apex:inputField value="{!contact.mailingCity}" id="city" label="City"/>
+              <apex:inputField value="{!contact.MailingCountryCode}" id="country" label="Country"/>
+              <apex:outputText ></apex:outputText>
+              <apex:inputField value="{!contact.mailingStateCode}" id="state" label="State"/>
+              <apex:outputText ></apex:outputText>
+              <apex:inputField value="{!contact.mailingPostalCode}" id="postalcode" label="Zip Code"/>   
+              <apex:inputField value="{!contact.Ethnicity__c}" id="Ethnicity" label="Ethnicity"/>
+              <apex:inputField value="{!contact.Birthdate}" id="birthdate" label="Birthdate"/>          
+              <apex:inputField value="{!contact.Gender__c}" id="gender" label="Gender"/>
+              <apex:inputField value="{!contact.Country_of_Citizenship__c}" id="countryofcitizenship" label="Country of Citizenship"/>
+
+          </apex:pageBlockSection>
+            <apex:pageBlockSection title="Prospect">
+              <apex:inputField value="{!opportunity.Term__c}" id="opportunityTerm" label="Term"/> 
+              <apex:inputField value="{!opportunity.College__c}" id="opportunityCollege" label="College" required="true"/> 
+              <apex:inputField value="{!opportunity.Degree_Type__c}" id="opportunityDegreeType" label="Degree Type"/> 
+              <apex:inputField value="{!opportunity.Academic_Plan__c}" id="opportunityAcademicPlan" label="Academic Plan"/>
+              <apex:outputText ></apex:outputText>
+              <apex:inputField value="{!opportunity.LeadSource}" id="opportunityLeadSource" label="Lead Source" required="true"/>  
+              <apex:outputText ></apex:outputText>
+              <apex:inputField value="{!opportunity.Lead_Source_Subtype__c}" id="opportunityLeadSourceSubType" label="Lead Source Sub Type"/> 
+              <apex:inputField value="{!opportunity.Qualifying__c}" id="opportunityQualifying" label="Qualifying"/>  
+              <apex:inputField value="{!opportunity.StageName}" id="opportunityStageName" label="Stage"/>  
+              <apex:inputField value="{!opportunity.Online_Degree__c}" id="opportunityOnlineDegree" label="Online Degree"/>
+              <!-- Commenting out for version 1.0
+              <apex:inputField value="{!opportunity.Academic_Interest__c}" id="opportunityInterest" label="Academic Interest"/>
+              -->
+            </apex:pageBlockSection>
+          <apex:pageBlocksection title="Additional Information (Optional)" columns="1">
+              <apex:inputfield value="{!task.Type}"/>
+              <apex:inputfield value="{!task.Subject}"/>
+              <apex:inputfield value="{!task.Description}"/>
+          </apex:pageBlocksection>
+          
+          <apex:pageBlockButtons location="bottom">
+              <apex:commandButton action="{!save}" value="New Prospect"/>
+          </apex:pageBlockButtons>
+        </apex:pageBlock>    
+     </apex:form>
+
+</apex:page>

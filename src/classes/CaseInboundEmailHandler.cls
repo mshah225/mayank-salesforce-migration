@@ -101,7 +101,7 @@ global class CaseInboundEmailHandler
             this.theCase = caseSearch[0];
             if (this.theCase.Status.startsWith('Closed')) {
                         this.theCase.Status = 'Re-Opened';
-                        /* SFE-626 Emergency migration fix, do not update queueId to avoid null pointer exception line 109 
+                        /* Emergency migration fix, do not update queueId to avoid null pointer exception line 109.
                         // Find the original recipient list and look up the associated Case Assignment Rule
                         // to set the Owner back to the original Queue
                         system.debug('GRF Initial_Request_Sent_To_Addresses__c: ' + theCase.Initial_Request_Sent_To_Addresses__c);

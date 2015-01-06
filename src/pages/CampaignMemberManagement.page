@@ -3,8 +3,8 @@
 * Written by: Mathew Ruff
 * Date Created: Nov 6 2014
 * 
-* Last Updated: Nov 12 2014
-* What was Changed: Removed event and interest debugging info with search.
+* Last Updated: Dec 16 2014
+* What was Changed: Added External ID to Interest Search.
 -->
 
 <apex:page standardController="Contact" extensions="CampaignMemberManagementController"
@@ -197,7 +197,7 @@
                                 <apex:outputText id="eventHelpText"><i>Search by Name, Type, or Category</i></apex:outputText>
                                 <hr />
                                 <apex:outputPanel id="eventPanel">
-                                    <apex:dataTable id="eventList" value="{!eventSearchResults}" var="el" cellpadding="7" width="50%" rowClasses="even,odds" rendered="{!IF(eSearchString != null,true,false)}">
+                                    <apex:dataTable id="eventList" value="{!eventSearchResults}" var="el" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(eSearchString != null,true,false)}">
                                         <apex:column headerValue="Action">
                                             <!--<apex:commandLink styleClass="myLink" target="_blank" value="Add to Event" action="{!AddToEvent}" status="actStatusEvent">-->
                                             <!--<apex:commandLink styleClass="myLink" value="Add to Event" onclick="openCMTab('00v/e?c_id={!el.Id}&parent_id={!contId}', '');">-->
@@ -262,7 +262,7 @@
                                 <apex:outputText id="interestHelpText"><i>Search by Name or Type</i></apex:outputText>
                                 <hr />
                                 <apex:outputPanel id="interestPanel">
-                                    <apex:dataTable id="interestList" value="{!interestSearchResults}" var="i" cellpadding="7" width="50%" rowClasses="even,odds" rendered="{!IF(iSearchString != null,true,false)}">
+                                    <apex:dataTable id="interestList" value="{!interestSearchResults}" var="i" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(iSearchString != null,true,false)}">
                                         <apex:column headerValue="Add Interest">
                                             <apex:commandLink styleClass="myLink" value="Select" onclick="addInterest()" action="{!AddInterest}" status="actStatusinterest">
                                                 <apex:param name="intId" value="{!i.Id}" assignTo="{!intId}"/>
@@ -271,6 +271,7 @@
                                         </apex:column>
                                         <apex:column headerValue="Name" value="{!i.Name}"/>
                                         <apex:column headerValue="Type" value="{!i.Type}"/>
+                                        <apex:column headerValue="External ID" value="{!i.Campaign_External_ID__c}"/>
                                     </apex:dataTable>
                                 </apex:outputPanel>
                             </apex:actionRegion>

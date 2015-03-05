@@ -1,10 +1,10 @@
 @isTest
 private class TestChangeStateOnDeeplinksUpdate
 {
-    private static Case createCase()
+    private static Case createCase(queue_id)
     {
         Case newCase = new Case(
-            Subject = 'Test Subject%ASURITE:9999999999%Queue:00Gd00000027w7CEAQ',
+            Subject = 'Test Subject%ASURITE:9999999999%Queue:' . queue_id,
             Description = 'Test Description',
             Status = 'Processing'
         );
@@ -24,10 +24,29 @@ private class TestChangeStateOnDeeplinksUpdate
         return newContact;
     }
     
-    static testmethod void TestChangeStateWithSufficientLinks()
+    static testmethod void TestFAChangeStateWithSufficientLinks()
     {
+        List<Group> fa_group = [SELECT Id FROM Group WHERE DeveloperName = 'Financial_Aid_Case' LIMIT 1];
+        Id fa_id = fa_group.get(0).Id;
+
         Contact con = createContact();
-        Case c = createCase();
+        Case c = createCase(fa_id);
+        c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
+        c.Number_of_Files__c = '3';
+        Test.startTest();
+        update c;
+        Test.stopTest();
+        Case stat = [SELECT Status FROM Case WHERE Id = :c.Id LIMIT 1];
+        System.assert(stat.Status == 'Closed: Resolved');
+    }
+
+    static testmethod void TestRegChangeStateWithSufficientLinks()
+    {
+        List<Group> reg_group = [SELECT Id FROM Group WHERE DeveloperName = 'University_Registrar_Services_Case' LIMIT 1];
+        Id reg_id = reg_group.get(0).Id;
+
+        Contact con = createContact();
+        Case c = createCase(reg_id);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '3';
         Test.startTest();
@@ -39,14 +58,17 @@ private class TestChangeStateOnDeeplinksUpdate
     
     static testmethod void TestChangeStateWithoutSufficientLinks()
     {
+        List<Group> reg_group = [SELECT Id FROM Group WHERE DeveloperName = 'University_Registrar_Services_Case' LIMIT 1];
+        Id reg_id = reg_group.get(0).Id;
+
         Contact con = createContact();
-        Case c = createCase();
+        Case c = createCase(reg_id);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
-        c.Number_of_Files__c = '5';
+        c.Number_of_Files__c = '3';
         Test.startTest();
         update c;
         Test.stopTest();
         Case stat = [SELECT Status FROM Case WHERE Id = :c.Id LIMIT 1];
-        System.assert(stat.Status != 'New');
+        System.assert(stat.Status == 'New');
     }
 }

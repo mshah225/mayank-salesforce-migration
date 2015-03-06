@@ -27,7 +27,7 @@ trigger changeStateOnDeeplinksUpdate on Case (before update)
                     c.Subject = subjectSplit[0];
                 }
 
-              List<Group> fa_group = [SELECT Id FROM Group WHERE DeveloperName = 'Financial_Aid_Case' LIMIT 1];
+              List<Group> fa_group = [SELECT Id FROM Group WHERE Name = 'Financial Aid (Case)' LIMIT 1];
               Id fa_id = fa_group.get(0).Id;
               if(c.OwnerId == fa_id)
               {

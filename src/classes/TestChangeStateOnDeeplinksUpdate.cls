@@ -26,8 +26,7 @@ private class TestChangeStateOnDeeplinksUpdate
     
     static testmethod void TestFAChangeStateWithSufficientLinks()
     {
-        List<Group> fa_group = [SELECT Id FROM Group WHERE Name = 'Financial Aid (Case)' LIMIT 1];
-        Id fa_id = fa_group.get(0).Id;
+        Id fa_id = [SELECT Id FROM Group WHERE Name = 'Financial Aid (Case)' LIMIT 1].Id;
 
         Contact con = createContact();
         Case c = createCase(fa_id);
@@ -42,8 +41,7 @@ private class TestChangeStateOnDeeplinksUpdate
 
     static testmethod void TestRegChangeStateWithSufficientLinks()
     {
-        List<Group> reg_group = [SELECT Id FROM Group WHERE Name = 'University Registrar Services (Case)' LIMIT 1];
-        Id reg_id = reg_group.get(0).Id;
+        Id reg_id = [SELECT Id FROM Group WHERE Name = 'University Registrar Services (Case)' LIMIT 1].Id;
 
         Contact con = createContact();
         Case c = createCase(reg_id);
@@ -58,8 +56,7 @@ private class TestChangeStateOnDeeplinksUpdate
     
     static testmethod void TestChangeStateWithoutSufficientLinks()
     {
-        List<Group> reg_group = [SELECT Id FROM Group WHERE Name = 'University Registrar Services (Case)' LIMIT 1];
-        Id reg_id = reg_group.get(0).Id;
+        Id reg_id = [SELECT Id FROM Group WHERE Name = 'University Registrar Services (Case)' LIMIT 1].Id;
 
         Contact con = createContact();
         Case c = createCase(reg_id);

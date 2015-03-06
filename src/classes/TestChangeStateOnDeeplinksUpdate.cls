@@ -64,11 +64,11 @@ private class TestChangeStateOnDeeplinksUpdate
         Contact con = createContact();
         Case c = createCase(reg_id);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
-        c.Number_of_Files__c = '3';
+        c.Number_of_Files__c = '5';
         Test.startTest();
         update c;
         Test.stopTest();
         Case stat = [SELECT Status FROM Case WHERE Id = :c.Id LIMIT 1];
-        System.assert(stat.Status == 'New');
+        System.assert(stat.Status == 'Processing');
     }
 }

@@ -1,10 +1,10 @@
 @isTest
 private class TestChangeStateOnDeeplinksUpdate
 {
-    private static Case createCase(queue_id)
+    private static Case createCase(Id queue_id)
     {
         Case newCase = new Case(
-            Subject = 'Test Subject%ASURITE:9999999999%Queue:' . queue_id,
+            Subject = 'Test Subject%ASURITE:9999999999%Queue:' + queue_id,
             Description = 'Test Description',
             Status = 'Processing'
         );

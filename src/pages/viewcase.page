@@ -56,6 +56,15 @@
         .bPageBlock.brandSecondaryBrd.apexDefaultPageBlock.secondaryPalette {
             border-top-color: #990033;
         }
+
+        .breadcrumb {
+            border-radius: 0px !important;
+        }
+
+        .breadcrumb a, .breadcrumb a:hover {
+            color: #990033 !important;
+            font-size: 10pt;
+        }
     </style>
     
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
@@ -336,6 +345,12 @@
     <div id="asu_content_well"><!-- These elements (content, content_well and content_container) -->
         <!-- INPUT CONTENT HERE -->
     <div class="container">
+
+      <ol class="breadcrumb">
+        <li><a href="/studentSC">Service Center</a></li>
+        <li class="active" style="font-size:10pt;">View Case</li>
+      </ol>
+
       <div class="row">
          <div class="col-md-8">
              <div class="box">
@@ -353,13 +368,6 @@
                      </apex:pageBlockSection>
                  </apex:pageBlock> 
              </apex:form>
-            <!--<br />
-            <hr />
-            <apex:pageBlock mode="maindetail">
-            <h4>Comments</h4>
-            <br /><Br /><p>Note: comments posted here will be sent to the agent working on your case, and will not be shown on this page.</p><br /><br />
-                <chatter:feed entityId="{!case.id}"/>
-            </apex:pageBlock>-->
             </div> 
           </div>
           
@@ -370,11 +378,14 @@
             <div class="content">
                 <apex:pageBlock mode="maindetail">
                     <apex:pageBlockSection >
-                        <apex:outputText value="{!caseDetails.CreatedDate}" /><br />
                         <apex:outputText value="{!caseDetails.Status}" /><br />
-                        <!--<apex:outputText value="{!caseDetails.Origin}" /><br />-->
-                        <apex:outputText value="{!caseDetails.Created_By_Name__c}" label="Opened By"/><br />
-                        <apex:outputText value="{!caseDetails.ClosedDate}" />
+                        <apex:outputText value="{0, date, MMMM d','  yyyy}" label="Date Opened">
+                            <apex:param value="{!caseDetails.CreatedDate}"/>
+                        </apex:outputText><br />
+                        <apex:outputText rendered="{!IF(caseDetails.Status == 'Closed: Resolved',true,false)}" value="{0, date, MMMM d','  yyyy}" label="Date Closed">
+                            <apex:param value="{!caseDetails.ClosedDate}"/>
+                        </apex:outputText><br />
+                        <apex:outputText rendered="{!IF(caseDetails.Status == 'Closed: Resolved',true,false)}" value="{!caseDetails.Feedback_Link__c}" escape="false" label="Feedback" styleClass="feedbackLink"/>
                     </apex:pageBlockSection>
                 </apex:pageBlock>
             </div>
@@ -682,6 +693,7 @@
                                     <apex:inputField id="caseSubject" value="{!c.subject}" required="true" style="width:95%;max-width:305px;border:solid 1px gray;" label=""/>
                                     <label for="caseDesc">Description</label>
                                     <apex:inputField id="caseDesc" value="{!c.description}" required="true" style="width:97%;height:100px;resize:none;max-width:305px" label=""/>
+                                    <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>
                                 </apex:pageBlockSection>
                                 <apex:pageblockbuttons location="bottom">
                                     <apex:commandButton action="{!submitCase}" value="Submit" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;"/>

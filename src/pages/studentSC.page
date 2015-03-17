@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1, maximum-scale=1" />
-   
+
     <c:asu_responsive_header_section />
     
     <!-- Stylesheets for Bootstrap/jQuery UI/MyASU -->
@@ -710,6 +710,7 @@
                                     <apex:inputField id="caseSubject" value="{!c.subject}" required="true" style="width:95%;max-width:305px;border:solid 1px gray;" label=""/>
                                     <label for="caseDesc">Description</label>
                                     <apex:inputField id="caseDesc" value="{!c.description}" required="true" style="width:97%;height:100px;resize:none;max-width:305px" label=""/>
+                                    <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>
                                 </apex:pageBlockSection>
                                 <apex:pageblockbuttons location="bottom">
                                     <apex:commandButton action="{!submitCase}" value="Submit" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;"/>

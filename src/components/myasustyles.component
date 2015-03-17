@@ -472,6 +472,10 @@
     .caseDesc {
         height: 100px;
     }
+
+    .feedbackLink a {
+        color: #990033;   
+    }
     
     .feeditemActionMenu, .feeditemActionMenuButton {
         display: none !important;
@@ -993,7 +997,7 @@
         }
         
         .modal-dialog {
-            padding-top: 15%;
+            padding-top: 5%;
         }
         
         @media screen and (max-width: 767px) {

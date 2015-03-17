@@ -547,7 +547,7 @@
         <div class="col-md-4">
             <div class="box">
             <div class="header">
-                <h6><b>Related Articles</b></h6>
+                <h6><b>Articles You May Find Helpful</b></h6>
             </div>
             <div class="content">
                 <knowledge:articleList articleVar="relatedart" 
@@ -577,13 +577,6 @@
                     pageSize="5">
                     -&nbsp;<apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink><br />
                 </knowledge:articleList>
-                               
-                   
-                    <div class="visible-lg visible-md">
-                        <hr />
-                        <p>Can't find what you need?<br />
-                        <a href="https://contact.asu.edu" target="_blank" style="border-bottom:dotted 1px;">Contact us</a></p>
-                    </div>
             </div>    
             </div>
             <apex:outputPanel rendered="{!HelpBox}">
@@ -892,7 +885,8 @@
                                     <label for="caseSubject">Subject</label>
                                     <apex:inputField id="caseSubject" styleClass="caseSubject" value="{!c.subject}" required="true" style="width:95%;max-width:305px;border:solid 1px gray;" label=""/>
                                     <label for="caseDesc">Description</label>
-                                    <apex:inputField id="caseDesc" styleClass="caseDesc" value="{!c.description}" style="width:97%;height:100px;resize:none;max-width:305px" required="true" label=""/>                                    
+                                    <apex:inputField id="caseDesc" styleClass="caseDesc" value="{!c.description}" style="width:97%;height:100px;resize:none;max-width:305px" required="true" label=""/>   
+                                    <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>                                 
                                 </apex:pageBlockSection>
                                 <apex:pageblockbuttons location="bottom">
                                     <apex:commandButton action="{!submitCase}" value="Submit" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;"/>

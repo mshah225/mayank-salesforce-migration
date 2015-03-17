@@ -2,11 +2,10 @@
 * Name: CampaignMemberManagement
 * Written by: Mathew Ruff
 * Date Created: Nov 6 2014
-* 
-* Last Updated: Dec 16 2014
-* What was Changed: Added External ID to Interest Search.
+* Last Updated: Feb 4th 2015
+* What was Changed: SFE-1239 Hotfix - Fixed problem with campaign members being added to events.
+* Rewrote calls to openSubTab in the service console. 
 -->
-
 <apex:page standardController="Contact" extensions="CampaignMemberManagementController"
     sidebar="false"
     showHeader="false"
@@ -118,55 +117,44 @@
     <apex:includeScript value="/support/console/32.0/integration.js"/>
     <script type="text/javascript">
         var primaryTabId;
-        
-        function openCMTab(recid, recname) {
-            if (!sforce.console.isInConsole()) {
+
+        function openViewTab(recid, recname) {
+            if(!sforce.console.isInConsole()) {
                 window.parent.location.replace('/' + recid);
             } else {
                 sforce.console.getEnclosingPrimaryTabId(function (result) {
                     primaryTabId = result.id;
-                    sforce.console.openSubtab(result.id, '/' + recid, true, recname, null, null, recname);
+                    sforce.console.openSubtab(result.id, recid, true, recname, null);
                 });
             }
         }
-        
-        function openEventTab(recid, recname, reccontact) {
-            if (!sforce.console.isInConsole()) {
-                window.parent.location.replace('/' + recid);
+
+        function refreshPrimaryTab() {
+            if(!sforce.console.isInConsole()) {
+                //window.location.reload(true);
+                window.top.location='/{!contId}';
             } else {
                 sforce.console.getEnclosingPrimaryTabId(function (result) {
                     primaryTabId = result.id;
-                    sforce.console.openSubtab(result.id, '00v/e?c_id=' + recid + '&parent_id=' + reccontact, true, recname, null);
-                    sforce.console.refreshPrimaryTabById(result.id, false);
+                    sforce.console.refreshPrimaryTabById(primaryTabId);
                 });
             }
-        }
-        
-        function addInterest() {
-            sforce.console.getEnclosingPrimaryTabId(function (result) {
-                sforce.console.refreshPrimaryTabById(result.id, false);
-            });
         }
     </script>
 </head>
-
 <body>  
-
     <apex:tabPanel switchType="client" selectedTab="events" id="theTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab" width="100%">
         <apex:tab label="Events" name="event" id="eventTab" >
             <apex:tabPanel switchType="client" selectedTab="assignedEvents" id="theTabPanel2" tabClass="activeSubTab" styleClass="subTab" inactiveTabClass="inactiveSubTab" width="100%">
                 <apex:tab label="Assigned Events" name="assignedEvents" id="assignedEvents" >
                     <apex:form id="viewEvents">
-                    <!--<apex:commandButton rerender="eventListBlock" value="Refresh"/>-->
                         <apex:outputPanel id="eventListBlock" layout="block" style="overflow:auto;height:195px" >
                             <apex:outputText rendered="{!IF(eventList.size < 1,true,false)}">No events found for this campaign member</apex:outputText>
                             <apex:dataTable id="eventList" value="{!eventList}" var="el" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(eventList.size > 0,true,false)}">
                                 <apex:column headerValue="Actions">
-                                 <!--   <apex:outputLink styleClass="myLink" target="_blank" value="/{!el.Id}">View</apex:outputLink>  -->
-                                    <apex:outputLink styleClass="myLink" value="#" onclick="openCMTab('{!el.Id}','{!el.Campaign.Name}');">View</apex:outputLink>
+                                    <apex:outputLink styleClass="myLink" value="#" onclick="openViewTab('{!el.Id}','{!el.Campaign.Name}');">View</apex:outputLink>
                                     &nbsp;|&nbsp;
-                                 <!--   <apex:outputLink styleClass="myLink" target="_blank" value="/{!el.Id}/e?retURL=%2F{!el.Id}">Edit</apex:outputLink> -->
-                                    <apex:outputLink styleClass="myLink" value="#" onclick="openCMTab('{!el.Id}/e', '{!el.Campaign.Name}');">Edit</apex:outputLink>
+                                    <apex:outputLink styleClass="myLink" value="#" onclick="openViewTab('{!el.Id}/e', '{!el.Campaign.Name}');">Edit</apex:outputLink>
                                 </apex:column>
                                 <apex:column headerValue="Event Name" value="{!el.Campaign.Name}"/>
                                 <apex:column headerValue="Type" value="{!el.Campaign.Type}"/>
@@ -199,9 +187,7 @@
                                 <apex:outputPanel id="eventPanel">
                                     <apex:dataTable id="eventList" value="{!eventSearchResults}" var="el" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(eSearchString != null,true,false)}">
                                         <apex:column headerValue="Action">
-                                            <!--<apex:commandLink styleClass="myLink" target="_blank" value="Add to Event" action="{!AddToEvent}" status="actStatusEvent">-->
-                                            <!--<apex:commandLink styleClass="myLink" value="Add to Event" onclick="openCMTab('00v/e?c_id={!el.Id}&parent_id={!contId}', '');">-->
-                                            <apex:commandLink styleClass="myLink" value="Add to Event" onclick="openEventTab('{!el.Id}', '{!el.Name}', '{!contId}');">
+                                            <apex:commandLink styleClass="myLink" value="Add to Event" action="{!AddToEvent}" status="actStatusEvent" oncomplete="refreshPrimaryTab()">
                                                 <apex:param name="elId" value="{!el.Id}" assignTo="{!elId}"/>
                                                 <apex:actionSupport reRender="eventListBlock"/>
                                             </apex:commandLink>
@@ -227,11 +213,9 @@
                             <apex:outputText rendered="{!IF(interestList.size < 1,true,false)}">No interests found for this campaign member</apex:outputText>
                             <apex:dataTable id="interestList" value="{!interestList}" var="i" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(interestList.size > 0,true,false)}">
                                 <apex:column headerValue="Actions">
-                                    <!--<apex:outputLink styleClass="myLink" target="_blank" value="/{!i.Id}">View</apex:outputLink>-->
-                                    <apex:outputLink styleClass="myLink" value="#" onclick="openCMTab('{!i.Id}','{!i.Campaign.Name}');">View</apex:outputLink>
+                                    <apex:outputLink styleClass="myLink" value="#" onclick="openViewTab('{!i.Id}','{!i.Campaign.Name}');">View</apex:outputLink>
                                     &nbsp;|&nbsp;
-                                    <!--<apex:outputLink styleClass="myLink" target="_blank" value="/{!i.Id}/e?retURL=%2F{!i.Id}">Edit</apex:outputLink>-->
-                                    <apex:outputLink styleClass="myLink" value="#" onclick="openCMTab('{!i.Id}/e','{!i.Campaign.Name}');">Edit</apex:outputLink>
+                                    <apex:outputLink styleClass="myLink" value="#" onclick="openViewTab('{!i.Id}/e','{!i.Campaign.Name}');">Edit</apex:outputLink>
                                 </apex:column>
                                 <apex:column headerValue="Interest Name" value="{!i.Campaign.Name}"/>
                                 <apex:column headerValue="Type" value="{!i.Campaign.Type}"/>
@@ -264,7 +248,7 @@
                                 <apex:outputPanel id="interestPanel">
                                     <apex:dataTable id="interestList" value="{!interestSearchResults}" var="i" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(iSearchString != null,true,false)}">
                                         <apex:column headerValue="Add Interest">
-                                            <apex:commandLink styleClass="myLink" value="Select" onclick="addInterest()" action="{!AddInterest}" status="actStatusinterest">
+                                            <apex:commandLink styleClass="myLink" value="Select" action="{!AddInterest}" status="actStatusinterest" oncomplete="refreshPrimaryTab()">
                                                 <apex:param name="intId" value="{!i.Id}" assignTo="{!intId}"/>
                                                 <apex:actionSupport reRender="interestBlock"/>
                                             </apex:commandLink>
@@ -287,11 +271,9 @@
                     <apex:outputText rendered="{!IF(scholarList.size < 1,true,false)}">No scholarships found for this campaign member</apex:outputText>
                     <apex:dataTable id="scholarList" value="{!scholarList}" var="s" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(scholarList.size > 0,true,false)}">
                         <apex:column headerValue="Actions">
-                            <!--<apex:outputLink styleClass="myLink" target="_blank" value="/{!s.Id}">View</apex:outputLink>-->
-                            <apex:outputLink styleClass="myLink" value="#" onclick="openCMTab('{!s.Id}','{!s.Campaign.Name}');">View</apex:outputLink>
+                            <apex:outputLink styleClass="myLink" value="#" onclick="openViewTab('{!s.Id}','{!s.Campaign.Name}');">View</apex:outputLink>
                             &nbsp;|&nbsp;
-                            <!--<apex:outputLink styleClass="myLink" target="_blank" value="/{!s.Id}/e?retURL=%2F{!s.Id}">Edit</apex:outputLink>-->
-                            <apex:outputLink styleClass="myLink" value="#" onclick="openCMTab('{!s.Id}/e','{!s.Campaign.Name}');">View</apex:outputLink>
+                            <apex:outputLink styleClass="myLink" value="#" onclick="openViewTab('{!s.Id}/e','{!s.Campaign.Name}');">Edit</apex:outputLink>
                         </apex:column>
                         <apex:column headerValue="Scholarship Name" value="{!s.Campaign.Name}"/>
                         <apex:column headerValue="Type" value="{!s.Campaign.Type}"/>
@@ -311,8 +293,7 @@
                     <apex:outputText rendered="{!IF(cohortList.size < 1,true,false)}">No cohorts found for this campaign member</apex:outputText>
                     <apex:dataTable id="cohortList" value="{!cohortList}" var="c" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(cohortList.size > 0,true,false)}">
                         <apex:column headerValue="Actions">
-                            <!--<apex:outputLink styleClass="myLink" target="_blank" value="/{!c.Id}">View</apex:outputLink>-->
-                            <apex:outputLink styleClass="myLink" value="#" onclick="openCMTab('{!c.Id}','{!c.Campaign.Name}');">View</apex:outputLink>
+                            <apex:outputLink styleClass="myLink" value="#" onclick="openViewTab('{!c.Id}','{!c.Campaign.Name}');">View</apex:outputLink>
                         </apex:column>
                         <apex:column headerValue="Campaign Name" value="{!c.Campaign.Name}"/>
                         <apex:column headerValue="Type" value="{!c.Campaign.Type}"/>
@@ -330,8 +311,7 @@
                     <apex:outputText rendered="{!IF(oSourceList.size < 1,true,false)}">No other sources found for this campaign member</apex:outputText>
                     <apex:dataTable id="cohortList" value="{!oSourceList}" var="o" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(oSourceList.size > 0,true,false)}">
                         <apex:column headerValue="Actions">
-                            <!--<apex:outputLink styleClass="myLink" target="_blank" value="/{!o.Id}">View</apex:outputLink>-->
-                            <apex:outputLink styleClass="myLink" value="#" onclick="openCMTab('{!o.Id}','{!o.Campaign.Name}');">View</apex:outputLink>
+                            <apex:outputLink styleClass="myLink" value="#" onclick="openViewTab('{!o.Id}','{!o.Campaign.Name}');">View</apex:outputLink>
                         </apex:column>
                         <apex:column headerValue="Campaign Name" value="{!o.Campaign.Name}"/>
                         <apex:column headerValue="Type" value="{!o.Campaign.Type}"/>
@@ -349,8 +329,7 @@
                     <apex:outputText rendered="{!IF(markCommList.size < 1,true,false)}">No marketing or communication campaigns found for this campaign member</apex:outputText>
                     <apex:dataTable id="cohortList" value="{!markCommList}" var="m" cellpadding="7" width="100%" rowClasses="even,odds" rendered="{!IF(markCommList.size > 0,true,false)}">
                         <apex:column headerValue="Actions">
-                            <!--<apex:outputLink styleClass="myLink" target="_blank" value="/{!m.Id}">View</apex:outputLink>-->
-                            <apex:outputLink styleClass="myLink" value="#" onclick="openCMTab('{!m.Id}','{!m.Campaign.Name}');">View</apex:outputLink>
+                            <apex:outputLink styleClass="myLink" value="#" onclick="openViewTab('{!m.Id}','{!m.Campaign.Name}');">View</apex:outputLink>
                         </apex:column>
                         <apex:column headerValue="Campaign Name" value="{!m.Campaign.Name}"/>
                         <apex:column headerValue="Type" value="{!m.Campaign.Type}"/>

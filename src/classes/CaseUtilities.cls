@@ -1,4 +1,6 @@
 public class CaseUtilities {
+	public static boolean emailForwarded = false;
+
     public static void forwardCaseAttachments(Id caseId, string forwardToEmail, string forwardToEmailCalc) {
 
         String dummyContactId;
@@ -136,6 +138,4 @@ public class CaseUtilities {
 
         insert theEmail;
     }
-
-
 }

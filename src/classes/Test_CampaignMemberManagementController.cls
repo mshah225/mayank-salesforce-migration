@@ -3,13 +3,24 @@ private class Test_CampaignMemberManagementController {
 
     private static ApexPages.standardController std;
     private static CampaignMemberManagementController cm;
+    private static Contact testContact;
+    private static Campaign interest;
+    private static Campaign event;
     
     static void setUp() { 
-    	//Set up contact
-    	Contact testContact = new Contact();
+    	testContact = new Contact();
         testContact.FirstName = 'Jonny';
         testContact.LastName = 'Test';
         insert testContact;        
+
+        interest = new Campaign();
+        interest.Name = 'Test interest';
+        insert interest;
+
+        event = new Campaign();
+        event.Name = 'Test event';
+        insert event;
+
 		Test.setCurrentPage(Page.CampaignMemberManagement);
 		System.currentPageReference().getParameters().put('Id', testContact.Id);
 		std = new ApexPages.standardController(testContact);
@@ -17,13 +28,9 @@ private class Test_CampaignMemberManagementController {
     }
     
     static testMethod void Test_CampaignMemberMangementController() {
-        //CampaignMemberManagementController cm = new CampaignMemberManagementController();
-        setUp();
-        Test.startTest();
-        Campaign interest = new Campaign();
-        interest.Name = 'Test campaign';
-        insert interest;
+        setUp();        
         cm.intId = interest.Id;
+        cm.elId = event.Id;
 		cm.getContId();
 		cm.iSearchString = 'Test';
 		cm.eSearchString= 'Test';
@@ -31,19 +38,31 @@ private class Test_CampaignMemberManagementController {
 		cm.doEventSearch();
 		cm.getEventSearchResults();
 		cm.getInterestSearchResults();
-		cm.AddInterest();
+		CampaignMember camMemEvent = cm.getCampaignMemberEvent();
+		cm.setCampaignMemberEvent(camMemEvent);
 		CampaignMember camMemInterest = cm.getCampaignMemberInterest();
 		cm.setCampaignMemberInterest(camMemInterest);
+
+		cm.camMemEvent.CampaignId = interest.Id;
+		cm.camMemEvent.ContactId = testContact.Id;
+		cm.AddInterest();
+
+		cm.camMemEvent.CampaignId = event.Id;
+		cm.camMemEvent.ContactId = testContact.Id;
+		cm.AddToEvent();
+
         List<CampaignMember> eventList = cm.getEventList();
 	    List<CampaignMember> interestList = cm.getInterestList();
 	    List<CampaignMember> scholarList = cm.getScholarList();
 	    List<CampaignMember> cohortList = cm.getCohortList();
 	    List<CampaignMember> oSourceList = cm.getOSourceList();
 	    List<CampaignMember> markCommList = cm.getMarkCommList();
-	    PageReference expected = new PageReference('/00v/e?c_id=' + cm.elId + '&parent_id=' + cm.contId + '&retURL=%2F' + cm.contId);
-	    PageReference result = cm.AddToEvent();
-	    System.AssertEquals(expected.getURL(), result.getURL());
-	    System.AssertNotEquals(null, eventList);
+
+	    Test.startTest();
+	    CampaignMember checkEventTestContact = [SELECT Id, ContactId, CampaignId FROM CampaignMember WHERE ContactId = :testContact.Id AND CampaignId = :event.Id];
+	    CampaignMember checkIntTestContact = [SELECT Id, ContactId, CampaignId FROM CampaignMember WHERE ContactId = :testContact.Id AND CampaignId = :interest.Id];
+	    System.AssertEquals(checkEventTestContact.ContactId, testContact.Id);
+	    System.AssertEquals(checkIntTestContact.ContactId, testContact.Id);
 	    Test.stopTest();
     }
 }

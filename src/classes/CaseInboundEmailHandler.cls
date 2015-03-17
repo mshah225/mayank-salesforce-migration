@@ -7,10 +7,11 @@ global class CaseInboundEmailHandler
   private Id templateId;
   private OrgWideEmailAddress defaultOrgWideEmailAddress;
   private boolean useDefaultEmailAddress = false;
-  private string categoryName;
-  private string subCategoryName;
-  private string origin;
-  private string functionalGroup;
+  private String categoryName;
+  private String subCategoryName;
+  private String origin;
+  private String campus;
+  private String functionalGroup;
   private String replyToAddress;
   private String emailFromName;
 
@@ -18,7 +19,7 @@ global class CaseInboundEmailHandler
   private Id defaultCaseRecordTypeId;
   private Id caseRecordTypeId;
   private Id fallbackQueueId;
-  private string typeOfAdditionalAssignmentNeeded;
+  private String typeOfAdditionalAssignmentNeeded;
   private boolean associateCaseToActiveOpportunity;
   // End Recruitment update
 
@@ -88,7 +89,9 @@ global class CaseInboundEmailHandler
     if(caseId != null)
     {
       if(TRACE)system.debug(Logginglevel.ERROR,'CaseEmailInBoundUtilities.  extracted case id: "' + caseId + '"');
-      Case[] caseSearch = [SELECT Id, ContactId, Subject, Description, Status, ClosedDate FROM Case WHERE Id = :caseId];
+      Case[] caseSearch = [SELECT Id, ContactId, Subject, Description, Status, ClosedDate 
+                           FROM Case 
+                           WHERE Id = :caseId];
       if (caseSearch.size() > 0) {
         Integer iReopenClosedCaseThreshold;
         string reopenClosedCaseThreshold = getConfigurationSetting('Reopen Closed Case Threshold');
@@ -97,22 +100,16 @@ global class CaseInboundEmailHandler
         else
           iReopenClosedCaseThreshold = 0;
           // If the case was closed within the last n days set in custom settings, re-open it.  Otherwise, create a new case below
-          if (caseSearch[0].Status != null && (!caseSearch[0].Status.startsWith('Closed') || (iReopenClosedCaseThreshold != 0 && caseSearch[0].Status.startsWith('Closed') && caseSearch[0].ClosedDate != null && caseSearch[0].ClosedDate > DateTime.Now().addDays(iReopenClosedCaseThreshold)))) {
+          if (caseSearch[0].Status != null &&
+          (!caseSearch[0].Status.startsWith('Closed') ||
+          (iReopenClosedCaseThreshold != 0 && 
+          caseSearch[0].Status.startsWith('Closed') &&
+          caseSearch[0].ClosedDate != null && 
+          caseSearch[0].ClosedDate > DateTime.Now().addDays(iReopenClosedCaseThreshold)))) {
             this.theCase = caseSearch[0];
             if (this.theCase.Status.startsWith('Closed')) {
-                        this.theCase.Status = 'Re-Opened';
-                        /* Emergency migration fix, do not update queueId to avoid null pointer exception line 109.
-                        // Find the original recipient list and look up the associated Case Assignment Rule
-                        // to set the Owner back to the original Queue
-                        system.debug('GRF Initial_Request_Sent_To_Addresses__c: ' + theCase.Initial_Request_Sent_To_Addresses__c);
-                        List<String> originalToList = theCase.Initial_Request_Sent_To_Addresses__c.split(',',0);
-                        system.debug('GRF originalToList: ' + originalToList);
-                        if (originalToList.size() > 0) {
-                            setCaseAssignmentRule(originalToList, new List<String>());
-                            if (queueId != null)
-                                theCase.OwnerId = queueId;
-                        }*/
-            updateSObject(this.theCase);
+              this.theCase.Status = 'Re-Opened';
+              updateSObject(this.theCase);
             }
         }
       }
@@ -130,7 +127,11 @@ global class CaseInboundEmailHandler
     if (email.ToAddresses != null && email.ToAddresses.size() > 1) {
       DateTime dtOneMinuteAgo = DateTime.now().addMinutes(-1);
       string suppliedEmail = email.fromAddress;
-      Case[] dupeCases = [SELECT Id FROM Case WHERE Subject = :email.Subject AND SuppliedEMail = :suppliedEmail AND CreatedDate >= :dtOneMinuteAgo];
+      Case[] dupeCases = [SELECT Id 
+                          FROM Case 
+                          WHERE Subject = :email.Subject 
+                          AND SuppliedEMail = :suppliedEmail 
+                          AND CreatedDate >= :dtOneMinuteAgo];
       if (dupeCases.size() > 0) {
         // Found one; let's stop here
         return result;
@@ -156,18 +157,18 @@ global class CaseInboundEmailHandler
       // End Recruitment update
       theCase.Category__c = categoryName;
       theCase.Sub_Category__c = subCategoryName;
+      theCase.Campus__c = campus;
       theCase.Functional_Group__c = functionalGroup;
       theCase.SuppliedEmail = email.fromAddress;
       theCase.SuppliedName = fname + ' ' + lname;
       theCase.Status = 'New';
       theCase.Priority = 'Normal';
-            // The Queue ID should be set as long as a Cse Assignment Rule was found; just in case, adding
-            // and else clause to be sure the Owner is not set to null, which would prevent the insert
-            //
-            if (queueId != null)
-                theCase.OwnerId = queueId;
-            else
-                theCase.OwnerId = UserInfo.getUserId();
+      // The Queue ID should be set as long as a Cse Assignment Rule was found; just in case, adding
+      // and else clause to be sure the Owner is not set to null, which would prevent the insert
+      if (queueId != null)
+          theCase.OwnerId = queueId;
+      else
+          theCase.OwnerId = UserInfo.getUserId();
       system.debug('GRF theCase.OwnerId: ' + theCase.OwnerId);
       if(origin != null){
         theCase.Origin__c = origin;
@@ -200,33 +201,32 @@ global class CaseInboundEmailHandler
       // Recruitment update
       theCase.Type_of_Additional_Assignment_Needed__c = typeOfAdditionalAssignmentNeeded;
       if(associateCaseToActiveOpportunity == null){
-      	theCase.Associate_Case_to_Active_Opportunity__c = false;
+        theCase.Associate_Case_to_Active_Opportunity__c = false;
       }else{
-      	theCase.Associate_Case_to_Active_Opportunity__c = associateCaseToActiveOpportunity;
+        theCase.Associate_Case_to_Active_Opportunity__c = associateCaseToActiveOpportunity;
 
       }
       // End recruitment update
 
       system.debug('GRF replyTo: ' + email.replyTo);
 
-      // Cause assignment rules to fire -- Removed now that Handler is Assigning and Auto-replying
-      //Database.DMLOptions dmo = new Database.DMLOptions();
-      //dmo.assignmentRuleHeader.useDefaultRule= true;
-      //dmo.EmailHeader.triggerAutoResponseEmail = true;
-      //theCase.setOptions(dmo);
-
-      Contact[] contacts = [SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c FROM Contact WHERE Email = :email.fromAddress or
-                                              ASU_Gmail__c = :email.fromAddress or
-                                              EPO_Email__c = :email.fromAddress or
-                                              ASU_Email__c = :email.fromAddress or
-                                              Lead_Email__c = :email.fromAddress or
-                                              Lead_Secondary_Email__c = :email.fromAddress or
-                                              Personal_Email__c = :email.fromAddress or
-                                              Preferred_Email__c = :email.fromAddress ];
+      Contact[] contacts = [SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c 
+                            FROM Contact 
+                            WHERE Email = :email.fromAddress 
+                            OR ASU_Gmail__c = :email.fromAddress 
+                            OR EPO_Email__c = :email.fromAddress 
+                            OR ASU_Email__c = :email.fromAddress 
+                            OR Lead_Email__c = :email.fromAddress 
+                            OR Lead_Secondary_Email__c = :email.fromAddress 
+                            OR Personal_Email__c = :email.fromAddress 
+                            OR Preferred_Email__c = :email.fromAddress 
+                            OR Corporate_Relations_Email__c = :email.fromAddress];
       if(contacts.size() > 1) {
       Contact[] filteredContacts;
           for (Contact c: contacts) {
-            if ((c.FirstName != null && c.LastName != null) && c.FirstName.toLowerCase() == fname.toLowerCase() && c.LastName.toLowerCase() == lname.toLowerCase())
+            if ((c.FirstName != null && c.LastName != null) && 
+            c.FirstName.toLowerCase() == fname.toLowerCase() && 
+            c.LastName.toLowerCase() == lname.toLowerCase())
               filteredContacts.add(c);
           }
           if (filteredContacts != null) {
@@ -262,14 +262,19 @@ global class CaseInboundEmailHandler
       }
       else {
         Id rtId;
-          List<RecordType> rtypes = [Select Name, Id From RecordType
-                                where sObjectType='Contact' and DeveloperName = 'SF_Mastered' and isActive=true];
+          List<RecordType> rtypes = [Select Name, Id 
+                                     From RecordType
+                                     Where sObjectType='Contact' 
+                                     And DeveloperName = 'SF_Mastered' 
+                                     And isActive=true];
             if(rtypes.size() > 0)
               rtId = rtypes[0].Id;
 
           Contact c = new Contact(FirstName = fname, LastName = lname, Email = email.fromAddress, RecordTypeId=rtId);
           insertSObject(c);
-          Contact insertedContact = [SELECT Id, AccountId FROM Contact WHERE Id = :c.Id];
+          Contact insertedContact = [SELECT Id, AccountId 
+                                     FROM Contact 
+                                     WHERE Id = :c.Id];
           theCase.ContactId = insertedContact.Id;
           theCase.AccountId = insertedContact.AccountId;
           emailContact = insertedContact;
@@ -279,7 +284,9 @@ global class CaseInboundEmailHandler
     }
     else {
       // Grab the contact record from the existing case
-      List<Contact> caseContact = [SELECT Id FROM Contact WHERE Id = :theCase.ContactId];
+      List<Contact> caseContact = [SELECT Id 
+                                   FROM Contact 
+                                   WHERE Id = :theCase.ContactId];
       if (caseContact.size() > 0)
         emailContact = caseContact[0];
     }
@@ -464,7 +471,9 @@ global class CaseInboundEmailHandler
      }
      if(e != null) { // compose the DmlException message on one line to minimize the number of untested lines.  AFAIK easy to instantiate a DmlException in a unit test.
         msg += '\n';
-        msg += 'EXCEPTION:\n  Error: ' + e.getMessage() + '\n  Type: ' + e.getTypeName() + '\n  Line Number: ' + e.getLineNumber() + '\n  Trace:\n' + e.getStackTraceString() + '\n(end stack trace)\n';
+        msg += 'EXCEPTION:\n  Error: ' + e.getMessage() + '\n  Type: ' + 
+        e.getTypeName() + '\n  Line Number: ' + e.getLineNumber() + '\n  Trace:\n' + 
+        e.getStackTraceString() + '\n(end stack trace)\n';
      }
 
      Case errCase = new Case();
@@ -472,90 +481,20 @@ global class CaseInboundEmailHandler
      errCase.OwnerId = UserInfo.getUserId();
      errCase.Status = 'New';
      errCase.Priority = 'Normal';
-      errCase.Origin = 'Email';
+     errCase.Origin = 'Email';
      errCase.Subject = 'Error processing incoming email';
      errCase.Description = limitLength(msg,Case.Description.getDescribe().getLength());
      insert errCase;
-     errCase = [Select Id, CaseNumber from Case where Id = :errCase.Id limit 1];
+     errCase = [Select Id, CaseNumber 
+                From Case 
+                Where Id = :errCase.Id 
+                Limit 1];
 
      caseURL = baseURL + errCase.Id;
      msg += '\n\n';
      msg += 'Created new Case number ' + errCase.CaseNumber + ' for this error.  See: ' + caseURL +'\n';
 
-     //TriggerErrorNotification.reportError('CaseEmailInBoundUtilities', msg);
   }
-
-
-  /*
-  Given a case number such as 8144 find the exact case that use this number. Note that CaseNumber is a string field
-  that may have any number of leading zeros.
-
-  private Case locateByCaseNumberAsString(String caseNumberStr){
-   Integer target = Integer.valueOf(caseNumberStr);
-   Case theResult = null;
-   String caseNumber = '%' + String.valueOf(target);
-   Case[] matchingCases = [Select Id, CaseNumber, Subject, Description from Case where CaseNumber like :caseNumber];
-   for(Case aCase: matchingCases) {
-    Integer cnum = Integer.valueOf(aCase.CaseNumber);
-    if(cnum == target) {
-    theResult = aCase;
-    break;
-    }
-   }
-   return theResult;
-  }
-  */
-
-  /*
-  Look for the case reference in the email subject line.  First search for a case reference using the
-  standard Salesforce method of creating that complicated and non-user-friendly reference.  Do this first
-  so it takes precedence.
-
-  But, also search for the case number itself. This is user-friendly!
-
-  private String extractRef(String emailSubject)
-  {
-   String itemRef = null;
-   String target = emailSubject.toLowerCase();
-   String patternString;
-   Pattern thePattern;
-   Matcher matcher;
-  */
-
-  /*  Take the text between the period and ":ref"  For example in the ref [ ref:00D7JFzw.5007H3Rh8:ref ] extract 5007H3Rh8
-   Take that text and remove the 5007. For example H3Rh8
-   Append H3Rh8 to https://na5.salesforce.com/5007000000  to produce https://na5.salesforce.com/5007000000H3Rh8.   This is your link to get to the case.
-
-   patternString = '.*ref:(.{8}).(.{4})(.+):ref.*';
-   thePattern = Pattern.compile(patternString);
-   matcher = thePattern.matcher(emailSubject); // do not change to lower case for this test because Id's are case sensitive
-
-   if (matcher.matches()) {
-    String caseId = matcher.group(2) + '000000' + matcher.group(3);
-    if(TRACE) system.debug(Logginglevel.ERROR,'extractRef "' + caseId + '"');
-    Case[] matchingCases = [Select CaseNumber from Case where Id = :caseId];
-    if(matchingCases.size() == 1) {
-     Case theCase = matchingCases[0];
-     itemRef = theCase.CaseNumber;
-    }
-   }
-   if(itemRef == null) {
-    // extract the Case Number from the email Subject
-    // Re: Test two numbers Case: 30088 and Case: 30089'
-    // returns 30089, the last pattern matched
-    patternString = '.*case[;:=]?\\s*([0-9]+).*';
-    thePattern = Pattern.compile(patternString);
-    matcher = thePattern.matcher(target);
-
-    if (matcher.matches()) {
-     itemRef = matcher.group(1);
-     if(TRACE) system.debug('Extracted case number ' + itemRef);
-    }
-   }
-
-   return itemRef;
-  }
-  */
 
   private String extractIdRefNew(String searchText)
   {
@@ -577,82 +516,6 @@ global class CaseInboundEmailHandler
        return null;
      }
   }
-/*
-    private String extractIdFromCaseNumber(String searchText)
-    {
-        if (searchText==null)
-            return null;
-
-        string caseNumber;
-
-        string patternString = '.*Case Number [;:=]?\\s*([0-9]+).*';
-        Pattern thePattern = Pattern.compile(patternString);
-        Matcher matcher = thePattern.matcher(searchText);
-
-        if (matcher.matches()) {
-            caseNumber = matcher.group(1);
-            List<Case> caseCheck = new List<Case>([SELECT Id FROM Case WHERE CaseNumber = :caseNumber]);
-
-            if (caseCheck.size() > 0)
-                return String.valueOf(caseCheck[0].Id);
-        }
-
-        return null;
-    }
-*/
-/*
-  private String extractIdRef(String searchText)
-  {
-
-    if (searchtext==null)
-      return null;
-
-   String itemRef = null;
-   String patternString;
-   Pattern thePattern;
-   Matcher matcher;
-
-  /*  Take the text between the period and ":ref"  For example in the ref [ ref:00D7JFzw.5007H3Rh8:ref ] extract 5007H3Rh8
-   Take that text and remove the 5007. For example H3Rh8
-   Append H3Rh8 to https://na5.salesforce.com/5007000000  to produce https://na5.salesforce.com/5007000000H3Rh8.   This is your link to get to the case.
-  */
-  /*
-   //patternString = '.*ref:(.{8}).(.{4})(.+):ref.*';
-   patternString = '.*ref:(.{11}).(.{5})(.+):ref.*';
-   thePattern = Pattern.compile(patternString);
-   matcher = thePattern.matcher(searchText);
-   if (matcher.matches()) {
-    String caseId = matcher.group(2) + '00000' + matcher.group(3);
-    // String caseId = matcher.group(1) + matcher.group(2) + matcher.group(3);
-    caseId = caseId.replace('_', '');
-    system.debug('GRF caseId extracted: ' + caseId);
-    return caseId;
-   }
-   else {
-    system.debug('GRF no caseId extracted');
-     return null;
-   }
-  }
-  */
-
-
-  /*
-  private String extractMainSubject(String emailSubject)
-  {
-     if(emailSubject == null || emailSubject.length() < 3)
-        return emailSubject;
-     String[] prefixes = new String[] {'fw:','re:', 'automatic reply:', 'out of office autoreply:', 'out of office'};
-     String target = emailSubject.toLowerCase();
-     for(String prefix: prefixes) {
-        Integer index = target.indexOf(prefix);
-        if(index == 0 ){
-           String mainSubject = emailSubject.substring(prefix.length(),emailSubject.length());
-           return mainSubject.trim();
-        }
-     }
-     return emailSubject;
-  }
-  */
 
   private String extractAddress(String inAddress)
   {
@@ -675,25 +538,9 @@ global class CaseInboundEmailHandler
      return address;
   }
 
-
-  /*
-  private Id findQueue(string toAddress) {
-    Email_To_Case_Queue_Assignment__c[] queueAssignments = [SELECT queue_name__c FROM Email_To_Case_Queue_Assignment__c WHERE email_alias__c = :toAddress];
-    if (queueAssignments.size() > 0) {
-      Group[] queueSearch = [SELECT Id FROM Group WHERE Name = :queueAssignments[0].queue_name__c AND Type = 'Queue'];
-      if (queueSearch.size() > 0)
-        return queueSearch[0].Id;
-      else
-        return null;
-    }
-    else {
-      return null;
-    }
-  }
-  */
-
   private Boolean filteredTermFound() {
-    Email_To_Case_Filter__c[] filteredTerms = [SELECT Name, Rejection_Count__c FROM Email_To_Case_Filter__c];
+    Email_To_Case_Filter__c[] filteredTerms = [SELECT Name, Rejection_Count__c 
+                                               FROM Email_To_Case_Filter__c];
     for (Email_To_Case_Filter__c filter: filteredTerms) {
       String lcFilter = filter.Name.toLowerCase();
       if (filter.Rejection_Count__c == null)
@@ -725,7 +572,8 @@ global class CaseInboundEmailHandler
   }
 
   private void loadConfigurationSettings() {
-    Email_To_Case_Configuration__c[] configList = [SELECT Name, Value__c FROM Email_To_Case_Configuration__c];
+    Email_To_Case_Configuration__c[] configList = [SELECT Name, Value__c 
+                                                   FROM Email_To_Case_Configuration__c];
     if (configList.size() > 0) {
       for (Email_To_Case_Configuration__c c: configList) {
         configMap.put(c.Name, c.Value__c);
@@ -733,7 +581,10 @@ global class CaseInboundEmailHandler
     }
 
     // Recruitment update
-    RecordType defaultCaseRecordType = [SELECT Id FROM RecordType WHERE SObjectType = 'Case' AND DeveloperName = 'ASU_Service'];
+    RecordType defaultCaseRecordType = [SELECT Id 
+                                        FROM RecordType 
+                                        WHERE SObjectType = 'Case' 
+                                        AND DeveloperName = 'ASU_Service'];
     if (defaultCaseRecordType != null)
       defaultCaseRecordTypeId = defaultCaseRecordType.Id;
     // End Recruitment Update
@@ -750,15 +601,19 @@ global class CaseInboundEmailHandler
 
   private void setCaseAssignmentRule(String[] toEmailAddresses, String[] ccEmailAddresses) {
     // Recruitment update
-    Case_Assignment_Rule__c[] assignmentRuleList = [SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Customer_Notice_Email_From_Name__c, Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c FROM Case_Assignment_Rule__c WHERE Email_Address__c IN :toEmailAddresses ORDER BY Priority__c];
+    Case_Assignment_Rule__c[] assignmentRuleList = [SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Customer_Notice_Email_From_Name__c, 
+                                                    Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, 
+                                                    Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
+                                                    FROM Case_Assignment_Rule__c 
+                                                    WHERE Email_Address__c IN :toEmailAddresses 
+                                                    ORDER BY Priority__c];
     if (assignmentRuleList.size() > 0) {
       categoryName = assignmentRuleList[0].Category__c;
       subCategoryName = assignmentRuleList[0].Sub_Category__c;
+      campus = assignmentRuleList[0].Campus__c;
       functionalGroup = assignmentRuleList[0].Functional_Group__c;
       origin = assignmentRuleList[0].Origin__c;
       queueId = ID.valueOf(assignmentRuleList[0].Queue_ID__c);
-      //templateId = ID.valueOf(assignmentRuleList[0].Email_Template_ID__c);
-      //replyToAddress = assignmentRuleList[0].Email_Address__c;
 
             if (assignmentRuleList[0].Email_Template_ID__c != null && assignmentRuleList[0].Email_Template_ID__c != '')
                 templateId = ID.valueOf(assignmentRuleList[0].Email_Template_ID__c);
@@ -782,15 +637,20 @@ global class CaseInboundEmailHandler
       system.debug('GRF CAR__c: ' + assignmentRuleList[0]);
     }
     else {
-      assignmentRuleList = [SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Customer_Notice_Email_From_Name__c, Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c FROM Case_Assignment_Rule__c WHERE Email_Address__c IN :ccEmailAddresses ORDER BY Priority__c];
+      assignmentRuleList = [SELECT Id, Name, Category__c, Sub_Category__c, 
+                            Email_Address__c, Customer_Notice_Email_From_Name__c, Reply_To_Email_Address__c, Email_Template_ID__c, 
+                            Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, 
+                            Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
+                            FROM Case_Assignment_Rule__c 
+                            WHERE Email_Address__c IN :ccEmailAddresses 
+                            ORDER BY Priority__c];
       if (assignmentRuleList.size() > 0) {
         categoryName = assignmentRuleList[0].Category__c;
         subCategoryName = assignmentRuleList[0].Sub_Category__c;
+        campus = assignmentRuleList[0].Campus__c;
         functionalGroup = assignmentRuleList[0].Functional_Group__c;
         origin = assignmentRuleList[0].Origin__c;
         queueId = ID.valueOf(assignmentRuleList[0].Queue_ID__c);
-        //templateId = ID.valueOf(assignmentRuleList[0].Email_Template_ID__c);
-        //replyToAddress = assignmentRuleList[0].Email_Address__c;
 
                 if (assignmentRuleList[0].Email_Template_ID__c != null && assignmentRuleList[0].Email_Template_ID__c != '')
                     templateId = ID.valueOf(assignmentRuleList[0].Email_Template_ID__c);
@@ -819,16 +679,20 @@ global class CaseInboundEmailHandler
       string defaultEmailAddress = getConfigurationSetting('Default Org Wide Email Address');
       Case_Assignment_Rule__c[] assignmentRuleListDefault;
       if (defaultEmailAddress != null && defaultEmailAddress != '') {
-        assignmentRuleListDefault = [SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Customer_Notice_Email_From_Name__c, Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = :defaultEmailAddress];
+        assignmentRuleListDefault = [SELECT Id, Name, Category__c, Sub_Category__c, 
+                                     Email_Address__c, Customer_Notice_Email_From_Name__c, Reply_To_Email_Address__c, Email_Template_ID__c, 
+                                     Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, 
+                                     Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
+                                     FROM Case_Assignment_Rule__c 
+                                     WHERE Email_Address__c = :defaultEmailAddress];
       }
       if (assignmentRuleListDefault != null && assignmentRuleListDefault.size() > 0) {
         categoryName = assignmentRuleListDefault[0].Category__c;
         subCategoryName = assignmentRuleListDefault[0].Sub_Category__c;
+        campus = assignmentRuleListDefault[0].Campus__c;
         functionalGroup = assignmentRuleListDefault[0].Functional_Group__c;
         origin = assignmentRuleListDefault[0].Origin__c;
         queueId = ID.valueOf(assignmentRuleListDefault[0].Queue_ID__c);
-        //templateId = ID.valueOf(assignmentRuleListDefault[0].Email_Template_ID__c);
-        //replyToAddress = assignmentRuleListDefault[0].Email_Address__c;
 
                 if (assignmentRuleListDefault[0].Email_Template_ID__c != null && assignmentRuleListDefault[0].Email_Template_ID__c != '')
                     templateId = ID.valueOf(assignmentRuleListDefault[0].Email_Template_ID__c);
@@ -860,12 +724,6 @@ global class CaseInboundEmailHandler
 
   }
 
-  /*
-  private void sendAutoReply(Contact emailContact, String emailTemplateId) {
-    sendAutoReply(null, emailContact, emailTemplateId);
-  }
-  */
-
   private void sendAutoReply(Case emailCase, Contact emailContact, String emailTemplateId) {
     Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
     mail.setTargetObjectId(emailContact.Id);
@@ -884,7 +742,6 @@ global class CaseInboundEmailHandler
         }
         catch (Exception e) {
             //Most likely SINGLE_EMAIL_LIMIT_EXCEEDED; catching so the transaction will continue
-            //
         }
   }
 
@@ -894,7 +751,9 @@ global class CaseInboundEmailHandler
     String orgWideEmailAddress = getConfigurationSetting('Default Org Wide Email Address');
     system.debug('GRF owea:' + orgWideEmailAddress);
     if (orgWideEmailAddress != null && orgWideEmailAddress != '') {
-      List<OrgWideEmailAddress> oweaList = new List<OrgWideEmailAddress>([SELECT Id, DisplayName, Address FROM OrgWideEmailAddress WHERE Address = :orgWideEmailAddress]);
+      List<OrgWideEmailAddress> oweaList = new List<OrgWideEmailAddress>([SELECT Id, DisplayName, Address 
+                                                                          FROM OrgWideEmailAddress 
+                                                                          WHERE Address = :orgWideEmailAddress]);
       system.debug('GRF owea list:' + oweaList);
       if (oweaList.size() > 0) {
         oweaLookup = oweaList[0];
@@ -904,18 +763,10 @@ global class CaseInboundEmailHandler
   }
 
   // Recruitment update
-/*
-  private boolean isUserActive(string emailAddress) {
-    List<User> userList = new List<User>([SELECT Id, IsActive FROM User WHERE Email = :emailAddress]);
-    if (userList.size() > 0) {
-      if (userList[0].IsActive)
-        return true;
-    }
-    return false;
-  }
-*/
   private boolean isUserActive(string userId) {
-    List<User> userList = new List<User>([SELECT Id, IsActive FROM User WHERE Id = :userId]);
+    List<User> userList = new List<User>([SELECT Id, IsActive 
+                                          FROM User 
+                                          WHERE Id = :userId]);
     if (userList.size() > 0) {
       if (userList[0].IsActive)
         return true;
@@ -923,6 +774,4 @@ global class CaseInboundEmailHandler
     return false;
   }
   // End recruitment update
-
-
 }

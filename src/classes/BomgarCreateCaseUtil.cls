@@ -1,4 +1,6 @@
-//Edited 12/1/14 for BB - ASURITE lookup for contact.
+/* Edited: 2/16/15 by Mat Ruff
+*  Changes: SFE-1318 - Changed Origin to Origin__c to reflect new field.
+*/
 
 global class BomgarCreateCaseUtil{
     global static String createCase(bomgar__BomgarWebEvent__c bgEvent){
@@ -55,7 +57,7 @@ global class BomgarCreateCaseUtil{
         c.Functional_Group__c = 'Help Desk';
         c.Category__c = 'General Help Desk';
         c.Priority = 'Normal';
-        c.Origin = 'Chat';
+        c.Origin__c = 'Chat';
 
         if(contact != null){
             c.ContactId = contact.Id;    

@@ -256,7 +256,52 @@ private static testMethod void testLocation(){
     String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
     System.Debug('Opportunity Details: ' + Opp);
     System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);}
+    System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
+}
+
+private static testMethod void testAdmittedLocation(){
+    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
+    
+    Contact Con = new Contact();
+    Con.FirstName = 'TestFirstName';
+    Con.LastName = 'TestLastName';
+    Insert Con;
+
+    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
+    
+    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
+    Atar1.Rule_Type__c = 'Location';
+    Atar1.User__c = TestUser.Id;
+    Atar1.Location__c = 'Lake Havasu';
+    insert Atar1;
+    
+    
+    Location__c LakeHavasu = new Location__c();
+    LakeHavasu.Name = 'Lake Havasu';
+    LakeHavasu.Location_Code__c = 'CALHC';
+    insert LakeHavasu;
+
+    
+    Opportunity Opp = new Opportunity();
+    Opp.Name = 'Test Opp';
+    Opp.StageName = 'Prospect';
+    Opp.Type = 'First Time Freshman';
+    Opp.CloseDate = date.today() + 365;
+    Opp.Contact__c = Con.Id;
+    Opp.AccountId = Con.AccountId;
+    Opp.Admitted_Location__c = LakeHavasu.Id;
+            
+    Test.startTest();
+        insert Opp;
+        //Opp.Location__c = LakeHavasu.Id;
+        //update Opp;
+    Test.stopTest();
+
+    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+    System.Debug('Opportunity Details: ' + Opp);
+    System.Debug('Last Rule Type: ' + LastRuleType);
+    System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
+}
 
 private static testMethod void testLastHighSchoolAttended(){
     User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];

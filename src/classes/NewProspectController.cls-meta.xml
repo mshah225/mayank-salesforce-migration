@@ -3,7 +3,7 @@
     <apiVersion>30.0</apiVersion>
     <packageVersions>
         <majorNumber>1</majorNumber>
-        <minorNumber>16</minorNumber>
+        <minorNumber>21</minorNumber>
         <namespace>silverpop</namespace>
     </packageVersions>
     <status>Active</status>

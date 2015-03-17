@@ -20,7 +20,7 @@ public without sharing class CampaignMemberHandler
 
     // TODO: Some way to limit this to recruitment CM records?
     //
-    if (Trigger.isInsert) {
+    if (Trigger.isInsert || Trigger.isUpdate) {
       Set<Id> contactIds = new Set<Id>();
       for (CampaignMember cm: (List<CampaignMember>)Trigger.new) {
         if (cm.ContactId != null)
@@ -80,6 +80,10 @@ public without sharing class CampaignMemberHandler
    * trigger.
    */
   public void beforeUpdate(SObject oldSo, SObject so) {
+    CampaignMember cm = (CampaignMember)so;
+    CampaignMember oldCm = (CampaignMember)oldSo;
+    if (cm.ContactId != oldCm.ContactId && OpportunitiesByContactMap.containsKey(cm.ContactId))
+        cm.Opportunity__c = OpportunitiesByContactMap.get(cm.ContactId)[0].Id;
   }
 
   /**
@@ -181,7 +185,7 @@ public without sharing class CampaignMemberHandler
       //relatedOpportunityMap = new Map<Id, Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Id IN :interestOpportunityIds]);
       interestOpportunities = new List<Opportunity>([SELECT Id, Contact__c, primary_interest__c, primary_interest__r.Type, National_Merit_Semifinalist__c FROM Opportunity WHERE Id IN :interestOpportunityIds]);
       interestLeads = new List<Lead>([SELECT Id, primary_interest__c, primary_interest__r.Type FROM Lead WHERE Id IN :interestLeadIds]);
-      List<CampaignMember> allCmList = new List<CampaignMember>([SELECT Id, Status, ContactId, LeadId, CampaignId, Campaign.Type, CreatedDate FROM CampaignMember WHERE (ContactId IN :interestContactIds OR (LeadId IN :interestLeadIds AND Campaign.Type IN ('PSMajors', 'Academic', 'ASU College', 'Degree Search by Interest'))) AND Campaign.RecordType.DeveloperName = 'Interest' AND Status = 'Interested' ORDER BY Last_Member_Status_Change__c DESC]);
+      List<CampaignMember> allCmList = new List<CampaignMember>([SELECT Id, Status, ContactId, LeadId, CampaignId, Campaign.Type, CreatedDate FROM CampaignMember WHERE (ContactId IN :interestContactIds OR LeadId IN :interestLeadIds) AND Campaign.Type IN ('PSMajors', 'Academic', 'ASU College', 'Degree Search by Interest') AND Campaign.RecordType.DeveloperName = 'Interest' AND Status = 'Interested' ORDER BY Last_Member_Status_Change__c DESC]);
       //List<CampaignMember> allCmList = new List<CampaignMember>([SELECT Id, Status, ContactId, LeadId, CampaignId, Campaign.Type, CreatedDate FROM CampaignMember WHERE (ContactId IN :interestContactIds) AND Campaign.RecordType.DeveloperName = 'Interest' ORDER BY Last_Member_Status_Change__c DESC]);
       system.debug('GRF allCmList: ' + allCmList);
       for (CampaignMember cm: allCmList) {

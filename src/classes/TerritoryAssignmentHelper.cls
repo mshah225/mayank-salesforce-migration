@@ -202,7 +202,7 @@ public without sharing class TerritoryAssignmentHelper {
       //if (Trigger.isAfter) {
         for (Opportunity o: (List<Opportunity>)Trigger.new) {
             if(!contactIdSet.contains(o.Contact__c)){contactIdSet.add(o.Contact__c);}
-            if(!locationSet.contains(o.Location__c)){locationSet.add(o.Location__c);}    
+            locationSet.add(o.Admitted_Location__c==null?o.Location__c:o.Admitted_Location__c);
         }
         
         Map<Id, Contact> contactMap = new Map<Id, Contact>([SELECT Id, Geomarket_Code__c, MailingState, Last_HS_Attended__c, Last_HS_Attended__r.Territory_Manager__c, Last_HS_Attended__r.Territory_Manager__r.IsActive, Last_HS_Attended__r.Territory_Manager__r.Name, Last_College_Attended__r.Territory_Manager__c,Last_College_Attended__r.Territory_Manager__r.Name, Last_College_Attended__r.Territory_Manager__r.IsActive FROM Contact WHERE Id IN :contactIdSet]);
@@ -234,7 +234,7 @@ public without sharing class TerritoryAssignmentHelper {
         for(Opportunity Opp: (List<Opportunity>)Trigger.New){
             Boolean inactiveUserFound = false;
             Contact thisContact = contactMap.get(Opp.Contact__c);
-            Location__c thisLocation = locationMap.get(Opp.Location__c);
+            Location__c thisLocation = locationMap.get(Opp.Admitted_Location__c==null?Opp.Location__c:Opp.Admitted_Location__c);
             if (thisLocation == null) thisLocation = new Location__c();
         
             // Start Territory Assignment Rules Evaluation
@@ -281,8 +281,7 @@ public without sharing class TerritoryAssignmentHelper {
         
                 ////////////////////////////////////////////////////////////// Location
                 System.Debug('About to Test Location');  
-                  
-                if (Opp.Location__c != null && thisLocation.Location_Code__c != null && thisLocation.Location_Code__c.equalsIgnoreCase('CALHC')){
+                if (thisLocation != null && thisLocation.Location_Code__c != null && thisLocation.Location_Code__c.equalsIgnoreCase('CALHC')){
                     Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Location' + '|' + 'Lake Havasu');
                     if (tar != null) {
                         if (tar.User__r.IsActive == false) {

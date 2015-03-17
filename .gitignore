@@ -9,3 +9,5 @@ salesforce.schema
 asu-salesforce-metadata.sublime-project
 asu-salesforce-metadata.sublime-settings
 asu-salesforce-metadata.sublime-workspace
+
+*.log

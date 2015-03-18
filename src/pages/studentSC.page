@@ -727,6 +727,13 @@
         
     </div><!-- End main container -->
 
+        <div style="float:right;margin:1em;">
+            <a href="https://webforms-dev.asu.edu/feedback?refer={!$Site.CurrentSiteUrl}">
+                <!--<span class="glyphicon glyphicon-comment" style="color:#fff;"></span>&nbsp;&nbsp;Feedback-->
+                <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg" alt="Feedback" title="Please leave your feedback" onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'" onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'" border="0"/>
+            </a>
+        </div>
+
         <div id="main-bottom" class="row-fluid main-bottom"> 
             <div class="region region-main-bottom clearfix">
                 <div id="block-asu-brand-asu-brand-footer" class="clearfix block block-asu-brand">   

@@ -104,52 +104,96 @@
     </style>
     
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
-        <script>
-            BG.setSite("bomgar.asu.edu");
-            var custName = "{!$Component.customer_name}";
-            var desc = "{!$Component.description}";
-            var emplid = "{!$User.EmplId__c}";
-        
-            function start(){
-                var jsonString = null;
-                var jsonObject = {};
-                jsonObject.employeeNumber = emplid;
-                jsonObject.description = document.getElementById('description').value;
-                try{
-                    jsonString = JSON.stringify(jsonObject);
-                }
-                catch(e){
-                
-                }
-                if(jsonString == null){
-                    jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('description').value + '"}';
-                }
-                         
-                BG.start(BG.START_TYPE.CHAT, {
-                    issue: {
-                        codeName: 'salesforce_chat',
-                        customerName: '{!$User.Contact_First_Name__c} {!$User.Contact_Last_Name__c}',
-                        companyName: 'ASU',
-                        details: document.getElementById('description').value
-                    },
-                    attributes:{
-                        externalKey: ('SFDC:' + jsonString)
-                    },
-                    uiOptions:{
-                        fallbackToFullWindow:true
-                    }
-                });              
+    <script>
+        BG.setSite("bomgar.asu.edu");
+        var custName = "{!$Component.customer_name}";
+        var desc = "{!$Component.description}";
+        var emplid = "{!$User.EmplId__c}";
+    
+        function start(){
+            var jsonString = null;
+            var jsonObject = {};
+            jsonObject.employeeNumber = emplid;
+            jsonObject.description = document.getElementById('description').value;
+            try{
+                jsonString = JSON.stringify(jsonObject);
             }
-        </script> 
+            catch(e){
+            
+            }
+            if(jsonString == null){
+                jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('description').value + '"}';
+            }
+                     
+            BG.start(BG.START_TYPE.CHAT, {
+                issue: {
+                    codeName: 'salesforce_chat',
+                    customerName: '{!$User.Contact_First_Name__c} {!$User.Contact_Last_Name__c}',
+                    companyName: 'ASU',
+                    details: document.getElementById('description').value
+                },
+                attributes:{
+                    externalKey: ('SFDC:' + jsonString)
+                },
+                uiOptions:{
+                    fallbackToFullWindow:true
+                }
+            });              
+        }
+    </script> 
     
     <script>
         $( document ).ready(function() {
-            //$("img").not(".sparky").addClass("img-responsive")
             $( "#articleContentDiv img" ).addClass("img-responsive");
         });
     </script>
+
+    <script>
+        function getLinks(){ 
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var addLink;
+            var linkArray = [];
+            var articleLinks = []
+
+            for(i = 0; i < links.length; i++) {
+                if(links[i].href.indexOf('/articles') > -1) {
+                    articleLinks.push(links[i]);
+                }
+            }
+
+            for(i = 0; i < articleLinks.length; i++) {
+                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);;
+                linkArray.push(addlink);
+            }
+            linkArray = JSON.stringify(linkArray);
+            setLink(linkArray);
+        }
+        
+        function changeLinkOnPage(newLinks) {
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var articleLinks = []
+            var parsed = JSON.parse(newLinks);
+            var arr = [];
+
+            for(i = 0; i < links.length; i++) {
+                if(links[i].href.indexOf('/articles') > -1) {
+                    articleLinks.push(links[i]);
+                }
+            }
+
+            for(var x in parsed){
+                arr.push(parsed[x]);
+            }
+
+            for(i = 0; i < articleLinks.length; i++) {
+                articleLinks[i].href = arr[i];
+                articleLinks[i].target = "_self";
+            }
+            return false;
+        }
+    </script>
 </head>
-<body>
+<body onload="getLinks()">
     <!-- START /asuthemes/4.0-rsp.1/headers/default.shtml -->
     <div id="asu_hdr" class="asu_hdr_gold">
     
@@ -398,7 +442,6 @@
         <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback != null}">
             <div class="alert alert-success feedbackConfirm">
                 <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
-                <apex:Form ><apex:actionFunction name="removeFeedbackParam" action="{!removeFeedbackParam}"/></apex:Form>
                 <p><strong>Thank you for your feedback.</strong> Your feedback helps ASU make the Knowledge Base better.</p>
             </div>
          </apex:outputPanel>
@@ -409,7 +452,7 @@
         <div class="col-md-8">
             <div class="box">
             <div class="header">
-                <h6><b>Viewing Article Number {!articleNumber}</b></h6>
+                <h6><b>Knowledge Article &#35;{!article.ArticleNumber}</b></h6>
             </div>
             <div class="content">
              <apex:form id="autoCompleteForm" styleClass="searchKB">
@@ -463,33 +506,38 @@
             <hr />
             <h3>{!article.title}</h3>
             <br /><br />
-            <div id="articleContentDiv" class="articleContent">
-            <apex:pageBlock tabStyle="Case">
-                <apex:pageBlockSection columns="1">
-                    <apex:outputText value="Category" rendered="{!IF(faq.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                    <apex:outputText rendered="{!IF(faq.Functional_Group__c != null,true,false)}" value="{!faq.Functional_Group__c}"/>
+            <apex:form id="articleContentForm">
+            <apex:actionFunction name="setLink" action="{!changeLink}" oncomplete="changeLinkOnPage('{!fixedLinksJSON}')" reRender="url1">
+                <apex:param name="urlNameToChange" value="" assignTo="{!urlsJSON}" />  
+            </apex:actionFunction>
+                <div id="articleContentDiv" class="articleContent">
+                    <apex:pageBlock tabStyle="Case">
+                        <apex:pageBlockSection columns="1">
+                            <apex:outputText value="Category" rendered="{!IF(faq.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
+                            <apex:outputText rendered="{!IF(faq.Functional_Group__c != null,true,false)}" value="{!faq.Functional_Group__c}"/>
 
-                    <apex:outputText value="Category" rendered="{!IF(info.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                    <apex:outputText rendered="{!IF(info.Functional_Group__c != null,true,false)}" value="{!info.Functional_Group__c}"/>
+                            <apex:outputText value="Category" rendered="{!IF(info.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
+                            <apex:outputText rendered="{!IF(info.Functional_Group__c != null,true,false)}" value="{!info.Functional_Group__c}"/>
 
-                    <apex:outputText value="Category" rendered="{!IF(howTo.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                    <apex:outputText rendered="{!IF(howTo.Functional_Group__c != null,true,false)}" value="{!howTo.Functional_Group__c}"/>
+                            <apex:outputText value="Category" rendered="{!IF(howTo.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
+                            <apex:outputText rendered="{!IF(howTo.Functional_Group__c != null,true,false)}" value="{!howTo.Functional_Group__c}"/>
 
-                    <apex:outputText rendered="{!IF(faq.Functional_Group__c != null || info.Functional_Group__c != null || howTo.Functional_Group__c != null,true,false)}">
-                        <hr />
-                    </apex:outputText>
+                            <apex:outputText rendered="{!IF(faq.Functional_Group__c != null || info.Functional_Group__c != null || howTo.Functional_Group__c != null,true,false)}">
+                                <hr />
+                            </apex:outputText>
 
-                    <apex:outputField value="{!info.Information__c}" rendered="{!IF(article.ArticleType = 'Informational__kav',true,false)}" label=""/>
-                    
-                    <apex:outputText value="Question" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                    <apex:outputField value="{!faq.Question__c}" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" label="" styleClass="noLabel"/>
-                    <apex:outputText value="Answer" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-4px;color:#4a4a5b"/>
-                    <apex:outputField value="{!faq.Answer__c}" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" label="" styleClass="noLabel"/>
+                            <apex:outputField value="{!info.Information__c}" rendered="{!IF(article.ArticleType = 'Informational__kav',true,false)}" label=""/>
+                            
+                            <apex:outputText value="Question" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
+                            <apex:outputField value="{!faq.Question__c}" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" label="" styleClass="noLabel"/>
+                            <apex:outputText value="Answer" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-4px;color:#4a4a5b"/>
+                            <apex:outputField value="{!faq.Answer__c}" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" label="" styleClass="noLabel"/>
 
-                    <apex:outputField value="{!howto.Content__c}" rendered="{!IF(article.ArticleType = 'How_To__kav',true,false)}" label=""/>
-                </apex:pageblocksection>
-            </apex:pageBlock>
-            </div>
+                            <apex:outputField value="{!howto.Content__c}" rendered="{!IF(article.ArticleType = 'How_To__kav',true,false)}" label=""/>
+                        </apex:pageblocksection>
+                    </apex:pageBlock>
+                </div>
+            </apex:form>
               
             <div class="page-header">
                 <h5>Article Feedback</h5>

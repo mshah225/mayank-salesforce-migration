@@ -17,33 +17,46 @@ public with sharing class ServiceCenter {
     public Term__c termcAC;
     public Term__c termcB;
 
-    public ServiceCenter() { 
-        c = new Case(); 
-        caseContId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].ContactId;
-        contactList = [SELECT Id, Name FROM Contact WHERE Id = :caseContId];
-        contId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].ContactId;
-        d = date.today();
-        termcAC = [SELECT Session_A_C_Start_Date__c FROM Term__c where session_A_C_Start_Date__c > :system.today() limit 1];
-        termcB = [SELECT Session_B_Start_Date__c FROM Term__c where session_B_Start_Date__c > :system.today() limit 1];
-        cont = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c FROM Contact WHERE Id = :contId];
-        oppList = [SELECT Career__c, Term__c, StageName, Admitted_Session__c FROM Opportunity WHERE Contact__c = :contId];
-    }
+    public ServiceCenter() { setUpPage(); }
+    public ServiceCenter(AKBController controller) { setUpPage(); }
 
-    public ServiceCenter(AKBController controller) { 
+    public void setUpPage() {
         c = new Case(); 
-        caseContId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].ContactId;
-        contactList = [SELECT Id, Name FROM Contact WHERE Id = :caseContId];
-        contId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].ContactId;
+        caseContId = [SELECT ContactId 
+                      FROM User 
+                      WHERE Id = :UserInfo.getUserId() 
+                      LIMIT 1].ContactId;
+        contactList = [SELECT Id, Name 
+                       FROM Contact 
+                       WHERE Id = :caseContId];
+        contId = [SELECT ContactId 
+                  FROM User 
+                  WHERE Id = :UserInfo.getUserId() 
+                  LIMIT 1].ContactId;
         d = date.today();
-        termcAC = [SELECT Session_A_C_Start_Date__c FROM Term__c where session_A_C_Start_Date__c > :system.today() limit 1];
-        termcB = [SELECT Session_B_Start_Date__c FROM Term__c where session_B_Start_Date__c > :system.today() limit 1];
-        cont = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c FROM Contact WHERE Id = :contId];
-        oppList = [SELECT Career__c, Term__c, StageName, Admitted_Session__c FROM Opportunity WHERE Contact__c = :contId]; 
+        termcAC = [SELECT Session_A_C_Start_Date__c 
+                   FROM Term__c 
+                   WHERE session_A_C_Start_Date__c > :System.today() 
+                   LIMIT 1];
+        termcB = [SELECT Session_B_Start_Date__c 
+                  FROM Term__c 
+                  WHERE session_B_Start_Date__c > :System.today() 
+                  LIMIT 1];
+        cont = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c 
+                FROM Contact 
+                WHERE Id = :contId];
+        oppList = [SELECT Career__c, Term__c, StageName, Admitted_Session__c 
+                   FROM Opportunity 
+                   WHERE Contact__c = :contId];
     }
 
     public Contact getLoggedInContact() {
-        userAlias = [SELECT Alias FROM User WHERE Id = :UserInfo.getUserId()].Alias;
-        loggedInContact = [SELECT Id, Name FROM Contact WHERE ASURITE_Id__c = :userAlias];
+        userAlias = [SELECT Alias 
+                     FROM User 
+                     WHERE Id = :UserInfo.getUserId()].Alias;
+        loggedInContact = [SELECT Id, Name 
+                           FROM Contact 
+                           WHERE ASURITE_Id__c = :userAlias];
         System.Debug('User Alias: ' + userAlias);
         System.Debug('Contact: ' + loggedInContact);
         return loggedInContact;
@@ -68,40 +81,51 @@ public with sharing class ServiceCenter {
         }
     }
     
-    public PageReference removeParam() {
-        PageReference confirmPage = new PageReference('/studentSC');
-        confirmPage.setRedirect(true);
-        return confirmPage; 
-    }
-    
-    public Solution[] getSolutions() {
-        return [SELECT Id, SolutionNumber, SolutionName, Status FROM Solution];
-    }
-    
     public Case[] getMyCases() {
         if(contactList.isEmpty()){
             getLoggedInContact();
-            return [SELECT Subject, Status, Description, Origin, Origin__c FROM Case WHERE IsClosed = False AND Visible_by_Contact__c = true AND ContactId = :loggedInContact.Id];
+            return [SELECT Subject, Status, Description, Origin, Origin__c 
+                    FROM Case 
+                    WHERE IsClosed = False 
+                    AND Visible_by_Contact__c = true 
+                    AND ContactId = :loggedInContact.Id];
         } else {
-            return [SELECT Subject, Status, Description, Origin, Origin__c FROM Case WHERE IsClosed = False AND Visible_by_Contact__c = true AND ContactId = :caseContId];
+            return [SELECT Subject, Status, Description, Origin, Origin__c 
+                    FROM Case 
+                    WHERE IsClosed = False 
+                    AND Visible_by_Contact__c = true 
+                    AND ContactId = :caseContId];
         }
     }
     
     public Case[] getClosedCases() {
         if(contactList.isEmpty()) {
             getLoggedInContact();
-            return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c FROM Case WHERE IsClosed = True AND Visible_by_Contact__c = true AND ContactId = :loggedInContact.Id];
+            return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c 
+                    FROM Case WHERE IsClosed = True 
+                    AND Visible_by_Contact__c = true 
+                    AND ContactId = :loggedInContact.Id];
         } else {
-            return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c FROM Case WHERE IsClosed = True AND Visible_by_Contact__c = true AND ContactId = :caseContId];
+            return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c 
+                    FROM Case 
+                    WHERE IsClosed = True 
+                    AND Visible_by_Contact__c = true 
+                    AND ContactId = :caseContId];
         }
     }
 
     public Case getCaseDetails() {
-        return [SELECT Id, CaseNumber, Functional_Group__c, Subject, Description, Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate FROM Case WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
+        return [SELECT Id, CaseNumber, Functional_Group__c, Subject, Description, Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate 
+                FROM Case 
+                WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
     } 
     
     public EmailMessage[] getEmailMessages() {
-        return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress FROM EmailMessage WHERE ParentId = :ApexPages.currentPage().getParameters().get('id') AND Incoming = false ORDER BY CreatedDate ASC];
+        return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress 
+                FROM EmailMessage 
+                WHERE ParentId = :ApexPages.currentPage().getParameters().get('id') 
+                AND Incoming = false 
+                ORDER BY CreatedDate ASC];
     }
     
     public PageReference viewCase() {

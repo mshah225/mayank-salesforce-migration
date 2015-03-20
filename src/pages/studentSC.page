@@ -314,8 +314,7 @@
     <center>
         <apex:outputPanel rendered="{!$CurrentPage.parameters.Confirm != null}">
             <div class="alert alert-success caseConfirm">
-                <button type='button' class='close' id="closeConfirm" onClick="removeParam()" data-dismiss='alert'>×</button>
-                <apex:Form ><apex:actionFunction name="removeParam" action="{!removeParam}"/></apex:Form>
+                <button type='button' class='close' id="closeConfirm" data-dismiss='alert'>×</button>
                 <p><strong>Your request has been submitted.</strong> We are working on responding to you as soon as possible.<br />
                 A member of the ASU team will contact you if additional information is needed to answer your request.<br />
                 Please check back here, in the My ASU Service Center, to track the status of your request.</p>

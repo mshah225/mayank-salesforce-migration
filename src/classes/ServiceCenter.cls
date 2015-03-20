@@ -100,8 +100,8 @@ public with sharing class ServiceCenter {
         return [SELECT Id, CaseNumber, Functional_Group__c, Subject, Description, Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate FROM Case WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
     } 
     
-    public CaseFeed[] getCaseFeed() {
-        return [SELECT Body, SystemModStamp from CaseFeed WHERE ParentId = :ApexPages.currentPage().getParameters().get('id') and CreatedById = :UserInfo.getUserId()];
+    public EmailMessage[] getEmailMessages() {
+        return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress FROM EmailMessage WHERE ParentId = :ApexPages.currentPage().getParameters().get('id') AND Incoming = false ORDER BY CreatedDate ASC];
     }
     
     public PageReference viewCase() {

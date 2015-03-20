@@ -145,6 +145,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
       }
     }
 
+    Case recentCase = new Case();
     //Create a brand new case
     if(this.theCase == null) {
       if (fallbackQueueId != null) {
@@ -281,6 +282,25 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         theCase.AccountId = insertedContact.AccountId;
         emailContact = insertedContact;
       }
+
+      // Check to make sure we are not about to spawn an auto reply loop
+      try{
+        recentCase = [SELECT Id, Description, OwnerId
+                       FROM Case
+                       WHERE ContactId = :emailContact.Id
+                       ORDER BY CreatedDate desc
+                       LIMIT 1];
+        String currentCaseDescription = theCase.Description;
+        currentCaseDescription = currentCaseDescription.trim();
+
+        // If we catch an auto reply loop, do not create the case and discard this email
+        if (recentCase.Description.equals(currentCaseDescription) &&
+            recentCase.OwnerId == theCase.OwnerID){
+          return result;
+        }
+      } catch (System.QueryException e){
+        System.debug('This is the contact\'s initial case.');
+      } 
 
       insertSObject(this.theCase);
     }else {

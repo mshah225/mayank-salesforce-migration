@@ -448,6 +448,12 @@
      </center>
 
     <div class="container">
+
+      <ol class="breadcrumb">
+        <li><a href="/studentSC">Back To Service Center</a></li>
+        <li class="active" style="font-size:10pt;">View Article</li>
+      </ol>
+
     <div class="row">
         <div class="col-md-8">
             <div class="box">
@@ -915,8 +921,8 @@
                         <script>
                             jQuery(document).ready(function($){
                                 $("td.truncate").each(function(){
-                                        if ($(this).text().length > 30) {
-                                            $(this).text($(this).text().substr(0, 27));
+                                        if ($(this).text().length > 50) {
+                                            $(this).text($(this).text().substr(0, 47));
                                             $(this).append('...');
                                         }
                                     });

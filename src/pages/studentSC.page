@@ -387,19 +387,17 @@
                         
                         <apex:pageBlock mode="maindetail">
                             <apex:panelGrid width="100%">
-                                <h5>Top 5 Help Articles</h5>
+                                <h5><b>Top 5 Help Articles</b></h5>
                                 <knowledge:articleList articleVar="article" 
-                                    pageNumber="{!currentPageNumber}" 
-                                    Keyword="{!searchstring}" 
-                                    hasMoreVar="true" pageSize="5" 
                                     sortBy="mostViewed">
-                                    <table width="99%; padding:5px">
+                                    <!--<table width="99%; padding:5px">
                                         <tr>
                                             <td width="100%">
                                             -&nbsp;<apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink>
                                             </td>
                                         </tr>
-                                    </table>
+                                    </table>-->
+                                    <li style="padding-top:5px !important;padding-bottom:5px; !important"><a href="/akb?id={!article.id}">{!article.title}</a></li>
                                 </knowledge:articleList>
                             </apex:panelGrid>
                         </apex:pageBlock>
@@ -692,8 +690,8 @@
                         <script>
                             jQuery(document).ready(function($){
                                 $("td.truncate").each(function(){
-                                        if ($(this).text().length > 30) {
-                                            $(this).text($(this).text().substr(0, 27));
+                                        if ($(this).text().length > 50) {
+                                            $(this).text($(this).text().substr(0, 47));
                                             $(this).append('...');
                                         }
                                     });

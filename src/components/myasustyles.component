@@ -1039,6 +1039,15 @@
             border-color: #c00;
             background-color: #fcf8e3 !important; 
         }
+
+        .breadcrumb {
+            border-radius: 0px !important;
+        }
+
+        .breadcrumb a, .breadcrumb a:hover {
+            color: #990033 !important;
+            font-size: 10pt;
+        }
         
         #closePinMessages .btn:hover {
             background-color: transparent !important;   

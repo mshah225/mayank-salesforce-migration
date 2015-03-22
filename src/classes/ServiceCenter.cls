@@ -22,6 +22,7 @@ public with sharing class ServiceCenter {
 
     public void setUpPage() {
         c = new Case(); 
+        getContact();
         caseContId = [SELECT ContactId 
                       FROM User 
                       WHERE Id = :UserInfo.getUserId() 
@@ -134,22 +135,18 @@ public with sharing class ServiceCenter {
     }
     
     public Boolean getNormalPhone() {
-        if(cont == Null || cont.size() == 0) {
-            return true;
-        } else if(cont[0].CAP__c == Null) {
-            return true;
-        } else {
+        if(contact.CAP__c != null) {
             return false;
+        } else {
+            return true;
         }
     }
     
     public Boolean getRoverPhone() {
-        if(cont == Null || cont.size() == 0) {
-            return false;
-        } else if(cont[0].CAP__c == Null) {
-            return false;
-        } else {
+        if(contact.CAP__c != null) {
             return true;
+        } else {
+            return false;
         }
     }
     
@@ -221,12 +218,12 @@ public with sharing class ServiceCenter {
         
     public Contact getContact() {
         if(contId != null) {
-            contact = [SELECT Id, Self_Service_PIN__c, PIN_Lockout__c FROM Contact WHERE Id = :contId];
+            contact = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c FROM Contact WHERE Id = :contId];
             return contact;
         }
         else {
             getLoggedInContact();
-            contact = [SELECT Id, Self_Service_PIN__c, PIN_Lockout__c FROM Contact WHERE Id = :loggedInContact.Id];
+            contact = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c FROM Contact WHERE Id = :loggedInContact.Id];
             return contact;
         }   
     }

@@ -57,15 +57,6 @@
             border-top-color: #990033;
         }
 
-        .breadcrumb {
-            border-radius: 0px !important;
-        }
-
-        .breadcrumb a, .breadcrumb a:hover {
-            color: #990033 !important;
-            font-size: 10pt;
-        }
-
         .panel {
             border-radius: 0px;
             margin-bottom: 10px;
@@ -444,7 +435,7 @@
                                     <apex:outputText rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}" value="{0, date, MMMM d','  yyyy}" label="Date Closed">
                                         <apex:param value="{!caseDetails.ClosedDate}"/>
                                     </apex:outputText>
-                                    <apex:outputText rendered="{!IF(caseDetails.Status == 'Closed: Resolved',true,false)}" value="{!caseDetails.Feedback_Link__c}" escape="false" label="Feedback" styleClass="feedbackLink"/>
+                                    <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved') && (caseDetails.Feedback_Link__c != ''),true,false)}" value="{!caseDetails.Feedback_Link__c}" escape="false" styleClass="feedbackLink"/>
                               </apex:pageBlockSection>
                             </apex:pageBlock> 
                         </apex:form>
@@ -774,8 +765,8 @@
                         <script>
                             jQuery(document).ready(function($){
                                 $("td.truncate").each(function(){
-                                        if ($(this).text().length > 30) {
-                                            $(this).text($(this).text().substr(0, 27));
+                                        if ($(this).text().length > 50) {
+                                            $(this).text($(this).text().substr(0, 47));
                                             $(this).append('...');
                                         }
                                     });

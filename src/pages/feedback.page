@@ -14,6 +14,12 @@
     <c:myasustyles />  
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
+
+    <style>
+        .panel {
+            border-radius: 0px !important;
+        }
+    </style>
 </head>
     
 <body>
@@ -182,15 +188,19 @@
             <li><a href="/studentSC">Back To Service Center</a></li>
             <li class="active" style="font-size:10pt;">Feedback</li>
         </ol>
-        <apex:form id="feedbackForm" style="max-width:600px;">
-            <h3><b style="font-weight:400">My ASU Service Center Feedback</b></h3><br /><br />
-            
-            <p>ASU values your experience and wants to ensure that you receive quality service. The My ASU Service Center is your personalized online resource for reporting issues and getting help. How can ASU improve the way we provide support through the Service Center?</p><br />
-          
-            <apex:outputText value="Feedback Comments:"/><br />
-            <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width:100%;" rows="5" cols="120"/><br />
-            <apex:commandButton value="Submit" action="{!submit}" styleClass="kbbtn submitButton" style="margin-top:15px;"/>
-        </apex:form>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <apex:form id="feedbackForm" style="max-width:600px;">
+                    <h3><b style="font-weight:400">My ASU Service Center Feedback</b></h3><br /><br />
+                    
+                    <p>ASU values your experience and wants to ensure that you receive quality service. The My ASU Service Center is your personalized online resource for reporting issues and getting help. How can ASU improve the way we provide support through the Service Center?</p><br />
+                  
+                    <apex:outputText value="Feedback Comments:"/><br />
+                    <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width:100%;" rows="5" cols="120"/><br />
+                    <apex:commandButton value="Submit" action="{!submit}" styleClass="kbbtn submitButton" style="margin-top:15px;"/>
+                </apex:form>
+            </div>
+        </div>
     </div>
 
     <br />

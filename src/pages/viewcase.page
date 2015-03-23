@@ -134,8 +134,8 @@
             var showChar = 200;
             var ellipsestext = "...";
             var moretext = "...Show More";
-            var lesstext = "Show Less";
-            $('.emailMessage').each(function() {
+            var lesstext = "Less";
+            $(".emailMessage").each(function() {
                 var content = $(this).html();
         
                 if(content.length > showChar) {

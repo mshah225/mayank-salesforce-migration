@@ -1,0 +1,65 @@
+<apex:page showHeader="true" 
+	sidebar="true"
+	tabStyle="Account"
+	controller="NewCorporateRelationsContactController">
+
+	<apex:form >
+		<apex:pageBlock title="New Corporate Relations Contact">
+			<apex:pageMessages />
+			<apex:pageBlockButtons >
+				<apex:commandButton value="Save" action="{!save}"/>
+				<apex:commandButton value="Save & New" action="{!saveAndNew}"/>
+			</apex:pageBlockButtons>
+				<apex:pageBlockSection title="Contact Information">
+					<apex:inputField value="{!contact.FirstName}"/>
+					<apex:inputField value="{!contact.Contact_Preference__c}"/>
+					<apex:inputField value="{!contact.LastName}"/>
+					<apex:inputField value="{!contact.MobilePhone}"/>
+					<apex:inputField value="{!contact.Nickname__c}"/>
+					<apex:inputField value="{!contact.Phone}"/>
+					<apex:inputField value="{!contact.Suffix__c}"/>
+					<apex:inputField value="{!contact.Work_Phone__c}"/>
+					<apex:inputField value="{!contact.Corporate_Relations_Email__c}"/>
+					<apex:inputField value="{!contact.LinkedIn__c}"/>
+					<apex:inputField value="{!contact.Birthdate}"/>
+					<apex:inputField value="{!contact.Marital_Status__c}"/>
+				</apex:pageBlockSection>
+
+				<apex:pageBlockSection title="Address Information">
+					<apex:inputField value="{!contact.MailingCountryCode}" label="Mailing Country"/>
+					<apex:inputField value="{!contact.MailingStreet}"/>
+					<apex:inputField value="{!contact.MailingCity}"/>
+					<apex:inputField value="{!contact.MailingStateCode}" label="Mailing State/Province"/>
+					<apex:inputField value="{!contact.MailingPostalCode}"/>
+				</apex:pageBlockSection>
+
+				<apex:pageBlockSection title="Corporate Relations">
+					<apex:inputField value="{!relationship.Title__c}" />
+					<apex:PageBlockSectionItem >
+                        <apex:outputLabel value="Department Affiliation"/>
+						<apex:actionRegion>	
+							<apex:selectList value="{!selectedParentId}" label="Department Affiliation" required="true" multiselect="false" size="1" style="margin-left:4px;">
+								<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
+								<apex:selectOptions value="{!campaignOptions}"/>
+								<apex:actionSupport event="onchange" reRender="childCampaignList, Details" action="{!populateChildCampaigns}" status="thinking"/>
+								<apex:actionStatus id="thinking" >
+			                        <apex:facet name="start" >
+			                            <img src="/img/loading.gif" style="position: absolute;margin-left: 170px;margin-top: 1px;"/>
+			                        </apex:facet>
+			                    </apex:actionStatus>
+							</apex:selectList>
+						</apex:actionRegion>
+					</apex:pageBlockSectionItem>	
+                    <apex:inputField value="{!relationship.Account__c}" required="true"/>
+					<apex:selectList id="childCampaignList" value="{!selectedChildId}" label="Type of Engagement" required="true" multiselect="false" size="1" style="margin-left:4px;">
+						<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
+						<apex:selectOptions value="{!childCampaignOptions}"/>
+					</apex:selectList>
+					<apex:inputField value="{!relationship.Relationship_Type__c}" required="true"/>
+					<br />
+					<apex:inputField value="{!relationship.Relationship_Start_Date__c}"/>
+					<br />
+				</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

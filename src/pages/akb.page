@@ -956,11 +956,11 @@
           </div>
         </div>
       
-        <!--<div style="float:right;margin:1em;">
-            <a href="https://webforms-dev.asu.edu/feedback?refer=https://mat2-myasu.cs20.force.com" class="btn btn-default btn-success">
-                <span class="glyphicon glyphicon-comment" style="color:#fff;"></span>&nbsp;&nbsp;Feedback
+        <div style="float:right;margin:1em;">
+            <a href="/feedback">
+                <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg" alt="Feedback" title="Please leave your feedback" onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'" onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'" border="0"/>
             </a>
-        </div>-->
+        </div>
         <br />
         <div id="main-bottom" class="row-fluid main-bottom"> 
             <div class="region region-main-bottom clearfix">

@@ -664,7 +664,7 @@ global class CaseInboundEmailHandler
         // Recruitment update
         if (assignmentRuleList[0].Case_Record_Type_ID__c != null)
           caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
-        if (assignmentRuleList[0].Case_Record_Type_ID__c != null)
+        if (assignmentRuleList[0].Fallback_Queue_ID__c != null)
           fallbackQueueId = ID.valueOf(assignmentRuleList[0].Fallback_Queue_ID__c);
         typeOfAdditionalAssignmentNeeded = assignmentRuleList[0].Type_of_Additional_Assignment_Needed__c;
         associateCaseToActiveOpportunity = assignmentRuleList[0].Associate_Case_to_Active_Opportunity__c;

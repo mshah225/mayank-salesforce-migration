@@ -405,10 +405,12 @@
                         <apex:pageBlock mode="maindetail">
                             <apex:panelGrid width="100%">
                                 <h5><b>Top 5 Help Articles</b></h5>
+                                <ul>
                                 <knowledge:articleList articleVar="article" 
                                     sortBy="mostViewed">
-                                    <li style="padding-top:5px !important;padding-bottom:5px; !important"><a href="/akb?id={!article.id}">{!article.title}</a></li>
+                                    &#8226;&nbsp;<apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink><br /><div style="height:5px;"/>
                                 </knowledge:articleList>
+                                </ul>
                             </apex:panelGrid>
                         </apex:pageBlock>
                     </apex:form>                    

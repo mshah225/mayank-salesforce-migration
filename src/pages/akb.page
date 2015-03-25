@@ -480,9 +480,9 @@
                      <p>Search the Knowledge Base for more articles.</p><br />
                      <div class="searchKB2">   
                          <div class="form-horizontal">
-                             <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="placeHolder" style="height: 24px;width: 58%;border-radius: 2px;border: solid 1px #990033;padding-left:5px;padding-top:.5px;"/>
-                             <apex:commandButton value="Search" id="submitButton" styleClass="kbbtn submitButton" style="" reRender="theSearchResults" />
-                             <apex:commandButton value="Clear" styleClass="kbbtn clearButton" style="width:37px;" onclick="this.form.reset();return false;" />
+                             <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"/>
+                             <apex:commandButton value="Search" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
+                             <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
                          </div>
                          
                          <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
@@ -625,7 +625,7 @@
                     sortBy="mostViewed" 
                     hasMoreVar="true" 
                     pageSize="5">
-                    <li style="padding-top:5px !important;padding-bottom:5px; !important"><apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink></li>
+                    &#8226;&nbsp;<apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink><br /><div style="height:5px;"/>
                 </knowledge:articleList>
                 
                 <knowledge:articleList articleVar="relatedart" 
@@ -635,7 +635,7 @@
                     sortBy="mostViewed" 
                     hasMoreVar="true" 
                     pageSize="5">
-                    <li style="padding-top:5px !important;padding-bottom:5px; !important"><apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink></li>
+                    &#8226;&nbsp;<apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink><br /><div style="height:5px;"/>
                 </knowledge:articleList>
                 
                 <knowledge:articleList articleVar="relatedart" 
@@ -645,7 +645,7 @@
                     sortBy="mostViewed" 
                     hasMoreVar="true" 
                     pageSize="5">
-                    <li style="padding-top:5px !important;padding-bottom:5px; !important"><apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink></li>
+                    &#8226;&nbsp;<apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink><br /><div style="height:5px;"/>
                 </knowledge:articleList>
             </div>    
             </div>

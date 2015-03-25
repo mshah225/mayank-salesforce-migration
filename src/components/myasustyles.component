@@ -921,18 +921,18 @@
             border-bottom-left-radius: 2px !important;
             padding-bottom: 8px !important;
             padding-left: 10px !important;
-            padding-right: 30px !important;
+            padding-right: 70px !important;
         }
         
         .hiddenPinBox {
             background: #f0f0f0 !important;
-            //padding: 6px !important;
             border-top-left-radius: 2px !important;
             border-bottom-left-radius: 2px !important;
-            //padding-bottom: 4px !important;
             padding-left: 10px !important;
             padding-right: 30px !important;
             padding-top: 5px !important;
+            width: auto !important;
+            max-width: 85px !important;
         }
         
         .viewPin {
@@ -943,6 +943,7 @@
             font-weight: 600 !important;
             border: solid 1px #ccc !important;
             margin-left: -4px !important;
+            margin: 0px;
             border-top-right-radius: 2px !important;
             border-bottom-right-radius: 2px !important;
             border-top-left-radius: 0px !important;
@@ -960,13 +961,15 @@
             color: white !important;
             border: none !important;
             border-radius: 2px !important;
-            margin-left: 4px !important;
+            //margin-left: 4px !important;
+            margin: 0px;
         }
         
         .pinBoxInput {
             padding: 3px !important;
             font-size: 10pt;
-            width: 90px !important;
+            width: auto !important;
+            max-width: 115px !important;
             margin-right: -2px;
             padding-top: 2px !important;
         } 

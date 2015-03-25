@@ -36,12 +36,10 @@ public with sharing class FeedbackController {
 		if(contact != null) {
 			c.ContactId = contact.Id;
 		}
-		/*
-		To be figured out by Stacey and Crystal.
-		c.Functional_Group = '';
-		c.Category = '';
+		c.Functional_Group__c = 'Student-Centric Initiatives';
+		c.Category__c = 'Service Center Feedback';
 		c.Origin__c = 'My ASU';
-		*/
+		c.Visible_by_Contact__c = false;
 		insert c;
 
 		PageReference submit = new PageReference('/studentSC?Confirm=feedback');

@@ -606,30 +606,32 @@
             <div class="content">
                 <knowledge:articleList articleVar="relatedart" 
                     rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}"
+                    articleTypes="FAQ__kav"
                     keyword="{!titleKeyword}"
                     sortBy="mostViewed" 
                     hasMoreVar="true" 
                     pageSize="5">
-                    -&nbsp;<apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink><br />
+                    <li style="padding-top:5px !important;padding-bottom:5px; !important"><apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink></li>
                 </knowledge:articleList>
-                <!--articleTypes="FAQ__kav"-->
                 
                 <knowledge:articleList articleVar="relatedart" 
                     rendered="{!IF(article.ArticleType = 'Informational__kav',true,false)}"
                     articleTypes="Informational__kav" 
+                    keyword="{!titleKeyword}"
                     sortBy="mostViewed" 
                     hasMoreVar="true" 
                     pageSize="5">
-                    -&nbsp;<apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink><br />
+                    <li style="padding-top:5px !important;padding-bottom:5px; !important"><apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink></li>
                 </knowledge:articleList>
                 
                 <knowledge:articleList articleVar="relatedart" 
                     rendered="{!IF(article.ArticleType = 'How_To__kav',true,false)}"
                     articleTypes="How_To__kav" 
+                    keyword="{!titleKeyword}"
                     sortBy="mostViewed" 
                     hasMoreVar="true" 
                     pageSize="5">
-                    -&nbsp;<apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink><br />
+                    <li style="padding-top:5px !important;padding-bottom:5px; !important"><apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink></li>
                 </knowledge:articleList>
             </div>    
             </div>

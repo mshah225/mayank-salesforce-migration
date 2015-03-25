@@ -70,7 +70,7 @@ public with sharing class ServiceCenter {
             System.Debug('Case Contact Id: ' + c.ContactId);
             c.Web_Submission__c = 'My ASU Standard';
             insert c;
-            PageReference confirmPage = new PageReference('/studentSC?Confirm=case');
+            PageReference confirmPage = new PageReference('/studentSC?Confirm=newcase');
             confirmPage.setRedirect(true);
             return confirmPage;
         } catch (Exception e) {
@@ -89,13 +89,15 @@ public with sharing class ServiceCenter {
                     FROM Case 
                     WHERE IsClosed = False 
                     AND Visible_by_Contact__c = true 
-                    AND ContactId = :loggedInContact.Id];
+                    AND ContactId = :loggedInContact.Id
+                    ORDER BY CreatedDate DESC];
         } else {
             return [SELECT Subject, Status, Description, Origin, Origin__c 
                     FROM Case 
                     WHERE IsClosed = False 
                     AND Visible_by_Contact__c = true 
-                    AND ContactId = :caseContId];
+                    AND ContactId = :caseContId
+                    ORDER BY CreatedDate DESC];
         }
     }
     
@@ -105,13 +107,15 @@ public with sharing class ServiceCenter {
             return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c 
                     FROM Case WHERE IsClosed = True 
                     AND Visible_by_Contact__c = true 
-                    AND ContactId = :loggedInContact.Id];
+                    AND ContactId = :loggedInContact.Id
+                    ORDER BY CreatedDate DESC];
         } else {
             return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c 
                     FROM Case 
                     WHERE IsClosed = True 
                     AND Visible_by_Contact__c = true 
-                    AND ContactId = :caseContId];
+                    AND ContactId = :caseContId
+                    ORDER BY CreatedDate DESC];
         }
     }
 

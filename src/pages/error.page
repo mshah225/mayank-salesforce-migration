@@ -185,10 +185,6 @@
     </div>
     
     <div class="container">
-        <ol class="breadcrumb">
-            <li><a href="/studentSC">Back To Service Center</a></li>
-            <li class="active" style="font-size:10pt;">Error</li>
-        </ol>
         <div class="panel panel-default">
             <div class="panel-body">
                 <p>ASU was unable to process your request. We apologize for the inconvenience.<br /><br />

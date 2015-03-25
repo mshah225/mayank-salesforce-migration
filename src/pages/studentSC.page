@@ -33,10 +33,6 @@
         .contactPhone td {
             padding: 0px !important;
         }
-
-        .alert.alert-success {
-            border-radius: 0px;
-        }
     </style> 
     
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
@@ -358,9 +354,9 @@
                         <p>Search for any issue or question to learn how ASU can help!</p><br />
                         <div class="searchKB2">   
                             <div class="form-horizontal">
-                                <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="placeHolder" style="height:24px;width:58%;border-radius:2px;border:solid 1px #990033;padding-left:5px;padding-top:.5px;font-size:1em;"/>
-                                <apex:commandButton value="Search" id="submitButton" styleClass="kbbtn submitButton" style="" reRender="theSearchResults" />
-                                <apex:commandButton value="Clear" styleClass="kbbtn clearButton" style="width:37px;" onclick="this.form.reset();return false;" />
+                                <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"/>
+                                <apex:commandButton value="Search" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
+                                <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
                             </div>
                              
                             <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
@@ -713,9 +709,9 @@
                                 <h5>Create a new case</h5>
                                 <apex:pageBlockSection collapsible="false" columns="1">
                                     <label for="caseSubject">Subject</label>
-                                    <apex:inputField id="caseSubject" value="{!c.subject}" required="true" style="width:95%;max-width:305px;border:solid 1px gray;" label=""/>
+                                    <apex:inputField id="caseSubject" styleClass="caseField" value="{!c.subject}" required="true" style="max-width:305px;border:solid 1px gray;" label=""/>
                                     <label for="caseDesc">Description</label>
-                                    <apex:inputField id="caseDesc" value="{!c.description}" required="true" style="width:97%;height:100px;resize:none;max-width:305px" label=""/>
+                                    <apex:inputField id="caseDesc" styleClass="caseField" value="{!c.description}" required="true" style="height:100px;resize:none;max-width:305px;border: solid 1px gray;" label=""/>
                                     <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>
                                 </apex:pageBlockSection>
                                 <apex:pageblockbuttons location="bottom">

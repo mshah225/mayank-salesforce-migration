@@ -22,6 +22,30 @@
     .searchKB2 {
         margin-bottom: -10px !important;
     }
+
+    .searchBox {
+        height: 29px !important;
+        width: 63% !important;
+        max-width: 400px !important;
+        border-radius: 2px !important;
+        border: solid 1px #990033 !important;
+        padding-left: 5px !important;
+        font-size: 1em !important;
+        -webkit-box-sizing: border-box !important;
+        -moz-box-sizing: border-box !important;
+        box-sizing: border-box !important;
+        padding: 4px !important;
+        vertical-align: bottom !important;
+    }
+
+    .searchBtn {
+        padding: 4px !important;
+        font-size: 1em !important;
+        height: 19px !important;
+        vertical-align: bottom !important;
+        margin: 0 !important;
+        margin-left: 2px !important;
+    }
     
     thead {
         border: none !important;
@@ -84,6 +108,13 @@
     
     .myCasesTable tr {
         border-bottom: solid 1px #e6e6e6;
+    }
+
+    .caseField {
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+        box-sizing: border-box;
+        width: 100% !important;
     }
       
     .box a:hover {
@@ -425,12 +456,6 @@
         padding: 5px !important;
     } 
     
-    .placeholder {
-        height: 24px !important;
-        width: 58% !important;
-        border-radius: 2px !important;
-    }
-    
     @-moz-document url-prefix() { 
         .placeholder {
             height: 25px !important;
@@ -700,10 +725,6 @@
                 width: 160px !important;
             }
             
-            .searchKB2 {
-                text-align: center !important;
-            }
-            
             .page-title {
                 height: 40px;
             }
@@ -883,19 +904,6 @@
             border: none !important;
         }
                     
-        @-moz-document url-prefix() {
-            .clearButton, .submitButton {
-                height: 17px !important;
-            }
-        }
-        
-        @media screen and (-webkit-min-device-pixel-ratio:0) { 
-            .clearButton, .submitButton {
-                height: 16px !important;
-                padding-top: 5px !important;
-            }            
-        }
-        
         //MyPin Form
         .pinForm {
             border: solid 1px #353535 !important;

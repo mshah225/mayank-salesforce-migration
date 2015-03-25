@@ -56,38 +56,6 @@
         .bPageBlock.brandSecondaryBrd.apexDefaultPageBlock.secondaryPalette {
             border-top-color: #990033;
         }
-
-        .panel {
-            border-radius: 0px;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.05) !important;
-        }
-        
-        .commentBox .content {
-            padding-bottom: 0px !important;
-        }
-        
-        a.emailToggle {
-            text-decoration:none;
-            outline: none;
-            color: #990033;
-        }
-        
-        .moreContent {
-            display: none;
-        }
-        
-        .emailMessage {
-            font-family: Helvetica, Arial !important;
-            overflow: hidden;
-        }
-        
-        .emailMessage p, .emailMessage span {
-            font-family: Helvetica, Arial !important;
-            font-size: 10pt !important;
-            line-height: 1.5em !important;
-            font-weight: 400;
-        }
     </style>
     
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
@@ -407,6 +375,23 @@
     <!-- START CONTENT -->
     <div id="asu_content_well"><!-- These elements (content, content_well and content_container) -->
         <!-- INPUT CONTENT HERE -->
+
+    <center>
+        <apex:outputPanel rendered="{!pinError}">
+            <div class="alert alert-danger">
+                <button type='button' class='close' data-dismiss='alert'>×</button>
+                <apex:outputText escape="false" value="{!pinMessage}"/>
+            </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!pinSuccess}">
+            <div class="alert alert-success">
+                <button type='button' class='close' data-dismiss='alert'>×</button>
+                <apex:outputText escape="false" value="{!pinMessage}"/>
+            </div>
+        </apex:outputPanel>
+    </center>
+
     <div class="container">
 
       <ol class="breadcrumb">
@@ -441,45 +426,6 @@
                         </apex:form>
                     </div> 
                 </div>
-
-                <apex:outputPanel id="emailMessagesBox" rendered="{!IF(EmailMessages.empty,false,true)}">
-                    <div class="box commentBox">
-                    <div class="header">
-                        <h6><b>Responses To This Case</b></h6>
-                    </div>
-                        <div class="content">
-                            <apex:repeat value="{!EmailMessages}" var="EM">
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <apex:outputLabel for="emailSentDate" value="Sent Date:"/>
-                                        <apex:outputText id="emailSentDate" value="{0, date, MMMM d','  yyyy}">
-                                            <apex:param value="{!EM.CreatedDate}"/>
-                                        </apex:outputText><br />
-
-                                        <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">    
-                                            <apex:outputLabel for="fromAddress" value="From Address:"/>&nbsp;
-                                            <apex:outputText id="fromAddress">{!EM.FromName} &#60;{!EM.FromAddress}&#62;</apex:outputText><br />
-                                        </apex:outputPanel>
-
-                                        <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
-                                            <apex:outputLabel for="toAddress" value="To Address:"/>&nbsp;
-                                            <apex:outputText id="toAddress" value="{!EM.ToAddress}"/><br />
-                                        </apex:outputPanel>
-
-                                        <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
-                                            <apex:outputLabel for="ccAddress" value="CC:"/>&nbsp;
-                                            <apex:outputText id="ccAddress" value="{!EM.CCAddress}"/><br />
-                                        </apex:outputPanel>
-                                        <br />
-                                        <div class="emailBlock">
-                                            <div class="emailMessage"><apex:outputText escape="false" value="{!EM.HtmlBody}"/></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </apex:repeat>
-                        </div>
-                    </div>
-                </apex:outputPanel>
             </div>
 
             <div class="col-md-4">
@@ -548,11 +494,6 @@
                                     <button id="cancelPinInput" class="resetPin kbbtn" onclick="this.form.reset();" style="display:none;" type="button">Cancel</button>
                                     <p style="margin-top:5px;">Select <b>View</b> when calling to access confidential information about your financial aid and account balance.</p>
                                 </div>
-                                
-                                <apex:outputPanel id="pinMessagePanel">
-                                    <apex:pageMessages escape="false" id="pinMessages"/>
-                                    <apex:commandButton id="closePinMessages" action="{!closePinMessageBox}" reRender="pinMessagePanel" rendered="{!isPinSuccess}" style="position: relative;background: none;border: none!important;float: right;z-index: 200;margin-top: -65px;margin-right: 30px;" value="x"/>
-                                </apex:outputPanel>
                                 
                                 <script>
                                     $( "[id$=qmarkPin]" ).click(function() {

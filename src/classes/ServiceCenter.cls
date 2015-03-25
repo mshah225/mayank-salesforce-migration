@@ -3,7 +3,8 @@ public with sharing class ServiceCenter {
     public Contact contact;
     public Contact loggedInContact;
     public Case c { get; set; }
-    public Boolean isPinSuccess { get;set; }
+    public Boolean pinError { get;set; }
+    public Boolean pinSuccess { get;set; }
     public Id caseId;
     public Id caseContId;
     public Id contId;
@@ -14,6 +15,7 @@ public with sharing class ServiceCenter {
     public List<Opportunity> oppList;
     public List<Contact> contactList;
     public String userAlias;
+    public String pinMessage { get;set; }
     public Term__c termcAC;
     public Term__c termcB;
 
@@ -125,14 +127,6 @@ public with sharing class ServiceCenter {
                 WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
     } 
     
-    public EmailMessage[] getEmailMessages() {
-        return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress 
-                FROM EmailMessage 
-                WHERE ParentId = :ApexPages.currentPage().getParameters().get('id') 
-                AND Incoming = false 
-                ORDER BY CreatedDate ASC];
-    }
-    
     public PageReference viewCase() {
         caseId = ApexPages.currentPage().getParameters().get('caseId');
         return new PageReference('/viewcase?id=' + caseId);
@@ -243,11 +237,6 @@ public with sharing class ServiceCenter {
         }
     }
     
-    public void closePinMessageBox() {
-        ApexPages.getMessages().clear();
-        isPinSuccess = false;
-    }
-
     public PageReference changePin() {
         try {
             contact.Self_Service_PIN__c = newPin;
@@ -255,17 +244,17 @@ public with sharing class ServiceCenter {
                 contact.PIN_lockout__c = false;
             }
             update contact;
-            ApexPages.Message success = new ApexPages.Message(ApexPages.Severity.CONFIRM,'Your PIN has been updated.');
-            ApexPages.addMessage(success);
-            isPinSuccess = true;
+            pinMessage = 'Your PIN has been updated.';
+            pinError = false;
+            pinSuccess = true;
             PageReference ref = ApexPages.currentPage();
             return ref;
         }
         catch(DmlException e) {
             if(e.getMessage().contains('InvalidSelfServicePinException')) {
-                ApexPages.Message error = new ApexPages.Message(ApexPages.Severity.ERROR,'Your PIN cannot contain your year of birth.<br>Your PIN must not use more than 4 duplicate numbers.<br>Your PIN must be different than your previous PIN.<br>Your PIN cannot use more than 4 sequential numbers in your PIN. Forwards or backwards.<br>Your PIN must be between 6 and 10 characters.');
-                ApexPages.addMessage(error);
-                isPinSuccess = false;
+                pinMessage = 'Your PIN cannot contain your year of birth.<br>Your PIN must not use more than 4 duplicate numbers.<br>Your PIN must be different than your previous PIN.<br>Your PIN cannot use more than 4 sequential numbers in your PIN. Forwards or backwards.<br>Your PIN must be between 6 and 10 characters.';
+                pinSuccess = false;
+                pinError = true;
                 return null;    
             }
             else {

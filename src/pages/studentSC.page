@@ -373,10 +373,11 @@
                     </apex:pageBlock> 
                  </apex:form>
                     <apex:form >
-                        <apex:pageBlock mode="maindetail">
-                            <apex:panelGroup id="theSearchResults" >
-                                <apex:panelGrid width="100%">
-                                <br /><apex:outputText rendered="{!searchstring != ''}"><h6><b>Top Results for:</b> '{!searchstring}'</h6></apex:outputText>
+                        <apex:outputPanel id="theSearchResults">
+                            <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
+                                <hr />
+                                <h5><b>Top Results for:</b> '{!searchstring}'</h5>
+                                <div style="height:5px;"/>
                                 <knowledge:articleList articleVar="article" 
                                     pageNumber="{!currentPageNumber}"
                                     Keyword="{!searchstring}" 
@@ -384,33 +385,20 @@
                                     pageSize="10"
                                     sortBy="lastUpdated"
                                     rendered="{!searchstring != ''}">
-                                    <table width="99%; padding:3px" rules="rows" cellpadding="1">
-                                        <tr height="20px">
-                                            <td width="99%" style="margin-right:5px;">                                            
-                                            <apex:outputLink rendered="{!searchstring != ''}" onMouseOver="this.style.color='#990033';" onMouseOut="this.style.color='';" value="/akb?id={!article.id}">-&nbsp;{!article.title}</apex:outputLink>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    &#8226;&nbsp;<apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink><br /><div style="height:5px;"/>
                                 </knowledge:articleList>
-                                </apex:panelGrid> 
-                                <apex:panelGrid columns="2">
-                                   <apex:commandLink action="{!previous}" value="Previous" style="{!IF(prevRequired = true,'display:block','display:none')}" reRender="theSearchResults"/> 
-                                   <apex:commandLink action="{!next}" value="Next"  style="{!IF(nextRequired = true,'display:block','display:none')}" reRender="theSearchResults"/>  
-                                 </apex:panelGrid>
-                            </apex:panelGroup>
-                        </apex:pageBlock>
-                        
+                            </apex:pageBlock>
+                        </apex:outputPanel>
+                        <br />
                         <hr /> 
-                        
                         <apex:pageBlock mode="maindetail">
                             <apex:panelGrid width="100%">
                                 <h5><b>Top 5 Help Articles</b></h5>
-                                <ul>
+                                <div style="height:5px;"/>
                                 <knowledge:articleList articleVar="article" 
                                     sortBy="mostViewed">
                                     &#8226;&nbsp;<apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink><br /><div style="height:5px;"/>
                                 </knowledge:articleList>
-                                </ul>
                             </apex:panelGrid>
                         </apex:pageBlock>
                     </apex:form>                    

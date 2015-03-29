@@ -57,6 +57,38 @@
         .bPageBlock.brandSecondaryBrd.apexDefaultPageBlock.secondaryPalette {
             border-top-color: #990033;
         }
+
+        .panel {
+            border-radius: 0px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05) !important;
+        }
+        
+        .commentBox .content {
+            padding-bottom: 0px !important;
+        }
+        
+        a.emailToggle {
+            text-decoration:none;
+            outline: none;
+            color: #990033;
+        }
+        
+        .moreContent {
+            display: none;
+        }
+        
+        .emailMessage {
+            font-family: Helvetica, Arial !important;
+            overflow: hidden;
+        }
+        
+        .emailMessage p, .emailMessage span {
+            font-family: Helvetica, Arial !important;
+            font-size: 10pt !important;
+            line-height: 1.5em !important;
+            font-weight: 400;
+        }
     </style>
     
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
@@ -105,36 +137,30 @@
             var ellipsestext = "...";
             var moretext = "...Show More";
             var lesstext = "Less";
-            $(".emailMessage").each(function() 
-            {
+            $(".emailMessage").each(function() {
                 var content = $(this).html();
         
-                if (content.length > showChar) 
-                {
+                if(content.length > showChar) {
+        
                     var c = content.substr(0, showChar);
                     var h = content.substr(showChar, content.length - showChar);
                     var shortHtml = c + '<span class="moreEllipses">' + ellipsestext + '</span>';
                     var longHtml = c + '<span class="moreContent"><span>' + h + '</span></span>&nbsp;<a href="" class="emailToggle">' + moretext + '</a>';
-                    if ($(this).hasClass("less")) 
-                    {
+        
+                    if($(this).hasClass("less")) {
                         $(this).html(shortHtml);
-                    } 
-                    else 
-                    {
+                    } else {
                         $(this).html(longHtml);
                     }
                 }
+        
             });
         
-            $(".emailToggle").click(function()
-            {
-                if ($(this).hasClass("less")) 
-                {
+            $(".emailToggle").click(function(){
+                if($(this).hasClass("less")) {
                     $(this).removeClass("less");
                     $(this).html(moretext);
-                } 
-                else 
-                {
+                } else {
                     $(this).addClass("less");
                     $(this).html(lesstext);
                 }
@@ -147,6 +173,7 @@
 </head>
 
 <body>
+<!-- START /asuthemes/4.0-rsp.1/headers/default.shtml -->
     <div id="asu_hdr" class="asu_hdr_gold">
         <div id="asu_mobile_hdr">
                 <div id="asu_logo">
@@ -180,6 +207,16 @@
                     onclick="this.href = ASUHeader.alterLoginHref(this.href);">SIGN OUT</a>
                     </li>
                 </ul>
+                
+                <!--<h2 class="hidden">Sign In / Sign Out</h2>
+                <ul id="asu_login_module">
+                    <li id="asu_hdr_ssi" class="end">
+                    <a target="_top" href="https://weblogin.asu.edu/cgi-bin/login"
+                    onmouseover="this.href = ASUHeader.alterLoginHref(this.href);"
+                    onfocus="this.href = ASUHeader.alterLoginHref(this.href);"
+                    onclick="this.href = ASUHeader.alterLoginHref(this.href);">Sign In</a>
+                    </li>
+                </ul>-->
             
             <div id="asu_nav_menu">
                 <h2 class="hidden">Menu</h2>
@@ -223,6 +260,7 @@
                                     <li><a target="_top" href="http://cronkite.asu.edu" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a></li>
                                     <li><a target="_top" href="http://www.law.asu.edu/" title="Sandra Day O' Connor College of Law website">Law</a></li>
                                     <li><a target="_top" href="http://nursingandhealth.asu.edu/" title="College of Nursing and Health Innovation website">Nursing and Health</a></li>
+                                    <!-- li><a href="http://nursingandhealth.asu.edu/nutrition" title="School of Nutrition and Health Promotion website">Nutrition and Health Promotion</a></li -->
                                     <li><a target="_top" href="http://copp.asu.edu" title="College of Public Programs website">Public Programs</a></li>
                                     <li><a target="_top" href="http://schoolofsustainability.asu.edu" title="School of Sustainability website">Sustainability</a></li>
                                     <li><a target="_top" href="http://technology.poly.asu.edu/" title="College of Technology and Innovation website">Technology and Innovation</a></li>
@@ -245,6 +283,7 @@
                                 </ul>
                             </li>
                             <li><a target="_top" href="http://www.asu.edu/contactasu/" title="Directory, Index and other info">Directory</a></li>  
+                       
                     </ul>
                     <img class="asu_touch" src="//www.asu.edu/asuthemes/4.0-rsp.1/images/ipad_close.gif" alt="" />
                 </div><!-- /#asu_universal_nav -->
@@ -416,6 +455,45 @@
                         </apex:form>
                     </div> 
                 </div>
+
+                <apex:outputPanel id="emailMessagesBox" rendered="{!IF(EmailMessages.empty,false,true)}">
+                    <div class="box commentBox">
+                    <div class="header">
+                        <h6><b>Responses To This Case</b></h6>
+                    </div>
+                        <div class="content">
+                            <apex:repeat value="{!EmailMessages}" var="EM">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <apex:outputLabel for="emailSentDate" value="Sent Date:"/>
+                                        <apex:outputText id="emailSentDate" value="{0, date, MMMM d','  yyyy}">
+                                            <apex:param value="{!EM.CreatedDate}"/>
+                                        </apex:outputText><br />
+
+                                        <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">    
+                                            <apex:outputLabel for="fromAddress" value="From Address:"/>&nbsp;
+                                            <apex:outputText id="fromAddress">{!EM.FromName} &#60;{!EM.FromAddress}&#62;</apex:outputText><br />
+                                        </apex:outputPanel>
+
+                                        <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
+                                            <apex:outputLabel for="toAddress" value="To Address:"/>&nbsp;
+                                            <apex:outputText id="toAddress" value="{!EM.ToAddress}"/><br />
+                                        </apex:outputPanel>
+
+                                        <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
+                                            <apex:outputLabel for="ccAddress" value="CC:"/>&nbsp;
+                                            <apex:outputText id="ccAddress" value="{!EM.CCAddress}"/><br />
+                                        </apex:outputPanel>
+                                        <br />
+                                        <div class="emailBlock">
+                                            <div class="emailMessage"><apex:outputText escape="false" value="{!EM.HtmlBody}"/></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </apex:repeat>
+                        </div>
+                    </div>
+                </apex:outputPanel>
             </div>
 
             <div class="col-md-4">

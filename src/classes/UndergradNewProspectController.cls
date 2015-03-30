@@ -145,11 +145,11 @@ public class UndergradNewProspectController {
         getC();
         try {
             if(originSelection != '--Select--' && elId != null) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE source OR ONE event.'));
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 return false; 
             }
             else if(originSelection == '--Select--' && elId == null) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE source OR ONE event.'));
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 return false;
             }
             else if(pickSelection != '--Select--' && selectedInterestId == null) {

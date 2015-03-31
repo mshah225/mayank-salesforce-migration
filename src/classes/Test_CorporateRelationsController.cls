@@ -1,6 +1,6 @@
 @isTest
-private class Test_CorporateRelationsController {
-	
+private class Test_CorporateRelationsController 
+{	
 	private static Campaign testCampaign;
 	private static Campaign testChildCampaign;
 	private static Account testAccount;
@@ -9,7 +9,8 @@ private class Test_CorporateRelationsController {
 	private static CampaignMember testCM;
 	private static NewCorporateRelationsContactController ncr;
 
-	private static void setupData() {
+	private static void setupData() 
+	{
 		testCampaign = new Campaign(
 			Name = 'Test Campaign');
 		insert testCampaign;
@@ -46,7 +47,8 @@ private class Test_CorporateRelationsController {
 	}
 
 
-	@isTest static void testSave() {
+	@isTest static void testSave() 
+	{
 		setupData();
 		PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);
@@ -61,7 +63,8 @@ private class Test_CorporateRelationsController {
 		System.assertEquals(confirmSave.getUrl(),ncr.save().getUrl());
 	}
 	
-	@isTest static void testSaveAndNew() {
+	@isTest static void testSaveAndNew() 
+	{
 		setupData();
 		PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);
@@ -76,7 +79,8 @@ private class Test_CorporateRelationsController {
 		System.assertEquals(confirmSave.getUrl(),ncr.saveAndNew().getUrl());
 	}
 
-	@isTest static void testAddPageSave() {
+	@isTest static void testAddPageSave() 
+	{
 		setupData();
 		PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);

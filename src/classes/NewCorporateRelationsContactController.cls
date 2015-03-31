@@ -1,5 +1,5 @@
-public with sharing class NewCorporateRelationsContactController {
-	
+public with sharing class NewCorporateRelationsContactController 
+{	
 	public Contact contact { get;set; }
 	public CampaignMember campaignMember { get;set; }
 	public RecordType cohortRecordType { get;set; }
@@ -14,7 +14,8 @@ public with sharing class NewCorporateRelationsContactController {
 	public String selectedParentId { get;set; }
 	public String selectedChildId { get;set; }
 
-	public NewCorporateRelationsContactController() {
+	public NewCorporateRelationsContactController() 
+	{
 		page = 1;
 		contact = new Contact();
 		campaignMember = new CampaignMember();
@@ -27,7 +28,8 @@ public with sharing class NewCorporateRelationsContactController {
 							WHERE Name = 'Cohort'];
 	}
 
-	public List<SelectOption> getCampaignOptions() {
+	public List<SelectOption> getCampaignOptions() 
+	{
 		cohortCampaigns = [SELECT Id, Name, RecordTypeId 
 					       FROM Campaign 
 					       WHERE RecordTypeId = :cohortRecordType.Id 
@@ -36,28 +38,33 @@ public with sharing class NewCorporateRelationsContactController {
 					       ORDER BY Name ASC];
         campaignOptions = new List<SelectOption>();
         campaignOptions.add(new SelectOption( '' ,'--Select--'));
-        for(Campaign c : cohortCampaigns ) {
+        for (Campaign c : cohortCampaigns ) 
+        {
             campaignOptions.add(new SelectOption(c.Id , c.Name));
         }
         return campaignOptions;
     }
 
-    public void populateChildCampaigns() {
+    public void populateChildCampaigns() 
+    {
         childCohortCampaigns = [SELECT Id, Name, RecordTypeId 
-					       FROM Campaign 
-					       WHERE RecordTypeId = :cohortRecordType.Id 
-					       AND IsActive = true 
-					       AND ParentId = :selectedParentId
-					       ORDER BY Name ASC];
+					       		FROM Campaign 
+					       		WHERE RecordTypeId = :cohortRecordType.Id 
+					       		AND IsActive = true 
+					       		AND ParentId = :selectedParentId
+					       		ORDER BY Name ASC];
         childCampaignOptions = new List<SelectOption>();
         childCampaignOptions.add(new SelectOption( '' ,'--Select--'));
-        for(Campaign c : childCohortCampaigns ) {
+        for (Campaign c : childCohortCampaigns ) 
+        {
             childCampaignOptions.add(new SelectOption(c.Id , c.Name));
         }
     }
 
-    public void saveToDatabase() {
-    	try {
+    public void saveToDatabase() 
+    {
+    	try 
+    	{
 			contact.SF_First_Name__c = contact.FirstName;
             contact.SF_First_Name_Updated__c = Datetime.now();
             contact.SF_Last_Name__c = contact.LastName;
@@ -74,25 +81,30 @@ public with sharing class NewCorporateRelationsContactController {
             contact.SF_Birthdate_Updated__c = Datetime.now();
             insert contact; 
 
-	        for(Relationship__c r: relationshipList) {
+	        for (Relationship__c r: relationshipList) 
+	        {
 	            r.Active_Relationship__c = true;
 	            r.Contact__c = contact.Id;
 	        }
             insert relationshipList;
 
-	        for(CampaignMember c: campaignMemberList) {   
+	        for (CampaignMember c: campaignMemberList) 
+	        {   
 	            c.ContactId = contact.Id;
 	            System.Debug('cList CampaignId: ' + c.CampaignId);
 	            System.Debug('cList ContactId: ' + c.ContactId);
 	        }
             insert campaignMemberList;
             System.Debug('Inserted cList: ' + campaignMemberList);
-		} catch(exception e) {
+		} 
+		catch (exception e) 
+		{
 
 		}
     }
 
-    public void addRelationship() {
+    public void addRelationship() 
+    {
     	Relationship__c rNew = new Relationship__c();
     	rNew.Title__c = relationship.Title__c;
     	rNew.Account__c = relationship.Account__c;
@@ -102,19 +114,22 @@ public with sharing class NewCorporateRelationsContactController {
     	System.Debug('rList: ' + relationshipList);
     }
 
-    public void addCampaignMember() {
+    public void addCampaignMember() 
+    {
     	CampaignMember cNew = new CampaignMember();
     	cNew.CampaignId = selectedChildId;
     	campaignMemberList.add(cNew);
     	System.Debug('cList: ' + campaignMemberList);
     }
 
-    public PageReference page2(){
+    public PageReference page2()
+    {
 		page = 2;
 		return ApexPages.currentPage();
 	}
 
-	public void addPage() {
+	public void addPage() 
+	{
 		addRelationship();
 		addCampaignMember();
 		relationship = null;
@@ -124,7 +139,8 @@ public with sharing class NewCorporateRelationsContactController {
 		childCampaignOptions = null;
 	}
 
-	public PageReference save() {
+	public PageReference save() 
+	{
 		addRelationship();
 		addCampaignMember();
 		saveToDatabase();
@@ -133,7 +149,8 @@ public with sharing class NewCorporateRelationsContactController {
 		return submit;
 	}
 
-	public PageReference saveAndNew() {
+	public PageReference saveAndNew() 
+	{
 		addRelationship();
 		addCampaignMember();
 		saveToDatabase();

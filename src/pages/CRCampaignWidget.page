@@ -1,5 +1,76 @@
 <apex:page showHeader="true" 
 	sidebar="true"
 	controller="CRCampaignWidgetController">
-	
+
+	<style>
+    	.activeTab {
+    		background-color: #236FBD; 
+    		color: white; 
+    		background-image: none;
+    		padding: 6px;
+    		width: 120px;
+
+    	}
+    	.inactiveTab { 
+    		background-color: lightgrey; 
+    		color: black; 
+    		background-image: none;
+    		padding: 5px;
+    		width: 120px;
+    	}
+
+    	.left { 
+    		float: left; 
+    		width: 50%;
+    	}
+
+    	.right { 
+    		float: right;
+    		width: 50%; 
+    	}
+    </style>
+
+	<apex:tabPanel id="CRTabPanel" tabClass='activeTab' inactiveTabClass='inactiveTab' style="max-width:800px;padding:10px;">
+		<apex:tab id="viewAffiliations" label="View Affiliations">
+			<apex:pageBlock>
+				<apex:dataTable value="{!currentCampaigns}" var="cc" cellspacing="10">
+					<apex:column>
+						<apex:outputLink value="/{!cc.Id}" target="_blank">View</apex:outputLink>
+					</apex:column>
+					<apex:column value="{!cc.Campaign.Name}"/>
+				</apex:dataTable>
+			</apex:pageBlock>
+		</apex:tab>
+		<apex:tab id="addAffiliation" label="Add an Affiliation">
+			<apex:form id="searchForm">
+				<div class="left">
+					<apex:inputText value="{!searchString}" html-placeholder="Enter Search Terms">
+						<apex:actionSupport event="onkeyup" action="{!campaignSearch}" reRender="resultsPanel" status="searchStatus"/>
+					</apex:inputText>
+					<apex:actionStatus id="searchStatus">
+                        <apex:facet name="start" >
+                            <img src="/img/loading.gif" />
+                        </apex:facet>
+                    </apex:actionStatus>
+				</div>
+				<div class="right">
+					<apex:outputPanel id="resultsPanel">
+						<apex:pageBlock rendered="{!IF(campaigns != null,true,false)}">
+							<apex:dataTable id="resultsTabls" value="{!campaigns}" var="c" cellspacing="10">
+								<apex:column>
+									<apex:commandLink value="Select" action="{!assignToCampaign}">
+										<apex:param assignTo="{!selectedCampaign}" value="{!c.Id}"/>
+									</apex:commandLink>
+								</apex:column>
+								<apex:column value="{!c.Name}"/>
+							</apex:dataTable>
+						</apex:pageBlock>
+					</apex:outputPanel>
+				</div>
+			</apex:form>
+		</apex:tab>
+		<apex:tab id="editAffiliation" label="Edit Affiliations">
+
+		</apex:tab>
+	</apex:tabPanel>
 </apex:page>

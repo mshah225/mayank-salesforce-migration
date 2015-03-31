@@ -1,0 +1,5 @@
+<apex:page showHeader="true" 
+	sidebar="true"
+	controller="CRCampaignWidgetController">
+	
+</apex:page>

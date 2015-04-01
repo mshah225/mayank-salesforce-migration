@@ -22,7 +22,8 @@ public with sharing class CRCampaignWidgetController
 					WHERE Name = 'Cohort'].Id;
 		currentCampaigns = [SELECT Id, Campaign.Name 
 							FROM CampaignMember 
-							WHERE ContactId = :contact.Id];
+							WHERE ContactId = :contact.Id
+							ORDER BY Campaign.Name];
 	}
 
 	public void parentCampaignSearch()

@@ -3,7 +3,7 @@
     <apiVersion>30.0</apiVersion>
     <packageVersions>
         <majorNumber>2</majorNumber>
-        <minorNumber>8</minorNumber>
+        <minorNumber>10</minorNumber>
         <namespace>bomgar</namespace>
     </packageVersions>
     <status>Active</status>

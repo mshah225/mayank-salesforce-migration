@@ -1029,7 +1029,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         return oweaLookup;
     }
 
-    private boolean isUserActive(string userId) 
+    private boolean isUserActive(String userId) 
     {
         List<User> userList = [SELECT Id, IsActive
                                 FROM User

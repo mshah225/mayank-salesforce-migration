@@ -21,7 +21,7 @@ public with sharing class CRCampaignWidgetController
 	public String selectedParentCampaignName { get;set; }
 	public String selectedChildCampaignName { get;set; }
 
-	public CRCampaignWidgetController() 
+	public CRCampaignWidgetController(ApexPages.StandardController controller) 
 	{
 		contact = [SELECT Id 
 				   FROM Contact 
@@ -56,7 +56,8 @@ public with sharing class CRCampaignWidgetController
 										 WHERE ContactId = :contact.Id 
 										 AND Campaign_Type__c = 'Corporate Relations'
 										 AND Status = 'Active' 
-										 AND Campaign.ParentId = :cm.Campaign.Id])
+										 AND Campaign.ParentId = :cm.Campaign.Id
+										 ORDER BY Campaign.Name])
 				{
 					sortList.add(ch);
 				}

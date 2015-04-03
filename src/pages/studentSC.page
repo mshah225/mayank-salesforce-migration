@@ -39,9 +39,9 @@
         }
     </style> 
     
-    <script src="https://bomgar.asu.edu/api/start_session.js"></script>
+    <script src="https://bomgardev.asu.edu/api/start_session.js"></script>
     <script>
-        BG.setSite("bomgar.asu.edu");
+        BG.setSite("bomgardev.asu.edu");
         var custName = "{!$User.Contact_First_Name__c} {!$User.Contact_Last_Name__c}";
         var desc = "{!$Component.FADesc}";
         var emplid = "{!$User.EmplId__c}";
@@ -71,7 +71,7 @@
             {
                 issue:
                 {
-                    codeName: 'salesforce_chat',
+                    codeName: 'stufa_chatdev',
                     customerName: custName,
                     companyName: 'ASU',
                     details: document.getElementById('FADesc').value
@@ -628,7 +628,7 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a id="faChat" class="chat-link">Student Finances</a></li>
+                                <li><a id="faChat" class="chat-link">Finances</a></li>
 
                                 <li><a id="bomgarChat" class="chat-link">Other</a></li>   
                            </ul>

@@ -54,7 +54,6 @@ private class Test_CorporateRelationsController
         Test.setCurrentPage(crPage);
 		ncr.contact = testContact;
 		ncr.relationship = testR;
-		ncr.campaignMember = testCM;
 		ncr.selectedParentId = testCampaign.Id;
 		ncr.selectedChildId = testChildCampaign.Id;
 		ncr.getCampaignOptions();
@@ -70,7 +69,6 @@ private class Test_CorporateRelationsController
         Test.setCurrentPage(crPage);
 		ncr.contact = testContact;
 		ncr.relationship = testR;
-		ncr.campaignMember = testCM;
 		ncr.selectedParentId = testCampaign.Id;
 		ncr.selectedChildId = testChildCampaign.Id;
 		ncr.getCampaignOptions();
@@ -86,7 +84,6 @@ private class Test_CorporateRelationsController
         Test.setCurrentPage(crPage);
 		ncr.contact = testContact;
 		ncr.relationship = testR;
-		ncr.campaignMember = testCM;
 		ncr.selectedParentId = testCampaign.Id;
 		ncr.selectedChildId = testChildCampaign.Id;
 		ncr.getCampaignOptions();
@@ -94,7 +91,6 @@ private class Test_CorporateRelationsController
 		ncr.page2();
 		ncr.addPage();
 		ncr.relationship = testR;
-		ncr.campaignMember = testCM;
 		ncr.selectedParentId = testCampaign.Id;
 		ncr.selectedChildId = testChildCampaign.Id;
 		PageReference confirmSave = new PageReference('/' + testContact.Id);

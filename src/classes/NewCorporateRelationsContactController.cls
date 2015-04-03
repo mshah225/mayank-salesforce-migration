@@ -1,7 +1,6 @@
 public with sharing class NewCorporateRelationsContactController 
 {	
 	public Contact contact { get;set; }
-	public CampaignMember campaignMember { get;set; }
 	public RecordType cohortRecordType { get;set; }
 	public Relationship__c relationship { get;set; }
 	public Integer page { get;set; }
@@ -11,6 +10,7 @@ public with sharing class NewCorporateRelationsContactController
 	public List<SelectOption> childCampaignOptions { get;set; }
 	public List<Campaign> cohortCampaigns;
 	public List<Campaign> childCohortCampaigns;
+	public Set<String> currentSet;
 	public String selectedParentId { get;set; }
 	public String selectedChildId { get;set; }
 
@@ -18,8 +18,8 @@ public with sharing class NewCorporateRelationsContactController
 	{
 		page = 1;
 		contact = new Contact();
-		campaignMember = new CampaignMember();
 		cohortRecordType = new RecordType();
+		currentSet = new Set<String>();
 		relationship = new Relationship__c();
 		relationshipList = new List<Relationship__c>();
 		campaignMemberList = new List<CampaignMember>();
@@ -91,11 +91,8 @@ public with sharing class NewCorporateRelationsContactController
 	        for (CampaignMember c: campaignMemberList) 
 	        {   
 	            c.ContactId = contact.Id;
-	            System.Debug('cList CampaignId: ' + c.CampaignId);
-	            System.Debug('cList ContactId: ' + c.ContactId);
 	        }
             insert campaignMemberList;
-            System.Debug('Inserted cList: ' + campaignMemberList);
 		} 
 		catch (exception e) 
 		{
@@ -111,15 +108,28 @@ public with sharing class NewCorporateRelationsContactController
     	rNew.Relationship_Type__c = relationship.Relationship_Type__c;
     	rNew.Relationship_Start_Date__c = relationship.Relationship_Start_Date__c;
     	relationshipList.add(rNew);
-    	System.Debug('rList: ' + relationshipList);
+    }
+
+    public void addParentCampaignMember() 
+    {
+    	CampaignMember pNew = new CampaignMember();
+    	pNew.CampaignId = selectedParentId;
+    	if (!currentSet.contains(selectedParentId)) 
+    	{
+    		campaignMemberList.add(pNew);
+    		currentSet.add(selectedParentId);
+    	}
     }
 
     public void addCampaignMember() 
     {
     	CampaignMember cNew = new CampaignMember();
     	cNew.CampaignId = selectedChildId;
-    	campaignMemberList.add(cNew);
-    	System.Debug('cList: ' + campaignMemberList);
+    	if (!currentSet.contains(selectedChildId)) 
+    	{
+    		campaignMemberList.add(cNew);
+    		currentSet.add(selectedChildId);
+    	}
     }
 
     public PageReference page2()
@@ -131,6 +141,7 @@ public with sharing class NewCorporateRelationsContactController
 	public void addPage() 
 	{
 		addRelationship();
+		addParentCampaignMember();
 		addCampaignMember();
 		relationship = null;
 		relationship = new Relationship__c();
@@ -142,6 +153,7 @@ public with sharing class NewCorporateRelationsContactController
 	public PageReference save() 
 	{
 		addRelationship();
+		addParentCampaignMember();
 		addCampaignMember();
 		saveToDatabase();
 		PageReference submit = new PageReference('/' + contact.Id);

@@ -3,6 +3,11 @@
 	controller="CRCampaignWidgetController"
 	docType="HTML-5.0">
 <head>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"/>
+  	<apex:includeScript value="//code.jquery.com/jquery-1.10.2.js"></apex:includeScript>
+  	<apex:includeScript value="//code.jquery.com/ui/1.11.4/jquery-ui.js"></apex:includeScript>
+  	<link rel="stylesheet" href="/resources/demos/style.css"/>
+
 	<style>
 		.activeTab {
     		background-color: #236FBD; 
@@ -44,6 +49,16 @@
 		    border-radius: 2px;
 		}
     </style>
+    <script type="text/javascript" language="javascript">
+	    if(jQuery) {
+	        jQuery.noConflict();
+	    }
+	</script>
+    <script>
+	    $('.parent').click(function() {
+		    $(this).nextUntil('.parent').show();
+		});
+	</script>
 </head>
 <body>
 	<apex:tabPanel id="CRTabPanel" switchType="client" selectedTab="{!$Component.viewAffiliations}" tabClass='activeTab' inactiveTabClass='inactiveTab' style="max-width:800px;padding:10px;">
@@ -51,11 +66,19 @@
 			<apex:pageBlock>
 				<apex:outputPanel style="overflow:auto;">
 					<b style="font-size:9pt;">Campaigns this Contact is associated with.</b>
-					<apex:dataTable value="{!currentCampaigns}" var="cc" cellspacing="15" style="font-size:9pt;">
+					<apex:dataTable value="{!sortList}" var="cc" cellspacing="15" style="font-size:9pt;">
 						<apex:column>
-							<apex:outputLink styleClass="linkBtn" value="/{!cc.Id}" target="_blank">View</apex:outputLink>
+							<apex:outputPanel rendered="{!IF(cc.Campaign.ParentId == null,true,false)}">
+								<h4 class="parent"><apex:outputText value="{!cc.Campaign.Name}"/></h4>
+							</apex:outputPanel>
+
+							<apex:outputPanel rendered="{!IF(cc.Campaign.ParentId != null,true,false)}">
+								<div class="child" style="display:none;">
+									<span style="margin-left:20px;"/>
+									&#8226;&nbsp;<apex:outputText value="{!cc.Campaign.Name}"/>
+								</div>
+							</apex:outputPanel>
 						</apex:column>
-						<apex:column value="{!cc.Campaign.Name}"/>
 					</apex:dataTable>
 				</apex:outputPanel>
 			</apex:pageBlock>
@@ -69,7 +92,7 @@
 					</apex:inputText>
 					<apex:actionStatus id="searchStatus">
 	                    <apex:facet name="start" >
-	                        <img src="/img/loading.gif" style="margin:1px 4px;position:absolute;"/>
+	                        <img src="/img/loading.gif" style="margin:5px 4px;position:absolute;"/>
 	                    </apex:facet>
 	                </apex:actionStatus>
 					<br />
@@ -120,21 +143,28 @@
 							</apex:dataTable>
 						</apex:pageBlock>
 					</apex:outputPanel>
-				</apex:apex:outputPanel>
+				</apex:outputPanel>
 			</apex:form>
 		</apex:tab>
 		<apex:tab id="editAffiliation" name="editAffiliation" label="Edit Affiliations">
-			<apex:pageBlock>
-				<apex:outputPanel style="overflow:auto;">
-					<b style="font-size:9pt;">Select a Cohort Campaign to Edit</b>
-					<apex:dataTable value="{!currentCampaigns}" var="ec" cellspacing="15" style="font-size:9pt;">
-						<apex:column>
-							<apex:outputLink styleClass="linkBtn" value="/{!ec.Id}/e?retURL={!$CurrentPage.URL}">Edit</apex:outputLink>
-						</apex:column>
-						<apex:column value="{!ec.Campaign.Name}"/>
-					</apex:dataTable>
-				</apex:outputPanel>
-			</apex:pageBlock>
+			<apex:form id="inActivateCMForm">
+				<apex:pageBlock>
+					<apex:outputPanel style="overflow:auto;">
+						<b style="font-size:9pt;">Select a Cohort Campaign to Edit</b>
+						<apex:dataTable value="{!currentCampaigns}" var="ec" cellspacing="15" style="font-size:9pt;">
+							<apex:column>
+								<apex:actionRegion>
+									<apex:commandLink styleClass="linkBtn" value="Remove" action="{!inActivateCM}">
+										<apex:param name="inActivateButton" value="{!ec.Id}" assignTo="{!inActivateCMId}"/>
+										<apex:actionSupport status="searchStatus"/>
+									</apex:commandLink>
+								</apex:actionRegion>
+							</apex:column>
+							<apex:column value="{!ec.Campaign.Name}"/>
+						</apex:dataTable>
+					</apex:outputPanel>
+				</apex:pageBlock>
+			</apex:form>
 		</apex:tab>
 	</apex:tabPanel>
 </body>

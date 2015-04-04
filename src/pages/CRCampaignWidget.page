@@ -85,14 +85,18 @@
 				<br />
 				<apex:outputPanel id="parentResultsPanel" style="font-size:9pt;">
 					<apex:pageBlock rendered="{!IF(parentCampaigns != null,true,false)}">
-						<apex:outputText rendered="{!IF(parentCampaigns.size != 0 && searchString != null,true,false)}">
+						<apex:outputText rendered="{!IF(parentCampaigns.size != 0,true,false)}">
 							<b>Parent Campaign Results - Select a Campaign</b>
 						</apex:outputText>
 						<apex:outputText rendered="{!IF(parentCampaigns.size == 0 && searchString != null,true,false)}">
 							No Campaigns found for '{!searchString}'
 						</apex:outputText>
 						<apex:outputText rendered="{!IF(selectedParentCampaignName != null,true,false)}">
-							<b>Selected Parent Campaign:</b><br /><br /> <span style="padding:10px;">{!selectedParentCampaignName}</span>
+							<b>Selected Parent Campaign:</b>
+
+							<br /><br /><span style="padding:10px;">{!selectedParentCampaignName}</span>
+
+							<br /><br /><span style="padding:10px;">Would you like to <apex:commandLink action="{!save}" value="Add" styleClass="linkBtn"/> just the Parent Campaign?</span>
 						</apex:outputText>
 						<apex:dataTable id="parentResultsTable" value="{!parentCampaigns}" var="pc" cellspacing="15">
 							<apex:column>
@@ -111,12 +115,12 @@
 				<apex:outputPanel id="childResultsPanel">
 					<apex:pageBlock rendered="{!IF(childCampaigns != null,true,false)}">
 						<apex:outputText>
-							<b>Select a Child Campaigns for {!selectedParentCampaignName}</b>
+							<b>Select a Child Campaign for {!selectedParentCampaignName}</b>
 						</apex:outputText>
-						<apex:outputText rendered="{!IF(childCampaigns.size == 0,true,false)}">
-							<span style="margin-top:10px;position:absolute;">No Child Campaigns for {!selectedParentCampaignName}</span>
+						<apex:outputText rendered="{!IF(fixedChildCampaigns.size == 0,true,false)}">
+							<br /><br/>No Child Campaigns for {!selectedParentCampaignName} or this user is already a member of all child Campaigns.
 						</apex:outputText>
-						<apex:dataTable id="childResultsTable" value="{!childCampaigns}" var="chc" cellspacing="15">
+						<apex:dataTable id="childResultsTable" value="{!fixedChildCampaigns}" var="chc" cellspacing="15">
 							<apex:column>
 								<apex:actionRegion>
 									<apex:commandLink styleClass="linkBtn" value="Select" action="{!assignToChildCampaign}">

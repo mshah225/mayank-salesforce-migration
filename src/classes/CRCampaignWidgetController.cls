@@ -11,12 +11,15 @@ public with sharing class CRCampaignWidgetController
 	public Id selectedChildCampaign { get;set; }
 	public String inActivateCMId { get;set; }
 	public List<CampaignMember> currentCampaigns { get;set; }
+	public List<CampaignMember> currentChildCams { get;set; }
 	public List<CampaignMember> inActiveCampaigns { get;set; }
 	public List<CampaignMember> sortList;
 	public List<Campaign> parentCampaigns { get;set; }
 	public List<Campaign> childCampaigns { get;set; }
+	public List<Campaign> fixedChildCampaigns { get;set; }
 	public Set<String> currentSet;
 	public Set<String> inActiveSet;
+	public Set<String> childSearchSet;
 	public String searchString { get;set; }
 	public String selectedParentCampaignName { get;set; }
 	public String selectedChildCampaignName { get;set; }
@@ -86,8 +89,26 @@ public with sharing class CRCampaignWidgetController
 
 	public void childCampaignSearch()
 	{
+		currentChildCams = [SELECT CampaignId 
+							FROM CampaignMember 
+							WHERE ContactId = :contact.Id 
+							AND Campaign.ParentId = :selectedParentCampaign
+							AND Status = 'Active'];
+		childSearchSet = new Set<String>();
+		fixedChildCampaigns = new List<Campaign>();
+		for (CampaignMember c: currentChildCams)
+		{
+			childSearchSet.add(c.CampaignId);
+		}
 		String queryString = 'SELECT Id, Name FROM Campaign WHERE RecordTypeId = \'' + cohortId + '\' AND ParentId = \'' + selectedParentCampaign + '\' AND isActive = true';
 		childCampaigns = Database.query(queryString);
+		for (Campaign cc: childCampaigns) 
+		{
+			if(!childSearchSet.contains(cc.Id))
+			{
+				fixedChildCampaigns.add(cc);
+			}
+		}
 	}
 
 	public void parentCamNameSearch() {
@@ -116,13 +137,37 @@ public with sharing class CRCampaignWidgetController
 		childCampaignSearch();
 	}
 
-	public PageReference assignToChildCampaign()
+	public void assignToChildCampaign()
 	{
 		newChildCamMem = new CampaignMember();
 		newChildCamMem.ContactId = contact.Id;
 		newChildCamMem.CampaignId = selectedChildCampaign;
 		newChildCamMem.Status = 'Active';
 		childCamNameSearch();
+		save();
+	} 
+
+	public PageReference inActivateCM() 
+	{
+		inActivateCamMem = [SELECT Id 
+							FROM CampaignMember
+							WHERE Id = :inActivateCMId];
+		inActivateCamMem.Status = 'Inactive';
+		try
+		{
+			update inActivateCamMem;
+		}
+		catch (Exception e)
+		{
+
+		}
+		PageReference refresh = ApexPages.currentPage();
+		refresh.setRedirect(true);
+		return refresh;
+	}
+
+	public PageReference save() 
+	{
 		try
 		{
 			currentSet = new Set<String>();
@@ -145,25 +190,28 @@ public with sharing class CRCampaignWidgetController
 			else
 			{
 				activateParentCamMem = [SELECT Id 
-							FROM CampaignMember
-							WHERE Campaign.Name = :selectedParentCampaignName];
+										FROM CampaignMember
+										WHERE Campaign.Name = :selectedParentCampaignName];
 				activateParentCamMem.Status = 'Active';
 				update activateParentCamMem;
 			}
-			if (!inActiveSet.contains(selectedChildCampaignName))
+			if(selectedChildCampaign != null)
 			{
-				if (!currentSet.contains(selectedChildCampaignName))
+				if (!inActiveSet.contains(selectedChildCampaignName))
 				{
-					insert newChildCamMem;
+					if (!currentSet.contains(selectedChildCampaignName))
+					{
+						insert newChildCamMem;
+					}
 				}
-			}
-			else 
-			{
-				activateChildCamMem = [SELECT Id 
-							FROM CampaignMember
-							WHERE Campaign.Name = :selectedChildCampaignName];
-				activateChildCamMem.Status = 'Active';
-				update activateChildCamMem;
+				else 
+				{
+					activateChildCamMem = [SELECT Id 
+										   FROM CampaignMember
+										   WHERE Campaign.Name = :selectedChildCampaignName];
+					activateChildCamMem.Status = 'Active';
+					update activateChildCamMem;
+				}
 			}
 		}
 		catch (Exception e)
@@ -173,24 +221,5 @@ public with sharing class CRCampaignWidgetController
 		PageReference save = ApexPages.currentPage();
 		save.setRedirect(true);
 		return save;
-	} 
-
-	public PageReference inActivateCM() 
-	{
-		inActivateCamMem = [SELECT Id 
-							FROM CampaignMember
-							WHERE Id = :inActivateCMId];
-		inActivateCamMem.Status = 'Inactive';
-		try
-		{
-			update inActivateCamMem;
-		}
-		catch (Exception e)
-		{
-
-		}
-		PageReference refresh = ApexPages.currentPage();
-		refresh.setRedirect(true);
-		return refresh;
 	}
 }

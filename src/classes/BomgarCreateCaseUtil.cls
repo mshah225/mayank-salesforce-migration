@@ -19,6 +19,10 @@ global class BomgarCreateCaseUtil
         {
              contact = lookupContactByEmployeeId(dynamicFieldMap.get('employeeNumber'));
         }
+        if (contact == null) 
+        {
+            lookupContactByASURITE(dynamicFieldMap.get('asuriteId'));
+        }
         if (dynamicFieldMap.get('asuriteId') != null && '' != dynamicFieldMap.get('asuriteId'))
         {
              contact = lookupContactByASURITE(dynamicFieldMap.get('asuriteId'));
@@ -47,7 +51,7 @@ global class BomgarCreateCaseUtil
         c.Priority = 'Normal';
         c.Origin__c = 'Chat';
         c.Functional_Group__c = 'Help Desk';
-        if (dynamicFieldMap.get('externalKey') == 'SFDC')
+        if (dynamicFieldMap.get('externalKey') == 'Other')
         {
             c.Category__c = 'General Help Desk';
         }

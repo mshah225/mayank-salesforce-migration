@@ -824,7 +824,7 @@
         .dropdown-menu:before {
           position: absolute;
           top: -7px;
-          right: 24px;
+          right: 37px;
           display: inline-block;
           border-right: 7px solid transparent;
           border-bottom: 7px solid #ccc;
@@ -836,7 +836,7 @@
         .dropdown-menu:after {
           position: absolute;
           top: -6px;
-          right: 25px;
+          right: 38px;
           display: inline-block;
           border-right: 6px solid transparent;
           border-bottom: 6px solid #ffffff;

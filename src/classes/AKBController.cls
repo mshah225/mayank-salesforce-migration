@@ -18,27 +18,27 @@ public with sharing class AKBController
    
     public AKBController() 
     {   
-        article = [SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId, CreatedBy.Name
+        article = [SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId 
                    FROM KnowledgeArticleVersion 
                    WHERE KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id') 
                    AND PublishStatus = 'Online'];                      
         if (article.ArticleType.equals('FAQ__kav')) 
         {
-            faq = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Question__c, Answer__c, toLabel(ArticleType) 
+            faq = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Question__c, Answer__c 
                    FROM FAQ__kav 
                    WHERE PublishStatus='Online' 
                    AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
         } 
         else if (article.ArticleType.equals('Informational__kav')) 
         {
-            info = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Information__c, toLabel(ArticleType) 
+            info = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Information__c 
                     FROM Informational__kav 
                     WHERE PublishStatus='Online' 
                     AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
         } 
         else if (article.ArticleType.equals('How_To__kav')) 
         {
-            howTo = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Content__c, toLabel(ArticleType)
+            howTo = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Content__c 
                      FROM How_To__kav 
                      WHERE PublishStatus='Online' 
                      AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
@@ -95,22 +95,6 @@ public with sharing class AKBController
         feedbackHelpful.Contact__c = contactId;
         feedbackHelpful.Helpful__c = true;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
-        feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
-        if (article.ArticleType.equals('FAQ__kav')) 
-        {
-            feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
-            feedbackHelpful.Type__c = faq.ArticleType;
-        } 
-        else if (article.ArticleType.equals('Informational__kav')) 
-        {
-            feedbackHelpful.Functional_Group__c = info.Functional_Group__c;
-            feedbackHelpful.Type__c = info.ArticleType;
-        } 
-        else if (article.ArticleType.equals('How_To__kav')) 
-        {
-            feedbackHelpful.Functional_Group__c = howto.Functional_Group__c;
-            feedbackHelpful.Type__c = howto.ArticleType;
-        }
         insert feedbackHelpful;
         
         PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes');
@@ -127,22 +111,6 @@ public with sharing class AKBController
         feedbackHelpful.Helpful__c = false;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
         feedbackHelpful.Comments__c = feedbackHelpful.Comments__c;
-        feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
-        if (article.ArticleType.equals('FAQ__kav')) 
-        {
-            feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
-            feedbackHelpful.Type__c = faq.ArticleType;
-        } 
-        else if (article.ArticleType.equals('Informational__kav')) 
-        {
-            feedbackHelpful.Functional_Group__c = info.Functional_Group__c;
-            feedbackHelpful.Type__c = info.ArticleType;
-        } 
-        else if (article.ArticleType.equals('How_To__kav')) 
-        {
-            feedbackHelpful.Functional_Group__c = howto.Functional_Group__c;
-            feedbackHelpful.Type__c = howto.ArticleType;
-        }
         insert feedbackHelpful;
         
         PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes');

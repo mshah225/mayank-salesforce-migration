@@ -1,19 +1,22 @@
-public with sharing class FeedbackController {
-	
+public with sharing class FeedbackController
+{	
 	public Case c { get;set; }
 	public Contact contact { get;set; }
 	public Group queue { get;set; }
 	public String comments { get;set; }
 	public String userAlias;
 
-	public FeedbackController() {
+	public FeedbackController() 
+	{
 		c = new Case();	
 		contact = new Contact();
 		queue = new Group();
 	}
 
-	public PageReference submit() {
-		try {
+	public PageReference submit() 
+	{
+		try 
+		{
 			queue = [SELECT Id 
 					 FROM Group 
 					 WHERE Name = 'Student-Centric Initiatives (Case)' 
@@ -24,16 +27,16 @@ public with sharing class FeedbackController {
 	        contact = [SELECT Id 
 	                   FROM Contact 
 	                   WHERE ASURITE_Id__c = :userAlias];
-		} catch(Exception e) {
+		} 
+		catch(Exception e) 
+		{
 
 		}
 		c.OwnerId = queue.Id;
-		c.Subject = comments;
-		if(c.Subject != null && c.Subject.length() > 255){
-            c.Subject = c.Subject.substring(0,254);
-        }
+		c.Subject = 'MyASU Service Center Feedback';
 		c.Description = comments;
-		if(contact != null) {
+		if (contact != null) 
+		{
 			c.ContactId = contact.Id;
 		}
 		c.Functional_Group__c = 'Student-Centric Initiatives';

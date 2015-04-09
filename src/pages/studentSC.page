@@ -11,19 +11,13 @@
     <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1, maximum-scale=1" />
-
     <c:asu_responsive_header_section />
-    
-    <!-- Stylesheets for Bootstrap/jQuery UI/MyASU -->
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.jquery_ui, '/themes/base/minified/jquery-ui.min.css')}"/>
     <c:myasustyles />  
-    
-    <!-- Javascript for Autocomplete/Bootstrap -->
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
     <apex:includeScript value="{!URLFOR($Resource.jquery_ui, '/ui/minified/jquery-ui.min.js')}"/>
-    
     
     <style>
         .checkboxHidden {
@@ -75,6 +69,10 @@
     </script>    
 </head>
 <body>
+<script>
+    if (window.top !== window.self) top.location.replace(self.location.href);
+</script>
+
 <!-- START /asuthemes/4.0-rsp.1/headers/default.shtml -->
 <div id="asu_hdr" class="asu_hdr_gold">
     <div id="asu_mobile_hdr">
@@ -109,16 +107,6 @@
                 onclick="this.href = ASUHeader.alterLoginHref(this.href);">SIGN OUT</a>
                 </li>
             </ul>
-            
-            <!--<h2 class="hidden">Sign In / Sign Out</h2>
-            <ul id="asu_login_module">
-                <li id="asu_hdr_ssi" class="end">
-                <a target="_top" href="https://weblogin.asu.edu/cgi-bin/login"
-                onmouseover="this.href = ASUHeader.alterLoginHref(this.href);"
-                onfocus="this.href = ASUHeader.alterLoginHref(this.href);"
-                onclick="this.href = ASUHeader.alterLoginHref(this.href);">Sign In</a>
-                </li>
-            </ul>-->
         
         <div id="asu_nav_menu">
             <h2 class="hidden">Menu</h2>
@@ -162,7 +150,6 @@
                                 <li><a target="_top" href="http://cronkite.asu.edu" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a></li>
                                 <li><a target="_top" href="http://www.law.asu.edu/" title="Sandra Day O' Connor College of Law website">Law</a></li>
                                 <li><a target="_top" href="http://nursingandhealth.asu.edu/" title="College of Nursing and Health Innovation website">Nursing and Health</a></li>
-                                <!-- li><a href="http://nursingandhealth.asu.edu/nutrition" title="School of Nutrition and Health Promotion website">Nutrition and Health Promotion</a></li -->
                                 <li><a target="_top" href="http://copp.asu.edu" title="College of Public Programs website">Public Programs</a></li>
                                 <li><a target="_top" href="http://schoolofsustainability.asu.edu" title="School of Sustainability website">Sustainability</a></li>
                                 <li><a target="_top" href="http://technology.poly.asu.edu/" title="College of Technology and Innovation website">Technology and Innovation</a></li>
@@ -238,8 +225,7 @@
     
   <div style="clear:both;"></div>
     <!-- END /asuthemes/4.0-rsp.1/headers/default.shtml -->
-    <!-- MyASU Tab Bar 
-    ======================================-->
+    <!-- MyASU Tab Bar -->
     <header class="navbar navbar-default" role="banner">
         <div class="navbar-header">
           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
@@ -291,7 +277,6 @@
               $( "a:contains('Service Center')" ).last().addClass( "arrow" );
           </script>
           
-          
           <p class="username pull-right">
               {!$User.FirstName} {!$User.LastName}
           </p>
@@ -305,7 +290,7 @@
     </div> 
     
     <!-- START CONTENT -->
-    <div id="asu_content_well"><!-- These elements (content, content_well and content_container) -->
+    <div id="asu_content_well">
     
     <center>
         <apex:outputPanel rendered="{!$CurrentPage.parameters.Confirm == 'newcase'}">
@@ -339,69 +324,82 @@
         </apex:outputPanel>
     </center>
        
-        <!-- INPUT CONTENT HERE -->
     <div class="container">
         <div class="row">
             <div class="col-md-7">
                 <div class="box firstbox">
-                        <div class="header">
-                            <h6><b>ASU Knowledge Base</b></h6>
-                        </div>
-                   <div class="content box-padding" id="search_content" >
-                       
-                <apex:form id="autoCompleteForm" styleClass="searchKB">
-                    <apex:pageBlock mode="maindetail">
-                        <p>Search for any issue or question to learn how ASU can help!</p><br />
-                        <div class="searchKB2">   
-                            <div class="form-horizontal">
-                                <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"/>
-                                <apex:commandButton value="Search" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
-                                <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
-                            </div>
-                             
-                            <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
-                        </div>
-                         
-                        <script>
-                            var articleTextBoxId = "{!$Component.articleTextBoxId}";
-                        
-                            window.onload=function()
-                            {
-                               document.getElementById(articleTextBoxId).value = "{!$CurrentPage.parameters.ArtType}";
-                            };
-                        </script>
-                    </apex:pageBlock> 
-                 </apex:form>
-                    <apex:form >
-                        <apex:outputPanel id="theSearchResults">
+                    <div class="header">
+                        <h6><b>ASU Knowledge Base</b></h6>
+                    </div>
+                    <div class="content box-padding" id="search_content" >
+                        <apex:form id="autoCompleteForm" styleClass="searchKB">
+                            <apex:pageBlock mode="maindetail">
+                                <p>Search for any issue or question to learn how ASU can help!</p><br />
+                                <div class="searchKB2">   
+                                    <div class="form-horizontal">
+                                        <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"/>
+                                        <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
+                                        <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
+                                    </div>
+                                     
+                                    <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
+                                </div>
+                                 
+                                <script>
+                                    var articleTextBoxId = "{!$Component.articleTextBoxId}";
+                                
+                                    window.onload=function()
+                                    {
+                                       document.getElementById(articleTextBoxId).value = "{!$CurrentPage.parameters.ArtType}";
+                                    };
+                                </script>
+                            </apex:pageBlock> 
+                        </apex:form>
+                        <br />
+                        <hr />
+                        <apex:form id="theSearchResults">
                             <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
-                                <hr />
-                                <h5><b>Top Results for:</b> '{!searchstring}'</h5>
+                                <h5><b>Search Results for:</b> '{!searchstring}'</h5>
                                 <div style="height:5px;"/>
                                 <knowledge:articleList articleVar="article" 
                                     pageNumber="{!currentPageNumber}"
                                     Keyword="{!searchstring}" 
                                     hasMoreVar="true" 
                                     pageSize="10"
-                                    sortBy="lastUpdated"
                                     rendered="{!searchstring != ''}">
-                                    &#8226;&nbsp;<apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink><br /><div style="height:5px;"/>
+                                    <table>
+                                        <tr>
+                                            <td style="vertical-align:top;">
+                                                &#8226;&nbsp;
+                                            </td>
+                                            <td>
+                                                <apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink><br />
+                                                <div style="height:6px;"/>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </knowledge:articleList>
                             </apex:pageBlock>
-                        </apex:outputPanel>
-                        <br />
-                        <hr /> 
-                        <apex:pageBlock mode="maindetail">
-                            <apex:panelGrid width="100%">
+
+                            <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
                                 <h5><b>Top 5 Help Articles</b></h5>
                                 <div style="height:5px;"/>
                                 <knowledge:articleList articleVar="article" 
                                     sortBy="mostViewed">
-                                    &#8226;&nbsp;<apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink><br /><div style="height:5px;"/>
+                                    <table>
+                                        <tr>
+                                            <td style="vertical-align:top;">
+                                                &#8226;&nbsp;
+                                            </td>
+                                            <td>
+                                                <apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink><br />
+                                                <div style="height:6px;"/>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </knowledge:articleList>
-                            </apex:panelGrid>
-                        </apex:pageBlock>
-                    </apex:form>                    
+                            </apex:pageBlock>
+                        </apex:form>                    
                     </div>
                 </div>
             </div><!-- end col-md-7 -->
@@ -415,8 +413,6 @@
                         <div class="content">
                         <p>Please contact us if you need immediate assistance. We're available 24/7 to answer your questions.</p>
                         
-                        
-                        
                         <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>     
                         <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
                             
@@ -427,12 +423,10 @@
                                 <div id="pinFormDiv" style="margin-left:30px;">
                                     <h5>ASU Finances PIN</h5>&nbsp;
                                     
-                                    <!-- Button trigger modal -->
                                     <button type="button" class="qMarkMobile" data-toggle="modal" data-target="#finPinMobile" style="display:none">
                                         <img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png" width="14" height="14" alt="qmark" style="margin-bottom:3px;cursor:pointer;"/>
                                     </button>
                                     
-                                    <!-- Modal -->
                                     <div class="modal fade" id="finPinMobile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
@@ -491,7 +485,6 @@
                                 </script>
                                 
                                 <script>
-                                    //Show and hide our buttons and input boxes. 
                                     $( "[id$=viewPinBtn]" ).click(function() {
                                         $( "[id$=yourPinHidden]" ).hide();
                                         $( "[id$=viewPinBtn]" ).hide();
@@ -529,13 +522,11 @@
                                         $( "[id$=cancelPinInput]" ).hide();
                                     });
 
-                                    //populate the hidden field on page load
                                     $( document ).ready(function() {
                                         $( "[id$=yourPinHidden]" ).val( "••••••••••" );
                                         $( "[id$=newPinInput]" ).val( "" );
                                     });
                                 
-                                    //function to prevent anthing but numbers be entered into our reset pin box.
                                     function inputLimiter(e,allow) {
                                         var AllowableCharacters = '';
                             
@@ -621,7 +612,6 @@
                 </apex:outputPanel>
                 
                 <apex:outputPanel rendered="{!MyCasesBox}">
-                <!--<apex:outputPanel rendered="true">-->
                 <div class="box">
                 <div class="header">
                     <h6><b>My Cases</b></h6>
@@ -685,8 +675,8 @@
                         <script>
                             jQuery(document).ready(function($){
                                 $("td.truncate").each(function(){
-                                        if ($(this).text().length > 50) {
-                                            $(this).text($(this).text().substr(0, 47));
+                                        if ($(this).text().length > 99) {
+                                            $(this).text($(this).text().substr(0, 99));
                                             $(this).append('...');
                                         }
                                     });
@@ -730,7 +720,6 @@
                 <div id="block-asu-brand-asu-brand-footer" class="clearfix block block-asu-brand">   
                     <div class="content1"> 
                     <a href="http://thesundevils.com/"><img class="sparky" src="https://webapp4.asu.edu/myasu/images/Sparky.png" alt="The Sun Devils"/></a>
-                    <!-- START FOOTER /asuthemes/3.1/includes/footer.html -->   
                         <ul id="asu_footer" class="asu_black_footer">
                           <li><a href="https://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
                           <li><a href="https://www.asu.edu/accessibility/">Accessibility</a></li>
@@ -738,14 +727,12 @@
                           <li><a href="https://www.asu.edu/emergency/">Emergency</a></li>
                           <li class="no-border"><a href="https://www.asu.edu/contactasu/">Contact ASU</a></li>
                         </ul>
-                    <!-- END FOOTER -->
                     </div>
                 </div>
             </div>
         </div>
     </div><!-- End ASU Content -->
 
-  
     <!-- Autocomplete Code -->
     <script type="text/javascript">
         var PLACEHOLDER = ''; 
@@ -786,7 +773,6 @@
                 .appendTo( ul );
         };
             
-        // Add or remove placeholder values
         $('[id$=articleTextBoxId]').val(PLACEHOLDER);
         $('[id$=articleTextBoxId]').on("focus",  function(event){
             $tgt = $(event.target);

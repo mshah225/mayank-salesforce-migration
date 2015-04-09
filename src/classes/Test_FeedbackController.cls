@@ -1,12 +1,13 @@
 @isTest
-private class Test_FeedbackController {
-	
+private class Test_FeedbackController
+{	
 	private static Contact testContact;
 	private static Case testCase;
 	private static User testUser;
 	private static FeedbackController fc;
 
-	static void setUp() {
+	static void setUp() 
+	{
 		Profile p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
 
 		testContact = new Contact(
@@ -36,14 +37,16 @@ private class Test_FeedbackController {
 		fc = new FeedbackController();
 	}
 
-	@isTest static void testFeedbackCase() {
+	@isTest static void testFeedbackCase() 
+	{
 		setUp();
 		fc.c = testCase;
 		fc.comments = testCase.Description;
 		PageReference setPage = Page.feedback;
 		Test.setCurrentPage(setPage);
 		PageReference submitTest = new PageReference('/studentSC?Confirm=feedback');
-		System.runAs(testUser) {
+		System.runAs(testUser) 
+		{
 			System.assertEquals(fc.submit().getUrl(),submitTest.getUrl());
 		}
 	}

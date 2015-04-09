@@ -1,6 +1,6 @@
 @isTest
-private class Test_ServiceCenter {
-
+private class Test_ServiceCenter 
+{
     private static User testUser;
     private static User testUserAC;
     private static User testUserB;
@@ -17,7 +17,8 @@ private class Test_ServiceCenter {
     private static AKBController akb;
     private static ServiceCenter sc;
 
-    private static void getProfileAndTerms() {
+    private static void getProfileAndTerms() 
+    {
         p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
 
         Term__c termAC = new Term__c();
@@ -35,12 +36,15 @@ private class Test_ServiceCenter {
         insert termB;
     }
 
-    private static void setUp() {
+    private static void setUp() 
+    {
         getProfileAndTerms();
 
         testContact = new Contact();
         testContact.FirstName = 'Jonny';
         testContact.LastName = 'Test';
+        testContact.MailingPostalCode = '85282';
+        testContact.Email = 'test@nomail.com';
         testContact.Birthdate = Date.newInstance(1989, 8, 12);
         testContact.Self_Service_PIN__c = 57483638;
         testContact.PIN_lockout__c = true;
@@ -66,7 +70,8 @@ private class Test_ServiceCenter {
         Test.setCurrentPage(serviceCenter);
     }
 
-    private static void setUpOppNotEnrolled() {
+    private static void setUpOppNotEnrolled() 
+    {
         getProfileAndTerms();
 
         testContact = new Contact();
@@ -109,7 +114,8 @@ private class Test_ServiceCenter {
         Test.setCurrentPage(serviceCenter);
     }
 
-    private static void setUpACOpp() {
+    private static void setUpACOpp() 
+    {
         getProfileAndTerms();
 
         testContactAC = new Contact();
@@ -152,7 +158,8 @@ private class Test_ServiceCenter {
         Test.setCurrentPage(serviceCenter);
     }
 
-    private static void setUpBOpp() {
+    private static void setUpBOpp() 
+    {
         getProfileAndTerms();
 
         testContactB = new Contact();
@@ -195,10 +202,12 @@ private class Test_ServiceCenter {
         Test.setCurrentPage(serviceCenter);
     }
 
-    static testMethod void submitCaseTest() {
+    @isTest static void submitCaseTest() 
+    {
         setUp();
         Test.startTest();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
             sc = new ServiceCenter();
             Case c = sc.c;
             c.ContactId = testUser.Id;
@@ -212,10 +221,12 @@ private class Test_ServiceCenter {
         Test.stopTest();
     }
 
-    static testMethod void testCases() {
+    @isTest static void testCases() 
+    {
         setUp();
         Test.startTest();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
             sc = new ServiceCenter();
             Case c = sc.c;
             c.Subject = 'Test case';
@@ -230,9 +241,11 @@ private class Test_ServiceCenter {
         Test.stopTest();
     }
 
-    static testMethod void testCasesContact() {
+    @isTest static void testCasesContact() 
+    {
         setUp();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
             sc = new ServiceCenter();
             Case c = sc.c;
             c.Subject = 'Test case';
@@ -247,10 +260,12 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void getBoxes() {
+    @isTest static void getBoxes() 
+    {
         setUp();
         Test.startTest();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
             sc = new ServiceCenter();
             sc.getNormalPhone();
             sc.getRoverPhone();
@@ -261,12 +276,15 @@ private class Test_ServiceCenter {
         Test.stopTest();
     }
 
-    static testMethod void testPin() {
+    @isTest static void testPin() 
+    {
         setUp();
         System.runAs(testUser) {
             sc = new ServiceCenter();
             sc.contId = testUser.ContactId;
-            sc.cont = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c FROM Contact WHERE Id = :sc.contId];
+            sc.cont = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c 
+                       FROM Contact 
+                       WHERE Id = :sc.contId];
             sc.getContact();
             sc.getMyPin();
             sc.newPin = 111111;
@@ -278,9 +296,11 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void getNotEnrolledOppBoxes() {
+    @isTest static void getNotEnrolledOppBoxes() 
+    {
         setUpOppNotEnrolled();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
             sc = new ServiceCenter();
             sc.contId = testUser.ContactId;
             sc.cont.add(testContact);
@@ -295,9 +315,11 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void getACOppBoxes() {
+    @isTest static void getACOppBoxes() 
+    {
         setUpACOpp();
-        System.runAs(testUserAC) {
+        System.runAs(testUserAC) 
+        {
             sc = new ServiceCenter();
             sc.contId = testUserAC.ContactId;
             sc.cont.add(testContactAC);
@@ -312,9 +334,11 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void getBOppBoxes() {
+    @isTest static void getBOppBoxes() 
+    {
         setUpBOpp();
-        System.runAs(testUserB) {
+        System.runAs(testUserB) 
+        {
             sc = new ServiceCenter();
             sc.contId = testUserB.ContactId;
             sc.cont.add(testContactB);
@@ -329,7 +353,8 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void getNoOppBoxes() {
+    @isTest static void getNoOppBoxes() 
+    {
         setUpACOpp();
         System.runAs(testUserAC) {
             sc = new ServiceCenter();
@@ -345,10 +370,12 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void testCaseDetails() {
+    @isTest static void testCaseDetails() 
+    {
         setUp();
         Test.startTest();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
             sc = new ServiceCenter();
             Case c = sc.c;
             c.Subject = 'Test case';
@@ -361,11 +388,13 @@ private class Test_ServiceCenter {
         Test.stopTest();
     }
 
-    static testMethod void viewCaseTest() {
+    @isTest static void viewCaseTest() 
+    {
         setUp();
         PageReference viewcase = Page.viewcase;
         Test.setCurrentPage(viewcase);
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
             sc = new ServiceCenter();
             Case c = sc.c;
             c.Subject = 'Test case';

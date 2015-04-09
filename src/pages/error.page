@@ -5,9 +5,7 @@
     <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width; initial-scale=1.0"/>
-
     <c:asu_responsive_header_section />
-    
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
     <c:myasustyles />  
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
@@ -24,7 +22,6 @@
     <script>
         if (window.top !== window.self) top.location.replace(self.location.href);
     </script>
-    <!-- START /asuthemes/4.0-rsp.1/headers/default.shtml -->
     <div id="asu_hdr" class="asu_hdr_gold">
         <div id="asu_mobile_hdr">
             <div id="asu_logo">
@@ -77,7 +74,6 @@
                                         <li><a target="_top" href="http://cronkite.asu.edu" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a></li>
                                         <li><a target="_top" href="http://www.law.asu.edu/" title="Sandra Day O' Connor College of Law website">Law</a></li>
                                         <li><a target="_top" href="http://nursingandhealth.asu.edu/" title="College of Nursing and Health Innovation website">Nursing and Health</a></li>
-                                        <!-- li><a href="http://nursingandhealth.asu.edu/nutrition" title="School of Nutrition and Health Promotion website">Nutrition and Health Promotion</a></li -->
                                         <li><a target="_top" href="http://copp.asu.edu" title="College of Public Programs website">Public Programs</a></li>
                                         <li><a target="_top" href="http://schoolofsustainability.asu.edu" title="School of Sustainability website">Sustainability</a></li>
                                         <li><a target="_top" href="http://technology.poly.asu.edu/" title="College of Technology and Innovation website">Technology and Innovation</a></li>
@@ -100,7 +96,6 @@
                                     </ul>
                                 </li>
                                 <li><a target="_top" href="http://www.asu.edu/contactasu/" title="Directory, Index and other info">Directory</a></li>  
-                           
                         </ul>
                         <img class="asu_touch" src="//www.asu.edu/asuthemes/4.0-rsp.1/images/ipad_close.gif" alt="" />
                     </div><!-- /#asu_universal_nav -->
@@ -151,10 +146,8 @@
         }
         //--><!]]>
     </script>
-    <!-- END /asuthemes/4.0-rsp.1/headers/default.shtml -->
 
-    <!-- MyASU Tab Bar 
-    ======================================-->
+    <!-- MyASU Tab Bar -->
     <header class="navbar navbar-default" role="banner">
         <div class="navbar-header">
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
@@ -166,7 +159,7 @@
          
             <a href="https://my.asu.edu" class="navbar-brand myasu"><b>My</b> ASU &nbsp;</a>
         </div>
-        <apex:outputPanel>
+        <apex:outputPanel >
             <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
                 <ul class="nav navbar-nav">
                     <li>
@@ -202,7 +195,6 @@
         <div class="region region-main-bottom clearfix">
             <div id="block-asu-brand-asu-brand-footer" class="clearfix block block-asu-brand">       
                 <div class="content1"> 
-                <!-- START FOOTER /asuthemes/3.1/includes/footer.html -->   
                     <ul id="asu_footer" class="asu_black_footer">
                       <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
                       <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>
@@ -210,7 +202,6 @@
                       <li><a href="http://www.asu.edu/emergency/">Emergency</a></li>
                       <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
                     </ul>
-                <!-- END FOOTER -->
                 </div>
             </div>
         </div>

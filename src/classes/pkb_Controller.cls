@@ -459,12 +459,29 @@ system.debug('\n\n[DEBUG-PKB CONTROLLER] buildFeaturedKads \n===='+anums+'=====\
       Article_ID__c = theKad.id,
       Article_Number__c = theKad.articleNumber,
       Article_Title__c = theKad.title,
+      Type__c = theKad.articleTypeLabel,
       Feedback_Source__c = fs,
       Comments__c = feedbackComments,
       Session_ID__c = sessionId,
       Deflection__c = isDeferred,
       Keyword_Searched__c = urlSearchQuery
     );
+    String authorName = [SELECT CreatedBy.Name 
+                         FROM KnowledgeArticle 
+                         WHERE Id = :theKad.id].CreatedBy.Name;
+    afd.Article_Author__c = authorName;
+    if (theKad.articleTypeName.equals('FAQ__kav')) 
+    {
+        afd.Functional_Group__c = theKad.faq.Functional_Group__c;
+    } 
+    else if (theKad.articleTypeName.equals('Informational__kav')) 
+    {
+        afd.Functional_Group__c = theKad.info.Functional_Group__c;
+    } 
+    else if (theKad.articleTypeName.equals('How_To__kav')) 
+    {
+        afd.Functional_Group__c = theKad.howto.Functional_Group__c;
+    }
     insert afd;
   }
 
@@ -904,7 +921,11 @@ system.debug('\n\n===== sessionId :'+sessionId+'  contactId :'+contactId);
     public DateTime firstPublishedDate   { get; set; }
     public DateTime lastPublishedDate    { get; set; }
     public String articleNumber          { get; set; }
-    public KnowledgeArticleVersion theAV { get; set; }  
+    public String articleAuthor          { get; set; }
+    public KnowledgeArticleVersion theAV { get; set; }
+    public FAQ__kav faq                  { get; set; }
+    public How_To__kav howTo             { get; set; }
+    public Informational__kav info       { get; set; }  
 
     // ctor for empty KAD
     public KnowledgeArticleData() { }
@@ -937,6 +958,28 @@ system.debug('\n\n===== sessionId :'+sessionId+'  contactId :'+contactId);
       firstPublishedDate = this.theAV.FirstPublishedDate;
       lastPublishedDate = this.theAV.LastPublishedDate;     
       articleNumber = this.theAV.ArticleNumber;
+      
+      if (articleTypeName.equals('FAQ__kav')) 
+      {
+          faq = [SELECT Functional_Group__c 
+                 FROM FAQ__kav 
+                 WHERE PublishStatus = 'Online' 
+                 AND KnowledgeArticleId = :id];
+      } 
+      else if (articleTypeName.equals('Informational__kav')) 
+      {
+          info = [SELECT Functional_Group__c 
+                  FROM Informational__kav 
+                  WHERE PublishStatus = 'Online' 
+                  AND KnowledgeArticleId = :id];
+      } 
+      else if (articleTypeName.equals('How_To__kav')) 
+      {
+          howTo = [SELECT Functional_Group__c
+                   FROM How_To__kav 
+                   WHERE PublishStatus = 'Online' 
+                   AND KnowledgeArticleId = :id];
+      }
     }
   }
 

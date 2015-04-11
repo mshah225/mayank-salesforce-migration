@@ -6,6 +6,7 @@ public with sharing class CRCampaignWidgetController
 	public CampaignMember inActivateCamMem { get;set; }
 	public CampaignMember activateParentCamMem { get;set; }
 	public CampaignMember activateChildCamMem { get;set; }
+	public Boolean shouldRedirect { get;set; }
 	public Id cohortId;
 	public Id selectedParentCampaign { get;set; }
 	public Id selectedChildCampaign { get;set; }
@@ -147,26 +148,36 @@ public with sharing class CRCampaignWidgetController
 		save();
 	} 
 
-	public PageReference inActivateCM() 
+	public void inActivateCM() 
 	{
-		inActivateCamMem = [SELECT Id 
+		List<CampaignMember> childKillList = new List<CampaignMember>();
+		inActivateCamMem = [SELECT Id, Campaign.ParentId, CampaignId 
 							FROM CampaignMember
 							WHERE Id = :inActivateCMId];
 		inActivateCamMem.Status = 'Inactive';
+		if (inActivateCamMem.Campaign.ParentId == null)
+		{
+			childKillList = [SELECT Id, Status
+						  	 FROM CampaignMember
+						  	 WHERE Campaign.ParentId = :inActivateCamMem.CampaignId];
+			for (CampaignMember kill: childKillList)
+			{
+				kill.Status = 'Inactive';
+			}
+		}
 		try
 		{
 			update inActivateCamMem;
+			update childKillList;
 		}
 		catch (Exception e)
 		{
 
 		}
-		PageReference refresh = ApexPages.currentPage();
-		refresh.setRedirect(true);
-		return refresh;
+		shouldRedirect = true;
 	}
 
-	public PageReference save() 
+	public void save() 
 	{
 		try
 		{
@@ -218,8 +229,6 @@ public with sharing class CRCampaignWidgetController
 		{
 
 		}
-		PageReference save = ApexPages.currentPage();
-		save.setRedirect(true);
-		return save;
+		shouldRedirect = true;
 	}
 }

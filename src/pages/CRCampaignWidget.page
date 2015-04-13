@@ -199,6 +199,7 @@
 		<apex:tab id="editAffiliation" name="editAffiliation" label="Remove Affiliations" style="background-color:#f0f0f0;">
 			<apex:form id="inActivateCMForm" style="font-size:9pt;overflow:auto;height:240px;max-width:1100px;">
 				<apex:pageBlock title="Select a Cohort Campaign to Remove">
+				<apex:pageMessages />
 					<apex:outputPanel style="overflow:auto;">
 						<apex:actionStatus id="removeStatus">
 		                    <apex:facet name="start" >
@@ -209,7 +210,7 @@
 							<apex:column>
 								<apex:outputPanel rendered="{!IF(ec.Campaign.ParentId == null,true,false)}">
 									<apex:actionRegion>
-										<apex:commandLink styleClass="linkBtn" value="Remove" action="{!inActivateCM}" reRender="redirectPanel" status="removeStatus">
+										<apex:commandLink styleClass="linkBtn" value="Remove" action="{!inActivateCM}" reRender="redirectPanel,inActivateCMForm" status="removeStatus">
 											<apex:param name="inActivateParentButton" value="{!ec.Id}" assignTo="{!inActivateCMId}"/>
 										</apex:commandLink>
 									</apex:actionRegion>
@@ -219,7 +220,7 @@
 								<apex:outputPanel rendered="{!IF(ec.Campaign.ParentId != null,true,false)}">
 									<span style="margin-left:20px;"/>
 									<apex:actionRegion>
-										<apex:commandLink styleClass="linkBtn" value="Remove" action="{!inActivateCM}" reRender="redirectPanel" status="removeStatus">
+										<apex:commandLink styleClass="linkBtn" value="Remove" action="{!inActivateCM}" reRender="redirectPanel,inActivateCMForm" status="removeStatus">
 											<apex:param name="inActivateChildButton" value="{!ec.Id}" assignTo="{!inActivateCMId}"/>
 										</apex:commandLink>
 									</apex:actionRegion>

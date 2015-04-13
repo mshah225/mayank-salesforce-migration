@@ -151,30 +151,40 @@ public with sharing class CRCampaignWidgetController
 	public void inActivateCM() 
 	{
 		List<CampaignMember> childKillList = new List<CampaignMember>();
-		inActivateCamMem = [SELECT Id, Campaign.ParentId, CampaignId 
+		inActivateCamMem = [SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name 
 							FROM CampaignMember
 							WHERE Id = :inActivateCMId];
-		inActivateCamMem.Status = 'Inactive';
-		if (inActivateCamMem.Campaign.ParentId == null)
+		User currentUser = [SELECT Id, UserRole.Name 
+							FROM User 
+							WHERE Id = :UserInfo.getUserId()];
+		if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name)
 		{
-			childKillList = [SELECT Id, Status
-						  	 FROM CampaignMember
-						  	 WHERE Campaign.ParentId = :inActivateCamMem.CampaignId];
-			for (CampaignMember kill: childKillList)
+			
+			inActivateCamMem.Status = 'Inactive';
+			if (inActivateCamMem.Campaign.ParentId == null)
 			{
-				kill.Status = 'Inactive';
+				childKillList = [SELECT Id, Status
+							  	 FROM CampaignMember
+							  	 WHERE Campaign.ParentId = :inActivateCamMem.CampaignId];
+				for (CampaignMember kill: childKillList)
+				{
+					kill.Status = 'Inactive';
+				}
 			}
-		}
-		try
-		{
-			update inActivateCamMem;
-			update childKillList;
-		}
-		catch (Exception e)
-		{
+			try
+			{
+				update inActivateCamMem;
+				update childKillList;
+			}
+			catch (Exception e)
+			{
 
+			}
+			shouldRedirect = true;
 		}
-		shouldRedirect = true;
+		else{
+			ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You do not have access to remove this Affiliation, only a member of the Department that created it can.'));
+		}
 	}
 
 	public void save() 

@@ -7,21 +7,27 @@ private class Test_CorporateRelationsController
 	private static Contact testContact;
 	private static Relationship__c testR;
 	private static CampaignMember testCM;
+	private static Id cohortId;
 	private static NewCorporateRelationsContactController ncr;
 
 	private static void setupData() 
-	{
+	{	
+		cohortId = [SELECT Id FROM RecordType WHERE Name = 'Cohort'].Id;
+
 		testCampaign = new Campaign(
-			Name = 'Test Campaign');
+			Name = 'Test Campaign',
+			RecordTypeId = cohortId);
 		insert testCampaign;
 
 		testChildCampaign = new Campaign(
 			Name = 'Test Child Campaign',
-			ParentId = testCampaign.Id);
+			ParentId = testCampaign.Id,
+			RecordTypeId = cohortId);
 		insert testChildCampaign;
 
 		testAccount = new Account(
-			Name = 'Test Account');
+			Name = 'Test Account',
+			Website = 'www.example.com');
 		insert testAccount;
 
 		testContact = new Contact(
@@ -60,6 +66,30 @@ private class Test_CorporateRelationsController
 		ncr.populateChildCampaigns();
 		PageReference confirmSave = new PageReference('/' + testContact.Id);
 		System.assertEquals(confirmSave.getUrl(),ncr.save().getUrl());
+	}
+
+	@isTest static void testInsertAccount()
+	{
+		setupData();
+		PageReference crPage = Page.NewCorporateRelationsContact;
+		Test.setCurrentPage(crPage);
+		ncr.account = testAccount;
+		ncr.cancelAccount();
+		ncr.page3();
+		ncr.insertAccount();
+		List<Account> accountList = [SELECT Id FROM Account];
+		System.assertNotEquals(null, accountList);
+	}
+
+	@isTest static void testInsertDuplicateAccount()
+	{
+		setupData();
+		PageReference crPage = Page.NewCorporateRelationsContact;
+		Test.setCurrentPage(crPage);
+		ncr.account = testAccount;
+		ncr.insertAccount();
+		ncr.account = testAccount;
+		ncr.insertAccount();
 	}
 	
 	@isTest static void testSaveAndNew() 

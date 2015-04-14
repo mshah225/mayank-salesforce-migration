@@ -1,6 +1,9 @@
 <apex:page showHeader="true" 
 	sidebar="true"
 	controller="NewCorporateRelationsContactController">
+	<apex:form>
+		<apex:actionFunction name="checkClick" action="{!click}" reRender="accountHelpPanel"/>
+	</apex:form>
 
 	<apex:form id="CRForm">
 		<apex:pageBlock id="page1" title="New Corporate Relations Contact" rendered="{!page == 1}">
@@ -61,24 +64,37 @@
 	                    </apex:actionStatus>
 					</apex:actionRegion>
 				</apex:pageBlockSectionItem>	
-	            
-	            <apex:inputField value="{!relationship.Account__c}" required="true"/>
+		    	<apex:pageBlockSectionItem>    
+		    		<apex:outputLabel for="accountField" value="Account"/>
+			        <apex:inputField id="accountField" value="{!relationship.Account__c}" required="true"/>
+		    	</apex:pageBlockSectionItem>		    	
 				<apex:selectList id="childCampaignList" value="{!selectedChildId}" label="Type of Engagement" required="true" multiselect="false" size="1" style="margin-left:4px;">
 					<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
 					<apex:selectOptions value="{!childCampaignOptions}"/>
 				</apex:selectList>
-				<apex:pageBlockSectionItem>
-					<apex:outputLabel value="" for="accountHelp"/>
-					<apex:outputText id="accountHelp">
-						<i>Can't find the correct Account? You can&nbsp;<apex:commandButton value="Create" action="{!page3}" immediate="true"/>&nbsp;a new one.</i>
-					</apex:outputText>
-				</apex:pageBlockSectionItem>
+				<apex:outputPanel id="accountHelpPanel">	
+					<apex:outputPanel rendered="{!clickedAccount}">
+						<apex:pageBlockSectionItem>
+							<apex:outputLabel value="" for="accountHelp"/>
+							<apex:outputText id="accountHelp">
+								<i style="margin-left:220px;">Can't find the correct Account? You can&nbsp;<apex:commandButton value="Create" action="{!page3}" immediate="true"/>&nbsp;a new one.</i>
+							</apex:outputText>
+						</apex:pageBlockSectionItem>
+					</apex:outputPanel>
+				</apex:outputPanel>
 				<br />
 				<apex:inputField value="{!relationship.Relationship_Type__c}" required="true"/>
 				<br />
 				<apex:inputField value="{!relationship.Relationship_Start_Date__c}"/>
 				<br />
 			</apex:pageBlockSection>
+			<script>
+				var lookup = document.getElementsByClassName("lookupIcon")[0];
+
+				lookup.onclick = function() {
+				    checkClick()
+				};
+			</script>
 		</apex:pageBlock>
 
 		<apex:pageBlock id="page3" title="Create a new Account" rendered="{!page == 3}">

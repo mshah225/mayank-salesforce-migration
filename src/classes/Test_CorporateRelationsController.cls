@@ -76,20 +76,10 @@ private class Test_CorporateRelationsController
 		ncr.account = testAccount;
 		ncr.cancelAccount();
 		ncr.page3();
+		ncr.click();
 		ncr.insertAccount();
 		List<Account> accountList = [SELECT Id FROM Account];
 		System.assertNotEquals(null, accountList);
-	}
-
-	@isTest static void testInsertDuplicateAccount()
-	{
-		setupData();
-		PageReference crPage = Page.NewCorporateRelationsContact;
-		Test.setCurrentPage(crPage);
-		ncr.account = testAccount;
-		ncr.insertAccount();
-		ncr.account = testAccount;
-		ncr.insertAccount();
 	}
 	
 	@isTest static void testSaveAndNew() 

@@ -4,8 +4,8 @@ public with sharing class NewCorporateRelationsContactController
 	public Contact contact { get;set; }
 	public RecordType cohortRecordType { get;set; }
 	public Relationship__c relationship { get;set; }
+	public Boolean clickedAccount { get;set; }
 	public Integer page { get;set; }
-	public List<Account> allAccounts;
 	public List<Relationship__c> relationshipList { get;set; }
 	public List<CampaignMember> campaignMemberList { get;set; }
 	public List<SelectOption> campaignOptions;
@@ -13,7 +13,6 @@ public with sharing class NewCorporateRelationsContactController
 	public List<Campaign> cohortCampaigns;
 	public List<Campaign> childCohortCampaigns;
 	public Set<String> currentSet;
-	public Set<String> accountSet;
 	public String selectedParentId { get;set; }
 	public String selectedChildId { get;set; }
 
@@ -30,9 +29,6 @@ public with sharing class NewCorporateRelationsContactController
 		cohortRecordType = [SELECT Id 
 							FROM RecordType 
 							WHERE Name = 'Cohort'];
-		allAccounts = [SELECT Name
-					   FROM Account];
-		accountSet = new Set<String>();
 	}
 
 	public List<SelectOption> getCampaignOptions() 
@@ -169,29 +165,18 @@ public with sharing class NewCorporateRelationsContactController
 		return ApexPages.currentPage();
 	}
 
+	public void click() 
+	{
+		clickedAccount = true;
+	}
+
 	public PageReference insertAccount()
 	{
-		for (Account a: allAccounts)
-		{
-			if (a.Name != null)
-			{
-				accountSet.add(a.Name);
-			}
-
-		}
 		try
 		{
-			if (!accountSet.contains(account.Name))
-			{
-				insert account;
-				page = 2;
-				return ApexPages.currentPage();
-			}
-			else
-			{
-				ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Account already exists. You can press the \'Back\' button to return to the previous page and search for the Account you\'re looking for.'));
-				return null;
-			}
+			insert account;
+			page = 2;
+			return ApexPages.currentPage();
 		}
 		catch (Exception e)
 		{

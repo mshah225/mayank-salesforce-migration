@@ -135,8 +135,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
         }
         
-        List<string> toAddressList = new List<string>();
-        List<string> ccAddressList = new List<string>();
+        List<String> toAddressList = new List<String>();
+        List<String> ccAddressList = new List<String>();
 
         if (email.ToAddresses != null)
         {
@@ -483,14 +483,17 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
         }
 
-        if (attachmentSize > 25000000){ 
+        if (attachmentSize > 25000000)
+	{ 
             bAttachmentError = true;
         }
 
-        if (bAttachmentError) {
+        if (bAttachmentError) 
+	{
             String attachmentFailureTemplateId = getConfigurationSetting('Rejected Attachment Email Template ID');
 
-            if (attachmentFailureTemplateId != null && attachmentFailureTemplateId != ''){
+            if (attachmentFailureTemplateId != null && attachmentFailureTemplateId != '')
+	    {
                 sendAutoReply(theCase, theContact, attachmentFailureTemplateId);
             }
         }
@@ -577,7 +580,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         theEmail.FromAddress = email.fromAddress;
 
         /* **** CC */
-        if (email.ccAddresses != null) {
+        if (email.ccAddresses != null) 
+	{
             value = '';
             Boolean seenOne= false;
             

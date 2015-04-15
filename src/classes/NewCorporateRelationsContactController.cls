@@ -147,6 +147,24 @@ public with sharing class NewCorporateRelationsContactController
 		return ApexPages.currentPage();
 	}
 
+	public PageReference page4()
+	{
+		page = 4;
+		return ApexPages.currentPage();
+	}
+
+	public PageReference page5()
+	{
+		page = 5;
+		return ApexPages.currentPage();
+	}
+
+	public PageReference page6()
+	{
+		page = 6;
+		return ApexPages.currentPage();
+	}
+
 	public void addPage() 
 	{
 		addRelationship();
@@ -159,15 +177,42 @@ public with sharing class NewCorporateRelationsContactController
 		childCampaignOptions = null;
 	}
 
-	public PageReference cancelAccount()
+	public void addRelationshipPage() 
 	{
-		page = 2;
-		return ApexPages.currentPage();
+		addRelationship();
+		addParentCampaignMember();
+		addCampaignMember();
+		relationship = null;
+		relationship = new Relationship__c();
+		page = 4;
+	}
+
+	public void addCampaignPage()
+	{
+		addRelationship();
+		addParentCampaignMember();
+		addCampaignMember();
+		relationship = null;
+		relationship = new Relationship__c();
+		selectedParentId = null;
+		selectedChildId = null;
+		childCampaignOptions = null;
+		page = 5;
 	}
 
 	public void click() 
 	{
 		clickedAccount = true;
+	}
+
+	public void cancelAccount()
+	{
+		page2();
+	}
+
+	public void backToRelationship()
+	{
+		page4();
 	}
 
 	public PageReference insertAccount()
@@ -183,6 +228,25 @@ public with sharing class NewCorporateRelationsContactController
 
 		}
 		return null;
+	}
+
+	public PageReference insertRelationship()
+	{
+		addRelationship();
+		saveToDatabase();
+		PageReference submit = new PageReference('/' + contact.Id);
+		submit.setRedirect(true);
+		return submit;
+	}
+
+	public PageReference insertCampaignMember()
+	{
+		addParentCampaignMember();
+		addCampaignMember();
+		saveToDatabase();
+		PageReference submit = new PageReference('/' + contact.Id);
+		submit.setRedirect(true);
+		return submit;
 	}
 
 	public PageReference save() 

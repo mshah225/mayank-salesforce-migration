@@ -40,15 +40,7 @@ private class Test_ServiceCenter
     {
         getProfileAndTerms();
 
-        testContact = new Contact();
-        testContact.FirstName = 'Jonny';
-        testContact.LastName = 'Test';
-        testContact.MailingPostalCode = '85282';
-        testContact.Email = 'test@nomail.com';
-        testContact.Birthdate = Date.newInstance(1989, 8, 12);
-        testContact.Self_Service_PIN__c = 57483638;
-        testContact.PIN_lockout__c = true;
-        testContact.ASURite_ID__c = 'jontest';
+        testContact = ContactService.createTestContact();
         insert testContact;
 
         testUser = new User();
@@ -56,7 +48,7 @@ private class Test_ServiceCenter
         testUser.LastName = 'Test';
         testUser.Username = 'username@test.com';
         testUser.Email = 'test@nomail.com';
-        testUser.Alias = 'jontest';
+        testUser.Alias = testContact.ASURite_ID__c;
         testUser.CommunityNickname = 'jontestComm';
         testUser.TimeZoneSidKey = 'America/Phoenix';
         testUser.LocaleSidKey = 'en_US';
@@ -74,11 +66,7 @@ private class Test_ServiceCenter
     {
         getProfileAndTerms();
 
-        testContact = new Contact();
-        testContact.FirstName = 'Jonny';
-        testContact.LastName = 'TestNotEnrolled';
-        testContact.ASURite_ID__c = 'jon1';
-        testContact.Affiliation_Student__c = 'Current';
+        testContact = ContactService.createTestContact();
         insert testContact;
 
         testAccount = new Account();
@@ -100,7 +88,7 @@ private class Test_ServiceCenter
         testUser.LastName = 'Test';
         testUser.Username = 'usernameOpp@test.com';
         testUser.Email = 'test@nomail.com';
-        testUser.Alias = 'jon1';
+        testUser.Alias = testContact.ASURite_ID__c;
         testUser.CommunityNickname = 'jontest1';
         testUser.TimeZoneSidKey = 'America/Phoenix';
         testUser.LocaleSidKey = 'en_US';
@@ -118,10 +106,7 @@ private class Test_ServiceCenter
     {
         getProfileAndTerms();
 
-        testContactAC = new Contact();
-        testContactAC.FirstName = 'Jonny';
-        testContactAC.LastName = 'TestAC';
-        testContactAC.ASURite_ID__c = 'jon1';
+        testContactAC = ContactService.createTestContact();
         insert testContactAC;
 
         testAccountAC = new Account();
@@ -144,7 +129,7 @@ private class Test_ServiceCenter
         testUserAC.LastName = 'Test';
         testUserAC.Username = 'usernameACOpp@test.com';
         testUserAC.Email = 'test@nomail.com';
-        testUserAC.Alias = 'jon1';
+        testUserAC.Alias = testContactAC.ASURite_Id__c;
         testUserAC.CommunityNickname = 'jontest1';
         testUserAC.TimeZoneSidKey = 'America/Phoenix';
         testUserAC.LocaleSidKey = 'en_US';
@@ -162,10 +147,7 @@ private class Test_ServiceCenter
     {
         getProfileAndTerms();
 
-        testContactB = new Contact();
-        testContactB.FirstName = 'Jonny';
-        testContactB.LastName = 'TestB';
-        testContactB.ASURite_ID__c = 'jon1';
+        testContactB = ContactService.createTestContact();
         insert testContactB;
 
         testAccountB = new Account();
@@ -188,7 +170,7 @@ private class Test_ServiceCenter
         testUserB.LastName = 'Test';
         testUserB.Username = 'usernameBOpp@test.com';
         testUserB.Email = 'test@nomail.com';
-        testUserB.Alias = 'jon1';
+        testUserB.Alias = testContactB.ASURite_ID__c;
         testUserB.CommunityNickname = 'jontest1';
         testUserB.TimeZoneSidKey = 'America/Phoenix';
         testUserB.LocaleSidKey = 'en_US';

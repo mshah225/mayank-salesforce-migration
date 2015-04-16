@@ -60,13 +60,7 @@ public class Test_AKBController
 
         Profile p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
 
-        Contact testContact = new Contact();
-        testContact.FirstName = 'Jonny';
-        testContact.LastName = 'Test';
-        testContact.Birthdate = Date.newInstance(1989, 8, 12);
-        testContact.Self_Service_PIN__c = 57483638;
-        testContact.PIN_lockout__c = true;
-        testContact.ASURite_ID__c = 'jontest';
+        Contact testContact = ContactService.createTestContact();
         insert testContact;
 
         User testUser = new User();
@@ -74,7 +68,7 @@ public class Test_AKBController
         testUser.LastName = 'Test';
         testUser.Username = 'username@test.com';
         testUser.Email = 'test@nomail.com';
-        testUser.Alias = 'jontest';
+        testUser.Alias = testContact.ASURite_ID__c;
         testUser.CommunityNickname = 'jontestComm';
         testUser.TimeZoneSidKey = 'America/Phoenix';
         testUser.LocaleSidKey = 'en_US';

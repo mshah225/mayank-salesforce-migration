@@ -76,10 +76,40 @@ private class Test_CorporateRelationsController
 		ncr.account = testAccount;
 		ncr.cancelAccount();
 		ncr.page3();
+		ncr.page6();
+		ncr.backToRelationship();
 		ncr.click();
 		ncr.insertAccount();
 		List<Account> accountList = [SELECT Id FROM Account];
 		System.assertNotEquals(null, accountList);
+	}
+
+	@isTest static void testInsertRelationship()
+	{
+		setupData();
+		PageReference crPage = Page.NewCorporateRelationsContact;
+		Test.setCurrentPage(crPage);
+		ncr.relationship = testR;
+		ncr.addRelationshipPage();
+		ncr.insertRelationship();
+		List<Relationship__c> relList = [SELECT Id FROM Relationship__c];
+		System.assertNotEquals(null, relList);
+	}
+
+	@isTest static void testInsertCampaignMember()
+	{
+		setupData();
+		PageReference crPage = Page.NewCorporateRelationsContact;
+		Test.setCurrentPage(crPage);
+		ncr.page5();
+		ncr.addCampaignPage();
+		ncr.selectedParentId = testCampaign.Id;
+		ncr.selectedChildId = testChildCampaign.Id;
+		ncr.getCampaignOptions();
+		ncr.populateChildCampaigns();
+		ncr.insertCampaignMember();
+		List<CampaignMember> camMemList = [SELECT Id FROM CampaignMember];
+		System.assertNotEquals(null, camMemList);
 	}
 	
 	@isTest static void testSaveAndNew() 
@@ -116,5 +146,4 @@ private class Test_CorporateRelationsController
 		PageReference confirmSave = new PageReference('/' + testContact.Id);
 		System.assertEquals(confirmSave.getUrl(),ncr.save().getUrl());
 	}
-	
 }

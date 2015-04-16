@@ -70,7 +70,7 @@
 		    		<apex:outputLabel for="accountField" value="Account"/>
 			        <apex:inputField id="accountField" value="{!relationship.Account__c}" required="true"/>
 		    	</apex:pageBlockSectionItem>		    	
-				<apex:selectList id="childCampaignList" value="{!selectedChildId}" label="Type of Engagement" required="true" multiselect="false" size="1" style="margin-left:4px;">
+				<apex:selectList id="childCampaignList" value="{!selectedChildId}" label="Type of Engagement" multiselect="false" size="1" style="margin-left:4px;">
 					<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
 					<apex:selectOptions value="{!childCampaignOptions}"/>
 				</apex:selectList>
@@ -168,7 +168,7 @@
 	                    </apex:actionStatus>
 					</apex:actionRegion>
 				</apex:pageBlockSectionItem>
-				<apex:selectList id="childCampaignList2" value="{!selectedChildId}" label="Type of Engagement" required="true" multiselect="false" size="1" style="margin-left:4px;">
+				<apex:selectList id="childCampaignList2" value="{!selectedChildId}" label="Type of Engagement" multiselect="false" size="1" style="margin-left:4px;">
 					<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
 					<apex:selectOptions value="{!childCampaignOptions}"/>
 				</apex:selectList>

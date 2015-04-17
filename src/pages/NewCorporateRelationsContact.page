@@ -25,7 +25,6 @@
 					<apex:inputField value="{!contact.Birthdate}"/>
 					<apex:inputField value="{!contact.Marital_Status__c}"/>
 				</apex:pageBlockSection>
-
 				<apex:pageBlockSection title="Address Information">
 					<apex:inputField value="{!contact.MailingCountryCode}" label="Mailing Country"/>
 					<apex:inputField value="{!contact.MailingStreet}"/>
@@ -43,6 +42,7 @@
 				<apex:commandButton value="Add Relationship & Campaign" action="{!addPage}" status="addPageStatus"/>
 				<apex:commandButton value="Add Relationship" action="{!addRelationshipPage}" status="addPageStatus"/>
 				<apex:commandButton value="Add Campaign" action="{!addCampaignPage}" status="addPageStatus"/>
+				<apex:commandButton value="Cancel" action="{!cancelAndSave}" status="addPageStatus" rendered="{!showCancel}" immediate="true"/>
 				<apex:actionStatus id="addPageStatus" >
                     <apex:facet name="start" >
                         <img src="/img/loading.gif" style="position: absolute;margin-left:5px;margin-top:3px;"/>
@@ -54,7 +54,7 @@
 				<apex:PageBlockSectionItem >
 	                <apex:outputLabel value="Department Affiliation"/>
 					<apex:actionRegion>	
-						<apex:selectList value="{!selectedParentId}" label="Department Affiliation" required="true" multiselect="false" size="1" style="margin-left:4px;">
+						<apex:selectList value="{!selectedParentId}" label="Department Affiliation" multiselect="false" size="1" style="margin-left:4px;">
 							<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
 							<apex:selectOptions value="{!campaignOptions}"/>
 							<apex:actionSupport event="onchange" reRender="childCampaignList, Details" action="{!populateChildCampaigns}" status="thinking"/>
@@ -71,7 +71,6 @@
 			        <apex:inputField id="accountField" value="{!relationship.Account__c}" required="true"/>
 		    	</apex:pageBlockSectionItem>		    	
 				<apex:selectList id="childCampaignList" value="{!selectedChildId}" label="Type of Engagement" multiselect="false" size="1" style="margin-left:4px;">
-					<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
 					<apex:selectOptions value="{!childCampaignOptions}"/>
 				</apex:selectList>
 				<apex:outputPanel id="accountHelpPanel">	
@@ -85,7 +84,10 @@
 					</apex:outputPanel>
 				</apex:outputPanel>
 				<br />
-				<apex:inputField value="{!relationship.Relationship_Type__c}" required="true"/>
+				<apex:selectList value="{!relationship.Relationship_Type__c}" label="Type" multiselect="false" size="1" style="margin-left:4px;">
+					<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
+					<apex:selectOptions value="{!relTypeOptions}"/>
+				</apex:selectList>
 				<br />
 				<apex:inputField value="{!relationship.Relationship_Start_Date__c}"/>
 				<br />
@@ -125,12 +127,15 @@
 			<apex:pageMessages />
 			<apex:pageBlockButtons>
 				<apex:commandButton value="Save" action="{!insertRelationship}"/>
-				<apex:commandButton value="Save & New" action="{!saveAndNew}" immediate="true"/>
-				<apex:commandButton value="Cancel" action="{!save}" immediate="true"/>
+				<apex:commandButton value="Save & New" action="{!relationshipSaveAndNew}"/>
+				<apex:commandButton value="Cancel" action="{!cancelAndSaveRelationship}" immediate="true"/>
 			</apex:pageBlockButtons>
 			<apex:pageBlockSection title="Relationship Information">
 				<apex:inputField value="{!relationship.Title__c}" />
-				<apex:inputField value="{!relationship.Relationship_Type__c}" required="true"/>
+				<apex:selectList value="{!relationship.Relationship_Type__c}" label="Type" multiselect="false" size="1" style="margin-left:4px;">
+					<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
+					<apex:selectOptions value="{!relTypeOptions}"/>
+				</apex:selectList>
 				<apex:pageBlockSectionItem>    
 		    		<apex:outputLabel for="accountField" value="Account"/>
 			        <apex:inputField id="accountField" value="{!relationship.Account__c}" required="true"/>
@@ -139,7 +144,7 @@
 				<apex:pageBlockSectionItem>
 					<apex:outputLabel value="" for="accountHelp"/>
 					<apex:outputText id="accountHelp">
-						<i>Can't find the correct Account? You can&nbsp;<apex:commandButton value="Create" action="{!page6}" immediate="true"/>&nbsp;a new one.</i>
+						<i style="margin-left:-70px;">Can't find the correct Account? You can&nbsp;<apex:commandButton value="Create" action="{!page6}" immediate="true"/>&nbsp;a new one.</i>
 					</apex:outputText>
 				</apex:pageBlockSectionItem>				
 			</apex:pageBlockSection>
@@ -149,14 +154,14 @@
 			<apex:pageMessages />
 			<apex:pageBlockButtons>
 				<apex:commandButton value="Save" action="{!insertCampaignMember}"/>
-				<apex:commandButton value="Save & New" action="{!saveAndNew}" immediate="true"/>
-				<apex:commandButton value="Cancel" action="{!save}" immediate="true"/>
+				<apex:commandButton value="Save & New" action="{!campaignMemberSaveAndNew}"/>
+				<apex:commandButton value="Cancel" action="{!cancelAndSaveCampaignMember}" immediate="true"/>
 			</apex:pageBlockButtons>
 			<apex:pageBlockSection title="Campaign Information">
 				<apex:PageBlockSectionItem >
 	                <apex:outputLabel value="Department Affiliation"/>
 					<apex:actionRegion>	
-						<apex:selectList value="{!selectedParentId}" label="Department Affiliation" required="true" multiselect="false" size="1" style="margin-left:4px;">
+						<apex:selectList value="{!selectedParentId}" label="Department Affiliation" multiselect="false" size="1" style="margin-left:4px;">
 							<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
 							<apex:selectOptions value="{!campaignOptions}"/>
 							<apex:actionSupport event="onchange" reRender="childCampaignList2, Details" action="{!populateChildCampaigns}" status="thinking2"/>
@@ -169,7 +174,6 @@
 					</apex:actionRegion>
 				</apex:pageBlockSectionItem>
 				<apex:selectList id="childCampaignList2" value="{!selectedChildId}" label="Type of Engagement" multiselect="false" size="1" style="margin-left:4px;">
-					<span style="border-right:solid 3px #cc0000;position:absolute;height:18px;"/>
 					<apex:selectOptions value="{!childCampaignOptions}"/>
 				</apex:selectList>
 			</apex:pageBlockSection>

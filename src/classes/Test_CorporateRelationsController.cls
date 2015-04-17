@@ -58,6 +58,7 @@ private class Test_CorporateRelationsController
 		setupData();
 		PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);
+        ncr.getRelTypeOptions();
 		ncr.contact = testContact;
 		ncr.relationship = testR;
 		ncr.selectedParentId = testCampaign.Id;
@@ -145,5 +146,41 @@ private class Test_CorporateRelationsController
 		ncr.selectedChildId = testChildCampaign.Id;
 		PageReference confirmSave = new PageReference('/' + testContact.Id);
 		System.assertEquals(confirmSave.getUrl(),ncr.save().getUrl());
+	}
+
+	@isTest static void testValidations()
+	{
+		setupData();
+		PageReference crPage = Page.NewCorporateRelationsContact;
+        Test.setCurrentPage(crPage);
+        ncr.relationship.Relationship_Type__c = null;
+        ncr.insertRelationship();
+        ncr.selectedParentId = null;
+        ncr.addPage();
+        ncr.saveAndNew();
+        ncr.insertCampaignMember();
+        ncr.cancelAndSaveRelationship();
+        ncr.cancelAndSaveCampaignMember();
+        ncr.cancelAndSave();
+        ncr.relationshipSaveAndNew();
+        ncr.campaignMemberSaveAndNew();
+        ncr.contact = testContact;
+		ncr.relationship = testR;
+		ncr.selectedParentId = testCampaign.Id;
+		ncr.selectedChildId = testChildCampaign.Id;
+		ncr.getCampaignOptions();
+		ncr.populateChildCampaigns();
+		ncr.insertRelationship();
+        ncr.insertCampaignMember();
+        ncr.cancelAndSaveRelationship();
+        ncr.cancelAndSaveCampaignMember();
+        ncr.cancelAndSave();
+        ncr.relationshipSaveAndNew();
+        ncr.campaignMemberSaveAndNew();
+        ncr.addRelationshipPage();
+        ncr.relationship.Relationship_Type__c = null;
+        ncr.addRelationshipPage();
+        ncr.relationship.Relationship_Type__c = 'Email';
+ 		ncr.addCampaignPage();       
 	}
 }

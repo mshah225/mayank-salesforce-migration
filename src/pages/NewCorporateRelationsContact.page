@@ -115,11 +115,11 @@
 				<apex:inputField value="{!account.Description}"/>
 			</apex:pageBlockSection>
 			<apex:pageBlockSection title="Address Information">
-				<apex:inputField value="{!contact.MailingCountryCode}" label="Mailing Country"/>
-				<apex:inputField value="{!contact.MailingStreet}"/>
-				<apex:inputField value="{!contact.MailingCity}" required="true"/>
-				<apex:inputField value="{!contact.MailingStateCode}" label="Mailing State/Province"/>
-				<apex:inputField value="{!contact.MailingPostalCode}"/>
+				<apex:inputField value="{!account.BillingCountryCode}" label="Mailing Country"/>
+				<apex:inputField value="{!account.BillingStreet}" label="Mailing Street"/>
+				<apex:inputField value="{!account.BillingCity}" label="Mailing City" required="true"/>
+				<apex:inputField value="{!account.BillingStateCode}" label="Mailing State/Province"/>
+				<apex:inputField value="{!account.BillingPostalCode}" label="Mailing Zip/Postal Code"/>
 			</apex:pageBlockSection>
 		</apex:pageBlock>
 
@@ -193,11 +193,11 @@
 				<apex:inputField value="{!account.Description}"/>
 			</apex:pageBlockSection>
 			<apex:pageBlockSection title="Address Information">
-				<apex:inputField value="{!contact.MailingCountryCode}" label="Mailing Country"/>
-				<apex:inputField value="{!contact.MailingStreet}"/>
-				<apex:inputField value="{!contact.MailingCity}" required="true"/>
-				<apex:inputField value="{!contact.MailingStateCode}" label="Mailing State/Province"/>
-				<apex:inputField value="{!contact.MailingPostalCode}"/>
+				<apex:inputField value="{!account.BillingCountryCode}" label="Mailing Country"/>
+				<apex:inputField value="{!account.BillingStreet}" label="Mailing Street"/>
+				<apex:inputField value="{!account.BillingCity}" label="Mailing City" required="true"/>
+				<apex:inputField value="{!account.BillingStateCode}" label="Mailing State/Province"/>
+				<apex:inputField value="{!account.BillingPostalCode}" label="Mailing Zip/Postal Code"/>
 			</apex:pageBlockSection>
 		</apex:pageBlock>
 	</apex:form>

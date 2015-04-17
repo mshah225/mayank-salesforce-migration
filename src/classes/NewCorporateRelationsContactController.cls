@@ -221,19 +221,43 @@ public with sharing class NewCorporateRelationsContactController
 		page = 5;
 	}
 
+	public Boolean validateRT()
+	{
+		if (relationship.Relationship_Type__c == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	public Boolean validateDA()
+	{
+		if (selectedParentId == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
 	public void click() 
 	{
 		clickedAccount = true;
 	}
 
-	public void cancelAccount()
-	{
-		page2();
-	}
-
 	public void backToRelationship()
 	{
 		page4();
+	}
+
+	public void cancelAccount()
+	{
+		page2();
 	}
 
 	public PageReference insertAccount()
@@ -282,9 +306,6 @@ public with sharing class NewCorporateRelationsContactController
 
 	public PageReference cancelAndSaveCampaignMember() 
 	{
-		addRelationship();
-		addParentCampaignMember();
-		addCampaignMember();
 		saveToDatabase();
 		PageReference submit = new PageReference('/' + contact.Id);
 		submit.setRedirect(true);
@@ -293,9 +314,6 @@ public with sharing class NewCorporateRelationsContactController
 
 	public PageReference cancelAndSaveRelationship() 
 	{
-		addRelationship();
-		addParentCampaignMember();
-		addCampaignMember();
 		saveToDatabase();
 		PageReference submit = new PageReference('/' + contact.Id);
 		submit.setRedirect(true);
@@ -304,9 +322,6 @@ public with sharing class NewCorporateRelationsContactController
 
 	public PageReference cancelAndSave()
 	{
-		addRelationship();
-		addParentCampaignMember();
-		addCampaignMember();
 		saveToDatabase();
 		PageReference submit = new PageReference('/' + contact.Id);
 		submit.setRedirect(true);
@@ -361,30 +376,6 @@ public with sharing class NewCorporateRelationsContactController
 		PageReference submit = ApexPages.currentPage();
 		submit.setRedirect(true);
 		return submit;
-	}
-
-	public Boolean validateRT()
-	{
-		if (relationship.Relationship_Type__c == null)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-
-	public Boolean validateDA()
-	{
-		if (selectedParentId == null)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
 	}
 
 	public PageReference save() 

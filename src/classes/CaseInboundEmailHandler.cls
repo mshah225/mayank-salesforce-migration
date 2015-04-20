@@ -364,7 +364,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                                 WHERE ContactId = :emailContact.Id
                                 ORDER BY CreatedDate desc
                                 LIMIT 1];
-                
+
                 String currentCaseDescription = theCase.Description;
                 currentCaseDescription = currentCaseDescription.trim();
 
@@ -375,10 +375,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
 
             } 
-            catch (System.QueryException e)
+            catch (QueryException e)
             {
                 System.debug('This is the contact\'s initial case.');
             } 
+            catch (Exception e)
+            {
+                System.debug('An error has occurred while trying to prevent an auto-reply loop from forming:\n ' + e.getStackTraceString());
+            }
 
             insertSObject(this.theCase);    
         }
@@ -391,16 +395,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                 emailContact = caseContact[0];
             }
+        }
 
-            createEmailMessage(theCase,email);
-            handleAttachments(theCase, emailContact, email);
-            System.debug('GRF template: ' + templateId);
-            
-            if (sendAutoReply && templateId != null) 
-            {
-                sendAutoReply(theCase, emailContact, templateId);
-            }
-        } 
+        createEmailMessage(theCase,email);
+        handleAttachments(theCase, emailContact, email);
+        System.debug('GRF template: ' + templateId);
+        
+        if (sendAutoReply && templateId != null) 
+        {
+            sendAutoReply(theCase, emailContact, templateId);
+        }
         
         return result;
     }

@@ -80,12 +80,12 @@
 </head>
 <body>
 	<apex:outputPanel id="redirectPanel" >
-            <apex:outputText rendered="{!shouldRedirect}">
-                <script type="text/javascript">
-                    window.location = '/apex/CRCampaignWidget?id={!contact.Id}';
-                </script>
-            </apex:outputText>
-        </apex:outputPanel>
+        <apex:outputText rendered="{!shouldRedirect}">
+            <script type="text/javascript">
+                window.location = '/apex/CRCampaignWidget?id={!contact.Id}';
+            </script>
+        </apex:outputText>
+    </apex:outputPanel>
 	<apex:tabPanel id="CRTabPanel" switchType="client" selectedTab="{!$Component.viewAffiliations}" tabClass='activeTab' inactiveTabClass='inactiveTab'>
 		<apex:tab id="viewAffiliations" name="viewAffiliations" label="View Affiliations" style="background-color:#f0f0f0;">
 			<apex:form style="font-size:9pt;overflow:auto;height:240px;max-width:1100px;">

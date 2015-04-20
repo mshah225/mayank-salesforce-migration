@@ -189,8 +189,11 @@ public with sharing class CRCampaignWidgetController
 
 	public void save() 
 	{
+		System.debug('!!!!!!!!!!!! SAVE !!!!!!!!!!!!!!');
 		try
 		{
+			System.debug(newChildCamMem);
+			System.debug(newParentCamMem);
 			currentSet = new Set<String>();
 			for (CampaignMember c: currentCampaigns)
 			{
@@ -206,13 +209,15 @@ public with sharing class CRCampaignWidgetController
 				if (!currentSet.contains(selectedParentCampaignName))
 				{
 					insert newParentCamMem;
+					System.debug('Inserted Parent camMem ' + newParentCamMem);
 				}
 			}
 			else
 			{
 				activateParentCamMem = [SELECT Id 
 										FROM CampaignMember
-										WHERE Campaign.Name = :selectedParentCampaignName];
+										WHERE Campaign.Name = :selectedParentCampaignName
+										AND ContactId = :ApexPages.currentPage().getParameters().get('id')];
 				activateParentCamMem.Status = 'Active';
 				update activateParentCamMem;
 			}
@@ -223,13 +228,15 @@ public with sharing class CRCampaignWidgetController
 					if (!currentSet.contains(selectedChildCampaignName))
 					{
 						insert newChildCamMem;
+						System.debug('Inserted chil camMem ' + newChildCamMem);
 					}
 				}
 				else 
 				{
 					activateChildCamMem = [SELECT Id 
 										   FROM CampaignMember
-										   WHERE Campaign.Name = :selectedChildCampaignName];
+										   WHERE Campaign.Name = :selectedChildCampaignName
+										   AND ContactId = :ApexPages.currentPage().getParameters().get('id')];
 					activateChildCamMem.Status = 'Active';
 					update activateChildCamMem;
 				}
@@ -237,7 +244,8 @@ public with sharing class CRCampaignWidgetController
 		}
 		catch (Exception e)
 		{
-
+			System.debug('EXCEPTION');
+			System.debug(e);
 		}
 		shouldRedirect = true;
 	}

@@ -828,8 +828,6 @@
                         <div id="bomgarChatForm" style="margin-top:5px;display:none;">
                             <apex:pageBlock >
                                 <h5>Get Help</h5><br /><br />
-                                <!--<label for="customer_name">Name</label><br />
-                                <input id="customer_name" type="text" placeholder="first and last name"/><br />-->
                                 <textarea id="description" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;"></textarea><br />
                                 <apex:pageBlockButtons location="bottom">
                                     <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;" onClick="start();">Start Chat</button>
@@ -915,8 +913,8 @@
                         <script>
                             jQuery(document).ready(function($){
                                 $("td.truncate").each(function(){
-                                        if ($(this).text().length > 30) {
-                                            $(this).text($(this).text().substr(0, 27));
+                                        if ($(this).text().length > 99) {
+                                            $(this).text($(this).text().substr(0, 99));
                                             $(this).append('...');
                                         }
                                     });
@@ -931,9 +929,10 @@
                                 </apex:pageBlockButtons>
                                 <apex:pageBlockSection collapsible="false" columns="1">
                                     <label for="caseSubject">Subject</label>
-                                    <apex:inputField id="caseSubject" styleClass="caseSubject" value="{!c.subject}" required="true" style="width:95%;max-width:305px;border:solid 1px gray;" label=""/>
+                                    <apex:inputField id="caseSubject" styleClass="caseField" value="{!c.subject}" required="true" style="max-width:305px;border:solid 1px gray;" label=""/>
                                     <label for="caseDesc">Description</label>
-                                    <apex:inputField id="caseDesc" styleClass="caseDesc" value="{!c.description}" style="width:97%;height:100px;resize:none;max-width:305px" required="true" label=""/>                                    
+                                    <apex:inputField id="caseDesc" styleClass="caseField" value="{!c.description}" required="true" style="height:100px;resize:none;max-width:305px;border: solid 1px gray;" label=""/>   
+                                    <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>                                 
                                 </apex:pageBlockSection>
                                 <apex:pageblockbuttons location="bottom">
                                     <apex:commandButton action="{!submitCase}" value="Submit" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;"/>
@@ -949,11 +948,11 @@
           </div>
         </div>
       
-        <!--<div style="float:right;margin:1em;">
-            <a href="https://webforms-dev.asu.edu/feedback?refer=https://mat2-myasu.cs20.force.com" class="btn btn-default btn-success">
-                <span class="glyphicon glyphicon-comment" style="color:#fff;"></span>&nbsp;&nbsp;Feedback
+        <div style="float:right;margin:1em;">
+            <a href="/feedback">
+                <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg" alt="Feedback" title="Please leave your feedback" onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'" onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'" border="0"/>
             </a>
-        </div>-->
+        </div>
         <br />
         <div id="main-bottom" class="row-fluid main-bottom"> 
             <div class="region region-main-bottom clearfix">
@@ -1015,7 +1014,6 @@
                 .appendTo( ul );
         };
             
-        // Add or remove placeholder values
         $('[id$=articleTextBoxId]').val(PLACEHOLDER);
         $('[id$=articleTextBoxId]').on("focus",  function(event){
             $tgt = $(event.target);

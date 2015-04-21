@@ -57,7 +57,7 @@ global class BomgarCreateCaseUtil
         }
         else
         {
-            c.Category__c = 'Financial Aid (Help Desk)';
+            c.Category__c = 'Finances (Help Desk)';
         }
         if (contact != null)
         {

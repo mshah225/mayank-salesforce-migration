@@ -139,13 +139,14 @@
             var lesstext = "Less";
             $(".emailMessage").each(function() {
                 var content = $(this).html();
+                alert('Content HTML: ' + content);
         
                 if(content.length > showChar) {
         
                     var c = content.substr(0, showChar);
                     var h = content.substr(showChar, content.length - showChar);
-                    var shortHtml = c + '<span class="moreEllipses">' + ellipsestext + '</span>';
-                    var longHtml = c + '<span class="moreContent"><span>' + h + '</span></span>&nbsp;<a href="" class="emailToggle">' + moretext + '</a>';
+                    var shortHtml = c + '<a href="" class="emailToggle"></a>';
+                    var longHtml = c + '<span class="moreContent"><span>' + h + '</span></span>&nbsp;<a href="" class="emailToggle"></a>';
         
                     if($(this).hasClass("less")) {
                         $(this).html(shortHtml);
@@ -486,7 +487,7 @@
                                         </apex:outputPanel>
                                         <br />
                                         <div class="emailBlock">
-                                            <div class="emailMessage"><apex:outputText escape="false" value="{!EM.HtmlBody}"/></div>
+                                            <div class="emailMessage less"><apex:outputText escape="false" value="{!EM.HtmlBody}"/></div>
                                         </div>
                                     </div>
                                 </div>

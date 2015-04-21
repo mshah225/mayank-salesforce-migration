@@ -2,7 +2,7 @@ public class pkb_mobile_Test {
 
 	static String lang  = KnowledgeArticleVersion.Language.getDescribe().getPickListValues().get(0).getValue();
 	static String siteName = 'PKB2_MOBILE_' + String.valueOf(Crypto.getRandomInteger()); 
-	static String publishStatus = 'draft';
+	static String publishStatus = 'Online';
 	static String objType;
 	static SObject kavObj;
 	
@@ -947,6 +947,8 @@ public class pkb_mobile_Test {
 		kavObj.put('Title','SAMPLE foo title!!!');
 		kavObj.put('UrlName', 'url-foo-foo');
 		kavObj.put('Summary', 'This is a summary!!! for the test article.');
+		kavObj.put('PublishStatus', 'Online');
+		kavObj.put('Functional_Group__c', 'Test');
 		kavObj.put('Language', lang);
 		insert kavObj;
 	

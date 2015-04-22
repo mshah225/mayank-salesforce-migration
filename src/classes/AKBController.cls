@@ -1,4 +1,4 @@
-public with sharing class AKBController 
+public without sharing class AKBController 
 {    
     public AKB_Article_Feedback__c feedbackHelpful {get;set;}
     public AKB_Article_Feedback__c[] feedbackGiven;
@@ -44,6 +44,7 @@ public with sharing class AKBController
                      AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
         }
         feedbackHelpful = new AKB_Article_Feedback__c(); 
+        getContactId();
     }
     
     public string getTitleKeyword() 

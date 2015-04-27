@@ -125,6 +125,34 @@ public with sharing class NewCorporateRelationsContactController
 	    }
     }
 
+    public void validateContact() 
+    {
+    	if (contact.Phone == null && contact.Corporate_Relations_Email__c == null && contact.MailingPostalCode == null)
+    	{
+    		ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out 2 of these 3 fields: Email, Phone, or Zip Code.'));
+			return;
+    	}
+    	else if (contact.Phone != null && contact.Corporate_Relations_Email__c == null && contact.MailingPostalCode == null)
+    	{
+    		ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out 2 of these 3 fields: Email, Phone, or Zip Code.'));
+			return;
+    	}
+    	else if (contact.Phone == null && contact.Corporate_Relations_Email__c != null && contact.MailingPostalCode == null)
+    	{
+    		ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out 2 of these 3 fields: Email, Phone, or Zip Code.'));
+			return;
+    	}
+    	else if (contact.Phone == null && contact.Corporate_Relations_Email__c == null && contact.MailingPostalCode != null)
+    	{
+    		ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out 2 of these 3 fields: Email, Phone, or Zip Code.'));
+			return;
+    	}
+    	else
+    	{
+    		page2();
+    	}
+    }
+
     public PageReference page2()
     {
 		page = 2;
@@ -417,6 +445,7 @@ public with sharing class NewCorporateRelationsContactController
             contact.SF_Mailing_Address_Updated__c = Datetime.now();
             contact.SF_Birthdate__c = contact.Birthdate;
             contact.SF_Birthdate_Updated__c = Datetime.now();
+            contact.Email = contact.Corporate_Relations_Email__c;
             insert contact; 
 
 	        for (Relationship__c r: relationshipList) 

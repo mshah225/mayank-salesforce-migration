@@ -10,7 +10,10 @@
     <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1, maximum-scale=1" />
+   
     <c:asu_responsive_header_section />
+    
+    <!-- Stylesheets and JS for Bootstrap/MyASU -->
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
     <c:myasustyles />  
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
@@ -45,10 +48,6 @@
         .detailList tr:last-child {
             border-bottom: none !important;
         }
-
-        .labelCol.vfLabelColTextWrap  {
-            vertical-align: top !important;
-        }
         
         label {
             margin-bottom: 0px !important;
@@ -72,15 +71,17 @@
             text-decoration:none;
             outline: none;
             color: #990033;
+            display: block;
         }
-        
-        .moreContent {
-            display: none;
-        }
-        
+
         .emailMessage {
             font-family: Helvetica, Arial !important;
             overflow: hidden;
+            word-wrap: break-word;
+        }
+
+        .emailMessage img {
+            display: none;
         }
         
         .emailMessage p, .emailMessage span {
@@ -88,6 +89,10 @@
             font-size: 10pt !important;
             line-height: 1.5em !important;
             font-weight: 400;
+        }
+
+        .morecontent {
+            display: none;
         }
     </style>
     
@@ -133,40 +138,40 @@
     <script>
         $(document).ready(function() 
         {
-            var showChar = 200;
+            var showChar = 250;
             var ellipsestext = "...";
-            var moretext = "...Show More";
-            var lesstext = "Less";
-            $(".emailMessage").each(function() {
+            var moretext = "Show More >";
+            var lesstext = "< Show Less";
+            $(".emailMessage").each(function() 
+            {
                 var content = $(this).html();
-                alert('Content HTML: ' + content);
-        
-                if(content.length > showChar) {
-        
+                if (content.length > showChar) 
+                {
                     var c = content.substr(0, showChar);
                     var h = content.substr(showChar, content.length - showChar);
-                    var shortHtml = c + '<a href="" class="emailToggle"></a>';
-                    var longHtml = c + '<span class="moreContent"><span>' + h + '</span></span>&nbsp;<a href="" class="emailToggle"></a>';
-        
-                    if($(this).hasClass("less")) {
-                        $(this).html(shortHtml);
-                    } else {
-                        $(this).html(longHtml);
-                    }
+                    var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="emailToggle">' + moretext + '</a></span>';
+         
+                    $(this).html(html);
                 }
         
             });
         
-            $(".emailToggle").click(function(){
-                if($(this).hasClass("less")) {
+            $(".emailToggle").click(function()
+            {
+                if ($(this).hasClass("less")) 
+                {
                     $(this).removeClass("less");
                     $(this).html(moretext);
-                } else {
+                    $(".moreellipses").show();
+                } 
+                else 
+                {
                     $(this).addClass("less");
                     $(this).html(lesstext);
+                    $(".moreellipses").hide();
                 }
-                $(this).parent().prev().fadeToggle();
-                $(this).prev().fadeToggle();
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
                 return false;
             });
         });
@@ -338,8 +343,11 @@
         </script>
     
     <div style="clear:both;"></div>
-      
-    <!-- MyASU Tab Bar -->
+    
+    <!-- END /asuthemes/4.0-rsp.1/headers/default.shtml -->
+  
+    <!-- MyASU Tab Bar 
+    ======================================-->
     <header class="navbar navbar-default" role="banner">
         <div class="navbar-header">
           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
@@ -397,6 +405,7 @@
           </p>
         </nav>
         </apex:outputPanel>
+        
     </header>  
     
     <div class="page-title">
@@ -404,28 +413,12 @@
     </div> 
 
     <!-- START CONTENT -->
-    <div id="asu_content_well">
-
-    <center>
-        <apex:outputPanel rendered="{!pinError}">
-            <div class="alert alert-danger">
-                <button type='button' class='close' data-dismiss='alert'>×</button>
-                <apex:outputText escape="false" value="{!pinMessage}"/>
-            </div>
-        </apex:outputPanel>
-
-        <apex:outputPanel rendered="{!pinSuccess}">
-            <div class="alert alert-success">
-                <button type='button' class='close' data-dismiss='alert'>×</button>
-                <apex:outputText escape="false" value="{!pinMessage}"/>
-            </div>
-        </apex:outputPanel>
-    </center>
-
+    <div id="asu_content_well"><!-- These elements (content, content_well and content_container) -->
+        <!-- INPUT CONTENT HERE -->
     <div class="container">
 
       <ol class="breadcrumb">
-        <li><a href="/studentSC">Back</a></li>
+        <li><a href="/studentSC">Back To Service Center</a></li>
         <li class="active" style="font-size:10pt;">Case Details</li>
       </ol>
 
@@ -467,7 +460,7 @@
                                 <div class="panel panel-default">
                                     <div class="panel-body">
                                         <apex:outputLabel for="emailSentDate" value="Sent Date:"/>
-                                        <apex:outputText id="emailSentDate" value="{0, date, MMMM d','  yyyy}">
+                                        <apex:outputText id="emailSentDate" value="{0, date, MMMM d','  yyyy, hh:MM a z}">
                                             <apex:param value="{!EM.CreatedDate}"/>
                                         </apex:outputText><br />
 
@@ -487,7 +480,7 @@
                                         </apex:outputPanel>
                                         <br />
                                         <div class="emailBlock">
-                                            <div class="emailMessage less"><apex:outputText escape="false" value="{!EM.HtmlBody}"/></div>
+                                            <apex:outputText styleClass="emailMessage" escape="false" value="{!EM.HtmlBody}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -505,6 +498,9 @@
                         </div>
                         <div class="content">
                         <p>Please contact us if you need immediate assistance. We're available 24/7 to answer your questions.</p>
+                        
+                        
+                        
                         <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>     
                         <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
                             
@@ -515,10 +511,12 @@
                                 <div id="pinFormDiv" style="margin-left:30px;">
                                     <h5>ASU Finances PIN</h5>&nbsp;
                                     
+                                    <!-- Button trigger modal -->
                                     <button type="button" class="qMarkMobile" data-toggle="modal" data-target="#finPinMobile" style="display:none">
                                         <img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png" width="14" height="14" alt="qmark" style="margin-bottom:3px;cursor:pointer;"/>
                                     </button>
                                     
+                                    <!-- Modal -->
                                     <div class="modal fade" id="finPinMobile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
@@ -558,7 +556,7 @@
                                     <button id="cancelPinInput" class="resetPin kbbtn" onclick="this.form.reset();" style="display:none;" type="button">Cancel</button>
                                     <p style="margin-top:5px;">Select <b>View</b> when calling to access confidential information about your financial aid and account balance.</p>
                                 </div>
-                                
+                                                                
                                 <script>
                                     $( "[id$=qmarkPin]" ).click(function() {
                                         $( "[id$=tooltipPin]" ).show();    
@@ -577,6 +575,7 @@
                                 </script>
                                 
                                 <script>
+                                    //Show and hide our buttons and input boxes. 
                                     $( "[id$=viewPinBtn]" ).click(function() {
                                         $( "[id$=yourPinHidden]" ).hide();
                                         $( "[id$=viewPinBtn]" ).hide();
@@ -614,11 +613,13 @@
                                         $( "[id$=cancelPinInput]" ).hide();
                                     });
                                     
+                                    //populate the hidden field on page load
                                     $( document ).ready(function() {
                                         $( "[id$=yourPinHidden]" ).val( "••••••••••" );
                                         $( "[id$=newPinInput]" ).val( "" );
                                     });
                                 
+                                    //function to prevent anthing but numbers be entered into our reset pin box.
                                     function inputLimiter(e,allow) {
                                         var AllowableCharacters = '';
                             
@@ -767,13 +768,14 @@
                         <script>
                             jQuery(document).ready(function($){
                                 $("td.truncate").each(function(){
-                                        if ($(this).text().length > 99) {
-                                            $(this).text($(this).text().substr(0, 99));
+                                        if ($(this).text().length > 50) {
+                                            $(this).text($(this).text().substr(0, 47));
                                             $(this).append('...');
                                         }
                                     });
                             });
                         </script>
+                    
                         
                         <div id="newCaseForm" style="display:none">
                         <apex:form style="width:100%">
@@ -781,9 +783,9 @@
                                 <h5>Create a new case</h5>
                                 <apex:pageBlockSection collapsible="false" columns="1">
                                     <label for="caseSubject">Subject</label>
-                                    <apex:inputField id="caseSubject" styleClass="caseField" value="{!c.subject}" required="true" style="max-width:305px;border:solid 1px gray;" label=""/>
+                                    <apex:inputField id="caseSubject" value="{!c.subject}" required="true" style="width:95%;max-width:305px;border:solid 1px gray;" label=""/>
                                     <label for="caseDesc">Description</label>
-                                    <apex:inputField id="caseDesc" styleClass="caseField" value="{!c.description}" required="true" style="height:100px;resize:none;max-width:305px;border: solid 1px gray;" label=""/>
+                                    <apex:inputField id="caseDesc" value="{!c.description}" required="true" style="width:97%;height:100px;resize:none;max-width:305px" label=""/>
                                     <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>
                                 </apex:pageBlockSection>
                                 <apex:pageblockbuttons location="bottom">
@@ -810,6 +812,7 @@
                 <div id="block-asu-brand-asu-brand-footer" class="clearfix block block-asu-brand">       
                     <div class="content1"> 
                     <a href="http://thesundevils.com/"><img class="sparky" src="https://webapp4.asu.edu/myasu/images/Sparky.png" alt="The Sun Devils"/></a>
+                    <!-- START FOOTER /asuthemes/3.1/includes/footer.html -->   
                         <ul id="asu_footer" class="asu_black_footer">
                           <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
                           <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>

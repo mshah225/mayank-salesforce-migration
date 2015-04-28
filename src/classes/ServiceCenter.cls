@@ -81,7 +81,7 @@ public with sharing class ServiceCenter
                 AND Incoming = false
                 AND CreatedDate > :launchDate 
                 AND ToAddress = :contact.Email
-                ORDER BY CreatedDate DESC]; 
+                ORDER BY CreatedDate DESC];
     }
     
     public PageReference viewCase() 

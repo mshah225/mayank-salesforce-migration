@@ -73,6 +73,8 @@
             color: #990033;
             display: block;
             margin-top: 20px;
+            font-weight: 600;
+            width:  90px;
         }
 
         .emailMessage {
@@ -141,9 +143,9 @@
         {
             var showChar = 250;
             var ellipsestext = "...";
-            var moretext = "Show More >";
-            var lesstext = "< Show Less";
-            $(".emailMessage").each(function() 
+            var moretext = 'Show More <span class="caret" style="margin-bottom:2px;"></span>';
+            var lesstext = 'Show Less <span class="dropup"><span class="caret"  style="margin-bottom:2px;"></span></span>';
+            $("[id$=emailMore]").each(function() 
             {
                 var content = $(this).html();
                 if (content.length > showChar) 
@@ -171,7 +173,6 @@
                     $(this).html(lesstext);
                     $(this).prevAll(".moreellipses:first").toggle();
                 }
-                //$(this).parent().prev().toggle();
                 $(this).prev().toggle();
                 return false;
             });
@@ -419,7 +420,7 @@
     <div class="container">
 
       <ol class="breadcrumb">
-        <li><a href="/studentSC">Back To Service Center</a></li>
+        <li><a href="/studentSC">Back</a></li>
         <li class="active" style="font-size:10pt;">Case Details</li>
       </ol>
 
@@ -480,7 +481,7 @@
                                             <apex:outputText id="ccAddress" value="{!EM.CCAddress}"/><br />
                                         </apex:outputPanel>
                                         <br />
-                                        <apex:outputText styleClass="emailMessage" value="{!EM.TextBody}"/>
+                                        <apex:outputField id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}"/>
                                     </div>
                                 </div>
                             </apex:repeat>

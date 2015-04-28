@@ -72,6 +72,7 @@
             outline: none;
             color: #990033;
             display: block;
+            margin-top: 20px;
         }
 
         .emailMessage {
@@ -81,7 +82,7 @@
         }
 
         .emailMessage img {
-            display: none;
+            display: none !important;
         }
         
         .emailMessage p, .emailMessage span {
@@ -149,7 +150,7 @@
                 {
                     var c = content.substr(0, showChar);
                     var h = content.substr(showChar, content.length - showChar);
-                    var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="emailToggle">' + moretext + '</a></span>';
+                    var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;</span><a href="" class="emailToggle">' + moretext + '</a>';
          
                     $(this).html(html);
                 }
@@ -162,15 +163,15 @@
                 {
                     $(this).removeClass("less");
                     $(this).html(moretext);
-                    $(".moreellipses").show();
+                    $(this).prevAll(".moreellipses:first").toggle();
                 } 
                 else 
                 {
                     $(this).addClass("less");
                     $(this).html(lesstext);
-                    $(".moreellipses").hide();
+                    $(this).prevAll(".moreellipses:first").toggle();
                 }
-                $(this).parent().prev().toggle();
+                //$(this).parent().prev().toggle();
                 $(this).prev().toggle();
                 return false;
             });
@@ -479,9 +480,7 @@
                                             <apex:outputText id="ccAddress" value="{!EM.CCAddress}"/><br />
                                         </apex:outputPanel>
                                         <br />
-                                        <div class="emailBlock">
-                                            <apex:outputText styleClass="emailMessage" escape="false" value="{!EM.HtmlBody}"/>
-                                        </div>
+                                        <apex:outputText styleClass="emailMessage" value="{!EM.TextBody}"/>
                                     </div>
                                 </div>
                             </apex:repeat>

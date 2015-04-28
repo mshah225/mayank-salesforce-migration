@@ -40,7 +40,7 @@ public with sharing class ServiceCenter
         userAlias = [SELECT Alias 
                      FROM User 
                      WHERE Id = :UserInfo.getUserId()].Alias;
-        contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
+        contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, Email, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
                    FROM Contact 
                    WHERE ASURITE_Id__c = :userAlias];
         return contact;
@@ -78,8 +78,9 @@ public with sharing class ServiceCenter
         return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress 
                 FROM EmailMessage 
                 WHERE ParentId = :ApexPages.currentPage().getParameters().get('id') 
-                AND Incoming = false 
+                AND Incoming = false
                 AND CreatedDate > :launchDate 
+                AND ToAddress = :contact.Email
                 ORDER BY CreatedDate DESC]; 
     }
     

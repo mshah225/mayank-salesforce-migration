@@ -6,40 +6,17 @@ private class BomgarCreateCaseUtilTest
         Profile p = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
         Profile h = [SELECT Id FROM Profile WHERE Name = 'ASU Service - Help Desk'];
 
-        Contact testContact = new Contact(
-            FirstName = 'Test',
-            LastName = 'Contact',
-            ASURITE_Id__c = 'testc',
-            EmplId__c = '1231231231');
+        Contact testContact = ContactService.createTestContact();
+        testContact.EMPLID__c = '1231231231';
         insert testContact;
 
-        User testUser = new User(
-            FirstName = 'Test',
-            LastName = 'User',
-            Alias = 'testc',
-            Email = 'test@nomail.com',
-            UserName = 'test.user@sfdc.com',
-            CommunityNickname = 'testUserComm',
-            TimeZoneSidKey = 'America/Phoenix',
-            LocaleSidKey = 'en_US',
-            EmailEncodingKey = 'ISO-8859-1',
-            LanguageLocaleKey = 'en_US',
-            ProfileId = p.Id,
-            ContactId = testContact.Id);
+        User testUser = UserService.createTestUser();
+        testUser.ProfileId = p.Id;
+        testUser.ContactId = testContact.Id;
         insert testUser;
 
-        User testBomgarUser = new User(
-            FirstName = 'abcd',
-            LastName = 'Test',
-            Alias = 'abcd',
-            Bomgar__Bomgar_Username__c = 'abcd',
-            Email = 'test@nomail.com',
-            UserName = 'abcd.user@sfdc.com',
-            TimeZoneSidKey = 'America/Phoenix',
-            LocaleSidKey = 'en_US',
-            EmailEncodingKey = 'ISO-8859-1',
-            LanguageLocaleKey = 'en_US',
-            ProfileId = h.Id);
+        User testBomgarUser = UserService.createTestUser();
+        testBomgarUser.ProfileId = h.Id;
         insert testBomgarUser;
     }
 

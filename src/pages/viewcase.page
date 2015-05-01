@@ -81,19 +81,11 @@
 
         .emailMessage {
             font-family: Helvetica, Arial !important;
-            overflow: hidden;
-            word-wrap: break-word;
+            word-wrap: break-word !important;
         }
 
         .emailMessage img {
             display: none !important;
-        }
-        
-        .emailMessage p, .emailMessage span {
-            font-family: Helvetica, Arial !important;
-            font-size: 10pt !important;
-            line-height: 1.5em !important;
-            font-weight: 400;
         }
 
         .morecontent {
@@ -143,18 +135,23 @@
     <script>
         $(document).ready(function() 
         {
-            var showChar = 250;
+            var showChar = 200;
             var ellipsestext = "...";
             var moretext = 'Show More <span class="caret" style="margin-bottom:2px;"></span>';
             var lesstext = 'Show Less <span class="dropup"><span class="caret"  style="margin-bottom:2px;"></span></span>';
             $("[id$=emailMore]").each(function() 
             {
-                var content = $(this).html();
+                var content = $(this).clone().html();
+                if (content.indexOf("Inline image") > 0)
+                {
+                    content = content.replace(/\[[^\]]+\]/,'');
+                    content = content.replace(/(<br\s*\/?>){2}/, '');
+                }
                 if (content.length > showChar) 
                 {
                     var c = content.substr(0, showChar);
                     var h = content.substr(showChar, content.length - showChar);
-                    var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;</span><a href="" class="emailToggle">' + moretext + '</a>';
+                    var html = c + '<span class="moreellipses">' + ellipsestext + '</span><span class="morecontent">' + h + '</span><a href="" class="emailToggle">' + moretext + '</a>';
          
                     $(this).html(html);
                 }
@@ -484,7 +481,7 @@
                                             <apex:outputText id="ccAddress" value="{!EM.CCAddress}"/><br />
                                         </apex:outputPanel>
                                         <br />
-                                        <apex:outputField id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}"/>
+                                        <apex:outputField id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important;"/>
                                     </div>
                                 </div>
                             </apex:repeat>

@@ -16,4 +16,22 @@ public class UserService
 
 		return testUser;
   	}
+
+  	public static List<User> createMultipleUsers(Integer numUsers)
+  	{
+  		List<User> userList = new List<User>();
+
+  		for (Integer i = 0; i < numUsers; i++)
+  		{
+  			User tUser = createTestUser();
+  			tUser.FirstName = 'Test' + i;
+			tUser.LastName = 'User' + i;
+			tUser.Username = 'test.user' + i + '@test.example.com';
+			tUser.Email = 'test.user' + i + '@test.example.com';
+			tUser.Alias = 'testuse' + i;
+			tUser.CommunityNickname = 'testuser' + i;
+			userList.add(tUser);
+  		}
+  		return userList;
+  	}
 }

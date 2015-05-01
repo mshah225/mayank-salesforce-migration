@@ -10,12 +10,14 @@ private class BomgarCreateCaseUtilTest
         testContact.EMPLID__c = '1231231231';
         insert testContact;
 
-        User testUser = UserService.createTestUser();
+        List<User> userList = UserService.createMultipleUsers(2);
+
+        User testUser = userList[0];
         testUser.ProfileId = p.Id;
         testUser.ContactId = testContact.Id;
         insert testUser;
 
-        User testBomgarUser = UserService.createTestUser();
+        User testBomgarUser = userList[1];
         testBomgarUser.ProfileId = h.Id;
         insert testBomgarUser;
     }

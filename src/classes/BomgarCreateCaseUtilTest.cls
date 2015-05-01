@@ -10,7 +10,7 @@ private class BomgarCreateCaseUtilTest
         testContact.EMPLID__c = '1231231231';
         insert testContact;
 
-        List<User> userList = UserService.createMultipleUsers(2);
+        List<User> userList = UserService.createMultipleTestUsers(2);
 
         User testUser = userList[0];
         testUser.ProfileId = p.Id;

@@ -17,7 +17,7 @@ public class UserService
 		return testUser;
   	}
 
-  	public static List<User> createMultipleUsers(Integer numUsers)
+  	public static List<User> createMultipleTestUsers(Integer numUsers)
   	{
   		List<User> userList = new List<User>();
 

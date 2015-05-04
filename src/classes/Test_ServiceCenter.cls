@@ -1,7 +1,6 @@
 @isTest
-private class Test_ServiceCenter {
-
-    private static ServiceCenter sc;
+private class Test_ServiceCenter 
+{
     private static User testUser;
     private static User testUserAC;
     private static User testUserB;
@@ -14,10 +13,13 @@ private class Test_ServiceCenter {
     private static Account testAccount;
     private static Account testAccountAC;
     private static Account testAccountB;
+    private static Profile p;
     private static AKBController akb;
+    private static ServiceCenter sc;
 
-    private static void setUp() {
-        Profile p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
+    private static void getProfileAndTerms() 
+    {
+        p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
 
         Term__c termAC = new Term__c();
         Date dTac = Date.today().adddays(365);
@@ -32,14 +34,13 @@ private class Test_ServiceCenter {
         String BYear = String.valueOf(dTb.year());
         termB.Year__c = BYear;
         insert termB;
+    }
 
-        testContact = new Contact();
-        testContact.FirstName = 'Jonny';
-        testContact.LastName = 'Test';
-        testContact.Birthdate = Date.newInstance(1989, 8, 12);
-        testContact.Self_Service_PIN__c = 57483638;
-        testContact.PIN_lockout__c = true;
-        testContact.ASURite_ID__c = 'jontest';
+    private static void setUp() 
+    {
+        getProfileAndTerms();
+
+        testContact = ContactService.createTestContact();
         insert testContact;
 
         testUser = new User();
@@ -47,7 +48,7 @@ private class Test_ServiceCenter {
         testUser.LastName = 'Test';
         testUser.Username = 'username@test.com';
         testUser.Email = 'test@nomail.com';
-        testUser.Alias = 'jontest';
+        testUser.Alias = testContact.ASURite_ID__c;
         testUser.CommunityNickname = 'jontestComm';
         testUser.TimeZoneSidKey = 'America/Phoenix';
         testUser.LocaleSidKey = 'en_US';
@@ -59,30 +60,13 @@ private class Test_ServiceCenter {
 
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
-        sc = new ServiceCenter();
-        //ApexPages.StandardController stand = new ApexPages.StandardController(testContact);
-        //akb = new AKBController(stand); erroring.
     }
 
-    private static void setUpOppNotEnrolled() {
-        Term__c termAC = new Term__c();
-        Date dTac = Date.today().adddays(365);
-        Date dTb = Date.today().adddays(405);
-        termAC.Session_A_C_Start_Date__c = date.newinstance(dTac.year(), dTac.month(), dTac.day());
-        String ACYear = String.valueOf(dTac.year());
-        termAC.Year__c = ACYear;
-        insert termAC;
+    private static void setUpOppNotEnrolled() 
+    {
+        getProfileAndTerms();
 
-        Term__c termB = new Term__c();
-        termB.Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day());
-        String BYear = String.valueOf(dTb.year());
-        termB.Year__c = BYear;
-        insert termB;
-
-        testContact = new Contact();
-        testContact.FirstName = 'Jonny';
-        testContact.LastName = 'TestNotEnrolled';
-        testContact.Affiliation_Student__c = 'Current';
+        testContact = ContactService.createTestContact();
         insert testContact;
 
         testAccount = new Account();
@@ -104,39 +88,25 @@ private class Test_ServiceCenter {
         testUser.LastName = 'Test';
         testUser.Username = 'usernameOpp@test.com';
         testUser.Email = 'test@nomail.com';
-        testUser.Alias = 'jon1';
+        testUser.Alias = testContact.ASURite_ID__c;
         testUser.CommunityNickname = 'jontest1';
         testUser.TimeZoneSidKey = 'America/Phoenix';
         testUser.LocaleSidKey = 'en_US';
         testUser.EmailEncodingKey = 'ISO-8859-1';
         testUser.LanguageLocaleKey = 'en_US';
-        testUser.ProfileId = '00ed00000019z5nAAA';
+        testUser.ProfileId = p.Id;
         testUser.ContactId = testContact.Id;
         insert testUser;
 
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
-        sc = new ServiceCenter();
     }
 
-    private static void setUpACOpp() {
-        Term__c termAC = new Term__c();
-        Date dTac = Date.today().adddays(365);
-        Date dTb = Date.today().adddays(405);
-        termAC.Session_A_C_Start_Date__c = date.newinstance(dTac.year(), dTac.month(), dTac.day());
-        String ACYear = String.valueOf(dTac.year());
-        termAC.Year__c = ACYear;
-        insert termAC;
+    private static void setUpACOpp() 
+    {
+        getProfileAndTerms();
 
-        Term__c termB = new Term__c();
-        termB.Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day());
-        String BYear = String.valueOf(dTb.year());
-        termB.Year__c = BYear;
-        insert termB;
-
-        testContactAC = new Contact();
-        testContactAC.FirstName = 'Jonny';
-        testContactAC.LastName = 'TestAC';
+        testContactAC = ContactService.createTestContact();
         insert testContactAC;
 
         testAccountAC = new Account();
@@ -159,39 +129,25 @@ private class Test_ServiceCenter {
         testUserAC.LastName = 'Test';
         testUserAC.Username = 'usernameACOpp@test.com';
         testUserAC.Email = 'test@nomail.com';
-        testUserAC.Alias = 'jon1';
+        testUserAC.Alias = testContactAC.ASURite_Id__c;
         testUserAC.CommunityNickname = 'jontest1';
         testUserAC.TimeZoneSidKey = 'America/Phoenix';
         testUserAC.LocaleSidKey = 'en_US';
         testUserAC.EmailEncodingKey = 'ISO-8859-1';
         testUserAC.LanguageLocaleKey = 'en_US';
-        testUserAC.ProfileId = '00ed00000019z5nAAA';
+        testUserAC.ProfileId = p.Id;
         testUserAC.ContactId = testContactAC.Id;
         insert testUserAC;
 
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
-        sc = new ServiceCenter();
     }
 
-    private static void setUpBOpp() {
-        Term__c termAC = new Term__c();
-        Date dTac = Date.today().adddays(365);
-        Date dTb = Date.today().adddays(405);
-        termAC.Session_A_C_Start_Date__c = date.newinstance(dTac.year(), dTac.month(), dTac.day());
-        String ACYear = String.valueOf(dTac.year());
-        termAC.Year__c = ACYear;
-        insert termAC;
+    private static void setUpBOpp() 
+    {
+        getProfileAndTerms();
 
-        Term__c termB = new Term__c();
-        termB.Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day());
-        String BYear = String.valueOf(dTb.year());
-        termB.Year__c = BYear;
-        insert termB;
-
-        testContactB = new Contact();
-        testContactB.FirstName = 'Jonny';
-        testContactB.LastName = 'TestB';
+        testContactB = ContactService.createTestContact();
         insert testContactB;
 
         testAccountB = new Account();
@@ -214,25 +170,27 @@ private class Test_ServiceCenter {
         testUserB.LastName = 'Test';
         testUserB.Username = 'usernameBOpp@test.com';
         testUserB.Email = 'test@nomail.com';
-        testUserB.Alias = 'jon1';
+        testUserB.Alias = testContactB.ASURite_ID__c;
         testUserB.CommunityNickname = 'jontest1';
         testUserB.TimeZoneSidKey = 'America/Phoenix';
         testUserB.LocaleSidKey = 'en_US';
         testUserB.EmailEncodingKey = 'ISO-8859-1';
         testUserB.LanguageLocaleKey = 'en_US';
-        testUserB.ProfileId = '00ed00000019z5nAAA';
+        testUserB.ProfileId = p.Id;
         testUserB.ContactId = testContactB.Id;
         insert testUserB;
 
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
-        sc = new ServiceCenter();
     }
 
-    static testMethod void submitCaseTest() {
+    @isTest static void submitCaseTest() 
+    {
         setUp();
         Test.startTest();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
+            sc = new ServiceCenter();
             Case c = sc.c;
             c.ContactId = testUser.Id;
             c.Subject = 'Test case';
@@ -245,27 +203,32 @@ private class Test_ServiceCenter {
         Test.stopTest();
     }
 
-    static testMethod void testCases() {
+    @isTest static void testCases() 
+    {
         setUp();
         Test.startTest();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
+            sc = new ServiceCenter();
             Case c = sc.c;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
             sc.c = c;
             sc.SubmitCase();
-            sc.getSolutions();
             sc.getMyCases();
             sc.getClosedCases();
-            sc.getCaseFeed();
-            //sc.getEmailMessages();
+            sc.contactList.clear();
+            sc.getMyCases();
         }
         Test.stopTest();
     }
 
-    static testMethod void testCasesContact() {
+    @isTest static void testCasesContact() 
+    {
         setUp();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
+            sc = new ServiceCenter();
             Case c = sc.c;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
@@ -274,17 +237,18 @@ private class Test_ServiceCenter {
             sc.SubmitCase();
             sc.caseContId = testContact.Id;
             sc.contactList = [SELECT Id, Name FROM Contact WHERE Id = :sc.caseContId];
-            sc.getSolutions();
             sc.getMyCases();
             sc.getClosedCases();
-            sc.getCaseFeed();
         }
     }
 
-    static testMethod void getBoxes() {
+    @isTest static void getBoxes() 
+    {
         setUp();
         Test.startTest();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
+            sc = new ServiceCenter();
             sc.getNormalPhone();
             sc.getRoverPhone();
             sc.getHelpBox();
@@ -294,14 +258,17 @@ private class Test_ServiceCenter {
         Test.stopTest();
     }
 
-    static testMethod void testPin() {
+    @isTest static void testPin() 
+    {
         setUp();
         System.runAs(testUser) {
+            sc = new ServiceCenter();
             sc.contId = testUser.ContactId;
-            sc.cont = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c FROM Contact WHERE Id = :sc.contId];
+            sc.cont = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c 
+                       FROM Contact 
+                       WHERE Id = :sc.contId];
             sc.getContact();
             sc.getMyPin();
-            sc.closePinMessageBox();
             sc.newPin = 111111;
             sc.changePin();
             sc.newPin = 6758394;
@@ -311,9 +278,12 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void getNotEnrolledOppBoxes() {
+    @isTest static void getNotEnrolledOppBoxes() 
+    {
         setUpOppNotEnrolled();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
+            sc = new ServiceCenter();
             sc.contId = testUser.ContactId;
             sc.cont.add(testContact);
             sc.oppList.add(testOpp);
@@ -327,9 +297,12 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void getACOppBoxes() {
+    @isTest static void getACOppBoxes() 
+    {
         setUpACOpp();
-        System.runAs(testUserAC) {
+        System.runAs(testUserAC) 
+        {
+            sc = new ServiceCenter();
             sc.contId = testUserAC.ContactId;
             sc.cont.add(testContactAC);
             sc.oppList.add(testOppAC);
@@ -343,9 +316,12 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void getBOppBoxes() {
+    @isTest static void getBOppBoxes() 
+    {
         setUpBOpp();
-        System.runAs(testUserB) {
+        System.runAs(testUserB) 
+        {
+            sc = new ServiceCenter();
             sc.contId = testUserB.ContactId;
             sc.cont.add(testContactB);
             sc.oppList.add(testOppB);
@@ -359,12 +335,13 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void getNoOppBoxes() {
+    @isTest static void getNoOppBoxes() 
+    {
         setUpACOpp();
         System.runAs(testUserAC) {
+            sc = new ServiceCenter();
             sc.contId = testUserAC.ContactId;
             sc.cont.add(testContactAC);
-            //sc.oppList.add(testOppAC);
             System.Debug('Test user contact getOppBoxes() Not Enrolled: ' + sc.cont);
             System.Debug('Test user opportunity getOppBoxes() Not Enrolled: ' + sc.oppList);
             sc.getNormalPhone();
@@ -375,21 +352,13 @@ private class Test_ServiceCenter {
         }
     }
 
-    static testMethod void removeParamTest() {
+    @isTest static void testCaseDetails() 
+    {
         setUp();
         Test.startTest();
-        System.runAs(testUser) {
-            PageReference confirmRemoveParamTest = sc.removeParam();
-            PageReference confirmRemoveParam = new PageReference('/studentSC');
-            System.AssertEquals(confirmRemoveParamTest.getURL(), confirmRemoveParam.getURL());
-        }
-        Test.stopTest();
-    }
-
-    static testMethod void testCaseDetails() {
-        setUp();
-        Test.startTest();
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
+            sc = new ServiceCenter();
             Case c = sc.c;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
@@ -401,11 +370,14 @@ private class Test_ServiceCenter {
         Test.stopTest();
     }
 
-    static testMethod void viewCaseTest() {
+    @isTest static void viewCaseTest() 
+    {
         setUp();
         PageReference viewcase = Page.viewcase;
         Test.setCurrentPage(viewcase);
-        System.runAs(testUser) {
+        System.runAs(testUser) 
+        {
+            sc = new ServiceCenter();
             Case c = sc.c;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';

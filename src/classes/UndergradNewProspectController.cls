@@ -1,16 +1,5 @@
-/*
-* Name: UndergradNewProspectController.cls
-* Written by: Mathew Ruff
-* Date Created: Oct. 2, 2014
-*
-* Last Updated: Dec. 8, 2014
-* Updated by: Mathew Ruff
-* What was Changed: Added SMS Text validation to assist custom field validation.
-*/
-
 public class UndergradNewProspectController {
 
-    
     Contact contact;
     Opportunity opportunity;
     CampaignMember camMemInterest;
@@ -19,23 +8,20 @@ public class UndergradNewProspectController {
     Case c;
 
     public Id selectedInterestId { get;set; }
-    public Id Accid;
-    public List<Account> instList;
-    public Id elId { get;set; }
-    public String eventName { get;set; }
-    public Id InstId { get;set; }
-    public String pickSelection { get;set; }
-    public String originSelection { get;set; }
-    public Boolean smsText { get;set; }
-
+    public Id accId;
     public Id oppRecType;
     public Id walkInOrig;
     public Id phoneOrig;
     public Id emailOrig;
-    
-    List<Campaign> eventList;
+    public Id elId { get;set; }
+    public Id instId { get;set; }
+    public String eventName { get;set; }
+    public String pickSelection { get;set; }
+    public String originSelection { get;set; }
     public String eventSearchString { get;set; }
-
+    public Boolean smsText { get;set; }
+    public List<Account> instList;
+    public List<Campaign> eventList;
 
     public void setContact(Contact contact){
         this.contact = contact;
@@ -59,7 +45,6 @@ public class UndergradNewProspectController {
     public void setCase(Case c){
         this.c = c;
     }
-
 
     public Contact getContact(){
         if(contact == null) contact= new Contact();
@@ -90,10 +75,11 @@ public class UndergradNewProspectController {
 
     public Case getC() {
         if(c == null) c = new Case();
+        Id asuAdmissionRecId = [SELECT Id, Name FROM RecordType WHERE Name = 'ASU Admission Services' LIMIT 1].Id;
+        c.RecordTypeId = asuAdmissionRecId;
         return c;
     }
     
-
     //Get our event list
     public List<Campaign> getEventList() {
         return eventList;
@@ -117,7 +103,6 @@ public class UndergradNewProspectController {
         String instSearchTerm = 'SELECT Id, Name, BillingCity, BillingState, Institution_Type__c FROM Account WHERE Id = ' + instId;
         instList = Database.query(instSearchTerm);
     }
-
 
     //Select list for ASU Location interest type
     public List<SelectOption> getASULocationIntList() {
@@ -155,21 +140,25 @@ public class UndergradNewProspectController {
         return asuCollegesIntList;
     }
 
-
     //Save method - try to insert all objects
     public Boolean save() {
+        getC();
         try {
             if(originSelection != '--Select--' && elId != null) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE source OR ONE event.'));
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 return false; 
             }
             else if(originSelection == '--Select--' && elId == null) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE source OR ONE event.'));
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 return false;
             }
             else if(pickSelection != '--Select--' && selectedInterestId == null) {
                 System.Debug('You should see the interest error here.');
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
+                return false;
+            }
+            else if(originSelection != '--Select--' && elId == null && c.Functional_Group__c == null) {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'When selecting an Origin, you must also select a Functional Group.'));
                 return false;
             }
             else {
@@ -215,8 +204,8 @@ public class UndergradNewProspectController {
                 opportunity.Contact__c = contact.id;
                 opportunity.Name = contact.FirstName + ' ' + contact.LastName + ' ' + TodayString;
                 opportunity.CloseDate = Date.Today()+365;
-                AccId = [SELECT AccountId FROM Contact WHERE Id = :Contact.Id][0].AccountId;
-                opportunity.AccountId = AccId;
+                accId = [SELECT AccountId FROM Contact WHERE Id = :Contact.Id][0].AccountId;
+                opportunity.AccountId = accId;
                 opportunity.Career__c = 'Undergraduate';
                 opportunity.StageName = 'Prospect';
                 if(contact.Country_of_Citizenship__r.Name == 'United States') {
@@ -232,7 +221,6 @@ public class UndergradNewProspectController {
                 System.Debug('Inserted Opportunity');
                 System.Debug(opportunity);
     
-    
                 //Create Previous Education
                 //-------------------------------------------------------
                 if(previousEducation.Account__c != null) {
@@ -243,7 +231,6 @@ public class UndergradNewProspectController {
                     System.Debug('Inserted Previous Education');
                     System.Debug(previousEducation);
                 }
-    
     
                 //Create CampaignMember Event
                 //-------------------------------------------------------
@@ -263,11 +250,8 @@ public class UndergradNewProspectController {
                 //Create Case
                 //-------------------------------------------------------
                 else if(originSelection != '--Select--' && elId == null) {
-                    getC();
                     c.Id = null;
                     c.Status = 'Closed: Resolved';
-                    Id asuAdmissionRecId = [SELECT Id, Name FROM RecordType WHERE Name = 'ASU Admission Services' LIMIT 1].Id;
-                    c.RecordTypeId = asuAdmissionRecId;
                     c.ContactId = contact.Id;
                     c.Opportunity__c = opportunity.Id;
                     if(originSelection == 'Incoming Call') {
@@ -292,7 +276,7 @@ public class UndergradNewProspectController {
                     c.Inbound_Interaction__c = true;
                     c.Priority = 'Normal';
                     String termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
-                    if(c.Description == null) {
+                    if(c.Subject == null && c.Description == null) {
                         c.Subject = c.Origin__c + ' Submission - ' + termName;
                     }
                     insert c;
@@ -304,8 +288,7 @@ public class UndergradNewProspectController {
                     opportunity.Prospect_Case__c = c.Id;
                     update opportunity;
                     System.Debug('Update opportuinty\'s prospect case id with the new case id.');
-                    System.Debug(opportunity);
-                    
+                    System.Debug(opportunity); 
                 }
                 else if(originSelection != '--Select--' && elId != null) {
                     return false;
@@ -316,7 +299,6 @@ public class UndergradNewProspectController {
                 else {
                     return false;
                 }
-                
                 
                 //Create CampaignMember Interest
                 //-------------------------------------------------------
@@ -338,7 +320,6 @@ public class UndergradNewProspectController {
                         return false;
                     }
                 }
-                
                 //Save success, return true.
                 return true;
             }
@@ -353,7 +334,6 @@ public class UndergradNewProspectController {
         }
     }
 
-    //Save
     public PageReference savePage() {
         if(save()) {
             PageReference save = new PageReference('/' + opportunity.Id);

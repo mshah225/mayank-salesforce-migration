@@ -5,6 +5,7 @@ public with sharing class ServiceCenter
     public Boolean pinError { get;set; }
     public Boolean pinSuccess { get;set; }
     public Date d;
+    public final Date EMAIL_MESSAGE_LAUNCH = Date.newInstance(2015, 05, 06);
     public Decimal myPin;
     public Decimal newPin { get;set; }
     public Id caseId;
@@ -74,12 +75,11 @@ public with sharing class ServiceCenter
     } 
 
     public EmailMessage[] getEmailMessages() { 
-        Date launchDate = Date.newInstance(2015, 04, 06); 
         return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress 
                 FROM EmailMessage 
                 WHERE ParentId = :ApexPages.currentPage().getParameters().get('id') 
                 AND Incoming = false
-                AND CreatedDate > :launchDate 
+                AND CreatedDate > :EMAIL_MESSAGE_LAUNCH 
                 AND ToAddress = :contact.Email
                 ORDER BY CreatedDate DESC];
     }

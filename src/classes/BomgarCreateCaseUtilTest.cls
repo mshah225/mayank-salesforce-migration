@@ -110,13 +110,6 @@ private class BomgarCreateCaseUtilTest
         try
         {
             BomgarCreateCaseUtil.lookupUserByBomgarUsername('abcd');
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
-        try
-        {
             BomgarCreateCaseUtil.lookupUserByBomgarUsername('nobody');
         }
         catch (Exception e)
@@ -159,13 +152,6 @@ private class BomgarCreateCaseUtilTest
         try
         {
             BomgarCreateCaseUtil.lookupContactByEmployeeId('1231231231');
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
-        try
-        {
             BomgarCreateCaseUtil.lookupContactByEmployeeId('3432423432');
         }
         catch (Exception e)
@@ -182,13 +168,6 @@ private class BomgarCreateCaseUtilTest
         try
         {
             BomgarCreateCaseUtil.lookupContactByASURITE('testc');
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
-        try
-        {
             BomgarCreateCaseUtil.lookupContactByASURITE('nobody');
         }
         catch (Exception e)

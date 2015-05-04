@@ -103,9 +103,9 @@
         }
     </style>
     
-    <script src="https://bomgardev.asu.edu/api/start_session.js"></script>
+    <script src="https://bomgar.asu.edu/api/start_session.js"></script>
     <script>
-        BG.setSite("bomgardev.asu.edu");
+        BG.setSite("bomgar.asu.edu");
         
         // Start 'Finances' Chat
         function startFAChat()
@@ -133,7 +133,7 @@
             {
                 issue:
                 {
-                    codeName: 'stufa_chatdev',
+                    codeName: 'studentfinances_chat',
                     customerName: "{!$User.FirstName} {!$User.LastName}",
                     companyName: 'ASU',
                     details: document.getElementById('FADesc').value
@@ -151,7 +151,7 @@
     </script>
 
     <script>
-        BG.setSite("bomgardev.asu.edu");
+        BG.setSite("bomgar.asu.edu");
        
         // Start 'Other' Chat
         function startSFDCChat()

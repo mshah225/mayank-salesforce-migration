@@ -848,7 +848,6 @@
                         <div id="bomgarChatForm" style="margin-top:5px;display:none;">
                             <apex:pageBlock >
                                 <h5>Get Help</h5><br /><br />
-                                <input id="customer_name" type="text" placeholder="first and last name"/><br />-->
                                 <textarea id="description" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;"></textarea><br />
                                 <apex:pageBlockButtons location="bottom">
                                     <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;" onClick="start();">Start Chat</button>

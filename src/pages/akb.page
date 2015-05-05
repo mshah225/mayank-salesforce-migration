@@ -105,11 +105,11 @@
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
         ga('create', 'UA-47141114-2', 'auto');
+        ga('set', 'dimension1', '{!funcGroup}');
+        ga('set', 'dimension2', '{!artType}');
+        ga('set', 'dimension3', '{!article.CreatedBy.Name}');
+        ga('set', 'dimension4', '{!currentUser}');
         ga('send', 'pageview');
-        ga.push(['_setCustomVar', 1, 'functional group', '{!funcGroup}']);
-        ga.push(['_setCustomVar', 2, 'article type', '{!article.ArticleType}']);
-        ga.push(['_setCustomVar', 3, 'article created by', '{!article.CreatedBy.Name}']);
-        ga.push(['_setCustomVar', 4, 'current logged in user', '{!currentUser}']);
     </script>
     
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>

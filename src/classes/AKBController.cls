@@ -17,6 +17,7 @@ public without sharing class AKBController
     public String userAlias;
     public String funcGroup { get;set; }
     public String currentUser { get;set; }
+    public String artType { get;set; }
    
     public AKBController() 
     {   
@@ -31,6 +32,7 @@ public without sharing class AKBController
                    WHERE PublishStatus='Online' 
                    AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
             funcGroup = faq.Functional_Group__c;
+            artType = faq.ArticleType;
         } 
         else if (article.ArticleType.equals('Informational__kav')) 
         {
@@ -39,6 +41,7 @@ public without sharing class AKBController
                     WHERE PublishStatus='Online' 
                     AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
             funcGroup = info.Functional_Group__c;
+            artType = info.ArticleType;
         } 
         else if (article.ArticleType.equals('How_To__kav')) 
         {
@@ -47,6 +50,7 @@ public without sharing class AKBController
                      WHERE PublishStatus='Online' 
                      AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
             funcGroup = howTo.Functional_Group__c;
+            artType = howTo.ArticleType;
         }
         feedbackHelpful = new AKB_Article_Feedback__c(); 
         getContactId();

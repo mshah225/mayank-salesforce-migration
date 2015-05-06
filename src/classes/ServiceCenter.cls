@@ -36,15 +36,52 @@ public with sharing class ServiceCenter
                    WHERE Contact__c = :contact.Id];
     }
 
-    public Contact getContact() 
+    public Contact getLoggedInContact() 
     {
-        userAlias = [SELECT Alias 
-                     FROM User 
-                     WHERE Id = :UserInfo.getUserId()].Alias;
-        contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, Email, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
-                   FROM Contact 
-                   WHERE ASURITE_Id__c = :userAlias];
-        return contact;
+        Id userContactId = [SELECT ContactId 
+                            FROM User 
+                            WHERE Id = :UserInfo.getUserId()].ContactId;
+        if (userContactId != null)
+        {
+            loggedInContact = [SELECT Id, Name 
+                               FROM Contact 
+                               WHERE Id = :userContactId];
+        }
+        else
+        {
+            userAlias = [SELECT Alias 
+                         FROM User 
+                         WHERE Id = :UserInfo.getUserId()].Alias;
+            loggedInContact = [SELECT Id, Name 
+                               FROM Contact 
+                               WHERE ASURITE_Id__c = :userAlias];
+        }
+        System.Debug('User Alias: ' + userAlias);
+        System.Debug('Contact: ' + loggedInContact);
+        return loggedInContact;
+    }
+    
+    public PageReference submitCase() 
+    {
+        getLoggedInContact();
+        try 
+        {
+            c.ContactId = loggedInContact.Id;
+            System.Debug('Case Contact Id: ' + c.ContactId);
+            c.Web_Submission__c = 'My ASU Standard';
+            insert c;
+            PageReference confirmPage = new PageReference('/studentSC?Confirm=newcase');
+            confirmPage.setRedirect(true);
+            return confirmPage;
+        } 
+        catch (Exception e) 
+        {
+            ApexPages.addMessages(e);
+            System.Debug ('Message: ' + e.getMessage());
+            System.Debug ('Cause: ' + e.getCause());
+            System.Debug ('Stack Trace: ' + e.getStackTraceString());
+            return null;
+        }
     }
 
     public Case[] getMyCases() 

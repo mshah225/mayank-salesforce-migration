@@ -88,7 +88,7 @@ public class Test_AKBController
                                                      AND ArticleType = 'FAQ__kav' 
                                                      LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE Username = 'username@test.com' LIMIT 1];
-        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Test' LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
@@ -108,7 +108,7 @@ public class Test_AKBController
                                                      AND ArticleType = 'Informational__kav' 
                                                      LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE Username = 'username@test.com' LIMIT 1];
-        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Test' LIMIT 1];PageReference akbPage = Page.akb;
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
         Test.startTest();
@@ -127,7 +127,7 @@ public class Test_AKBController
                                                      AND ArticleType = 'How_To__kav' 
                                                      LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE Username = 'username@test.com' LIMIT 1];
-        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Test' LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
@@ -147,7 +147,7 @@ public class Test_AKBController
                                                      AND ArticleType = 'FAQ__kav' 
                                                      LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE Username = 'username@test.com' LIMIT 1];
-        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Test' LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
@@ -167,7 +167,7 @@ public class Test_AKBController
                                                      AND ArticleType = 'FAQ__kav' 
                                                      LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE Username = 'username@test.com' LIMIT 1];
-        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Test' LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
@@ -188,7 +188,7 @@ public class Test_AKBController
                                                      AND ArticleType = 'FAQ__kav' 
                                                      LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE Username = 'username@test.com' LIMIT 1];
-        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Test' LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
@@ -213,7 +213,7 @@ public class Test_AKBController
                                                      AND ArticleType = 'FAQ__kav' 
                                                      LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE Username = 'username@test.com' LIMIT 1];
-        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Test' LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
@@ -239,7 +239,7 @@ public class Test_AKBController
                                                      AND Title = 'testFAQ'
                                                      LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE Username = 'username@test.com' LIMIT 1];
-        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Test' LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);

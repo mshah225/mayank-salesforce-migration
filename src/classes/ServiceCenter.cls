@@ -1,19 +1,15 @@
 public with sharing class ServiceCenter 
 {
     public Contact contact;
-    public Contact loggedInContact;
     public Case c { get; set; }
     public Boolean pinError { get;set; }
     public Boolean pinSuccess { get;set; }
-    public Id caseId;
-    public Id caseContId;
-    public Id contId;
     public Date d;
+    public final Date EMAIL_MESSAGE_LAUNCH = Date.newInstance(2015, 05, 06);
     public Decimal myPin;
     public Decimal newPin { get;set; }
-    public List<Contact> cont;
+    public Id caseId;
     public List<Opportunity> oppList;
-    public List<Contact> contactList;
     public String userAlias;
     public String pinMessage { get;set; }
     public Term__c termcAC;
@@ -24,19 +20,8 @@ public with sharing class ServiceCenter
 
     public void setUpPage() 
     {
-        c = new Case(); 
         getContact();
-        caseContId = [SELECT ContactId 
-                      FROM User 
-                      WHERE Id = :UserInfo.getUserId() 
-                      LIMIT 1].ContactId;
-        contactList = [SELECT Id, Name 
-                       FROM Contact 
-                       WHERE Id = :caseContId];
-        contId = [SELECT ContactId 
-                  FROM User 
-                  WHERE Id = :UserInfo.getUserId() 
-                  LIMIT 1].ContactId;
+        c = new Case(); 
         d = date.today();
         termcAC = [SELECT Session_A_C_Start_Date__c 
                    FROM Term__c 
@@ -46,12 +31,9 @@ public with sharing class ServiceCenter
                   FROM Term__c 
                   WHERE session_B_Start_Date__c > :System.today() 
                   LIMIT 1];
-        cont = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c 
-                FROM Contact 
-                WHERE Id = :contId];
         oppList = [SELECT Career__c, Term__c, StageName, Admitted_Session__c 
                    FROM Opportunity 
-                   WHERE Contact__c = :contId];
+                   WHERE Contact__c = :contact.Id];
     }
 
     public Contact getLoggedInContact() 
@@ -101,50 +83,25 @@ public with sharing class ServiceCenter
             return null;
         }
     }
-    
+
     public Case[] getMyCases() 
     {
-        if (contactList.isEmpty())
-        {
-            getLoggedInContact();
-            return [SELECT Subject, Status, Description, Origin, Origin__c 
+        return [SELECT Subject, Status, Description, Origin, Origin__c 
                     FROM Case 
                     WHERE IsClosed = False 
                     AND Visible_by_Contact__c = true 
-                    AND ContactId = :loggedInContact.Id
+                    AND ContactId = :contact.Id
                     ORDER BY CreatedDate DESC];
-        } 
-        else 
-        {
-            return [SELECT Subject, Status, Description, Origin, Origin__c 
-                    FROM Case 
-                    WHERE IsClosed = False 
-                    AND Visible_by_Contact__c = true 
-                    AND ContactId = :caseContId
-                    ORDER BY CreatedDate DESC];
-        }
     }
     
     public Case[] getClosedCases() 
     {
-        if (contactList.isEmpty()) 
-        {
-            getLoggedInContact();
-            return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c 
-                    FROM Case WHERE IsClosed = True 
-                    AND Visible_by_Contact__c = true 
-                    AND ContactId = :loggedInContact.Id
-                    ORDER BY CreatedDate DESC];
-        } 
-        else 
-        {
-            return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c 
+        return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c 
                     FROM Case 
                     WHERE IsClosed = True 
                     AND Visible_by_Contact__c = true 
-                    AND ContactId = :caseContId
+                    AND ContactId = :contact.Id
                     ORDER BY CreatedDate DESC];
-        }
     }
 
     public Case getCaseDetails() 
@@ -153,6 +110,16 @@ public with sharing class ServiceCenter
                 FROM Case 
                 WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
     } 
+
+    public EmailMessage[] getEmailMessages() { 
+        return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress 
+                FROM EmailMessage 
+                WHERE ParentId = :ApexPages.currentPage().getParameters().get('id') 
+                AND Incoming = false
+                AND CreatedDate > :EMAIL_MESSAGE_LAUNCH 
+                AND ToAddress = :contact.Email
+                ORDER BY CreatedDate DESC];
+    }
     
     public PageReference viewCase() 
     {
@@ -185,11 +152,11 @@ public with sharing class ServiceCenter
     
     public Boolean getHelpBox() 
     {
-        if (cont == Null || cont.size() == 0) 
+        if (contact == Null) 
         {
             return true;
         }
-        else if ((oppList == Null && cont.size() > 0) || (oppList.size() == 0 && cont.size() > 0))
+        else if ((oppList == Null && contact != null) || (oppList.size() == 0 && contact != null))
         {
             return true;
         } 
@@ -201,13 +168,9 @@ public with sharing class ServiceCenter
         {
             return false;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (cont[0].Affiliation_Student__c == 'Current' || cont[0].Affiliation_Alumni__c == 'Current' || cont[0].Affiliation_Courtesy_Affiliate__c == 'Current' || cont[0].Affiliation_Employee__c == 'Current') && d < date.valueOf(termcB.Session_B_Start_Date__c)) 
+        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (contact.Affiliation_Student__c == 'Current' || contact.Affiliation_Alumni__c == 'Current' || contact.Affiliation_Courtesy_Affiliate__c == 'Current' || contact.Affiliation_Employee__c == 'Current') && d < date.valueOf(termcB.Session_B_Start_Date__c)) 
         {
             return false;
-        }
-        else if (cont[0].CAP__c == Null) 
-        {
-            return true;
         } 
         else 
         {
@@ -217,11 +180,11 @@ public with sharing class ServiceCenter
     
     public Boolean getQuestionsBox() 
     {
-        if (cont == Null || cont.size() == 0) 
+        if (contact == Null) 
         {
             return false;
         } 
-        else if ((oppList == Null && cont.size() > 0) || (oppList.size() == 0 && cont.size() > 0)) 
+        else if ((oppList == Null && contact != null) || (oppList.size() == 0 && contact != null)) 
         {
             return false;
         } 
@@ -233,7 +196,7 @@ public with sharing class ServiceCenter
         {
             return true;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (cont[0].Affiliation_Student__c == 'Current' || cont[0].Affiliation_Alumni__c == 'Current' || cont[0].Affiliation_Courtesy_Affiliate__c == 'Current' || cont[0].Affiliation_Employee__c == 'Current') && d < date.valueOf(termcB.Session_B_Start_Date__c)) 
+        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (contact.Affiliation_Student__c == 'Current' || contact.Affiliation_Alumni__c == 'Current' || contact.Affiliation_Courtesy_Affiliate__c == 'Current' || contact.Affiliation_Employee__c == 'Current') && d < date.valueOf(termcB.Session_B_Start_Date__c)) 
         {
             return true;
         }
@@ -245,11 +208,11 @@ public with sharing class ServiceCenter
     
     public Boolean getMyCasesBox() 
     {
-        if (cont == Null || cont.size() == 0) 
+        if (contact == Null) 
         {
             return true;
         } 
-        else if ((oppList == Null && cont.size() > 0) || (oppList.size() == 0 && cont.size() > 0)) 
+        else if ((oppList == Null && contact != null) || (oppList.size() == 0 && contact != null)) 
         {
             return true;
         } 
@@ -261,7 +224,7 @@ public with sharing class ServiceCenter
         {
             return false;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (cont[0].Affiliation_Student__c == 'Current' || cont[0].Affiliation_Alumni__c == 'Current' || cont[0].Affiliation_Courtesy_Affiliate__c == 'Current' || cont[0].Affiliation_Employee__c == 'Current') && d < date.valueOf(termcB.Session_B_Start_Date__c)) 
+        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (contact.Affiliation_Student__c == 'Current' || contact.Affiliation_Alumni__c == 'Current' || contact.Affiliation_Courtesy_Affiliate__c == 'Current' || contact.Affiliation_Employee__c == 'Current') && d < date.valueOf(termcB.Session_B_Start_Date__c)) 
         {
             return false;
         }
@@ -270,38 +233,33 @@ public with sharing class ServiceCenter
             return true;   
         }
     }
-        
-    public Contact getContact() 
+
+    public PageReference submitCase() 
     {
-        if (contId != null) 
+        try 
         {
-            contact = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
-                       FROM Contact 
-                       WHERE Id = :contId];
-            return contact;
-        }
-        else 
+            c.ContactId = contact.Id;
+            System.Debug('Case Contact Id: ' + c.ContactId);
+            c.Web_Submission__c = 'My ASU Standard';
+            insert c;
+            PageReference confirmPage = new PageReference('/studentSC?Confirm=newcase');
+            confirmPage.setRedirect(true);
+            return confirmPage;
+        } 
+        catch (Exception e) 
         {
-            getLoggedInContact();
-            contact = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
-                       FROM Contact 
-                       WHERE Id = :loggedInContact.Id];
-            return contact;
-        }   
+            ApexPages.addMessages(e);
+            System.Debug ('Message: ' + e.getMessage());
+            System.Debug ('Cause: ' + e.getCause());
+            System.Debug ('Stack Trace: ' + e.getStackTraceString());
+            return null;
+       }
     }
     
     public Decimal getMyPin() 
     {
-        getContact();
-        if (contact != null) 
-        {
-            myPin = contact.Self_Service_PIN__c;
-            return myPin;
-        }
-        else 
-        {
-            return null;
-        }
+        myPin = contact.Self_Service_PIN__c;
+        return myPin;
     }
     
     public PageReference changePin() 

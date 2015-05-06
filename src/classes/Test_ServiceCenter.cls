@@ -217,8 +217,8 @@ private class Test_ServiceCenter
             sc.SubmitCase();
             sc.getMyCases();
             sc.getClosedCases();
-            sc.contactList.clear();
             sc.getMyCases();
+            sc.getEmailMessages();
         }
         Test.stopTest();
     }
@@ -232,11 +232,9 @@ private class Test_ServiceCenter
             Case c = sc.c;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
-            c.ContactId = testContact.Id;
+            c.contact = testContact;
             sc.c = c;
             sc.SubmitCase();
-            sc.caseContId = testContact.Id;
-            sc.contactList = [SELECT Id, Name FROM Contact WHERE Id = :sc.caseContId];
             sc.getMyCases();
             sc.getClosedCases();
         }
@@ -263,17 +261,14 @@ private class Test_ServiceCenter
         setUp();
         System.runAs(testUser) {
             sc = new ServiceCenter();
-            sc.contId = testUser.ContactId;
-            sc.cont = [SELECT Id, Name, EmplId__c, CAP__c, Personal_Email__c, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c 
-                       FROM Contact 
-                       WHERE Id = :sc.contId];
+            sc.contact = testContact;
             sc.getContact();
             sc.getMyPin();
             sc.newPin = 111111;
             sc.changePin();
             sc.newPin = 6758394;
             sc.changePin();
-            sc.cont = null;
+            sc.contact = null;
             sc.getContact();
         }
     }
@@ -284,10 +279,9 @@ private class Test_ServiceCenter
         System.runAs(testUser) 
         {
             sc = new ServiceCenter();
-            sc.contId = testUser.ContactId;
-            sc.cont.add(testContact);
+            sc.contact = testContact;
             sc.oppList.add(testOpp);
-            System.Debug('Test user contact getOppBoxes() Not Enrolled: ' + sc.cont);
+            System.Debug('Test user contact getOppBoxes() Not Enrolled: ' + sc.contact);
             System.Debug('Test user opportunity getOppBoxes() Not Enrolled: ' + sc.oppList);
             sc.getNormalPhone();
             sc.getRoverPhone();
@@ -303,10 +297,9 @@ private class Test_ServiceCenter
         System.runAs(testUserAC) 
         {
             sc = new ServiceCenter();
-            sc.contId = testUserAC.ContactId;
-            sc.cont.add(testContactAC);
+            sc.contact = testContactAC;
             sc.oppList.add(testOppAC);
-            System.Debug('Test user contact getACOppBoxes(): ' + sc.cont);
+            System.Debug('Test user contact getACOppBoxes(): ' + sc.contact);
             System.Debug('Test user opportunity getACOppBoxes(): ' + sc.oppList);
             sc.getNormalPhone();
             sc.getRoverPhone();
@@ -322,10 +315,9 @@ private class Test_ServiceCenter
         System.runAs(testUserB) 
         {
             sc = new ServiceCenter();
-            sc.contId = testUserB.ContactId;
-            sc.cont.add(testContactB);
+            sc.contact = testContactB;
             sc.oppList.add(testOppB);
-            System.Debug('Test user contact getBOppBoxes(): ' + sc.cont);
+            System.Debug('Test user contact getBOppBoxes(): ' + sc.contact);
             System.Debug('Test user opportunity getBOppBoxes(): ' + sc.oppList);
             sc.getNormalPhone();
             sc.getRoverPhone();
@@ -340,9 +332,8 @@ private class Test_ServiceCenter
         setUpACOpp();
         System.runAs(testUserAC) {
             sc = new ServiceCenter();
-            sc.contId = testUserAC.ContactId;
-            sc.cont.add(testContactAC);
-            System.Debug('Test user contact getOppBoxes() Not Enrolled: ' + sc.cont);
+            sc.contact = testContactAC;
+            System.Debug('Test user contact getOppBoxes() Not Enrolled: ' + sc.contact);
             System.Debug('Test user opportunity getOppBoxes() Not Enrolled: ' + sc.oppList);
             sc.getNormalPhone();
             sc.getRoverPhone();

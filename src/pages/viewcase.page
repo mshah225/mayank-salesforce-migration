@@ -451,6 +451,7 @@
     </div> 
 
     <!-- START CONTENT -->
+    <div id="asu_content_well">
 
     <center>
         <apex:outputPanel rendered="{!pinError}">

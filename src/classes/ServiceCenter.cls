@@ -56,12 +56,24 @@ public with sharing class ServiceCenter
 
     public Contact getLoggedInContact() 
     {
-        userAlias = [SELECT Alias 
-                     FROM User 
-                     WHERE Id = :UserInfo.getUserId()].Alias;
-        loggedInContact = [SELECT Id, Name 
-                           FROM Contact 
-                           WHERE ASURITE_Id__c = :userAlias];
+        Id userContactId = [SELECT ContactId 
+                            FROM User 
+                            WHERE Id = :UserInfo.getUserId()].ContactId;
+        if (userContactId != null)
+        {
+            loggedInContact = [SELECT Id, Name 
+                               FROM Contact 
+                               WHERE Id = :userContactId];
+        }
+        else
+        {
+            userAlias = [SELECT Alias 
+                         FROM User 
+                         WHERE Id = :UserInfo.getUserId()].Alias;
+            loggedInContact = [SELECT Id, Name 
+                               FROM Contact 
+                               WHERE ASURITE_Id__c = :userAlias];
+        }
         System.Debug('User Alias: ' + userAlias);
         System.Debug('Contact: ' + loggedInContact);
         return loggedInContact;

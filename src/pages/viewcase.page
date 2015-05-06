@@ -96,39 +96,93 @@
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
     <script>
         BG.setSite("bomgar.asu.edu");
-        var custName = "{!$Component.customer_name}";
-        var desc = "{!$Component.description}";
-        var emplid = "{!$User.EmplId__c}";
-    
-        function start(){
+        
+        // Start 'Finances' Chat
+        function startFAChat()
+        {
             var jsonString = null;
             var jsonObject = {};
-            jsonObject.employeeNumber = emplid;
-            jsonObject.description = document.getElementById('description').value;
-            try{
+                jsonObject.employeeNumber = "{!$User.EmplId__c}";
+                jsonObject.description = document.getElementById('FADesc').value;
+                jsonObject.asuriteId = "{!$User.Alias}";
+                jsonObject.externalKey = 'Finances';
+            try
+            {
                 jsonString = JSON.stringify(jsonObject);
             }
-            catch(e){
-            
+            catch (e)
+            {
+
             }
-            if(jsonString == null){
-                jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('description').value + '"}';
+            if (jsonString == null)
+            {
+                jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('FADesc').value + '", "asuriteId":"{!$User.Alias}", "externalKey":"Finances"}';
             }
-                     
-            BG.start(BG.START_TYPE.CHAT, {
-                issue: {
-                    codeName: 'salesforce_chat',
-                    customerName: '{!$User.Contact_First_Name__c} {!$User.Contact_Last_Name__c}',
+
+            BG.start(BG.START_TYPE.CHAT,
+            {
+                issue:
+                {
+                    codeName: 'studentfinances_chat',
+                    customerName: "{!$User.FirstName} {!$User.LastName}",
                     companyName: 'ASU',
-                    details: document.getElementById('description').value
+                    details: document.getElementById('FADesc').value
                 },
-                attributes:{
+                attributes:
+                {
                     externalKey: ('SFDC:' + jsonString)
                 },
-                uiOptions:{
+                uiOptions:
+                {
                     fallbackToFullWindow:true
                 }
-            });              
+            });
+        }
+    </script>
+
+    <script>
+        BG.setSite("bomgar.asu.edu");
+       
+        // Start 'Other' Chat
+        function startSFDCChat()
+        {
+            var jsonString = null;
+            var jsonObject = {};
+                jsonObject.employeeNumber = "{!$User.EmplId__c}";
+                jsonObject.description = document.getElementById('SFDCDesc').value;
+                jsonObject.asuriteId = "{!$User.Alias}";
+                jsonObject.externalKey = 'Other';
+            try
+            {
+                jsonString = JSON.stringify(jsonObject);
+            }
+            catch (e)
+            {
+
+            }
+            if (jsonString == null)
+            {
+                jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('SFDCDesc').value + '", "asuriteId":"{!$User.Alias}", "externalKey":"Other"}';
+            }
+
+            BG.start(BG.START_TYPE.CHAT,
+            {
+                issue:
+                {
+                    codeName: 'salesforce_chat',
+                    customerName: "{!$User.FirstName} {!$User.LastName}",
+                    companyName: 'ASU',
+                    details: document.getElementById('SFDCDesc').value
+                },
+                attributes:
+                {
+                    externalKey: ('SFDC:' + jsonString)
+                },
+                uiOptions:
+                {
+                    fallbackToFullWindow:true
+                }
+            });
         }
     </script>
 
@@ -176,7 +230,7 @@
                 return false;
             });
         });
-    </script>
+    </script> 
 </head>
 
 <body>
@@ -390,7 +444,6 @@
           </p>
         </nav>
         </apex:outputPanel>
-        
     </header>  
     
     <div class="page-title">
@@ -401,12 +454,12 @@
 
     <center>
         <apex:outputPanel rendered="{!pinError}">
-             <div class="alert alert-danger">
+            <div class="alert alert-danger">
                 <button type='button' class='close' data-dismiss='alert'>×</button>
                 <apex:outputText escape="false" value="{!pinMessage}"/>
             </div>
         </apex:outputPanel>
- 
+
         <apex:outputPanel rendered="{!pinSuccess}">
             <div class="alert alert-success">
                 <button type='button' class='close' data-dismiss='alert'>×</button>
@@ -415,8 +468,6 @@
         </apex:outputPanel>
     </center>
 
-    <div id="asu_content_well"><!-- These elements (content, content_well and content_container) -->
-        <!-- INPUT CONTENT HERE -->
     <div class="container">
 
       <ol class="breadcrumb">
@@ -498,9 +549,6 @@
                         </div>
                         <div class="content">
                         <p>Please contact us if you need immediate assistance. We're available 24/7 to answer your questions.</p>
-                        
-                        
-                        
                         <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>     
                         <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
                             
@@ -554,7 +602,7 @@
                                     <button id="cancelPinInput" class="resetPin kbbtn" onclick="this.form.reset();" style="display:none;" type="button">Cancel</button>
                                     <p style="margin-top:5px;">Select <b>View</b> when calling to access confidential information about your financial aid and account balance.</p>
                                 </div>
-                                                                
+                                
                                 <script>
                                     $( "[id$=qmarkPin]" ).click(function() {
                                         $( "[id$=tooltipPin]" ).show();    
@@ -644,7 +692,7 @@
                         <div class="dropdown" style="display:inline-block">
                             <button type="button" class="btn kbbtn dropdown-toggle" style="width:160px;color:#fff;background:#990033;padding:5px;" data-toggle="dropdown" href="//asu.edu/helpchat">
                                 <span class="glyphicon glyphicon-comment pull-left" style="padding-left:10px;"></span>
-                                24/7 Live Chat &nbsp;
+                                Live Chat &nbsp;
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
@@ -676,25 +724,15 @@
                                 </apex:pageBlock>
                             </div>
 
-                            <form id="faChatForm" style="margin-top:5px;display:none;" method="post" action="https://server.iad.liveperson.net/hc/21503917/?site=21503917&cmd=file&file=preChatSurveySubmit&survey=Pre-Chat">
+                            <div id="faChatForm" style="margin-top:5px;display:none;">
                                 <apex:pageBlock >
-                                    <h5>Financial Aid and Scholarship Services</h5><br /><br />
-                                    <input type="text" class="hidden" name="SESSIONVAR!simsurl" value="http://10.80.80.68/sims/callViewPage.seam?call_number=234543646&amp;agent_id=l1agent" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!Institution" value="asu-fa" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!Sims_Callback" value="asu.edusupportcenter.com" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!skill" value="FinancialAid" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!Username" value="{!$User.ASURITE_Id__c}" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!UserID" value="{!$User.EmplId__c}" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!identifier" value="{!$User.Contact_First_Name__c}" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!LastName" value="{!$User.Contact_Last_Name__c}" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!ASU_Request_Type" value="BbSS Chat" /> 
-                                    <input type="text" class="hidden" name="SESSIONVAR!ASU_Request_Type_Detail" value="BbSS Chat" />
-                                    <textarea id="caseDescription" maxlength="32000" name="SESSIONVAR!ASU_Request_Description" rows="6" style="width:100%;max-width:300px;resize:none;" placeholder="Enter a brief description of your issue"></textarea><br />
+                                    <h5>Get Help with Finances</h5><br /><br />
+                                    <textarea id="FADesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;"></textarea><br />
                                     <apex:pageBlockButtons location="bottom">
-                                        <input type="submit" id="faChatSubmit" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;" value="Start Chat" />
+                                        <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;" onClick="startFAChat();">Start Chat</button>
                                     </apex:pageBlockButtons>
                                 </apex:pageBlock>
-                            </form>  
+                            </div>
                         </div>
                     </div>
                 </apex:outputPanel>

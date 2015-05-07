@@ -38,12 +38,24 @@ public with sharing class ServiceCenter
 
     public Contact getContact() 
     {
-        userAlias = [SELECT Alias 
-                     FROM User 
-                     WHERE Id = :UserInfo.getUserId()].Alias;
-        contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, Email, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
-                   FROM Contact 
-                   WHERE ASURITE_Id__c = :userAlias];
+        Id userContactId = [SELECT ContactId 
+                            FROM User 
+                            WHERE Id = :UserInfo.getUserId()].ContactId;
+        if (userContactId != null)
+        {
+            contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, Email, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
+                       FROM Contact 
+                       WHERE ASURITE_Id__c = :userContactId];
+        }
+        else
+        {
+            userAlias = [SELECT Alias 
+                         FROM User 
+                         WHERE Id = :UserInfo.getUserId()].Alias;
+            contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, Email, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
+                       FROM Contact 
+                       WHERE ASURITE_Id__c = :userAlias];
+        }
         return contact;
     }
 

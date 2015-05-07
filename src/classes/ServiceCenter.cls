@@ -45,7 +45,7 @@ public with sharing class ServiceCenter
         {
             contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, Email, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
                        FROM Contact 
-                       WHERE ContactId = :userContactId];
+                       WHERE Id = :userContactId];
         }
         else
         {

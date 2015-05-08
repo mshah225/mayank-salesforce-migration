@@ -101,10 +101,6 @@
     .btn.kbbtn.btnLink:hover {
         color: #fff !important;
     }
-    
-    .myCasesTable tr {
-        border-bottom: solid 1px #e6e6e6;
-    }
 
     .caseField {
         -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */

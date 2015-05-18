@@ -730,7 +730,7 @@
                         <div style="text-align:right">
                             <br />
                             <apex:form >
-                                <apex:pageBlock mode="maindetail" rendered="{!(closedCases.size >= 1)}">
+                                <apex:pageBlock mode="maindetail">
                                     <a href="/viewAllCases?source=studentSC" style="padding:4px" class="btn">
                                         View All Cases
                                     </a>

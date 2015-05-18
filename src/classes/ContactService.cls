@@ -6,7 +6,7 @@ public class ContactService
     */
 	public static Contact createTestContact() 
 	{
-        Contact testContact = new Contact();
+		Contact testContact = new Contact();
         testContact.FirstName = 'Test';
         testContact.LastName = 'Contact';
         testContact.MailingPostalCode = '85282';
@@ -15,8 +15,8 @@ public class ContactService
         testContact.Self_Service_PIN__c = 57483638;
         testContact.PIN_lockout__c = true;
         testContact.ASURite_ID__c = 'testuser';
-        
-        return testContact;
+
+		return testContact;
 	}
     
     /**

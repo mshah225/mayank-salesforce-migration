@@ -12,33 +12,79 @@ public without sharing class CaseHandler
    * This method is called prior to execution of a BEFORE trigger. Use this to cache
    * any data required into maps prior execution of the trigger.
    */
-  public void bulkBefore() {
-    if (!Trigger.isInsert)
-      return;
-      
-    recruitmentCaseRT = new List<RecordType>([SELECT Id FROM RecordType WHERE SobjectType='Case' AND DeveloperName = 'ASU_Admission_Services']);
-    if (recruitmentCaseRT.size() < 1)
+  public void bulkBefore() 
+  {
+    if (Trigger.isInsert)
+    {
+      recruitmentCaseRT = new List<RecordType>([SELECT Id FROM RecordType WHERE SobjectType='Case' AND DeveloperName = 'ASU_Admission_Services']);
+      if (recruitmentCaseRT.size() < 1)
+      {
         return;
+      }
 
-    Set<Id> caseContactIdSet = new Set<ID>();
-    Set<Id> campaignIdSet = new Set<Id>();
-    
-    for (Case c: (List<Case>)Trigger.new) {
-        if (c.RecordTypeId == recruitmentCaseRT[0].Id) {
-            campaignIdSet.add(c.Case_Source__c);
-            // Case "a"
-            // SFR-1109; removed boolean check here to correct bug on webform submissions
-            //if (c.Associate_Case_to_Active_Opportunity__c == true) {
-            caseContactIdSet.add(c.ContactId);
-            //}
- 
+      Set<Id> caseContactIdSet = new Set<ID>();
+      Set<Id> campaignIdSet = new Set<Id>();
+      
+      for (Case c: (List<Case>)Trigger.new)
+      {
+        if (c.RecordTypeId == recruitmentCaseRT[0].Id)
+        {
+          campaignIdSet.add(c.Case_Source__c);
+          // Case "a"
+          // SFR-1109; removed boolean check here to correct bug on webform submissions
+          //if (c.Associate_Case_to_Active_Opportunity__c == true) {
+          caseContactIdSet.add(c.ContactId);
+          //}
         }
+      }
+
+      relatedContactMap = new Map<Id, Contact>([SELECT Id, (Select Id, StageName, Territory_Assignment_Last_Rule_Type__c, OwnerId, Owner.IsActive, Enrollment_Coach__c, Enrollment_Coach__r.IsActive, CreatedDate, IsClosed FROM Opportunities__r ORDER BY IsClosed ASC, CreatedDate DESC) FROM Contact WHERE Id in :caseContactIdSet]);
+
+      if (campaignIdSet.size() > 0)
+      {
+        sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.Category__c, Case_Assignment_Rule__r.Sub_Category__c, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.Functional_Group__c, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
+      }
     }
-    relatedContactMap = new Map<Id, Contact>([SELECT Id, (Select Id, StageName, Territory_Assignment_Last_Rule_Type__c, OwnerId, Owner.IsActive, Enrollment_Coach__c, Enrollment_Coach__r.IsActive, CreatedDate, IsClosed FROM Opportunities__r ORDER BY IsClosed ASC, CreatedDate DESC) FROM Contact WHERE Id in :caseContactIdSet]);
-    if (campaignIdSet.size() > 0) {
-      sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.Category__c, Case_Assignment_Rule__r.Sub_Category__c, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.Functional_Group__c, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
+    else if(Trigger.isUpdate)
+    {
+      //Handles Webform cases (webforms.asu.edu)
+      for(Case c : (List<Case>)Trigger.new)
+      {
+        if(c.Status == 'Processing' && c.Deep_Links__c != NULL)
+        {
+          List<String> links = c.Deep_Links__c.split('Click Here');
+          if(links.size() == (Integer.valueof(c.Number_of_Files__c) + 1))
+          {
+            c.Status = 'New';
+              
+            List<String> subjectSplit = c.Subject.split('%');
+            if(subjectSplit.size() >= 2)
+            {
+              String queueId = '';
+              for(Integer x = 0; x < subjectSplit.size(); x++)
+              {
+                List<String> tokenSplit = subjectSplit[x].split(':');
+                if(tokenSplit.size() >= 2 && tokenSplit[0] == 'Queue' && tokenSplit[1] != '')
+                {
+                  queueId = tokenSplit[1];
+                  c.OwnerId = queueId;
+                  System.debug(c.OwnerId);
+                }
+
+              }
+              c.Subject = subjectSplit[0];
+            }
+
+            Id fa_id = [SELECT Id FROM Group WHERE Name = 'Financial Aid (Case)' LIMIT 1].Id;
+            if(c.OwnerId == fa_id)
+            {
+              c.Visible_By_Contact__c = FALSE;
+              c.Status = 'Closed: Resolved';
+            }
+          }
+        }
+      }
     }
-    
   }
   
   /**
@@ -57,133 +103,182 @@ public without sharing class CaseHandler
    * This method is called iteratively for each record to be inserted during a BEFORE
    * trigger. Never execute any SOQL/SOSL etc in this and other iterative methods.
    */
-  public void beforeInsert(SObject so) {
+  public void beforeInsert(SObject so) 
+  {
     Case c = (Case)so;
  
-    if (recruitmentCaseRT.size() > 0 && c.RecordTypeId == recruitmentCaseRT[0].Id) {
-        Contact con = relatedContactMap.get(c.ContactId);
-        List<Opportunity> opList = new List<Opportunity>();
-        Case_Assignment_Rule__c defaultCAR;
-        boolean ownerSet = false;
+    if (recruitmentCaseRT.size() > 0 && c.RecordTypeId == recruitmentCaseRT[0].Id) 
+    {
+      Contact con = relatedContactMap.get(c.ContactId);
+      List<Opportunity> opList = new List<Opportunity>();
+      Case_Assignment_Rule__c defaultCAR;
+      boolean ownerSet = false;
         
-        if (con != null)
-            opList = con.Opportunities__r;
+      if (con != null)
+      {
+        opList = con.Opportunities__r;
+      }
         
-        system.debug('GRF c: ' + c);
-        system.debug('GRF opList: ' + opList);
+      system.debug('GRF c: ' + c);
+      system.debug('GRF opList: ' + opList);
         
-        // SFR-1109; moved boolean check here to correct bug on webform submissions
-        if (c.Associate_Case_to_Active_Opportunity__c == true && opList != null && opList.size() > 0)
-            c.Opportunity__c = opList[0].Id;
+      // SFR-1109; moved boolean check here to correct bug on webform submissions
+      if (c.Associate_Case_to_Active_Opportunity__c == true && opList != null && opList.size() > 0)
+      {
+        c.Opportunity__c = opList[0].Id;
+      }
         
-        // Special handling for API users below for webform integrations'
-        system.debug('GRF Username: ' + UserInfo.getFirstName());
-        system.debug('GRF sourceMap: ' + sourceMap);
-        if (!UserInfo.getFirstName().equals('API') || UserInfo.getLastName().equals('ASU EMAIL SERVICE')) {
-          // SFR-1109; added opList check here to correct bug on webform submissions
-            if (opList != null && opList.size() > 0) {
-                // Case "b" 
-                if (c.Type_of_Additional_Assignment_Needed__c == 'Territory Manager' && c.Associate_Case_to_Active_Opportunity__c == true) {
-                    if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false) {
-                        c.OwnerId = opList[0].OwnerId;
-                        ownerSet = true;
-                    }
-                }
-                // Case "c"
-                else if (c.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach' && c.Associate_Case_to_Active_Opportunity__c == true) {
-                    if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false) {
-                        c.OwnerId = opList[0].Enrollment_Coach__c;  
-                        ownerSet = true;
-                    }
-                }                
+      // Special handling for API users below for webform integrations'
+      system.debug('GRF Username: ' + UserInfo.getFirstName());
+      system.debug('GRF sourceMap: ' + sourceMap);
+      if (!UserInfo.getFirstName().equals('API') || UserInfo.getLastName().equals('ASU EMAIL SERVICE'))
+      {
+        // SFR-1109; added opList check here to correct bug on webform submissions
+        if (opList != null && opList.size() > 0)
+        {
+          // Case "b" 
+          if (c.Type_of_Additional_Assignment_Needed__c == 'Territory Manager' && c.Associate_Case_to_Active_Opportunity__c == true)
+          {
+            if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false) 
+            {
+              c.OwnerId = opList[0].OwnerId;
+              ownerSet = true;
             }
+          }
+          // Case "c"
+          else if (c.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach' && c.Associate_Case_to_Active_Opportunity__c == true)
+          {
+            if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false)
+            {
+              c.OwnerId = opList[0].Enrollment_Coach__c;  
+              ownerSet = true;
+            }
+          }                
         }
-        // Case for API users (webforms)
-        else {
-            if (sourceMap.containsKey(c.Case_Source__c)) {
-              Campaign source = sourceMap.get(c.Case_Source__c);
-              // Did we find a related Case Assignment Rule?
-              if (source.Case_Assignment_Rule__c != null) {
+      }
+      // Case for API users (webforms)
+      else
+      {
+        if (sourceMap.containsKey(c.Case_Source__c))
+        {
+          Campaign source = sourceMap.get(c.Case_Source__c);
+          // Did we find a related Case Assignment Rule?
+          if (source.Case_Assignment_Rule__c != null)
+          {
+            // SFE-690 Apply TM/EC logic to API users as well as non-API users
+            if (opList != null && opList.size() > 0)
+            {
+              // Case "b" 
+              if (source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c == 'Territory Manager')
+              {
+                if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false)
+                {
+                  c.OwnerId = opList[0].OwnerId;
+                  c.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
+                  ownerSet = true;
+                }
+              }
+              // Case "c"
+              else if (source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach')
+              {
+                if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false)
+                {
+                  c.OwnerId = opList[0].Enrollment_Coach__c;
+                  c.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
+                  ownerSet = true;  
+                }
+              }                
+            }
 
-                // SFE-690 Apply TM/EC logic to API users as well as non-API users
-                if (opList != null && opList.size() > 0) {
+            if (!ownerSet && source.Case_Assignment_Rule__r.Queue_ID__c != null)
+            {
+              c.OwnerId = ID.valueOf(source.Case_Assignment_Rule__r.Queue_ID__c);
+            }
+            if (source.Case_Assignment_Rule__r.Origin__c != null)
+            {
+              c.Origin__c = source.Case_Assignment_Rule__r.Origin__c;
+            }
+            if (source.Case_Assignment_Rule__r.Category__c != null)
+            {
+              c.Category__c = source.Case_Assignment_Rule__r.Category__c;
+            }
+            if (source.Case_Assignment_Rule__r.Sub_Category__c != null)
+            {
+              c.Sub_Category__c = source.Case_Assignment_Rule__r.Sub_Category__c;
+            }
+            if (source.Case_Assignment_Rule__r.Functional_Group__c != null)
+            {
+              c.Functional_Group__c =source.Case_Assignment_Rule__r.Functional_Group__c;
+            }
+          }
+          else
+          {
+            // No related Case Assignment Rule found; use the Territory Manager if found
+            if (opList != null && opList.size() > 0 && opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true)
+            {
+              c.OwnerId = opList[0].OwnerId;
+            }
+            else
+            {
+              // No valid Territory Manager found; use default Case Assignment Rule
+              if (defaultCAR == null)
+              {
+                defaultCar = [SELECT Id, Queue_ID__c, Origin__c, Category__c, Sub_Category__c, Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
+                if (!(defaultCAR == null))
+                {
+                  // SFE-690 Apply TM/EC logic to API users as well as non-API users
+                  if (opList != null && opList.size() > 0)
+                  {
                     // Case "b" 
-                    if (source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c == 'Territory Manager') {
-                        if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false) {
-                            c.OwnerId = opList[0].OwnerId;
-                            c.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
-                            ownerSet = true;
-                        }
+                    if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Territory Manager') 
+                    {
+                      if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false)
+                      {
+                        c.OwnerId = opList[0].OwnerId;
+                        c.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
+                        ownerSet = true;
+                      }
                     }
                     // Case "c"
-                    else if (source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach') {
-                        if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false) {
-                            c.OwnerId = opList[0].Enrollment_Coach__c;
-                            c.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
-                            ownerSet = true;  
-                        }
-                    }                
-                }
-
-               if (!ownerSet && source.Case_Assignment_Rule__r.Queue_ID__c != null)
-                  c.OwnerId = ID.valueOf(source.Case_Assignment_Rule__r.Queue_ID__c);
-                if (source.Case_Assignment_Rule__r.Origin__c != null)
-                  c.Origin__c = source.Case_Assignment_Rule__r.Origin__c;
-                if (source.Case_Assignment_Rule__r.Category__c != null)
-                  c.Category__c = source.Case_Assignment_Rule__r.Category__c;
-                if (source.Case_Assignment_Rule__r.Sub_Category__c != null)
-                  c.Sub_Category__c = source.Case_Assignment_Rule__r.Sub_Category__c;
-                if (source.Case_Assignment_Rule__r.Functional_Group__c != null)
-                  c.Functional_Group__c =source.Case_Assignment_Rule__r.Functional_Group__c;
-              }
-              else {
-                // No related Case Assignment Rule found; use the Territory Manager if found
-                if (opList != null && opList.size() > 0 && opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true)
-                  c.OwnerId = opList[0].OwnerId;
-                else {
-                  // No valid Territory Manager found; use default Case Assignment Rule
-                  if (defaultCAR == null) {
-                    defaultCar = [SELECT Id, Queue_ID__c, Origin__c, Category__c, Sub_Category__c, Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
-                    if (!(defaultCAR == null)) {
-  
-                      // SFE-690 Apply TM/EC logic to API users as well as non-API users
-                      if (opList != null && opList.size() > 0) {
-                          // Case "b" 
-                          if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Territory Manager') {
-                              if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false) {
-                                  c.OwnerId = opList[0].OwnerId;
-                                  c.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
-                                  ownerSet = true;
-                              }
-                          }
-                          // Case "c"
-                          else if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach') {
-                              if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false) {
-                                  c.OwnerId = opList[0].Enrollment_Coach__c;
-                                  c.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
-                                  ownerSet = true;  
-                              }
-                          }                
+                    else if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach')
+                    {
+                      if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false)
+                      {
+                        c.OwnerId = opList[0].Enrollment_Coach__c;
+                        c.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
+                        ownerSet = true;  
                       }
-                      if (!ownerSet && defaultCar.Queue_ID__c != null)
-                        c.OwnerId = ID.valueOf(defaultCar.Queue_ID__c);
+                    }                
+                  }
+                  if (!ownerSet && defaultCar.Queue_ID__c != null)
+                  {
+                    c.OwnerId = ID.valueOf(defaultCar.Queue_ID__c);
 
-                      if (defaultCAR.Origin__c != null)
-                        c.Origin__c = defaultCAR.Origin__c;
-                      if (defaultCAR.Category__c != null)
-                        c.Category__c = defaultCAR.Category__c;
-                      if (defaultCAR.Sub_Category__c != null)
-                        c.Sub_Category__c = defaultCAR.Sub_Category__c;
-                      if (defaultCAR.Functional_Group__c != null)
-                        c.Functional_Group__c = defaultCAR.Functional_Group__c;                          
+                    if (defaultCAR.Origin__c != null)
+                    {
+                      c.Origin__c = defaultCAR.Origin__c;
+                    }
+                    if (defaultCAR.Category__c != null)
+                    {
+                      c.Category__c = defaultCAR.Category__c;
+                    }
+                    if (defaultCAR.Sub_Category__c != null)
+                    {
+                      c.Sub_Category__c = defaultCAR.Sub_Category__c;
+                    }
+                    if (defaultCAR.Functional_Group__c != null)
+                    {
+                      c.Functional_Group__c = defaultCAR.Functional_Group__c;                          
                     }
                   }
                 }
               }
             }
-        } 
+          }
+        }
+      } 
     }       
-}
+  }
   
   
   /**

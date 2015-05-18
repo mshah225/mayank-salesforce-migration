@@ -1,11 +1,12 @@
-public with sharing class AKBController 
+public without sharing class AKBController 
 {    
-    public AKB_Article_Feedback__c feedbackHelpful {get;set;}
+    public AKB_Article_Feedback__c feedbackHelpful { get;set; }
     public AKB_Article_Feedback__c[] feedbackGiven;
+    public Case suggestAnArticle {get; set;}
     public FAQ__kav faq {get;set;}
-    public How_To__kav howTo {get;set;}
-    public Informational__kav info {get;set;}
-    public KnowledgeArticleVersion article {get;set;}
+    public How_To__kav howTo { get;set; }
+    public Informational__kav info { get;set; }
+    public KnowledgeArticleVersion article { get;set; }
     public Id contactId;
     public Id articleId;
     public List<String> urls;
@@ -15,35 +16,47 @@ public with sharing class AKBController
     public String urlsJSON { get;set; }
     public String fixedLinksJSON { get;set; }
     public String userAlias;
+    public String funcGroup { get;set; }
+    public String currentUser { get;set; }
+    public String artType { get;set; }
    
     public AKBController() 
     {   
-        article = [SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId 
+        article = [SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId, CreatedBy.Name
                    FROM KnowledgeArticleVersion 
                    WHERE KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id') 
                    AND PublishStatus = 'Online'];                      
         if (article.ArticleType.equals('FAQ__kav')) 
         {
-            faq = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Question__c, Answer__c 
+            faq = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Question__c, Answer__c, toLabel(ArticleType) 
                    FROM FAQ__kav 
                    WHERE PublishStatus='Online' 
                    AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
+            funcGroup = faq.Functional_Group__c;
+            artType = faq.ArticleType;
         } 
         else if (article.ArticleType.equals('Informational__kav')) 
         {
-            info = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Information__c 
+            info = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Information__c, toLabel(ArticleType) 
                     FROM Informational__kav 
                     WHERE PublishStatus='Online' 
                     AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
+            funcGroup = info.Functional_Group__c;
+            artType = info.ArticleType;
         } 
         else if (article.ArticleType.equals('How_To__kav')) 
         {
-            howTo = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Content__c 
+            howTo = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Content__c, toLabel(ArticleType)
                      FROM How_To__kav 
                      WHERE PublishStatus='Online' 
                      AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
+            funcGroup = howTo.Functional_Group__c;
+            artType = howTo.ArticleType;
         }
         feedbackHelpful = new AKB_Article_Feedback__c(); 
+        suggestAnArticle = new Case();
+        getContactId();
+        currentUser = [SELECT Name FROM Contact WHERE Id = :contactId].Name;
     }
     
     public string getTitleKeyword() 
@@ -95,6 +108,22 @@ public with sharing class AKBController
         feedbackHelpful.Contact__c = contactId;
         feedbackHelpful.Helpful__c = true;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
+        feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
+        if (article.ArticleType.equals('FAQ__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
+            feedbackHelpful.Type__c = faq.ArticleType;
+        } 
+        else if (article.ArticleType.equals('Informational__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = info.Functional_Group__c;
+            feedbackHelpful.Type__c = info.ArticleType;
+        } 
+        else if (article.ArticleType.equals('How_To__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = howto.Functional_Group__c;
+            feedbackHelpful.Type__c = howto.ArticleType;
+        }
         insert feedbackHelpful;
         
         PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes');
@@ -111,9 +140,42 @@ public with sharing class AKBController
         feedbackHelpful.Helpful__c = false;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
         feedbackHelpful.Comments__c = feedbackHelpful.Comments__c;
+        feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
+        if (article.ArticleType.equals('FAQ__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
+            feedbackHelpful.Type__c = faq.ArticleType;
+        } 
+        else if (article.ArticleType.equals('Informational__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = info.Functional_Group__c;
+            feedbackHelpful.Type__c = info.ArticleType;
+        } 
+        else if (article.ArticleType.equals('How_To__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = howto.Functional_Group__c;
+            feedbackHelpful.Type__c = howto.ArticleType;
+        }
         insert feedbackHelpful;
         
         PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes');
+        confirmPage.setRedirect(true);
+        return confirmPage;
+    }
+
+    public PageReference suggestAnArticleSubmit() 
+    {
+        suggestAnArticle.Subject = 'Suggest An Article';
+        suggestAnArticle.Description = suggestAnArticle.Description;
+        suggestAnArticle.ContactId = contactId;
+        suggestAnArticle.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
+        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
+        suggestAnArticle.Category__c = 'Service Center Feedback';
+        suggestAnArticle.Origin__c = 'My ASU';
+        suggestAnArticle.Visible_by_Contact__c = false;
+        insert suggestAnArticle;
+        
+        PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Suggest=yes');
         confirmPage.setRedirect(true);
         return confirmPage;
     }

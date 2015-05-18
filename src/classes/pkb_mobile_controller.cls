@@ -885,7 +885,7 @@ public with sharing class pkb_mobile_controller {
 			if (!fieldSet.contains('lastmodifieddate'))	artFields += ',lastmodifieddate';
 			if (!fieldSet.contains('articlenumber'))	artFields += ',articlenumber';
 			if (!fieldSet.contains('summary'))			artFields += ',summary';
-			if (!fieldSet.contains('KnowledgeArticleId'))	artFields += ',KnowledgeArticleId';
+			//if (!fieldSet.contains('KnowledgeArticleId'))	artFields += ',KnowledgeArticleId';
 
 			if (artFields.startsWith(',')) artFields = artFields.substring(1);
 			//artFields = artFields;

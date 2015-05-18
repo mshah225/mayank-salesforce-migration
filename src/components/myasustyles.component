@@ -19,6 +19,10 @@
         margin: 0px !important;
     }
 
+    td {
+        word-break: break-word !important;
+    }
+
     .searchKB2 {
         margin-bottom: -10px !important;
     }

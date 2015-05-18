@@ -12,6 +12,7 @@
     <c:myasustyles />  
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
     <style>
+        /*Page specific .css*/
         body {
             margin: 0px;
             padding: 0px;
@@ -25,10 +26,6 @@
         .mainBody {
             width: 90%;
             max-width: 500px;
-        }
-
-        #hide {
-            display: none;
         }
     </style>
 
@@ -55,13 +52,6 @@
             var url = '/SCLaunch';
             var urlString = url + '?asuriteId=' + asuriteId + '&navbar=' + navbar + '&signature=' + signature + '&time=' + time;
             document.getElementById('theIframe').src = urlString;
-        }
-    </script>
-
-    <script>
-        window.onload = new function timeout() 
-        {
-            setTimeout(function show() { document.getElementById('hide').style.display = 'block';}, 10000);
         }
     </script>
 </head>
@@ -119,6 +109,7 @@
                                         <li><a target="_top" href="http://cronkite.asu.edu" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a></li>
                                         <li><a target="_top" href="http://www.law.asu.edu/" title="Sandra Day O' Connor College of Law website">Law</a></li>
                                         <li><a target="_top" href="http://nursingandhealth.asu.edu/" title="College of Nursing and Health Innovation website">Nursing and Health</a></li>
+                                        <!-- li><a href="http://nursingandhealth.asu.edu/nutrition" title="School of Nutrition and Health Promotion website">Nutrition and Health Promotion</a></li -->
                                         <li><a target="_top" href="http://copp.asu.edu" title="College of Public Programs website">Public Programs</a></li>
                                         <li><a target="_top" href="http://schoolofsustainability.asu.edu" title="School of Sustainability website">Sustainability</a></li>
                                         <li><a target="_top" href="http://technology.poly.asu.edu/" title="College of Technology and Innovation website">Technology and Innovation</a></li>
@@ -194,12 +185,9 @@
     </script>
 
     <center>
-        <noscript>JavaScript is currently disabled. You must enable JavaScript for the Service Center to work properly.</noscript>
         <div class="mainBody">
             <img src="https://webapp4.asu.edu/myasu/images/loader_all_yellow.gif" style="margin-top:50px;"/><br /><br /><br />
             <p><i>Please wait while we initiate the ASU Service Center</i></p>
-            <br />
-            <span id="hide">If not automatically redirected, please click <a href="/studentSC">here</a>.</span>
         </div>
     </center>
 

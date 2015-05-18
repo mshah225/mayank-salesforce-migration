@@ -1,28 +1,44 @@
 @isTest 
 private class Test_CRCampaignWidgetController 
 {	
-	@testSetup static void setUpInactive() 
-	{
-		Id recId = [SELECT Id FROM RecordType WHERE Name = 'Cohort'].Id;
+	private static Contact testContact;
+	private static Campaign testParentCampaign;
+	private static Campaign testParentCampaignTwo;
+	private static Campaign testChildCampaign;
+	private static Campaign testChildCampaignTwo;
+	private static CampaignMember testParentCamMem;
+	private static CampaignMember testParentCamMemTwo;
+	private static CampaignMember testChildCamMem;
+	private static CampaignMember testChildCamMemTwo;
+	private static CampaignMemberStatus cmActive1;
+	private static CampaignMemberStatus cmInActive1;
+	private static CampaignMemberStatus cmActive2;
+	private static CampaignMemberStatus cmInActive2;
+	private static CampaignMemberStatus cmActive3;
+	private static CampaignMemberStatus cmInActive3;
+	private static CampaignMemberStatus cmActive4;
+	private static CampaignMemberStatus cmInActive4;
+	private static Id recId;
+	private static CRCampaignWidgetController cr;
 
-        Contact testContact = ContactService.createTestContact();
+	private static void setUp() 
+	{
+		recId = [SELECT Id FROM RecordType WHERE Name = 'Cohort'].Id;
+
+        testContact = new Contact(
+        	FirstName = 'Jonny',
+        	LastName = 'Test',
+        	ASURite_ID__c = 'jontest');
         insert testContact;
 
-        Campaign testParentCampaign = new Campaign(
+        testParentCampaign = new Campaign(
         	Name = 'Test Parent Campaign',
         	RecordTypeId = recId,
         	Type = 'Corporate Relations',
         	IsActive = true);
         insert testParentCampaign;
 
-        Campaign testParentCampaignTwo = new Campaign(
-        	Name = 'Test Parent Campaign Two',
-        	RecordTypeId = recId,
-        	Type = 'Corporate Relations',
-        	IsActive = true);
-        insert testParentCampaignTwo;
-
-        Campaign testChildCampaign = new Campaign(
+        testChildCampaign = new Campaign(
         	Name = 'Test Child Campaign',
         	RecordTypeId = recId,
         	Type = 'Corporate Relations',
@@ -30,7 +46,86 @@ private class Test_CRCampaignWidgetController
         	ParentId = testParentCampaign.Id);
         insert testChildCampaign;
 
-        Campaign testChildCampaignTwo = new Campaign(
+        cmActive1 = new CampaignMemberStatus(
+        	CampaignId = testParentCampaign.Id,
+        	IsDefault = true,
+        	SortOrder = 3,
+        	Label = 'Active');
+        insert cmActive1;
+
+        cmInActive1 = new CampaignMemberStatus(
+        	CampaignId = testParentCampaign.Id,
+        	IsDefault = false,
+        	SortOrder = 4,
+        	Label = 'Inactive');
+        insert cmInActive1;
+
+        cmActive2 = new CampaignMemberStatus(
+        	CampaignId = testChildCampaign.Id,
+        	IsDefault = true,
+        	SortOrder = 3,
+        	Label = 'Active');
+        insert cmActive2;
+
+        cmInActive2 = new CampaignMemberStatus(
+        	CampaignId = testChildCampaign.Id,
+        	IsDefault = false,
+        	SortOrder = 4,
+        	Label = 'Inactive');
+        insert cmInActive2;
+
+        testParentCamMem = new CampaignMember(
+        	CampaignId = testParentCampaign.Id,
+        	ContactId = testContact.Id,
+        	Status = 'Active');
+        insert testParentCamMem;
+
+        testChildCamMem = new CampaignMember(
+        	CampaignId = testChildCampaign.Id,
+        	ContactId = testContact.Id,
+        	Status = 'Active');
+        insert testChildCamMem;
+
+        PageReference campaignWidget = Page.CRCampaignWidget;
+        Test.setCurrentPage(campaignWidget);
+        System.currentPageReference().getParameters().put('id', testContact.Id);
+        ApexPages.StandardController std = new ApexPages.StandardController(testContact);
+        cr = new CRCampaignWidgetController(std);
+    }
+
+    private static void setUpInactive() 
+	{
+		recId = [SELECT Id FROM RecordType WHERE Name = 'Cohort'].Id;
+
+        testContact = new Contact(
+        	FirstName = 'Jonny',
+        	LastName = 'Test',
+        	ASURite_ID__c = 'jontest');
+        insert testContact;
+
+        testParentCampaign = new Campaign(
+        	Name = 'Test Parent Campaign',
+        	RecordTypeId = recId,
+        	Type = 'Corporate Relations',
+        	IsActive = true);
+        insert testParentCampaign;
+
+        testParentCampaignTwo = new Campaign(
+        	Name = 'Test Parent Campaign Two',
+        	RecordTypeId = recId,
+        	Type = 'Corporate Relations',
+        	IsActive = true);
+        insert testParentCampaignTwo;
+
+        testChildCampaign = new Campaign(
+        	Name = 'Test Child Campaign',
+        	RecordTypeId = recId,
+        	Type = 'Corporate Relations',
+        	IsActive = true,
+        	ParentId = testParentCampaign.Id);
+        insert testChildCampaign;
+
+        testChildCampaignTwo = new Campaign(
         	Name = 'Test Child Campaign Two',
         	RecordTypeId = recId,
         	Type = 'Corporate Relations',
@@ -38,109 +133,103 @@ private class Test_CRCampaignWidgetController
         	ParentId = testParentCampaign.Id);
         insert testChildCampaignTwo;
 
-        CampaignMemberStatus cmActive1 = new CampaignMemberStatus(
+        cmActive1 = new CampaignMemberStatus(
         	CampaignId = testParentCampaign.Id,
         	IsDefault = true,
         	SortOrder = 3,
         	Label = 'Active');
         insert cmActive1;
 
-        CampaignMemberStatus cmInActive1 = new CampaignMemberStatus(
+        cmInActive1 = new CampaignMemberStatus(
         	CampaignId = testParentCampaign.Id,
         	IsDefault = false,
         	SortOrder = 4,
         	Label = 'Inactive');
         insert cmInActive1;
 
-        CampaignMemberStatus cmActive2 = new CampaignMemberStatus(
+        cmActive2 = new CampaignMemberStatus(
         	CampaignId = testChildCampaign.Id,
         	IsDefault = true,
         	SortOrder = 3,
         	Label = 'Active');
         insert cmActive2;
 
-        CampaignMemberStatus cmInActive2 = new CampaignMemberStatus(
+        cmInActive2 = new CampaignMemberStatus(
         	CampaignId = testChildCampaign.Id,
         	IsDefault = false,
         	SortOrder = 4,
         	Label = 'Inactive');
         insert cmInActive2;
 
-        CampaignMemberStatus cmActive3 = new CampaignMemberStatus(
+        cmActive3 = new CampaignMemberStatus(
         	CampaignId = testParentCampaignTwo.Id,
         	IsDefault = true,
         	SortOrder = 3,
         	Label = 'Active');
         insert cmActive3;
 
-        CampaignMemberStatus cmInActive3 = new CampaignMemberStatus(
+        cmInActive3 = new CampaignMemberStatus(
         	CampaignId = testParentCampaignTwo.Id,
         	IsDefault = false,
         	SortOrder = 4,
         	Label = 'Inactive');
         insert cmInActive3;
 
-        CampaignMemberStatus cmActive4 = new CampaignMemberStatus(
+        cmActive4 = new CampaignMemberStatus(
         	CampaignId = testChildCampaignTwo.Id,
         	IsDefault = true,
         	SortOrder = 3,
         	Label = 'Active');
         insert cmActive4;
 
-        CampaignMemberStatus cmInActive4 = new CampaignMemberStatus(
+        cmInActive4 = new CampaignMemberStatus(
         	CampaignId = testChildCampaignTwo.Id,
         	IsDefault = false,
         	SortOrder = 4,
         	Label = 'Inactive');
         insert cmInActive4;
 
-        CampaignMember testParentCamMem = new CampaignMember(
+        testParentCamMem = new CampaignMember(
         	CampaignId = testParentCampaign.Id,
         	ContactId = testContact.Id,
         	Status = 'Inactive');
         insert testParentCamMem;
 
-        CampaignMember testParentCamMemTwo = new CampaignMember(
+        testParentCamMemTwo = new CampaignMember(
         	CampaignId = testParentCampaignTwo.Id,
         	ContactId = testContact.Id,
         	Status = 'Active');
         insert testParentCamMemTwo;
 
-        CampaignMember testChildCamMem = new CampaignMember(
+        testChildCamMem = new CampaignMember(
         	CampaignId = testChildCampaign.Id,
         	ContactId = testContact.Id,
         	Status = 'Inactive');
         insert testChildCamMem;
 
-        CampaignMember testChildCamMemTwo = new CampaignMember(
+        testChildCamMemTwo = new CampaignMember(
         	CampaignId = testChildCampaignTwo.Id,
         	ContactId = testContact.Id,
         	Status = 'Active');
         insert testChildCamMemTwo;
+
+        PageReference campaignWidget = Page.CRCampaignWidget;
+        Test.setCurrentPage(campaignWidget);
+        System.currentPageReference().getParameters().put('id', testContact.Id);
+        ApexPages.StandardController std = new ApexPages.StandardController(testContact);
+        cr = new CRCampaignWidgetController(std);
     }
 
     @isTest static void testViewCampaigns() 
 	{
-        Contact testCont = [SELECT Id FROM Contact WHERE ASURite_ID__c = 'testuser'];
-        PageReference campaignWidget = Page.CRCampaignWidget;
-        Test.setCurrentPage(campaignWidget);
-        System.currentPageReference().getParameters().put('id', testCont.Id);
-        ApexPages.StandardController std = new ApexPages.StandardController(testCont);
-        CRCampaignWidgetController cr = new CRCampaignWidgetController(std);
+		setUp();
 		cr.getSortList();
 		System.assert(true,cr.sortList.size() > 0);
 	}
 
 	@isTest static void testAssignToCampaign()
 	{
-        Contact testCont = [SELECT Id FROM Contact WHERE ASURite_ID__c = 'testuser'];
-        Campaign testParentCampaign = [SELECT Id FROM Campaign WHERE Name = 'Test Parent Campaign'];
-        Campaign testChildCampaign = [SELECT Id FROM Campaign WHERE Name = 'Test Child Campaign'];
-        PageReference campaignWidget = Page.CRCampaignWidget;
-        Test.setCurrentPage(campaignWidget);
-        System.currentPageReference().getParameters().put('id', testCont.Id);
-        ApexPages.StandardController std = new ApexPages.StandardController(testCont);
-        CRCampaignWidgetController cr = new CRCampaignWidgetController(std);
+		setUp();
 		cr.searchString = 'Test Parent';
 		cr.parentCampaignSearch();
 		System.assert(true,cr.parentCampaigns.size() > 0);
@@ -155,14 +244,7 @@ private class Test_CRCampaignWidgetController
 
 	@isTest static void testActivate()
 	{
-        Contact testCont = [SELECT Id FROM Contact WHERE ASURite_ID__c = 'testuser'];
-        Campaign testParentCampaign = [SELECT Id FROM Campaign WHERE Name = 'Test Parent Campaign'];
-        Campaign testChildCampaign = [SELECT Id FROM Campaign WHERE Name = 'Test Child Campaign'];
-        PageReference campaignWidget = Page.CRCampaignWidget;
-        Test.setCurrentPage(campaignWidget);
-        System.currentPageReference().getParameters().put('id', testCont.Id);
-        ApexPages.StandardController std = new ApexPages.StandardController(testCont);
-        CRCampaignWidgetController cr = new CRCampaignWidgetController(std);
+		setUpInactive();
 		cr.searchString = 'Test Parent';
 		cr.parentCampaignSearch();
 		cr.selectedParentCampaign = testParentCampaign.Id;
@@ -176,15 +258,7 @@ private class Test_CRCampaignWidgetController
 	
 	@isTest static void testInactivate()
 	{
-        Contact testCont = [SELECT Id FROM Contact WHERE ASURite_ID__c = 'testuser'];
-        Campaign testParentCampaign = [SELECT Id FROM Campaign WHERE Name = 'Test Parent Campaign'];
-        Campaign testChildCampaign = [SELECT Id FROM Campaign WHERE Name = 'Test Child Campaign'];
-        CampaignMember testChildCamMem = [SELECT Id FROM CampaignMember WHERE CampaignId = :testChildCampaign.Id];
-        PageReference campaignWidget = Page.CRCampaignWidget;
-        Test.setCurrentPage(campaignWidget);
-        System.currentPageReference().getParameters().put('id', testCont.Id);
-        ApexPages.StandardController std = new ApexPages.StandardController(testCont);
-        CRCampaignWidgetController cr = new CRCampaignWidgetController(std);
+		setUp();
 		cr.inActivateCMId = testChildCamMem.Id;
 		cr.inActivateCM();
 		System.assertEquals('Inactive',cr.inActivateCamMem.Status);

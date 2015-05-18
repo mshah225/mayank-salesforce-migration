@@ -112,16 +112,11 @@ public without sharing class ContactHandler
 			 
 		if (okToProcess1to1) {
 			Contact c = (Contact)so;
-			Contact oldContact = (Contact)oldSo;
-			
-			//Check if we need to validate a pin
-			if(oldContact.Self_Service_PIN__c != c.Self_Service_PIN__c){
-				//Check to see if the pin is still valid on update
-				if(!isPinValid(c.Self_Service_PIN__c, c.Birthdate)){
-					throw new InvalidSelfServicePinException();
-				}
-			}
 
+			//Check to see if the pin is still valid on update
+			if(!isPinValid(c.Self_Service_PIN__c, c.Birthdate)){
+				throw new InvalidSelfServicePinException();
+			}
 			checkAccountNew(c);
 		}
 	}
@@ -282,7 +277,7 @@ public without sharing class ContactHandler
 
 		//Contains birthdate check
         if(dob != null){
-        	Integer dobYear = dob.year();
+	        Integer dobYear = dob.year();
 	        Pattern dobPattern = Pattern.compile('.*(' + dobYear + ').*');
 	        Matcher dobYearMatches = dobPattern.matcher(randPin.toPlainString());
 

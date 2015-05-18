@@ -1,11 +1,13 @@
 public with sharing class ServiceCenter 
 {
+    public final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06); 
+    public final Integer CLOSEDCASELIMIT = 5;
+
     public Contact contact;
     public Case c { get; set; }
     public Boolean pinError { get;set; }
     public Boolean pinSuccess { get;set; }
     public Date d;
-    public final Date EMAIL_MESSAGE_LAUNCH = Date.newInstance(2015, 05, 06);
     public Decimal myPin;
     public Decimal newPin { get;set; }
     public Id caseId;
@@ -14,6 +16,7 @@ public with sharing class ServiceCenter
     public String pinMessage { get;set; }
     public Term__c termcAC;
     public Term__c termcB;
+    public Case suggestAnArticle {get; set;}
 
     public ServiceCenter() { setUpPage(); }
     public ServiceCenter(AKBController controller) { setUpPage(); }
@@ -34,49 +37,45 @@ public with sharing class ServiceCenter
         oppList = [SELECT Career__c, Term__c, StageName, Admitted_Session__c 
                    FROM Opportunity 
                    WHERE Contact__c = :contact.Id];
+        suggestAnArticle = new Case();
     }
 
     public Contact getContact() 
     {
-        Id userContactId = [SELECT ContactId 
-                            FROM User 
-                            WHERE Id = :UserInfo.getUserId()].ContactId;
-        if (userContactId != null)
-        {
-            contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, Email, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
-                       FROM Contact 
-                       WHERE Id = :userContactId];
-        }
-        else
-        {
-            userAlias = [SELECT Alias 
-                         FROM User 
-                         WHERE Id = :UserInfo.getUserId()].Alias;
-            contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, Email, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
-                       FROM Contact 
-                       WHERE ASURITE_Id__c = :userAlias];
-        }
+        userAlias = [SELECT Alias 
+                     FROM User 
+                     WHERE Id = :UserInfo.getUserId()].Alias;
+        contact = [SELECT Id, Name, FirstName, LastName, EmplId__c, CAP__c, Personal_Email__c, Email, CAP_Student_Group_Count__c, Affiliation_Student_Applicant__c, Affiliation_Student__c, Affiliation_Employee__c, Affiliation_Alumni__c, Affiliation_Courtesy_Affiliate__c, Self_Service_PIN__c, PIN_Lockout__c 
+                   FROM Contact 
+                   WHERE ASURITE_Id__c = :userAlias];
         return contact;
     }
 
-    public Case[] getMyCases() 
+    public List<Case> getMyCases() 
     {
-        return [SELECT Subject, Status, Description, Origin, Origin__c 
-                    FROM Case 
-                    WHERE IsClosed = False 
-                    AND Visible_by_Contact__c = true 
-                    AND ContactId = :contact.Id
-                    ORDER BY CreatedDate DESC];
+        List<Contact> contacts = new List<Contact> { contact };
+        Map<Id, List<Case>> openCaseMap = CaseService.getVisibleOpenCases(contacts);
+
+        return openCaseMap.get(contact.Id);
     }
     
-    public Case[] getClosedCases() 
+    public List<Case> getClosedCases() 
     {
-        return [SELECT Subject, Status, Description, Origin, Origin__c, Feedback_Link__c 
-                    FROM Case 
-                    WHERE IsClosed = True 
-                    AND Visible_by_Contact__c = true 
-                    AND ContactId = :contact.Id
-                    ORDER BY CreatedDate DESC];
+        List<Case> closedCases = new List<Case>();
+        
+        List<Contact> contacts = new List<Contact> { contact };
+        Map<Id, List<Case>> closedCaseMap = CaseService.getVisibleClosedCases(contacts);
+
+        // Limit the number of closed cases that are displayed to CLOSEDCASELIMIT
+        if (closedCaseMap.get(contact.Id) != null)
+        {
+            for (Integer i = 0; i < CLOSEDCASELIMIT; i++)
+            {
+                closedCases.add(closedCaseMap.get(contact.Id).get(i));
+            }
+        }
+
+        return closedCases;
     }
 
     public Case getCaseDetails() 
@@ -87,11 +86,12 @@ public with sharing class ServiceCenter
     } 
 
     public EmailMessage[] getEmailMessages() { 
+        Date launchDate = EMAILVISIBILITYDATE;
         return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress 
                 FROM EmailMessage 
                 WHERE ParentId = :ApexPages.currentPage().getParameters().get('id') 
                 AND Incoming = false
-                AND CreatedDate > :EMAIL_MESSAGE_LAUNCH 
+                AND CreatedDate > :launchDate 
                 AND ToAddress = :contact.Email
                 ORDER BY CreatedDate DESC];
     }
@@ -99,8 +99,28 @@ public with sharing class ServiceCenter
     public PageReference viewCase() 
     {
         caseId = ApexPages.currentPage().getParameters().get('caseId');
-        return new PageReference('/viewcase?id=' + caseId);
+        PageReference viewCasePage = new PageReference('/viewcase');
+        viewCasePage.getParameters().put('id', caseId);
+        viewCasePage.getParameters().put('source', 'studentSC');
+
+        return viewCasePage;
     }
+
+    public String getSource()
+    {
+        String source = ApexPages.currentPage().getParameters().get('source');
+
+        if (source == null)
+        {
+            source = 'studentSC';
+        }
+        else if (source.equals('viewAllCases'))
+        {
+            source = 'viewAllCases?source=studentSC';
+        }
+
+        return source;
+    } 
     
     public Boolean getNormalPhone() 
     {
@@ -233,10 +253,18 @@ public with sharing class ServiceCenter
     
     public Decimal getMyPin() 
     {
-        myPin = contact.Self_Service_PIN__c;
-        return myPin;
+        getContact();
+        if (contact != null) 
+        {
+            myPin = contact.Self_Service_PIN__c;
+            return myPin;
+        }
+        else 
+        {
+            return null;
+        }
     }
-    
+
     public PageReference changePin() 
     {
         try 
@@ -267,5 +295,29 @@ public with sharing class ServiceCenter
                 throw e;   
             }
         }
+    }
+
+    public PageReference suggestAnArticleSubmit() 
+    {
+        String userAlias = [SELECT Alias 
+                     FROM User 
+                     WHERE Id = :UserInfo.getUserId()].Alias;
+        Id contactId = [SELECT Id 
+                     FROM Contact 
+                     WHERE ASURITE_Id__c = :userAlias].Id;
+
+        suggestAnArticle.Subject = 'Suggest An Article';
+        suggestAnArticle.Description = suggestAnArticle.Description;
+        suggestAnArticle.ContactId = contactId;
+        suggestAnArticle.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
+        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
+        suggestAnArticle.Category__c = 'Service Center Feedback';
+        suggestAnArticle.Origin__c = 'My ASU';
+        suggestAnArticle.Visible_by_Contact__c = false;
+        insert suggestAnArticle;
+        
+        PageReference confirmPage = new PageReference('/studentSC' + '?Suggest=yes');
+        confirmPage.setRedirect(true);
+        return confirmPage;
     }
 }

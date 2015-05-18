@@ -19,14 +19,9 @@
 	</style>
 
 	<apex:form id="auditForm" style="margin-top:20px;">
-	<!--
-	DEBUG:<br />
-	<br />
-	DRILLDOWN: {!drillDown}<br />
-	-->
 		<apex:outputText value="Select a profile: " style="font-size:12pt;"/>
 		<apex:selectList id="profileSelect" value="{!selectedProfileId}" multiselect="false" size="1" style="font-size:12pt;">
-			<apex:actionSupport event="onchange" status="profileLoading" action="{!reStart}" reRender="accessPanel,typeSelectPanel,objectListPanel,fieldListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel"/>
+			<apex:actionSupport event="onchange" status="profileLoading" action="{!reStart}" reRender="accessPanel,typeSelectPanel,objectListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel,backBtnPanel"/>
 			<apex:selectOptions value="{!profileOptions}"/>
 		</apex:selectList>
 
@@ -35,42 +30,38 @@
 	            <img src="/img/loading.gif" style="position:absolute;margin-top:1px;"/>
 	        </apex:facet>
     	</apex:actionStatus>
-    	<br />
-    	<br />
+    	
     	<apex:outputPanel id="accessPanel">
+    		<br />
+    		<br />
 			<apex:outputText value="Select access: " rendered="{!IF(selectedProfileId != null,true,false)}" style="font-size:12pt;"/>
 			<apex:selectList id="accessSelect" value="{!selectedAccess}" multiselect="false" size="1" rendered="{!IF(selectedProfileId != null,true,false)}" style="font-size:12pt;">
-				<apex:actionSupport event="onchange" status="accessLoading" action="{!profilePermissionSearch}" reRender="typeSelectPanel,objectListPanel,fieldListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel"/>
+				<apex:actionSupport event="onchange" status="accessLoading" action="{!profilePermissionSearch}" reRender="objectListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel,backBtnPanel"/>
 				<apex:selectOptions value="{!accessOptions}"/>
 			</apex:selectList>
+			<apex:actionStatus id="accessLoading">
+		        <apex:facet name="start" >
+		            <img src="/img/loading.gif" style="position:absolute;margin-top:2px;margin-left:3px;"/>
+		        </apex:facet>
+	    	</apex:actionStatus>
+			<apex:outputPanel rendered="{!IF(selectedProfileId != null,true,false)}">
+				<br />
+				<br />
+			</apex:outputPanel>
+		</apex:outputPanel>
+		
+		<apex:outputPanel id="backBtnPanel">
+			<apex:commandButton value="Back" rendered="{!back}" action="{!profilePermissionSearch}" style="margin-top:5px;margin-bottom:10px;"/>
 		</apex:outputPanel>
 
-		<apex:actionStatus id="accessLoading">
-	        <apex:facet name="start" >
-	            <img src="/img/loading.gif" style="position:absolute;margin-top:1px;"/>
-	        </apex:facet>
-    	</apex:actionStatus>
-		<br />
-		<br />
-		<apex:outputPanel id="typeSelectPanel">
-			<apex:outputText value="Select permission type to view: " rendered="{!IF(selectedAccess == 'Has Access',true,false)}" style="font-size:12pt;"/>
-			<apex:selectList id="typeSelect" value="{!selectedType}" multiselect="false" size="1" rendered="{!IF(selectedAccess == 'Has Access',true,false)}" style="font-size:12pt;">
-				<apex:actionSupport event="onchange" action="{!profilePermissionSearch}" status="typeLoading" reRender="objectListPanel,fieldListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel"/>
-				<apex:selectOptions value="{!typeOptions}"/>
-			</apex:selectList>
-		</apex:outputPanel>
-
-		<apex:actionStatus id="typeLoading">
-	        <apex:facet name="start" >
-	            <img src="/img/loading.gif" style="position:absolute;margin-top:1px;"/>
-	        </apex:facet>
-    	</apex:actionStatus>
-		<br />
-		<br />
 		<apex:outputPanel id="objectListPanel">
-			<apex:pageBlock rendered="{!IF(selectedType == 'Object Permissions' && selectedAccess == 'Has Access' && drillDown == false,true,false)}" title="Viewing Object Permissions for {!selectedProfileName} Where Profile Has Access">
+			<apex:pageBlock rendered="{!IF(selectedAccess == 'Has Access' && drillDown == false,true,false)}" title="Viewing Object Permissions for {!selectedProfileName} Where Profile Has Access">
 				<apex:pageBlockTable value="{!objectPerms}" var="o" cellpadding="7" width="100%" rendered="{!IF(selectedAccess == 'Has Access',true,false)}">
-			        <apex:column value="{!o.sObjectType}" headerValue="Object"/>
+			        <apex:column headerValue="Object">
+			        	<apex:commandLink value="{!o.SObjectType}" action="{!drillDownFieldSearch}" reRender="objectListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel,backBtnPanel">
+			        		<apex:param name="selectedObject" assignTo="{!selectedObject}" value="{!o.SObjectType}"/>
+			        	</apex:commandLink>
+			        </apex:column>
 			        <apex:column value="{!o.PermissionsCreate}" headerValue="Create"/>
 					<apex:column value="{!o.PermissionsRead}" headerValue="Read"/>
 			        <apex:column value="{!o.PermissionsDelete}" headerValue="Delete"/>
@@ -85,7 +76,7 @@
 				<br />
 				<apex:pageBlockTable value="{!finalList}" var="f" cellpadding="10" width="100%" rendered="{!IF(selectedAccess == 'No Access',true,false)}">
 			        <apex:column headerValue="Object">
-			        	<apex:commandLink value="{!f}" action="{!drillDownSearch}" reRender="objectListPanel,fieldListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel">
+			        	<apex:commandLink value="{!f}" action="{!drillDownSearch}" reRender="objectListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel,backBtnPanel">
 			        		<apex:param name="selectedObject" assignTo="{!selectedObject}" value="{!f}" />
 			        	</apex:commandLink>
 			        </apex:column>
@@ -93,22 +84,18 @@
 			</apex:pageBlock>
 		</apex:outputPanel>
 
-		<apex:outputPanel id="fieldListPanel">
-			<apex:pageBlock title="Viewing Field Permissions for {!selectedProfileName} Where Profile Has Access" rendered="{!IF(fieldPerms != null && drillDown == false,true,false)}">
+		<apex:outputPanel id="drillDownPanel">
+			<apex:pageBlock title="Viewing Field Permissions for {!selectedObject} Where The {!selectedProfileName} Profile Has NO Access" rendered="{!drillDown && selectedAccess = 'No Access'}">
+				<apex:pageBlockTable value="{!fieldDrillList}" var="fdl">
+					<apex:column value="{!fdl}" headerValue="{!selectedObject}"/>
+				</apex:pageBlockTable>
+			</apex:pageBlock>
+
+			<apex:pageBlock title="Viewing Field Permissions for {!selectedObject} Where The {!selectedProfileName} Profile Has Access" rendered="{!drillDown && selectedAccess == 'Has Access'}">
 				<apex:pageBlockTable value="{!fieldPerms}" var="f" cellpadding="7" width="100%">
-			        <apex:column value="{!f.sObjectType}" headerValue="Object"/>
 			        <apex:column value="{!f.Field}" headerValue="Field"/>
 					<apex:column value="{!f.PermissionsRead}" headerValue="Read"/>
 			        <apex:column value="{!f.PermissionsEdit}" headerValue="Edit"/>
-				</apex:pageBlockTable>
-			</apex:pageBlock>
-		</apex:outputPanel>
-
-		<apex:outputPanel id="drillDownPanel">
-			<apex:pageBlock title="Viewing Field Permissions for {!selectedProfileName} Where Profile NO Access" rendered="{!drillDown}">
-				<apex:outputText value="You should see the Drill Down Panel"/>
-				<apex:pageBlockTable value="{!fieldDrillList}" var="fdl">
-					<apex:column value="{!fdl}"/>
 				</apex:pageBlockTable>
 			</apex:pageBlock>
 		</apex:outputPanel>

@@ -1,6 +1,7 @@
 public without sharing class ProfileAuditController 
 {    
     public Boolean drillDown { get;set; }
+    public Boolean back { get;set; }
     public Id selectedProfileId { get;set; }
     public List<Profile> profileList;
     public List<ObjectPermissions> objectPerms { get;set; }
@@ -17,6 +18,7 @@ public without sharing class ProfileAuditController
     {
         selectedProfileId = null;
         drillDown = false;
+        back = false;
         profileList = [SELECT Name FROM Profile ORDER BY Name];
     }
 
@@ -56,6 +58,7 @@ public without sharing class ProfileAuditController
     public void profilePermissionSearch() 
     {
         drillDown = false;
+        back = false;
         if (selectedType != null && selectedAccess == 'No Access') 
         {
             resetForm();
@@ -63,35 +66,19 @@ public without sharing class ProfileAuditController
 
         if (selectedAccess == 'Has Access')
         {
-            if (selectedType == 'Object Permissions') 
+            if (selectedProfileId != null) 
             {
-                if (selectedProfileId != null) 
-                {
-                    fieldPerms = null;
-                    objectPerms = [SELECT ParentId, SObjectType, PermissionsCreate, PermissionsDelete, PermissionsEdit, PermissionsModifyAllRecords, PermissionsRead, PermissionsViewAllRecords 
-                                   FROM ObjectPermissions 
-                                   WHERE ParentId 
-                                   IN (SELECT Id FROM PermissionSet 
-                                       WHERE IsOwnedByProfile = true 
-                                       AND PermissionSet.Profile.Id = :selectedProfileId)]; 
-                    objectPerms.sort();
-                    selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
-                }
-            } 
-            else if (selectedType == 'Field Permissions') 
-            {
-                if (selectedProfileId != null) 
-                {
-                    objectPerms = null;
-                    fieldPerms = [SELECT ParentId, SObjectType, Field, PermissionsEdit, PermissionsRead
-                                  FROM FieldPermissions 
-                                  WHERE ParentId IN (SELECT Id FROM PermissionSet 
-                                                     WHERE IsOwnedByProfile = true 
-                                                     AND PermissionSet.Profile.Id = :selectedProfileId) 
-                                  ORDER BY SObjectType]; 
-                    selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
-                }
-            } 
+                fieldPerms = null;
+                objectPerms = [SELECT ParentId, SObjectType, PermissionsCreate, PermissionsDelete, PermissionsEdit, PermissionsModifyAllRecords, PermissionsRead, PermissionsViewAllRecords 
+                               FROM ObjectPermissions 
+                               WHERE ParentId 
+                               IN (SELECT Id FROM PermissionSet 
+                                   WHERE IsOwnedByProfile = true 
+                                   AND PermissionSet.Profile.Id = :selectedProfileId)
+                               ORDER BY SObjectType]; 
+                objectPerms.sort();
+                selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
+            }
         }
         else if (selectedAccess == 'No Access')
         {  
@@ -103,7 +90,6 @@ public without sharing class ProfileAuditController
                          IN (SELECT Id FROM PermissionSet 
                              WHERE IsOwnedByProfile = true 
                              AND PermissionSet.Profile.Id = :selectedProfileId)]; 
-            
             Set<String> accessSet = new Set<String>();
             for (ObjectPermissions op: hasAccess)
             {
@@ -130,6 +116,7 @@ public without sharing class ProfileAuditController
     public void drillDownSearch() 
     {
         drillDown = true;
+        back = true;
         objectPerms = null;
         fieldPerms = null;
         fieldDrillList = new List<String>();
@@ -140,18 +127,27 @@ public without sharing class ProfileAuditController
             fieldDrillList.add(obFields.get(obf).getDescribe().getLabel());
         }
         fieldDrillList.sort();
+    }
 
-        /*List<Schema.SObjectField> schemaFields = obFields.values();
-        fieldDrillList = new List<String>();
-        for (Schema.SObjectField sf: schemaFields)
-        {
-            fieldDrillList.add(sf.value());
-        }*/
+    public void drillDownFieldSearch() 
+    {
+        drillDown = true;
+        back = true;
+        objectPerms = null;
+        fieldPerms = [SELECT ParentId, SObjectType, Field, PermissionsEdit, PermissionsRead
+                      FROM FieldPermissions 
+                      WHERE ParentId IN (SELECT Id FROM PermissionSet 
+                                         WHERE IsOwnedByProfile = true 
+                                         AND PermissionSet.Profile.Id = :selectedProfileId) 
+                      AND SObjectType = :selectedObject
+                      ORDER BY Field]; 
+        selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
     }
 
     public void reStart() 
     {
         drillDown = false;
+        back = false;
         objectPerms = null;
         fieldPerms = null; 
         selectedAccess = null;
@@ -161,6 +157,7 @@ public without sharing class ProfileAuditController
     public void resetForm() 
     {
         drillDown = false;
+        back = false;
         objectPerms = null;
         fieldPerms = null; 
         selectedType = null;   

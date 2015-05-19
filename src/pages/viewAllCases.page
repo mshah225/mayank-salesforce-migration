@@ -234,7 +234,9 @@
 	                                    </apex:commandLink>
 	                                </apex:column>
 	                            </apex:pageBlockTable>
-	                            <apex:outputText rendered="{!(openCases.size = 0)}" value="You do not have any open cases." />
+	                            <apex:outputText rendered="{!(openCases.size = 0)}">
+                                    <div class="padClass"> You do not have any open cases. </div>
+                                </apex:outputText>
 	                        </apex:pageBlock>
 	                    </apex:form>
 	                </div>
@@ -260,7 +262,9 @@
 	                                    </apex:commandLink>
 	                                </apex:column>
 	                            </apex:pageBlockTable>
-	                            <apex:outputText rendered="{!(closedCases.size = 0)}" value="You do not have any closed cases." />
+	                            <apex:outputText rendered="{!(closedCases.size = 0)}">
+                                    <div class="padClass"> You do not have any closed cases. </div>
+                                </apex:outputText>
 	                        </apex:pageBlock>
 	                    </apex:form>
                     </div>

@@ -1033,6 +1033,10 @@
         color: #990033 !important;
         font-size: 10pt;
     }
+
+    .padClass {
+            padding: 7px ;
+    }
     
     #closePinMessages .btn:hover {
         background-color: transparent !important;   

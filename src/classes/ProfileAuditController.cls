@@ -8,14 +8,12 @@ public without sharing class ProfileAuditController
     public List<FieldPermissions> fieldPerms { get;set; }
     public List<String> finalList { get;set; }
     public List<String> fieldDrillList { get;set; }
-    public Set<String> finalSet { get;set; }
     public String selectedProfileName { get;set; }
     public String selectedAccess { get;set; }
     public String selectedObject { get;set; }
 
-    public ProfileAuditController() 
+    public ProfileAuditController()
     {
-        selectedProfileId = null;
         drillDown = false;
         back = false;
         profileList = [SELECT Name FROM Profile ORDER BY Name];
@@ -54,45 +52,14 @@ public without sharing class ProfileAuditController
             if (selectedProfileId != null) 
             {
                 fieldPerms = null;
-                objectPerms = [SELECT ParentId, SObjectType, PermissionsCreate, PermissionsDelete, PermissionsEdit, PermissionsModifyAllRecords, PermissionsRead, PermissionsViewAllRecords 
-                               FROM ObjectPermissions 
-                               WHERE ParentId 
-                               IN (SELECT Id FROM PermissionSet 
-                                   WHERE IsOwnedByProfile = true 
-                                   AND PermissionSet.Profile.Id = :selectedProfileId)
-                               ORDER BY SObjectType]; 
-                objectPerms.sort();
+                objectPerms = ProfileService.getAccessibleObjectsByProfile(selectedProfileId);
                 selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
             }
         }
         else if (selectedAccess == 'No Access')
         {  
             fieldPerms = null;
-            List<ObjectPermissions> hasAccess = new List<ObjectPermissions>();
-            hasAccess = [SELECT ParentId, SObjectType, PermissionsCreate, PermissionsDelete, PermissionsEdit, PermissionsModifyAllRecords, PermissionsRead, PermissionsViewAllRecords 
-                         FROM ObjectPermissions 
-                         WHERE ParentId 
-                         IN (SELECT Id FROM PermissionSet 
-                             WHERE IsOwnedByProfile = true 
-                             AND PermissionSet.Profile.Id = :selectedProfileId)]; 
-            Set<String> accessSet = new Set<String>();
-            for (ObjectPermissions op: hasAccess)
-            {
-                accessSet.add(op.SObjectType);
-            }
-
-            finalSet = new Set<String>();
-            for (Schema.SObjectType typ: Schema.getGlobalDescribe().values()) 
-            {
-                String sobjName = String.valueOf(typ);
-                if(!accessSet.contains(sobjName))
-                {
-                    finalSet.add(sobjName);
-                }
-            }
-            finalList = new List<String>();
-            finalList.addAll(finalSet);
-            finalList.sort();
+            finalList = ProfileService.getInaccessibleObjectsByProfile(selectedProfileId);
             selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
         }
         else {}
@@ -104,14 +71,7 @@ public without sharing class ProfileAuditController
         back = true;
         objectPerms = null;
         fieldPerms = null;
-        fieldDrillList = new List<String>();
-        SObjectType obType = Schema.getGlobalDescribe().get(selectedObject);
-        Map<String,Schema.SObjectField> obFields = obType.getDescribe().fields.getMap();
-        for (String obf: obFields.keySet()) 
-        {         
-            fieldDrillList.add(obFields.get(obf).getDescribe().getLabel());
-        }
-        fieldDrillList.sort();
+        fieldDrillList = ObjectService.getFieldLabelsToList(selectedObject);
     }
 
     public void drillDownFieldSearch() 
@@ -119,13 +79,7 @@ public without sharing class ProfileAuditController
         drillDown = true;
         back = true;
         objectPerms = null;
-        fieldPerms = [SELECT ParentId, SObjectType, Field, PermissionsEdit, PermissionsRead
-                      FROM FieldPermissions 
-                      WHERE ParentId IN (SELECT Id FROM PermissionSet 
-                                         WHERE IsOwnedByProfile = true 
-                                         AND PermissionSet.Profile.Id = :selectedProfileId) 
-                      AND SObjectType = :selectedObject
-                      ORDER BY Field]; 
+        fieldPerms = ProfileService.getAccessibleObjectFieldsByProfile(selectedProfileId, selectedObject);
         selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
     }
 

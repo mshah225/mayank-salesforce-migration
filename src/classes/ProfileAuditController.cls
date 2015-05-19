@@ -10,7 +10,6 @@ public without sharing class ProfileAuditController
     public List<String> fieldDrillList { get;set; }
     public Set<String> finalSet { get;set; }
     public String selectedProfileName { get;set; }
-    public String selectedType { get;set; }
     public String selectedAccess { get;set; }
     public String selectedObject { get;set; }
 
@@ -20,24 +19,6 @@ public without sharing class ProfileAuditController
         drillDown = false;
         back = false;
         profileList = [SELECT Name FROM Profile ORDER BY Name];
-    }
-
-    public List<SelectOption> getAccessOptions() 
-    {
-        List<SelectOption> accessOptions = new List<SelectOption>();
-        accessOptions.add(new SelectOption('', '--Select--'));
-        accessOptions.add(new SelectOption('Has Access', 'Has Access'));
-        accessOptions.add(new SelectOption('No Access', 'No Access'));
-        return accessOptions;
-    }
-
-    public List<SelectOption> getTypeOptions() 
-    {
-        List<SelectOption> typeOptions = new List<SelectOption>();
-        typeOptions.add(new SelectOption('', '--Select--'));
-        typeOptions.add(new SelectOption('Object Permissions', 'Object Permissions'));
-        typeOptions.add(new SelectOption('Field Permissions', 'Field Permissions'));
-        return typeOptions;
     }
 
     public List<SelectOption> getProfileOptions() 
@@ -55,15 +36,19 @@ public without sharing class ProfileAuditController
         return profileOptions;
     }
 
+    public List<SelectOption> getAccessOptions() 
+    {
+        List<SelectOption> accessOptions = new List<SelectOption>();
+        accessOptions.add(new SelectOption('', '--Select--'));
+        accessOptions.add(new SelectOption('Has Access', 'Has Access'));
+        accessOptions.add(new SelectOption('No Access', 'No Access'));
+        return accessOptions;
+    }
+
     public void profilePermissionSearch() 
     {
         drillDown = false;
         back = false;
-        if (selectedType != null && selectedAccess == 'No Access') 
-        {
-            resetForm();
-        }
-
         if (selectedAccess == 'Has Access')
         {
             if (selectedProfileId != null) 
@@ -151,15 +136,5 @@ public without sharing class ProfileAuditController
         objectPerms = null;
         fieldPerms = null; 
         selectedAccess = null;
-        selectedType = null;   
-    }
-
-    public void resetForm() 
-    {
-        drillDown = false;
-        back = false;
-        objectPerms = null;
-        fieldPerms = null; 
-        selectedType = null;   
     }
 }

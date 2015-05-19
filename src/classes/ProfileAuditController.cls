@@ -62,7 +62,6 @@ public without sharing class ProfileAuditController
             finalList = ProfileService.getInaccessibleObjectsByProfile(selectedProfileId);
             selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
         }
-        else {}
     }
 
     public void drillDownSearch() 

@@ -373,13 +373,13 @@ public without sharing class TerritoryAssignmentHelper {
                             tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|Transfer|', assignmentNumber);
                         }
                     }
-                    else
+                    else if (String.isNotEmpty(country))
                     {
                         if (country.equals('Vietnam'))
                         {
                             tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + Opp.Type + '|Viet Nam', assignmentNumber);
                         }
-                        else if (String.isNotEmpty(country))
+                        else
                         {
                             tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + Opp.Type + '|' + country, assignmentNumber);
                         }

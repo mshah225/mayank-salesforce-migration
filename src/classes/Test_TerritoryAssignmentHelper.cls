@@ -241,6 +241,7 @@ private without sharing class Test_TerritoryAssignmentHelper
         ATar1.International__c = true;
         ATar1.User__c = TestUser.Id;
         insert ATar1;
+        String tarRuleKey = [SELECT Rule_Key__c FROM Territory_Assignment_Rule__c WHERE Id = :ATar1.Id].Rule_Key__c;
         
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
@@ -265,7 +266,7 @@ private without sharing class Test_TerritoryAssignmentHelper
         
         System.Debug('Opportunity Details: ' + Opp);
         System.Debug('Last Rule Type: ' + LastRuleType);
-        System.Assert(LastRuleType == 'International','Rule did not assign correctly by rule type International');
+        System.Assert(LastRuleType == tarRuleKey,'Rule did not assign correctly by rule type International');
     }
 
     private static testMethod void testInternationalChina()
@@ -478,7 +479,7 @@ private without sharing class Test_TerritoryAssignmentHelper
         ATar1.Rule_Type__c = 'International';
         ATar1.International__c = true;
         ATar1.Opportunity_Type__c = 'Transfer';
-        ATar1.Assignment_By_Country__c = 'Vietnam';
+        ATar1.Assignment_By_Country__c = 'Viet Nam';
         ATar1.User__c = transferManagers[0].Id;
         insert ATar1;
 

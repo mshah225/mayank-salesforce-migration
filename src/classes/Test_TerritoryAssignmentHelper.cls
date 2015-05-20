@@ -1,892 +1,1419 @@
 @istest
-private without sharing class Test_TerritoryAssignmentHelper{  
+private without sharing class Test_TerritoryAssignmentHelper
+{
+    private static testMethod void testAccountGeomarketCodeAssignment()
+    { 
+        User testUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1]; 
 
-private static testMethod void testAccountGeomarketCodeAssignment(){ 
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1]; 
+        Account HS = new Account();
+        HS.Name = 'Test High School';
+        insert HS;
+        
+        Contact con = new Contact();
+        con.FirstName = 'TestFirstName';
+        con.LastName = 'TestLastName';
+        con.MailingPostalCode = '90210';
+        con.Geomarket_Code__c = 'CA-01';
+        Insert con;
+        
+        con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :con.Id];    
+        
+        Key_Value__c KV = new Key_Value__c();
+        KV.Geomarket_ZIP__c = '85287';
+        KV.Geomarket_Code__c = 'GM-01';
+        insert KV;
+        
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.Contact__c = con.Id;
+        Opp.AccountId = con.AccountID;
+        Opp.StageName = 'Prospect';
+        Opp.CloseDate = date.today() + 365;
+        Opp.Type = 'First Time Freshman';
+        Opp.OwnerId = TestUser.Id;
+        insert Opp;
 
-    Account HS = new Account();
-    HS.Name = 'Test High School';
-    insert HS;
-    
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Con.MailingPostalCode = '90210';
-    Con.Geomarket_Code__c = 'CA-01';
-    Insert Con;
-    
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Key_Value__c KV = new Key_Value__c();
-    KV.Geomarket_ZIP__c = '85287';
-    KV.Geomarket_Code__c = 'GM-01';
-    insert KV;
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountID;
-    Opp.StageName = 'Prospect';
-    Opp.CloseDate = date.today() + 365;
-    Opp.Type = 'First Time Freshman';
-    Opp.OwnerId = TestUser.Id;
-    //Opp.Territory_Assignment_UserID__c = TestUser.Id;
-    insert Opp;
+        TerritoryAssignmentHelper.accountTADone = false;
 
-    TerritoryAssignmentHelper.accountTADone = false;
+        Test.startTest();
 
-    Test.startTest();
         HS.ShippingPostalCode = '85287';
         HS.Territory_Manager__c = TestUser.Id;
         update HS;
-        String AccountGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c FROM Account WHERE Id =: HS.Id LIMIT 1].Geomarket_Code__c;
-    Test.stopTest();
 
-    System.Debug('Account Geomarket Code after update: '+ AccountGeoCodeAfterUpdate + ', Key Value Geomarket Code: ' + KV.Geomarket_Code__c );
-    System.Assert(AccountGeoCodeAfterUpdate == KV.Geomarket_Code__c,'Account Geomarket Code did not match by ZIP code');
-} 
+        String accountGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c 
+                                            FROM Account 
+                                            WHERE Id =: HS.Id 
+                                            LIMIT 1].Geomarket_Code__c;
+        
+        Test.stopTest();
 
+        System.Debug('Account Geomarket Code after update: '+ accountGeoCodeAfterUpdate + ', Key Value Geomarket Code: ' + KV.Geomarket_Code__c );
+        System.Assert(accountGeoCodeAfterUpdate == KV.Geomarket_Code__c,'Account Geomarket Code did not match by ZIP code');
+    } 
 
-private static testMethod void testContactGeomarketCodeAssignment(){ 
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
+    private static testMethod void testContactGeomarketCodeAssignment()
+    { 
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
 
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Con.MailingPostalCode = '90210';
-    Con.Geomarket_Code__c = 'CA-01';
-    Insert Con;
+        Contact con = new Contact();
+        con.FirstName = 'TestFirstName';
+        con.LastName = 'TestLastName';
+        con.MailingPostalCode = '90210';
+        con.Geomarket_Code__c = 'CA-01';
+        Insert con;
 
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Key_Value__c KVContact = new Key_Value__c();
-    KVContact.Geomarket_ZIP__c = '90210';
-    KVContact.Geomarket_Code__c = 'CA-01';
-    insert KVContact;
+        con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :con.Id];    
+        
+        Key_Value__c KVContact = new Key_Value__c();
+        KVContact.Geomarket_ZIP__c = '90210';
+        KVContact.Geomarket_Code__c = 'CA-01';
+        insert KVContact;
 
-    Key_Value__c KVHS = new Key_Value__c();
-    KVHS.Geomarket_ZIP__c = '84108';
-    KVHS.Geomarket_Code__c = 'UT-01';
-    insert KVHS;
-    
-    Key_Value__c KVCollege = new Key_Value__c();
-    KVCollege.Geomarket_ZIP__c = '85287';
-    KVCollege.Geomarket_Code__c = 'AZ-01';
-    insert KVCollege;
-    
-    Account HS = new Account();
-    HS.Name = 'Test High School';
-    HS.ShippingPostalCode = '84108';
-    HS.Geomarket_Code__c = 'UT-01';
-    insert HS;
-    
-    Account College = new Account();
-    College.Name = 'Test College School';
-    College.ShippingPostalCode = '85287';
-    College.Geomarket_Code__c = 'AZ-01';
-    insert College;
+        Key_Value__c KVHS = new Key_Value__c();
+        KVHS.Geomarket_ZIP__c = '84108';
+        KVHS.Geomarket_Code__c = 'UT-01';
+        insert KVHS;
+        
+        Key_Value__c KVCollege = new Key_Value__c();
+        KVCollege.Geomarket_ZIP__c = '85287';
+        KVCollege.Geomarket_Code__c = 'AZ-01';
+        insert KVCollege;
+        
+        Account HS = new Account();
+        HS.Name = 'Test High School';
+        HS.ShippingPostalCode = '84108';
+        HS.Geomarket_Code__c = 'UT-01';
+        insert HS;
+        
+        Account college = new Account();
+        college.Name = 'Test College School';
+        college.ShippingPostalCode = '85287';
+        college.Geomarket_Code__c = 'AZ-01';
+        insert college;
 
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    Opp.StageName = 'Prospect';
-    Opp.CloseDate = date.today() + 365;
-    Opp.Type = 'First Time Freshman';
-    //Commented out until territory assignment goes live with owner. 
-    //Opp.OwnerId = TestUser.Id;
-    //Opp.Territory_Assignment_UserID__c = TestUser.Id;
+        Opportunity opp = new Opportunity();
+        opp.Name = 'Test opp';
+        opp.Contact__c = con.Id;
+        opp.AccountId = con.AccountId;
+        opp.StageName = 'Prospect';
+        opp.CloseDate = Date.today() + 365;
+        opp.Type = 'First Time Freshman';
+        //TODO: Commented out until territory assignment goes live with owner. 
+        //opp.OwnerId = TestUser.Id;
+        //opp.Territory_Assignment_UserID__c = TestUser.Id;
 
-    Test.startTest();
-        insert Opp;
-        String ContactGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c FROM Contact WHERE Id = :Con.Id LIMIT 1].Geomarket_Code__c;    
+        Test.startTest();
+        
+        insert opp;
+        String contactGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c 
+                                            FROM Contact 
+                                            WHERE Id = :con.Id 
+                                            LIMIT 1].Geomarket_Code__c;    
 
         // Fire Account Trigger to set Account.Geomarketcode__c        
         HS.ShippingPostalCode = '84108';
         HS.Geomarket_Code__c = 'UT-01';
         update HS;
 
-        Con.Last_HS_Attended__c = HS.Id;
-        update Con;
+        con.Last_HS_Attended__c = HS.Id;
+        update con;
 
-        Opp.Type = 'First Time Freshman';
-        Opp.Territory_Assignment_Required__c = true;
-        update Opp;
-        String ContactHSGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c FROM Contact WHERE Id = :Con.Id LIMIT 1].Geomarket_Code__c;
+        opp.Type = 'First Time Freshman';
+        opp.Territory_Assignment_Required__c = true;
+        update opp;
+
+        String contactHSGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c 
+                                              FROM Contact 
+                                              WHERE Id = :Con.Id 
+                                              LIMIT 1].Geomarket_Code__c;
         
-        Opp.Type = 'Transfer';
-        update Opp;
+        opp.Type = 'Transfer';
+        update opp;
 
-        Con.Last_HS_Attended__c = null;
-        Con.Last_College_Attended__c = College.Id;
-        update Con;
+        con.Last_HS_Attended__c = null;
+        con.Last_College_Attended__c = College.Id;
+        update con;
         
-        Opp.Type = 'Transfer';
-        Opp.Territory_Assignment_Required__c = true;
-        update Opp;
-        String ContactCollegeGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c FROM Contact WHERE Id = :Con.Id LIMIT 1].Geomarket_Code__c;        
+        opp.Type = 'Transfer';
+        opp.Territory_Assignment_Required__c = true;
+        update opp;
 
-    Test.stopTest();
+        String contactCollegeGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c 
+                                                   FROM Contact 
+                                                   WHERE Id = :Con.Id 
+                                                   LIMIT 1].Geomarket_Code__c;        
 
-    System.Debug('Contact Geomarket Code after update: '+ ContactGeoCodeAfterUpdate + ', Key Value Contact Geomarket Code: ' + KVContact.Geomarket_Code__c);
-    System.Assert(ContactGeoCodeAfterUpdate == KVContact.Geomarket_Code__c,'Contact Geomarket Code did not match by ZIP code');
+        Test.stopTest();
 
-    System.Debug('Contact High School Geomarket Code after update: '+ ContactHSGeoCodeAfterUpdate + ', Key Value Contact High School Geomarket Code: ' + KVHS.Geomarket_Code__c);    
-    System.Assert(ContactHSGeoCodeAfterUpdate == KVHS.Geomarket_Code__c,'Contact Geomarket Code did not match by Last Attended High School Geomarket Code');
+        System.Debug('Contact Geomarket Code after update: '+ contactGeoCodeAfterUpdate + ', Key Value Contact Geomarket Code: ' + KVContact.Geomarket_Code__c);
+        System.Assert(contactGeoCodeAfterUpdate == KVContact.Geomarket_Code__c,'Contact Geomarket Code did not match by ZIP code');
 
-    System.Debug('Contact College Geomarket Code after update: '+ ContactCollegeGeoCodeAfterUpdate + ', Key Value Contact College Geomarket Code: ' + KVCollege.Geomarket_Code__c );    
-    System.Assert(ContactCollegeGeoCodeAfterUpdate == KVCollege.Geomarket_Code__c,'Contact Geomarket Code did not match by Last Attended College Geomarket Code');
-} 
+        System.Debug('Contact High School Geomarket Code after update: '+ contactHSGeoCodeAfterUpdate + ', Key Value Contact High School Geomarket Code: ' + KVHS.Geomarket_Code__c);    
+        System.Assert(contactHSGeoCodeAfterUpdate == KVHS.Geomarket_Code__c,'Contact Geomarket Code did not match by Last Attended High School Geomarket Code');
 
+        System.Debug('Contact College Geomarket Code after update: '+ contactCollegeGeoCodeAfterUpdate + ', Key Value Contact College Geomarket Code: ' + KVCollege.Geomarket_Code__c );    
+        System.Assert(contactCollegeGeoCodeAfterUpdate == KVCollege.Geomarket_Code__c,'Contact Geomarket Code did not match by Last Attended College Geomarket Code');
+    } 
 
+    private static testMethod void testFreshmanScholar()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
 
-private static testMethod void testFreshmanScholar(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Insert Con;
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        insert Con;
 
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'Freshman Scholar';
-    Atar1.Opportunity_Type__c = 'First Time Freshman';
-    //Atar1.National_Scholarship__c = 'Flinn Finalist';
-    Atar1.User__c = TestUser.Id;
-    insert Atar1;
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'test';
-    Opp.CloseDate = date.today() + 365;
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    insert Opp;
-    
-    Test.startTest();
+        Con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :Con.Id];    
+        
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Freshman Scholar';
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        aTar1.User__c = TestUser.Id;
+        insert aTar1;
+        
+        Opportunity opp = new Opportunity();
+        opp.Name = 'Test Opp';
+        opp.StageName = 'Prospect';
+        opp.Type = 'test';
+        opp.CloseDate = date.today() + 365;
+        opp.Contact__c = Con.Id;
+        opp.AccountId = Con.AccountId;
+        insert opp;
+        
+        Test.startTest();
+
+        opp.Type = 'First Time Freshman';
+        opp.Potential_National_Scholar__c = true;
+        update opp;
+
+        Test.stopTest();
+
+        String lastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c 
+                               FROM Opportunity 
+                               WHERE Id = :opp.Id 
+                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        
+        System.Debug('Opportunity Details: ' + Opp);
+        System.Debug('Last Rule Type: ' + lastRuleType);
+        System.Assert(lastRuleType  == 'Freshman Scholar','Rule did not assign correctly by rule type Freshman Scholar: ' + lastRuleType);
+
+    }
+
+    private static testMethod void testInternational()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        Insert Con;
+     
+        Con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :Con.Id];    
+
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.Rule_Type__c = 'International';
+        ATar1.International__c = true;
+        ATar1.User__c = TestUser.Id;
+        insert ATar1;
+        
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.StageName = 'Prospect';
         Opp.Type = 'First Time Freshman';
-        Opp.Potential_National_Scholar__c = true;
-        update Opp;
-    Test.stopTest();
-
-    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-    System.Debug('Opportunity Details: ' + Opp);
-    System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType  == 'Freshman Scholar','Rule did not assign correctly by rule type Freshman Scholar: ' + LastRuleType);
-
-}
-
-private static testMethod void testInternational(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Insert Con;
- 
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'International';
-    Atar1.International__c = true;
-    Atar1.User__c = TestUser.Id;
-    insert Atar1;
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'First Time Freshman';
-    Opp.CloseDate = date.today() + 365;
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    insert Opp;
-            
-    Test.startTest();
+        Opp.CloseDate = date.today() + 365;
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+        insert Opp;
+                
+        Test.startTest();
+        
         Opp.International_Student__c = true;
         update Opp;
-    Test.stopTest();
 
-    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-    System.Debug('Opportunity Details: ' + Opp);
-    System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType == 'International','Rule did not assign correctly by rule type International');
+        Test.stopTest();
 
-}
+        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c 
+                               FROM Opportunity 
+                               WHERE Id = :Opp.Id 
+                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        
+        System.Debug('Opportunity Details: ' + Opp);
+        System.Debug('Last Rule Type: ' + LastRuleType);
+        System.Assert(LastRuleType == 'International','Rule did not assign correctly by rule type International');
+    }
 
-private static testMethod void testLocation(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Insert Con;
+    private static testMethod void testInternationalChina()
+    {
+        List<User> chinaManagers = UserService.createMultipleTestUsers(2);
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'Location';
-    Atar1.User__c = TestUser.Id;
-    Atar1.Location__c = 'Lake Havasu';
-    insert Atar1;
-    
-    
-    Location__c LakeHavasu = new Location__c();
-    LakeHavasu.Name = 'Lake Havasu';
-    LakeHavasu.Location_Code__c = 'CALHC';
-    insert LakeHavasu;
+        for (User u : chinaManagers)
+        {
+            u.ProfileId = saProfile;
+        }
+        
+        insert chinaManagers;
 
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'First Time Freshman';
-    Opp.CloseDate = date.today() + 365;
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    Opp.Location__c = LakeHavasu.Id;
-            
-    Test.startTest();
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.Rule_Type__c = 'International';
+        ATar1.International__c = true;
+        ATar1.Opportunity_Type__c = 'First Time Freshman';
+        ATar1.Assignment_By_Country__c = 'China';
+        ATar1.Range_Start__c = 1;
+        ATar1.Range_End__c = 50;
+        ATar1.User__c = chinaManagers[0].Id;
+        insert ATar1;
+
+        Territory_Assignment_Rule__c ATar2 = new Territory_Assignment_Rule__c();
+        ATar2.Rule_Type__c = 'International';
+        ATar2.International__c = true;
+        ATar2.Opportunity_Type__c = 'First Time Freshman';
+        ATar2.Assignment_By_Country__c = 'China';
+        ATar2.Range_Start__c = 51;
+        Atar2.Range_End__c = 100;
+        ATar2.User__c = chinaManagers[1].Id;
+        insert ATar2;
+
+        List<Contact> testContacts = ContactService.createMultipleTestContacts(2);
+
+        for (Contact con : testContacts)
+        {
+            con.MailingCountry = 'China';
+        }
+
+        insert testContacts;
+     
+        Contact chinaContact1 = [SELECT Id, AccountId 
+                         FROM Contact 
+                         WHERE Id = :testContacts[0].Id];
+        Contact chinaContact2 = [SELECT Id, AccountId
+                         FROM Contact
+                         WHERE Id = :testContacts[1].Id];
+
+        Opportunity chinaOpp1 = new Opportunity();
+        chinaOpp1.Name = 'China Opportunity 1';
+        chinaOpp1.StageName = 'Prospect';
+        chinaOpp1.Type = 'First Time Freshman';
+        chinaOpp1.CloseDate = Date.today() + 365;
+        chinaOpp1.Contact__c = chinaContact1.Id;
+        chinaOpp1.AccountId = chinaContact1.AccountId;
+        insert chinaOpp1;
+
+        Opportunity chinaOpp2 = new Opportunity();
+        chinaOpp2.Name = 'China Opportunity 2';
+        chinaOpp2.StageName = 'Prospect';
+        chinaOpp2.Type = 'First Time Freshman';
+        chinaOpp2.CloseDate = Date.today() + 365;
+        chinaOpp2.Contact__c = chinaContact2.Id;
+        chinaOpp2.AccountId = chinaContact2.AccountId;
+        insert chinaOpp2;
+
+        Test.startTest();
+
+        chinaOpp1.Opportunity_Assignment_Number_Rand__c = 25;
+        chinaOpp1.International_Student__c = true;
+
+        chinaOpp2.Opportunity_Assignment_Number_Rand__c = null;
+        chinaOpp2.International_Student__c = true;
+
+        update chinaOpp1;
+        update chinaOpp2;
+
+        Test.stopTest();
+
+        chinaOpp1 = [SELECT OwnerId FROM Opportunity WHERE Name = 'China Opportunity 1'];
+
+        System.assertEquals(chinaManagers[0].Id, chinaOpp1.OwnerId, 'Rule did not assign correct China territory manager.');
+
+        chinaOpp2 = [SELECT OwnerId, Opportunity_Assignment_Number__c 
+                     FROM Opportunity 
+                     WHERE Name = 'China Opportunity 2'];
+
+        if (chinaOpp2.Opportunity_Assignment_Number__c <= ATar1.Range_End__c)
+        {
+            System.assertEquals(chinaManagers[0].Id, chinaOpp2.OwnerId, 'Rule did not assign correct China territory manager.');
+        }
+        else
+        {
+            System.assertEquals(chinaManagers[1].Id, chinaOpp2.OwnerId, 'Rule did not assign correct China territory manager.');
+        }
+    }
+
+    private static testMethod void testInternationalUnitedStates()
+    {
+        List<User> usManagers = UserService.createMultipleTestUsers(2);
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
+        for (User u : usManagers)
+        {
+            u.ProfileId = saProfile;
+        }
+        
+        insert usManagers;
+
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.Rule_Type__c = 'International';
+        ATar1.International__c = true;
+        ATar1.Opportunity_Type__c = 'First Time Freshman';
+        ATar1.Assignment_By_Country__c = 'United States';
+        ATar1.Range_Start__c = 1;
+        ATar1.Range_End__c = 50;
+        ATar1.User__c = usManagers[0].Id;
+        insert ATar1;
+
+        Territory_Assignment_Rule__c ATar2 = new Territory_Assignment_Rule__c();
+        ATar2.Rule_Type__c = 'International';
+        ATar2.International__c = true;
+        ATar2.Opportunity_Type__c = 'First Time Freshman';
+        ATar2.Assignment_By_Country__c = 'United States';
+        ATar2.Range_Start__c = 51;
+        Atar2.Range_End__c = 100;
+        ATar2.User__c = usManagers[1].Id;
+        insert ATar2;
+
+        List<Contact> testContacts = ContactService.createMultipleTestContacts(2);
+
+        for (Contact con : testContacts)
+        {
+            con.MailingCountry = 'United States';
+        }
+
+        insert testContacts;
+     
+        Contact usContact1 = [SELECT Id, AccountId 
+                         FROM Contact 
+                         WHERE Id = :testContacts[0].Id];
+        Contact usContact2 = [SELECT Id, AccountId
+                         FROM Contact
+                         WHERE Id = :testContacts[1].Id];
+
+        Opportunity usOpp1 = new Opportunity();
+        usOpp1.Name = 'US Opportunity 1';
+        usOpp1.StageName = 'Prospect';
+        usOpp1.Type = 'First Time Freshman';
+        usOpp1.CloseDate = Date.today() + 365;
+        usOpp1.Contact__c = usContact1.Id;
+        usOpp1.AccountId = usContact1.AccountId;
+        insert usOpp1;
+
+        Opportunity usOpp2 = new Opportunity();
+        usOpp2.Name = 'US Opportunity 2';
+        usOpp2.StageName = 'Prospect';
+        usOpp2.Type = 'First Time Freshman';
+        usOpp2.CloseDate = Date.today() + 365;
+        usOpp2.Contact__c = usContact2.Id;
+        usOpp2.AccountId = usContact2.AccountId;
+        insert usOpp2;
+
+        Test.startTest();
+
+        usOpp1.Opportunity_Assignment_Number_Rand__c = 25;
+        usOpp1.International_Student__c = true;
+
+        usOpp2.Opportunity_Assignment_Number_Rand__c = null;
+        usOpp2.International_Student__c = true;
+
+        update usOpp1;
+        update usOpp2;
+
+        Test.stopTest();
+
+        usOpp1 = [SELECT OwnerId FROM Opportunity WHERE Name = 'US Opportunity 1'];
+
+        System.assertEquals(usManagers[0].Id, usOpp1.OwnerId, 'Rule did not assign correct US territory manager.');
+        
+        usOpp2 = [SELECT OwnerId, Opportunity_Assignment_Number__c 
+                  FROM Opportunity 
+                  WHERE Name = 'US Opportunity 2'];
+
+        if (usOpp2.Opportunity_Assignment_Number__c <= ATar1.Range_End__c)
+        {
+            System.assertEquals(usManagers[0].Id, usOpp2.OwnerId, 'Rule did not assign correct US territory manager.');
+        }
+        else
+        {
+            System.assertEquals(usManagers[1].Id, usOpp2.OwnerId, 'Rule did not assign correct US territory manager.');
+        }
+    }
+
+    private static testMethod void testInternationalTransfer()
+    {
+        List<User> transferManagers = UserService.createMultipleTestUsers(2);
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
+        for (User u : transferManagers)
+        {
+            u.ProfileId = saProfile;
+        }
+        
+        insert transferManagers;
+
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.Rule_Type__c = 'International';
+        ATar1.International__c = true;
+        ATar1.Opportunity_Type__c = 'Transfer';
+        ATar1.Assignment_By_Country__c = 'Vietnam';
+        ATar1.User__c = transferManagers[0].Id;
+        insert ATar1;
+
+        Territory_Assignment_Rule__c ATar2 = new Territory_Assignment_Rule__c();
+        ATar2.Rule_Type__c = 'International';
+        ATar2.International__c = true;
+        ATar2.Opportunity_Type__c = 'Transfer';
+        ATar2.User__c = transferManagers[1].Id;
+        insert ATar2;
+
+        List<Contact> testContacts = ContactService.createMultipleTestContacts(2);
+
+        testContacts[0].MailingCountry = 'Vietnam';
+
+        insert testContacts;
+     
+        Contact transferContact1 = [SELECT Id, AccountId 
+                                    FROM Contact 
+                                    WHERE Id = :testContacts[0].Id];
+
+        Contact transferContact2 = [SELECT Id, AccountId 
+                                    FROM Contact 
+                                    WHERE Id = :testContacts[1].Id];
+
+        Opportunity transferOpp = new Opportunity();
+        transferOpp.Name = 'Transfer Opportunity 1';
+        transferOpp.StageName = 'Prospect';
+        transferOpp.Type = 'Transfer';
+        transferOpp.CloseDate = Date.today() + 365;
+        transferOpp.Contact__c = transferContact1.Id;
+        transferOpp.AccountId = transferContact1.AccountId;
+        insert transferOpp;
+
+        Opportunity transferOpp2 = new Opportunity();
+        transferOpp2.Name = 'Transfer Opportunity 2';
+        transferOpp2.StageName = 'Prospect';
+        transferOpp2.Type = 'Transfer';
+        transferOpp2.CloseDate = Date.today() + 365;
+        transferOpp2.Contact__c = transferContact2.Id;
+        transferOpp2.AccountId = transferContact2.AccountId;
+        insert transferOpp2;
+
+        Test.startTest();
+
+        transferOpp.International_Student__c = true;
+        transferOpp2.International_Student__c = true;
+
+        update transferOpp;
+        update transferOpp2;
+
+        Test.stopTest();
+
+        transferOpp = [SELECT OwnerId FROM Opportunity WHERE Name = 'Transfer Opportunity 1'];
+        transferOpp2 = [SELECT OwnerId FROM Opportunity WHERE Name = 'Transfer Opportunity 2'];
+
+        System.assertEquals(transferManagers[0].Id, transferOpp.OwnerId, 'Rule did not assign correct transfer territory manager.');
+        System.assertEquals(transferManagers[1].Id, transferOpp2.OwnerId, 'Rule did not assign correct default transfer territory manager.');
+    }
+
+    private static testMethod void testInternationalAdmitConditional()
+    {
+        List<User> conditAdmitManagers = UserService.createMultipleTestUsers(1);
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
+        for (User u : conditAdmitManagers)
+        {
+            u.ProfileId = saProfile;
+        }
+        
+        insert conditAdmitManagers;
+
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.Rule_Type__c = 'International Admitted - Conditional';
+        ATar1.International__c = true;
+        ATar1.Assignment_By_Country__c = 'China';
+        ATar1.User__c = conditAdmitManagers[0].Id;
+        insert ATar1;
+
+        List<Contact> testContacts = ContactService.createMultipleTestContacts(1);
+
+        for (Contact con : testContacts)
+        {
+            con.MailingCountry = 'China';
+        }
+
+        insert testContacts;
+     
+        Contact admitCondCon = [SELECT Id, AccountId 
+                         FROM Contact 
+                         WHERE Id = :testContacts[0].Id];
+
+        Opportunity admitCondOpp = new Opportunity();
+        admitCondOpp.Name = 'Conditional Admit Opportunity 1';
+        admitCondOpp.StageName = 'Admitted - Conditional';
+        admitCondOpp.CloseDate = Date.today() + 365;
+        admitCondOpp.Contact__c = admitCondCon.Id;
+        admitCondOpp.AccountId = admitCondCon.AccountId;
+        insert admitCondOpp;
+
+        Test.startTest();
+
+        admitCondOpp.International_Student__c = true;
+
+        update admitCondOpp;
+
+        Test.stopTest();
+
+        admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Name = 'Conditional Admit Opportunity 1'];
+
+        System.assertEquals(conditAdmitManagers[0].Id, admitCondOpp.OwnerId, 'Rule did not assign correct transfer territory manager.');
+    }
+
+    private static testMethod void testLocation()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        Insert Con;
+
+        Con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :Con.Id];    
+        
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Location';
+        aTar1.User__c = TestUser.Id;
+        aTar1.Location__c = 'Lake Havasu';
+        insert aTar1;
+        
+        
+        Location__c LakeHavasu = new Location__c();
+        LakeHavasu.Name = 'Lake Havasu';
+        LakeHavasu.Location_Code__c = 'CALHC';
+        insert LakeHavasu;
+
+        
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.StageName = 'Prospect';
+        Opp.Type = 'First Time Freshman';
+        Opp.CloseDate = date.today() + 365;
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+        Opp.Location__c = LakeHavasu.Id;
+                
+        Test.startTest();
+        
         insert Opp;
-        //Opp.Location__c = LakeHavasu.Id;
-        //update Opp;
-    Test.stopTest();
+        
+        Test.stopTest();
 
-    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-    System.Debug('Opportunity Details: ' + Opp);
-    System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
-}
+        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c 
+                               FROM Opportunity 
+                               WHERE Id = :Opp.Id 
+                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        
+        System.Debug('Opportunity Details: ' + Opp);
+        System.Debug('Last Rule Type: ' + LastRuleType);
+        System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
+    }
 
-private static testMethod void testAdmittedLocation(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Insert Con;
+    private static testMethod void testAdmittedLocation()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
+        
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        Insert Con;
 
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'Location';
-    Atar1.User__c = TestUser.Id;
-    Atar1.Location__c = 'Lake Havasu';
-    insert Atar1;
-    
-    
-    Location__c LakeHavasu = new Location__c();
-    LakeHavasu.Name = 'Lake Havasu';
-    LakeHavasu.Location_Code__c = 'CALHC';
-    insert LakeHavasu;
+        Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
+        
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Location';
+        aTar1.User__c = TestUser.Id;
+        aTar1.Location__c = 'Lake Havasu';
+        insert aTar1;
+        
+        
+        Location__c LakeHavasu = new Location__c();
+        LakeHavasu.Name = 'Lake Havasu';
+        LakeHavasu.Location_Code__c = 'CALHC';
+        insert LakeHavasu;
 
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'First Time Freshman';
-    Opp.CloseDate = date.today() + 365;
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    Opp.Admitted_Location__c = LakeHavasu.Id;
-            
-    Test.startTest();
+        
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.StageName = 'Prospect';
+        Opp.Type = 'First Time Freshman';
+        Opp.CloseDate = date.today() + 365;
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+        Opp.Admitted_Location__c = LakeHavasu.Id;
+                
+        Test.startTest();
+            insert Opp;
+            //Opp.Location__c = LakeHavasu.Id;
+            //update Opp;
+        Test.stopTest();
+
+        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        System.Debug('Opportunity Details: ' + Opp);
+        System.Debug('Last Rule Type: ' + LastRuleType);
+        System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
+    }
+
+    private static testMethod void testLastHighSchoolAttended()
+    {
+        User TestUser = [SELECt Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        Account HS = new Account();
+        HS.Name = 'Test High School';
+        HS.Institution_Type__c = 'HS';
+        HS.Territory_Manager__c = TestUser.Id;
+        insert HS;
+       
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        Con.Email = 'test@test.com';
+        insert Con;
+
+        Previous_Education__c pe = new Previous_Education__c();
+        pe.Contact__c = Con.Id;
+        pe.Account__c = HS.Id;
+        insert pe;
+
+        Con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :Con.Id];    
+        
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+        Opp.StageName = 'Prospect';
+        Opp.Type = 'Test';
+        Opp.CloseDate = Date.today() + 365;
         insert Opp;
-        //Opp.Location__c = LakeHavasu.Id;
-        //update Opp;
-    Test.stopTest();
+        
+        Test.startTest();
 
-    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-    System.Debug('Opportunity Details: ' + Opp);
-    System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
-}
-
-private static testMethod void testLastHighSchoolAttended(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    Account HS = new Account();
-    HS.Name = 'Test High School';
-    HS.Institution_Type__c = 'HS';
-    HS.Territory_Manager__c = TestUser.Id;
-    insert HS;
-   
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Con.Email = 'test@test.com';
-    //Con.Last_HS_Attended__c = HS.Id;
-    insert Con;
-
-    Previous_Education__c pe = new Previous_Education__c();
-    pe.Contact__c = Con.Id;
-    pe.Account__c = HS.Id;
-    insert pe;
-
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'Test';
-    Opp.CloseDate = date.today() + 365;
-    insert Opp;
-    
-    Test.startTest();
         Opp.Type = 'First Time Freshman';
         update Opp;
-    Test.stopTest();
-    
-    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-    System.Debug('Opportunity Details: ' + Opp);
-    System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType == 'Last Attended High School','Rule did not assign correctly by rule type Last High School Attended');
-}
+
+        Test.stopTest();
+        
+        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c 
+                               FROM Opportunity 
+                               WHERE Id = :Opp.Id 
+                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+
+        System.Debug('Opportunity Details: ' + Opp);
+        System.Debug('Last Rule Type: ' + LastRuleType);
+        System.Assert(LastRuleType == 'Last Attended High School','Rule did not assign correctly by rule type Last High School Attended');
+    }
 
 
-private static testMethod void testLastCollegeAttended(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.User__c = TestUser.Id;
-    Atar1.Rule_Type__c = 'Default User';
-    Atar1.Opportunity_Type__c = 'First Time Freshman';
-    Insert Atar1;  
-    
-    Territory_Assignment_Rule__c Atar2 = new Territory_Assignment_Rule__c();
-    Atar2.User__c = TestUser.Id;
-    Atar2.Rule_Type__c = 'Default User';
-    Atar2.Opportunity_Type__c = 'Transfer';
-    Insert Atar2;  
-    
-    Territory_Assignment_Rule__c Atar3 = new Territory_Assignment_Rule__c();
-    Atar3.User__c = TestUser.Id;
-    Atar3.Rule_Type__c = 'Default User';
-    Atar3.Opportunity_Type__c = 'Non-Degree';
-    Insert Atar3;  
-    
-    Territory_Assignment_Rule__c Atar4 = new Territory_Assignment_Rule__c();
-    Atar4.User__c = TestUser.Id;
-    Atar4.Rule_Type__c = 'Default User';
-    Atar4.Opportunity_Type__c = 'Readmission';
-    Insert Atar4;  
-    
-    Territory_Assignment_Rule__c Atar5 = new Territory_Assignment_Rule__c();
-    Atar5.User__c = TestUser.Id;
-    Atar5.Rule_Type__c = 'Default User';
-    Atar5.Opportunity_Type__c = 'Law';
-    Insert Atar5;      
-    
-    Territory_Assignment_Rule__c Atar6 = new Territory_Assignment_Rule__c();
-    Atar6.User__c = TestUser.Id;
-    Atar6.Rule_Type__c = 'Default User';
-    Atar6.Opportunity_Type__c = 'Graduate';
-    Insert Atar6;     
-    
-    Territory_Assignment_Rule__c Atar7 = new Territory_Assignment_Rule__c();
-    Atar7.User__c = TestUser.Id;
-    Atar7.Rule_Type__c = 'Default User';
-    Atar7.Opportunity_Type__c = 'Non-Degree';
-    Insert Atar7;  
-    
-    Account College= new Account();
-    College.Name = 'Test College';
-    College.Institution_Type__c = '4YR';
-    College.Territory_Manager__c = TestUser.Id;
-    insert College;
-   
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Con.Email = 'test@test.com';
-    //Con.Last_College_Attended__c = College.Id;
-    insert Con;
+    private static testMethod void testLastCollegeAttended()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.User__c = TestUser.Id;
+        ATar1.Rule_Type__c = 'Default User';
+        ATar1.Opportunity_Type__c = 'First Time Freshman';
+        Insert ATar1;  
+        
+        Territory_Assignment_Rule__c Atar2 = new Territory_Assignment_Rule__c();
+        Atar2.User__c = TestUser.Id;
+        Atar2.Rule_Type__c = 'Default User';
+        Atar2.Opportunity_Type__c = 'Transfer';
+        Insert Atar2;  
+        
+        Territory_Assignment_Rule__c Atar3 = new Territory_Assignment_Rule__c();
+        Atar3.User__c = TestUser.Id;
+        Atar3.Rule_Type__c = 'Default User';
+        Atar3.Opportunity_Type__c = 'Non-Degree';
+        Insert Atar3;  
+        
+        Territory_Assignment_Rule__c Atar4 = new Territory_Assignment_Rule__c();
+        Atar4.User__c = TestUser.Id;
+        Atar4.Rule_Type__c = 'Default User';
+        Atar4.Opportunity_Type__c = 'Readmission';
+        Insert Atar4;  
+        
+        Territory_Assignment_Rule__c Atar5 = new Territory_Assignment_Rule__c();
+        Atar5.User__c = TestUser.Id;
+        Atar5.Rule_Type__c = 'Default User';
+        Atar5.Opportunity_Type__c = 'Law';
+        Insert Atar5;      
+        
+        Territory_Assignment_Rule__c Atar6 = new Territory_Assignment_Rule__c();
+        Atar6.User__c = TestUser.Id;
+        Atar6.Rule_Type__c = 'Default User';
+        Atar6.Opportunity_Type__c = 'Graduate';
+        Insert Atar6;     
+        
+        Territory_Assignment_Rule__c Atar7 = new Territory_Assignment_Rule__c();
+        Atar7.User__c = TestUser.Id;
+        Atar7.Rule_Type__c = 'Default User';
+        Atar7.Opportunity_Type__c = 'Non-Degree';
+        Insert Atar7;  
+        
+        Account College= new Account();
+        College.Name = 'Test College';
+        College.Institution_Type__c = '4YR';
+        College.Territory_Manager__c = TestUser.Id;
+        insert College;
+       
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        Con.Email = 'test@test.com';
+        insert Con;
 
-    Previous_Education__c pe = new Previous_Education__c();
-    pe.Contact__c = Con.Id;
-    pe.Account__c = College.Id;
-    insert pe;
+        Previous_Education__c pe = new Previous_Education__c();
+        pe.Contact__c = Con.Id;
+        pe.Account__c = College.Id;
+        insert pe;
 
 
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'Test';
-    Opp.CloseDate = date.today() + 365;
-    insert Opp;
-    
-    Test.startTest();
+        Con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :Con.Id];    
+        
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+        Opp.StageName = 'Prospect';
+        Opp.Type = 'Test';
+        Opp.CloseDate = date.today() + 365;
+        insert Opp;
+        
+        Test.startTest();
+        
         Opp.Type = 'First Time Freshman';
         update Opp;
         Opp.Type = 'Transfer';
         update Opp;
+        
+        Test.stopTest();
+        
+        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c 
+                               FROM Opportunity 
+                               WHERE Id = :Opp.Id 
+                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
 
-        //Opp.Type = 'Readmission';
-        //update Opp;
-        //Opp.Type = 'Graduate';
-        //update Opp;
-        //Opp.Type = 'Law';
-        //update Opp;
-        //Opp.Type = 'Non-Degree';
-        //update Opp;    
-    
+        System.Debug('Opportunity Details: ' + Opp);
+        System.Debug('Last Rule Type: ' + LastRuleType);
+        System.Assert(LastRuleType == 'Last Attended College, Type ' + Opp.Type,'Rule did not assign correctly by rule type Last College Attended');
+    }  
+          
+    private static testMethod void testGeomarketCode()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.Rule_Type__c = 'Geomarket';
+        ATar1.User__c = TestUser.Id;
+        ATar1.Geomarket__c = 'AZ-01';
+        ATar1.Opportunity_Type__c = 'First Time Freshman';
+        insert ATar1;
+        
+        Key_Value__c KVContact = new Key_Value__c();
+        KVContact.Geomarket_ZIP__c = '85123';
+        KVContact.Geomarket_Code__c = 'AZ-01';
+        insert KVContact;    
+        
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        Con.Email = 'test@test.com';
+        Con.MailingPostalCode = '85123';
+        Con.Geomarket_Code__c = 'AZ-01';
+        insert Con;
+     
+        Con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :Con.Id];    
 
-    Test.stopTest();
-    
-    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-    System.Debug('Opportunity Details: ' + Opp);
-    System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType == 'Last Attended College, Type ' + Opp.Type,'Rule did not assign correctly by rule type Last College Attended');
-}  
-      
-private static testMethod void testGeomarketCode(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'Geomarket';
-    Atar1.User__c = TestUser.Id;
-    Atar1.Geomarket__c = 'AZ-01';
-    Atar1.Opportunity_Type__c = 'First Time Freshman';
-    insert Atar1;
-    
-    Key_Value__c KVContact = new Key_Value__c();
-    KVContact.Geomarket_ZIP__c = '85123';
-    KVContact.Geomarket_Code__c = 'AZ-01';
-    insert KVContact;    
-    
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Con.Email = 'test@test.com';
-    Con.MailingPostalCode = '85123';
-    Con.Geomarket_Code__c = 'AZ-01';
-    insert Con;
- 
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'First Time Freshman';
-    Opp.CloseDate = date.today() + 365;
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-            
-    Test.startTest();
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.StageName = 'Prospect';
+        Opp.Type = 'First Time Freshman';
+        Opp.CloseDate = date.today() + 365;
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+                
+        Test.startTest();
+        
         insert Opp;
-    Test.stopTest();
+        
+        Test.stopTest();
 
-    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-    System.Debug('Opportunity Details: ' + Opp);
-    System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType == 'Geomarket, Type ' + Opp.Type, 'Rule did not assign correctly by rule type Geomarket');
-}
+        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c 
+                               FROM Opportunity 
+                               WHERE Id = :Opp.Id 
+                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        
+        System.Debug('Opportunity Details: ' + Opp);
+        System.Debug('Last Rule Type: ' + LastRuleType);
+        System.Assert(LastRuleType == 'Geomarket, Type ' + Opp.Type, 'Rule did not assign correctly by rule type Geomarket');
+    }
 
-private static testMethod void testState(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'State';
-    Atar1.User__c = TestUser.Id;
-    Atar1.Assignment_By_State__c = 'Arizona';
-    Atar1.Opportunity_Type__c = 'First Time Freshman';
-    insert Atar1;
-    
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Con.Email = 'test@test.com';
-    Con.MailingCountry = 'United States';
-    insert Con;
+    private static testMethod void testState()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'State';
+        aTar1.User__c = TestUser.Id;
+        aTar1.Assignment_By_State__c = 'Arizona';
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        insert aTar1;
+        
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        Con.Email = 'test@test.com';
+        Con.MailingCountry = 'United States';
+        insert Con;
 
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'First Time Freshman';
-    Opp.CloseDate = date.today() + 365;
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    insert Opp;
-            
-    Test.startTest();
+        Con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :Con.Id];    
+        
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.StageName = 'Prospect';
+        Opp.Type = 'First Time Freshman';
+        Opp.CloseDate = date.today() + 365;
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+        insert Opp;
+                
+        Test.startTest();
+        
         Con.MailingState = 'Arizona';
-        update Con;
-        //Opp.Territory_Assignment_Required__c = true;
-        //update Opp;
+        update Con;       
+        
+        Test.stopTest();
+
+        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c 
+                               FROM Opportunity 
+                               WHERE Id = :Opp.Id 
+                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        
+        System.Debug('Opportunity Details: ' + Opp);
+        System.Debug('Last Rule Type: ' + LastRuleType);
+        System.Assert(LastRuleType == 'State, ' + Con.MailingState + ', Type ' + Opp.Type,'Rule did not assign correctly by rule type State: ' + LastRuleType);
+    }  
+
+    private static testMethod void testDefaultUser()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        Insert Con;    
+
+        Con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :Con.Id];    
+        
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Default User';
+        aTar1.User__c = TestUser.Id;
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        insert aTar1;
+        
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.StageName = 'Prospect';
+        Opp.Type = 'First Time Freshman';
+        Opp.CloseDate = date.today() + 365;
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+                
+        Test.startTest();
+        
+        insert Opp;
+        
+        Test.stopTest();
+
+        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c 
+                               FROM Opportunity 
+                               WHERE Id = :Opp.Id 
+                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        
+        System.Debug('Opportunity Details: ' + Opp);
+        System.Debug('Last Rule Type: ' + LastRuleType);
+        System.Assert(LastRuleType == 'Default User','Rule did not assign correctly by rule type Default User: ' + LastRuleType);
+    } 
+
+    private static testMethod void testInactiveUser()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+
+        Profile saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+
+        User InactiveUser = UserService.createTestUser();
+        InactiveUser.FirstName = 'Test';
+        InactiveUser.LastName = 'Name';
+        InactiveUser.CompanyName = 'Test Company';
+        InactiveUser.MobilePhone = '123-456-7890';
+        InactiveUser.Username = 'testUser-Inactive@test.test';
+        InactiveUser.Email = 'testUser-Inactive@test.test';
+        InactiveUser.Alias = 'testXX';
+        InactiveUser.CommunityNickname = 'test1';
+        InactiveUser.TimeZoneSidKey = 'America/New_York';
+        InactiveUser.LocaleSidKey = 'en_US';
+        InactiveUser.EmailEncodingKey = 'UTF-8';
+        InactiveUser.ProfileId = saProfile.Id;
+        InactiveUser.LanguageLocaleKey = 'en_US';
+        InactiveUser.IsActive = false;
+        insert InactiveUser;   
+      
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Default User';
+        aTar1.User__c = TestUser.Id;
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        insert aTar1;
+
+        Account HS = new Account();
+        HS.Name = 'Test High School';
+        HS.Institution_Type__c = 'HS';
+        HS.Territory_Manager__c = InactiveUser.Id;
+        insert HS;
        
-    Test.stopTest();
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        Con.Email = 'test@test.com';
+        Con.Last_HS_Attended__c = HS.Id;
+        insert Con;
 
-    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-    System.Debug('Opportunity Details: ' + Opp);
-    System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType == 'State, ' + Con.MailingState + ', Type ' + Opp.Type,'Rule did not assign correctly by rule type State: ' + LastRuleType);
-}  
+        Previous_Education__c pe = new Previous_Education__c();
+        pe.Contact__c = Con.Id;
+        pe.Account__c = HS.Id;
+        insert pe;
 
-
-private static testMethod void testDefaultUser(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Insert Con;    
-
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'Default User';
-    Atar1.User__c = TestUser.Id;
-    Atar1.Opportunity_Type__c = 'First Time Freshman';
-    insert Atar1;
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'First Time Freshman';
-    Opp.CloseDate = date.today() + 365;
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    //insert Opp;
-            
-    Test.startTest();
-        insert Opp;
-        //Opp.Type = 'Transfer';
-        //update Opp;
-        //Opp.Type = 'Readmission';
-        //update Opp;
+        Con = [SELECT Id, AccountId 
+               FROM Contact 
+               WHERE Id = :Con.Id];    
         
-        //Opp.Type = 'Graduate';
-        //update Opp;
-        //Opp.Type = 'Law';
-        //update Opp;
-        //Opp.Type = 'Non-Degree';
-        //update Opp;        
-        //Opp.Type = 'First Time Freshman';
-        //update Opp;
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+        Opp.StageName = 'Prospect';
+        Opp.Type = 'First Time Freshman';
+        Opp.CloseDate = Date.today() + 365;
+
         
-
-    Test.stopTest();
-
-    String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-    System.Debug('Opportunity Details: ' + Opp);
-    System.Debug('Last Rule Type: ' + LastRuleType);
-    System.Assert(LastRuleType == 'Default User','Rule did not assign correctly by rule type Default User: ' + LastRuleType);
-
-} 
-
-
-private static testMethod void testInactiveUser(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    //User InactiveUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = false LIMIT 1];
-
-    Profile saProfile = [select id from profile where name='System Administrator'];
-
-    User InactiveUser = new User();
-    InactiveUser.FirstName = 'Test';
-    InactiveUser.LastName = 'Name';
-    InactiveUser.CompanyName = 'Test Company';
-    InactiveUser.MobilePhone = '123-456-7890';
-    InactiveUser.Username = 'testUser-Inactive@test.test';
-    InactiveUser.Email = 'testUser-Inactive@test.test';
-    InactiveUser.Alias = 'testXX';
-    InactiveUser.CommunityNickname = 'test1';
-    InactiveUser.TimeZoneSidKey = 'America/New_York';
-    InactiveUser.LocaleSidKey = 'en_US';
-    InactiveUser.EmailEncodingKey = 'UTF-8';
-    InactiveUser.ProfileId = saProfile.Id;
-    InactiveUser.LanguageLocaleKey = 'en_US';
-    InactiveUser.IsActive = false;
-    insert InactiveUser;   
-  
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'Default User';
-    Atar1.User__c = TestUser.Id;
-    Atar1.Opportunity_Type__c = 'First Time Freshman';
-    insert Atar1;
-
-    Account HS = new Account();
-    HS.Name = 'Test High School';
-    HS.Institution_Type__c = 'HS';
-    HS.Territory_Manager__c = InactiveUser.Id;
-    insert HS;
-   
-    Contact Con = new Contact();
-    Con.FirstName = 'TestFirstName';
-    Con.LastName = 'TestLastName';
-    Con.Email = 'test@test.com';
-    Con.Last_HS_Attended__c = HS.Id;
-    insert Con;
-
-    Previous_Education__c pe = new Previous_Education__c();
-    pe.Contact__c = Con.Id;
-    pe.Account__c = HS.Id;
-    insert pe;
-
-    Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];    
-    
-    Opportunity Opp = new Opportunity();
-    Opp.Name = 'Test Opp';
-    Opp.Contact__c = Con.Id;
-    Opp.AccountId = Con.AccountId;
-    Opp.StageName = 'Prospect';
-    Opp.Type = 'First Time Freshman';
-    Opp.CloseDate = date.today() + 365;
-
-    
-    Test.startTest();
+        Test.startTest();
+        
         insert Opp;
-    Test.stopTest();
-    
-    Opportunity OppAfterInsert = [SELECT Id,Territory_Assignment_Last_Rule_Type__c,OwnerId FROM Opportunity WHERE Id = :Opp.Id LIMIT 1];
-    System.Debug('Opportunity Details: ' + OppAfterInsert);
-    System.Debug('Last Rule Type: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c);
-    System.Assert(OppAfterInsert.OwnerId ==TestUser.Id);
-    System.Assert(OppAfterInsert.Territory_Assignment_Last_Rule_Type__c == 'Inactive Territory Manager','Did not correctly identify inactive User: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c);
 
-} 
+        Test.stopTest();
+        
+        Opportunity OppAfterInsert = [SELECT Id,Territory_Assignment_Last_Rule_Type__c,OwnerId 
+                                      FROM Opportunity 
+                                      WHERE Id = :Opp.Id 
+                                      LIMIT 1];
 
-private static testMethod void testLeadFreshmanScholar(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    List<Lead> leadList = new List<Lead>();
-    for (Integer i=0;i<1;i++) {
-        Lead l = new Lead(LastName='LName'+i, 
-                          FirstName='FName'+i,
-                          Company='Company', 
-                          Email='test'+i+'@test.test', 
-                          LeadSource='Email',
-                          Potential_National_Scholar__c=true,
-                          Type__c='First Time Freshman');
-        leadList.add(l);
-    }
+        System.Debug('Opportunity Details: ' + OppAfterInsert);
+        System.Debug('Last Rule Type: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c);
+        System.Assert(OppAfterInsert.OwnerId ==TestUser.Id);
+        System.Assert(OppAfterInsert.Territory_Assignment_Last_Rule_Type__c == 'Inactive Territory Manager','Did not correctly identify inactive User: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c);
+    } 
 
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'Freshman Scholar';
-    Atar1.User__c = TestUser.Id;
-    Atar1.Opportunity_Type__c = 'Freshman Scholar';
-    insert Atar1;
-    
-            
-    Test.startTest();
+    private static testMethod void testLeadFreshmanScholar(){
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        List<Lead> leadList = new List<Lead>();
+
+        for (Integer i=0;i<1;i++) 
+        {
+            Lead l = new Lead(LastName='LName'+i, 
+                              FirstName='FName'+i,
+                              Company='Company', 
+                              Email='test'+i+'@test.test', 
+                              LeadSource='Email',
+                              Potential_National_Scholar__c=true,
+                              Type__c='First Time Freshman');
+            leadList.add(l);
+        }
+
+        
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Freshman Scholar';
+        aTar1.User__c = TestUser.Id;
+        aTar1.Opportunity_Type__c = 'Freshman Scholar';
+        insert aTar1;
+        
+                
+        Test.startTest();
+
         insert leadList;    
 
-    Test.stopTest();
+        Test.stopTest();
 
-    List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]);
-    System.Debug('Lead Details: ' + leadList[0]);
-    System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
-    System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Freshman Scholar','Rule did not assign correctly by rule type Freshman Scholar');
+        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c 
+                                                 FROM Lead 
+                                                 WHERE Id = :leadList[0].Id 
+                                                 LIMIT 1]);
 
-} 
+        System.Debug('Lead Details: ' + leadList[0]);
+        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
+        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Freshman Scholar','Rule did not assign correctly by rule type Freshman Scholar');
+    } 
 
-private static testMethod void testLeadInternational(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    List<Lead> leadList = new List<Lead>();
-    for (Integer i=0;i<1;i++) {
-        Lead l = new Lead(LastName='LName'+i, 
-                          FirstName='FName'+i,
-                          Company='Company', 
-                          Email='test'+i+'@test.test', 
-                          LeadSource='Email',
-                          Type__c='First Time Freshman',
-                          International_Student__c = true);
-        leadList.add(l);
-    }
+    private static testMethod void testLeadInternational()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        List<Lead> leadList = new List<Lead>();
 
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'International';
-    Atar1.User__c = TestUser.Id;
-    insert Atar1;
-    
+        for (Integer i=0;i<1;i++) 
+        {
+            Lead l = new Lead(LastName='LName'+i, 
+                              FirstName='FName'+i,
+                              Company='Company', 
+                              Email='test'+i+'@test.test', 
+                              LeadSource='Email',
+                              Type__c='First Time Freshman',
+                              International_Student__c = true);
+            leadList.add(l);
+        }
+
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.Rule_Type__c = 'International';
+        ATar1.User__c = TestUser.Id;
+        insert ATar1;     
+                
+        Test.startTest();
             
-    Test.startTest();
         insert leadList;    
 
-    Test.stopTest();
+        Test.stopTest();
 
-    List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]);
-    System.Debug('Lead Details: ' + leadList[0]);
-    System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
-    System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International','Rule did not assign correctly by rule type Default User');
+        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c 
+                                                 FROM Lead 
+                                                 WHERE Id = :leadList[0].Id 
+                                                 LIMIT 1]);
 
-} 
+        System.Debug('Lead Details: ' + leadList[0]);
+        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
+        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International','Rule did not assign correctly by rule type Default User');
+    } 
 
+    private static testMethod void testLeadLastInstitution()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
 
-private static testMethod void testLeadLastInstitution(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
+        Key_Value__c KVHS = new Key_Value__c();
+        KVHS.Geomarket_ZIP__c = '84108';
+        KVHS.Geomarket_Code__c = 'UT-01';
+        insert KVHS;
 
-   Key_Value__c KVHS = new Key_Value__c();
-    KVHS.Geomarket_ZIP__c = '84108';
-    KVHS.Geomarket_Code__c = 'UT-01';
-    insert KVHS;
-    
-    //Key_Value__c KVCollege = new Key_Value__c();
-    //KVCollege.Geomarket_ZIP__c = '85287';
-    //KVCollege.Geomarket_Code__c = 'AZ-01';
-    //insert KVCollege;
-    
-    Account HS = new Account();
-    HS.Name = 'Test High School';
-    HS.ShippingPostalCode = '84108';
-    HS.Geomarket_Code__c = 'UT-01';
-    HS.Institution_Type__c = 'HS';
-    HS.Territory_Manager__c = TestUser.Id;
-    insert HS;
+        Account HS = new Account();
+        HS.Name = 'Test High School';
+        HS.ShippingPostalCode = '84108';
+        HS.Geomarket_Code__c = 'UT-01';
+        HS.Institution_Type__c = 'HS';
+        HS.Territory_Manager__c = TestUser.Id;
+        insert HS;
 
-    List<Lead> leadList = new List<Lead>();
-    for (Integer i=0;i<1;i++) {
-        Lead l = new Lead(LastName='LName'+i, 
-                          FirstName='FName'+i,
-                          Company='Company', 
-                          Email='test'+i+'@test.test', 
-                          LeadSource='Email',
-                          Type__c='First Time Freshman',
-                          Last_Institution_Attended__c = HS.id);
-        leadList.add(l);
-    }
+        List<Lead> leadList = new List<Lead>();
 
-    
-    //Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    //Atar1.Rule_Type__c = 'International';
-    //Atar1.User__c = TestUser.Id;
-    //insert Atar1;
-    
-            
-    Test.startTest();
+        for (Integer i=0;i<1;i++) 
+        {
+            Lead l = new Lead(LastName='LName'+i, 
+                              FirstName='FName'+i,
+                              Company='Company', 
+                              Email='test'+i+'@test.test', 
+                              LeadSource='Email',
+                              Type__c='First Time Freshman',
+                              Last_Institution_Attended__c = HS.id);
+            leadList.add(l);
+        }
+
+        Test.startTest();
+        
+        insert leadList;    
+        
+        Test.stopTest();
+
+        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c, OwnerId 
+                                                 FROM Lead 
+                                                 WHERE Id = :leadList[0].Id 
+                                                 LIMIT 1]);
+
+        System.Debug('Lead Details: ' + leadList[0]);
+        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
+        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Last Institution Attended','Rule did not assign correctly by rule type Last Institution Attended');
+        System.Assert(newLeadList[0].OwnerId == testUser.Id, 'Territory Assignment did not assign Owner correctly for Lead/Last Institution');
+    } 
+
+    private static testMethod void testLeadGeoMarket()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        Key_Value__c KVLead = new Key_Value__c();
+        KVLead.Geomarket_ZIP__c = '84108';
+        KVLead.Geomarket_Code__c = 'UT-01';
+        insert KVLead;
+
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Geomarket';
+        aTar1.Geomarket__c = 'UT-01';
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        aTar1.User__c = TestUser.Id;
+        insert aTar1;    
+
+        List<Lead> leadList = new List<Lead>();
+
+        for (Integer i=0;i<1;i++) 
+        {
+            Lead l = new Lead(LastName='LName'+i, 
+                              FirstName='FName'+i,
+                              Company='Company',
+                              PostalCode='84108', 
+                              Email='test'+i+'@test.test', 
+                              LeadSource='Email',
+                              Type__c='First Time Freshman');
+            leadList.add(l);
+        }
+
+                
+        Test.startTest();
+        
         insert leadList;    
 
-    Test.stopTest();
+        Test.stopTest();
 
-    List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c, OwnerId FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]);
-    System.Debug('Lead Details: ' + leadList[0]);
-    System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
-    System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Last Institution Attended','Rule did not assign correctly by rule type Last Institution Attended');
-    System.Assert(newLeadList[0].OwnerId == testUser.Id, 'Territory Assignment did not assign Owner correctly for Lead/Last Institution');
-} 
+        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c 
+                                                 FROM Lead 
+                                                 WHERE Id = :leadList[0].Id 
+                                                 LIMIT 1]);
 
-private static testMethod void testLeadGeoMarket(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    Key_Value__c KVLead = new Key_Value__c();
-    KVLead.Geomarket_ZIP__c = '84108';
-    KVLead.Geomarket_Code__c = 'UT-01';
-    insert KVLead;
-
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'Geomarket';
-    Atar1.Geomarket__c = 'UT-01';
-    Atar1.Opportunity_Type__c = 'First Time Freshman';
-    Atar1.User__c = TestUser.Id;
-    insert Atar1;    
-
-    List<Lead> leadList = new List<Lead>();
-    for (Integer i=0;i<1;i++) {
-        Lead l = new Lead(LastName='LName'+i, 
-                          FirstName='FName'+i,
-                          Company='Company',
-                          PostalCode='84108', 
-                          Email='test'+i+'@test.test', 
-                          LeadSource='Email',
-                          Type__c='First Time Freshman');
-        leadList.add(l);
+        System.Debug('Lead Details: ' + leadList[0]);
+        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
+        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Geomarket, Type ' +  newLeadList[0].Type__c,'Rule did not assign correctly by rule type Lead/GeoMarket');
     }
 
-            
-    Test.startTest();
+
+    private static testMethod void testLeadState(){
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'State';
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        aTar1.Assignment_By_State__c = 'Texas';
+        aTar1.User__c = TestUser.Id;
+        insert aTar1;    
+
+        List<Lead> leadList = new List<Lead>();
+
+        for (Integer i=0;i<1;i++)
+        {
+            Lead l = new Lead(LastName='LName'+i, 
+                              FirstName='FName'+i,
+                              Company='Company',
+                              State='Texas',
+                              Country='United States', 
+                              Email='test'+i+'@test.test', 
+                              LeadSource='Email',
+                              Type__c='First Time Freshman');
+            leadList.add(l);
+        }
+
+                
+        Test.startTest();
+
         insert leadList;    
 
-    Test.stopTest();
+        Test.stopTest();
 
-    List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]);
-    System.Debug('Lead Details: ' + leadList[0]);
-    System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
-    System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Geomarket, Type ' +  newLeadList[0].Type__c,'Rule did not assign correctly by rule type Lead/GeoMarket');
+        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, OwnerId, Territory_Assignment_Last_Rule_Type__c 
+                                                 FROM Lead 
+                                                 WHERE Id = :leadList[0].Id 
+                                                 LIMIT 1]);
 
-}
+        System.Debug('Lead Details: ' + leadList[0]);
+        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
+        System.Debug('Last Rule Type to Match: ' + 'State, Type ' + leadList[0].Type__c);
+        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'State, Type ' + leadList[0].Type__c,'Rule did not assign correctly by rule type Lead/State');
+    } 
 
+    private static testMethod void testLeadDefaultUser()
+    {
+        User TestUser = [SELECT Id 
+                         FROM User 
+                         WHERE Profile.Name = 'System Administrator' 
+                         AND isActive = true 
+                         LIMIT 1];
+        
+        List<Lead> leadList = new List<Lead>();
 
-private static testMethod void testLeadState(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
+        for (Integer i=0;i<1;i++) 
+        {
+            Lead l = new Lead(LastName='LName'+i, 
+                              FirstName='FName'+i,
+                              Company='Company', 
+                              Email='test'+i+'@test.test', 
+                              LeadSource='Email',
+                              Type__c='First Time Freshman');
+            leadList.add(l);
+        }
 
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'State';
-    Atar1.Opportunity_Type__c = 'First Time Freshman';
-    Atar1.Assignment_By_State__c = 'Texas';
-    Atar1.User__c = TestUser.Id;
-    insert Atar1;    
+        
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Default User';
+        aTar1.User__c = TestUser.Id;
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        insert aTar1;
+        
+                
+        Test.startTest();
 
-    List<Lead> leadList = new List<Lead>();
-    for (Integer i=0;i<1;i++) {
-        Lead l = new Lead(LastName='LName'+i, 
-                          FirstName='FName'+i,
-                          Company='Company',
-                          State='Texas',
-                          Country='United States', 
-                          Email='test'+i+'@test.test', 
-                          LeadSource='Email',
-                          Type__c='First Time Freshman');
-        leadList.add(l);
+        insert leadList;    
+
+        Test.stopTest();
+
+        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c 
+                                                 FROM Lead 
+                                                 WHERE Id = :leadList[0].Id 
+                                                 LIMIT 1]);
+
+        System.Debug('Lead Details: ' + leadList[0]);
+        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
+        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Default User','Rule did not assign correctly by rule type Default User');
+    } 
+
+    private static testMethod void testLeadUpdate()
+    {
+        List<User> testUsers = UserService.createMultipleTestUsers(2);
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
+        for (User u : testUsers)
+        {
+            u.ProfileId = saProfile;
+        }
+
+        insert testUsers;
+
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Default User';
+        aTar1.User__c = testUsers[0].Id;
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        insert aTar1;
+
+        Territory_Assignment_Rule__c aTar2 = new Territory_Assignment_Rule__c();
+        aTar2.Rule_Type__c = 'International';
+        aTar2.User__c = testUsers[1].Id;
+        insert aTar2; 
+        
+        Lead l = new Lead(LastName='LName', 
+                              FirstName='FName',
+                              Company='Company', 
+                              Email='test@test.test', 
+                              LeadSource='Email',
+                              Type__c='First Time Freshman');
+        insert l;
+
+        Test.startTest();
+
+        // Force an update to run on lead
+        TerritoryAssignmentHelper.leadTADone = false;
+
+        Lead updatedLead = [SELECT Id FROM Lead WHERE Id = :l.Id];
+        updatedLead.International_Student__c = true;
+
+        update updatedLead;
+
+        Test.stopTest();
+
+        updatedLead = [SELECT OwnerId FROM Lead WHERE Id = :updatedLead.Id];
+
+        System.assertEquals(testUsers[1].Id, updatedLead.OwnerId,'Rule did not assign correctly when changing relevant fields');
     }
-
-            
-    Test.startTest();
-        insert leadList;    
-
-    Test.stopTest();
-
-    List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, OwnerId, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]);
-    System.Debug('Lead Details: ' + leadList[0]);
-    System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
-    System.Debug('Last Rule Type to Match: ' + 'State, Type ' + leadList[0].Type__c);
-    System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'State, Type ' + leadList[0].Type__c,'Rule did not assign correctly by rule type Lead/State');
-    //system.assert(newLeadList[0].OwnerId == testUser.Id, 'Rule did not assign correctly by rule type Lead/State');
-} 
-
-private static testMethod void testLeadDefaultUser(){
-    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-    
-    List<Lead> leadList = new List<Lead>();
-    for (Integer i=0;i<1;i++) {
-        Lead l = new Lead(LastName='LName'+i, 
-                          FirstName='FName'+i,
-                          Company='Company', 
-                          Email='test'+i+'@test.test', 
-                          LeadSource='Email',
-                          Type__c='First Time Freshman');
-        leadList.add(l);
-    }
-
-    
-    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
-    Atar1.Rule_Type__c = 'Default User';
-    Atar1.User__c = TestUser.Id;
-    Atar1.Opportunity_Type__c = 'First Time Freshman';
-    insert Atar1;
-    
-            
-    Test.startTest();
-        insert leadList;    
-
-    Test.stopTest();
-
-    List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]);
-    System.Debug('Lead Details: ' + leadList[0]);
-    System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
-    System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Default User','Rule did not assign correctly by rule type Default User');
-
-} 
-
-
 }

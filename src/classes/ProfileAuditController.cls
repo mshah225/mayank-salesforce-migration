@@ -8,6 +8,9 @@ public without sharing class ProfileAuditController
     public List<FieldPermissions> fieldPerms { get;set; }
     public List<String> finalList { get;set; }
     public List<String> fieldDrillList { get;set; }
+    public List<PermissionSetAssignment> usersPermissions;
+    public String usersProfile { get;set; }
+    public String permissionString { get;set; }
     public String selectedProfileName { get;set; }
     public String selectedAccess { get;set; }
     public String selectedObject { get;set; }
@@ -16,7 +19,28 @@ public without sharing class ProfileAuditController
     {
         drillDown = false;
         back = false;
+        selectedObject = null;
         profileList = [SELECT Name FROM Profile ORDER BY Name];
+        getUserProfileInfo();
+    }
+
+    public void getUserProfileInfo()
+    {
+        usersProfile = [SELECT Profile.Name FROM User WHERE Id = :UserInfo.getUserId()].Profile.Name;
+        usersPermissions = [SELECT PermissionSet.Label FROM PermissionSetAssignment WHERE AssigneeId = :UserInfo.getUserId() AND (NOT PermissionSet.Label LIKE '%X%')];
+        if (!usersPermissions.isEmpty())    
+        {
+            for (PermissionSetAssignment psa: usersPermissions)
+            {
+                String temp = String.valueOf(psa.PermissionSet.Label);
+                permissionString = permissionString + ', ' + temp;
+            }
+            permissionString = permissionString.replaceAll('null, ', '');
+        }
+        else 
+        {
+            permissionString = 'You do not have any Permission Sets assigned to your User';
+        }
     }
 
     public List<SelectOption> getProfileOptions() 
@@ -47,6 +71,7 @@ public without sharing class ProfileAuditController
     {
         drillDown = false;
         back = false;
+        selectedObject = null;
         if (selectedAccess == 'Has Access')
         {
             if (selectedProfileId != null) 

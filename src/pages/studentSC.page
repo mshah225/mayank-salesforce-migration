@@ -734,7 +734,7 @@
                             <h5>My Open Cases</h5>
                             <apex:pageBlock mode="maindetail">
                                 <apex:pageBlockTable rendered="{!(myCases.size >= 1)}" value="{!myCases}" var="case" styleClass="myCasesTable">
-                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;"  onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;"  onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column headerValue="Status" width="33%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column width="33%" onmousemove="this.style.backgroundColor='white'" style="background-color:white;" onmouseout="this.style.backgroundColor ='white'">
                                         <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
@@ -742,7 +742,9 @@
                                         </apex:commandLink>
                                     </apex:column>
                                 </apex:pageBlockTable>
-                                <apex:outputText rendered="{!(myCases.size = 0)}" value="You do not have any open cases." />
+                                <apex:outputText rendered="{!(myCases.size = 0)}">
+                                    <div class="padClass"> You do not have any open cases. </div>
+                                </apex:outputText>
                             </apex:pageBlock>
                         </apex:form>
                         
@@ -751,7 +753,7 @@
                             <h5>My Closed Cases</h5>
                             <apex:pageBlock mode="maindetail">
                                 <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="case" styleClass="myCasesTable">
-                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column headerValue="Status" width="33%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column width="33%" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'">
                                         <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
@@ -759,14 +761,16 @@
                                         </apex:commandLink>
                                     </apex:column>
                                 </apex:pageBlockTable>
-                                <apex:outputText rendered="{!(closedCases.size = 0)}" value="You do not have any closed cases." />
+                                <apex:outputText rendered="{!(closedCases.size = 0)}">
+                                    <div class="padClass"> You do not have any closed cases. </div>
+                                </apex:outputText>
                             </apex:pageBlock>
                         </apex:form>
 
                         <div style="text-align:right">
                             <br />
                             <apex:form >
-                                <apex:pageBlock mode="maindetail" rendered="{!(closedCases.size >= 1)}">
+                            <apex:pageBlock mode="maindetail">
                                     <a href="/viewAllCases?source=studentSC" style="padding:4px" class="btn">
                                         View All Cases
                                     </a>

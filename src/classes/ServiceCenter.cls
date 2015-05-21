@@ -56,7 +56,7 @@ public with sharing class ServiceCenter
         List<Contact> contacts = new List<Contact> { contact };
         Map<Id, List<Case>> openCaseMap = CaseService.getVisibleOpenCases(contacts);
 
-        return openCaseMap.get(contact.Id)==null ? new List<Case>() : openCaseMap.get(contact.Id);
+        return openCaseMap.get(contact.Id);
     }
     
     public List<Case> getClosedCases() 
@@ -66,20 +66,12 @@ public with sharing class ServiceCenter
         List<Contact> contacts = new List<Contact> { contact };
         Map<Id, List<Case>> closedCaseMap = CaseService.getVisibleClosedCases(contacts);
 
+        // Limit the number of closed cases that are displayed to CLOSEDCASELIMIT
         if (closedCaseMap.get(contact.Id) != null)
         {
-            // Limit the number of closed cases that are displayed to CLOSEDCASELIMIT
-            if (closedCaseMap.get(contact.Id).size() > CLOSEDCASELIMIT)
+            for (Integer i = 0; i < CLOSEDCASELIMIT; i++)
             {
-                for (Integer i = 0; i < CLOSEDCASELIMIT; i++)
-                {
-                    closedCases.add(closedCaseMap.get(contact.Id).get(i));
-
-                }
-            }
-            else 
-            {
-                closedCases = closedCaseMap.get(contact.Id).clone();
+                closedCases.add(closedCaseMap.get(contact.Id).get(i));
             }
         }
 

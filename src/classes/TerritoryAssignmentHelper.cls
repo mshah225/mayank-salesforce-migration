@@ -345,7 +345,6 @@ public without sharing class TerritoryAssignmentHelper {
                         assignmentNumber = Opp.Opportunity_Assignment_Number__c;
                     }
 
-
                     // Begin filter hierarchy
                     if (Opp.StageName == 'Admitted - Conditional')
                     {

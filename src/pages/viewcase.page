@@ -709,7 +709,7 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a id="faChat" class="chat-link">Financial Aid</a></li>
+                                <li><a id="faChat" class="chat-link">Finances</a></li>
 
                                 <li><a id="bomgarChat" class="chat-link">Other</a></li>   
                            </ul>

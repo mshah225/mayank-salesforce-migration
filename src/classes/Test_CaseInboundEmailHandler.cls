@@ -1,262 +1,220 @@
-@IsTest(SeeAllData=false)
+@IsTest
 public with sharing class Test_CaseInboundEmailHandler {
 
 
-static void createCaseAssignmentRule() {
-	Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
-	
-	EmailTemplate e;
-	QueueSobject testQueue;
-	Group testGroup;
-	System.runAs(new User(Id = Userinfo.getUserId())) {
-		e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
-		insert e;
-
-		testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
-		insert testGroup;
+	@testSetup static void setup() 
+	{
+		Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
 		
-		testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Lead');
-    	insert testQueue;
+		EmailTemplate e1;
+		QueueSobject testQueue;
+		Group testGroup;
+		System.runAs(new User(Id = Userinfo.getUserId())) {
+			e1 = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
+			insert e1;
+
+			testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
+			insert testGroup;
+			
+			testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Lead');
+	    	insert testQueue;
+		}
+		
+
+
+	    String queueId = String.valueOf(testQueue.Id).substring(0,15);
+	    String fallbackQueueId = String.valueOf(testQueue.Id).substring(0,15);
+	    String templateId = String.valueOf(e1.Id).substring(0,15);
+	    
+	    Case_Assignment_Rule__c car = new Case_Assignment_Rule__c();
+	    car.Email_Address__c = 'service@test.test'; 
+	    car.Customer_notice_email_from_name__c = 'Test Service';
+		car.Email_template_id__c = templateId;
+		car.Queue_id__c = queueId;
+		car.Fallback_Queue_Id__c = fallbackQueueId;
+		car.Origin__c = 'Test Origin';
+		car.Functional_Group__c = 'Test Group';
+		car.Category__c = 'Test Category';
+		car.Sub_Category__c = 'Test Subcategory';
+		car.Priority__c = 99;
+
+	    insert car;
+
+	    Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c();
+	    carDefault.Email_Address__c = 'default@test.test';
+	    carDefault.Customer_notice_email_from_name__c = 'Default Test Service';
+	    carDefault.Email_template_id__c = templateId;
+	    carDefault.Queue_Id__c = queueId;
+	    carDefault.Fallback_Queue_Id__c = fallbackQueueId;
+	    carDefault.Origin__c = 'Test Origin';
+	    carDefault.Functional_Group__c = 'Test Group';
+	    carDefault.Category__c = 'Test Category';
+	    carDefault.Sub_Category__c = 'Test Subcategory';
+	    carDefault.Priority__c = 999;
+
+	    insert carDefault;
+
+	    Email_To_Case_Filter__c etcf1 = new Email_To_Case_Filter__c(Name='Test Filter');
+		Email_To_Case_Filter__c etcf2 = new Email_To_Case_Filter__c(Name='blockme@test.test');
+		insert etcf1;
+		insert etcf2;
+		
+		EmailTemplate e2;
+		System.runAs(new User(Id = Userinfo.getUserId())) {
+			e2 = new EmailTemplate (developerName = 'test2', TemplateType= 'Text', Name = 'test2', FolderId = f.Id, IsActive=true); 
+			insert e2;
+		}
+		
+		Email_To_Case_Configuration__c etcc1 = new Email_To_Case_Configuration__c(Name='Rejected Attachment Email Template ID', Value__c=e2.Id);
+		Email_To_Case_Configuration__c etcc2 = new Email_To_Case_Configuration__c(Name='Reopen Closed Case Threshold', Value__c='14');
+		Email_To_Case_Configuration__c etcc3 = new Email_To_Case_Configuration__c(Name='Valid Attachment Types', Value__c='doc,pdf,png,docx,jpeg,jpg,gif,xls,xlsx,txt');
+		Email_To_Case_Configuration__c etcc4 = new Email_To_Case_Configuration__c(Name='Default Org Wide Email Address', Value__c='default@test.test');
+		
+		insert etcc1;
+		insert etcc2;
+		insert etcc3;
+		insert etcc4;
 	}
-	
+
+	@isTest static void newContact() 
+	{
+		Messaging.InboundEmail email = new Messaging.InboundEmail();
+		Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+		Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+		List<string> toAddresses = new List<string>();
+		toAddresses.add('service@test.test');	
+		toAddresses.add('default@test.test');
+		email.toAddresses = toAddresses;
+		email.subject = 'test';
+		email.fromAddress = 'user@acme.com.test';
+		email.fromName = 'Last, First';
+		env.fromAddress = 'user@acme.com.test';
+
+		// set the body of the attachment
+		inAtt.body = blob.valueOf('test');
+		inAtt.fileName = 'attach.pdf';
+		inAtt.mimeTypeSubType = 'plain/txt';
+
+		email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { inAtt }; 
+	   
+		Messaging.InboundEmail.TextAttachment tattachment = new Messaging.InboundEmail.TextAttachment();
+		String csv = 'this is just a test';
+		tattachment.body = csv;
+		tattachment.fileName = 'data.txt';
+		tattachment.mimeTypeSubType = 'text/plain';
+		  
+		email.textAttachments = new Messaging.inboundEmail.TextAttachment[] { tattachment };   
+
+		// call the class and test it with the data in the testMethod
+		CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+		emailServiceObj.handleInboundEmail(email, env );  
+		
+		email.subject = 'Test 2';
+		emailServiceObj.handleInboundEmail(email, env );  
+		                    
+	}    
 
 
-    string queueId = String.valueOf(testQueue.Id).substring(0,15);
-    string templateId = String.valueOf(e.Id).substring(0,15);
-    
-    Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
-    														  customer_notice_email_from_name__c = 'Test Service',
-    														  email_template_id__c = templateId,
-    														  queue_id__c = queueId,
-	    													  origin__c = 'Test Origin',
-	    													  functional_group__c = 'Test Group',
-	    													  category__c = 'Test Category',
-	    													  sub_category__c = 'Test Subcategory',
-    														  priority__c = 99);
-    insert car;
+	@isTest static void existingContact() 
+	{
+		Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+		insert c;
 
-    Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='default@test.test', 
-    														  customer_notice_email_from_name__c = 'Default Test Service',
-    														  email_template_id__c = templateId,
-    														  queue_id__c = queueId,
-	    													  origin__c = 'Test Origin',
-	    													  functional_group__c = 'Test Group',
-	    													  category__c = 'Test Category',
-	    													  sub_category__c = 'Test Subcategory',
-    														  priority__c = 999);
-    insert carDefault;
-}
+		Messaging.InboundEmail email = new Messaging.InboundEmail();
+		Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+		Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
-static void createCustomSettings() {
-	Email_To_Case_Filter__c etcf1 = new Email_To_Case_Filter__c(Name='Test Filter');
-	Email_To_Case_Filter__c etcf2 = new Email_To_Case_Filter__c(Name='blockme@test.test');
-	insert etcf1;
-	insert etcf2;
+		List<string> toAddresses = new List<string>();
+		toAddresses.add('service@test.test');	
+		email.toAddresses = toAddresses;
+		email.subject = 'test';
+		email.fromAddress = 'user2@acme.com.test';
+		email.fromName = 'Last, First';
+		env.fromAddress = 'user@acme.com.test';
 
-	Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
-	
-	EmailTemplate e;
-	System.runAs(new User(Id = Userinfo.getUserId())) {
-		e = new EmailTemplate (developerName = 'test2', TemplateType= 'Text', Name = 'test2', FolderId = f.Id, IsActive=true); 
-		insert e;
-	}
-	
-	Email_To_Case_Configuration__c etcc1 = new Email_To_Case_Configuration__c(Name='Rejected Attachment Email Template ID', Value__c=e.Id);
-	Email_To_Case_Configuration__c etcc2 = new Email_To_Case_Configuration__c(Name='Reopen Closed Case Threshold', Value__c='14');
-	Email_To_Case_Configuration__c etcc3 = new Email_To_Case_Configuration__c(Name='Valid Attachment Types', Value__c='doc,pdf,png,docx,jpeg,jpg,gif,xls,xlsx,txt');
-	Email_To_Case_Configuration__c etcc4 = new Email_To_Case_Configuration__c(Name='Default Org Wide Email Address', Value__c='default@test.test');
-	
-	insert etcc1;
-	insert etcc2;
-	insert etcc3;
-	insert etcc4;
-	
-}
+		// call the class and test it with the data in the testMethod
+		CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+		emailServiceObj.handleInboundEmail(email, env );  
+		email.subject = 'Test 2';
+		emailServiceObj.handleInboundEmail(email, env );  
+		                    
+	}  
 
-static testMethod void newContact() {
-	
-	createCaseAssignmentRule();
-	createCustomSettings();
+	@isTest static void existingContactCcOnly() 
+	{
+		Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+		insert c;
 
-	Messaging.InboundEmail email = new Messaging.InboundEmail();
-	Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-	Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+		Messaging.InboundEmail email = new Messaging.InboundEmail();
+		Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
-	List<string> toAddresses = new List<string>();
-	toAddresses.add('service@test.test');	
-	toAddresses.add('default@test.test');
-	email.toAddresses = toAddresses;
-	email.subject = 'test';
-	email.fromAddress = 'user@acme.com.test';
-	email.fromName = 'Last, First';
-	env.fromAddress = 'user@acme.com.test';
+		List<string> ccAddresses = new List<string>();
+		ccAddresses.add('service@test.test');	
+		email.ccAddresses = ccAddresses;
+		email.subject = 'test';
+		email.fromAddress = 'user2@acme.com.test';
+		email.fromName = 'Last, First';
+		env.fromAddress = 'user@acme.com.test';
 
-	// set the body of the attachment
-	inAtt.body = blob.valueOf('test');
-	inAtt.fileName = 'attach.pdf';
-	inAtt.mimeTypeSubType = 'plain/txt';
-
-	email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] {inAtt }; 
-   
-	Messaging.InboundEmail.TextAttachment tattachment = new Messaging.InboundEmail.TextAttachment();
-	String csv = 'this is just a test';
-	tattachment.body = csv;
-	tattachment.fileName = 'data.txt';
-	tattachment.mimeTypeSubType = 'text/plain';
-	  
-	email.textAttachments = new Messaging.inboundEmail.TextAttachment[] { tattachment };   
-
-	// call the class and test it with the data in the testMethod
-	CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-	emailServiceObj.handleInboundEmail(email, env );  
-	
-	email.subject = 'Test 2';
-	emailServiceObj.handleInboundEmail(email, env );  
-	                    
-}    
-
-/*
-static testMethod void badAttachment() {
-
-	Messaging.InboundEmail email = new Messaging.InboundEmail();
-	Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-	Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
-
-	List<string> toAddresses = new List<string>();
-	toAddresses.add('service@test.test');	
-	email.toAddresses = toAddresses;
-	email.subject = 'test';
-	email.fromAddress = 'user@acme.com.test';
-	email.fromName = 'Last, First';
-	env.fromAddress = 'user@acme.com.test';
-
-	// set the body of the attachment
-	inAtt.body = blob.valueOf('test');
-	inAtt.fileName = 'attach.exe';
-	inAtt.mimeTypeSubType = 'plain/txt';
-
-	email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] {inAtt }; 
-   
-
-	// call the class and test it with the data in the testMethod
-	CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-	emailServiceObj.handleInboundEmail(email, env );  
-	
-	email.subject = 'Test 2';
-	emailServiceObj.handleInboundEmail(email, env );  
-	                    
-}  
-*/
+		// call the class and test it with the data in the testMethod
+		CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+		emailServiceObj.handleInboundEmail(email, env );  
+		email.subject = 'Test CC Only';
+		emailServiceObj.handleInboundEmail(email, env );  
+		                    
+	}  
 
 
-static testMethod void existingContact() {
-	createCaseAssignmentRule();
-	createCustomSettings();
-	
-	Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
-	insert c;
+	@isTest static void multipleExistingContacts() 
+	{
+		Contact c1 = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test');
+		Contact c2 = new Contact(FirstName='First', LastName='Last', Email='user@work.com.test', ASU_Gmail__c='user@acme.com.test');
+		insert c1;
+		insert c2;
 
-	Messaging.InboundEmail email = new Messaging.InboundEmail();
-	Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-	Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+		Messaging.InboundEmail email = new Messaging.InboundEmail();
+		Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+		Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
-	List<string> toAddresses = new List<string>();
-	toAddresses.add('service@test.test');	
-	email.toAddresses = toAddresses;
-	email.subject = 'test';
-	email.fromAddress = 'user2@acme.com.test';
-	email.fromName = 'Last, First';
-	env.fromAddress = 'user@acme.com.test';
+		List<string> toAddresses = new List<string>();
+		toAddresses.add('service@test.test');	
+		email.toAddresses = toAddresses;
+		email.subject = 'test';
+		email.fromAddress = 'user@acme.com.test';
+		email.fromName = 'Last, First';
+		env.fromAddress = 'user@acme.com.test';
 
-	// call the class and test it with the data in the testMethod
-	CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-	emailServiceObj.handleInboundEmail(email, env );  
-	email.subject = 'Test 2';
-	emailServiceObj.handleInboundEmail(email, env );  
-	                    
-}  
+		// call the class and test it with the data in the testMethod
+		CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+		emailServiceObj.handleInboundEmail(email, env );  
+		email.subject = 'Test 2';
+		emailServiceObj.handleInboundEmail(email, env );  
+		                    
+	}  
 
-static testMethod void existingContactCcOnly() {
-	createCaseAssignmentRule();
-	createCustomSettings();
-	
-	Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
-	insert c;
+	@isTest static void existingContactDefaultRule() 
+	{	
+		Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+		insert c;
 
-	Messaging.InboundEmail email = new Messaging.InboundEmail();
-	Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+		Messaging.InboundEmail email = new Messaging.InboundEmail();
+		Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+		Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
-	List<string> ccAddresses = new List<string>();
-	ccAddresses.add('service@test.test');	
-	email.ccAddresses = ccAddresses;
-	email.subject = 'test';
-	email.fromAddress = 'user2@acme.com.test';
-	email.fromName = 'Last, First';
-	env.fromAddress = 'user@acme.com.test';
+		List<string> toAddresses = new List<string>();
+		toAddresses.add('service_nomatch@test.test');	
+		email.toAddresses = toAddresses;
+		email.subject = 'test';
+		email.fromAddress = 'user2@acme.com.test';
+		email.fromName = 'Last, First';
+		env.fromAddress = 'user@acme.com.test';
 
-	// call the class and test it with the data in the testMethod
-	CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-	emailServiceObj.handleInboundEmail(email, env );  
-	email.subject = 'Test CC Only';
-	emailServiceObj.handleInboundEmail(email, env );  
-	                    
-}  
-
-
-static testMethod void multipleExistingContacts() {
-	createCaseAssignmentRule();
-	createCustomSettings();
-	
-	Contact c1 = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test');
-	Contact c2 = new Contact(FirstName='First', LastName='Last', Email='user@work.com.test', ASU_Gmail__c='user@acme.com.test');
-	insert c1;
-	insert c2;
-
-	Messaging.InboundEmail email = new Messaging.InboundEmail();
-	Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-	Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
-
-	List<string> toAddresses = new List<string>();
-	toAddresses.add('service@test.test');	
-	email.toAddresses = toAddresses;
-	email.subject = 'test';
-	email.fromAddress = 'user@acme.com.test';
-	email.fromName = 'Last, First';
-	env.fromAddress = 'user@acme.com.test';
-
-	// call the class and test it with the data in the testMethod
-	CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-	emailServiceObj.handleInboundEmail(email, env );  
-	email.subject = 'Test 2';
-	emailServiceObj.handleInboundEmail(email, env );  
-	                    
-}  
-
-static testMethod void existingContactDefaultRule() {
-	createCaseAssignmentRule();
-	createCustomSettings();
-	
-	Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
-	insert c;
-
-	Messaging.InboundEmail email = new Messaging.InboundEmail();
-	Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-	Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
-
-	List<string> toAddresses = new List<string>();
-	toAddresses.add('service_nomatch@test.test');	
-	email.toAddresses = toAddresses;
-	email.subject = 'test';
-	email.fromAddress = 'user2@acme.com.test';
-	email.fromName = 'Last, First';
-	env.fromAddress = 'user@acme.com.test';
-
-	// call the class and test it with the data in the testMethod
-	CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-	emailServiceObj.handleInboundEmail(email, env );  
-	email.subject = 'Test 2';
-	emailServiceObj.handleInboundEmail(email, env );  
-	                    
-} 
-
+		// call the class and test it with the data in the testMethod
+		CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+		emailServiceObj.handleInboundEmail(email, env );  
+		email.subject = 'Test 2';
+		emailServiceObj.handleInboundEmail(email, env );  
+		                    
+	} 
 }

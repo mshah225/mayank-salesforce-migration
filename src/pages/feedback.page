@@ -1,7 +1,9 @@
-<apex:page sidebar="false" showHeader="false">
+<apex:page sidebar="false" 
+	showHeader="false" 
+	controller="FeedbackController">
 <html>
 <head>
-    <title>Error - Service Center</title>
+    <title>MyASU - Service Center Feedback</title>
     <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width; initial-scale=1.0"/>
@@ -10,7 +12,7 @@
     <c:myasustyles />  
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
-    
+
     <style>
         .panel {
             border-radius: 0px !important;
@@ -19,9 +21,6 @@
 </head>
     
 <body>
-    <script>
-        if (window.top !== window.self) top.location.replace(self.location.href);
-    </script>
     <div id="asu_hdr" class="asu_hdr_gold">
         <div id="asu_mobile_hdr">
             <div id="asu_logo">
@@ -96,6 +95,7 @@
                                     </ul>
                                 </li>
                                 <li><a target="_top" href="http://www.asu.edu/contactasu/" title="Directory, Index and other info">Directory</a></li>  
+                           
                         </ul>
                         <img class="asu_touch" src="//www.asu.edu/asuthemes/4.0-rsp.1/images/ipad_close.gif" alt="" />
                     </div><!-- /#asu_universal_nav -->
@@ -145,50 +145,58 @@
             document.getElementById('asu_hdr').className = document.getElementById('asu_hdr').className+" chrome";
         }
         //--><!]]>
-    </script>
+    </script>   
 
     <!-- MyASU Tab Bar -->
     <header class="navbar navbar-default" role="banner">
         <div class="navbar-header">
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
             </button>
          
             <a href="https://my.asu.edu" class="navbar-brand myasu"><b>My</b> ASU &nbsp;</a>
         </div>
         <apex:outputPanel >
-            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="https://my.asu.edu" title="Home">Home</a>
-                    </li>
-                </ul>
-                <p class="username pull-right">
-                    {!$User.FirstName} {!$User.LastName}
-                </p>
-            </nav>
+	        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+	            <ul class="nav navbar-nav">
+	            	<li>
+	                	<a href="https://my.asu.edu" title="Home">Home</a>
+	            	</li>
+	          	</ul>
+	          	<p class="username pull-right">
+	                {!$User.FirstName} {!$User.LastName}
+	          	</p>
+	        </nav>
         </apex:outputPanel>
-    </header> 
+	</header> 
 
     <div class="page-title">
         <h2><a href="/studentSC" class="mobileHeaderLink"><div style="color:#afa593; display:inline;">Student</div> <div style="color:#fff; display:inline;">Service Center</div></a></h2>
     </div>
     
     <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="/studentSC">Back</a></li>
+            <li class="active" style="font-size:10pt;">Feedback</li>
+        </ol>
         <div class="panel panel-default">
             <div class="panel-body">
-                <p>ASU was unable to process your request. We apologize for the inconvenience.<br /><br />
-                
-                Please return to the Service Center in <a href="https://webapp4.asu.edu/myasu" style="color:#990033;">My ASU</a> to ask questions, report an issue, and get help.<br /><br />
-                
-                If you’re unable to access the My ASU Service Center or need immediate assistance, please call 1-855-ASU-5080.</p>
+                <apex:form id="feedbackForm" style="max-width:600px;">
+                    <h3><b style="font-weight:400">My ASU Service Center Feedback</b></h3><br /><br />
+                    
+                    <p>ASU values your experience and wants to ensure that you receive quality service. The My ASU Service Center is your personalized online resource for reporting issues and getting help. How can ASU improve the way we provide support through the Service Center?</p><br />
+                  
+                    <apex:outputText value="Feedback Comments:"/><br />
+                    <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width:100%;" rows="5" cols="120"/><br />
+                    <apex:commandButton value="Submit" action="{!submit}" styleClass="kbbtn submitButton" style="margin-top:15px;width:45px;"/>
+                </apex:form>
             </div>
         </div>
     </div>
-    
+
     <br />
 
     <div id="main-bottom" class="row-fluid main-bottom"> 

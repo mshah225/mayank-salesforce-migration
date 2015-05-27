@@ -1,4 +1,4 @@
-public with sharing class AKBController 
+public without sharing class AKBController 
 {    
     public AKB_Article_Feedback__c feedbackHelpful {get;set;}
     public AKB_Article_Feedback__c[] feedbackGiven;
@@ -18,32 +18,33 @@ public with sharing class AKBController
    
     public AKBController() 
     {   
-        article = [SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId 
+        article = [SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId, CreatedBy.Name
                    FROM KnowledgeArticleVersion 
                    WHERE KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id') 
                    AND PublishStatus = 'Online'];                      
         if (article.ArticleType.equals('FAQ__kav')) 
         {
-            faq = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Question__c, Answer__c 
+            faq = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Question__c, Answer__c, toLabel(ArticleType) 
                    FROM FAQ__kav 
                    WHERE PublishStatus='Online' 
                    AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
         } 
         else if (article.ArticleType.equals('Informational__kav')) 
         {
-            info = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Information__c 
+            info = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Information__c, toLabel(ArticleType) 
                     FROM Informational__kav 
                     WHERE PublishStatus='Online' 
                     AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
         } 
         else if (article.ArticleType.equals('How_To__kav')) 
         {
-            howTo = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Content__c 
+            howTo = [SELECT KnowledgeArticleId, Title, Functional_Group__c, Content__c, toLabel(ArticleType)
                      FROM How_To__kav 
                      WHERE PublishStatus='Online' 
                      AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
         }
         feedbackHelpful = new AKB_Article_Feedback__c(); 
+        getContactId();
     }
     
     public string getTitleKeyword() 
@@ -95,6 +96,22 @@ public with sharing class AKBController
         feedbackHelpful.Contact__c = contactId;
         feedbackHelpful.Helpful__c = true;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
+        feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
+        if (article.ArticleType.equals('FAQ__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
+            feedbackHelpful.Type__c = faq.ArticleType;
+        } 
+        else if (article.ArticleType.equals('Informational__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = info.Functional_Group__c;
+            feedbackHelpful.Type__c = info.ArticleType;
+        } 
+        else if (article.ArticleType.equals('How_To__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = howto.Functional_Group__c;
+            feedbackHelpful.Type__c = howto.ArticleType;
+        }
         insert feedbackHelpful;
         
         PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes');
@@ -111,6 +128,22 @@ public with sharing class AKBController
         feedbackHelpful.Helpful__c = false;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
         feedbackHelpful.Comments__c = feedbackHelpful.Comments__c;
+        feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
+        if (article.ArticleType.equals('FAQ__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
+            feedbackHelpful.Type__c = faq.ArticleType;
+        } 
+        else if (article.ArticleType.equals('Informational__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = info.Functional_Group__c;
+            feedbackHelpful.Type__c = info.ArticleType;
+        } 
+        else if (article.ArticleType.equals('How_To__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = howto.Functional_Group__c;
+            feedbackHelpful.Type__c = howto.ArticleType;
+        }
         insert feedbackHelpful;
         
         PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes');

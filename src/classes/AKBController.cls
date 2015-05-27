@@ -1,11 +1,11 @@
 public without sharing class AKBController 
 {    
-    public AKB_Article_Feedback__c feedbackHelpful {get;set;}
+    public AKB_Article_Feedback__c feedbackHelpful { get;set; }
     public AKB_Article_Feedback__c[] feedbackGiven;
     public FAQ__kav faq {get;set;}
-    public How_To__kav howTo {get;set;}
-    public Informational__kav info {get;set;}
-    public KnowledgeArticleVersion article {get;set;}
+    public How_To__kav howTo { get;set; }
+    public Informational__kav info { get;set; }
+    public KnowledgeArticleVersion article { get;set; }
     public Id contactId;
     public Id articleId;
     public List<String> urls;
@@ -15,6 +15,9 @@ public without sharing class AKBController
     public String urlsJSON { get;set; }
     public String fixedLinksJSON { get;set; }
     public String userAlias;
+    public String funcGroup { get;set; }
+    public String currentUser { get;set; }
+    public String artType { get;set; }
    
     public AKBController() 
     {   
@@ -28,6 +31,8 @@ public without sharing class AKBController
                    FROM FAQ__kav 
                    WHERE PublishStatus='Online' 
                    AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
+            funcGroup = faq.Functional_Group__c;
+            artType = faq.ArticleType;
         } 
         else if (article.ArticleType.equals('Informational__kav')) 
         {
@@ -35,6 +40,8 @@ public without sharing class AKBController
                     FROM Informational__kav 
                     WHERE PublishStatus='Online' 
                     AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
+            funcGroup = info.Functional_Group__c;
+            artType = info.ArticleType;
         } 
         else if (article.ArticleType.equals('How_To__kav')) 
         {
@@ -42,9 +49,12 @@ public without sharing class AKBController
                      FROM How_To__kav 
                      WHERE PublishStatus='Online' 
                      AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')];
+            funcGroup = howTo.Functional_Group__c;
+            artType = howTo.ArticleType;
         }
         feedbackHelpful = new AKB_Article_Feedback__c(); 
         getContactId();
+        currentUser = [SELECT Name FROM Contact WHERE Id = :contactId].Name;
     }
     
     public string getTitleKeyword() 

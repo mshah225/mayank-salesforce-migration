@@ -63,19 +63,7 @@ public class Test_AKBController
         Contact testContact = ContactService.createTestContact();
         insert testContact;
 
-        User testUser = new User();
-        testUser.FirstName = 'Jonny';
-        testUser.LastName = 'Test';
-        testUser.Username = 'username@test.com';
-        testUser.Email = 'test@nomail.com';
-        testUser.Alias = testContact.ASURite_ID__c;
-        testUser.CommunityNickname = 'jontestComm';
-        testUser.TimeZoneSidKey = 'America/Phoenix';
-        testUser.LocaleSidKey = 'en_US';
-        testUser.EmailEncodingKey = 'ISO-8859-1';
-        testUser.LanguageLocaleKey = 'en_US';
-        testUser.ProfileId = p.Id;
-        testuser.ContactId = testContact.Id;
+        User testUser = UserService.createTestUser();
         insert testUser;
     }
 

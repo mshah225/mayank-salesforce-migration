@@ -10,10 +10,8 @@
     <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1, maximum-scale=1" />
-   
     <c:asu_responsive_header_section />
     
-    <!-- Stylesheets and JS for Bootstrap/MyASU -->
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
     <c:myasustyles />  
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
@@ -27,6 +25,10 @@
         td, tr {
            vertical-align: middle !important; 
         }
+
+        .truncate>span, .detailsForm {
+            word-break: break-all !important;
+        }   
         
         .bPageBlock .detailList .dataCol {
             width: 100% !important;
@@ -48,6 +50,10 @@
         .detailList tr:last-child {
             border-bottom: none !important;
         }
+
+        .labelCol.vfLabelColTextWrap  {
+            vertical-align: top !important;
+        }
         
         label {
             margin-bottom: 0px !important;
@@ -56,50 +62,192 @@
         .bPageBlock.brandSecondaryBrd.apexDefaultPageBlock.secondaryPalette {
             border-top-color: #990033;
         }
+
+        .panel {
+            border-radius: 0px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05) !important;
+        }
+        
+        .commentBox .content {
+            padding-bottom: 0px !important;
+        }
+        
+        a.emailToggle {
+            text-decoration:none;
+            outline: none;
+            color: #990033;
+            display: block;
+            margin-top: 20px;
+            font-weight: 600;
+            width:  90px;
+        }
+
+        .emailMessage {
+            font-family: Helvetica, Arial !important;
+            word-wrap: break-word !important;
+        }
+
+        .emailMessage img {
+            display: none !important;
+        }
+
+        .morecontent {
+            display: none;
+        }
     </style>
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-47141114-2', 'auto');
+        ga('send', 'pageview');
+    </script>
     
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
     <script>
         BG.setSite("bomgar.asu.edu");
-        var custName = "{!$Component.customer_name}";
-        var desc = "{!$Component.description}";
-        var emplid = "{!$User.EmplId__c}";
-    
-        function start(){
+        
+        // Start 'Finances' Chat
+        function startFAChat()
+        {
             var jsonString = null;
             var jsonObject = {};
-            jsonObject.employeeNumber = emplid;
-            jsonObject.description = document.getElementById('description').value;
-            try{
+                jsonObject.employeeNumber = "{!$User.EmplId__c}";
+                jsonObject.description = document.getElementById('FADesc').value;
+                jsonObject.asuriteId = "{!$User.Alias}";
+                jsonObject.externalKey = 'Finances';
+            try
+            {
                 jsonString = JSON.stringify(jsonObject);
             }
-            catch(e){
-            
+            catch (e)
+            {
+
             }
-            if(jsonString == null){
-                jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('description').value + '"}';
+            if (jsonString == null)
+            {
+                jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('FADesc').value + '", "asuriteId":"{!$User.Alias}", "externalKey":"Finances"}';
             }
-                     
-            BG.start(BG.START_TYPE.CHAT, {
-                issue: {
-                    codeName: 'salesforce_chat',
-                    customerName: '{!$User.Contact_First_Name__c} {!$User.Contact_Last_Name__c}',
+
+            BG.start(BG.START_TYPE.CHAT,
+            {
+                issue:
+                {
+                    codeName: 'studentfinances_chat',
+                    customerName: "{!$User.FirstName} {!$User.LastName}",
                     companyName: 'ASU',
-                    details: document.getElementById('description').value
+                    details: document.getElementById('FADesc').value
                 },
-                attributes:{
+                attributes:
+                {
                     externalKey: ('SFDC:' + jsonString)
                 },
-                uiOptions:{
+                uiOptions:
+                {
                     fallbackToFullWindow:true
                 }
-            });              
+            });
         }
+    </script>
+
+    <script>
+        BG.setSite("bomgar.asu.edu");
+       
+        // Start 'Other' Chat
+        function startSFDCChat()
+        {
+            var jsonString = null;
+            var jsonObject = {};
+                jsonObject.employeeNumber = "{!$User.EmplId__c}";
+                jsonObject.description = document.getElementById('SFDCDesc').value;
+                jsonObject.asuriteId = "{!$User.Alias}";
+                jsonObject.externalKey = 'Other';
+            try
+            {
+                jsonString = JSON.stringify(jsonObject);
+            }
+            catch (e)
+            {
+
+            }
+            if (jsonString == null)
+            {
+                jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('SFDCDesc').value + '", "asuriteId":"{!$User.Alias}", "externalKey":"Other"}';
+            }
+
+            BG.start(BG.START_TYPE.CHAT,
+            {
+                issue:
+                {
+                    codeName: 'salesforce_chat',
+                    customerName: "{!$User.FirstName} {!$User.LastName}",
+                    companyName: 'ASU',
+                    details: document.getElementById('SFDCDesc').value
+                },
+                attributes:
+                {
+                    externalKey: ('SFDC:' + jsonString)
+                },
+                uiOptions:
+                {
+                    fallbackToFullWindow:true
+                }
+            });
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() 
+        {
+            var showChar = 200;
+            var ellipsestext = "...";
+            var moretext = 'Show More <span class="caret" style="margin-bottom:2px;"></span>';
+            var lesstext = 'Show Less <span class="dropup"><span class="caret"  style="margin-bottom:2px;"></span></span>';
+            $("[id$=emailMore]").each(function() 
+            {
+                var content = $(this).clone().html();
+                if (content.indexOf("Inline image") > 0)
+                {
+                    content = content.replace(/\[[^\]]+\]/,'');
+                    content = content.replace(/(<br\s*\/?>){2}/, '');
+                }
+                if (content.length > showChar) 
+                {
+                    var c = content.substr(0, showChar);
+                    var h = content.substr(showChar, content.length - showChar);
+                    var html = c + '<span class="moreellipses">' + ellipsestext + '</span><span class="morecontent">' + h + '</span><a href="" class="emailToggle">' + moretext + '</a>';
+         
+                    $(this).html(html);
+                }
+        
+            });
+        
+            $(".emailToggle").click(function()
+            {
+                if ($(this).hasClass("less")) 
+                {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                    $(this).prevAll(".moreellipses:first").toggle();
+                } 
+                else 
+                {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                    $(this).prevAll(".moreellipses:first").toggle();
+                }
+                $(this).prev().toggle();
+                return false;
+            });
+        });
     </script> 
 </head>
 
 <body>
-<!-- START /asuthemes/4.0-rsp.1/headers/default.shtml -->
     <div id="asu_hdr" class="asu_hdr_gold">
         <div id="asu_mobile_hdr">
                 <div id="asu_logo">
@@ -133,16 +281,6 @@
                     onclick="this.href = ASUHeader.alterLoginHref(this.href);">SIGN OUT</a>
                     </li>
                 </ul>
-                
-                <!--<h2 class="hidden">Sign In / Sign Out</h2>
-                <ul id="asu_login_module">
-                    <li id="asu_hdr_ssi" class="end">
-                    <a target="_top" href="https://weblogin.asu.edu/cgi-bin/login"
-                    onmouseover="this.href = ASUHeader.alterLoginHref(this.href);"
-                    onfocus="this.href = ASUHeader.alterLoginHref(this.href);"
-                    onclick="this.href = ASUHeader.alterLoginHref(this.href);">Sign In</a>
-                    </li>
-                </ul>-->
             
             <div id="asu_nav_menu">
                 <h2 class="hidden">Menu</h2>
@@ -186,7 +324,6 @@
                                     <li><a target="_top" href="http://cronkite.asu.edu" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a></li>
                                     <li><a target="_top" href="http://www.law.asu.edu/" title="Sandra Day O' Connor College of Law website">Law</a></li>
                                     <li><a target="_top" href="http://nursingandhealth.asu.edu/" title="College of Nursing and Health Innovation website">Nursing and Health</a></li>
-                                    <!-- li><a href="http://nursingandhealth.asu.edu/nutrition" title="School of Nutrition and Health Promotion website">Nutrition and Health Promotion</a></li -->
                                     <li><a target="_top" href="http://copp.asu.edu" title="College of Public Programs website">Public Programs</a></li>
                                     <li><a target="_top" href="http://schoolofsustainability.asu.edu" title="School of Sustainability website">Sustainability</a></li>
                                     <li><a target="_top" href="http://technology.poly.asu.edu/" title="College of Technology and Innovation website">Technology and Innovation</a></li>
@@ -209,7 +346,6 @@
                                 </ul>
                             </li>
                             <li><a target="_top" href="http://www.asu.edu/contactasu/" title="Directory, Index and other info">Directory</a></li>  
-                       
                     </ul>
                     <img class="asu_touch" src="//www.asu.edu/asuthemes/4.0-rsp.1/images/ipad_close.gif" alt="" />
                 </div><!-- /#asu_universal_nav -->
@@ -263,11 +399,8 @@
         </script>
     
     <div style="clear:both;"></div>
-    
-    <!-- END /asuthemes/4.0-rsp.1/headers/default.shtml -->
-  
-    <!-- MyASU Tab Bar 
-    ======================================-->
+      
+    <!-- MyASU Tab Bar -->
     <header class="navbar navbar-default" role="banner">
         <div class="navbar-header">
           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
@@ -325,7 +458,6 @@
           </p>
         </nav>
         </apex:outputPanel>
-        
     </header>  
     
     <div class="page-title">
@@ -333,55 +465,98 @@
     </div> 
 
     <!-- START CONTENT -->
-    <div id="asu_content_well"><!-- These elements (content, content_well and content_container) -->
-        <!-- INPUT CONTENT HERE -->
-    <div class="container">
-      <div class="row">
-         <div class="col-md-8">
-             <div class="box">
-                        <div class="header">
-                            <h6 class="floatleft"><b>Case Number {!caseDetails.CaseNumber}</b></h6>
-                        </div>
-             <div class="content">
-             <apex:form >
-               <h3>{!caseDetails.subject}</h3><br /><br />
-                 <apex:pageBlock tabStyle="Case" mode="maindetail">
-                     <apex:pageBlockSection collapsible="false" columns="1">
-                         <apex:outputText value="{!caseDetails.Functional_Group__c}" label="Department"/>
-                         <apex:outputField value="{!caseDetails.Subject}"/>
-                         <apex:outputField value="{!caseDetails.description}"/>
-                     </apex:pageBlockSection>
-                 </apex:pageBlock> 
-             </apex:form>
-            <!--<br />
-            <hr />
-            <apex:pageBlock mode="maindetail">
-            <h4>Comments</h4>
-            <br /><Br /><p>Note: comments posted here will be sent to the agent working on your case, and will not be shown on this page.</p><br /><br />
-                <chatter:feed entityId="{!case.id}"/>
-            </apex:pageBlock>-->
-            </div> 
-          </div>
-          
-          <div class="box">
-            <div class="header">
-                <h6><b>Case Details</b></h6>
-            </div>
-            <div class="content">
-                <apex:pageBlock mode="maindetail">
-                    <apex:pageBlockSection >
-                        <apex:outputText value="{!caseDetails.CreatedDate}" /><br />
-                        <apex:outputText value="{!caseDetails.Status}" /><br />
-                        <!--<apex:outputText value="{!caseDetails.Origin}" /><br />-->
-                        <apex:outputText value="{!caseDetails.Created_By_Name__c}" label="Opened By"/><br />
-                        <apex:outputText value="{!caseDetails.ClosedDate}" />
-                    </apex:pageBlockSection>
-                </apex:pageBlock>
-            </div>
-         </div>
-        </div>
+    <div id="asu_content_well">
 
-        <div class="col-md-4">
+    <center>
+        <apex:outputPanel rendered="{!pinError}">
+            <div class="alert alert-danger">
+                <button type='button' class='close' data-dismiss='alert'>×</button>
+                <apex:outputText escape="false" value="{!pinMessage}"/>
+            </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!pinSuccess}">
+            <div class="alert alert-success">
+                <button type='button' class='close' data-dismiss='alert'>×</button>
+                <apex:outputText escape="false" value="{!pinMessage}"/>
+            </div>
+        </apex:outputPanel>
+    </center>
+
+    <div class="container">
+
+      <ol class="breadcrumb">
+        <li><a href="/studentSC">Back</a></li>
+        <li class="active" style="font-size:10pt;">Case Details</li>
+      </ol>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="box">
+                            <div class="header">
+                                <h6 class="floatleft"><b>Case &#35;{!caseDetails.CaseNumber} Details</b></h6>
+                            </div>
+                    <div class="content">
+                        <apex:form styleClass="detailsForm">
+                          <h3>{!caseDetails.subject}</h3><br /><br />
+                            <apex:pageBlock tabStyle="Case" mode="maindetail">
+                                <apex:pageBlockSection collapsible="false" columns="1">
+                                    <apex:outputText value="{!caseDetails.Status}" />
+                                    <apex:outputField value="{!caseDetails.Subject}"/>
+                                    <apex:outputField value="{!caseDetails.description}"/>
+                                    <apex:outputText value="{!caseDetails.Functional_Group__c}" label="Department" rendered="{!IF(caseDetails.Functional_Group__c != null,true,false)}"/>
+                                    <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Opened">
+                                        <apex:param value="{!caseDetails.CreatedDate}"/>
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}" value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Closed">
+                                        <apex:param value="{!caseDetails.ClosedDate}"/>
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved') && (caseDetails.Feedback_Link__c != ''),true,false)}" value="{!caseDetails.Feedback_Link__c}" escape="false" styleClass="feedbackLink" label="Feedback"/>
+                              </apex:pageBlockSection>
+                            </apex:pageBlock> 
+                        </apex:form>
+                    </div> 
+                </div>
+
+                <apex:outputPanel id="emailMessagesBox" rendered="{!IF(EmailMessages.empty,false,true)}">
+                    <div class="box commentBox">
+                    <div class="header">
+                        <h6><b>Responses To This Case</b></h6>
+                    </div>
+                        <div class="content">
+                            <apex:repeat value="{!EmailMessages}" var="EM">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <apex:outputLabel for="emailSentDate" value="Sent Date:"/>
+                                        <apex:outputText id="emailSentDate" value="{0, date, MMMM d','  yyyy, hh:MM a z}">
+                                            <apex:param value="{!EM.CreatedDate}"/>
+                                        </apex:outputText><br />
+
+                                        <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">    
+                                            <apex:outputLabel for="fromAddress" value="From Address:"/>&nbsp;
+                                            <apex:outputText id="fromAddress">{!EM.FromName} &#60;{!EM.FromAddress}&#62;</apex:outputText><br />
+                                        </apex:outputPanel>
+
+                                        <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
+                                            <apex:outputLabel for="toAddress" value="To Address:"/>&nbsp;
+                                            <apex:outputText id="toAddress" value="{!EM.ToAddress}"/><br />
+                                        </apex:outputPanel>
+
+                                        <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
+                                            <apex:outputLabel for="ccAddress" value="CC:"/>&nbsp;
+                                            <apex:outputText id="ccAddress" value="{!EM.CCAddress}"/><br />
+                                        </apex:outputPanel>
+                                        <br />
+                                        <apex:outputField id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important;"/>
+                                    </div>
+                                </div>
+                            </apex:repeat>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+            </div>
+
+            <div class="col-md-4">
             <apex:outputPanel rendered="{!HelpBox}">
                     <div class="box">
                         <div class="header">
@@ -389,9 +564,6 @@
                         </div>
                         <div class="content">
                         <p>Please contact us if you need immediate assistance. We're available 24/7 to answer your questions.</p>
-                        
-                        
-                        
                         <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>     
                         <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
                             
@@ -402,12 +574,10 @@
                                 <div id="pinFormDiv" style="margin-left:30px;">
                                     <h5>ASU Finances PIN</h5>&nbsp;
                                     
-                                    <!-- Button trigger modal -->
                                     <button type="button" class="qMarkMobile" data-toggle="modal" data-target="#finPinMobile" style="display:none">
                                         <img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png" width="14" height="14" alt="qmark" style="margin-bottom:3px;cursor:pointer;"/>
                                     </button>
                                     
-                                    <!-- Modal -->
                                     <div class="modal fade" id="finPinMobile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
@@ -448,11 +618,6 @@
                                     <p style="margin-top:5px;">Select <b>View</b> when calling to access confidential information about your financial aid and account balance.</p>
                                 </div>
                                 
-                                <apex:outputPanel id="pinMessagePanel">
-                                    <apex:pageMessages escape="false" id="pinMessages"/>
-                                    <apex:commandButton id="closePinMessages" action="{!closePinMessageBox}" reRender="pinMessagePanel" rendered="{!isPinSuccess}" style="position: relative;background: none;border: none!important;float: right;z-index: 200;margin-top: -65px;margin-right: 30px;" value="x"/>
-                                </apex:outputPanel>
-                                
                                 <script>
                                     $( "[id$=qmarkPin]" ).click(function() {
                                         $( "[id$=tooltipPin]" ).show();    
@@ -471,7 +636,6 @@
                                 </script>
                                 
                                 <script>
-                                    //Show and hide our buttons and input boxes. 
                                     $( "[id$=viewPinBtn]" ).click(function() {
                                         $( "[id$=yourPinHidden]" ).hide();
                                         $( "[id$=viewPinBtn]" ).hide();
@@ -509,13 +673,11 @@
                                         $( "[id$=cancelPinInput]" ).hide();
                                     });
                                     
-                                    //populate the hidden field on page load
                                     $( document ).ready(function() {
                                         $( "[id$=yourPinHidden]" ).val( "••••••••••" );
                                         $( "[id$=newPinInput]" ).val( "" );
                                     });
                                 
-                                    //function to prevent anthing but numbers be entered into our reset pin box.
                                     function inputLimiter(e,allow) {
                                         var AllowableCharacters = '';
                             
@@ -545,7 +707,7 @@
                         <div class="dropdown" style="display:inline-block">
                             <button type="button" class="btn kbbtn dropdown-toggle" style="width:160px;color:#fff;background:#990033;padding:5px;" data-toggle="dropdown" href="//asu.edu/helpchat">
                                 <span class="glyphicon glyphicon-comment pull-left" style="padding-left:10px;"></span>
-                                24/7 Live Chat &nbsp;
+                                Live Chat &nbsp;
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
@@ -577,25 +739,15 @@
                                 </apex:pageBlock>
                             </div>
 
-                            <form id="faChatForm" style="margin-top:5px;display:none;" method="post" action="https://server.iad.liveperson.net/hc/21503917/?site=21503917&cmd=file&file=preChatSurveySubmit&survey=Pre-Chat">
+                            <div id="faChatForm" style="margin-top:5px;display:none;">
                                 <apex:pageBlock >
-                                    <h5>Financial Aid and Scholarship Services</h5><br /><br />
-                                    <input type="text" class="hidden" name="SESSIONVAR!simsurl" value="http://10.80.80.68/sims/callViewPage.seam?call_number=234543646&amp;agent_id=l1agent" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!Institution" value="asu-fa" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!Sims_Callback" value="asu.edusupportcenter.com" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!skill" value="FinancialAid" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!Username" value="{!$User.ASURITE_Id__c}" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!UserID" value="{!$User.EmplId__c}" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!identifier" value="{!$User.Contact_First_Name__c}" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!LastName" value="{!$User.Contact_Last_Name__c}" />
-                                    <input type="text" class="hidden" name="SESSIONVAR!ASU_Request_Type" value="BbSS Chat" /> 
-                                    <input type="text" class="hidden" name="SESSIONVAR!ASU_Request_Type_Detail" value="BbSS Chat" />
-                                    <textarea id="caseDescription" maxlength="32000" name="SESSIONVAR!ASU_Request_Description" rows="6" style="width:100%;max-width:300px;resize:none;" placeholder="Enter a brief description of your issue"></textarea><br />
+                                    <h5>Get Help with Finances</h5><br /><br />
+                                    <textarea id="FADesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;"></textarea><br />
                                     <apex:pageBlockButtons location="bottom">
-                                        <input type="submit" id="faChatSubmit" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;" value="Start Chat" />
+                                        <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;" onClick="startFAChat();">Start Chat</button>
                                     </apex:pageBlockButtons>
                                 </apex:pageBlock>
-                            </form>  
+                            </div>
                         </div>
                     </div>
                 </apex:outputPanel>
@@ -631,7 +783,7 @@
                             <h5>Cases I've Opened</h5>
                             <apex:pageBlock mode="maindetail">
                                 <apex:pageBlockTable rendered="{!(myCases.size >= 1)}" value="{!myCases}" var="case" styleClass="myCasesTable">
-                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column headerValue="Status" width="33%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column width="33%" onmousemove="this.style.backgroundColor='white'" style="background-color:white;" onmouseout="this.style.backgroundColor ='white'">
                                         <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
@@ -648,7 +800,7 @@
                             <h5>My Closed Cases</h5>
                             <apex:pageBlock mode="maindetail">
                                 <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="case" styleClass="myCasesTable">
-                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column headerValue="Status" width="33%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column width="33%" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'">
                                         <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
@@ -664,14 +816,13 @@
                         <script>
                             jQuery(document).ready(function($){
                                 $("td.truncate").each(function(){
-                                        if ($(this).text().length > 30) {
-                                            $(this).text($(this).text().substr(0, 27));
+                                        if ($(this).text().length > 99) {
+                                            $(this).text($(this).text().substr(0, 99));
                                             $(this).append('...');
                                         }
                                     });
                             });
                         </script>
-                    
                         
                         <div id="newCaseForm" style="display:none">
                         <apex:form style="width:100%">
@@ -679,9 +830,10 @@
                                 <h5>Create a new case</h5>
                                 <apex:pageBlockSection collapsible="false" columns="1">
                                     <label for="caseSubject">Subject</label>
-                                    <apex:inputField id="caseSubject" value="{!c.subject}" required="true" style="width:95%;max-width:305px;border:solid 1px gray;" label=""/>
+                                    <apex:inputField id="caseSubject" styleClass="caseField" value="{!c.subject}" required="true" style="max-width:305px;border:solid 1px gray;" label=""/>
                                     <label for="caseDesc">Description</label>
-                                    <apex:inputField id="caseDesc" value="{!c.description}" required="true" style="width:97%;height:100px;resize:none;max-width:305px" label=""/>
+                                    <apex:inputField id="caseDesc" styleClass="caseField" value="{!c.description}" required="true" style="height:100px;resize:none;max-width:305px;border: solid 1px gray;" label=""/>
+                                    <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>
                                 </apex:pageBlockSection>
                                 <apex:pageblockbuttons location="bottom">
                                     <apex:commandButton action="{!submitCase}" value="Submit" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;"/>
@@ -695,12 +847,18 @@
             </div>
         </div> 
     </div>
+
+        <div style="float:right;margin:1em;">
+            <a href="/feedback">
+                <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg" alt="Feedback" title="Please leave your feedback" onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'" onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'" border="0"/>
+            </a>
+        </div>
+        <br />
         <div id="main-bottom" class="row-fluid main-bottom"> 
             <div class="region region-main-bottom clearfix">
                 <div id="block-asu-brand-asu-brand-footer" class="clearfix block block-asu-brand">       
                     <div class="content1"> 
                     <a href="http://thesundevils.com/"><img class="sparky" src="https://webapp4.asu.edu/myasu/images/Sparky.png" alt="The Sun Devils"/></a>
-                    <!-- START FOOTER /asuthemes/3.1/includes/footer.html -->   
                         <ul id="asu_footer" class="asu_black_footer">
                           <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
                           <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>

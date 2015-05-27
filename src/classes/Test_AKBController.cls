@@ -64,7 +64,8 @@ public class Test_AKBController
         insert testContact;
 
         User testUser = UserService.createTestUser();
-        insert testUser;
+        testUser.ProfileId = p.Id;
+        insert testUser;    
     }
 
     @isTest static void testAKBControllerFAQ() 

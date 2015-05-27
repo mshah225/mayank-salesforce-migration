@@ -206,6 +206,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         opp.Name = 'Test Opp';
         opp.StageName = 'Prospect';
         opp.Type = 'test';
+        opp.Career__c = 'Undergraduate';
         opp.CloseDate = date.today() + 365;
         opp.Contact__c = Con.Id;
         opp.AccountId = Con.AccountId;
@@ -228,6 +229,48 @@ public without sharing class Test_TerritoryAssignmentHelper
         System.Debug('Last Rule Type: ' + lastRuleType);
         System.Assert(lastRuleType  == 'Freshman Scholar','Rule did not assign correctly by rule type Freshman Scholar: ' + lastRuleType);
 
+    }
+
+    @isTest public static void testGraduateOpportunity()
+    {
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com'];
+
+        List<Contact> testContacts = ContactService.createMultipleTestContacts(1);
+
+        Insert testContacts;
+
+        Contact con = [SELECT Id, AccountId
+                        FROM Contact
+                        WHERE Id = :testContacts[0].Id];
+
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.Rule_Type__c = 'International';
+        ATar1.International__c = true;
+        ATar1.User__c = testUser.Id;
+        insert ATar1;
+
+        Test.startTest();
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.StageName = 'Prospect';
+        Opp.Type = 'First Time Freshman';
+        Opp.Career__c = 'Graduate';
+        Opp.CloseDate = date.today() + 365;
+        Opp.Contact__c = Con.Id;
+        Opp.AccountId = Con.AccountId;
+        insert Opp;
+
+        Id originalOwner = [SELECT OwnerId FROM Opportunity WHERE Id = :Opp.Id].Id;
+        
+        Opp.International_Student__c = true;
+        update Opp;
+
+        Test.stopTest();
+
+        Opp = [SELECT OwnerId FROM Opportunity WHERE Id = :Opp.Id];
+
+        System.assertNotEquals(originalOwner, testUser.Id, 'Territory assignment occurred on insert for Graduate opportunity');
+        System.assertNotEquals(Opp.OwnerId, testUser.Id, 'Territory assignment occurred on update for Graduate opportunity');
     }
 
     @isTest public static void testInternational()
@@ -257,6 +300,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
         Opp.StageName = 'Prospect';
+        Opp.Career__c = 'Undergraduate';
         Opp.Type = 'First Time Freshman';
         Opp.CloseDate = date.today() + 365;
         Opp.Contact__c = Con.Id;
@@ -332,6 +376,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         chinaOpp1.Name = 'China Opportunity 1';
         chinaOpp1.StageName = 'Prospect';
         chinaOpp1.Type = 'First Time Freshman';
+        chinaOpp1.Career__c = 'Undergraduate';
         chinaOpp1.CloseDate = Date.today() + 365;
         chinaOpp1.Contact__c = chinaContact1.Id;
         chinaOpp1.AccountId = chinaContact1.AccountId;
@@ -341,6 +386,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         chinaOpp2.Name = 'China Opportunity 2';
         chinaOpp2.StageName = 'Prospect';
         chinaOpp2.Type = 'First Time Freshman';
+        chinaOpp2.Career__c = 'Undergraduate';
         chinaOpp2.CloseDate = Date.today() + 365;
         chinaOpp2.Contact__c = chinaContact2.Id;
         chinaOpp2.AccountId = chinaContact2.AccountId;
@@ -430,6 +476,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         usOpp1.StageName = 'Prospect';
         usOpp1.Type = 'First Time Freshman';
         usOpp1.CloseDate = Date.today() + 365;
+        usOpp1.Career__c = 'Undergraduate';
         usOpp1.Contact__c = usContact1.Id;
         usOpp1.AccountId = usContact1.AccountId;
         insert usOpp1;
@@ -439,6 +486,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         usOpp2.StageName = 'Prospect';
         usOpp2.Type = 'First Time Freshman';
         usOpp2.CloseDate = Date.today() + 365;
+        usOpp2.Career__c = 'Undergraduate';
         usOpp2.Contact__c = usContact2.Id;
         usOpp2.AccountId = usContact2.AccountId;
         insert usOpp2;
@@ -519,6 +567,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         transferOpp.Name = 'Transfer Opportunity 1';
         transferOpp.StageName = 'Prospect';
         transferOpp.Type = 'Transfer';
+        transferOpp.Career__c = 'Undergraduate';
         transferOpp.CloseDate = Date.today() + 365;
         transferOpp.Contact__c = transferContact1.Id;
         transferOpp.AccountId = transferContact1.AccountId;
@@ -527,6 +576,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opportunity transferOpp2 = new Opportunity();
         transferOpp2.Name = 'Transfer Opportunity 2';
         transferOpp2.StageName = 'Prospect';
+        transferOpp2.Career__c = 'Undergraduate';
         transferOpp2.Type = 'Transfer';
         transferOpp2.CloseDate = Date.today() + 365;
         transferOpp2.Contact__c = transferContact2.Id;
@@ -550,8 +600,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         System.assertEquals(transferManagers[1].Id, transferOpp2.OwnerId, 'Rule did not assign correct default transfer territory manager.');
     }
 
-    /*
-    * TODO: Fix broken test. Seems to be environment dependent.
     @isTest public static void testInternationalAdmitConditional()
     {
         User conditAdmitManager = [SELECT Id FROM User WHERE Alias = 'testuser'];
@@ -572,7 +620,8 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Opportunity admitCondOpp = new Opportunity();
         admitCondOpp.Name = 'Conditional Admit Opportunity 1';
-        admitCondOpp.StageName = 'Admitted - Conditional';        
+        admitCondOpp.StageName = 'Admitted - Conditional';   
+        admitCondOpp.Career__c = 'Undergraduate';     
         admitCondOpp.CloseDate = Date.today() + 365;
         admitCondOpp.Contact__c = admitCondCon.Id;
         admitCondOpp.AccountId = admitCondCon.AccountId;
@@ -590,7 +639,6 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct transfer territory manager.');
     }
-    */
 
     @isTest public static void testLocation()
     {
@@ -626,6 +674,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.Name = 'Test Opp';
         Opp.StageName = 'Prospect';
         Opp.Type = 'First Time Freshman';
+        Opp.Career__c = 'Undergraduate';
         Opp.CloseDate = date.today() + 365;
         Opp.Contact__c = Con.Id;
         Opp.AccountId = Con.AccountId;
@@ -677,6 +726,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.Name = 'Test Opp';
         Opp.StageName = 'Prospect';
         Opp.Type = 'First Time Freshman';
+        Opp.Career__c = 'Undergraduate';
         Opp.CloseDate = date.today() + 365;
         Opp.Contact__c = Con.Id;
         Opp.AccountId = Con.AccountId;
@@ -728,6 +778,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.Contact__c = Con.Id;
         Opp.AccountId = Con.AccountId;
         Opp.StageName = 'Prospect';
+        Opp.Career__c = 'Undergraduate';
         Opp.Type = 'Test';
         Opp.CloseDate = Date.today() + 365;
         insert Opp;
@@ -826,6 +877,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.Name = 'Test Opp';
         Opp.Contact__c = Con.Id;
         Opp.AccountId = Con.AccountId;
+        Opp.Career__c = 'Undergraduate';
         Opp.StageName = 'Prospect';
         Opp.Type = 'Test';
         Opp.CloseDate = date.today() + 365;
@@ -885,6 +937,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
         Opp.StageName = 'Prospect';
+        Opp.Career__c = 'Undergraduate';
         Opp.Type = 'First Time Freshman';
         Opp.CloseDate = date.today() + 365;
         Opp.Contact__c = Con.Id;
@@ -936,6 +989,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.Name = 'Test Opp';
         Opp.StageName = 'Prospect';
         Opp.Type = 'First Time Freshman';
+        Opp.Career__c = 'Undergraduate';
         Opp.CloseDate = date.today() + 365;
         Opp.Contact__c = Con.Id;
         Opp.AccountId = Con.AccountId;
@@ -984,6 +1038,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
         Opp.StageName = 'Prospect';
+        Opp.Career__c = 'Undergraduate';
         Opp.Type = 'First Time Freshman';
         Opp.CloseDate = date.today() + 365;
         Opp.Contact__c = Con.Id;
@@ -1065,6 +1120,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.Contact__c = Con.Id;
         Opp.AccountId = Con.AccountId;
         Opp.StageName = 'Prospect';
+        Opp.Career__c = 'Undergraduate';
         Opp.Type = 'First Time Freshman';
         Opp.CloseDate = Date.today() + 365;
 

@@ -262,12 +262,19 @@ public without sharing class TerritoryAssignmentHelper {
             TerritoryAssignmentRuleMap.put(TARM.Rule_Key__c,TARM);
         }
         
-        // Force all new opportunities to be evaluated for territory assignment
+        // Force all new undergraduate opportunities to be evaluated for territory assignment
         if (Trigger.isInsert)
         {
             for (Opportunity NewOpps : (List<Opportunity>)Trigger.New)
             {
-                NewOpps.Territory_Assignment_Required__c = true;
+                if (NewOpps.Career__c != 'Undergraduate')
+                {
+                    NewOpps.Territory_Assignment_Required__c = false;
+                }
+                else
+                {
+                    NewOpps.Territory_Assignment_Required__c = true;
+                }
             }    
         }
         
@@ -278,7 +285,11 @@ public without sharing class TerritoryAssignmentHelper {
 
             for (Opportunity OppsToAssign : (List<Opportunity>)Trigger.New)
             {
-                if(OppsToAssign.Territory_Assignment_Required__c == true 
+                if (OppsToAssign.Career__c != 'Undergraduate')
+                {
+                    OppsToAssign.Territory_Assignment_Required__c = false;
+                }
+                else if(OppsToAssign.Territory_Assignment_Required__c == true 
                     || OpportunityOldMap.get(OppsToAssign.Id).Type != OppsToAssign.Type 
                     || OpportunityOldMap.get(OppsToAssign.Id).International_Student__c != OppsToAssign.International_Student__c 
                     || OpportunityOldMap.get(OppsToAssign.Id).Location__c != OppsToAssign.Location__c 

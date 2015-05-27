@@ -57,7 +57,10 @@ private class Test_FinancialAidPackageHandler {
 		for(Financial_Aid_Package__c faPack : faPacks){
 			System.debug('Time Stamp is ' + faPack.FA_Status_Time_Stamp__c);
 			System.debug('CreatedDate is ' + faPack.CreatedDate);
-			System.assertEquals(faPack.CreatedDate, faPack.FA_Status_Time_Stamp__c);
+
+			System.assertEquals(faPack.CreatedDate.year(), faPack.FA_Status_Time_Stamp__c.year());
+			System.assertEquals(faPack.CreatedDate.month(), faPack.FA_Status_Time_Stamp__c.month());
+			System.assertEquals(faPack.CreatedDate.day(), faPack.FA_Status_Time_Stamp__c.day());
 		}
 	}
 	
@@ -84,7 +87,10 @@ private class Test_FinancialAidPackageHandler {
 		for(Financial_Aid_Package__c f2 : faPacks){
 			System.debug('Time Stamp is ' + f2.FA_Status_Time_Stamp__c);
 			System.debug('LastModifiedDate is ' + f2.LastModifiedDate);
-			System.assertEquals(f2.LastModifiedDate, f2.FA_Status_Time_Stamp__c);
+
+			System.assertEquals(f2.LastModifiedDate.year(), f2.FA_Status_Time_Stamp__c.year());
+			System.assertEquals(f2.LastModifiedDate.month(), f2.FA_Status_Time_Stamp__c.month());
+			System.assertEquals(f2.LastModifiedDate.day(), f2.FA_Status_Time_Stamp__c.day());
 		}
 
 	}

@@ -66,8 +66,6 @@ public class TerritoryAssignmentRuleService
 
         Map<String, List<Territory_Assignment_Rule__c>> tarsByRuleKey = TerritoryAssignmentRuleService.getTerritoryAssignmentRulesByRuleKey();
 
-        System.debug('!!! tarRuleKey is ' + tarRuleKey);
-
         List<Territory_Assignment_Rule__c> tarList = tarsByRuleKey.get(tarRuleKey);
 
         if (tarList == null)

@@ -347,8 +347,26 @@ public without sharing class TerritoryAssignmentHelper {
                 if (Opp.International_Student__c)
                 {
                     Territory_Assignment_Rule__c tar = null;
-                    String country = thisContact.MailingCountry;
                     Decimal assignmentNumber = Opp.Opportunity_Assignment_Number_Rand__c;
+                    String country = thisContact.MailingCountry;
+
+                    // Handle the country issue with integration and country name mismatches using PS_Country_Map__c
+                    if (String.isEmpty(country))
+                    {
+                        country = '';
+                    }
+                    else
+                    {
+                        try 
+                        {
+                            country = [SELECT Country_Name__c FROM PS_Country_Map__c WHERE Integration_Value__c = :country].Country_Name__c;
+                        }
+                        catch (Exception e)
+                        {
+                            System.debug('!!!ERROR: An issue occurred when searching PS_Country_Map__c for this opportunity\'s mailing country. Setting to default international TA: ' + e.getMessage());
+                            country = '';
+                        }
+                    }
 
                     // Avoid NPE on Opportunity Assignment Number Rand. At least one of these should be populated.
                     if (assignmentNumber == null)
@@ -363,19 +381,11 @@ public without sharing class TerritoryAssignmentHelper {
                     }
                     else if (Opp.Type == 'Transfer')
                     {
-                        if (String.isEmpty(country))
-                        {
-                            country = '';
-                        }
-                        else if (country.equals('Vietnam'))
-                        {
-                            country = 'Viet Nam';
-                        }
 
                         tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International' + '|' + 'Transfer' + '|' + country, assignmentNumber);
 
                         /**
-                        * The country may be defined, but we don't have a TAR for it.
+                        * The country may be defined, but we don't have a Transfer TAR for it.
                         * Use the default TAR for International Transfer
                         */ 
                         if (tar == null)
@@ -385,17 +395,8 @@ public without sharing class TerritoryAssignmentHelper {
                     }
                     else if (String.isNotEmpty(country))
                     {
-                        if (country.equals('Vietnam'))
-                        {
-                            tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + Opp.Type + '|Viet Nam', assignmentNumber);
-                        }
-                        else
-                        {
-                            tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + Opp.Type + '|' + country, assignmentNumber);
-                        }
+                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + Opp.Type + '|' + country, assignmentNumber);
                     }
-
-                    System.debug('!!! tar is ' +  tar);
                     
                     // Hit the default International manager
                     if (tar == null)

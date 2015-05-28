@@ -336,6 +336,14 @@ public without sharing class Test_TerritoryAssignmentHelper
         
         insert chinaManagers;
 
+        PS_Country_Map__c chinaMap = new PS_Country_Map__c();
+        chinaMap.Name = 'China';
+        chinaMap.PS_Country_Code__c = 'CHN';
+        chinaMap.Country_Name__c = 'China';
+        chinaMap.Integration_Value__c = 'China';
+        chinaMap.Country_Code__c = 'CN';
+        insert chinaMap;
+
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International';
         ATar1.International__c = true;
@@ -435,6 +443,14 @@ public without sharing class Test_TerritoryAssignmentHelper
         
         insert usManagers;
 
+        PS_Country_Map__c usMap = new PS_Country_Map__c();
+        usMap.Name = 'United States';
+        usMap.PS_Country_Code__c = 'USA';
+        usMap.Country_Name__c = 'United States';
+        usMap.Integration_Value__c = 'United States';
+        usMap.Country_Code__c = 'CN';
+        insert usMap;
+
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International';
         ATar1.International__c = true;
@@ -533,6 +549,14 @@ public without sharing class Test_TerritoryAssignmentHelper
         }
         
         insert transferManagers;
+
+        PS_Country_Map__c vietnamMap = new PS_Country_Map__c();
+        vietnamMap.Name = 'Vietnam';
+        vietnamMap.PS_Country_Code__c = 'VNM';
+        vietnamMap.Country_Name__c = 'Viet Nam';
+        vietnamMap.Integration_Value__c = 'Vietnam';
+        vietnamMap.Country_Code__c = 'VN';
+        insert vietnamMap;
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International';

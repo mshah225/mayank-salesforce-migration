@@ -359,7 +359,7 @@ public without sharing class TerritoryAssignmentHelper {
                     {
                         try 
                         {
-                            country = [SELECT Country_Name__c FROM PS_Country_Map__c WHERE Integration_Value__c = :country].Country_Name__c;
+                            country = [SELECT Country_Name__c FROM PS_Country_Map__c WHERE Integration_Value__c = :country LIMIT 1].Country_Name__c;
                         }
                         catch (Exception e)
                         {

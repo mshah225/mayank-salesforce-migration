@@ -5,8 +5,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     private Map<String, String> configMap = new Map<String, String>();
     private Id queueId;
     private Id templateId;
-    private OrgWideEmailAddress defaultOrgWideEmailAddress;
-    private boolean useDefaultEmailAddress = false;
     private String categoryName;
     private String subCategoryName;
     private String origin;
@@ -951,12 +949,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
 
                 emailFromName = assignmentRuleListDefault[0].Customer_Notice_Email_From_Name__c;
-                defaultOrgWideEmailAddress = getDefaultOrgWideEmailAddress();
-                
-                if (defaultOrgWideEmailAddress != null) 
-                {
-                    useDefaultEmailAddress = true;
-                }
 
                 if (assignmentRuleListDefault[0].Case_Record_Type_ID__c != null)
                 {
@@ -990,32 +982,32 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         }
 
         OrgWideEmailAddress oweaToUse = new OrgWideEmailAddress();
+        OrgWideEmailAddress defaultOwea = getDefaultOrgWideEmailAddress();
+        Boolean noOweaFound = false;
+        
+        // Find the appropriate OrgWideEmailAddress for this reply
         try
         {
             oweaToUse = [SELECT Id FROM OrgWideEmailAddress WHERE Address = :replyToAddress];
-            System.debug('!!!!!!!!!!!!!!!! OWEATOUSE ' + oweaToUse);
+            System.debug('!!!FINE: Using ' + oweaToUse + ' as OrgWideEmailAddress');
+            mail.setOrgWideEmailAddressId(oweaToUse.Id);
         }
         catch (Exception e)
         {
-            System.debug('!!!!!!!!!!!!!!!! OWEATOUSE ERROR ' + e);
-        }
-
-        if (oweaToUse != null)
-        {
-            mail.setOrgWideEmailAddressId(oweaToUse.Id);
-            System.debug('!!!!!!!!!!!!!!!!!!!!!!!! USING DEPARTMENT EMAIL/NAME ' + oweaToUse);
-        }
-        else if (useDefaultEmailAddress && defaultOrgWideEmailAddress != null)
-        {
-            mail.setOrgWideEmailAddressId(defaultOrgWideEmailAddress.Id);
-            System.debug('!!!!!!!!!!!!!!!!!!!!!!!! USING DEFAULT ORG-WIDE EMAIL ' + defaultOrgWideEmailAddress);
-        }
-        else 
-        {
-            mail.setSenderDisplayName(emailFromName);
-            mail.setReplyTo(replyToAddress);
-            System.debug('!!!!!!!!!!!!!!!!!!!!!!!! API USER SENT THE EMAIL ' + emailFromName + '' + replyToAddress);
-        }
+            System.debug('!!!ERROR: Query for OrgWideEmailAddress failed when using ' + replyToAddress + '.\n' + e.getMessage());
+            
+            // Use context user's information if there is no default OrgWideEmailAddress configured
+            if (defaultOwea == null)
+            {
+                mail.setSenderDisplayName(emailFromName);
+                System.debug('!!!ERROR: No default OrgWideAddress configured. Using context user\'s email information instead.');
+            }
+            else
+            {
+                mail.setOrgWideEmailAddressId(defaultOwea.Id);
+                System.debug('!!!WARN: Using default OrgWideEmailAddress ' + defaultOwea);
+            }
+        } 
 
         //Send the email
         try 

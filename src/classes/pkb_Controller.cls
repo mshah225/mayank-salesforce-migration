@@ -1018,8 +1018,8 @@ public without sharing class pkb_Controller
     public String query     { get; set; }
     /** fields added to covert new fields on Mobile app**/
     public Decimal  location_Latitude { get; set; }
-  public Decimal  location_Longitude { get; set; }
-    public String User_Experience     { get; set; }
+    public Decimal  location_Longitude { get; set; }
+    public String User_Experience { get; set; }
     
     
     public ContactUsData() { }

@@ -1,9 +1,9 @@
 trigger AccountTrigger on Account (after delete, after insert, after undelete, 
-after update, before delete, before insert, before update) {
-
-    if (Trigger.isInsert || Trigger.isUpdate) {
+after update, before delete, before insert, before update) 
+{
+    if (Trigger.isInsert || Trigger.isUpdate) 
+    {
         TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
         tah.AccountTA();
     }
-
 }

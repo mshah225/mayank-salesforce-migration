@@ -3,7 +3,7 @@ before delete, before insert, before update) {
     TriggerFactory.createAndExecuteHandler(ContactHandler.class);
 
     if (Trigger.isAfter && Trigger.isUpdate) {
-    	TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
-    	tah.ContactTA();
+      TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
+      tah.ContactTA();
     }
 }

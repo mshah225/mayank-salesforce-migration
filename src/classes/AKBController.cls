@@ -2,6 +2,7 @@ public without sharing class AKBController
 {    
     public AKB_Article_Feedback__c feedbackHelpful { get;set; }
     public AKB_Article_Feedback__c[] feedbackGiven;
+    public Case suggestAnArticle {get; set;}
     public FAQ__kav faq {get;set;}
     public How_To__kav howTo { get;set; }
     public Informational__kav info { get;set; }
@@ -53,6 +54,7 @@ public without sharing class AKBController
             artType = howTo.ArticleType;
         }
         feedbackHelpful = new AKB_Article_Feedback__c(); 
+        suggestAnArticle = new Case();
         getContactId();
         currentUser = [SELECT Name FROM Contact WHERE Id = :contactId].Name;
     }
@@ -157,6 +159,23 @@ public without sharing class AKBController
         insert feedbackHelpful;
         
         PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes');
+        confirmPage.setRedirect(true);
+        return confirmPage;
+    }
+
+    public PageReference suggestAnArticleSubmit() 
+    {
+        suggestAnArticle.Subject = 'Suggest An Article';
+        suggestAnArticle.Description = suggestAnArticle.Description;
+        suggestAnArticle.ContactId = contactId;
+        suggestAnArticle.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
+        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
+        suggestAnArticle.Category__c = 'Service Center Feedback';
+        suggestAnArticle.Origin__c = 'My ASU';
+        suggestAnArticle.Visible_by_Contact__c = false;
+        insert suggestAnArticle;
+        
+        PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Suggest=yes');
         confirmPage.setRedirect(true);
         return confirmPage;
     }

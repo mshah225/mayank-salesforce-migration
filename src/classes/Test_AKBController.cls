@@ -13,7 +13,7 @@ public class Test_AKBController
             IsVisibleInPKB = true,
             IsVisibleInCsp = true,
             IsVisibleInPrm = true,
-            URLName = 'test-FAQ');
+            URLName = 'test-FAQ-asdf');
         insert faqArticle;
 
         // publish the faq
@@ -31,7 +31,7 @@ public class Test_AKBController
             IsVisibleInPKB = true,
             IsVisibleInCsp = true,
             IsVisibleInPrm = true,
-            URLName = 'testHowTo');
+            URLName = 'testHowTo-asdf');
         insert howArticle;
 
         // publish the howTo
@@ -49,7 +49,7 @@ public class Test_AKBController
             IsVisibleInPKB = true,
             IsVisibleInCsp = true,
             IsVisibleInPrm = true,
-            URLName = 'testInfo');
+            URLName = 'testInfo-asdf');
         insert infoArticle;
 
         // publish the info
@@ -297,6 +297,36 @@ public class Test_AKBController
         Test.stopTest();
     }
 
+    @isTest static void testSuggestAnArticle() 
+    {
+        List<KnowledgeArticleVersion> articleTest = [SELECT KnowledgeArticleId 
+                                                     FROM KnowledgeArticleVersion 
+                                                     WHERE PublishStatus = 'Online' 
+                                                     AND Language = 'en_US' 
+                                                     AND ArticleType = 'FAQ__kav' 
+                                                     LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
+        Id newCaseId;
+        PageReference akbPage = Page.akb;
+        Test.setCurrentPage(akbPage);
+        Test.startTest();
+        System.runAs(testUser)
+        {
+            ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
+            AKBController akb = new AKBController();
+            akb.suggestAnArticle.Description = 'Test Description';
+            PageReference page = akb.suggestAnArticleSubmit();
+            PageReference expected = new PageReference('/akb?Suggest=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
+            System.AssertEquals(expected.getUrl(), page.getUrl());
+            newCaseId = akb.suggestAnArticle.Id;
+        }
+        Case newCase = [SELECT Subject, Description FROM Case WHERE Id = :newCaseId];
+        System.AssertEquals(newCase.Subject, 'Suggest An Article');
+        System.AssertEquals(newCase.Description, 'Test Description');
+        Test.stopTest();
+    }
+
     @isTest static void testChangeLinks() 
     {
         List<KnowledgeArticleVersion> articleTest = [SELECT KnowledgeArticleId 
@@ -315,7 +345,7 @@ public class Test_AKBController
         System.runAs(testUser)
         {
             AKBController akb = new AKBController();
-            akb.urlsJSON = '["test-FAQ"]';
+            akb.urlsJSON = '["test-FAQ-asdf"]';
             String fixedIdLink = '["/akb?id=' + articleTest[0].KnowledgeArticleId + '"]';
             akb.changeLink();
             akb.getContactId();

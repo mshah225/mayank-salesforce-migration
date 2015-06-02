@@ -5,8 +5,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     private Map<String, String> configMap = new Map<String, String>();
     private Id queueId;
     private Id templateId;
-    private OrgWideEmailAddress defaultOrgWideEmailAddress;
-    private boolean useDefaultEmailAddress = false;
     private String categoryName;
     private String subCategoryName;
     private String origin;
@@ -134,10 +132,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
             }
         }
-        
+
         List<String> toAddressList = new List<String>();
         List<String> ccAddressList = new List<String>();
-
+        
         if (email.ToAddresses != null)
         {
             toAddressList = email.ToAddresses;
@@ -488,16 +486,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         }
 
         if (attachmentSize > 25000000)
-	{ 
+    { 
             bAttachmentError = true;
         }
 
         if (bAttachmentError) 
-	{
+    {
             String attachmentFailureTemplateId = getConfigurationSetting('Rejected Attachment Email Template ID');
 
             if (attachmentFailureTemplateId != null && attachmentFailureTemplateId != '')
-	    {
+        {
                 sendAutoReply(theCase, theContact, attachmentFailureTemplateId);
             }
         }
@@ -585,7 +583,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         /* **** CC */
         if (email.ccAddresses != null) 
-	{
+    {
             value = '';
             Boolean seenOne= false;
             
@@ -897,16 +895,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 emailFromName = assignmentRuleList[0].Customer_Notice_Email_From_Name__c;
 
-                // Recruitment update
-                if (assignmentRuleList[0].Case_Record_Type_ID__c != null)
-                {
-                    caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
-                }
+        if (assignmentRuleList[0].Case_Record_Type_ID__c != null){
+          caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
+        }
 
-                if (assignmentRuleList[0].Fallback_Queue_ID__c != null)
-                {
-                    fallbackQueueId = ID.valueOf(assignmentRuleList[0].Fallback_Queue_ID__c);
-                }
+        if (assignmentRuleList[0].Fallback_Queue_ID__c != null){
+          fallbackQueueId = ID.valueOf(assignmentRuleList[0].Fallback_Queue_ID__c);
+        }
 
                 typeOfAdditionalAssignmentNeeded = assignmentRuleList[0].Type_of_Additional_Assignment_Needed__c;
                 associateCaseToActiveOpportunity = assignmentRuleList[0].Associate_Case_to_Active_Opportunity__c;
@@ -954,12 +949,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
 
                 emailFromName = assignmentRuleListDefault[0].Customer_Notice_Email_From_Name__c;
-                defaultOrgWideEmailAddress = getDefaultOrgWideEmailAddress();
-                
-                if (defaultOrgWideEmailAddress != null) 
-                {
-                    useDefaultEmailAddress = true;
-                }
 
                 if (assignmentRuleListDefault[0].Case_Record_Type_ID__c != null)
                 {
@@ -992,15 +981,33 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             mail.setWhatId(emailCase.Id);
         }
 
-        if (useDefaultEmailAddress && defaultOrgWideEmailAddress != null)
+        OrgWideEmailAddress oweaToUse = new OrgWideEmailAddress();
+        OrgWideEmailAddress defaultOwea = getDefaultOrgWideEmailAddress();
+        Boolean noOweaFound = false;
+        
+        // Find the appropriate OrgWideEmailAddress for this reply
+        try
         {
-            mail.setOrgWideEmailAddressId(defaultOrgWideEmailAddress.Id);
+            oweaToUse = [SELECT Id FROM OrgWideEmailAddress WHERE Address = :replyToAddress];
+            System.debug('!!!FINE: Using ' + oweaToUse + ' as OrgWideEmailAddress');
+            mail.setOrgWideEmailAddressId(oweaToUse.Id);
         }
-        else 
+        catch (Exception e)
         {
-            mail.setSenderDisplayName(emailFromName);
-            mail.setReplyTo(replyToAddress);
-        }
+            System.debug('!!!ERROR: Query for OrgWideEmailAddress failed when using ' + replyToAddress + '.\n' + e.getMessage());
+            
+            // Use context user's information if there is no default OrgWideEmailAddress configured
+            if (defaultOwea == null)
+            {
+                mail.setSenderDisplayName(emailFromName);
+                System.debug('!!!ERROR: No default OrgWideAddress configured. Using context user\'s email information instead.');
+            }
+            else
+            {
+                mail.setOrgWideEmailAddressId(defaultOwea.Id);
+                System.debug('!!!WARN: Using default OrgWideEmailAddress ' + defaultOwea);
+            }
+        } 
 
         //Send the email
         try 

@@ -386,6 +386,12 @@
                 <apex:outputText escape="false" value="{!pinMessage}"/>
             </div>
         </apex:outputPanel>
+        <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest != null}">
+            <div class="alert alert-success feedbackConfirm">
+                <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
+                <p><strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.</p>
+            </div>
+         </apex:outputPanel>
     </center>
        
     <div class="container">
@@ -443,6 +449,9 @@
                                         </tr>
                                     </table>
                                 </knowledge:articleList>
+                                <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
+                                    Suggest An Article
+                                </button>
                             </apex:pageBlock>
 
                             <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
@@ -470,6 +479,32 @@
                     <iframe src="https://webapp4.asu.edu/narrowcasting/ad/SMALL/myasu-servicecenter-1/true?rotate=true&interval=6000" scrolling="no" frameborder="0" width="100%" height="57" style="margin-bottom: -5px;"></iframe>
                 </div>
             </div><!-- end col-md-7 -->
+            <apex:form id="suggestAnArticle">
+                <!-- Modal -->
+                <div class="modal fade" id="suggestAnArticle" tabindex="-1" role="dialog" aria-labelledby="suggestAnArticleLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h6 class="modal-title" id="suggestAnArticleLabel">Suggest An Article</h6>
+                      </div>
+                      <div class="modal-body">
+                        <apex:pageBlock mode="maindetail">
+                            <p>Have an idea for an article you'd like to see? Please tell us below!</p>
+                            <br />
+                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;"/>
+                        </apex:pageBlock>
+                      </div>
+                      <div class="modal-footer">
+                        <div class="pull-left">
+                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </apex:form> 
             
             <div class="col-md-5">
                 <apex:outputPanel rendered="{!HelpBox}">
@@ -696,10 +731,10 @@
                         
                         <div id="myCases">
                         <apex:form >
-                            <h5>Cases I've Opened</h5>
+                            <h5>My Open Cases</h5>
                             <apex:pageBlock mode="maindetail">
                                 <apex:pageBlockTable rendered="{!(myCases.size >= 1)}" value="{!myCases}" var="case" styleClass="myCasesTable">
-                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;"  onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;"  onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column headerValue="Status" width="33%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column width="33%" onmousemove="this.style.backgroundColor='white'" style="background-color:white;" onmouseout="this.style.backgroundColor ='white'">
                                         <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
@@ -707,7 +742,9 @@
                                         </apex:commandLink>
                                     </apex:column>
                                 </apex:pageBlockTable>
-                                <apex:outputText rendered="{!(myCases.size = 0)}" value="You do not have any open cases." />
+                                <apex:outputText rendered="{!(myCases.size = 0)}">
+                                    <div class="padClass"> You do not have any open cases. </div>
+                                </apex:outputText>
                             </apex:pageBlock>
                         </apex:form>
                         
@@ -716,7 +753,7 @@
                             <h5>My Closed Cases</h5>
                             <apex:pageBlock mode="maindetail">
                                 <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="case" styleClass="myCasesTable">
-                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+                                    <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column headerValue="Status" width="33%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column width="33%" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'">
                                         <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
@@ -724,9 +761,23 @@
                                         </apex:commandLink>
                                     </apex:column>
                                 </apex:pageBlockTable>
-                                <apex:outputText rendered="{!(closedCases.size = 0)}" value="You do not have any closed cases." />
+                                <apex:outputText rendered="{!(closedCases.size = 0)}">
+                                    <div class="padClass"> You do not have any closed cases. </div>
+                                </apex:outputText>
                             </apex:pageBlock>
                         </apex:form>
+
+                        <div style="text-align:right">
+                            <br />
+                            <apex:form >
+                            <apex:pageBlock mode="maindetail">
+                                    <a href="/viewAllCases?source=studentSC" style="padding:4px" class="btn">
+                                        View All Cases
+                                    </a>
+                                </apex:pageBlock>
+                            </apex:form>
+                        </div>
+
                         </div>
                         
                         <script>

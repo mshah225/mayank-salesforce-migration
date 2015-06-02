@@ -19,6 +19,10 @@
         margin: 0px !important;
     }
 
+    td {
+        word-break: break-word !important;
+    }
+
     .searchKB2 {
         margin-bottom: -10px !important;
     }
@@ -1028,6 +1032,10 @@
     .breadcrumb a, .breadcrumb a:hover {
         color: #990033 !important;
         font-size: 10pt;
+    }
+
+    .padClass {
+            padding: 7px ;
     }
     
     #closePinMessages .btn:hover {

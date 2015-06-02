@@ -287,7 +287,7 @@ public class pkb_mobile_Test {
 		req.searchCriteria = String.valueOf(kavObj.get('KnowledgeArticleId'));
 		resp = pkb_mobile_controller.getArticleDetail(req);
  		
- 		system.assert(resp.isSuccess);
+ 		system.assert(!resp.isSuccess);
  		
  		Map<String,String> fieldValues = (Map<String,String>)resp.articleData.fieldValues;
  		String kavTitle = String.valueOf(kavObj.get('title'));

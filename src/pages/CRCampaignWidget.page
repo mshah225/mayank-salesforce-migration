@@ -86,7 +86,7 @@
             </script>
         </apex:outputText>
     </apex:outputPanel>
-	<apex:tabPanel id="CRTabPanel" switchType="client" selectedTab="{!$Component.viewAffiliations}" tabClass='activeTab' inactiveTabClass='inactiveTab'>
+	<apex:tabPanel id="CRTabPanel" switchType="client" selectedTab="{!$Component.viewAffiliations}" tabClass="activeTab" inactiveTabClass="inactiveTab">
 		<apex:tab id="viewAffiliations" name="viewAffiliations" label="View Affiliations" style="background-color:#f0f0f0;">
 			<apex:form style="font-size:9pt;overflow:auto;height:240px;max-width:1100px;">
 				<apex:pageBlock title="Campaigns this Contact is associated with.">
@@ -94,7 +94,7 @@
 						No Campaigns found for {!contact.Name}
 					</apex:outputText>
 					<apex:pageBlockTable value="{!sortList}" var="cc" style="font-size:9pt;" rendered="{!IF(sortList.size == 0,false,true)}" headerClass="none" columnClasses="bigCols">
-						<apex:column>
+						<apex:column >
 							<apex:outputPanel rendered="{!IF(cc.Campaign.ParentId == null,true,false)}">
 								<h4><apex:outputText value="{!cc.Campaign.Name}"/></h4>
 							</apex:outputPanel>
@@ -156,7 +156,7 @@
 							</apex:outputText>
 							<apex:pageBlockTable id="parentResultsTable" value="{!parentCampaigns}" var="pc" cellspacing="0" headerClass="none" columnClasses="remCols" rendered="{!IF(parentCampaigns.size != 0,true,false)}">
 								<apex:column width="50px">
-									<apex:actionRegion>
+									<apex:actionRegion >
 										<apex:commandLink value="Select" action="{!assignToParentCampaign}" styleClass="linkBtn">
 											<apex:param name="selectedParentCampaign" value="{!pc.Id}" assignTo="{!selectedParentCampaign}" />
 											<apex:actionSupport event="oncomplete" action="{!parentCamNameSearch}" reRender="searchInput,parentResultsPanel,childResultsPanel" status="searchStatus"/>
@@ -171,7 +171,7 @@
 
 				<apex:outputPanel id="childResultsPanel" style="float:right;width:49.5%;">
 					<apex:pageBlock rendered="{!IF(childCampaigns != null,true,false)}">
-						<apex:outputText>
+						<apex:outputText >
 							<b style="font-size:11pt;">Select a Child Campaign for {!selectedParentCampaignName}</b>
 							<br />
 							<br />
@@ -184,7 +184,7 @@
 						</apex:outputText>
 						<apex:pageBlockTable id="childResultsTable" value="{!fixedChildCampaigns}" var="chc" cellspacing="0" headerClass="none" columnClasses="remCols" rendered="{!IF(fixedChildCampaigns.size != 0,true,false)}">
 							<apex:column width="50px">
-								<apex:actionRegion>
+								<apex:actionRegion >
 									<apex:commandLink styleClass="linkBtn" value="Select" action="{!assignToChildCampaign}" reRender="redirectPanel" status="searchStatus">
 										<apex:param name="selectedChildCampaign" value="{!chc.Id}" assignTo="{!selectedChildCampaign}"/>
 									</apex:commandLink>
@@ -207,9 +207,9 @@
 		                    </apex:facet>
 		                </apex:actionStatus>
 						<apex:pageBlockTable value="{!sortList}" var="ec" cellspacing="5" style="font-size:9pt;" headerClass="none" columnClasses="remCols">
-							<apex:column>
+							<apex:column >
 								<apex:outputPanel rendered="{!IF(ec.Campaign.ParentId == null,true,false)}">
-									<apex:actionRegion>
+									<apex:actionRegion >
 										<apex:commandLink styleClass="linkBtn" value="Remove" action="{!inActivateCM}" reRender="redirectPanel,inActivateCMForm" status="removeStatus">
 											<apex:param name="inActivateParentButton" value="{!ec.Id}" assignTo="{!inActivateCMId}"/>
 										</apex:commandLink>
@@ -219,7 +219,7 @@
 
 								<apex:outputPanel rendered="{!IF(ec.Campaign.ParentId != null,true,false)}">
 									<span style="margin-left:20px;"/>
-									<apex:actionRegion>
+									<apex:actionRegion >
 										<apex:commandLink styleClass="linkBtn" value="Remove" action="{!inActivateCM}" reRender="redirectPanel,inActivateCMForm" status="removeStatus">
 											<apex:param name="inActivateChildButton" value="{!ec.Id}" assignTo="{!inActivateCMId}"/>
 										</apex:commandLink>

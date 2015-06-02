@@ -21,6 +21,5 @@ public class Test_UserHandler
 		updateUser = [SELECT Role_Knowledge__c FROM User WHERE Id =: updateUser.Id];
 
 		System.assert(!updateUser.Role_Knowledge__c);
-
 	}
 }

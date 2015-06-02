@@ -364,6 +364,7 @@ private class Test_ServiceCenter
     @isTest static void viewCaseTest() 
     {
         setUp();
+        String source;
         PageReference viewcase = Page.viewcase;
         Test.setCurrentPage(viewcase);
         System.runAs(testUser) 
@@ -377,6 +378,54 @@ private class Test_ServiceCenter
             sc.getMyCases();
             sc.caseId = c.Id;
             sc.viewCase();
+            source = sc.getSource();
         }
+
+        System.assertEquals(source, 'studentSC');
+    }
+
+    @isTest static void viewCaseFromViewAllTest() 
+    {
+        setUp();
+        String source;
+        PageReference viewcase = Page.viewcase;
+        Test.setCurrentPage(viewcase);
+        System.runAs(testUser) 
+        {
+            sc = new ServiceCenter();
+            Case c = sc.c;
+            c.Subject = 'Test case';
+            c.Description= 'here\'s my test';
+            sc.c = c;
+            sc.SubmitCase();
+            sc.getMyCases();
+            sc.caseId = c.Id;
+            sc.viewCase();
+            viewcase.getParameters().put('source', 'viewAllCases');
+            source = sc.getSource();
+        }
+
+        System.assertEquals(source, 'viewAllCases?source=studentSC');
+    }
+
+
+    @isTest static void testSuggestAnArticle() 
+    {
+        setUp();
+        PageReference viewcase = Page.viewcase;
+        Test.setCurrentPage(viewcase);
+        Id newCaseId;
+        System.runAs(testUser) 
+        {
+            sc = new ServiceCenter();
+            sc.suggestAnArticle.Description = 'Test Description';
+            PageReference page = sc.suggestAnArticleSubmit();
+            PageReference expected = new PageReference('/studentSC?Suggest=yes');
+            System.AssertEquals(expected.getUrl(), page.getUrl());
+            newCaseId = sc.suggestAnArticle.Id;
+        }
+        Case newCase = [SELECT Subject, Description FROM Case WHERE Id = :newCaseId];
+        System.AssertEquals(newCase.Subject, 'Suggest An Article');
+        System.AssertEquals(newCase.Description, 'Test Description');
     }
 }

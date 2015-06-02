@@ -1,0 +1,5 @@
+<apex:page controller="CaseTransferController"
+	showHeader="true" 
+	sidebar="true">
+	
+</apex:page>

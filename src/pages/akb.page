@@ -743,9 +743,10 @@
                     </div>
                     <div class="content">
                     <p>Please contact us if you need immediate assistance. We're available 24/7 to answer your questions.</p>
-                    <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>     
-                    <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
-                        
+                    <apex:outputLink styleClass="btn kbbtn btnLink mobileCall" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>
+                    <apex:outputLink styleClass="btn kbbtn btnLink desktopCall" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="#"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>      
+                    <apex:outputLink styleClass="btn kbbtn btnLink desktopCall" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="#"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
+                    <apex:outputLink styleClass="btn kbbtn btnLink mobileCall" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
                     <br /><br />
                     
                     <apex:form id="pinForm" styleClass="pinForm">                        

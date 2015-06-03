@@ -1,5 +1,132 @@
-<apex:page controller="CaseTransferController"
-	showHeader="true" 
+<apex:page standardController="Case"
+	extensions="CaseTransferController"
+	showHeader="true"
 	sidebar="true">
-	
+
+	<apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
+
+	<style>
+		h1 {
+			font-size: 16pt;
+		}
+
+		#collegeList a, #collegeList a:hover, #serviceList a, #serviceList a:hover {
+			color: #990033 !important;
+		}
+
+		.caseBtn {
+			transition: all 0.25s ease-in-out !important;
+			background: #a30046 !important;
+		    border: none !important;
+		    font-weight: 200 !important;
+		    color: white !important;
+		    padding: 8px !important;
+		    border-radius: 2px !important;
+		    font-size: 10pt !important;
+		    margin-top: 10px !important;
+		}
+
+		.caseBtn:hover {
+			background: #d23153 !important;
+		}
+
+		.caseTab .primaryPalette, .individualPalette .caseBlock .primaryPalette {
+		    background-color: #000 !important;
+		    border-color: #000 !important;
+		}
+
+		.caseTab .brdPalette {
+		    border-top-color: #353535 !important;
+		}
+
+		#collegeHeader, #serviceHeader {
+			cursor: pointer !important;
+		}
+	</style>
+
+	<h1>Change Case Owner ({!Case.CaseNumber})</h1>
+	<p><i>To assign this case, select a department or college below:</i></p>
+	<table id="pageTable" style="width:100%">
+		<tr>
+			<td style="width:30%;">
+				<apex:form id="serviceTransfer">
+					<h1 style="text-decoration:underline;">Service Departments</h1>
+					<br />
+					<br />
+					<apex:repeat value="{!serviceCARS}" var="serviceKey">
+						<div id="serviceHeader">
+							<apex:outputText value="{!serviceKey}" style="font-weight:600;font-size:12pt;"/>
+							<br />
+						</div>
+						<div id="serviceList" style="display:none;">
+							<apex:repeat value="{!serviceCARS[serviceKey]}" var="sk">
+								<div style="height:5px;"></div>
+								<apex:commandLink value="{!sk.Label__c}" style="margin-left:15px;" action="{!showChatterBox}">
+									<apex:param name="selectedCARId" value="{!sk.Id}" assignTo="{!selectedCARId}"/>
+									<apex:param name="selectedGroupName" value="{!sk.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
+									<apex:param name="selectedCARLabel" value="{!sk.Label__c}" assignTo="{!selectedCARLabel}"/>
+									<apex:actionSupport event="onclick" reRender="chatterBox,transferPanel"/>
+								</apex:commandLink>
+								<br />
+							</apex:repeat>
+						</div>
+						<br />
+					</apex:repeat>
+				</apex:form>
+			</td>
+			<td style="width:30%">
+				<apex:form id="collegeTransfer">
+					<h1 style="text-decoration:underline;">Colleges</h1>
+					<br />
+					<br />
+					<apex:repeat value="{!collegeCARS}" var="collegeKey">
+						<div id="collegeHeader">
+							<apex:outputText value="{!collegeKey}" style="font-weight:600;font-size:12pt;"/>
+							<br />
+						</div>
+						<div id="collegeList" style="display:none">
+							<apex:repeat value="{!collegeCARS[collegeKey]}" var="ck">
+								<div style="height:5px;"></div>
+								<apex:commandLink value="{!ck.Label__c}" action="{!showChatterBox}" style="margin-left:15px;">
+									<apex:param name="selectedCARId" value="{!ck.Id}" assignTo="{!selectedCARId}"/>
+									<apex:param name="selectedGroupName" value="{!ck.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
+									<apex:param name="selectedCARLabel" value="{!ck.Label__c}" assignTo="{!selectedCARLabel}"/>
+									<apex:actionSupport event="onclick" reRender="chatterBox,transferPanel"/>
+								</apex:commandLink>
+								<br />
+							</apex:repeat>
+						</div>
+						<br />
+					</apex:repeat>
+				</apex:form>
+			</td>
+			<td>
+				<apex:outputPanel id="chatterBox">
+					<apex:outputPanel rendered="{!showChatter}">
+						<h1>Transferring case to {!selectedGroupName}, {!selectedCARLabel}</h1>
+						<apex:form id="transferButton">
+							<apex:actionRegion>
+								<apex:commandButton value="Transfer Case" action="{!transferCase}" styleClass="caseBtn"/>
+							</apex:actionRegion>
+						</apex:form>
+						<br />
+						<br />
+						<i>(Optional) Enter Comments or @mention a user for {!selectedGroupName}, {!selectedCARLabel} before transferring case:</i>
+						<br />
+						<chatter:feed entityId="{!Case.Id}"/>
+					</apex:outputPanel>
+				</apex:outputPanel>
+			</td>
+		</tr>
+	</table>
+
+	<script>
+		$( "[id$=collegeHeader]" ).click(function() {
+	        $(this).next( "[id$=collegeList]" ).slideToggle( "600" );
+	    });
+
+	    $( "[id$=serviceHeader]" ).click(function() {
+	        $(this).next( "[id$=serviceList]" ).slideToggle( "600" );
+	    });
+	</script>
 </apex:page>

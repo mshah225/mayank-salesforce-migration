@@ -4,6 +4,7 @@ public with sharing class CaseTransferController
 	public Boolean showChatter { get;set; }
 	public Id selectedCARId { get;set; }
 	public List<Case_Assignment_Rule__c> allCARs;
+	public List<Case_Assignment_Rule__c> allGenCARs;
 	public List<Schema.PickListEntry> columnList;
 	public Map<String, List<Case_Assignment_Rule__c>> serviceCARS { get;set; }
 	public Map<String, List<Case_Assignment_Rule__c>> collegeCARS { get;set; }
@@ -16,14 +17,24 @@ public with sharing class CaseTransferController
 		serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
 		collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         this.c = (Case)stdController.getRecord();
+		allGenCARs = [SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Label__c, Name, Queue_ID__c 
+				   FROM Case_Assignment_Rule__c 
+				   WHERE CTPColumn__c != null 
+				   AND CTPGroup__c != null 
+				   AND Label__c != null 
+				   AND CTPVisible__c = true
+				   AND Label__c LIKE '%(Default)%'];
 		allCARs = [SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Label__c, Name, Queue_ID__c 
 				   FROM Case_Assignment_Rule__c 
 				   WHERE CTPColumn__c != null 
 				   AND CTPGroup__c != null 
 				   AND Label__c != null 
-				   AND CTPVisible__c = true];
+				   AND CTPVisible__c = true
+				   AND (NOT Label__c LIKE '%(Default)%')
+				   ORDER BY Label__c ASC];
+		allGenCARs.addAll(allCARS);
 
-		for (Case_Assignment_Rule__c car : allCARs)
+		for (Case_Assignment_Rule__c car : allGenCARs)
         {
         	if (car.CTPColumn__c.equals('Service Departments'))
 			{
@@ -60,6 +71,7 @@ public with sharing class CaseTransferController
 	public void showChatterBox()
 	{
 		showChatter = true;
+		selectedCARLabel = [SELECT Label__c FROM Case_Assignment_Rule__c WHERE Id = :selectedCARId].Label__c;
 	}
 
 	public PageReference transferCase() 

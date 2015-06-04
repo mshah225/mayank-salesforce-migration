@@ -111,6 +111,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                                         FROM CampaignMember 
                                         WHERE ContactId IN :contactIds 
                                         AND Id NOT IN :cmIds2
+                                        AND Status != 'Not Interested' 
                                         AND Campaign.RecordType.DeveloperName = 'Interest' 
                                         AND Campaign.Type IN :acceptableMajors];
 
@@ -146,7 +147,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                         }
                     }
                     
-                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest')
+                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest' && cm.Status != 'Not Interested')
                     {
                         if(CampaignMembersByContactMap.containsKey(cm.ContactId))
                         {
@@ -168,6 +169,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                                     FROM CampaignMember 
                                     WHERE LeadId IN :leadIds 
                                     AND Id NOT IN :cmIds2
+                                    AND Status != 'Not Interested' 
                                     AND Campaign.RecordType.DeveloperName = 'Interest' 
                                     AND Campaign.Type IN :acceptableMajors];
             for(CampaignMember cm : cmsForLeads)
@@ -198,7 +200,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                         }
                     }
                     
-                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest')
+                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest' && cm.Status != 'Not Interested')
                     {
                         if(CampaignMembersByLeadMap.containsKey(cm.LeadId))
                         {
@@ -378,6 +380,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
     {
         CampaignMember cm = (CampaignMember)so;
         CampaignMember oldCm = (CampaignMember)oldSo;
+
+        if(oldCm.Status != 'Not Interested' && cm.Status == 'Not Interested')
+        {
+            cm.Is_Primary_Interest__c = FALSE;
+        }
 
         if(run)
         {

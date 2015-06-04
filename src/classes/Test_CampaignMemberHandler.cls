@@ -469,7 +469,7 @@ public class Test_CampaignMemberHandler {
 		System.assert(cm1.Is_Primary_Interest__c == FALSE);
 		System.assert(cm2.Is_Primary_Interest__c == TRUE);
 
-        cm2.Status = 'Not Interested';
+        cm2.Status = 'No Longer Interested';
        	cmsToUpdate = new List<CampaignMember>();
        	cmsToUpdate.add(cm1);
        	cmsToUpdate.add(cm2);

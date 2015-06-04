@@ -133,7 +133,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                     existingCase.OwnerId = groupToReopen.Id;
 
-                    if (existingCase.Functional_Group__c.equals('External Unit'))
+                    if (String.isEmpty(existingCase.Most_Recent_Functional_Group__c))
+                    {
+                        // Handle NPE on Most_Recent_Functional_Group__c
+                        existingCase.Most_Recent_Functional_Group__c = existingCase.Functional_Group__c;
+                    }
+                    else if (existingCase.Functional_Group__c.equals('External Unit'))
                     {
                         existingCase.Functional_Group__c = existingcase.Most_Recent_Functional_Group__c;
                     }
@@ -204,6 +209,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             theCase.Sub_Category__c = subCategoryName;
             theCase.Campus__c = campus;
             theCase.Functional_Group__c = functionalGroup;
+            theCase.Most_Recent_Functional_Group__c = functionalGroup;
             theCase.SuppliedEmail = email.fromAddress;
             theCase.SuppliedName = fname + ' ' + lname;
             theCase.Status = 'New';

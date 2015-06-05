@@ -125,6 +125,36 @@ public with sharing class NewCorporateRelationsContactController
 	    }
     }
 
+    public void validateContact()
+    {
+    	contact.Email = contact.Corporate_Relations_Email__c;
+        if (contact.MailingPostalCode == null && contact.Email == null && contact.Phone == null)
+        {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
+            return;
+        }
+
+        if (contact.MailingPostalCode != null && contact.Email == null && contact.Phone == null)
+        {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
+            return;
+        }
+
+        if (contact.MailingPostalCode == null && contact.Email != null && contact.Phone == null)
+        {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
+            return;
+        }
+
+        if (contact.MailingPostalCode == null && contact.Email == null && contact.Phone != null)
+        {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
+            return;
+        }
+
+        page2();
+    }
+
     public PageReference page2()
     {
 		page = 2;

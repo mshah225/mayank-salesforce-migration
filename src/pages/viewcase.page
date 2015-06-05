@@ -237,8 +237,12 @@
                 </div><!-- end col-md-8 -->
 
                 <div class="col-md-4">
-                    <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}" changePin="{!changePin}"/>
-                 
+                    <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}" 
+                                                NormalPhone="{!NormalPhone}" 
+                                                RoverPhone="{!RoverPhone}" 
+                                                myPin="{!myPin}" 
+                                                newPin="{!newPin}" 
+                                                changePin="{!changePin}"/>
                     <c:SCMyCasesBox />
                 </div><!-- end col-md-4-->
             </div><!-- end row -->

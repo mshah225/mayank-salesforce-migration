@@ -1,7 +1,5 @@
 <apex:component >
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
-
     <link type="text/css" rel="stylesheet" media="all" href="//www.asu.edu/asuthemes/4.0-rsp.1/css/asu_header.min.css" />
     <!--[if lte IE 8]>
     <style type="text/css">

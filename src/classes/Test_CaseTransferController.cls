@@ -67,10 +67,4 @@ private class Test_CaseTransferController {
 		ctc.transferCase();
 		Test.stopTest();
 	}
-	
-	@isTest static void test_method_two() 
-	{
-		// Implement test code
-	}
-	
 }

@@ -96,7 +96,7 @@
 		}
 	</style>
 
-	<h1>Change Case Owner ({!Case.CaseNumber})</h1>
+	<h1 style="color:#990033;">Change Case Owner ({!Case.CaseNumber})</h1>
 	<p><i>To assign this case, select a department or college from the lists below:</i></p>
 	<table id="pageTable" style="width:100%">
 		<tr style="vertical-align:top;">

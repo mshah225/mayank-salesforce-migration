@@ -145,7 +145,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
 
                 existingCase.Status = 'Re-Opened';
-
+                                
                 updateSObject(existingCase);
             }
         }

@@ -82,32 +82,14 @@ public with sharing class NewProspectController
     Public PageReference save() 
     {
         contact.Email = contact.Lead_Email__c;
-        if (contact.MailingPostalCode == null && contact.Email == null && contact.Phone == null)
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
-            return null;
-        }
+        Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
+        Integer hasEmail = contact.Email == null ? 0 : 1;
+        Integer hasPhone = contact.Phone == null ? 0 : 1;
 
-        if (contact.MailingPostalCode != null && contact.Email == null && contact.Phone == null)
+        Integer result = hasMailingCode + hasEmail + hasPhone;
+        if (result < 2)
         {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
-            return null;
-        }
-
-        if (contact.MailingPostalCode == null && contact.Email != null && contact.Phone == null)
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
-            return null;
-        }
-
-        if (contact.MailingPostalCode == null && contact.Email == null && contact.Phone != null)
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
-            return null;
-        }
-
-        if(opportunity.Type == null) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'You must select an Opportunity type.'));
+           ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
             return null;
         }
     

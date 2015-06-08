@@ -221,27 +221,14 @@ public class UndergradNewProspectController
                 contact.SF_Mailing_Address_Updated__c = Datetime.now();
                 contact.SF_Birthdate__c = contact.Birthdate;
                 contact.SF_Birthdate_Updated__c = Datetime.now();
-                if (contact.MailingPostalCode == null && contact.Email == null && contact.Phone == null)
-                {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
-                    return false;
-                }
+                Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
+                Integer hasEmail = contact.Email == null ? 0 : 1;
+                Integer hasPhone = contact.Phone == null ? 0 : 1;
 
-                if (contact.MailingPostalCode != null && contact.Email == null && contact.Phone == null)
+                Integer result = hasMailingCode + hasEmail + hasPhone;
+                if (result < 2)
                 {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
-                    return false;
-                }
-
-                if (contact.MailingPostalCode == null && contact.Email != null && contact.Phone == null)
-                {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
-                    return false;
-                }
-
-                if (contact.MailingPostalCode == null && contact.Email == null && contact.Phone != null)
-                {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
+                   ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
                     return false;
                 }
 

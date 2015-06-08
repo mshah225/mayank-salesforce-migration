@@ -195,61 +195,6 @@ public without sharing class LeadHandler
 		}
 	}
 
-
-/*	
-	private void CreateLeadInterestOpportunities(List<Lead> leadList) {
-		if (leadList.size() == 0)
-			return;
-			
-		List<Opportunity> oppsToInsert = new List<Opportunity>();
-		Set<Id> LeadIds = new Set<Id>();
-		for (Lead l: leadList)
-			LeadIds.add(l.Id);
-		List<Lead_Interest__c> leadInterestList = new List<Lead_Interest__c>([SELECT Id, OwnerId, IsDeleted, Name, RecordType.Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, Leads__c, Eligibility__c, Plan__c, Contact__c, Status__c, Term__c, Primary_Source__c, Secondary_Source__c, Type__c, College__c, Academic_Interest__c, Test_Record__c, Qualifying__c, Send_Email__c, External_Application_Number__c, Send_Email_ID__c from Lead_Interest__c WHERE Leads__c IN :leadIds]);
-		//Need to requery to get the Converted Contact Ids
-		//
-		Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>([SELECT Id, ConvertedContactId FROM Lead WHERE Id in :leadIds]);
-		
-		for (Lead_Interest__c li: leadInterestList) {
-			// Here's the logic for determining which LIs to convert; keeping it simple for now
-			//
-			if (li.Status__c != null) {
-				Opportunity o = new Opportunity();
-				o.Academic_Interest__c = li.Academic_Interest__c;
-				o.College__c = li.College__c;
-				o.Contact__c = li.Contact__c;
-				o.Eligibility__c = li.Eligibility__c;
-				o.External_Application_Number__c = li.External_Application_Number__c;
-				o.Academic_Plan__c = li.Plan__c;
-				o.Qualifying__c = li.Qualifying__c;
-				o.Secondary_Source__c = li.Secondary_Source__c;
-				o.Primary_Source__c = li.Primary_Source__c;
-				o.Lead_Interest_Status__c = li.Status__c;
-				o.Term__c = li.Term__c;
-				o.Test_Record__c = li.Test_Record__c;
-				o.Lead_Interest_Type__c = li.Type__c;
-				o.Lead_Interest_Key__c = li.Name;
-				o.Lead_Interest_Record_Type__c = li.RecordType.Name;
-				o.OwnerId = li.OwnerId;
-				o.Lead_Interest__c = li.Id;
-				o.Contact__c = leadToContactIdMap.get(li.leads__c).ConvertedContactId;
-				
-				//Defaulting these for now
-				o.StageName = 'Applicant - Incomplete';
-				o.CloseDate = Date.today();
-				o.Name = 'LI Conversion: ' + li.Name;
-				
-				oppsToInsert.add(o);
-			}
-			// TODO: Add exception handling 
-			if (oppsToInsert.size() > 0) 
-				insert oppsToInsert;
-				
-			leadInterestsConverted = true;
-		}
-	}
-*/
-	
 	private void reparentRelatedLeadInterests(Set<Id> leadIds) {
 		if (leadIds.size() == 0)
 			return;

@@ -116,6 +116,7 @@ public without sharing class LeadHandler
 		List<List<Database.Leadconvert>> leadConvertBatches = new List<List<Database.Leadconvert>>();
 		List<Database.LeadConvertResult> leadConversionResults = new List<Database.LeadConvertResult>();
 		Set<Id> LeadsRequiringLIReparenting = new Set<Id>();
+		Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
 		Integer count = 0;
 		
 		for (Lead l: leadsToConvert) {
@@ -127,6 +128,12 @@ public without sharing class LeadHandler
 				lc.setAccountId(l.Convert_Contact_Account_ID__c);
 			}
 			
+			// If Leads has Last Institution Attended populated, add to the List that
+			// needs a Previous Education entry added
+			if (l.Last_Institution_Attended__c != null) {
+				leadsNeedingPreviousEducation.add(l.Id);
+			}
+
 			// Reparent related Lead Interests if we're not creating an Opportunity
 			// Deactivate related Lead Interests if we are creating an Opportunity
 			//
@@ -159,8 +166,35 @@ public without sharing class LeadHandler
 		}
 		
 		reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
+		createConvertedPreviousEducation(leadsNeedingPreviousEducation);
         
 	}
+
+	private void createConvertedPreviousEducation(Set<Id> leadIds) {
+		if (leadIds.size() == 0)
+			return;
+
+		List<Lead> leadList = new List<Lead>([SELECT Id, ConvertedContactId, Last_Institution_Attended__c, Last_Institution_Attended__r.Institution_Type__c, Last_Institution_GPA__c, Last_Institution_GPA_Scale__c, College_Transfer_Hours__c, High_School_Class_Percent__c, High_School_Class_Rank__c, High_School_Class_Size__c FROM Lead WHERE Id in :leadIds]);
+		List<Previous_Education__c> peList = new List<Previous_Education__c>();
+
+		for (Lead l: leadList) {
+			Previous_Education__c pe = new Previous_Education__c(Contact__c = l.ConvertedContactId, 
+																 Account__c = l.Last_Institution_Attended__c);
+			if (l.Last_Institution_Attended__r.Institution_Type__c == 'HS') {
+				pe.Class_Rank__c = l.High_School_Class_Rank__c;
+				pe.Class_Size__c = l.High_School_Class_Size__c;
+			}
+			pe.GPA__c = l.Last_Institution_GPA__c;
+			peList.add(pe);
+		}
+		try {
+			insert peList;
+		}
+		catch (Exception e) {
+			throw e; 
+		}
+	}
+
 
 /*	
 	private void CreateLeadInterestOpportunities(List<Lead> leadList) {

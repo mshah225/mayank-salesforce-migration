@@ -145,7 +145,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
 
                 existingCase.Status = 'Re-Opened';
-                                
+
                 updateSObject(existingCase);
             }
         }
@@ -222,7 +222,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 Group groupToAssign = GroupService.getGroupDetails(queueId);
 
                 theCase.OwnerId = groupToAssign.Id;
-                theCase.Most_Recent_Queue__c = groupToAssign.Name;
             }
             else
             {

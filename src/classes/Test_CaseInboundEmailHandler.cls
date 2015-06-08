@@ -9,7 +9,9 @@ public with sharing class Test_CaseInboundEmailHandler {
 		EmailTemplate e1;
 		QueueSobject testQueue, caseQueue;
 		Group testGroup, caseGroup;
-		System.runAs(new User(Id = Userinfo.getUserId())) {
+
+		System.runAs(new User(Id = Userinfo.getUserId()))
+		{
 			e1 = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true);
 			insert e1;
 
@@ -64,7 +66,8 @@ public with sharing class Test_CaseInboundEmailHandler {
 		insert etcf2;
 
 		EmailTemplate e2;
-		System.runAs(new User(Id = Userinfo.getUserId())) {
+		System.runAs(new User(Id = Userinfo.getUserId()))
+		{
 			e2 = new EmailTemplate (developerName = 'test2', TemplateType= 'Text', Name = 'test2', FolderId = f.Id, IsActive=true);
 			insert e2;
 		}
@@ -260,8 +263,8 @@ public with sharing class Test_CaseInboundEmailHandler {
 		Test.stopTest();
 
 		// Verify that the case status was updated
-		createdCase = [SELECT Status, Functional_Group__c 
-					   FROM Case 
+		createdCase = [SELECT Status, Functional_Group__c
+					   FROM Case
 					   WHERE Id = :createdCase.Id];
 
 		System.assertEquals('CaseFuncGroup', createdCase.Functional_Group__c, 'External Unit case was not re-opened to most recent functional group');

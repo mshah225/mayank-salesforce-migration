@@ -125,6 +125,25 @@ public with sharing class NewCorporateRelationsContactController
 	    }
     }
 
+    public void validateContact()
+    {
+    	contact.Email = contact.Corporate_Relations_Email__c;
+        Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
+		Integer hasEmail = contact.Email == null ? 0 : 1;
+		Integer hasPhone = contact.Phone == null ? 0 : 1;
+
+		Integer result = hasMailingCode + hasEmail + hasPhone;
+		if (result >= 2)
+		{
+			page2();
+		}
+		else
+		{
+			ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
+            return;
+		}
+    }
+
     public PageReference page2()
     {
 		page = 2;

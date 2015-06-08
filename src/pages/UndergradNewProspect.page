@@ -84,27 +84,10 @@
             padding-top: 5px;
         }
     </style>
-
-    <!--<apex:includeScript value="/support/console/31.0/integration.js"/>
-    <script type="text/javascript">
-        function openPrimaryTab(oppid, oppname) {
-            console.log("function was called with" + oppid + oppname);
-            if(!sforce.console.isInConsole()) {
-                console.log("trying to redirect to opp page");
-                window.parent.location.replace('/' + recid);
-            }
-            else {
-                console.log("trying to open primary tab");
-                sforce.console.openPrimaryTab(null, '/' + oppid, true, oppname, 'UGTab');
-                sforce.console.refreshNavigationTab();
-            }
-        }
-    </script>-->
 </head>
 
 <body id="contentBody" class="content">
     <apex:form id="underGradForm" >
-    <!--<apex:outputText id="myInt" value="{!selectedInterestId}"/>-->
         <apex:pageBlock title="ASU New Undergraduate Prospect Entry Form" id="undergradBlock">
             <apex:pageBlockButtons >
                 <apex:commandButton styleClass="button" action="{!savePage}" value="Save" status="saveStatus"/>
@@ -117,6 +100,9 @@
             <apex:pageMessages />
             
             <apex:pageBlockSection id="contactInfo" title="Contact Information" collapsible="false" columns="2">
+                <i>You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code</i>
+                <br />
+                <apex:outputText value="" />
                 <apex:inputField value="{!contact.FirstName}" required="true" id="firstname"/>
                 <apex:inputField value="{!contact.LastName}" required="true" id="lastname"/>
                 <apex:inputField value="{!contact.Lead_Email__c}" required="true" id="email" label="Email" type="email"/>

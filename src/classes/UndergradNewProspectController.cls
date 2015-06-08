@@ -1,11 +1,11 @@
 public class UndergradNewProspectController 
 {
-    Contact contact;
-    Case c;
-    CampaignMember camMemInterest;
-    CampaignMember camMemEvent;
-    Opportunity opportunity;
-    Previous_Education__c previousEducation;
+    public Contact contact;
+    public Case c;
+    public CampaignMember camMemInterest;
+    public CampaignMember camMemEvent;
+    public Opportunity opportunity;
+    public Previous_Education__c previousEducation;
     public Id selectedInterestId { get;set; }
     public Id accId;
     public Id oppRecType;

@@ -1,10 +1,10 @@
 public without sharing class CaseHandler
-implements ITrigger {
-
+implements ITrigger
+{
     Map<ID, Contact> relatedContactMap = new Map<ID, Contact>();
     Map<Id, Campaign> sourceMap = new Map<Id, Campaign>();
+    Map<Id, String> groupNameMap = new Map<Id, String>();
     List<RecordType> recruitmentCaseRT;
-    Set<Id> groupIds;
     Savepoint sp;
 
     /**
@@ -15,52 +15,80 @@ implements ITrigger {
     */
     public void bulkBefore()
     {
-        if (Trigger.isUpdate)
+        if (Trigger.isInsert)
         {
-            Map<Id, String> groupNameMap = GroupService.mapGroupIdToName();
-
-            for (Case caze : (List<Case>) Trigger.new)
+            recruitmentCaseRT = new List<RecordType>([SELECT Id FROM RecordType WHERE SobjectType='Case' AND DeveloperName = 'ASU_Admission_Services']);
+            if (recruitmentCaseRT.size() < 1)
             {
-                if (groupNameMap.containsKey(caze.OwnerId))
+                return;
+            }
+
+            Set<Id> caseContactIdSet = new Set<ID>();
+            Set<Id> campaignIdSet = new Set<Id>();
+
+            for (Case c: (List<Case>)Trigger.new)
+            {
+                if (c.RecordTypeId == recruitmentCaseRT[0].Id)
                 {
-                    caze.Most_Recent_Queue__c = groupNameMap.get(caze.OwnerId);
+                    campaignIdSet.add(c.Case_Source__c);
+                    // Case "a"
+                    // SFR-1109; removed boolean check here to correct bug on webform submissions
+                    //if (c.Associate_Case_to_Active_Opportunity__c == true) {
+                    caseContactIdSet.add(c.ContactId);
+                    //}
+                }
+            }
+
+            relatedContactMap = new Map<Id, Contact>([SELECT Id, (Select Id, StageName, Territory_Assignment_Last_Rule_Type__c, OwnerId, Owner.IsActive, Enrollment_Coach__c, Enrollment_Coach__r.IsActive, CreatedDate, IsClosed FROM Opportunities__r ORDER BY IsClosed ASC, CreatedDate DESC) FROM Contact WHERE Id in :caseContactIdSet]);
+
+            if (campaignIdSet.size() > 0)
+            {
+                sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.Category__c, Case_Assignment_Rule__r.Sub_Category__c, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.Functional_Group__c, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
+            }
+        }
+        else if(Trigger.isUpdate)
+        {
+            // Call the Group Service to map all the group names to their ids
+            groupNameMap = GroupService.mapGroupIdToName();
+
+            for(Case c : (List<Case>)Trigger.new)
+            {
+                //Handles Webform cases (webforms.asu.edu)
+                if(c.Status == 'Processing' && c.Deep_Links__c != NULL)
+                {
+                    List<String> links = c.Deep_Links__c.split('Click Here');
+                    if(links.size() == (Integer.valueof(c.Number_of_Files__c) + 1))
+                    {
+                        c.Status = 'New';
+
+                        List<String> subjectSplit = c.Subject.split('%');
+                        if(subjectSplit.size() >= 2)
+                        {
+                            String queueId = '';
+                            for(Integer x = 0; x < subjectSplit.size(); x++)
+                            {
+                                List<String> tokenSplit = subjectSplit[x].split(':');
+                                if(tokenSplit.size() >= 2 && tokenSplit[0] == 'Queue' && tokenSplit[1] != '')
+                                {
+                                    queueId = tokenSplit[1];
+                                    c.OwnerId = queueId;
+                                    System.debug(c.OwnerId);
+                                }
+
+                            }
+                            c.Subject = subjectSplit[0];
+                        }
+
+                        Id fa_id = [SELECT Id FROM Group WHERE Name = 'Financial Aid (Case)' LIMIT 1].Id;
+                        if(c.OwnerId == fa_id)
+                        {
+                            c.Visible_By_Contact__c = FALSE;
+                            c.Status = 'Closed: Resolved';
+                        }
+                    }
                 }
             }
         }
-
-        if (!Trigger.isInsert)
-        {
-            return;
-        }
-
-        recruitmentCaseRT = new List<RecordType>([SELECT Id FROM RecordType WHERE SobjectType='Case' AND DeveloperName = 'ASU_Admission_Services']);
-        if (recruitmentCaseRT.size() < 1)
-        return;
-
-        Set<Id> caseContactIdSet = new Set<ID>();
-        Set<Id> campaignIdSet = new Set<Id>();
-
-        for (Case c: (List<Case>)Trigger.new)
-        {
-            if (c.RecordTypeId == recruitmentCaseRT[0].Id)
-            {
-                campaignIdSet.add(c.Case_Source__c);
-                // Case "a"
-                // SFR-1109; removed boolean check here to correct bug on webform submissions
-                //if (c.Associate_Case_to_Active_Opportunity__c == true) {
-                caseContactIdSet.add(c.ContactId);
-                //}
-
-            }
-        }
-
-        relatedContactMap = new Map<Id, Contact>([SELECT Id, (Select Id, StageName, Territory_Assignment_Last_Rule_Type__c, OwnerId, Owner.IsActive, Enrollment_Coach__c, Enrollment_Coach__r.IsActive, CreatedDate, IsClosed FROM Opportunities__r ORDER BY IsClosed ASC, CreatedDate DESC) FROM Contact WHERE Id in :caseContactIdSet]);
-
-        if (campaignIdSet.size() > 0)
-        {
-            sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.Category__c, Case_Assignment_Rule__r.Sub_Category__c, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.Functional_Group__c, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
-        }
-
     }
 
     /**
@@ -69,7 +97,9 @@ implements ITrigger {
     * This method is called prior to execution of an AFTER trigger. Use this to cache
     * any data required into maps prior execution of the trigger.
     */
-    public void bulkAfter() {}
+    public void bulkAfter() {
+
+    }
 
     /**
     * beforeInsert
@@ -93,8 +123,8 @@ implements ITrigger {
                 opList = con.Opportunities__r;
             }
 
-            System.debug('GRF c: ' + c);
-            System.debug('GRF opList: ' + opList);
+            system.debug('GRF c: ' + c);
+            system.debug('GRF opList: ' + opList);
 
             // SFR-1109; moved boolean check here to correct bug on webform submissions
             if (c.Associate_Case_to_Active_Opportunity__c == true && opList != null && opList.size() > 0)
@@ -103,9 +133,8 @@ implements ITrigger {
             }
 
             // Special handling for API users below for webform integrations'
-            System.debug('GRF Username: ' + UserInfo.getFirstName());
-            System.debug('GRF sourceMap: ' + sourceMap);
-
+            system.debug('GRF Username: ' + UserInfo.getFirstName());
+            system.debug('GRF sourceMap: ' + sourceMap);
             if (!UserInfo.getFirstName().equals('API') || UserInfo.getLastName().equals('ASU EMAIL SERVICE'))
             {
                 // SFR-1109; added opList check here to correct bug on webform submissions
@@ -137,7 +166,6 @@ implements ITrigger {
                 if (sourceMap.containsKey(c.Case_Source__c))
                 {
                     Campaign source = sourceMap.get(c.Case_Source__c);
-
                     // Did we find a related Case Assignment Rule?
                     if (source.Case_Assignment_Rule__c != null)
                     {
@@ -169,24 +197,19 @@ implements ITrigger {
                         if (!ownerSet && source.Case_Assignment_Rule__r.Queue_ID__c != null)
                         {
                             c.OwnerId = ID.valueOf(source.Case_Assignment_Rule__r.Queue_ID__c);
-
                         }
-
                         if (source.Case_Assignment_Rule__r.Origin__c != null)
                         {
                             c.Origin__c = source.Case_Assignment_Rule__r.Origin__c;
                         }
-
                         if (source.Case_Assignment_Rule__r.Category__c != null)
                         {
                             c.Category__c = source.Case_Assignment_Rule__r.Category__c;
                         }
-
                         if (source.Case_Assignment_Rule__r.Sub_Category__c != null)
                         {
                             c.Sub_Category__c = source.Case_Assignment_Rule__r.Sub_Category__c;
                         }
-
                         if (source.Case_Assignment_Rule__r.Functional_Group__c != null)
                         {
                             c.Functional_Group__c =source.Case_Assignment_Rule__r.Functional_Group__c;
@@ -202,7 +225,8 @@ implements ITrigger {
                         else
                         {
                             // No valid Territory Manager found; use default Case Assignment Rule
-                            if (defaultCAR == null) {
+                            if (defaultCAR == null)
+                            {
                                 defaultCar = [SELECT Id, Queue_ID__c, Origin__c, Category__c, Sub_Category__c, Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
                                 if (!(defaultCAR == null))
                                 {
@@ -230,30 +254,26 @@ implements ITrigger {
                                             }
                                         }
                                     }
-
                                     if (!ownerSet && defaultCar.Queue_ID__c != null)
                                     {
                                         c.OwnerId = ID.valueOf(defaultCar.Queue_ID__c);
-                                    }
 
-                                    if (defaultCAR.Origin__c != null)
-                                    {
-                                        c.Origin__c = defaultCAR.Origin__c;
-                                    }
-
-                                    if (defaultCAR.Category__c != null)
-                                    {
-                                        c.Category__c = defaultCAR.Category__c;
-                                    }
-
-                                    if (defaultCAR.Sub_Category__c != null)
-                                    {
-                                        c.Sub_Category__c = defaultCAR.Sub_Category__c;
-                                    }
-
-                                    if (defaultCAR.Functional_Group__c != null)
-                                    {
-                                        c.Functional_Group__c = defaultCAR.Functional_Group__c;
+                                        if (defaultCAR.Origin__c != null)
+                                        {
+                                            c.Origin__c = defaultCAR.Origin__c;
+                                        }
+                                        if (defaultCAR.Category__c != null)
+                                        {
+                                            c.Category__c = defaultCAR.Category__c;
+                                        }
+                                        if (defaultCAR.Sub_Category__c != null)
+                                        {
+                                            c.Sub_Category__c = defaultCAR.Sub_Category__c;
+                                        }
+                                        if (defaultCAR.Functional_Group__c != null)
+                                        {
+                                            c.Functional_Group__c = defaultCAR.Functional_Group__c;
+                                        }
                                     }
                                 }
                             }
@@ -276,9 +296,16 @@ implements ITrigger {
         Case oldCase = (Case) oldSo;
         Case newCase = (Case) so;
 
+        // Update the Most Recent Functional Group if the Functional Group has changed
         if (newCase.Functional_Group__c != oldCase.Functional_Group__c && oldCase.Functional_Group__c != 'External Unit')
         {
             newCase.Most_Recent_Functional_Group__c = oldCase.Functional_Group__c;
+        }
+
+        // Update the Most Recent Queue field if the case owner is a Group
+        if (groupNameMap.containsKey(newCase.OwnerId))
+        {
+            newCase.Most_Recent_Queue__c = groupNameMap.get(newCase.OwnerId);
         }
     }
 
@@ -313,14 +340,17 @@ implements ITrigger {
     * This method is called iteratively for each record updated during an AFTER
     * trigger.
     */
-    public void afterUpdate(SObject oldSo, SObject so) {
+    public void afterUpdate(SObject oldSo, SObject so)
+    {
         Case c = (Case)so;
         Case oldc = (Case)oldSo;
 
         //Forward the email and attach any case attachments as well
-        if (c.Status == 'Closed: Forwarded' && oldC.Status != 'Closed: Forwarded'){
+        if (c.Status == 'Closed: Forwarded' && oldC.Status != 'Closed: Forwarded')
+        {
             //Prevent recursive update and sending of mail
-            if(!CaseUtilities.emailForwarded){
+            if(!CaseUtilities.emailForwarded)
+            {
                 CaseUtilities.emailForwarded = true;
                 CaseUtilities.forwardCaseAttachments(c.Id, c.Forward_To_Email__c , c.Forward_To_Email_Calculation__c);
             }

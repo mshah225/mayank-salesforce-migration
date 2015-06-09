@@ -82,20 +82,9 @@ public with sharing class CaseTransferController
 				   		   						   FROM Case_Assignment_Rule__c
 				   		   						   WHERE Id = :selectedCARId];
             c.OwnerId = selectedCAR.Queue_ID__c;
-            if (selectedCAR.Functional_Group__c != null)
-            {
-            	c.Functional_Group__c = selectedCAR.Functional_Group__c;
-            }
-            
-            if (selectedCAR.Category__c != null)
-            {
-            	c.Category__c = selectedCAR.Category__c;
-            }
-            
-            if (selectedCAR.Sub_Category__c != null)
-            {
-            	c.Sub_Category__c = selectedCAR.Sub_Category__c;
-            }
+            c.Functional_Group__c = selectedCAR.Functional_Group__c;
+            c.Category__c = selectedCAR.Category__c;
+            c.Sub_Category__c = selectedCAR.Sub_Category__c;
             update c;
         } 
         catch (Exception e) 

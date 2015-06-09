@@ -7,26 +7,30 @@
 	<apex:stylesheet value="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
 
 	<apex:includeScript value="/support/console/20.0/integration.js"/>
-   	<script type="text/javascript">      
-        function setTabTitle() 
+   	<script type="text/javascript">
+        function setTabTitle()
         {
         	sforce.console.setTabTitle('Transfer Case {!Case.CaseNumber}');
         }
 
-        var previousOnload = window.onload;        
-       	window.onload = function() 
-       	{ 
-            if (previousOnload) 
-            { 
+        var previousOnload = window.onload;
+       	window.onload = function()
+       	{
+            if (previousOnload)
+            {
                 previousOnload();
-            }                
-            setTimeout('setTabTitle()', '500'); 
-       	}     
+            }
+            setTimeout('setTabTitle()', '500');
+       	}
    	</script>
 
 	<style>
 		h1 {
 			font-size: 16pt;
+		}
+
+		#chatterBox {
+			display: none;
 		}
 
 		.fa-lg {
@@ -98,11 +102,11 @@
 
 	<h1 style="color:#990033;">Change Case Owner ({!Case.CaseNumber})</h1>
 	<p><i>To assign this case, select a department or college from the lists below:</i></p>
-	<table id="pageTable" style="width:100%">
+	<table id="pageTable" style="width:100%;min-width:900px;overflow-x:hidden;">
 		<tr style="vertical-align:top;">
 			<td style="width:20%;">
 				<apex:form id="serviceTransfer">
-					<h1 style="text-decoration:underline;">Service Departments</h1>
+					<h1>Service Departments</h1>
 					<br />
 					<br />
 					<apex:repeat value="{!serviceCARS}" var="serviceKey">
@@ -115,11 +119,10 @@
 						</div>
 						<div id="serviceList" style="display:none;">
 							<apex:repeat value="{!serviceCARS[serviceKey]}" var="sk">
-								<apex:commandLink value="{!sk.Label__c}" action="{!showChatterBox}">
+								<apex:commandLink id="serviceLink" value="{!sk.Label__c}" action="{!showChatterBox}" reRender="chatterPanel">
 									<apex:param name="selectedCARId" value="{!sk.Id}" assignTo="{!selectedCARId}"/>
 									<apex:param name="selectedGroupName" value="{!sk.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
 									<apex:param name="selectedCARLabel" value="{!sk.Label__c}" assignTo="{!selectedCARLabel}"/>
-									<apex:actionSupport event="onclick" reRender="chatterBox"/>
 								</apex:commandLink>
 								<br />
 								<br />
@@ -129,9 +132,9 @@
 					</apex:repeat>
 				</apex:form>
 			</td>
-			<td style="width:20%">
+			<td style="width:20%;padding-left:20px;">
 				<apex:form id="collegeTransfer">
-					<h1 style="text-decoration:underline;">Colleges</h1>
+					<h1>Colleges</h1>
 					<br />
 					<br />
 					<apex:repeat value="{!collegeCARS}" var="collegeKey">
@@ -144,10 +147,9 @@
 						</div>
 						<div id="collegeList" style="display:none">
 							<apex:repeat value="{!collegeCARS[collegeKey]}" var="ck">
-								<apex:commandLink value="{!ck.Label__c}" action="{!showChatterBox}">
+								<apex:commandLink id="collegeLink" styleClass="collegeLink" action="{!showChatterBox}" value="{!ck.Label__c}" reRender="chatterPanel">
 									<apex:param name="selectedCARId" value="{!ck.Id}" assignTo="{!selectedCARId}"/>
 									<apex:param name="selectedGroupName" value="{!ck.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
-									<apex:actionSupport event="onclick" reRender="chatterBox"/>
 								</apex:commandLink>
 								<br />
 								<br />
@@ -157,25 +159,25 @@
 					</apex:repeat>
 				</apex:form>
 			</td>
-			<td style="width:30%">
-				<apex:outputPanel id="chatterBox">
-					<apex:outputPanel id="showChatterPanel" rendered="{!showChatter}">
-						<h1>You are transferring this case to:<br />{!selectedGroupName} - {!selectedCARLabel}</h1>
-						<apex:form id="transferButton">
-							<br />
-							<apex:actionRegion>
-								<apex:commandLink action="{!transferCase}" styleClass="caseBtn">
-									<i class="fa fa-exchange" style="color:#fff;"></i>&nbsp;&nbsp;Transfer Case
-								</apex:commandLink>
-							</apex:actionRegion>
-						</apex:form>
-						<br />
-						<br />
-						<i>(Optional) Enter Comments or @mention a user before transferring the case:</i>
-						<br />
-						<chatter:feed entityId="{!Case.Id}" feedItemType="TextPost"/>
+			<td style="width:30%;padding-left:20px;">
+				<div id="chatterBox">
+					<apex:outputPanel id="chatterPanel">
+						<h1 style="font-weight:200">You are transferring this case to:<br />{!selectedGroupName} - {!selectedCARLabel}</h1>
 					</apex:outputPanel>
-				</apex:outputPanel>
+					<apex:form id="transferButton">
+						<br />
+						<apex:actionRegion>
+							<apex:commandLink action="{!transferCase}" styleClass="caseBtn">
+								<i class="fa fa-exchange" style="color:#fff;"></i>&nbsp;&nbsp;Transfer Case
+							</apex:commandLink>
+						</apex:actionRegion>
+					</apex:form>
+					<br />
+					<br />
+					<i>(Optional) Enter Comments or @mention a user before transferring the case:</i>
+					<br />
+					<chatter:feed entityId="{!Case.Id}" feedItemType="TextPost"/>
+				</div>
 			</td>
 		</tr>
 	</table>
@@ -191,10 +193,18 @@
 	    });
 
 	    $j( "[id$=collegeHeader]" ).click(function() {
-			var col = $j(this); 
+			var col = $j(this);
 	        col.next( "[id$=collegeList]" ).fadeToggle( "500" );
 	        col.find( ".fa-plus-circle" ).toggle();
 	        col.find( ".fa-minus-circle" ).toggle();
 	    });
+
+	    $j( "[id$=collegeLink]" ).click(function() {
+   			$j( "[id$=chatterBox]" ).show();
+   		});
+
+   		$j( "[id$=serviceLink]" ).click(function() {
+   			$j( "[id$=chatterBox]" ).show();
+   		});
 	</script>
 </apex:page>

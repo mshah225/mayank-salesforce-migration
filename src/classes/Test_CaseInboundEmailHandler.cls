@@ -1,7 +1,6 @@
 @IsTest
-public with sharing class Test_CaseInboundEmailHandler {
-
-
+public with sharing class Test_CaseInboundEmailHandler
+{
 	@testSetup static void setup()
 	{
 		Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];

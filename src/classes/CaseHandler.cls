@@ -297,9 +297,9 @@ implements ITrigger
         Case newCase = (Case) so;
 
         // Update the Most Recent Functional Group if the Functional Group has changed
-        if (newCase.Functional_Group__c != oldCase.Functional_Group__c && oldCase.Functional_Group__c != 'External Unit')
+        if (newCase.Functional_Group__c != oldCase.Functional_Group__c && newCase.Functional_Group__c != 'External Unit')
         {
-            newCase.Most_Recent_Functional_Group__c = oldCase.Functional_Group__c;
+            newCase.Most_Recent_Functional_Group__c = newCase.Functional_Group__c;
         }
 
         // Update the Most Recent Queue field if the case owner is a Group

@@ -37,17 +37,16 @@
 			vertical-align: 0% !important;
 		}
 
-		#collegeList, #serviceList {
+		#collegeSection, #serviceSection {
+			margin-top: -5px !important;
 			border: 1px solid rgb(238, 238, 238) !important;
     		padding: 16px 25px 0px 25px !important;
     		border-radius: 2px !important;
     		box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 3px, rgba(0, 0, 0, 0.239216) 0px 1px 2px !important;
     		width: 85% !important;
     		border-top-style: solid !important;
-		    border-top-width: 30px !important;
 		    border-top-color: rgb(227, 227, 227) !important;
 		    position: relative !important;
-		    margin-top: -25px !important;
 		    z-index: 1 !important;
 		    left: -5px !important;
 		}
@@ -61,6 +60,7 @@
 		#collegeHeader, #serviceHeader {
 			position: relative !important;
     		z-index: 2 !important;
+			cursor: pointer !important;
 		}
 
 		#collegeList a:hover, #serviceList a:hover {
@@ -94,39 +94,39 @@
 		.caseTab .brdPalette {
 		    border-top-color: #353535 !important;
 		}
-
-		#collegeHeader, #serviceHeader {
-			cursor: pointer !important;
-		}
 	</style>
 
 	<h1 style="color:#990033;">Change Case Owner ({!Case.CaseNumber})</h1>
 	<p><i>To assign this case, select a department or college from the lists below:</i></p>
 	<table id="pageTable" style="width:100%;min-width:900px;overflow-x:hidden;">
 		<tr style="vertical-align:top;">
-			<td style="width:20%;">
+			<td style="width:20%;padding-left:20px;">
 				<apex:form id="serviceTransfer">
 					<h1>Service Departments</h1>
 					<br />
 					<br />
+					<br />
 					<apex:repeat value="{!serviceCARS}" var="serviceKey">
-						<div id="serviceHeader">
-							<i id="plus" class="fa fa-plus-circle fa-lg"></i>
-							<i id="minus" class="fa fa-minus-circle fa-lg" style="display:none;"></i>
-							&nbsp;
-							<apex:outputText value="{!serviceKey}" style="font-weight:600;font-size:12pt;"/>
+						<div id="serviceSection">
+							<div id="serviceHeader" style="display:inline;">
+								<i class="fa fa-plus-circle fa-lg"></i>
+								<i class="fa fa-minus-circle fa-lg" style="display:none;"></i>
+								&nbsp;
+								<apex:outputText value="{!serviceKey}" style="font-weight:600;font-size:12pt;"/>
+							</div>
 							<br />
-						</div>
-						<div id="serviceList" style="display:none;">
-							<apex:repeat value="{!serviceCARS[serviceKey]}" var="sk">
-								<apex:commandLink id="serviceLink" value="{!sk.Label__c}" action="{!showChatterBox}" reRender="chatterPanel">
-									<apex:param name="selectedCARId" value="{!sk.Id}" assignTo="{!selectedCARId}"/>
-									<apex:param name="selectedGroupName" value="{!sk.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
-									<apex:param name="selectedCARLabel" value="{!sk.Label__c}" assignTo="{!selectedCARLabel}"/>
-								</apex:commandLink>
-								<br />
-								<br />
-							</apex:repeat>
+							<br />
+							<div id="serviceList" style="display:none;">
+								<apex:repeat value="{!serviceCARS[serviceKey]}" var="sk">
+									<apex:commandLink id="serviceLink" value="{!sk.Label__c}" action="{!showChatterBox}" reRender="chatterPanel">
+										<apex:param name="selectedCARId" value="{!sk.Id}" assignTo="{!selectedCARId}"/>
+										<apex:param name="selectedGroupName" value="{!sk.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
+										<apex:param name="selectedCARLabel" value="{!sk.Label__c}" assignTo="{!selectedCARLabel}"/>
+									</apex:commandLink>
+									<br />
+									<br />
+								</apex:repeat>
+							</div>
 						</div>
 						<br />
 					</apex:repeat>
@@ -137,23 +137,27 @@
 					<h1>Colleges</h1>
 					<br />
 					<br />
+					<br />
 					<apex:repeat value="{!collegeCARS}" var="collegeKey">
-						<div id="collegeHeader">
-							<i class="fa fa-plus-circle fa-lg"></i>
-							<i class="fa fa-minus-circle fa-lg" style="display:none;"></i>
-							&nbsp;
-							<apex:outputText value="{!collegeKey}" style="font-weight:600;font-size:12pt;"/>
+						<div id="collegeSection">
+							<div id="collegeHeader" style="display:inline;">
+								<i class="fa fa-plus-circle fa-lg"></i>
+								<i class="fa fa-minus-circle fa-lg" style="display:none;"></i>
+								&nbsp;
+								<apex:outputText value="{!collegeKey}" style="font-weight:600;font-size:12pt;"/>
+							</div>
 							<br />
-						</div>
-						<div id="collegeList" style="display:none">
-							<apex:repeat value="{!collegeCARS[collegeKey]}" var="ck">
-								<apex:commandLink id="collegeLink" styleClass="collegeLink" action="{!showChatterBox}" value="{!ck.Label__c}" reRender="chatterPanel">
-									<apex:param name="selectedCARId" value="{!ck.Id}" assignTo="{!selectedCARId}"/>
-									<apex:param name="selectedGroupName" value="{!ck.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
-								</apex:commandLink>
-								<br />
-								<br />
-							</apex:repeat>
+							<br />
+							<div id="collegeList" style="display:none">
+								<apex:repeat value="{!collegeCARS[collegeKey]}" var="ck">
+									<apex:commandLink id="collegeLink" styleClass="collegeLink" action="{!showChatterBox}" value="{!ck.Label__c}" reRender="chatterPanel">
+										<apex:param name="selectedCARId" value="{!ck.Id}" assignTo="{!selectedCARId}"/>
+										<apex:param name="selectedGroupName" value="{!ck.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
+									</apex:commandLink>
+									<br />
+									<br />
+								</apex:repeat>
+							</div>
 						</div>
 						<br />
 					</apex:repeat>
@@ -187,14 +191,14 @@
 
 	    $j( "[id$=serviceHeader]" ).click(function() {
 	    	var serv = $j(this);
-	        serv.next( "[id$=serviceList]" ).fadeToggle( "500" );
+	        serv.nextAll( "[id$=serviceList]" ).fadeToggle( "500" );
 	        serv.find( ".fa-plus-circle" ).toggle();
 	        serv.find( ".fa-minus-circle" ).toggle();
 	    });
 
 	    $j( "[id$=collegeHeader]" ).click(function() {
 			var col = $j(this);
-	        col.next( "[id$=collegeList]" ).fadeToggle( "500" );
+	        col.nextAll( "[id$=collegeList]" ).fadeToggle( "500" );
 	        col.find( ".fa-plus-circle" ).toggle();
 	        col.find( ".fa-minus-circle" ).toggle();
 	    });

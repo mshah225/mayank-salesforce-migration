@@ -1009,18 +1009,6 @@
         #pinFormDiv {
             margin-left: 0px !important;
         }
-    }
-
-     @media only screen and (max-device-width: 736px) {
-        .desktopCall {
-            display: none;
-        }
-    }
-
-    @media only screen and (min-device-width: 737px) {
-        .mobileCall {
-            display: none;
-        }
     } 
         
     .message {

@@ -1,7 +1,7 @@
-<apex:page docType="html-5.0" 
-    showHeader="false" 
-    sidebar="false" 
-    controller="ServiceCenter" 
+<apex:page docType="html-5.0"
+    showHeader="false"
+    sidebar="false"
+    controller="ServiceCenter"
     action="{!init}"
     extensions="NavLinks">
 <head>
@@ -10,28 +10,28 @@
     <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <c:asu_responsive_header_section />
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
-    <c:myasustyles />  
+    <c:myasustyles />
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
-    
+
     <style>
         .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
             border-top-color: #990033 !important;
         }
-        
+
         td, tr {
-           vertical-align: middle !important; 
+           vertical-align: middle !important;
         }
 
         .bPageBlock .detailList .dataCol {
             width: 100% !important;
         }
-        
+
         .detailList td, .detailList th {
             vertical-align: middle !important;
             padding: 6px !important;
         }
-        
+
         .detailList tr {
             border-bottom: solid 1px #e6e6e6 !important;
         }
@@ -39,7 +39,7 @@
         #newCaseForm .detailList tr {
             border-bottom: none !important;
         }
-        
+
         .detailList tr:last-child {
             border-bottom: none !important;
         }
@@ -47,11 +47,11 @@
         .labelCol.vfLabelColTextWrap  {
             vertical-align: top !important;
         }
-        
+
         label {
             margin-bottom: 0px !important;
         }
-        
+
         .bPageBlock.brandSecondaryBrd.apexDefaultPageBlock.secondaryPalette {
             border-top-color: #990033;
         }
@@ -61,11 +61,11 @@
             margin-bottom: 10px;
             box-shadow: 0 1px 1px rgba(0,0,0,0.05) !important;
         }
-        
+
         .commentBox .content {
             padding-bottom: 0px !important;
         }
-        
+
         a.emailToggle {
             text-decoration:none;
             outline: none;
@@ -84,7 +84,7 @@
         .emailMessage img {
             display: none !important;
         }
-        
+
         .emailMessage p, .emailMessage span {
             font-family: Helvetica, Arial !important;
             font-size: 10pt !important;
@@ -106,17 +106,17 @@
         ga('create', 'UA-47141114-2', 'auto');
         ga('send', 'pageview');
     </script>
-    
+
     <c:SCBomgarScripts />
 
     <script>
-        $(document).ready(function() 
+        $(document).ready(function()
         {
             var showChar = 250;
             var ellipsestext = "...";
             var moretext = 'Show More <span class="caret" style="margin-bottom:2px;"></span>';
             var lesstext = 'Show Less <span class="dropup"><span class="caret"  style="margin-bottom:2px;"></span></span>';
-            $("[id$=emailMore]").each(function() 
+            $("[id$=emailMore]").each(function()
             {
                 var content = $(this).clone().html();
                 if (content.indexOf("Inline image") > 0)
@@ -125,25 +125,25 @@
                     content = content.replace(/(<br\s*\/?>){2}/, '');
                 }
 
-                if (content.length > showChar) 
+                if (content.length > showChar)
                 {
                     var c = content.substr(0, showChar);
                     var h = content.substr(showChar, content.length - showChar);
                     var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;</span><a href="" class="emailToggle">' + moretext + '</a>';
                     $(this).html(html);
                 }
-        
+
             });
-        
+
             $(".emailToggle").click(function()
             {
-                if ($(this).hasClass("less")) 
+                if ($(this).hasClass("less"))
                 {
                     $(this).removeClass("less");
                     $(this).html(moretext);
                     $(this).prevAll(".moreellipses:first").toggle();
-                } 
-                else 
+                }
+                else
                 {
                     $(this).addClass("less");
                     $(this).html(lesstext);
@@ -193,9 +193,9 @@
                                         </apex:outputText>
                                         <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved') && (caseDetails.Feedback_Link__c != ''),true,false)}" value="{!caseDetails.Feedback_Link__c}" escape="false" styleClass="feedbackLink" label="Feedback"/>
                                   </apex:pageBlockSection>
-                                </apex:pageBlock> 
+                                </apex:pageBlock>
                             </apex:form>
-                        </div> 
+                        </div>
                     </div>
 
                     <apex:outputPanel id="emailMessagesBox" rendered="{!IF(EmailMessages.empty,false,true)}">
@@ -212,7 +212,7 @@
                                                 <apex:param value="{!EM.CreatedDate}"/>
                                             </apex:outputText><br />
 
-                                            <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">    
+                                            <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
                                                 <apex:outputLabel for="fromAddress" value="From Address:"/>&nbsp;
                                                 <apex:outputText id="fromAddress">{!EM.FromName} &#60;{!EM.FromAddress}&#62;</apex:outputText><br />
                                             </apex:outputPanel>
@@ -237,17 +237,16 @@
                 </div><!-- end col-md-8 -->
 
                 <div class="col-md-4">
-                    <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}" 
-                                                NormalPhone="{!NormalPhone}" 
-                                                RoverPhone="{!RoverPhone}" 
-                                                myPin="{!myPin}" 
-                                                newPin="{!newPin}" 
+                    <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}"
+                                                NormalPhone="{!NormalPhone}"
+                                                RoverPhone="{!RoverPhone}"
+                                                myPin="{!myPin}"
+                                                newPin="{!newPin}"
                                                 changePin="{!changePin}"/>
-                    <c:SCMyCasesBox />
+                    <c:SCMyCasesBox/>
                 </div><!-- end col-md-4-->
             </div><!-- end row -->
         </div><!-- end container -->
-
         <c:SCFooter />
     </div><!-- End ASU Content -->
 </body>

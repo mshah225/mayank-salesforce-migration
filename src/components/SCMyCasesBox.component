@@ -32,12 +32,12 @@
 		            <apex:form >
 		                <h5>Cases I've Opened</h5>
 		                <apex:pageBlock mode="maindetail">
-		                    <apex:pageBlockTable rendered="{!(myCases.size >= 1)}" value="{!myCases}" var="case" styleClass="myCasesTable">
-		                        <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
-		                        <apex:column headerValue="Status" width="33%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+		                    <apex:pageBlockTable rendered="{!(myCases.size >= 1)}" value="{!myCases}" var="oc" styleClass="myCasesTable">
+		                        <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!oc.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+		                        <apex:column headerValue="Status" width="33%" value="{!oc.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
 		                        <apex:column width="33%" onmousemove="this.style.backgroundColor='white'" style="background-color:white;" onmouseout="this.style.backgroundColor ='white'">
 		                            <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
-		                                <apex:param name="caseId" value="{!case.Id}"/>
+		                                <apex:param name="caseId" value="{!oc.Id}"/>
 		                            </apex:commandLink>
 		                        </apex:column>
 		                    </apex:pageBlockTable>
@@ -50,12 +50,12 @@
 		            <apex:form >
 		                <h5>My Closed Cases</h5>
 		                <apex:pageBlock mode="maindetail">
-		                    <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="case" styleClass="myCasesTable">
-		                        <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!case.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
-		                        <apex:column headerValue="Status" width="33%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+		                    <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="cc" styleClass="myCasesTable">
+		                        <apex:column headerValue="Subject" styleClass="truncate" width="66%" value="{!cc.Subject}" style="background-color:white;word-break:break-all;word-wrap:break-word;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+		                        <apex:column headerValue="Status" width="33%" value="{!cc.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
 		                        <apex:column width="33%" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'">
 		                            <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
-		                                <apex:param name="caseId" value="{!case.Id}"/>
+		                                <apex:param name="caseId" value="{!cc.Id}"/>
 		                            </apex:commandLink>
 		                        </apex:column>
 		                    </apex:pageBlockTable>

@@ -743,9 +743,12 @@
                     </div>
                     <div class="content">
                     <p>Please contact us if you need immediate assistance. We're available 24/7 to answer your questions.</p>
-                    <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>     
-                    <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
-                        
+                    <div id="normalPhone">
+                        <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>
+                    </div>
+                    <div id="roverPhone">
+                        <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
+                    </div>
                     <br /><br />
                     
                     <apex:form id="pinForm" styleClass="pinForm">                        
@@ -1128,5 +1131,21 @@
             }
         });
     </script>
+    <script>
+        window.onload = function() 
+        {
+            if (!(navigator.userAgent.match(/Android/i)
+                 || navigator.userAgent.match(/webOS/i)
+                 || navigator.userAgent.match(/iPhone/i)
+                 || navigator.userAgent.match(/iPad/i)
+                 || navigator.userAgent.match(/iPod/i)
+                 || navigator.userAgent.match(/BlackBerry/i)
+                 || navigator.userAgent.match(/Windows Phone/i)))
+            {
+                document.getElementById("normalPhone").firstChild.href = "#";
+                document.getElementById("roverPhone").firstChild.href = "#";        
+            }
+        }
+    </script> 
 </body>
 </apex:page>

@@ -108,7 +108,7 @@
 		<tr style="vertical-align:top;">
 			<td style="width:20%;padding-left:20px;">
 				<apex:form id="serviceTransfer">
-					<h1><u>Service Departments</u></h1>
+					<h1>Service Departments:</h1>
 					<br />
 					<br />
 					<apex:repeat value="{!serviceCARS}" var="serviceKey">
@@ -139,7 +139,7 @@
 			</td>
 			<td style="width:20%;padding-left:20px;">
 				<apex:form id="collegeTransfer">
-					<h1><u>Colleges</u></h1>
+					<h1>Colleges:</h1>
 					<br />
 					<br />
 					<apex:repeat value="{!collegeCARS}" var="collegeKey">
@@ -175,7 +175,7 @@
 								<apex:outputPanel id="chatterPanel">
 									<h1 style="font-weight:200;font-size:13pt;">You are transferring this case to:
 									<br />
-									{!selectedGroupName} - {!selectedCARLabel}</h1>
+									{!selectedGroupName}<apex:outputText rendered="{!NOT(CONTAINS(selectedCARLabel,'(General)'))}"> - {!selectedCARLabel}</apex:outputText></h1>
 								</apex:outputPanel>
 							</td>
 							<td style="width:30%;text-align:right;">
@@ -189,7 +189,7 @@
 						</tr>
 					</table>
 					<br />
-					<i>(Optional) Share Comments or @mention a user before transferring the case:</i>
+					<i>(Optional) Share comments or @mention a user before transferring the case:</i>
 					<br />
 					<chatter:feed entityId="{!Case.Id}" feedItemType="TextPost"/>
 				</div>

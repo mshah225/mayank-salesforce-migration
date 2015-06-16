@@ -12,14 +12,14 @@ public class Test_UserHandler
 
 	@isTest static void changeKnowledgePermission()
 	{
-		User updateUser = [SELECT Is_Knowledge_User__c FROM User LIMIT 1];
+		User updateUser = [SELECT Role_Knowledge__c FROM User LIMIT 1];
 
-		updateUser.Is_Knowledge_User__c = true;
+		updateUser.Role_Knowledge__c = true;
 
 		update updateUser;
 
-		updateUser = [SELECT Is_Knowledge_User__c FROM User WHERE Id =: updateUser.Id];
+		updateUser = [SELECT Role_Knowledge__c FROM User WHERE Id =: updateUser.Id];
 
-		System.assert(!updateUser.Is_Knowledge_User__c);
+		System.assert(!updateUser.Role_Knowledge__c);
 	}
 }

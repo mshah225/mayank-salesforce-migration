@@ -10,7 +10,7 @@ public without sharing class UserHandler implements ITrigger
 
 		if (newUser.UserPermissionsKnowledgeUser)
 		{
-			newUser.Is_Knowledge_User__c = true;
+			newUser.Role_Knowledge__c = true;
 		}
 	}
 
@@ -21,11 +21,11 @@ public without sharing class UserHandler implements ITrigger
 
 		if (updatedUser.UserPermissionsKnowledgeUser)
 		{
-			updatedUser.Is_Knowledge_User__c = true;
+			updatedUser.Role_Knowledge__c = true;
 		}
 		else
 		{
-			updatedUser.Is_Knowledge_User__c = false;
+			updatedUser.Role_Knowledge__c = false;
 		}
 	}
 

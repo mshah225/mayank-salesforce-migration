@@ -1009,7 +1009,7 @@
         #pinFormDiv {
             margin-left: 0px !important;
         }
-    }
+    } 
         
     .message {
         border-radius: 0px !important;

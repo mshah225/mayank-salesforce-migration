@@ -449,6 +449,37 @@ public class Test_CampaignMemberHandler {
         System.assert(cm2.Is_Primary_Interest__c == FALSE);
    } 
 
+    private static testMethod void updateContactPSMajorPSMajorPrimaryPreexistingChangeStatus()
+	{
+		Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
+		Campaign camp2 = createCampaign('Test PSMajor 2', 'PSMajors');
+		Contact contact = ContactService.createTestContact();
+		insert contact;
+		CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
+		CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+		System.assert(cm1.Is_Primary_Interest__c == FALSE);
+		System.assert(cm2.Is_Primary_Interest__c == FALSE);
+       	List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
+       	cmsToUpdate.add(cm1);
+       	cmsToUpdate.add(cm2);
+       	insert cmsToUpdate;
+		cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
+		cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+		System.assert(cm1.Is_Primary_Interest__c == FALSE);
+		System.assert(cm2.Is_Primary_Interest__c == TRUE);
+
+        cm2.Status = 'No Longer Interested';
+       	cmsToUpdate = new List<CampaignMember>();
+       	cmsToUpdate.add(cm1);
+       	cmsToUpdate.add(cm2);
+       	update cmsToUpdate;
+        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
+        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+		System.assert(cm1.Is_Primary_Interest__c == TRUE);
+        System.assert(cm2.Is_Primary_Interest__c == FALSE);
+   } 
+
 	private static testMethod void updateContactNonPSMajorNoPrimaryPreexisting()
 	{
 		Campaign camp = createCampaign('Test Non PSMajor', 'Academic');
@@ -639,8 +670,8 @@ public class Test_CampaignMemberHandler {
        	update cmsToUpdate;
 
 		delete cm3;
-		cm1 = [SELECT Id, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-		cm2 = [SELECT Id, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+		cm1 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
+		cm2 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
 		System.debug('CM1 Delete ' + cm1);
 		System.debug('CM2 Delete ' + cm2);
 		System.assert(cm1.Is_Primary_Interest__c == TRUE);

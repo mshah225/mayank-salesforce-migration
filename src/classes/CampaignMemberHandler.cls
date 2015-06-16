@@ -111,6 +111,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                                         FROM CampaignMember 
                                         WHERE ContactId IN :contactIds 
                                         AND Id NOT IN :cmIds2
+                                        AND Status != 'No Longer Interested' 
                                         AND Campaign.RecordType.DeveloperName = 'Interest' 
                                         AND Campaign.Type IN :acceptableMajors];
 
@@ -146,7 +147,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                         }
                     }
                     
-                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest')
+                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest' && cm.Status != 'No Longer Interested')
                     {
                         if(CampaignMembersByContactMap.containsKey(cm.ContactId))
                         {
@@ -168,6 +169,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                                     FROM CampaignMember 
                                     WHERE LeadId IN :leadIds 
                                     AND Id NOT IN :cmIds2
+                                    AND Status != 'No Longer Interested' 
                                     AND Campaign.RecordType.DeveloperName = 'Interest' 
                                     AND Campaign.Type IN :acceptableMajors];
             for(CampaignMember cm : cmsForLeads)
@@ -198,7 +200,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                         }
                     }
                     
-                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest')
+                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest' && cm.Status != 'No Longer Interested')
                     {
                         if(CampaignMembersByLeadMap.containsKey(cm.LeadId))
                         {
@@ -227,7 +229,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     //Pass 1 - Find PSMajor w/ greatest Last Member Status Change 
                     for(CampaignMember ocm : objectList)
                     {
-                        if(ocm.Campaign_Type__c == 'PSMajors' && (primary == null || ocm.Last_Member_Status_Change__c > primary.Last_Member_Status_Change__c) && ocm.Status != 'Not Interested')
+                        if(ocm.Campaign_Type__c == 'PSMajors' && (primary == null || ocm.Last_Member_Status_Change__c > primary.Last_Member_Status_Change__c) && ocm.Status != 'No Longer Interested')
                         {
                             primary = ocm;
                         }
@@ -238,7 +240,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     {
                         for(CampaignMember ocm : objectList)
                         {
-                            if(ocm.Status != 'Not Interested' && (primary == null || ocm.Last_Member_Status_Change__c >= primary.Last_Member_Status_Change__c))
+                            if(ocm.Status != 'No Longer Interested' && (primary == null || ocm.Last_Member_Status_Change__c >= primary.Last_Member_Status_Change__c))
                             {
                                 primary = ocm;
                             }
@@ -274,7 +276,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     //Pass 1 - Find PSMajor w/ greatest Last Member Status Change 
                     for(CampaignMember ocm : objectList)
                     {
-                        if(ocm.Campaign_Type__c == 'PSMajors' && (primary == null || ocm.Last_Member_Status_Change__c > primary.Last_Member_Status_Change__c) && ocm.Status != 'Not Interested')
+                        if(ocm.Campaign_Type__c == 'PSMajors' && (primary == null || ocm.Last_Member_Status_Change__c > primary.Last_Member_Status_Change__c) && ocm.Status != 'No Longer Interested')
                         {
                             primary = ocm;
                         }
@@ -285,7 +287,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     {
                         for(CampaignMember ocm : objectList)
                         {
-                            if(ocm.Status != 'Not Interested' && (primary == null || ocm.Last_Member_Status_Change__c >= primary.Last_Member_Status_Change__c))
+                            if(ocm.Status != 'No Longer Interested' && (primary == null || ocm.Last_Member_Status_Change__c >= primary.Last_Member_Status_Change__c))
                             {
                                 primary = ocm;
                             }
@@ -378,6 +380,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
     {
         CampaignMember cm = (CampaignMember)so;
         CampaignMember oldCm = (CampaignMember)oldSo;
+
+        if(oldCm.Status != 'No Longer Interested' && cm.Status == 'No Longer Interested')
+        {
+            cm.Is_Primary_Interest__c = FALSE;
+        }
 
         if(run)
         {

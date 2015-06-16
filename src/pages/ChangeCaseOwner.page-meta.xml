@@ -3,6 +3,5 @@
     <apiVersion>32.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <description>Auto-Generated Chatter Answers Home Page</description>
-    <label>Internal_Community_main</label>
+    <label>ChangeCaseOwner</label>
 </ApexPage>

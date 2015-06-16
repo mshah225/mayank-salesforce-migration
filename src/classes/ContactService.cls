@@ -1,10 +1,25 @@
-public class ContactService 
-{	
-    /**
+public class ContactService
+{
+	/**
+	* Returns all the fields on Case in a String
+	* @return A string containing all the Case fields
+	*/
+	public static String contactFieldsToString()
+	{
+		String contactFields = null;
+
+		Map<String, SObjectField> contactFieldMap = ObjectService.getObjectFieldMap('Contact');
+
+		contactFields = ObjectService.objectFieldsToString(contactFieldMap);
+
+		return contactFields;
+	}
+
+	/**
     * Creates a test contact. Usually for unit testing.
     * @return A test contact object with all required fields.
     */
-	public static Contact createTestContact() 
+	public static Contact createTestContact()
 	{
 		Contact testContact = new Contact();
         testContact.FirstName = 'Test';
@@ -40,33 +55,34 @@ public class ContactService
 
         return contactList;
     }
-    
+
     /**
     * The currently logged in contact somewhere. Usually the service center.
     * @return The logged in contact
     */
     public static Contact getLoggedInContact()
     {
-        String userAlias = null;
+        Id loggedInContactId = null;
         Contact loggedInContact = null;
+		String contactFields = contactFieldsToString();
 
         try
         {
-            userAlias = [SELECT Alias 
-                         FROM User 
-                         WHERE Id = :UserInfo.getUserId()].Alias;
-            loggedInContact = [SELECT Id, Name 
-                               FROM Contact 
-                               WHERE ASURITE_Id__c = :userAlias];
+			loggedInContactId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
+
+			String selectContactInfoByLoggedInUser = 'SELECT ' + contactFields + ' ' +
+        											 'FROM Contact ' +
+													 'WHERE Id = :loggedInContactId';
+
+            loggedInContact = Database.query(selectContactInfoByLoggedInUser);
         }
         catch (Exception e)
         {
-            System.debug('!!!ERROR!!!: An error occurred trying to get the logged in Contact\n' + e.getStackTraceString());
+            throw new ContactServiceException('!!!ERROR!!!: An error occurred trying to get the logged in Contact\n' + e.getMessage());
         }
-
-        System.Debug('User Alias: ' + userAlias);
-        System.Debug('Contact: ' + loggedInContact);
 
         return loggedInContact;
     }
+
+	public class ContactServiceException extends Exception {}
 }

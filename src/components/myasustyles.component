@@ -3,18 +3,18 @@
     body {
         font-family: Arial, Helvetica, sans-serif !important;
     }
-    
+
     h1, h2, h3, h4, h5 {
         margin-top: 0px !important;
         text-decoration: none !important;
         padding: 0px !important;
         border: none !important;
     }
-    
+
     h3 {
         font-weight: 300 !important;
-    }   
-    
+    }
+
     tr, td {
         margin: 0px !important;
     }
@@ -32,7 +32,7 @@
         width: 63% !important;
         max-width: 400px !important;
         border-radius: 2px !important;
-        border: solid 1px #990033 !important;
+        border: solid 1px #999 !important;
         padding-left: 5px !important;
         font-size: 1em !important;
         -webkit-box-sizing: border-box !important;
@@ -50,31 +50,35 @@
         margin: 0 !important;
         margin-left: 2px !important;
     }
-    
+
+    input[type=text]:focus, textarea:focus, input[type=submit]:focus {
+        outline: none !important;
+    }
+
     thead {
         border: none !important;
     }
-    
+
     ul li, ol li {
         margin-left: 0 !important;
     }
-  
+
     .caSearchText {
         height: 20px;
     }
-    
+
     .outputText {
         border-bottom: 1px dotted #000;
     }
-    
+
     .contactPhone td {
         padding: 0px !important;
     }
-    
+
     .btn.kbbtn.btnLink:hover {
         color: #fff !important;
     }
-    
+
     .btn.btn-default.btn-success {
         background-color: #568E14 !important;
         color: #fff !important;
@@ -84,7 +88,7 @@
         padding-left: 10px;
         padding-right:10px;
     }
-    
+
     .btn.btn-default.btn-success:hover {
         background-color: #4D8012 !important;
     }
@@ -92,16 +96,16 @@
     .myCasesTable tr {
         border-bottom: solid 1px #e6e6e6;
     }
-    
+
     .alert.alert-success, .alert.alert-danger {
         border-radius: 0px;
     }
-  
+
     .outputText:hover {
         color: #990033;
         text-decoration: none !important;
     }
-    
+
     .btn.kbbtn.btnLink:hover {
         color: #fff !important;
     }
@@ -112,129 +116,165 @@
         box-sizing: border-box;
         width: 100% !important;
     }
-      
+
     .box a:hover {
         color: #990033 !important;
     }
-    
+
     .btn.btn-danger {
         background-color: #990033 !important;
         color: #fff !important;
     }
-    
+
     .btn.btn-danger:hover {
         background-color: #880022 !important;
         color: #fff !important;
     }
-    
+
     .btn.btn-warning {
         background-color: #ffcb66 !important;
         color: #000 !important;
     }
-    
+
     .btn.btn-warning:hover {
         background-color: #eeB30f !important;
         color: #000 !important;
     }
-    
-    .selected {
-        font-weight: bold;
-    }
+
     .navbar {
-        border-top: 2px solid #990033 !important;
         border-radius: 0 !important;
-        border-bottom: solid 1px #b0b0b0 !important;
-        min-height:30px !important
+        margin-bottom: 20px !important
     }
-    
-    .nav>li>a {
-        padding: 10px 18px !important;
-    }
-    
+
     .navbar.navbar-default {
-        height: 45px !important;
-        -webkit-box-shadow: 0px 1px 5px 0px rgba(145, 145, 145, 0.41);
-        -moz-box-shadow:    0px 1px 5px 0px rgba(145, 145, 145, 0.41);
-        box-shadow:         0px 1px 5px 0px rgba(145, 145, 145, 0.41);
+        height: 57px !important;
+        background-color: none !important;
+        border: none !important;
     }
-    
-    .navbar-default {
-        background: -webkit-linear-gradient(#fff, #e9e9e9) !important; /* For Safari 5.1 to 6.0 */ 
-        background: -o-linear-gradient(#fff, #e9e9e9) !important; /* For Opera 11.1 to 12.0 */
-        background: -moz-linear-gradient(#fff, #e9e9e9) !important; /* For Firefox 3.6 to 15 */
-        background: linear-gradient(#fff, #e9e9e9) !important; /* Standard syntax */
-    }
-    
+
     .navbar-nav > li > a {
-        padding-top:10px !important; 
+        padding-top:10px !important;
         padding-bottom:10px !important;
         vertical-align: bottom !important;
     }
-    
+
     .navbar-nav > li {
         margin: 0 !important;
         padding-left: -10px !important;
         padding-right: -10px !important;
     }
-    
+
+    .mobileHeaderLink {
+        font-size: 107% !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+        margin-top: 1px !important;
+        position: absolute !important;
+        left: 5px;
+    }
+
     .mobileHeaderLink:hover {
         text-decoration: none !important;
     }
-    
+
     .nav.navbar-nav li{
-        margin-left: -12px !important; 
+        margin-left: -12px !important;
         margin-top: 13px !important;
         margin-bottom: -13px !important;
     }
-    
+
     ul.nav.navbar-nav {
-        margin-left: -10px !important; 
+        margin-left: -10px !important;
         margin-top: -5px !important;
       }
-    
+
     .navbar a {
         color: #000 !important;
         font-size: 10pt !important;
     }
-        
+
     .navbar a:hover {
         color: #990033 !important;
     }
-    
+
     .navbar li {
         margin-left: 0 !important;
         margin-right: 0 !important;
     }
-    
+
     a.navbar-brand.myasu {
         font-size: 15pt !important;
         margin-bottom: -5px !important;
         font-weight: 200 !important;
     }
-    
-    .navbar-toggle { 
+
+    #myasu-tabs span.tab a {
+        color: #ededed !important;
+        font-size: 12pt !important;
+        font-weight: 400 !important;
+    }
+
+    #myasu-tabs span.tab a:hover {
+        color: #ffb310 !important;
+        padding-top: 18px !important;
+    }
+
+    #myasu-header-seo {
+        margin-bottom: 3px !important;
+        margin-top: -2px !important;
+    }
+
+    #myasu-header-seo a {
+        font-size: 17pt !important;
+        font-weight: 400 !important;
+        color: #000 !important;
+    }
+
+    #myasu-header-seo a:hover, #myasu-header-seo:active, #myasu-header-seo:focus {
+        text-decoration: none !important;
+    }
+
+    @-moz-document url-prefix() {
+        #myasu-tabs .navbar-links span {
+            font-size: 14px;
+        }
+
+        #myasu-tabs span.tab a:hover {
+            padding-bottom: 18px !important;
+        }
+    }
+
+    .selected {
+        padding-top: 18px !important;
+    }
+
+    .navbar-header {
+        width: 10px !important;
+    }
+
+    .navbar-toggle {
         border: none !important;
     }
-    
+
     .nav li.active a {
         background: none !important;
         font-weight: bold;
     }
-    
+
     img.asuarrow {
         clip:rect(40px,200px,300px,0px);
         margin-left: 270px;
         margin-bottom: 65px;
     }
-    
+
     .icon-bar {
         background-color: #000 !important;
     }
-    
+
     div#asu_content_well {
         margin-top: 10px !important;
     }
-    
+
     div.move {
         font-size: 13pt;
         margin-top: 15px;
@@ -243,11 +283,11 @@
         display: inline;
         padding-left: 18px;
     }
-    
+
     div.move:hover {
         color: #990033;
     }
-    
+
     div.movemyasu {
         font-size:    16pt;
         margin-top: 10px;
@@ -257,26 +297,26 @@
         float: left;
         display: inline;
     }
-    
+
     div.movemyasu:hover {
         color: #990033;
     }
-    
+
     #utility-area {
         float: right;
         right: 0;
         padding-right: 5px;
     }
-    
+
     #utility-area a {
         color: #000;
     }
-    
+
     #utility-area .user-name {
         font-size: 12pt;
         font-weight: bold;
     }
-    
+
     .bPageBlock.brandSecondaryBrd.apexDefaultPageBlock.secondaryPalette {
         border-top-color: #990033;
         border: solid 1px #eee !important;
@@ -284,86 +324,86 @@
         box-shadow: 0 1px 1px rgba(0,0,0,0.05);
         background-color: #fcfcfc;
     }
-    
+
     .myCasesTable{
         margin-top: 5px;
         box-shadow: 0 1px 1px rgba(0,0,0,0.05);
     }
-    
+
     .container {
         background: #fff !important;
         width:        91% !important;
         margin-top: 0px;
         padding: 0px !important;
     }
-   
+
     .splitcontentleft {
         float: left;
     }
-    
+
     .splitcontentright {
         float: right;
         margin-left:    50px;
-        
+
     }
-    
+
     .pbTitle {
         white-space: nowrap
     }
-    
+
     .caseForm td.pbTitle {
         display: none;
     }
-    
+
     .caseForm tr {
         text-align: center;
     }
-    
+
     .help a {
         color: black;
         border-bottom: 1px dotted #000;
     }
-    
+
     .help a:hover {
         color: #990033;
         text-decoration: none;
     }
-    
+
     .page-title {
         padding: 5px;
-        background-color: #000;
+        background-color: #505558;
         position: absolute;
         width: 100%;
-        height: 48px;
-        border-top: 2px solid #990033 !important;
-        border-bottom: solid 1px #b0b0b0 !important;
-        text-indent: 18px;
+        height: 35px;
+        border-top: 2px solid #505558 !important;
+        text-indent: 10px;
+        margin-bottom: 10px;
     }
-    
+
     .qlinks {
         position: absolute !important;
         margin-left: 25px !important;
         top: 100 !important;
     }
-    
+
     .username {
         font-size: 11pt;
-        font-weight: bold;
-        margin-top: 3px;
-        margin-right: 10px;
+        font-weight: 500;
+        margin-top: -12px;
+        margin-right: 0px;
     }
-    
+
     .firstbox {
         margin-left: 10px;
         width:95%;
     }
-    
+
     .box {
         border: solid 1px #e8e8e8;
         margin-bottom: 20px;
         height: 100% !important;
     }
-    
+
     .header {
         width: 100%;
         background: -webkit-linear-gradient(#fff, #e9e9e9); /* For Safari 5.1 to 6.0 */
@@ -374,284 +414,275 @@
         padding: 3px;
         height: 27px;
     }
-    
+
     .header h5, .header h6 {
         margin-left: 5px;
     }
-   
+
     .content {
         padding: 10px;
         font-size: 10pt !important;
     }
-    
+
     .box a {
         color: #000;
         border-bottom: dotted 1px #bbbbbb;
     }
-    
+
     .row-fluid {
         width: 100% !important;
     }
-    
+
     #asu_content_well li {
         padding: 0px !important;
     }
-    
+
     #asu_content_well a {
         border-bottom: none;
     }
-    
+
     .asu_black_footer li {
         color: #fff !important;
         text-decoration: none !important;
     }
-    
+
     .asu_black_footer a:hover{
         color: #FFB310 !important;
         text-decoration: underline !important;
     }
-    
+
     .asu_black_footer {
         background: #4c4c4c !important;
         padding-bottom: 5px !important;
     }
-    
+
     div.content1 ul {
         text-decoration: none;
     }
-    
+
     .content1 a {
         border-bottom: none !important;
     }
-    
+
     .sparky {
         margin-bottom: -60px !important;
         margin-left: 35px !important;
-    } 
-    
+    }
+
     .scimage {
         margin-top: -30px !important;
-    } 
-    
+    }
+
     .pbBody tbody:hover {
         background: none !important;
-    } 
-    
+    }
+
     .kbbtn, a.kbbtn, .btn {
         font-weight: 300 !important;
         border-radius: 2px !important;
     }
-    
+
     .kbbtn {
         background: #990033 !important;
         color: #fff !important;
         padding: 5px !important;
-    } 
-    
-    @-moz-document url-prefix() { 
+    }
+
+    @-moz-document url-prefix() {
         .placeholder {
             height: 25px !important;
         }
     }
-    
+
     button::-moz-focus-inner, input::-moz-focus-inner {
         border: 0;
         padding: 0;
     }
-    
+
     .btn, a.btn {
         border-bottom: solid 1px #b0b0b0 !important;
         background: #f8f8f8;
     }
-    
+
     .kbbtn, a.kbbtn {
         border: none !important;
     }
-    
+
     input, .btn {
         -moz-box-sizing: border-box; /* or `border-box` */
         -webkit-box-sizing: content-box;
         box-sizing: content-box;
     }
-    
+
     .glyphicon {
         top: 2px !important;
     }
-    
-    .caseSubject, .caseDesc {
-        box-sizing:border-box;
-        webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        width:85%;
-        max-width: 300px;
-    }
-    
-    .caseDesc {
-        height: 100px;
+
+    .caseField {
+        border: solid 1px #999 !important;
+        padding: 5px !important;
+        border-radius: 2px !important;
+        max-width: 305px !important;
     }
 
     .feedbackLink a {
-        color: #990033;   
+        color: #990033;
     }
-    
+
     .feeditemActionMenu, .feeditemActionMenuButton {
         display: none !important;
-    }  
-    
-     .chatterUserGuestBadge, .cxlikeitemaction, 
+    }
+
+     .chatterUserGuestBadge, .cxlikeitemaction,
      .cxfeeditemlikedot, .visibilityicon, .publisherattachPollPost {
          display: none !important;
-     } 
-     
+     }
+
      .feeditemfirstentity, .feeditemtimestamp, .rstitle {
        pointer-events: none;
        cursor: default;
     }
-    
+
     .publishercontainer .bottomBar {
         height: 50px !important;
     }
-    
+
     .asu-student-mobile-menu li {
         height: 52px !important;
     }
-    
+
     @media screen and (min-width: 61px) and (max-width: 920px) {
         body {
             overflow-x: hidden;
         }
-    
+
         div.move {
             font-size: 10pt;
         }
-        
+
         div.movemyasu {
             margin-top: 13px;
             font-size: 11pt;
         }
-        
+
         #utility-area {
             display: none;
         }
-        
-        .selected {
-            font-weight: bold;
-            background: #e5e5e5;
-            border-radius: 10px;
-        }    
     }
-    
+
     @media screen and (min-width: 61px) and (max-width: 550px) {
         body {
             overflow-x: hidden;
         }
-        
-        .selected {
-            font-weight: bold;
-            background: #e5e5e5;
-            border-radius: 10px;
-        }
-        
+
         .container {
             width: 100% !important;
             padding-right: 5px !important;
             padding-left: 5px !important;
         }
-        
+
     }
-    
+
     @media screen and (min-width: 61px) and (max-width: 768px) {
         a.navbar-brand.myasu {
             text-indent: 10px;
             padding-right: 5px;
         }
-        
+
         .navbar-collapse {
             max-height: auto !important;
             overflow-x: auto !important;
         }
-        
+
         .container {
             width: 98% !important;
         }
     }
-    
+
     @media screen and (min-width: 61px) and (max-width: 930px) {
         #asu_mobile_button.asuhide {
-            display: block !important;
-            margin-right: 3px !important;
+            /*display: block !important;
+            margin-right: 3px !important;*/
         }
     }
-        
-    @media screen and (min-width: 931px) { 
+
+    @media screen and (min-width: 931px) {
         li.asu-student-mobile-menu, a.asu-student-mobile-menu {
             display: none !important;
-        } 
-        
+        }
+
         .page-title {
             display: none;
-        } 
+        }
+
+        #myasu-header-seo {
+            display: block;
+        }
     }
-    
+
     @media screen and (max-width: 931px) {
         header.navbar.navbar-default {
             display: none !important;
         }
-        
+
         .sparky, .arttype, .casedescription,
         .caseDescripHeader {
             display: none;
         }
-        
+
         .page-title {
             display: initial;
         }
-        
+
+        #myasu-header-seo {
+            display: none;
+        }
+
         .container {
-            margin-top: 60px; !important;
-        }  
-        
+            margin-top: 50px; !important;
+        }
+
         .caseConfirm {
             margin-top: 50px;
             margin-bottom: -47px;
         }
-        
+
         .caseConfirm p {
             font-size: 9pt;
         }
-        
+
         .alert {
-            margin-top: 55px !important;
-            margin-bottom: -47px !important;
+            margin-top: 35px !important;
+            margin-bottom: -30px !important;
         }
     }
-    
+
     @media screen and (max-width: 995px) {
         .qlinks {
             display: none;
-        } 
-        
+        }
+
         .firstbox {
             margin-left: 0px !important;
             width: 100% !important;
-        }   
+        }
     }
-    
+
     @media screen and (max-width: 390px) {
         .page-title h2 {
             font-size: 16pt !important;
         }
     }
-    
+
     .cxfeedinnerwrapper, #feedwrapper, .postTo, .publisherVisibilityWidget,
         .bottomBarLeft, #chatterLinkFileAction, .chatterPublisherFileActionContainerLeft {
         display: none !important;
     }
-    
+
     #chatterUploadFileAction, .contentPublisherSlideDown.customPanel.alignTop {
         border-bottom: solid 1px #c5cacc !important;
     }
-    
+
     .contentPublisherSlideDown td a {
         background: #990033 !important;
         color: #fff !important;
@@ -659,75 +690,71 @@
         margin-top: -7px;
         padding: 8px;
     }
-    
+
     .contentPublisherSlideDown td a:hover {
         background: #8A002E !important;
         color:#fff !important;
         text-decoration: none !important;
     }
-    
+
     div.contentPublisherSlideDown.customPanel.alignTop {
         height: 55px;
     }
-    
+
     div.publisherWrapper {
         width: 100%;
         max-width: 400px;
-    }    
-    
+    }
+
     .btn:hover, button:hover {
         background: #e6e6e6;
     }
-    
+
     div#publisherBottomBar.bottomBar {
         height: 35px !important;
         padding: 1px;
     }
-  
+
     .zen .zen-highlightBtn {
         background: #990033 !important;
         border: none !important;
     }
-    
+
     .publishercontainer input[type="text"] {
         width: 200px !important;
         float: left !important;
     }
-    
+
     .postInput label {
         font-size: 8pt !important;
     }
-    
+
     .contentPublisherSlideDown table.postInput th {
         width: 50px !important;
     }
-    
+
     @media screen and (max-width: 390px) {
         .publishercontainer input[type="text"] {
             width: 160px !important;
         }
-        
-        .page-title {
-            height: 40px;
-        }
     }
-    
+
     /* Styling for AutoComplete */
-    .displayNone { 
-        display:none; 
+    .displayNone {
+        display:none;
     }
     .displayBlock {
         display:block;
     }
-    .ui-autocomplete-loading { 
+    .ui-autocomplete-loading {
         background: white url(/img/loading32.gif) right center no-repeat;
-        background-size:15px 15px; 
+        background-size:15px 15px;
     }
-  
+
     body .bDetailBlock.bPageBlock, body .individualPalette .bDetailBlock.bPageBlock {
         margin-bottom: 0px !important;
     }
-  
+
     .ui-autocomplete {
         width: 84% !important;
         max-width: 400px !important;
@@ -737,7 +764,7 @@
         overflow-y: scroll;
         max-height: 300px;
     }
-    
+
     .ui-autocomplete a {
         color: #000;
         font-size: 9pt;
@@ -746,43 +773,43 @@
     .ui-autocomplete a:hover {
         color: #990033 !important;
     }
-    
+
     .ui-menu-item {
         margin-bottom: 3px;
     }
-    
+
     .btn:hover, button:hover {
         background: #e6e6e6;
         color: #990033 !important;
     }
-    
+
     .kbbtn:hover {
         background: #8A002E !important;
         color: #fff !important;
     }
-    
+
     .detailList {
         border: none !important;
     }
-    
+
     body .bPageBlock .detailList tr td, body .bPageBlock .detailList tr th, body table.list tr td, body table.list tr th, body .hoverDetail .bPageBlock .detailList tr td, body .hoverDetail .bPageBlock .detailList tr th
     {
         border: none !important;
     }
-    
+
     .bPageBlock .detailList tr td, .bPageBlock .detailList tr th, .hoverDetail .bPageBlock .detailList tr td, .hoverDetail .bPageBlock .detailList tr th
     {
         border:none !important;
     }
-    
+
     /* Arrow styling for active tab on myASU */
     .arrow {
         border-radius: 5px;
         display: inline-block;
         position: relative;
     }
-    
-    
+
+
     .arrow:after,
     .arrow:before {
         border-left: 15px solid transparent;
@@ -794,7 +821,7 @@
         margin-left: -16px;
         position: absolute;
     }
-    
+
     /* Styling for second triangle (border) */
     .arrow:before {
         border-left: 14px solid transparent;
@@ -804,28 +831,28 @@
         bottom: -9px;
         margin-left: -15px;
     }
-    
+
     /* Visualforce Component Styling */
     .artbuttons {
         width: initial !important;
         display: inline-block !important;
     }
-    
+
     /* Bootstrap Drop-down Menu Styling */
     .dropdown-menu>li>a.chat-link {
         font-size: 11pt !important;
     }
-    
+
     .dropdown-menu>li>a.chat-link:hover {
         color: #000 !important;
         background: #e6e6e6 !important;
     }
-    
+
     .dropdown-menu {
         margin-top: 8px !important;
         margin-left: 8px !important;
     }
-    
+
     .dropdown-menu:before {
       position: absolute;
       top: -7px;
@@ -837,7 +864,7 @@
       border-bottom-color: rgba(0, 0, 0, 0.2);
       content: '';
     }
-    
+
     .dropdown-menu:after {
       position: absolute;
       top: -6px;
@@ -848,11 +875,11 @@
       border-left: 6px solid transparent;
       content: '';
     }
-    
+
     .checkboxHidden {
         visibility:hidden;
     }
-    
+
     .contactPhone td {
         padding: 0px !important;
     }
@@ -860,7 +887,7 @@
     .alert.alert-success, .alert.alert-warning {
         border-radius: 0px;
     }
-    
+
     .startBtn {
         height: 12px !important;
         font-size: 7pt !important;
@@ -870,26 +897,28 @@
         margin-left: -15px !important;
         width: 45px !important;
     }
-    
+
     .modal-content {
         border-radius: 0px !important;
     }
-    
+
     .asuLink, .asuLink:hover {
         color: #990033 !important;
     }
-    
+
     .pbBody {
         border: none !important;
     }
-                
+
     .pinForm {
         background-color: white !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }
-    
+
     .pinBox {
+        width: auto !important;
+        max-width: 115px !important;
         background-color: #f0f0f0 !important;
         padding: 6px !important;
         border-top-left-radius: 2px !important;
@@ -898,8 +927,8 @@
         padding-left: 10px !important;
         padding-right: 71px !important;
     }
-    
-    .hiddenPinBox {
+
+    /*.hiddenPinBox {
         background: #f0f0f0 !important;
         border-top-left-radius: 2px !important;
         border-bottom-left-radius: 2px !important;
@@ -908,8 +937,8 @@
         padding-top: 5px !important;
         width: auto !important;
         max-width: 85px !important;
-    }
-    
+    }*/
+
     .viewPin {
         width: 70px !important;
         padding: 5px !important;
@@ -923,54 +952,91 @@
         border-bottom-right-radius: 2px !important;
         border-top-left-radius: 0px !important;
         border-bottom-left-radius: 0px !important;
-    } 
-    
+    }
+
     .viewPin:hover {
         background-color: #e8e8e8 !important;
     }
-    
+
     .resetPin {
         width: 70px !important;
         padding: 5px !important;
         background: #990033 !important;
         color: white !important;
-        border: none !important;
+        border: solid 1px #990033 !important;
         border-radius: 2px !important;
         margin: 0px;
+        vertical-align: middle !important;
     }
-    
+
     .pinBoxInput {
         padding: 3px !important;
         font-size: 10pt;
         width: auto !important;
+        height: 22px !important;
         max-width: 115px !important;
         margin-right: -2px;
         padding-top: 2px !important;
-    } 
-    
+        border: solid 1px #999 !important;
+        border-top-left-radius: 2px !important;
+        border-bottom-left-radius: 2px !important;
+        vertical-align: middle !important;
+    }
+
+    .hiddenPinBox {
+        padding: 3px !important;
+        font-size: 10pt;
+        width: auto !important;
+        height: 22px !important;
+        max-width: 115px !important;
+        margin-right: -2px;
+        padding-top: 2px !important;
+        padding-left: 10px !important;
+        color: #000 !important;
+        background: #f0f0f0 !important;
+        border: solid 1px #f0f0f0 !important;
+        border-top-left-radius: 2px !important;
+        border-bottom-left-radius: 2px !important;
+    }
+
+
+    @-moz-document url-prefix() {
+        .pinBoxInput {
+            vertical-align: middle !important;
+        }
+
+        .hiddenPinBox {
+            vertical-align: top !important;
+        }
+    }
+
     .savePin {
         width: 60px !important;
         padding: 5px !important;
         background: #029048 !important;
         color: #fff !important;
         font-weight: 500 !important;
-        border: none !important;
+        border: solid 1px #029048 !important;
         border-top-right-radius: 2px !important;
         border-bottom-right-radius: 2px !important;
         border-top-left-radius: 0px !important;
         border-bottom-left-radius: 0px !important;
-    } 
-    
+    }
+
     .savePin:hover {
         background: #028241 !important;
         color: #fff !important;
     }
-    
+
+    .viewPin:focus, .savePin:focus, .resetPin:focus {
+        outline: none !important;
+    }
+
     .qMarkMobile, .qMarkMobile:hover {
-        border: none !important; 
+        border: none !important;
         background: none !important;
     }
-    
+
     #tooltipArrow {
         width: 0;
         position: absolute;
@@ -980,49 +1046,49 @@
         border-width: 12px 0 12px 14px;
         border-color: transparent transparent transparent #c0c0c0;
     }
-    
+
     .modal-dialog {
         padding-top: 5%;
     }
-    
+
     @media screen and (max-width: 767px) {
         .qMarkMobile {
             display:initial !important;
         }
-        
+
         #qmarkPin {
             display:none !important;
         }
     }
-    
+
     @media screen and (max-width: 992px) {
         .qMarkMobile {
             display:initial !important;
         }
-        
+
         #qmarkPin {
             display:none !important;
         }
     }
-    
+
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
         #pinFormDiv {
             margin-left: 0px !important;
         }
     }
-        
+
     .message {
         border-radius: 0px !important;
-    }  
-    
+    }
+
     .confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1 {
         border-color: #390;
-        background-color: #dff0d8 !important; 
+        background-color: #dff0d8 !important;
     }
-    
+
     .errorM6, .errorM4, .errorM3, .errorM2, .errorS1 {
         border-color: #c00;
-        background-color: #fcf8e3 !important; 
+        background-color: #fcf8e3 !important;
     }
 
     .breadcrumb {
@@ -1035,11 +1101,11 @@
     }
 
     .padClass {
-            padding: 7px ;
+            padding: 7px !important;
     }
-    
+
     #closePinMessages .btn:hover {
-        background-color: transparent !important;   
+        background-color: transparent !important;
     }
 </style>
 </apex:component>

@@ -6,8 +6,10 @@ salesforce.schema
 /config/
 /debug/
 /deploy/
+/build/
 asu-salesforce-metadata.sublime-project
 asu-salesforce-metadata.sublime-settings
 asu-salesforce-metadata.sublime-workspace
 
+.DS_Store
 *.log

@@ -181,7 +181,7 @@
 							<td style="width:30%;text-align:right;">
 								<apex:form id="transferButton">
 									<br />
-									<apex:actionRegion>
+									<apex:actionRegion >
 										<apex:commandLink action="{!transferCase}" styleClass="caseBtn" value="Transfer Case"/>
 									</apex:actionRegion>
 								</apex:form>

@@ -606,6 +606,17 @@
         }
     }
 
+    @media screen and (max-width: 930px) {
+        #asu_universal_nav_new .tlb a {
+            color: #505558;
+            font-weight: 600 !important;
+        }
+    }
+
+    #asu_universal_nav_new a {
+        font-weight: 300 !important;
+    }
+
     @media screen and (min-width: 931px) {
         li.asu-student-mobile-menu, a.asu-student-mobile-menu {
             display: none !important;

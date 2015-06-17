@@ -54,13 +54,21 @@ public class UndergradNewProspectController
 
     public Contact getContact()
     {
-        if (contact == null) contact= new Contact();
+        if (contact == null) 
+        {
+            contact= new Contact();
+        }
+
         return contact;
     }
 
     public Opportunity getOpportunity() 
     {
-        if (opportunity == null) opportunity = new Opportunity();
+        if (opportunity == null) 
+        {
+            opportunity = new Opportunity();
+        }
+
         oppRecType = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
         opportunity.RecordTypeId = oppRecType;
         return opportunity;
@@ -68,25 +76,41 @@ public class UndergradNewProspectController
 
     public Previous_Education__c getPreviousEducation() 
     {
-        if (previousEducation == null) previousEducation = new Previous_Education__c();
+        if (previousEducation == null) 
+        {
+            previousEducation = new Previous_Education__c();
+        }
+
         return previousEducation;
     }
 
     public CampaignMember getCampaignMemberInterest() 
     {
-        if (camMemInterest == null) camMemInterest = new CampaignMember();
+        if (camMemInterest == null) 
+        {
+            camMemInterest = new CampaignMember();
+        }
+
         return camMemInterest;
     }
 
     public CampaignMember getCampaignMemberEvent() 
     {
-        if(camMemEvent == null) camMemEvent = new CampaignMember();
+        if(camMemEvent == null) 
+        {
+            camMemEvent = new CampaignMember();
+        }
+
         return camMemEvent;
     }
 
     public Case getC() 
     {
-        if (c == null) c = new Case();
+        if (c == null) 
+        {
+            c = new Case();
+        }
+
         Id asuAdmissionRecId = [SELECT Id, Name FROM RecordType WHERE Name = 'ASU Admission Services' LIMIT 1].Id;
         c.RecordTypeId = asuAdmissionRecId;
         return c;
@@ -131,6 +155,7 @@ public class UndergradNewProspectController
         {
             asuLocationIntList.add(new SelectOption(i.Id , i.Name));
         }
+        
         return asuLocationIntList;
     }
 
@@ -149,6 +174,7 @@ public class UndergradNewProspectController
         {
             academicIntList.add(new SelectOption(i.Id , i.Name));
         }
+
         return academicIntList;
     }
 
@@ -167,6 +193,7 @@ public class UndergradNewProspectController
         {
             asuCollegesIntList.add(new SelectOption(i.Id , i.Name));
         }
+
         return asuCollegesIntList;
     }
 

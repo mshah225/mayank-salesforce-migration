@@ -18,19 +18,31 @@ public with sharing class NewProspectController
 
     public Contact getContact()
     {
-        if (contact == null) contact= new Contact();
+        if (contact == null) 
+        {
+            contact= new Contact();
+        }
+
         return contact;
     }
 
     public Opportunity getOpportunity()
     {
-        if (opportunity == null) opportunity = new Opportunity();
+        if (opportunity == null) 
+        {
+            opportunity = new Opportunity();
+        }
+
         return opportunity;
     }
 
     public Task getTask()
     {
-        if (task == null) task = new Task();
+        if (task == null) 
+        {
+            task = new Task();
+        }
+
         return task;
     }
 
@@ -66,6 +78,7 @@ public with sharing class NewProspectController
                 }
             }
         }
+
         return options;
     }
 
@@ -93,12 +106,14 @@ public with sharing class NewProspectController
         {
           contact.OwnerId = sfAdminUserList[0].Id;
         }
+
         if (contact != null)
         {
             searchFirstName = contact.FirstName;
             searchLastname = contact.LastName;
             searchLeadEmail = contact.Lead_Email__c;
         }
+        
         LIST <Contact> DuplicateContacts = [SELECT Id, AccountId, FirstName, LastName
                                             FROM Contact
                                             WHERE FirstName = :searchFirstName

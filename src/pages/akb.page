@@ -330,18 +330,29 @@
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!IF(ISNULL(linkList),false,true) || IF(ISBLANK(linkList),false,true)}">
-            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-                <ul class="nav navbar-nav">
+            <div id="myasu-tabs">
+                <div class="navbar-links">
                     <apex:repeat value="{!linkList}" var="link" id="linkRepeater">
-                        <li>
-                            <apex:outputLink value="{!link.url}">{!link.name}</apex:outputLink><br/>
-                        </li>
+                        <span class='tab'>
+                            <apex:outputLink value="{!link.url}" title="{!link.name}" rendered="{!IF(link.name == 'Home',true,false)}">
+                                <span class="fa fa-home" title="Home"></span>
+                            </apex:outputLink>
+
+                            <apex:outputLink rendered="{!IF(link.name != 'Home' && link.name != 'Service Center',true,false)}" value="{!link.url}">
+                                {!link.name}
+                            </apex:outputLink>
+
+                            <apex:outputPanel rendered="{!IF(link.name == 'Service Center',true,false)}">
+                                <span class='selected tab'><a href="/" class="tracking">Service Center</a></span>
+                            </apex:outputPanel>
+                        </span>
                     </apex:repeat>
-                </ul>
-                <p class="username pull-right">
-                    {!$User.FirstName} {!$User.LastName}
+
+                    <p class="username pull-right">
+                        {!$User.FirstName} {!$User.LastName}
                     </p>
-                </nav>
+                </div>
+            </div>
         </apex:outputPanel>
     </header>
 

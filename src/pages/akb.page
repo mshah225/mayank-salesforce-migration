@@ -1,100 +1,91 @@
-<apex:page showHeader="false" 
-    sidebar="false" 
+<apex:page showHeader="false"
+    sidebar="false"
     cache="true"
     docType="html-5.0"
     controller="AKBController"
-    action="{!init}" 
-    extensions="ServiceCenter,vfKeywordSearchController,AutoCompleteController,NavLinks,newCase" 
+    action="{!init}"
+    extensions="ServiceCenter,vfKeywordSearchController,AutoCompleteController,NavLinks,newCase"
     tabStyle="Case">
 <head>
     <title>My ASU - {!article.title}</title>
-    <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1, maximum-scale=1" />
     <c:asu_responsive_header_section />
-    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.jquery_ui, '/themes/base/minified/jquery-ui.min.css')}"/>
-    <c:myasustyles />  
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.jquery_ui, '/ui/minified/jquery-ui.min.js')}"/>
-    
+
     <style>
         .detailList a {
             color: #990033 !important;
         }
-        
+
         body {
             overflow-x: scroll !important;
         }
-    
+
         .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
             border-top-color: #990033 !important;
         }
-        
+
         .x-toolbar-ct tr td{
             vertical-align: middle !important;
             padding: 0px !important;
         }
-       
+
         .bPageBlock .detailList .labelCol {
             width: 1% !important;
             font-size: 8pt;
         }
-        
+
         .searchKB2 {
             margin-bottom: -10px !important;
         }
-        
+
         .header {
             margin-left: 0px !important;
         }
-        
+
         iframe, embed {
             width: 100% !important;
             max-width: 500px !important;
         }
-        
-        .img-responsive { 
-            width: 100% !important; 
-            max-width: 450px !important; 
+
+        .img-responsive {
+            width: 100% !important;
+            max-width: 450px !important;
         }
-        
+
         th.labelCol.vfLabelColTextWrap {
             display: none !important;
         }
-        
+
         .articleContent {
             word-break: break-word !important;
             padding: 0px;
         }
-        
+
         .modal-content {
             border-radius: 0px !important;
             box-shadow: none !important;
         }
-        
+
         .submitButton, .clearButton {
             padding 2px !important;
         }
-               
+
         @media screen and (max-width: 931px) {
             .sparky {
                 display: none !important;
             }
         }
-        
+
         @-moz-document url-prefix() {
             .clearButton, .submitButton {
                 height: 17px !important;
             }
         }
-        
-        @media screen and (-webkit-min-device-pixel-ratio:0) { 
+
+        @media screen and (-webkit-min-device-pixel-ratio:0) {
             .clearButton, .submitButton {
                 height: 16px !important;
                 padding-top: 5px !important;
-            }            
+            }
         }
     </style>
 
@@ -111,11 +102,11 @@
         ga('set', 'dimension4', '{!currentUser}');
         ga('send', 'pageview');
     </script>
-    
+
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
     <script>
         BG.setSite("bomgar.asu.edu");
-        
+
         // Start 'Finances' Chat
         function startFAChat()
         {
@@ -161,7 +152,7 @@
 
     <script>
         BG.setSite("bomgar.asu.edu");
-       
+
         // Start 'Other' Chat
         function startSFDCChat()
         {
@@ -204,289 +195,173 @@
             });
         }
     </script>
-
-    <script>
-        $( document ).ready(function() {
-            $( "#articleContentDiv img" ).addClass("img-responsive");
-        });
-    </script>
-
-    <script>
-        function getLinks()
-        { 
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var addLink;
-            var linkArray = [];
-            var articleLinks = []
-
-            for (i = 0; i < links.length; i++) 
-            {
-                if (links[i].href.indexOf('/articles') > -1) 
-                {
-                    articleLinks.push(links[i]);
-                }
-            }
-
-            for (i = 0; i < articleLinks.length; i++) 
-            {
-                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
-                linkArray.push(addlink);
-            }
-            linkArray = JSON.stringify(linkArray);
-            setLink(linkArray);
-        }
-        
-        function changeLinkOnPage(newLinks) 
-        {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var articleLinks = []
-            var parsed = JSON.parse(newLinks);
-            var arr = [];
-
-            for (i = 0; i < links.length; i++) 
-            {
-                if (links[i].href.indexOf('/articles') > -1) 
-                {
-                    articleLinks.push(links[i]);
-                }
-            }
-
-            for (var x in parsed)
-            {
-                arr.push(parsed[x]);
-            }
-
-            for (i = 0; i < articleLinks.length; i++) 
-            {
-                articleLinks[i].href = arr[i];
-                articleLinks[i].target = "_self";
-            }
-            return false;
-        }
-    </script>
 </head>
 <body onload="getLinks()">
-    <div id="asu_hdr" class="asu_hdr_gold">
-    
+    <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
+    <div id="main-search" class="main-search closed"></div>
+    <div id="asu_hdr" class="asu_hdr_white">
         <div id="asu_mobile_hdr">
-                <div id="asu_logo">
-                        <a target="_top" href="https://www.asu.edu/" title="Arizona State University">
-                            <img src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo.png" alt="Arizona State University" height="32" width="203" style="margin-top:14px" title="Arizona State University" />
-                        </a>
-                </div><!-- /#asu_logo  -->
-        
-                <img src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_white.png" height="32" width="203" id="asu_print_logo" />
-    
-            <div id="asu_mobile_button" class="asuhide"><a href="">Menu</a></div>
-        </div><!-- /#asu_mobile_header  -->
-        
-        <script>
-            $( ".asuhide" ).click(function() {
-                $( "#asu_mobile_menu" ).slideToggle( "2000" );
-            });
-        </script>
-    
-        <div id="asu_mobile_menu" class="asutoggle_off">
+            <div id="asu_logo">
+                <a href="https://www.asu.edu/" target="_top" title="Arizona State University">
+                <img alt="Arizona State University" title="Arizona State University" src="https://www.asu.edu/asuthemes/4.0/images/logos/asu_logo_white.png"/></a>
+            </div>
+            <img alt="Arizona State University" title="Arizona State University" id="asu_print_logo" src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_mobile_white.png" />
+            <div class="f-navicon" id="asu_mobile_button" onclick="javascript:ASUHeader.toggleASU();">
+                <a href="javascript:ASUHeader.toggleASU();">Menu</a>
+            </div>
+            <div class="f-search" id="search_new" onclick="javascript:ASUHeader.toggleASU('main-search');"></div>
+        </div>
+        <div class="closed" id="asu_mobile_menu">
             <div id="asu_nav_wrapper">
-                
-                
-                <h2 class="hidden">Sign In / Sign Out</h2>
+                <h2 class="hidden">
+                    Sign In / Sign Out
+                </h2>
                 <ul id="asu_login_module">
                     <li>{!$User.FirstName}</li>
-                    <li id="asu_hdr_ssi" class="end">
-                    <a target="_top" href="/secur/logout.jsp"
-                    onmouseover="this.href = ASUHeader.alterLoginHref(this.href);"
-                    onfocus="this.href = ASUHeader.alterLoginHref(this.href);"
-                    onclick="this.href = ASUHeader.alterLoginHref(this.href);">SIGN OUT</a>
+                    <li>
+                        <a href="/secur/logout.jsp" target="_top">SIGN OUT</a>
                     </li>
-                </ul>                
-            
-            <div id="asu_nav_menu">
-                <h2 class="hidden">Menu</h2>
-                <div id="asu_universal_nav">
-                    <ul>
-                        <li><a target="_top" href="https://www.asu.edu/">ASU Home</a></li>
-                        <li><a target="_top" href="https://my.asu.edu/">My ASU</a></li>
-                        
-                        <apex:outputPanel rendered="{!IF(ISNULL(linkList),true,false) || IF(ISBLANK(linkList),true,false)}">
-                        <li class="asu-student-mobile-menu">
-                          <a href="https://webapp4.asu.edu/myasu/student/finances" class="asu-student-mobile-menu" title="Finances">Finances</a>
-                        </li>
-                        <li class="active asu-student-mobile-menu">
-                          <a href="/studentSC" class="asu-student-mobile-menu" title="Service Center">Service Center</a> 
-                        </li>
-                        <li class="asu-student-mobile-menu">
-                          <a href="https://webapp4.asu.edu/myasu/student/campusservices" class="asu-student-mobile-menu" title="Campus Services">Campus Services</a>
-                        </li>
-                        <li class="asu-student-mobile-menu">
-                          <a href="https://webapp4.asu.edu/myasu/student/profile" class="asu-student-mobile-menu" title="Profile">Profile</a>
-                        </li>
-                        </apex:outputPanel>
-                        
-                        <!-- This repeats the list of links brought over from MyASU -->
-                        <apex:repeat value="{!linkList}" var="mobilelink" id="mobileLinkRepeater" rendered="{!IF(ISNULL(linkList),false,true) || IF(ISBLANK(linkList),false,true)}">
-                            <li class="asu-student-mobile-menu" style="height:52px;">
-                                <apex:outputLink value="{!mobilelink.url}">{!mobilelink.name}</apex:outputLink><br/>
-                            </li>
-                        </apex:repeat>
-    
-                        <li class="parent"><a target="_top" href="https://www.asu.edu/colleges/">Colleges &amp; Schools</a>
+                </ul>
+                <div id="asu_nav_menu">
+                    <h2 class="hidden">
+                        Menu
+                    </h2>
+                    <div id="asu_universal_nav">
+                        <ul>
+                            <li><a href="https://www.asu.edu/" target="_top">ASU Home</a></li>
+                            <li><a href="https://my.asu.edu/" target="_top">My ASU</a></li>
+                            <li class="parent"><a href="https://www.asu.edu/colleges/" target="_top">Colleges &amp; Schools</a>
                                 <ul>
-                                    <li><a target="_top" class="first" href="http://artsandsciences.asu.edu/" title="Arts and Sciences website">Arts and Sciences</a></li>     
-                                    <li><a target="_top" href="http://wpcarey.asu.edu/" title="W. P. Carey School of Business Web  and Morrison School of Agribusiness website">Business</a></li>          
-                                    <li><a target="_top" href="http://herbergerinstitute.asu.edu" title="Herberger Institute for Design and the Arts website">Design and the Arts</a></li>
-                                    <li><a target="_top" href="http://education.asu.edu/" title="Mary Lou Fulton Teachers College website">Education </a></li>
-                                    <li><a target="_top" href="http://engineer.asu.edu/" title="Engineering website">Engineering</a></li>
-                                    <li><a target="_top" href="http://graduate.asu.edu" title="Graduate College website">Graduate</a></li>
-                                    <li><a target="_top" href="https://healthsolutions.asu.edu/" title="Health Solutions website">Health Solutions</a></li>
-                                    <li><a target="_top" href="http://honors.asu.edu/" title="Barrett, The Honors College website">Honors</a></li>
-                                    <li><a target="_top" href="http://cronkite.asu.edu" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a></li>
-                                    <li><a target="_top" href="http://www.law.asu.edu/" title="Sandra Day O' Connor College of Law website">Law</a></li>
-                                    <li><a target="_top" href="http://nursingandhealth.asu.edu/" title="College of Nursing and Health Innovation website">Nursing and Health</a></li>
-                                    <li><a target="_top" href="http://copp.asu.edu" title="College of Public Programs website">Public Programs</a></li>
-                                    <li><a target="_top" href="http://schoolofsustainability.asu.edu" title="School of Sustainability website">Sustainability</a></li>
-                                    <li><a target="_top" href="http://technology.poly.asu.edu/" title="College of Technology and Innovation website">Technology and Innovation</a></li>
-                                    <li><a target="_top" href="http://uc.asu.edu/" title="University College website">University College</a></li>
-                                </ul>
-                            </li>               
-                            <li class="parent"><a target="_top" href="https://www.asu.edu/map/">Map &amp; Locations</a>
-                                <ul>
-                                    <li><a target="_top" class="border first" href="http://www.asu.edu/map/">Map</a></li>
-                                    <li><a target="_top" href="http://campus.asu.edu/tempe/" title="Tempe campus">Tempe</a></li>
-                                    <li><a target="_top" href="http://campus.asu.edu/west/" title="West campus">West</a></li>
-                                    <li><a target="_top" href="http://campus.asu.edu/polytechnic/" title="Polytechnic campus">Polytechnic</a></li>
-                                    <li><a target="_top" href="http://campus.asu.edu/downtown/" title="Downtown Phoenix campus">Downtown Phoenix</a></li>
-                                    <li><a target="_top" href="http://asuonline.asu.edu/" title="Online and Extended campus">Online and Extended</a></li>
-                                    <li><a target="_top" class="border" href="http://havasu.asu.edu/">Lake Havasu</a></li>
-                                    <li><a target="_top" href="http://skysong.asu.edu/">Skysong</a></li>
-                                    <li><a target="_top" href="http://asuresearchpark.com/">Research Park</a></li>
-                                    <li><a target="_top" href="http://washingtoncenter.asu.edu/">Washington D.C.</a></li>
-                                    <li><a target="_top" href="http://wpcarey.asu.edu/mba/china-program/english/">China</a></li>
+                                    <li><a class="first" href="https://artsandsciences.asu.edu/" target="_top" title="Arts and Sciences website">Arts and Sciences</a></li>
+                                    <li><a href="https://wpcarey.asu.edu/" target="_top" title="W. P. Carey School of Business Web and Morrison School of Agribusiness website">Business</a></li>
+                                    <li><a href="https://herbergerinstitute.asu.edu" target="_top" title="Herberger Institute for Design and the Arts website">Design and the Arts</a></li>
+                                    <li><a href="https://education.asu.edu/" target="_top" title="Mary Lou Fulton Teachers College website">Education</a></li>
+                                    <li><a href="https://engineering.asu.edu/" target="_top" title="Engineering website">Engineering</a></li>
+                                    <li><a href="https://graduate.asu.edu" target="_top" title="Graduate College website">Graduate</a></li>
+                                    <li><a href="https://chs.asu.edu/" target="_top" title="Health Solutions website">Health Solutions</a></li>
+                                    <li><a href="https://honors.asu.edu/" target="_top" title="Barrett, The Honors College website">Honors</a></li>
+                                    <li><a href="https://cronkite.asu.edu" target="_top" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a></li>
+                                    <li><a href="https://www.law.asu.edu/" target="_top" title="Sandra Day O' Connor College of Law website">Law</a></li>
+                                    <li><a href="https://nursingandhealth.asu.edu/" target="_top" title="College of Nursing and Health Innovation website">Nursing and Health Innovation</a></li>
+                                    <li><a href="https://copp.asu.edu" target="_top" title="College of Public Programs website">Public Programs</a></li>
+                                    <li><a href="https://schoolofsustainability.asu.edu" target="_top" title="School of Sustainability website">Sustainability</a></li>
+                                    <li><a href="https://uc.asu.edu/" target="_top" title="University College website">University College</a></li>
+                                    <li><a target="_top" href="http://www.thunderbird.edu/" title="Thunderbird School of Global Management website">New: Thunderbird School of Global Management</a></li>
                                 </ul>
                             </li>
-                            <li><a target="_top" href="https://www.asu.edu/contactasu/" title="Directory, Index and other info">Directory</a></li>  
-                       
-                    </ul>
-                    <img class="asu_touch" src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/ipad_close.gif" alt="" />
-                </div><!-- /#asu_universal_nav -->
-            </div><!-- /#asu_nav_menu -->
-        </div><!-- /#asu_nav_wrapper -->
-    
-        <div id="asu_search">
-        <h2 class="hidden">Search</h2>
-            <div id="asu_search_module">
-                <form target="_top" action="https://search.asu.edu/search" method="get" name="gs">
-                    <label class="hidden" for="asu_search_box">Search</label>
-                    <input name="site" value="default_collection" type="hidden" />
-                    <input type="text" name="q" size="32" placeholder="Search ASU" id="asu_search_box" class="asu_search_box" onfocus="ASUHeader.searchFocus(this)" onblur="ASUHeader.searchBlur(this)" /> 
-                    <input type="submit" value="Search" title="Search" class="asu_search_button" />
-                    <input name="sort" value="date:D:L:d1" type="hidden" /> 
-                    <input name="output" value="xml_no_dtd" type="hidden" /> 
-                    <input name="ie" value="UTF-8" type="hidden" /> 
-                    <input name="oe" value="UTF-8" type="hidden" /> 
-                    <input name="client" value="asu_frontend" type="hidden" /> 
-                    <input name="proxystylesheet" value="asu_frontend" type="hidden" />
-                </form>
-            </div><!-- /#asu_search_module -->
-         </div><!-- /#asu_search -->
-         
-        </div><!-- /#asu_mobile_menu -->
-    </div><!-- /#asu_hdr -->
-    
+                            <li class="parent"><a href="https://www.asu.edu/map/" target="_top">Map &amp; Locations</a>
+                                <ul>
+                                    <li><a class="border first" href="https://www.asu.edu/map/" target="_top">Map</a></li>
+                                    <li><a href="https://campus.asu.edu/tempe/" target="_top" title="Tempe campus">Tempe</a></li>
+                                    <li><a href="https://campus.asu.edu/west/" target="_top" title="West campus">West</a></li>
+                                    <li><a href="https://campus.asu.edu/polytechnic/" target="_top" title="Polytechnic campus">Polytechnic</a></li>
+                                    <li><a href="https://campus.asu.edu/downtown/" target="_top" title="Downtown Phoenix campus">Downtown Phoenix</a></li>
+                                    <li><a href="https://asuonline.asu.edu/" target="_top" title="Online and Extended campus">Online and Extended</a></li>
+                                    <li><a class="border" href="https://havasu.asu.edu/" target="_top">Lake Havasu</a></li>
+                                    <li><a href="https://skysong.asu.edu/" target="_top">Skysong</a></li>
+                                    <li><a href="http://asuresearchpark.com/" target="_top">Research Park</a></li>
+                                    <li><a href="https://washingtoncenter.asu.edu/" target="_top">Washington D.C.</a></li>
+                                    <li><a href="https://wpcarey.asu.edu/mba/china-program/english/" target="_top">China</a></li>
+                                    <li><a target="_top" href="http://www.thunderbird.edu/about-thunderbird/locations/phoenix-arizona">Thunderbird</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="https://www.asu.edu/contactasu/" target="_top" title="Directory, Index and other info">Directory</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="asu_search">
+                <h2 class="hidden">
+                    Search
+                </h2>
+                <div id="asu_search_module"></div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
-        <!--//--><![CDATA[//><!--
-        ASUHeader.default_search_text = "Search ASU";
-        ASUHeader.default_search_alttext = "Search ASU";
-        if (typeof ASUHeader.signin_callback_url == "undefined") {
-            ASUHeader.signin_callback_url = '';
-        }
-        if (typeof ASUHeader.signin_url == "undefined") {
-            ASUHeader.signin_url = '';
-        }
-        if (typeof ASUHeader.signout_url == "undefined") {
-            ASUHeader.signout_url = 'https://webapp4.asu.edu/myasu/Signout';
-        }
-        if (typeof ASUHeader.user_signedin == "undefined" ||
-                (ASUHeader.user_signedin != false && typeof ASUHeader.user_displayname == "undefined")) {
-            ASUHeader.checkSSOCookie();
-        }
-        if (ASUHeader.user_signedin == true) {
-            ASUHeader.setSSOLink();
-        }if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-            document.getElementById('asu_hdr').className = document.getElementById('asu_hdr').className+" chrome";
-        }
-        //--><!]]>
+    <!--//--><![CDATA[//><!--
+    ASUHeader.default_search_text = "Search ASU";
+    ASUHeader.default_search_alttext = "Search ASU";
+    if (typeof ASUHeader.signin_callback_url == "undefined") {
+    ASUHeader.signin_callback_url = '';
+    }
+    if (typeof ASUHeader.signin_url == "undefined") {
+    ASUHeader.signin_url = '';
+    }
+    if (typeof ASUHeader.signout_url == "undefined") {
+    ASUHeader.signout_url = 'https://webapp4.asu.edu/myasu/Signout';
+    }
+    if (typeof ASUHeader.user_signedin == "undefined" || (ASUHeader.user_signedin != false && typeof ASUHeader.user_displayname == "undefined")) {
+    ASUHeader.checkSSOCookie();
+    }
+    if (ASUHeader.user_signedin == true) {
+    ASUHeader.setSSOLink();
+    }
+    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+    document.getElementById('asu_hdr').className = document.getElementById('asu_hdr').className+" chrome";
+    }
+    //--><!]]>
     </script>
-    
     <div style="clear:both;"></div>
-    
-    <!-- END /asuthemes/4.0-rsp.1/headers/default.shtml -->
-  
+    <!-- END /asuthemes/4.3/headers/default_myasu.shtml -->
+
+    <div id="myasu-header-seo"><a href="https://webapp4.asu.edu/myasu">My ASU</a></div>
+
     <!-- MyASU Tab Bar -->
     <header class="navbar navbar-default" role="banner">
-        <div class="navbar-header">
-          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-         
-          <a href="https://my.asu.edu" class="navbar-brand myasu"><b>My</b> ASU &nbsp;</a>
-        </div>
         <apex:outputPanel rendered="{!IF(ISNULL(linkList),true,false) || IF(ISBLANK(linkList),true,false)}">
-        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-          <ul class="nav navbar-nav">
-            <li>
-                <a href="https://my.asu.edu" title="Home">Home</a>
-            </li>
-            <li>
-              <a href="https://webapp4.asu.edu/myasu/student/finances" title="Resources">Finances</a>
-            </li>
-            <li class="active arrow">
-              <a href="/studentSC" title="Service Center">Service Center</a>
-            </li>
-            <li>
-              <a href="https://webapp4.asu.edu/myasu/student/campusservices" title="Campus Services">Campus Services</a>
-            </li>
-            <li>
-              <a href="https://webapp4.asu.edu/myasu/student/profile" title="Profile">Profile</a>
-            </li>
-          </ul>
-          <p class="username pull-right">
-              {!$User.FirstName} {!$User.LastName}
-          </p>
-        </nav>
+            <div id="myasu-tabs">
+                <div class="navbar-links">
+                    <span class='tab'><a href="https://webapp4.asu.edu/myasu" class="tracking"><span class="fa fa-home" title="Home"></span></a></span>
+
+                    <span class='tab'><a href="https://webapp4.asu.edu/myasu/student/finances" class="tracking">Finances</a></span>
+
+                    <span class='selected tab'><a href="/" class="tracking" >Service Center</a></span>
+
+                    <span class='tab'><a href="https://webapp4.asu.edu/myasu/student/campusservices" class="tracking">Campus Services</a></span>
+
+                    <span class='tab'><a href="https://webapp4.asu.edu/myasu/student/profile" class="tracking">Profile</a></span>
+                    <p class="username pull-right">
+                        {!$User.FirstName} {!$User.LastName}
+                    </p>
+                </div>
+            </div>
         </apex:outputPanel>
-        
+
         <apex:outputPanel rendered="{!IF(ISNULL(linkList),false,true) || IF(ISBLANK(linkList),false,true)}">
-        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-          <ul class="nav navbar-nav">
-              <apex:repeat value="{!linkList}" var="link" id="linkRepeater">
-                  <li>
-                      <apex:outputLink value="{!link.url}">{!link.name}</apex:outputLink><br/>
-                  </li>
-              </apex:repeat>
-          </ul>
-          
-          <script>
-              $( "li:contains('Service Center')" ).last().addClass( "active" );
-              $( "a:contains('Service Center')" ).last().addClass( "arrow" );
-          </script>
-          
-          <p class="username pull-right">
-              {!$User.FirstName} {!$User.LastName}
-          </p>
-        </nav>
+            <div id="myasu-tabs">
+                <div class="navbar-links">
+                    <apex:repeat value="{!linkList}" var="link" id="linkRepeater">
+                        <span class='tab'>
+                            <apex:outputLink value="{!link.url}" title="{!link.name}" rendered="{!IF(link.name == 'Home',true,false)}">
+                                <span class="fa fa-home" title="Home"></span>
+                            </apex:outputLink>
+
+                            <apex:outputLink rendered="{!IF(link.name != 'Home' && link.name != 'Service Center',true,false)}" value="{!link.url}">
+                                {!link.name}
+                            </apex:outputLink>
+
+                            <apex:outputPanel rendered="{!IF(link.name == 'Service Center',true,false)}">
+                                <span class='selected tab'><a href="/" class="tracking">Service Center</a></span>
+                            </apex:outputPanel>
+                        </span>
+                    </apex:repeat>
+
+                    <p class="username pull-right">
+                        {!$User.FirstName} {!$User.LastName}
+                    </p>
+                </div>
+            </div>
         </apex:outputPanel>
-    </header>  
-    
+    </header>
+
     <div class="page-title">
-        <h2><a href="/studentSC" class="mobileHeaderLink"><div style="color:#afa593; display:inline;">Student</div> <div style="color:#fff; display:inline;">Service Center</div></a></h2>
-    </div> 
+        <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
+    </div>
 
 <!-- START CONTENT -->
-<div id="asu_content_well">   
+<div id="asu_content_well">
      <center>
         <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback != null}">
             <div class="alert alert-success feedbackConfirm">
@@ -540,13 +415,13 @@
             <apex:form id="autoCompleteForm" styleClass="searchKB">
                 <apex:pageBlock mode="maindetail">
                     <p>Search the Knowledge Base for more articles.</p><br />
-                    <div class="searchKB2">   
+                    <div class="searchKB2">
                         <div class="form-horizontal">
-                            <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"/>
+                            <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox" html-placeholder="Enter search terms"/>
                             <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
                             <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
                         </div>
-                         
+
                         <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
                     </div>
                 </apex:pageBlock>
@@ -557,10 +432,10 @@
                     <hr />
                     <h5><b>Search Results for:</b> '{!searchstring}'</h5>
                     <div style="height:5px;"/>
-                    <knowledge:articleList articleVar="articleSearch" 
+                    <knowledge:articleList articleVar="articleSearch"
                         pageNumber="{!currentPageNumber}"
-                        Keyword="{!searchstring}" 
-                        hasMoreVar="true" 
+                        Keyword="{!searchstring}"
+                        hasMoreVar="true"
                         pageSize="10"
                         rendered="{!searchstring != ''}">
                         <table>
@@ -591,7 +466,7 @@
             <br /><br />
             <apex:form id="articleContentForm">
             <apex:actionFunction name="setLink" action="{!changeLink}" oncomplete="changeLinkOnPage('{!fixedLinksJSON}')" reRender="url1">
-                <apex:param name="urlNameToChange" value="" assignTo="{!urlsJSON}" />  
+                <apex:param name="urlNameToChange" value="" assignTo="{!urlsJSON}" />
             </apex:actionFunction>
                 <div id="articleContentDiv" class="articleContent">
                     <apex:pageBlock tabStyle="Case">
@@ -610,7 +485,7 @@
                             </apex:outputText>
 
                             <apex:outputField value="{!info.Information__c}" rendered="{!IF(article.ArticleType = 'Informational__kav',true,false)}" label=""/>
-                            
+
                             <apex:outputText value="Question" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
                             <apex:outputField value="{!faq.Question__c}" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" label="" styleClass="noLabel"/>
                             <apex:outputText value="Answer" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-4px;color:#4a4a5b"/>
@@ -621,7 +496,7 @@
                     </apex:pageBlock>
                 </div>
             </apex:form>
-              
+
             <div class="page-header">
                 <h5>Article Feedback</h5>
             </div>
@@ -631,18 +506,18 @@
                     &nbsp;
                     <apex:commandButton value="Yes" action="{!helpfulYes}" styleClass="btn btn-default" style="width:25px;height:15px;padding:3px;"/>
                     &nbsp;
-                           
+
                     <!-- Button trigger modal -->
                     <button class="btn btn-default" data-toggle="modal" data-target="#feedbackNoComments" style="width:25px;height:15px;padding:3px;">
                         No
                     </button>
                 </apex:outputPanel>
-                 
+
                  <apex:outputPanel rendered="{!NOT(feedbackVisible)}">
                      <p>Thanks for the feedback!</p>
                  </apex:outputPanel>
              </apex:form>
-             
+
              <apex:form id="feedbackNoComments">
                 <!-- Modal -->
                 <div class="modal fade" id="feedbackNoComments" tabindex="-1" role="dialog" aria-labelledby="feedbackCommentsLabel" aria-hidden="true">
@@ -655,7 +530,7 @@
                       <div class="modal-body">
                         <p>Please tell us how we can make this article more useful.</p>
                         <apex:pageBlock mode="maindetail">
-                            <apex:inputField id="articleFeedback" required="true" value="{!feedbackHelpful.Comments__c}" style="width:100%;max-width:400px;height:100px;"/>
+                            <apex:inputField id="articleFeedback" required="true" value="{!feedbackHelpful.Comments__c}" style="width:100%;max-width:400px;height:100px;border:solid 1px #999;border-radius:2px;"/>
                         </apex:pageBlock>
                       </div>
                       <div class="modal-footer">
@@ -672,7 +547,7 @@
             </div>
 
             </div>
-          
+
         </div>
 
         <div class="col-md-4">
@@ -681,9 +556,9 @@
                     <h6><b>Articles You May Find Helpful</b></h6>
                 </div>
                 <div class="content">
-                    <knowledge:articleList articleVar="relatedart" 
+                    <knowledge:articleList articleVar="relatedart"
                         keyword="{!titleKeyword}"
-                        hasMoreVar="true" 
+                        hasMoreVar="true"
                         pageSize="6">
                         <table>
                             <tr id="relatedArticleLink">
@@ -708,7 +583,7 @@
                 <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
                     Suggest An Article
                 </button>
-            </div>    
+            </div>
             </div>
             <apex:form id="suggestAnArticle">
                 <!-- Modal -->
@@ -723,7 +598,7 @@
                         <apex:pageBlock mode="maindetail">
                             <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                             <br />
-                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;"/>
+                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;border:solid 1px #999;border-radius:2px;"/>
                         </apex:pageBlock>
                       </div>
                       <div class="modal-footer">
@@ -749,16 +624,17 @@
                     <div id="roverPhone">
                         <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
                     </div>
-                    <br /><br />
-                    
-                    <apex:form id="pinForm" styleClass="pinForm">                        
+
+                    <hr />
+
+                    <apex:form id="pinForm" styleClass="pinForm">
                         <div id="pinFormDiv" style="margin-left:30px;">
                             <h5>ASU Finances PIN</h5>&nbsp;
-                            
+
                             <button type="button" class="qMarkMobile" data-toggle="modal" data-target="#finPinMobile" style="display:none">
                                 <img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png" width="14" height="14" alt="qmark" style="margin-bottom:3px;cursor:pointer;"/>
                             </button>
-                            
+
                             <div class="modal fade" id="finPinMobile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                   <div class="modal-content">
@@ -777,37 +653,37 @@
                                   </div>
                                 </div>
                             </div>
-                            
+
                             <div id="tooltipPin" class="tooltipBox" style="margin-left:-190px;margin-top:-22px;display:none;position:absolute;width:100%;max-width:300px;height:auto;background:#eee;color:#000;z-index:200;box-shadow: 5px 4px 5px 0px rgba(0,0,0,0.5);">
                                 <div id="tooltipArrow"></div>
                                 <div style="width:100%;background:#ddd;padding:3px;padding-left:5px;border-bottom:solid 2px #cdcdcd;"><h6>ASU Finances PIN Help</h6><span id="closeTooltip" class="pull-right" style="padding-right:5px;cursor:pointer;"><a href="">x</a></span></div>
                                 <div style="padding:5px;font-size:8pt;"><p>Use this PIN to access information about your financial aid and account balance when you call the number above. The PIN should be used to access your confidential account information and should not be shared with anyone. To choose another PIN select Reset and enter your own six digit PIN selection.</p></div>
                             </div>
-                            
+
                             <a id="qmarkPin" href=""><img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png" width="14" height="14" alt="qmark" style="margin-bottom:3px;cursor:pointer;"/></a><br />
                             <input id="yourPinHidden" class="hiddenPinBox" style="padding-right:30px;width:60px;border:none;padding:6px;" disabled="true"/>
                             <button id="viewPinBtn" class="viewPin" type="button">View</button>
-                            
+
                             <apex:outputText id="yourPin" styleClass="pinBox" style="display:none" value="{!myPin}"/>
                             <button id="hidePinBtn" class="viewPin" type="button" style="display:none;">Hide PIN</button>
-                            
+
                             <button id="resetPin" class="resetPin kbbtn" type="button">Reset</button>
-                            
+
                             <apex:inputText id="newPinInput" value="{!newPin}" html-placeholder="New Pin" onkeypress="return inputLimiter(event,'Numbers');" maxlength="10" styleClass="pinBoxInput" style="display:none;"/>
                             <apex:commandButton id="savePinBtn" value="Save" action="{!changePin}" styleClass="savePin" style="display:none;" reRender=""/>
                             <button id="cancelPinInput" class="resetPin kbbtn" onclick="this.form.reset();" style="display:none;" type="button">Cancel</button>
                             <p style="margin-top:5px;">Select <b>View</b> when calling to access confidential information about your financial aid and account balance.</p>
                         </div>
-                        
+
                         <script>
                             $( "[id$=qmarkPin]" ).click(function() {
-                                $( "[id$=tooltipPin]" ).show();    
+                                $( "[id$=tooltipPin]" ).show();
                             });
-                            
+
                             $( "[id$=closeTooltip]" ).click(function() {
-                                $( "[id$=tooltipPin]" ).hide();    
+                                $( "[id$=tooltipPin]" ).hide();
                             });
-                            
+
                             $(document).mouseup(function (e) {
                                 var container = $( "[id$=tooltipPin]" );
                                 if (!container.is(e.target) && container.has(e.target).length === 0) {
@@ -815,16 +691,16 @@
                                 }
                             });
                         </script>
-                                                
+
                         <script>
-                            //Show and hide our buttons and input boxes. 
+                            //Show and hide our buttons and input boxes.
                             $( "[id$=viewPinBtn]" ).click(function() {
                                 $( "[id$=yourPinHidden]" ).hide();
                                 $( "[id$=viewPinBtn]" ).hide();
                                 $( "[id$=hidePinBtn]" ).show();
                                 $( "[id$=yourPin]" ).show();
                             });
-                            
+
                             $( "[id$=hidePinBtn]" ).click(function() {
                                 $( "[id$=hidePinBtn]" ).hide();
                                 $( "[id$=yourPin]" ).hide();
@@ -832,7 +708,7 @@
                                 $( "[id$=yourPinHidden]" ).val( "••••••••••" );
                                 $( "[id$=viewPinBtn]" ).show();
                             });
-                        
+
                             $( "[id$=resetPin]" ).click(function() {
                                 $( "[id$=hidePinBtn]" ).hide();
                                 $( "[id$=yourPin]" ).hide();
@@ -843,7 +719,7 @@
                                 $( "[id$=savePinBtn]" ).show();
                                 $( "[id$=cancelPinInput]" ).show();
                             });
-                            
+
                             $( "[id$=cancelPinInput]" ).click(function() {
                                 $( "[id$=yourPinHidden]" ).show();
                                 $( "[id$=yourPinHidden]" ).val( "••••••••••" );
@@ -854,21 +730,21 @@
                                 $( "[id$=savePinBtn]" ).hide();
                                 $( "[id$=cancelPinInput]" ).hide();
                             });
-                            
+
                             $( document ).ready(function() {
                                 $( "[id$=yourPinHidden]" ).val( "••••••••••" );
                                 $( "[id$=newPinInput]" ).val( "" );
                             });
-                        
+
                             function inputLimiter(e,allow) {
                                 var AllowableCharacters = '';
-                    
+
                                 if (allow == 'Letters'){AllowableCharacters=' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';}
                                 if (allow == 'Numbers'){AllowableCharacters='1234567890';}
                                 if (allow == 'NameCharacters'){AllowableCharacters=' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';}
                                 if (allow == 'NameCharactersAndNumbers'){AllowableCharacters='1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-\'';}
                                 if (allow == 'Currency'){AllowableCharacters='1234567890.';}
-                    
+
                                 var k = document.getElementById('newPinInput')?parseInt(e.keyCode): parseInt(e.which);
                                 if (k!=13 && k!=8 && k!=0){
                                     if ((e.ctrlKey==false) && (e.altKey==false)) {
@@ -882,9 +758,9 @@
                             }
                         </script>
                     </apex:form>
-                          
+
                     <hr />
-                                              
+
                     <div class="dropdown" style="display:inline-block">
                         <button type="button" class="btn kbbtn dropdown-toggle" style="width:160px;color:#fff;background:#990033;padding:5px;" data-toggle="dropdown" href="//asu.edu/helpchat">
                             <span class="glyphicon glyphicon-comment pull-left" style="padding-left:10px;"></span>
@@ -894,46 +770,46 @@
                         <ul class="dropdown-menu">
                             <li><a id="faChat" class="chat-link">Finances</a></li>
 
-                            <li><a id="bomgarChat" class="chat-link">Other</a></li>   
+                            <li><a id="bomgarChat" class="chat-link">Other</a></li>
                        </ul>
                     </div>
-                        
+
                         <script>
                             $( "#bomgarChat" ).click(function() {
                                 $( "#bomgarChatForm" ).slideToggle( "700");
                                 $( "#faChatForm" ).slideUp( "700" );
                             });
-                            
+
                             $( "#faChat" ).click(function() {
                                 $( "#bomgarChatForm" ).slideUp( "700");
                                 $( "#faChatForm" ).slideToggle( "700" );
                             });
                         </script>
-                        
-                        <div id="bomgarChatForm" style="margin-top:5px;display:none;">
+
+                        <div id="bomgarChatForm" style="margin-top:20px;display:none;">
                             <apex:pageBlock >
                                 <h5>Get Help</h5><br /><br />
-                                <textarea id="description" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;"></textarea><br />
+                                <textarea id="description" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea><br />
                                 <apex:pageBlockButtons location="bottom">
-                                    <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;" onClick="start();">Start Chat</button>
+                                    <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;" onClick="start();">Start Chat</button>
                                 </apex:pageBlockButtons>
                             </apex:pageBlock>
                         </div>
 
-                        <div id="faChatForm" style="margin-top:5px;display:none;">
+                        <div id="faChatForm" style="margin-top:20px;display:none;">
                             <apex:pageBlock >
                                 <h5>Get Help with Finances</h5><br /><br />
-                                <textarea id="FADesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;"></textarea><br />
+                                <textarea id="FADesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea><br />
                                 <apex:pageBlockButtons location="bottom">
-                                    <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;" onClick="startFAChat();">Start Chat</button>
+                                    <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;" onClick="startFAChat();">Start Chat</button>
                                 </apex:pageBlockButtons>
                             </apex:pageBlock>
                         </div>
                     </div>
                 </div>
             </apex:outputPanel>
-            
-            
+
+
             <apex:outputPanel rendered="{!MyCasesBox}">
             <div class="box">
                 <div class="header">
@@ -941,17 +817,18 @@
                 </div>
                 <div class="content box-padding" id="crm_content" >
                         <p>Save time and submit your question or support request online.</p>
-                        <button id="showNewCase" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;">New Case</button>
-                        <button id="cancel" class="btn kbbtn" style="display:none;color:#fff;background:#990033;padding:5px;"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;My Cases</button><br /><br />
-                        
+                        <button id="showNewCase" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:75px;">New Case</button>
+                        <button id="cancel" class="btn kbbtn" style="display:none;color:#fff;background:#990033;padding:5px;width:75px;">My Cases</button><br /><br />
+
                         <script>
                             $( "#showNewCase" ).click(function() {
                                 $( "#newCaseForm" ).slideToggle( "700" );
                                 $( "#myCases" ).slideToggle( "700" );
                                 $( "#showNewCase" ).hide();
                                 $( "#cancel" ).show();
+                                $( "[id$=caseSubject]" ).focus(700);
                             });
-                            
+
                             $( "#cancel" ).click(function() {
                                 $( "#newCaseForm" ).slideToggle( "700" );
                                 $( "#myCases" ).slideToggle( "700" );
@@ -959,7 +836,7 @@
                                 $( "#cancel" ).hide();
                             });
                         </script>
-                        
+
                         <div id="myCases">
                         <apex:form >
                             <h5>My Open Cases</h5>
@@ -978,7 +855,7 @@
                                 </apex:outputText>
                             </apex:pageBlock>
                         </apex:form>
-    
+
                         <br />
                         <apex:form >
                             <h5>My Closed Cases</h5>
@@ -1008,9 +885,9 @@
                                 </apex:pageBlock>
                             </apex:form>
                         </div>
-                        
+
                         </div>
-                        
+
                         <script>
                             jQuery(document).ready(function($){
                                 $("td.truncate").each(function(){
@@ -1021,66 +898,58 @@
                                     });
                             });
                         </script>
-                        
+
                        <div id="newCaseForm" style="display:none">
-                        <apex:form styleClass="caseForm" style="width:100%">
-                            <apex:pageBlock >
-                                <apex:pageBlockButtons location="top">
-                                    <h5>Create a new case</h5>
-                                </apex:pageBlockButtons>
-                                <apex:pageBlockSection collapsible="false" columns="1">
-                                    <label for="caseSubject">Subject</label>
-                                    <apex:inputField id="caseSubject" styleClass="caseField" value="{!c.subject}" required="true" style="max-width:305px;border:solid 1px gray;" label=""/>
-                                    <label for="caseDesc">Description</label>
-                                    <apex:inputField id="caseDesc" styleClass="caseField" value="{!c.description}" required="true" style="height:100px;resize:none;max-width:305px;border: solid 1px gray;" label=""/>   
-                                    <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>                                 
-                                </apex:pageBlockSection>
-                                <apex:pageblockbuttons location="bottom">
-                                    <apex:commandButton action="{!submitCase}" value="Submit" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;"/>
-                                    <apex:commandButton value="Clear" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:40px" onclick="this.form.reset();return false;" />
-                                </apex:pageblockbuttons>
-                            </apex:pageBlock> 
-                        </apex:form>
-                        </div>
+                           <apex:form style="width:100%">
+                               <h5>Create a New Case</h5>
+                               <div style="height:5px;"></div>
+                               <apex:pageBlock >
+                                   <apex:pageBlockSection collapsible="false" columns="1">
+                                       <label for="caseSubject" style="margin-bottom:0px;">Subject</label>
+                                       <apex:inputField id="caseSubject" styleClass="caseField" value="{!c.subject}" required="true" label="" html-placeholder="Enter a subject"/>
+                                       <br />
+                                       <label for="caseDesc" style="margin-bottom:0px;">Description</label>
+                                       <apex:inputField id="caseDesc" styleClass="caseField" value="{!c.description}" required="true" style="height:100px;resize:none;" label="" html-placeholder="Enter a description"/>
+                                       <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>
+                                   </apex:pageBlockSection>
+                                   <apex:pageblockbuttons location="bottom">
+                                       <apex:commandButton action="{!submitCase}" value="Submit" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:55px;"/>
+                                   </apex:pageblockbuttons>
+                               </apex:pageBlock>
+                           </apex:form>
+                       </div>
                     </div>
                 </div><!-- end box -->
                 </apex:outputPanel>
-            </div>        
+            </div>
           </div>
         </div>
-      
+
         <div style="float:right;margin:1em;">
             <a href="/feedback">
                 <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg" alt="Feedback" title="Please leave your feedback" onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'" onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'" border="0"/>
             </a>
         </div>
         <br />
-        <div id="main-bottom" class="row-fluid main-bottom"> 
-            <div class="region region-main-bottom clearfix">
-                <div id="block-asu-brand-asu-brand-footer" class="clearfix block block-asu-brand">       
-                    <div class="content1"> 
-                    <a href="https://thesundevils.com/"><img class="sparky" src="https://webapp4.asu.edu/myasu/images/Sparky.png" alt="The Sun Devils"/></a> 
-                    <!-- START FOOTER /asuthemes/3.1/includes/footer.html -->   
-                        <ul id="asu_footer" class="asu_black_footer">
-                          <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
-                          <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>
-                          <li><a href="http://www.asu.edu/privacy/">Privacy</a></li>
-                          <li><a href="http://www.asu.edu/emergency/">Emergency</a></li>
-                          <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
-                        </ul>
-                    <!-- END FOOTER -->
-                    </div>
-                </div>
-            </div>
+        <br />
+        <br />
+        <div id="asu_footer">
+            <ul class="default">
+                <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
+                <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>
+                <li><a href="http://www.asu.edu/privacy/">Privacy</a></li>
+                <li><a href="http://www.asu.edu/emergency/">Emergency</a></li>
+                <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
+            </ul>
         </div>
     </div><!-- end ASU Content -->
-        
+
     <!-- Autocomplete Code -->
     <script type="text/javascript">
-        var PLACEHOLDER = ''; 
+        var PLACEHOLDER = '';
         var articleObjects;
         var queryTerm;
-        
+
         $('[id$=articleTextBoxId]').autocomplete({
             minLength: 2,
             source: function(request, response) {
@@ -1104,17 +973,16 @@
                         return false;
                     },
          })
-         .attr('placeholder','Enter Search Terms')
          .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
             var entry = "<a href=/akb?id=" + item.KnowledgeArticleId + ">" + item.Title + "</a><hr>";
-           
+
             entry = entry.replace(queryTerm, "<b>" + queryTerm + "</b>");
             return $( "<li></li>" )
                 .data( "item.autocomplete", item )
                 .append( entry )
                 .appendTo( ul );
         };
-            
+
         $('[id$=articleTextBoxId]').val(PLACEHOLDER);
         $('[id$=articleTextBoxId]').on("focus",  function(event){
             $tgt = $(event.target);
@@ -1131,21 +999,83 @@
             }
         });
     </script>
+
     <script>
-        window.onload = function() 
+        $( document ).ready(function() {
+            $( "#articleContentDiv img" ).addClass("img-responsive");
+        });
+    </script>
+
+    <script>
+        function getLinks()
         {
-            if (!(navigator.userAgent.match(/Android/i)
-                 || navigator.userAgent.match(/webOS/i)
-                 || navigator.userAgent.match(/iPhone/i)
-                 || navigator.userAgent.match(/iPad/i)
-                 || navigator.userAgent.match(/iPod/i)
-                 || navigator.userAgent.match(/BlackBerry/i)
-                 || navigator.userAgent.match(/Windows Phone/i)))
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var addLink;
+            var linkArray = [];
+            var articleLinks = []
+
+            for (i = 0; i < links.length; i++)
             {
-                document.getElementById("normalPhone").firstChild.href = "#";
-                document.getElementById("roverPhone").firstChild.href = "#";        
+                if (links[i].href.indexOf('/articles') > -1)
+                {
+                    articleLinks.push(links[i]);
+                }
             }
+
+            for (i = 0; i < articleLinks.length; i++)
+            {
+                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
+                linkArray.push(addlink);
+            }
+            linkArray = JSON.stringify(linkArray);
+            setLink(linkArray);
         }
-    </script> 
+
+        function changeLinkOnPage(newLinks)
+        {
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var articleLinks = []
+            var parsed = JSON.parse(newLinks);
+            var arr = [];
+
+            for (i = 0; i < links.length; i++)
+            {
+                if (links[i].href.indexOf('/articles') > -1)
+                {
+                    articleLinks.push(links[i]);
+                }
+            }
+
+            for (var x in parsed)
+            {
+                arr.push(parsed[x]);
+            }
+
+            for (i = 0; i < articleLinks.length; i++)
+            {
+                articleLinks[i].href = arr[i];
+                articleLinks[i].target = "_self";
+            }
+            return false;
+        }
+    </script>
+
+    <script>
+        if (!(navigator.userAgent.match(/Android/i)
+             || navigator.userAgent.match(/webOS/i)
+             || navigator.userAgent.match(/iPhone/i)
+             || navigator.userAgent.match(/iPad/i)
+             || navigator.userAgent.match(/iPod/i)
+             || navigator.userAgent.match(/BlackBerry/i)
+             || navigator.userAgent.match(/Windows Phone/i)))
+        {
+            document.getElementById("normalPhone").addEventListener("click", function(event){
+                event.preventDefault();
+            });
+            document.getElementById("roverPhone").addEventListener("click", function(event){
+                event.preventDefault();
+            });
+        }
+    </script>
 </body>
 </apex:page>

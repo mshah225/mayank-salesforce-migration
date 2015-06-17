@@ -1,42 +1,40 @@
 <apex:component >
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
-
-    <link type="text/css" rel="stylesheet" media="all" href="//www.asu.edu/asuthemes/4.0-rsp.1/css/asu_header.min.css" />
-    <!--[if lte IE 8]>
-    <style type="text/css">
-        #asu_hdr.asu_responsive {min-width:938px;}
-        #asu_search_module input.asu_search_box { line-height: 19px; }
-        #asu_universal_nav ul li:hover > ul {top: 25px;}
+    <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.jquery_ui, '/themes/base/minified/jquery-ui.min.css')}"/>
+    <c:myasustyles />
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/asu_header.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/myASUHeader.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
+    <style>
+        #asu_login_module:nth-child(2) {
+            padding-right: 7px !important;
+        }
     </style>
-    <![endif]-->
-    <!--[if lte IE 7]>
-    <style type="text/css">
-        #asu_search_module {height:17px;float:none; text-align:right; top:3px;}
-        .asu_search_selection {position:relative; top:-2px;}
-        #asu_universal_nav ul li.parent ul {display: none;}
-        #asu_universal_nav > ul > li.parent > a {background-image: none; padding-right: 8px;}
-        #asu_universal_nav > ul > li.parent:hover > a {background-image: none; background-color: transparent; color: #903; filter: none;}
-    </style>
-    <![endif]-->
-    <!--[if lte IE 6]>
-    <style type="text/css">
-        #asu_hdr.asu_hdr_maroon {background: #903;}
-    </style>
-    <![endif]-->
-
     <!--[if IE 9]>
     <style type="text/css">
-        #asu_universal_nav ul ul {filter: none; box-shadow: 0px 6px 6px 0px #999;}
-        #asu_universal_nav > ul > li.parent:hover > a {filter: none; box-shadow: 6px 0px 6px -6px #999, -6px 0px 6px -6px #999;}
+    #asu_universal_nav ul ul{filter:none;box-shadow:0 6px 6px 0 #999}#asu_universal_nav>ul>li.parent:hover>a{filter:none;box-shadow:6px 0 6px -6px #999,-6px 0 6px -6px #999}
     </style>
     <![endif]-->
-
-    <script type="text/javascript">
-        <!--//--><![CDATA[//><!--
+    <script>
         var ASUHeader = ASUHeader || {};
-        //--><!]]>
-    </script>
+        ASUHeader.browser = false;
+        window.ASUHeader = window.ASUHeader || {};
+        ASUHeader.site_menu = ASUHeader.site_menu || {};
+        ASUHeader.site_menu.json = '[{"title":"Home","path":"https://webapp4.asu.edu/myasu"},{"title":"Finances","path":"https://webapp4.asu.edu/myasu/student/finances"},{"title":"Service Center","path":"\/"},{"title":"Campus Services","path":"https://webapp4.asu.edu/myasu/student/campusservices"},{"title":"Profile","path":"https://webapp4.asu.edu/myasu/student/profile"}]';
 
-    <script type="text/javascript" src="//www.asu.edu/asuthemes/4.0-rsp.1/js/asu_header.min.js"></script>
+        ASUHeader.site_menu.site_name = "Student Service Center";
+        ASUHeader.user_signedin = true;
+        ASUHeader.user_displayname = '{!$User.FirstName}';
+    </script>
+    <!--[if IE 5]><script>ASUHeader.browser = true;</script><![endif]-->
+    <!--[if IE 6]><script>ASUHeader.browser = true;</script><![endif]-->
+    <!--[if IE 7]><script>ASUHeader.browser = true;</script><![endif]-->
+    <!--[if IE 8]><script>ASUHeader.browser = true;</script><![endif]-->
+    <apex:includeScript value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/js/asu_header.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquery_ui, '/ui/minified/jquery-ui.min.js')}"/>
 </apex:component>

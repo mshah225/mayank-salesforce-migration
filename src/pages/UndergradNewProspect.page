@@ -105,7 +105,7 @@
                 <apex:outputText value="" />
                 <apex:inputField value="{!contact.FirstName}" required="true" id="firstname"/>
                 <apex:inputField value="{!contact.LastName}" required="true" id="lastname"/>
-                <apex:inputField value="{!contact.Lead_Email__c}" required="true" id="email" label="Email" type="email"/>
+                <apex:inputField value="{!contact.Email}" required="true" id="email" label="Email" type="email"/>
                 <apex:inputField value="{!contact.Phone}" id="phone" type="tel"/>
                 <apex:inputField value="{!contact.MobilePhone}" id="mobilephone" label="Mobile Phone" type="tel"/>
                 <apex:pageBlockSectionItem >

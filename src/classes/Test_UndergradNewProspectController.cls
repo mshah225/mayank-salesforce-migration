@@ -179,16 +179,19 @@ private class Test_UndergradNewProspectController
     @isTest static void testContactValidation()
     {
         setUpController();
-        // Page selections
+
         ug.originSelection = 'Email';
         ug.pickSelection = '--Select--';
-        // Create case
+
         ug.c.Functional_Group__c = 'Business';
         ug.c.Subject = 'Test Subject';
-        // Create contact
+
         ug.contact.FirstName = 'Test';
         ug.contact.LastName = 'Contact';
-        // Create previous education
+        ug.contact.Email = 'test@nomail.com';
+        ug.contact.MailingPostalCode = null;
+        ug.contact.Phone = null;
+
         Id testSchool = [SELECT Id FROM Account WHERE Name = 'Test School'].Id;
         ug.previousEducation.Account__c = testSchool;
         ug.savePage();
@@ -197,61 +200,7 @@ private class Test_UndergradNewProspectController
         Boolean found = false;
         for (ApexPages.Message msg : msgs)
         {
-           if (msg.getSummary() == 'You must fill out at least two of these three fields: Postal Code, Email, or Phone.')
-           {
-              found = true;
-           }
-        }
-        System.assert(found);
-
-        // Create contact
-        ug.contact.FirstName = 'Test';
-        ug.contact.LastName = 'Contact';
-        ug.contact.MailingPostalCode = '58585';
-        ug.savePage();
-
-        msgs = ApexPages.getMessages();
-        found = false;
-        for (ApexPages.Message msg : msgs)
-        {
-           if (msg.getSummary() == 'You must fill out at least two of these three fields: Postal Code, Email, or Phone.')
-           {
-              found = true;
-           }
-        }
-        System.assert(found);
-
-        // Create contact
-        ug.contact.FirstName = 'Test';
-        ug.contact.LastName = 'Contact';
-        ug.contact.MailingPostalCode = null;
-        ug.contact.Lead_Email__c = 'test@nomail.com';
-        ug.savePage();
-
-        msgs = ApexPages.getMessages();
-        found = false;
-        for (ApexPages.Message msg : msgs)
-        {
-           if (msg.getSummary() == 'You must fill out at least two of these three fields: Postal Code, Email, or Phone.')
-           {
-              found = true;
-           }
-        }
-        System.assert(found);
-
-        // Create contact
-        ug.contact.FirstName = 'Test';
-        ug.contact.LastName = 'Contact';
-        ug.contact.MailingPostalCode = null;
-        ug.contact.Lead_Email__c = null;
-        ug.contact.Phone = '(484) 494-8944';
-        ug.savePage();
-
-        msgs = ApexPages.getMessages();
-        found = false;
-        for (ApexPages.Message msg : msgs)
-        {
-           if (msg.getSummary() == 'You must fill out at least two of these three fields: Postal Code, Email, or Phone.')
+           if (msg.getSummary() == 'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.')
            {
               found = true;
            }

@@ -240,8 +240,18 @@ public with sharing class Test_CaseInboundEmailHandler
 
 		// Generate the thread Id for the above case and send and email containing it
 		String caseId = createdCase.Id;
-		String threadId =  '_'  + UserInfo.getOrganizationId().left(4) + '0'  + UserInfo.getOrganizationId().mid(11,4) + '._'  + caseId.left(4) + '5'  + caseId.mid(10,5) + '';
-		System.debug('!!!DEBUG: CaseId is ' + caseId);
+		String threadId =  '_'  + UserInfo.getOrganizationId().left(4) + '0'  + UserInfo.getOrganizationId().mid(11,4) + '._'  + caseId.left(4) + '0'  + caseId.mid(10,5) + '';
+
+		try
+		{
+			caseId = Cases.getCaseIdFromEmailThreadId(threadId);
+			createdCase = [SELECT Id FROM Case WHERE Id = :caseId];
+		}
+		catch (Exception e)
+		{
+			// Most likely we're using a malformed threadId. Use the other type instead.
+			threadId =  '_'  + UserInfo.getOrganizationId().left(4) + '0'  + UserInfo.getOrganizationId().mid(11,4) + '._'  + caseId.left(4) + '5'  + caseId.mid(10,5) + '';
+		}
 
 		// Reopen the case via email
 		Messaging.InboundEmail email = new Messaging.InboundEmail();

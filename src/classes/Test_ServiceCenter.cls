@@ -1,5 +1,5 @@
 @isTest
-private class Test_ServiceCenter 
+private class Test_ServiceCenter
 {
     private static User testUser;
     private static User testUserAC;
@@ -17,7 +17,7 @@ private class Test_ServiceCenter
     private static AKBController akb;
     private static ServiceCenter sc;
 
-    private static void getProfileAndTerms() 
+    private static void getProfileAndTerms()
     {
         p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
 
@@ -29,14 +29,14 @@ private class Test_ServiceCenter
         termAC.Year__c = ACYear;
         insert termAC;
 
-        Term__c termB = new Term__c(); 
+        Term__c termB = new Term__c();
         termB.Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day());
         String BYear = String.valueOf(dTb.year());
         termB.Year__c = BYear;
         insert termB;
     }
 
-    private static void setUp() 
+    private static void setUp()
     {
         getProfileAndTerms();
 
@@ -62,7 +62,7 @@ private class Test_ServiceCenter
         Test.setCurrentPage(serviceCenter);
     }
 
-    private static void setUpOppNotEnrolled() 
+    private static void setUpOppNotEnrolled()
     {
         getProfileAndTerms();
 
@@ -102,7 +102,7 @@ private class Test_ServiceCenter
         Test.setCurrentPage(serviceCenter);
     }
 
-    private static void setUpACOpp() 
+    private static void setUpACOpp()
     {
         getProfileAndTerms();
 
@@ -143,7 +143,7 @@ private class Test_ServiceCenter
         Test.setCurrentPage(serviceCenter);
     }
 
-    private static void setUpBOpp() 
+    private static void setUpBOpp()
     {
         getProfileAndTerms();
 
@@ -184,11 +184,11 @@ private class Test_ServiceCenter
         Test.setCurrentPage(serviceCenter);
     }
 
-    @isTest static void submitCaseTest() 
+    @isTest static void submitCaseTest()
     {
         setUp();
         Test.startTest();
-        System.runAs(testUser) 
+        System.runAs(testUser)
         {
             sc = new ServiceCenter();
             Case c = sc.c;
@@ -203,11 +203,11 @@ private class Test_ServiceCenter
         Test.stopTest();
     }
 
-    @isTest static void testCases() 
+    @isTest static void testCases()
     {
         setUp();
         Test.startTest();
-        System.runAs(testUser) 
+        System.runAs(testUser)
         {
             sc = new ServiceCenter();
             Case c = sc.c;
@@ -223,10 +223,10 @@ private class Test_ServiceCenter
         Test.stopTest();
     }
 
-    @isTest static void testCasesContact() 
+    @isTest static void testCasesContact()
     {
         setUp();
-        System.runAs(testUser) 
+        System.runAs(testUser)
         {
             sc = new ServiceCenter();
             Case c = sc.c;
@@ -240,11 +240,11 @@ private class Test_ServiceCenter
         }
     }
 
-    @isTest static void getBoxes() 
+    @isTest static void getBoxes()
     {
         setUp();
         Test.startTest();
-        System.runAs(testUser) 
+        System.runAs(testUser)
         {
             sc = new ServiceCenter();
             sc.getNormalPhone();
@@ -256,27 +256,25 @@ private class Test_ServiceCenter
         Test.stopTest();
     }
 
-    @isTest static void testPin() 
+    @isTest static void testPin()
     {
         setUp();
         System.runAs(testUser) {
             sc = new ServiceCenter();
             sc.contact = testContact;
-            sc.getContact();
             sc.getMyPin();
             sc.newPin = 111111;
             sc.changePin();
             sc.newPin = 6758394;
             sc.changePin();
             sc.contact = null;
-            sc.getContact();
         }
     }
 
-    @isTest static void getNotEnrolledOppBoxes() 
+    @isTest static void getNotEnrolledOppBoxes()
     {
         setUpOppNotEnrolled();
-        System.runAs(testUser) 
+        System.runAs(testUser)
         {
             sc = new ServiceCenter();
             sc.contact = testContact;
@@ -291,10 +289,10 @@ private class Test_ServiceCenter
         }
     }
 
-    @isTest static void getACOppBoxes() 
+    @isTest static void getACOppBoxes()
     {
         setUpACOpp();
-        System.runAs(testUserAC) 
+        System.runAs(testUserAC)
         {
             sc = new ServiceCenter();
             sc.contact = testContactAC;
@@ -309,10 +307,10 @@ private class Test_ServiceCenter
         }
     }
 
-    @isTest static void getBOppBoxes() 
+    @isTest static void getBOppBoxes()
     {
         setUpBOpp();
-        System.runAs(testUserB) 
+        System.runAs(testUserB)
         {
             sc = new ServiceCenter();
             sc.contact = testContactB;
@@ -327,7 +325,7 @@ private class Test_ServiceCenter
         }
     }
 
-    @isTest static void getNoOppBoxes() 
+    @isTest static void getNoOppBoxes()
     {
         setUpACOpp();
         System.runAs(testUserAC) {
@@ -343,11 +341,11 @@ private class Test_ServiceCenter
         }
     }
 
-    @isTest static void testCaseDetails() 
+    @isTest static void testCaseDetails()
     {
         setUp();
         Test.startTest();
-        System.runAs(testUser) 
+        System.runAs(testUser)
         {
             sc = new ServiceCenter();
             Case c = sc.c;
@@ -361,13 +359,13 @@ private class Test_ServiceCenter
         Test.stopTest();
     }
 
-    @isTest static void viewCaseTest() 
+    @isTest static void viewCaseTest()
     {
         setUp();
         String source;
         PageReference viewcase = Page.viewcase;
         Test.setCurrentPage(viewcase);
-        System.runAs(testUser) 
+        System.runAs(testUser)
         {
             sc = new ServiceCenter();
             Case c = sc.c;
@@ -384,13 +382,13 @@ private class Test_ServiceCenter
         System.assertEquals(source, 'studentSC');
     }
 
-    @isTest static void viewCaseFromViewAllTest() 
+    @isTest static void viewCaseFromViewAllTest()
     {
         setUp();
         String source;
         PageReference viewcase = Page.viewcase;
         Test.setCurrentPage(viewcase);
-        System.runAs(testUser) 
+        System.runAs(testUser)
         {
             sc = new ServiceCenter();
             Case c = sc.c;
@@ -409,13 +407,13 @@ private class Test_ServiceCenter
     }
 
 
-    @isTest static void testSuggestAnArticle() 
+    @isTest static void testSuggestAnArticle()
     {
         setUp();
         PageReference viewcase = Page.viewcase;
         Test.setCurrentPage(viewcase);
         Id newCaseId;
-        System.runAs(testUser) 
+        System.runAs(testUser)
         {
             sc = new ServiceCenter();
             sc.suggestAnArticle.Description = 'Test Description';

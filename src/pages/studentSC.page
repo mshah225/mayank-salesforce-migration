@@ -522,6 +522,7 @@
                         <div id="roverPhone">
                             <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
                         </div>
+                            
                         <br /><br />
 
                         <apex:outputPanel id="pinPanel" rendered="{!IF(myPin != null,true,false)}">
@@ -914,7 +915,16 @@
             document.getElementById("normalPhone").addEventListener("click", function(event){
                 event.preventDefault();
             });
+
+            document.getElementById("normalPhone").addEventListener("contextmenu", function(event){
+                event.preventDefault();
+            });
+
             document.getElementById("roverPhone").addEventListener("click", function(event){
+                event.preventDefault();
+            });
+
+            document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
                 event.preventDefault();
             });
         }

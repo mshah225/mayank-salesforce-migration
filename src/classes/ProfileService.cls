@@ -1,4 +1,4 @@
-public class ProfileService 
+public without sharing class ProfileService 
 {
 	/**
 	* Returns a list of objects that the profile has access to

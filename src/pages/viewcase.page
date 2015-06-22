@@ -155,7 +155,12 @@
     <c:SCHeader />
 
     <div id="asu_content_well">
-        <c:SCPageNotifications pinError="{!pinError}" pinMessage="{!pinMessage}" pinSuccess="{!pinSuccess}" feedback="{!$CurrentPage.parameters.Feedback}" confirm="{!$CurrentPage.parameters.Confirm}" suggest="{!$CurrentPage.parameters.Suggest}"/>
+        <c:SCPageNotifications pinError="{!pinError}" 
+                               pinMessage="{!pinMessage}" 
+                               pinSuccess="{!pinSuccess}" 
+                               feedback="{!$CurrentPage.parameters.Feedback}" 
+                               confirm="{!$CurrentPage.parameters.Confirm}" 
+                               suggest="{!$CurrentPage.parameters.Suggest}"/>
 
         <div class="container">
 
@@ -257,10 +262,19 @@
             document.getElementById("normalPhone").addEventListener("click", function(event){
                 event.preventDefault();
             });
+
+            document.getElementById("normalPhone").addEventListener("contextmenu", function(event){
+                event.preventDefault();
+            });
+
             document.getElementById("roverPhone").addEventListener("click", function(event){
                 event.preventDefault();
             });
+
+            document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
+                event.preventDefault();
+            });
         }
-    </script> 
+    </script>
 </body>
 </apex:page>

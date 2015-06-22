@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component allowDML="true">
 	<!-- This component renders the Immediate Assitance Box -->
 	<apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean"/>
 	<apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean"/>

@@ -5,15 +5,9 @@
     action="{!init}"
     extensions="NavLinks">
 <head>
-    <title>{!caseDetails.Subject}</title>
-    <meta charset="utf-8" />
-    <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
+    <title>My ASU - {!caseDetails.Subject}</title>
     <c:asu_responsive_header_section />
-    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
-    <c:myasustyles />
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
-
+    
     <style>
         .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
             border-top-color: #990033 !important;

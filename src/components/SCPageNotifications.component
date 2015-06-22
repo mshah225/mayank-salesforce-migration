@@ -1,8 +1,11 @@
-<apex:component>
+<apex:component >
 	<!-- This component renders the page notifications on the page -->
 	<apex:attribute name="pinError" description="Boolean to display the pin error banner" type="Boolean"/>
 	<apex:attribute name="pinMessage" description="This is the message that is displayed" type="String"/>
 	<apex:attribute name="pinSuccess" description="Boolean to display the pin success banner" type="Boolean"/>
+	<apex:attribute name="feedback" description="String to determine if feedback is given" type="String"/>
+	<apex:attribute name="confirm" description="String to determine if AKB feedback or site feedback is given" type="String"/>
+	<apex:attribute name="suggest" description="String to determine if suggest an article feedback is given" type="String"/>
 	<center>
 	    <apex:outputPanel rendered="{!pinError}">
 	        <div class="alert alert-danger">
@@ -40,5 +43,12 @@
 	            <p><strong>Thank you for your feedback about the My ASU Service Center!</strong></p>
 	        </div>
 	    </apex:outputPanel>
+
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest != null}">
+            <div class="alert alert-success feedbackConfirm">
+                <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
+                <p><strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.</p>
+            </div>
+         </apex:outputPanel>
 	</center>
 </apex:component>

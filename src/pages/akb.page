@@ -104,72 +104,14 @@
     </script>
 
     <c:SCBomgarScripts />
-
-    <script>
-        $( document ).ready(function() {
-            $( "#articleContentDiv img" ).addClass("img-responsive");
-        });
-    </script>
-
-    <script>
-        function getLinks()
-        {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var addLink;
-            var linkArray = [];
-            var articleLinks = []
-
-            for (i = 0; i < links.length; i++)
-            {
-                if (links[i].href.indexOf('/articles') > -1)
-                {
-                    articleLinks.push(links[i]);
-                }
-            }
-
-            for (i = 0; i < articleLinks.length; i++)
-            {
-                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
-                linkArray.push(addlink);
-            }
-            linkArray = JSON.stringify(linkArray);
-            setLink(linkArray);
-        }
-
-        function changeLinkOnPage(newLinks)
-        {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var articleLinks = []
-            var parsed = JSON.parse(newLinks);
-            var arr = [];
-
-            for (i = 0; i < links.length; i++)
-            {
-                if (links[i].href.indexOf('/articles') > -1)
-                {
-                    articleLinks.push(links[i]);
-                }
-            }
-
-            for (var x in parsed)
-            {
-                arr.push(parsed[x]);
-            }
-
-            for (i = 0; i < articleLinks.length; i++)
-            {
-                articleLinks[i].href = arr[i];
-                articleLinks[i].target = "_self";
-            }
-            return false;
-        }
-    </script>
 </head>
 <body onload="getLinks()">
+    <div id="main-search" class="main-search closed"></div>
     <c:SCHeader/>
 
     <div id="asu_content_well">
-        <c:SCPageNotifications pinError="{!pinError}" pinMessage="{!pinMessage}" pinSuccess="{!pinSuccess}"/>
+        <c:SCPageNotifications pinError="{!pinError}" pinMessage="{!pinMessage}" pinSuccess="{!pinSuccess}" feedback="{!$CurrentPage.parameters.Feedback}" confirm="{!$CurrentPage.parameters.Confirm}" suggest="{!$CurrentPage.parameters.Suggest}"/>
+        
         <div class="container">
             <ol class="breadcrumb">
                 <li><a href="/studentSC">Back</a></li>
@@ -337,10 +279,6 @@
                                 $( '[id$=relatedArticleLink]' ).first().hide();
                             </script>
 
-                            <script>
-                                $( '[id$=relatedArticleLink]' ).first().hide();
-                            </script>
-
                             <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
                                 Suggest An Article
                             </button>
@@ -439,6 +377,66 @@
                 $tgt.addClass('placeHolder');
             }
         });
+    </script>
+
+    <script>
+        $( document ).ready(function() {
+            $( "#articleContentDiv img" ).addClass("img-responsive");
+        });
+    </script>
+
+    <script>
+        function getLinks()
+        {
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var addLink;
+            var linkArray = [];
+            var articleLinks = []
+
+            for (i = 0; i < links.length; i++)
+            {
+                if (links[i].href.indexOf('/articles') > -1)
+                {
+                    articleLinks.push(links[i]);
+                }
+            }
+
+            for (i = 0; i < articleLinks.length; i++)
+            {
+                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
+                linkArray.push(addlink);
+            }
+            linkArray = JSON.stringify(linkArray);
+            setLink(linkArray);
+        }
+
+        function changeLinkOnPage(newLinks)
+        {
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var articleLinks = []
+            var parsed = JSON.parse(newLinks);
+            var arr = [];
+
+            for (i = 0; i < links.length; i++)
+            {
+                if (links[i].href.indexOf('/articles') > -1)
+                {
+                    articleLinks.push(links[i]);
+                }
+            }
+
+            for (var x in parsed)
+            {
+                arr.push(parsed[x]);
+            }
+
+            for (i = 0; i < articleLinks.length; i++)
+            {
+                articleLinks[i].href = arr[i];
+                articleLinks[i].target = "_self";
+            }
+            return false;
+        }
     </script>
 
     <script>

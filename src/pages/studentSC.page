@@ -37,10 +37,11 @@
         if (window.top !== window.self) top.location.replace(self.location.href);
     </script>
 
+    <div id="main-search" class="main-search closed"></div>
     <c:SCHeader />
 
     <div id="asu_content_well">
-        <c:SCPageNotifications pinError="{!pinError}" pinMessage="{!pinMessage}" pinSuccess="{!pinSuccess}"/>
+        <c:SCPageNotifications pinError="{!pinError}" pinMessage="{!pinMessage}" pinSuccess="{!pinSuccess}" feedback="{!$CurrentPage.parameters.Feedback}" confirm="{!$CurrentPage.parameters.Confirm}" suggest="{!$CurrentPage.parameters.Suggest}"/>
 
         <apex:form id="suggestAnArticle">
             <!-- Modal -->

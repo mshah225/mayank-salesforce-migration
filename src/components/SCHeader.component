@@ -1,7 +1,6 @@
 <apex:component controller="NavLinks">
 	<!-- This component renders the ASU responsive header for the Service Center -->
 	<!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
-    <div id="main-search" class="main-search closed"></div>
     <div id="asu_hdr" class="asu_hdr_white">
         <div id="asu_mobile_hdr">
             <div id="asu_logo">

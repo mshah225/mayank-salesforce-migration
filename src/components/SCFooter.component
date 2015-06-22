@@ -1,25 +1,21 @@
 <apex:component>
 <!-- This component renders the Service Center Footer -->
 <div style="float:right;margin:1em;">
-    <a href="/feedback">
-        <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg" alt="Feedback" title="Please leave your feedback" onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'" onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'" border="0"/>
-    </a>
-</div>
-<br />
-<div id="main-bottom" class="row-fluid main-bottom">
-    <div class="region region-main-bottom clearfix">
-        <div id="block-asu-brand-asu-brand-footer" class="clearfix block block-asu-brand">
-            <div class="content1">
-            <a href="http://thesundevils.com/"><img class="sparky" src="https://webapp4.asu.edu/myasu/images/Sparky.png" alt="The Sun Devils"/></a>
-                <ul id="asu_footer" class="asu_black_footer">
-                  <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
-                  <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>
-                  <li><a href="http://www.asu.edu/privacy/">Privacy</a></li>
-                  <li><a href="http://www.asu.edu/emergency/">Emergency</a></li>
-                  <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
-                </ul>
-            </div>
-        </div>
+        <a href="/feedback">
+            <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg" alt="Feedback" title="Please leave your feedback" onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'" onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'" border="0"/>
+        </a>
     </div>
-</div><!-- END FOOTER -->
+    <br />
+    <br />
+    <br />
+    <div id="asu_footer">
+        <ul class="default">
+            <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
+            <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>
+            <li><a href="http://www.asu.edu/privacy/">Privacy</a></li>
+            <li><a href="http://www.asu.edu/asujobs/">Jobs@ASU</a></li>
+            <li><a href="http://www.asu.edu/emergency/">Emergency</a></li>
+            <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
+        </ul>
+    </div>
 </apex:component>

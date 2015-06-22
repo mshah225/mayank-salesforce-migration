@@ -8,16 +8,8 @@
     extensions="vfKeywordSearchController,AutoCompleteController,NavLinks">
 <head>
     <title>My ASU - Service Center</title>
-    <meta charset="utf-8" />
-    <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <c:asu_responsive_header_section />
-    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.jquery_ui, '/themes/base/minified/jquery-ui.min.css')}"/>
-    <c:myasustyles />
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.jquery_ui, '/ui/minified/jquery-ui.min.js')}"/>
-
+    
     <style>
         .checkboxHidden {
             visibility:hidden;
@@ -44,7 +36,9 @@
     <script>
         if (window.top !== window.self) top.location.replace(self.location.href);
     </script>
+
     <c:SCHeader />
+
     <div id="asu_content_well">
         <c:SCPageNotifications pinError="{!pinError}" pinMessage="{!pinMessage}" pinSuccess="{!pinSuccess}"/>
 
@@ -89,22 +83,14 @@
                                     <p>Search for any issue or question to learn how ASU can help!</p><br />
                                     <div class="searchKB2">
                                         <div class="form-horizontal">
-                                            <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"/>
+                                            <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"
+                                            html-placeholder="Enter search terms"/>
                                             <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
                                             <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
                                         </div>
 
                                         <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
                                     </div>
-
-                                    <script>
-                                        var articleTextBoxId = "{!$Component.articleTextBoxId}";
-
-                                        window.onload=function()
-                                        {
-                                           document.getElementById(articleTextBoxId).value = "{!$CurrentPage.parameters.ArtType}";
-                                        };
-                                    </script>
                                 </apex:pageBlock>
                             </apex:form>
                             <br />
@@ -205,7 +191,6 @@
                         return false;
                     },
          })
-         .attr('placeholder','Enter Search Terms')
          .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
             var entry = "<a href=/akb?id=" + item.KnowledgeArticleId + ">" + item.Title + "</a><hr>";
 
@@ -234,19 +219,20 @@
     </script>
 
     <script>
-        window.onload = function()
+        if (!(navigator.userAgent.match(/Android/i)
+             || navigator.userAgent.match(/webOS/i)
+             || navigator.userAgent.match(/iPhone/i)
+             || navigator.userAgent.match(/iPad/i)
+             || navigator.userAgent.match(/iPod/i)
+             || navigator.userAgent.match(/BlackBerry/i)
+             || navigator.userAgent.match(/Windows Phone/i)))
         {
-            if (!(navigator.userAgent.match(/Android/i)
-                 || navigator.userAgent.match(/webOS/i)
-                 || navigator.userAgent.match(/iPhone/i)
-                 || navigator.userAgent.match(/iPad/i)
-                 || navigator.userAgent.match(/iPod/i)
-                 || navigator.userAgent.match(/BlackBerry/i)
-                 || navigator.userAgent.match(/Windows Phone/i)))
-            {
-                document.getElementById("normalPhone").firstChild.href = "#";
-                document.getElementById("roverPhone").firstChild.href = "#";
-            }
+            document.getElementById("normalPhone").addEventListener("click", function(event){
+                event.preventDefault();
+            });
+            document.getElementById("roverPhone").addEventListener("click", function(event){
+                event.preventDefault();
+            });
         }
     </script> 
 </body>

@@ -675,22 +675,22 @@
                                 });
                             </script>
 
-                            <div id="bomgarChatForm" style="margin-top:20px;display:none;">
-                                <apex:pageBlock >
-                                    <h5>Get Help</h5><br /><br />
-                                    <textarea id="description" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea><br />
-                                    <apex:pageBlockButtons location="bottom">
-                                        <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;" onClick="start();width:60px;">Start Chat</button>
-                                    </apex:pageBlockButtons>
-                                </apex:pageBlock>
-                            </div>
-
                             <div id="faChatForm" style="margin-top:20px;display:none;">
                                 <apex:pageBlock >
                                     <h5>Get Help with Finances</h5><br /><br />
                                     <textarea id="FADesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea><br />
                                     <apex:pageBlockButtons location="bottom">
                                         <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;" onClick="startFAChat();">Start Chat</button>
+                                    </apex:pageBlockButtons>
+                                </apex:pageBlock>
+                            </div>
+
+                            <div id="bomgarChatForm" style="margin-top:20px;display:none;">
+                                <apex:pageBlock >
+                                    <h5>Get Help</h5><br /><br />
+                                    <textarea id="SFDCDesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea><br />
+                                    <apex:pageBlockButtons location="bottom">
+                                        <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;" onClick="startSFDCChat();">Start Chat</button>
                                     </apex:pageBlockButtons>
                                 </apex:pageBlock>
                             </div>

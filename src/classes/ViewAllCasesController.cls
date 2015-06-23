@@ -14,7 +14,7 @@ public with sharing class ViewAllCasesController
 
         Map<Id, List<Case>> openCaseMap = CaseService.getVisibleOpenCases(loggedInContacts);
 
-        return openCaseMap.get(loggedInContact.Id);
+        return openCaseMap.get(loggedInContact.Id)==null ? new List<Case>() : openCaseMap.get(loggedInContact.Id);
     }
 
     public List<Case> getClosedCases()
@@ -23,7 +23,7 @@ public with sharing class ViewAllCasesController
 
         Map<Id, List<Case>> closedCaseMap = CaseService.getVisibleClosedCases(loggedInContacts);
 
-        return closedCaseMap.get(loggedInContact.Id);
+        return closedCaseMap.get(loggedInContact.Id)==null ? new List<Case>() : closedCaseMap.get(loggedInContact.Id);
     }
 
     public PageReference viewCase()

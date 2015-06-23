@@ -225,8 +225,8 @@
 	                    <apex:form >
 	                        <apex:pageBlock mode="maindetail">
 	                            <apex:pageBlockTable rendered="{!(openCases.size >= 1)}" value="{!openCases}" var="case" styleClass="myCasesTable">
-	                                <apex:column headerValue="Subject" styleClass="truncate" width="60%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
-                                    <apex:column headerValue="Status" width="20%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+	                                <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+                                    <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column headerValue="Date Opened" width="15%" value="{!case.CreatedDate}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column width="5%" style="background-color:white;text-align:right" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'">
 	                                    <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
@@ -234,7 +234,9 @@
 	                                    </apex:commandLink>
 	                                </apex:column>
 	                            </apex:pageBlockTable>
-	                            <apex:outputText rendered="{!(openCases.size = 0)}" value="You do not have any open cases." />
+	                            <apex:outputText rendered="{!(openCases.size = 0)}">
+                                    <div class="padClass"> You do not have any open cases. </div>
+                                </apex:outputText>
 	                        </apex:pageBlock>
 	                    </apex:form>
 	                </div>
@@ -251,8 +253,8 @@
 	                    <apex:form >
 	                        <apex:pageBlock mode="maindetail">
 	                            <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="case" styleClass="myCasesTable">
-	                                <apex:column headerValue="Subject" styleClass="truncate" width="60%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
-                                    <apex:column headerValue="Status" width="20%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+	                                <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
+                                    <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column headerValue="Date Closed" width="15%" value="{!case.ClosedDate}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                     <apex:column width="5%" style="background-color:white;text-align:right" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'">
 	                                    <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
@@ -260,7 +262,9 @@
 	                                    </apex:commandLink>
 	                                </apex:column>
 	                            </apex:pageBlockTable>
-	                            <apex:outputText rendered="{!(closedCases.size = 0)}" value="You do not have any closed cases." />
+	                            <apex:outputText rendered="{!(closedCases.size = 0)}">
+                                    <div class="padClass"> You do not have any closed cases. </div>
+                                </apex:outputText>
 	                        </apex:pageBlock>
 	                    </apex:form>
                     </div>

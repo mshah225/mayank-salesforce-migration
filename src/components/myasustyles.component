@@ -1009,7 +1009,7 @@
         #pinFormDiv {
             margin-left: 0px !important;
         }
-    }
+    } 
         
     .message {
         border-radius: 0px !important;
@@ -1032,6 +1032,10 @@
     .breadcrumb a, .breadcrumb a:hover {
         color: #990033 !important;
         font-size: 10pt;
+    }
+
+    .padClass {
+            padding: 7px ;
     }
     
     #closePinMessages .btn:hover {

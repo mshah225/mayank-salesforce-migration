@@ -27,7 +27,8 @@
         .contactPhone td {
             padding: 0px !important;
         }
-    </style> 
+
+    </style>    
 
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -40,6 +41,7 @@
     </script>
     
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
+
     <script>
         BG.setSite("bomgar.asu.edu");
         
@@ -386,6 +388,12 @@
                 <apex:outputText escape="false" value="{!pinMessage}"/>
             </div>
         </apex:outputPanel>
+        <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest != null}">
+            <div class="alert alert-success feedbackConfirm">
+                <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
+                <p><strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.</p>
+            </div>
+         </apex:outputPanel>
     </center>
        
     <div class="container">
@@ -443,6 +451,9 @@
                                         </tr>
                                     </table>
                                 </knowledge:articleList>
+                                <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
+                                    Suggest An Article
+                                </button>
                             </apex:pageBlock>
 
                             <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
@@ -470,6 +481,32 @@
                     <iframe src="https://webapp4.asu.edu/narrowcasting/ad/SMALL/myasu-servicecenter-1/true?rotate=true&interval=6000" scrolling="no" frameborder="0" width="100%" height="57" style="margin-bottom: -5px;"></iframe>
                 </div>
             </div><!-- end col-md-7 -->
+            <apex:form id="suggestAnArticle">
+                <!-- Modal -->
+                <div class="modal fade" id="suggestAnArticle" tabindex="-1" role="dialog" aria-labelledby="suggestAnArticleLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h6 class="modal-title" id="suggestAnArticleLabel">Suggest An Article</h6>
+                      </div>
+                      <div class="modal-body">
+                        <apex:pageBlock mode="maindetail">
+                            <p>Have an idea for an article you'd like to see? Please tell us below!</p>
+                            <br />
+                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;"/>
+                        </apex:pageBlock>
+                      </div>
+                      <div class="modal-footer">
+                        <div class="pull-left">
+                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </apex:form> 
             
             <div class="col-md-5">
                 <apex:outputPanel rendered="{!HelpBox}">
@@ -479,11 +516,15 @@
                         </div>
                         <div class="content">
                         <p>Please contact us if you need immediate assistance. We're available 24/7 to answer your questions.</p>
-                        <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>     
-                        <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
+                        <div id="normalPhone">
+                            <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>
+                        </div>
+                        <div id="roverPhone">
+                            <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
+                        </div>
                             
                         <br /><br />
-                        
+
                         <apex:outputPanel id="pinPanel" rendered="{!IF(myPin != null,true,false)}">
                             <apex:form id="pinForm" styleClass="pinForm">
                                 <div id="pinFormDiv" style="margin-left:30px;">
@@ -706,7 +747,9 @@
                                         </apex:commandLink>
                                     </apex:column>
                                 </apex:pageBlockTable>
-                                <apex:outputText rendered="{!(myCases.size = 0)}" value="You do not have any open cases." />
+                                <apex:outputText rendered="{!(myCases.size = 0)}">
+                                    <div class="padClass"> You do not have any open cases. </div>
+                                </apex:outputText>
                             </apex:pageBlock>
                         </apex:form>
                         
@@ -723,14 +766,16 @@
                                         </apex:commandLink>
                                     </apex:column>
                                 </apex:pageBlockTable>
-                                <apex:outputText rendered="{!(closedCases.size = 0)}" value="You do not have any closed cases." />
+                                <apex:outputText rendered="{!(closedCases.size = 0)}">
+                                    <div class="padClass"> You do not have any closed cases. </div>
+                                </apex:outputText>
                             </apex:pageBlock>
                         </apex:form>
 
                         <div style="text-align:right">
                             <br />
                             <apex:form >
-                                <apex:pageBlock mode="maindetail" rendered="{!(closedCases.size >= 1)}">
+                            <apex:pageBlock mode="maindetail">
                                     <a href="/viewAllCases?source=studentSC" style="padding:4px" class="btn">
                                         View All Cases
                                     </a>
@@ -856,6 +901,33 @@
                 $tgt.addClass('placeHolder');
             }
         });
+    </script>
+
+    <script>
+        if (!(navigator.userAgent.match(/Android/i)
+             || navigator.userAgent.match(/webOS/i)
+             || navigator.userAgent.match(/iPhone/i)
+             || navigator.userAgent.match(/iPad/i)
+             || navigator.userAgent.match(/iPod/i)
+             || navigator.userAgent.match(/BlackBerry/i)
+             || navigator.userAgent.match(/Windows Phone/i)))
+        {
+            document.getElementById("normalPhone").addEventListener("click", function(event){
+                event.preventDefault();
+            });
+
+            document.getElementById("normalPhone").addEventListener("contextmenu", function(event){
+                event.preventDefault();
+            });
+
+            document.getElementById("roverPhone").addEventListener("click", function(event){
+                event.preventDefault();
+            });
+
+            document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
+                event.preventDefault();
+            });
+        }
     </script>
 </body>
 </apex:page>

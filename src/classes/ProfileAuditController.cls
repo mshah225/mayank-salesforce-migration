@@ -4,8 +4,8 @@ public without sharing class ProfileAuditController
     public Boolean back { get;set; }
     public Id selectedProfileId { get;set; }
     public List<Profile> profileList;
-    public List<ObjectPermissions> objectPerms { get;set; }
-    public List<FieldPermissions> fieldPerms { get;set; }
+    public Map<String, List<String>> objectPerms { get;set; }
+    public Map<String, List<String>> fieldPerms { get;set; }
     public List<String> finalList { get;set; }
     public List<String> fieldDrillList { get;set; }
     public List<PermissionSetAssignment> usersPermissions;

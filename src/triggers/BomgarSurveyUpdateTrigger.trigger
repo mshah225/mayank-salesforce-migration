@@ -20,7 +20,8 @@ trigger BomgarSurveyUpdateTrigger on bomgar__SurveyData__c (after insert) {
                         else if('Escalate' == surveyData.bomgar__Value__c){
                             Case c = new Case();
                             c.Id = surveyCaseData.bomgar__Survey__r.bomgar__BomgarSession__r.bomgar__RelatedCase__c;
-                            c.Status = 'New'; 
+                            c.Status = 'New';
+                            c.Origin__c = 'Chat'; 
                             Id ownerId = BomgarCreateCaseUtil.getOwnerIdBySessionId(surveyCaseData.bomgar__Survey__r.bomgar__BomgarSession__c); 
                             if(ownerId!= null){
                                 c.OwnerId = ownerId;

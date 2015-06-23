@@ -1,5 +1,6 @@
-public class TerritoryAssignmentRuleService
+public class TerritoryAssignmentRuleService 
 {
+
 	/**
 	* Returns all the fields on TerritoryAssignmentRule in a String
 	* @return A string containing all the TerritoryAssignmentRule fields
@@ -11,7 +12,7 @@ public class TerritoryAssignmentRuleService
 		Map<String, SObjectField> tarFieldMap = ObjectService.getObjectFieldMap('Territory_Assignment_Rule__c');
 
 		tarFields = ObjectService.objectFieldsToString(tarFieldMap);
-
+		
 		return tarFields;
 	}
 
@@ -19,7 +20,7 @@ public class TerritoryAssignmentRuleService
 	* Returns a map of all the Territory Assignment Rules sorted by their Rule Key
 	* @return A map containing a set of Rule Keys and their associated Territory Assignment Rules
 	*/
-	public static Map<String, List<Territory_Assignment_Rule__c>> getTerritoryAssignmentRulesByRuleKey()
+	public static Map<String, List<Territory_Assignment_Rule__c>> mapTerritoryAssignmentRulesToRuleKey()
 	{
 		Map<String, List<Territory_Assignment_Rule__c>> tarMap = new Map<String, List<Territory_Assignment_Rule__c>>();
 
@@ -28,7 +29,7 @@ public class TerritoryAssignmentRuleService
 		try
 		{
 			String selectAllTars = 'SELECT ' + fieldsToString() + ', User__r.IsActive ' + 'FROM Territory_Assignment_Rule__c';
-
+			
 			tars = Database.query(selectAllTars);
 		}
 		catch (Exception e)
@@ -53,25 +54,21 @@ public class TerritoryAssignmentRuleService
 	}
 
 	/**
-	* Returns the appropriate Territory Assignment Rule for a given Rule Key and Opportunity Assignment Number
-	* @param A String containing the Rule Key
-	* @param A Decimal containing the Opportunity Assignment Number
-	* @return A Territory Assignment Rule that corresponds to the tarRuleKey and assignmentNumber, or null if none could be found
+	* Returns the appropriate Territory Assignment Rule for a given list of TARs and an  Assignment Number
+	* @param A list of possible Territory Assignment Rules
+	* @param A Decimal containing the Opportunity or Lead Assignment Number
+	* @return A Territory Assignment Rule that corresponds to the tarList and assignmentNumber, or null if none could be found
 	*/
-	public static Territory_Assignment_Rule__c getTerritoryAssignmentRule(String tarRuleKey, Decimal assignmentNumber)
+	public static Territory_Assignment_Rule__c getTerritoryAssignmentRule(List<Territory_Assignment_Rule__c> tarList, Decimal assignmentNumber)
 	{
 		Territory_Assignment_Rule__c tarToReturn;
 		Territory_Assignment_Rule__c defaultTar;
-
-        Map<String, List<Territory_Assignment_Rule__c>> tarsByRuleKey = TerritoryAssignmentRuleService.getTerritoryAssignmentRulesByRuleKey();
-
-        List<Territory_Assignment_Rule__c> tarList = tarsByRuleKey.get(tarRuleKey);
 
 		Boolean useDefaultTar = false;
 
         if (tarList == null)
         {
-        	!useDefaultTar;
+        	useDefaultTar = !useDefaultTar;
         }
         else
         {
@@ -90,7 +87,7 @@ public class TerritoryAssignmentRuleService
 			}
 
 			// If no range defined Territory Assignment Rules were found, return the fallback Territory Assignment Rule
-			if(useDefaultTar)
+			if(tarToReturn == null) 
 			{
 				tarToReturn = defaultTar;
 			}

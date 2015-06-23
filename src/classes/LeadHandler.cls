@@ -40,6 +40,8 @@ public without sharing class LeadHandler
 	 */
 	public void beforeInsert(SObject so) 
 	{
+		Lead newLead = (Lead) so;
+
 		newLead.Lead_Assignment_Number__c = OpportunityService.generateOpportunityAssignmentNumber();
 	}
 
@@ -76,7 +78,7 @@ public without sharing class LeadHandler
 	 */
 	public void afterInsert(SObject so)
 	{
-		Lead l = (Lead)so;
+		Lead l = (Lead) so;
 
 		if (l.Convert_Perform_Conversion__c)
 		{
@@ -92,8 +94,8 @@ public without sharing class LeadHandler
 	 */
 	public void afterUpdate(SObject oldSo, SObject so)
 	{
-		Lead l = (Lead)so;
-		Lead oldL = (Lead)oldSo;
+		Lead l = (Lead) so;
+		Lead oldL = (Lead) oldSo;
 
 		if (l.Convert_Perform_Conversion__c && oldL.Convert_Perform_Conversion__c == false)
 		{

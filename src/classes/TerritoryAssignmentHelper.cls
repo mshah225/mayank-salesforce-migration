@@ -1,5 +1,5 @@
-public without sharing class TerritoryAssignmentHelper {
-
+public without sharing class TerritoryAssignmentHelper 
+{
     public static Boolean accountTADone = false;
     public static Boolean contactTADone = false;
     public static Boolean opportunityTADone = false;
@@ -24,7 +24,6 @@ public without sharing class TerritoryAssignmentHelper {
         {
             Map<String, String> KVMap = new Map<String, String>();
             Set<String> ZipsInTrigger = new Set<String>();
-
             for (Account InsZip :(List<Account>)Trigger.New)
             {
                 ZipsInTrigger.add(InsZip.ShippingPostalCode);
@@ -371,61 +370,45 @@ public without sharing class TerritoryAssignmentHelper {
                 if (Opp.International_Student__c)
                 {
                     Territory_Assignment_Rule__c tar = null;
-                    Decimal assignmentNumber = Opp.Opportunity_Assignment_Number_Rand__c;
-                    String country = thisContact.MailingCountry;
+                    Decimal oppAssignNumber = Opp.Opportunity_Assignment_Number_Rand__c;
+                    String oppCountry = thisContact.MailingCountry;
 
-                    // Handle the country issue with integration and country name mismatches using PS_Country_Map__c
-                    if (String.isEmpty(country))
-                    {
-                        country = '';
-                    }
-                    else
-                    {
-                        try
-                        {
-                            country = [SELECT Country_Name__c FROM PS_Country_Map__c WHERE Integration_Value__c = :country LIMIT 1].Country_Name__c;
-                        }
-                        catch (Exception e)
-                        {
-                            System.debug('!!!ERROR: An issue occurred when searching PS_Country_Map__c for this opportunity\'s mailing country. Setting to default international TA: ' + e.getMessage());
-                            country = '';
-                        }
-                    }
+                    oppCountry = getPSCountry(oppCountry);
 
                     // Avoid NPE on Opportunity Assignment Number Rand. At least one of these should be populated.
-                    if (assignmentNumber == null)
+                    if (oppAssignNumber == null)
                     {
-                        assignmentNumber = Opp.Opportunity_Assignment_Number__c;
+                        oppAssignNumber = Opp.Opportunity_Assignment_Number__c;
                     }
 
                     // Begin filter hierarchy
                     if (Opp.StageName == 'Admitted - Conditional')
                     {
-                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International Admitted - Conditional', assignmentNumber);
+                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International Admitted - Conditional', oppAssignNumber);
                     }
                     else if (Opp.Type == 'Transfer')
                     {
 
-                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International' + '|' + 'Transfer' + '|' + country, assignmentNumber);
+                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|Transfer|' + oppCountry, oppAssignNumber);
 
                         /**
-                        * The country may be defined, but we don't have a Transfer TAR for it.
+                        * The oppCountry may be defined, but we don't have a Transfer TAR for it.
                         * Use the default TAR for International Transfer
                         */
                         if (tar == null)
                         {
-                            tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|Transfer|', assignmentNumber);
+                            tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|Transfer|', oppAssignNumber);
                         }
                     }
-                    else if (String.isNotEmpty(country))
+                    else if (String.isNotEmpty(oppCountry))
                     {
-                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + Opp.Type + '|' + country, assignmentNumber);
+                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + Opp.Type + '|' + oppCountry, oppAssignNumber);
                     }
 
                     // Hit the default International manager
                     if (tar == null)
                     {
-                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International||', assignmentNumber);
+                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International||', oppAssignNumber);
                     }
 
                     // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
@@ -915,6 +898,7 @@ public without sharing class TerritoryAssignmentHelper {
 
         // Build map with Territory_Assignment_Rule__c Rule_Key__c values
         Map<String,Territory_Assignment_Rule__c> TerritoryAssignmentRuleMap = new Map<String,Territory_Assignment_Rule__c>();
+
         List<Territory_Assignment_Rule__c> TerritoryAssignmentRuleList =[SELECT Id,Rule_Key__c,User__c,User__r.IsActive
                                                                          FROM Territory_Assignment_Rule__c];
 
@@ -1005,7 +989,37 @@ public without sharing class TerritoryAssignmentHelper {
                         continue;
                     }
 
-                    Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + '|', l.Lead_Assignment_Number__c);
+                    Territory_Assignment_Rule__c tar = null;
+                    Decimal leadAssignNumber = l.Lead_Assignment_Number__c;
+                    String leadCountry = l.Silverpop_Mailing_Country__c;
+
+                    // Use the PSCountry mapping to get the correct integration value.
+                    leadCountry = getPSCountry(leadCountry);
+
+                    System.debug('Lead type is ' + l.Type__c);
+
+                    // Being filter hierarchy
+                    if (l.Type__c == 'First Time Freshman' || l.Type__c == 'Transfer' || l.Type__c == 'Readmission')
+                    {
+                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + l.Type__c + '|' + leadCountry, leadAssignNumber);
+
+                        /**
+                        * The lead's mailing country may be defined, but we don't have a TAR for 
+                        * it. Use the default TAR for this lead type instead.
+                        */
+                        if (tar == null)
+                        {
+                            tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + l.Type__c + '|', leadAssignNumber);
+                        }
+
+                        System.debug('Tar is ' + tar);
+                    }
+
+                    // Use the default International manager
+                    if (tar == null)
+                    {
+                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International||' , leadAssignNumber);
+                    }
 
                     // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
                     if (tar != null)
@@ -1152,5 +1166,33 @@ public without sharing class TerritoryAssignmentHelper {
         }
 
         territoryAssignmentRuleTADone = true;
+    }
+
+    /**
+    * Helper method to get the correct Country text
+    */
+    private String getPSCountry(String country)
+    {
+        String psCountry;
+
+        // Handle the country issue with integration and country name mismatches using PS_Country_Map__c
+        if (String.isEmpty(country))
+        {
+            psCountry = '';
+        }
+        else
+        {
+            try
+            {
+                psCountry = [SELECT Country_Name__c FROM PS_Country_Map__c WHERE Integration_Value__c = :country LIMIT 1].Country_Name__c;
+            }
+            catch (Exception e)
+            {
+                System.debug('!!!ERROR: An issue occurred when searching PS_Country_Map__c for this record\'s mailing country. Setting country to empty string: ' + e.getMessage());
+                psCountry = '';
+            }
+        }
+
+        return psCountry;
     }
 }

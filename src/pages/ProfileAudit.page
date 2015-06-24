@@ -6,9 +6,13 @@
 		.mainTitle {
 			white-space: nowrap !important;
 		}
+
+		.mainForm td {
+			padding: 10px !important;
+		}
 	</style>
 
-	<apex:form id="auditForm" style="margin-top:20px;">
+	<apex:form id="auditForm" styleClass="mainForm" style="margin-top:20px;">
 		<apex:pageBlock id="optionsBlock" title="Filter Options">
 			<apex:outputText id="usersProfile">
 				<span style="font-weight:600;">Your Profile:</span> {!usersProfile}

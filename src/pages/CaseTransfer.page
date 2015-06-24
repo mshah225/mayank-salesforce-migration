@@ -1,0 +1,212 @@
+<apex:page standardController="Case"
+	extensions="CaseTransferController"
+	showHeader="true"
+	sidebar="true">
+
+	<apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
+	<apex:stylesheet value="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+
+	<apex:includeScript value="/support/console/20.0/integration.js"/>
+   	<script type="text/javascript">
+        function setTabTitle()
+        {
+        	sforce.console.setTabTitle('Transfer Case {!Case.CaseNumber}');
+        }
+
+        var previousOnload = window.onload;
+       	window.onload = function()
+       	{
+            if (previousOnload)
+            {
+                previousOnload();
+            }
+            setTimeout('setTabTitle()', '500');
+       	}
+   	</script>
+
+	<style>
+		h1 {
+			font-size: 16pt;
+		}
+
+		#chatterBox {
+			display: none;
+		}
+
+		.fa-lg {
+			vertical-align: 0% !important;
+		}
+
+		#collegeSection, #serviceSection {
+			margin-top: -5px !important;
+			border: 1px solid rgb(238, 238, 238) !important;
+    		padding: 16px 25px 0px 25px !important;
+    		border-radius: 2px !important;
+    		box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 3px, rgba(0, 0, 0, 0.239216) 0px 1px 2px !important;
+    		width: 85% !important;
+    		border-top-style: solid !important;
+		    border-top-color: rgb(227, 227, 227) !important;
+		    position: relative !important;
+		    z-index: 1 !important;
+		    left: -5px !important;
+		}
+
+		#collegeList a, #serviceList a {
+			color: #990033 !important;
+			font-size: 10pt !important;
+			text-decoration: none !important;
+		}
+
+		#collegeHeader, #serviceHeader {
+			position: relative !important;
+    		z-index: 2 !important;
+			cursor: pointer !important;
+		}
+
+		#collegeList a:hover, #serviceList a:hover {
+			color: #990033 !important;
+			font-size: 10pt !important;
+			text-decoration: underline !important;
+		}
+
+		.caseBtn {
+			text-decoration: none !important;
+			transition: all 0.25s ease-in-out !important;
+			background: #a30046 !important;
+		    border: none !important;
+		    font-weight: 200 !important;
+		    color: white !important;
+		    padding: 8px !important;
+		    border-radius: 2px !important;
+		    font-size: 10pt !important;
+		    margin-top: 10px !important;
+		}
+
+		.caseBtn:hover {
+			background: #d23153 !important;
+		}
+
+		.caseTab .primaryPalette, .individualPalette .caseBlock .primaryPalette {
+		    background-color: #000 !important;
+		    border-color: #000 !important;
+		}
+
+		.caseTab .brdPalette {
+		    border-top-color: #353535 !important;
+		}
+	</style>
+
+	<h1 style="color:#990033;">Change Case Owner ({!Case.CaseNumber})</h1>
+	<p><i>To assign this case, select a department or college from the lists below:</i></p>
+	<table id="pageTable" style="width:100%;min-width:900px;overflow-x:hidden;">
+		<tr style="vertical-align:top;">
+			<td style="width:20%;padding-left:20px;">
+				<apex:form id="serviceTransfer">
+					<h1>Service Departments</h1>
+					<br />
+					<br />
+					<apex:repeat value="{!serviceCARS}" var="serviceKey">
+						<div id="serviceSection">
+							<div id="serviceHeader" style="display:inline;">
+								<i class="fa fa-plus-circle fa-lg"></i>
+								<i class="fa fa-minus-circle fa-lg" style="display:none;"></i>
+								&nbsp;
+								<apex:outputText value="{!serviceKey}" style="font-weight:600;font-size:12pt;"/>
+							</div>
+							<br />
+							<br />
+							<div id="serviceList" style="display:none;">
+								<apex:repeat value="{!serviceCARS[serviceKey]}" var="sk">
+									<apex:commandLink id="serviceLink" value="{!sk.Label__c}" action="{!showChatterBox}" reRender="chatterPanel">
+										<apex:param name="selectedCARId" value="{!sk.Id}" assignTo="{!selectedCARId}"/>
+										<apex:param name="selectedGroupName" value="{!sk.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
+										<apex:param name="selectedCARLabel" value="{!sk.Label__c}" assignTo="{!selectedCARLabel}"/>
+									</apex:commandLink>
+									<br />
+									<br />
+								</apex:repeat>
+							</div>
+						</div>
+						<br />
+					</apex:repeat>
+				</apex:form>
+			</td>
+			<td style="width:20%;padding-left:20px;">
+				<apex:form id="collegeTransfer">
+					<h1>Colleges</h1>
+					<br />
+					<br />
+					<apex:repeat value="{!collegeCARS}" var="collegeKey">
+						<div id="collegeSection">
+							<div id="collegeHeader" style="display:inline;">
+								<i class="fa fa-plus-circle fa-lg"></i>
+								<i class="fa fa-minus-circle fa-lg" style="display:none;"></i>
+								&nbsp;
+								<apex:outputText value="{!collegeKey}" style="font-weight:600;font-size:12pt;"/>
+							</div>
+							<br />
+							<br />
+							<div id="collegeList" style="display:none">
+								<apex:repeat value="{!collegeCARS[collegeKey]}" var="ck">
+									<apex:commandLink id="collegeLink" styleClass="collegeLink" action="{!showChatterBox}" value="{!ck.Label__c}" reRender="chatterPanel">
+										<apex:param name="selectedCARId" value="{!ck.Id}" assignTo="{!selectedCARId}"/>
+										<apex:param name="selectedGroupName" value="{!ck.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
+									</apex:commandLink>
+									<br />
+									<br />
+								</apex:repeat>
+							</div>
+						</div>
+						<br />
+					</apex:repeat>
+				</apex:form>
+			</td>
+			<td style="width:30%;padding-left:20px;">
+				<div id="chatterBox">
+					<apex:outputPanel id="chatterPanel">
+						<h1 style="font-weight:200">You are transferring this case to:<br />{!selectedGroupName} - {!selectedCARLabel}</h1>
+					</apex:outputPanel>
+					<apex:form id="transferButton">
+						<br />
+						<apex:actionRegion>
+							<apex:commandLink action="{!transferCase}" styleClass="caseBtn">
+								<i class="fa fa-exchange" style="color:#fff;"></i>&nbsp;&nbsp;Transfer Case
+							</apex:commandLink>
+						</apex:actionRegion>
+					</apex:form>
+					<br />
+					<br />
+					<i>(Optional) Enter Comments or @mention a user before transferring the case:</i>
+					<br />
+					<chatter:feed entityId="{!Case.Id}" feedItemType="TextPost"/>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+	<script>
+		var $j = jQuery.noConflict();
+
+	    $j( "[id$=serviceHeader]" ).click(function() {
+	    	var serv = $j(this);
+	        serv.nextAll( "[id$=serviceList]" ).fadeToggle( "500" );
+	        serv.find( ".fa-plus-circle" ).toggle();
+	        serv.find( ".fa-minus-circle" ).toggle();
+	    });
+
+	    $j( "[id$=collegeHeader]" ).click(function() {
+			var col = $j(this);
+	        col.nextAll( "[id$=collegeList]" ).fadeToggle( "500" );
+	        col.find( ".fa-plus-circle" ).toggle();
+	        col.find( ".fa-minus-circle" ).toggle();
+	    });
+
+	    $j( "[id$=collegeLink]" ).click(function() {
+   			$j( "[id$=chatterBox]" ).show();
+   		});
+
+   		$j( "[id$=serviceLink]" ).click(function() {
+   			$j( "[id$=chatterBox]" ).show();
+   		});
+	</script>
+</apex:page>

@@ -1,7 +1,6 @@
 <apex:page showHeader="false"
     sidebar="false"
     docType="html-5.0"
-    title="My Service Center"
     controller="ServiceCenter"
     action="{!init}"
     tabStyle="Dashboard"

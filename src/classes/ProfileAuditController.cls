@@ -4,8 +4,8 @@ public without sharing class ProfileAuditController
     public Boolean back { get;set; }
     public Id selectedProfileId { get;set; }
     public List<Profile> profileList;
-    public List<ObjectPermissions> objectPerms { get;set; }
-    public List<FieldPermissions> fieldPerms { get;set; }
+    public Map<String, List<String>> objectPerms { get;set; }
+    public Map<String, List<String>> fieldPerms { get;set; }
     public List<String> finalList { get;set; }
     public List<String> fieldDrillList { get;set; }
     public List<PermissionSetAssignment> usersPermissions;
@@ -20,19 +20,26 @@ public without sharing class ProfileAuditController
         drillDown = false;
         back = false;
         selectedObject = null;
-        profileList = [SELECT Name FROM Profile ORDER BY Name];
+        profileList = [SELECT Name 
+                       FROM Profile 
+                       ORDER BY Name];
         getUserProfileInfo();
     }
 
     public void getUserProfileInfo()
     {
-        usersProfile = [SELECT Profile.Name FROM User WHERE Id = :UserInfo.getUserId()].Profile.Name;
-        usersPermissions = [SELECT PermissionSet.Label FROM PermissionSetAssignment WHERE AssigneeId = :UserInfo.getUserId() AND (NOT PermissionSet.Label LIKE '%X%')];
+        usersProfile = [SELECT Profile.Name 
+                        FROM User 
+                        WHERE Id = :UserInfo.getUserId()].Profile.Name;
+        usersPermissions = [SELECT PermissionSet.Label, PermissionSet.ProfileId 
+                            FROM PermissionSetAssignment 
+                            WHERE AssigneeId = :UserInfo.getUserId() 
+                            AND (NOT PermissionSet.Label LIKE '00e%')];
         if (!usersPermissions.isEmpty())    
         {
             for (PermissionSetAssignment psa: usersPermissions)
             {
-                String temp = String.valueOf(psa.PermissionSet.Label);
+                String temp = String.valueOf(psa.PermissionSet.Label);        
                 permissionString = permissionString + ', ' + temp;
             }
             permissionString = permissionString.replaceAll('null, ', '');
@@ -78,14 +85,18 @@ public without sharing class ProfileAuditController
             {
                 fieldPerms = null;
                 objectPerms = ProfileService.getAccessibleObjectsByProfile(selectedProfileId);
-                selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
+                selectedProfileName = [SELECT Name 
+                                       FROM Profile 
+                                       WHERE Id = :selectedProfileId].Name;
             }
         }
         else if (selectedAccess == 'No Access')
         {  
             fieldPerms = null;
             finalList = ProfileService.getInaccessibleObjectsByProfile(selectedProfileId);
-            selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
+            selectedProfileName = [SELECT Name 
+                                   FROM Profile 
+                                   WHERE Id = :selectedProfileId].Name;
         }
     }
 
@@ -104,7 +115,9 @@ public without sharing class ProfileAuditController
         back = true;
         objectPerms = null;
         fieldPerms = ProfileService.getAccessibleObjectFieldsByProfile(selectedProfileId, selectedObject);
-        selectedProfileName = [SELECT Name FROM Profile WHERE Id = :selectedProfileId].Name;
+        selectedProfileName = [SELECT Name 
+                               FROM Profile 
+                               WHERE Id = :selectedProfileId].Name;
     }
 
     public void reStart() 

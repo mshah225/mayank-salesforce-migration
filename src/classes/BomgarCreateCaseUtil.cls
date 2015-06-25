@@ -131,11 +131,11 @@ global class BomgarCreateCaseUtil
                                                WHERE bomgar__IsPrimary__c = true
                                                AND bomgar__ParticipantType__c = 'Representative'
                                                AND bomgar__BomgarSession__r.Id = :sessionId];
-        for (bomgar__Participant__c x : myList)
+        for (bomgar__Participant__c bomgarParticipant : myList)
         {
-            if (x != null && x.bomgar__Username__c != null)
+            if (bomgarParticipant != null && bomgarParticipant.bomgar__Username__c != null)
             {
-                User owner = lookupUserByFederationId(x.bomgar__Username__c);
+                User owner = lookupUserByFederationId(bomgarParticipant.bomgar__Username__c);
                 if (owner != null)
                 {
                     return owner.Id;

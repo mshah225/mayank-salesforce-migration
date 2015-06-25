@@ -73,13 +73,13 @@ private class BomgarCreateCaseUtilTest
         Test.stopTest();
     }
 
-    @isTest static void testLookupUserByAlias()
+    @isTest static void testLookupUserByFederationId()
     {
         Test.startTest();
         String value = null;
         try
         {
-            BomgarCreateCaseUtil.lookupUserByAlias('testc');
+            BomgarCreateCaseUtil.lookupUserByFederationId('testc');
         }
         catch (Exception e)
         {
@@ -94,7 +94,7 @@ private class BomgarCreateCaseUtilTest
         String value = null;
         try
         {
-            BomgarCreateCaseUtil.lookupUserByAlias('abcd');
+            BomgarCreateCaseUtil.lookupUserByFederationId('abcd');
         }
         catch (Exception e)
         {

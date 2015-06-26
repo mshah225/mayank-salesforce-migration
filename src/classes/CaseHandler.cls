@@ -15,6 +15,9 @@ implements ITrigger
     */
     public void bulkBefore()
     {
+        // Call the Group Service to map all the group names to their ids
+        groupNameMap = GroupService.mapGroupIdToName();
+
         if (Trigger.isInsert)
         {
             recruitmentCaseRT = new List<RecordType>([SELECT Id FROM RecordType WHERE SobjectType='Case' AND DeveloperName = 'ASU_Admission_Services']);
@@ -48,9 +51,6 @@ implements ITrigger
         }
         else if(Trigger.isUpdate)
         {
-            // Call the Group Service to map all the group names to their ids
-            groupNameMap = GroupService.mapGroupIdToName();
-
             for(Case c : (List<Case>)Trigger.new)
             {
                 //Handles Webform cases (webforms.asu.edu)

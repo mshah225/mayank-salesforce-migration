@@ -209,7 +209,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             theCase.Sub_Category__c = subCategoryName;
             theCase.Campus__c = campus;
             theCase.Functional_Group__c = functionalGroup;
-            theCase.Most_Recent_Functional_Group__c = functionalGroup;
             theCase.SuppliedEmail = email.fromAddress;
             theCase.SuppliedName = fname + ' ' + lname;
             theCase.Status = 'New';

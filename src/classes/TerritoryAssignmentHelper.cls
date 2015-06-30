@@ -995,8 +995,10 @@ public without sharing class TerritoryAssignmentHelper
 
                 if (l.International_Student__c)
                 {
+                    String lastTARUsed = l.Territory_Assignment_Last_Rule_Type__c;
+
                     // If already set by International rule, skip it
-                    if (l.Territory_Assignment_Last_Rule_Type__c == 'International')
+                    if (lastTARUsed != null && lastTARUsed.contains('International|'))
                     {
                         continue;
                     }
@@ -1005,6 +1007,8 @@ public without sharing class TerritoryAssignmentHelper
                     Territory_Assignment_Rule__c tar = null;
                     Decimal leadAssignNumber = l.Lead_Assignment_Number__c;
                     String leadCountry = l.Silverpop_Mailing_Country__c;
+                    String leadType = l.Type__c;
+
 
                     // Use the PSCountry mapping to get the correct integration value.
                     if (String.isNotEmpty(leadCountry))
@@ -1013,9 +1017,9 @@ public without sharing class TerritoryAssignmentHelper
                     }
 
                     // Being filter hierarchy
-                    if (l.Type__c == 'First Time Freshman' || l.Type__c == 'Transfer' || l.Type__c == 'Readmission')
+                    if (leadType == 'First Time Freshman' || leadType == 'Transfer' || leadType == 'Readmission')
                     {
-                        possibleTars = mapOfTarsByRuleKey.get('International|' + l.Type__c + '|' + leadCountry);
+                        possibleTars = mapOfTarsByRuleKey.get('International|' + leadType + '|' + leadCountry);
 
                         /**
                         * The lead's mailing country may be defined, but we don't have a TAR for 
@@ -1023,7 +1027,7 @@ public without sharing class TerritoryAssignmentHelper
                         */
                         if (possibleTars == null || possibleTars.isEmpty())
                         {
-                            possibleTars = mapOfTarsByRuleKey.get('International|' + l.Type__c + '|');
+                            possibleTars = mapOfTarsByRuleKey.get('International|' + leadType + '|');
                         }
                     }
 
@@ -1038,16 +1042,17 @@ public without sharing class TerritoryAssignmentHelper
                     // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
                     if (tar != null)
                     {
-                        if (tar.User__r.IsActive == false)
+                        if (tar.User__r.IsActive)
                         {
-                            l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                            l.OwnerId = tar.User__c;
+                            l.Territory_Assignment_Last_Rule_Type__c = tar.Rule_Key__c;
+
+                            continue;
                         }
                         else
                         {
-                            l.OwnerId = tar.User__c;
-                            l.Territory_Assignment_Last_Rule_Type__c = 'International';
+                            l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
 
-                            continue;
                         }
                     }
                 }

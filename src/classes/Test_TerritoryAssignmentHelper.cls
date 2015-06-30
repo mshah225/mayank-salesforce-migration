@@ -1,4 +1,4 @@
-@istest
+@isTest
 public without sharing class Test_TerritoryAssignmentHelper
 {
     @testSetup static void setup()
@@ -1252,7 +1252,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         System.Debug('Lead Details: ' + leadList[0]);
         System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
-        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International','Rule did not assign correctly by rule type Default User');
+        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International||','Rule did not assign correctly by rule type Default User: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
     }
 
     @isTest public static void testLeadLastInstitution()

@@ -12,7 +12,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert testUser;
     }
 
-    /*
     @isTest public static void testAccountGeomarketCodeAssignment()
     {
         User testUser = [SELECT Id
@@ -664,7 +663,6 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct transfer territory manager.');
     }
-    */
 
     @isTest public static void testInternationalStageChange()
     {
@@ -712,7 +710,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct conditioal admit territory manager.');        
     }
 
-    /*
     @isTest public static void testLocation()
     {
         User TestUser = [SELECT Id
@@ -1547,5 +1544,4 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         System.assertEquals(testUsers[1].Id, updatedLead.OwnerId,'Rule did not assign correctly when changing relevant fields');
     }
-    */
 }

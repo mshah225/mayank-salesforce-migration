@@ -99,7 +99,7 @@
         ga('set', 'dimension1', '{!funcGroup}');
         ga('set', 'dimension2', '{!artType}');
         ga('set', 'dimension3', '{!article.CreatedBy.Name}');
-        ga('set', 'dimension4', '{!currentUser}');
+        ga('set', 'dimension4', '{!userContact.Name}');
         ga('send', 'pageview');
     </script>
 

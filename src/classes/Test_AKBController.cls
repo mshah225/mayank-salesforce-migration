@@ -58,7 +58,7 @@ public class Test_AKBController
                        WHERE Id = :infoArticle.id];
         KbManagement.PublishingService.publishArticle(infoArticle.KnowledgeArticleId, true);
 
-        Profile p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
+        Profile p = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
 
         Contact testContact = ContactService.createTestContact();
         insert testContact;
@@ -265,8 +265,7 @@ public class Test_AKBController
         {
             AKBController akb = new AKBController();
             akb.getfeedbackVisible();
-            akb.contactId = null;
-            akb.getfeedbackVisible();
+            akb.userContact = testContact;
             System.assertEquals(true, akb.getfeedbackVisible());
         }
         Test.stopTest();    
@@ -348,7 +347,6 @@ public class Test_AKBController
             akb.urlsJSON = '["test-FAQ-asdf"]';
             String fixedIdLink = '["/akb?id=' + articleTest[0].KnowledgeArticleId + '"]';
             akb.changeLink();
-            akb.getContactId();
             System.AssertEquals(fixedIdLink, akb.fixedLinksJSON);
         }   
         Test.stopTest();

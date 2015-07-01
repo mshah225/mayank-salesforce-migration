@@ -293,6 +293,7 @@ public without sharing class TerritoryAssignmentHelper
                     || OpportunityOldMap.get(OppsToAssign.Id).Type != OppsToAssign.Type
                     || OpportunityOldMap.get(OppsToAssign.Id).International_Student__c != OppsToAssign.International_Student__c
                     || OpportunityOldMap.get(OppsToAssign.Id).Location__c != OppsToAssign.Location__c
+                    || OpportunityOldMap.get(OppsToAssign.Id).StageName != OppsToAssign.StageName
                     || OpportunityOldMap.get(OppsToAssign.Id).Potential_National_Scholar__c != OppsToAssign.Potential_National_Scholar__c)
                 {
                     OppsToAssign.Territory_Assignment_Required__c = true;
@@ -995,20 +996,11 @@ public without sharing class TerritoryAssignmentHelper
 
                 if (l.International_Student__c)
                 {
-                    String lastTARUsed = l.Territory_Assignment_Last_Rule_Type__c;
-
-                    // If already set by International rule, skip it
-                    if (lastTARUsed != null && lastTARUsed.contains('International|'))
-                    {
-                        continue;
-                    }
-
                     List<Territory_Assignment_Rule__c> possibleTars = new List<Territory_Assignment_Rule__c>();
                     Territory_Assignment_Rule__c tar = null;
                     Decimal leadAssignNumber = l.Lead_Assignment_Number__c;
                     String leadCountry = l.Silverpop_Mailing_Country__c;
                     String leadType = l.Type__c;
-
 
                     // Use the PSCountry mapping to get the correct integration value.
                     if (String.isNotEmpty(leadCountry))

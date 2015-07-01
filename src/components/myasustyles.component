@@ -219,9 +219,13 @@
         padding-top: 18px !important;
     }
 
+    #asu_logo {
+        padding-bottom: 0px !important;
+    }
+
     #myasu-header-seo {
-        margin-bottom: 3px !important;
-        margin-top: -2px !important;
+        margin-bottom: 5px !important;
+        margin-top: -5px !important;
     }
 
     #myasu-header-seo a {

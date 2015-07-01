@@ -243,7 +243,7 @@
                                                 myPin="{!myPin}"
                                                 newPin="{!newPin}"
                                                 changePin="{!changePin}"/>
-                    <c:SCMyCasesBox />
+                    <c:SCMyCasesBox/>
                 </div><!-- end col-md-4-->
             </div><!-- end row -->
         </div><!-- end container -->

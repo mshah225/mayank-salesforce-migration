@@ -1,18 +1,15 @@
 <apex:page controller="ServiceCenter"
-    sidebar="false" 
-    standardStylesheets="false" 
+    sidebar="false"
+    standardStylesheets="false"
     showHeader="false">
 <head>
     <title>My ASU - Service Center</title>
-    <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width; initial-scale=1.0"/>
-
+    <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}"/>
     <c:asu_responsive_header_section />
-    <c:myasustyles />  
+    <c:myasustyles />
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
     <style>
-        /*Page specific .css*/
         body {
             margin: 0px;
             padding: 0px;
@@ -33,10 +30,10 @@
         function getUrlParameter(sParam) {
             var sPageURL = window.location.search.substring(1);
             var sURLVariables = sPageURL.split('&');
-            for (var i = 0; i < sURLVariables.length; i++) 
+            for (var i = 0; i < sURLVariables.length; i++)
             {
                 var sParameterName = sURLVariables[i].split('=');
-                if (sParameterName[0] == sParam) 
+                if (sParameterName[0] == sParam)
                 {
                     return sParameterName[1];
                 }
@@ -47,7 +44,7 @@
         var navbar = getUrlParameter('navbar');
         var signature = getUrlParameter('signature');
         var time = getUrlParameter('time');
-        
+
         function replaceIframe() {
             var url = '/SCLaunch';
             var urlString = url + '?asuriteId=' + asuriteId + '&navbar=' + navbar + '&signature=' + signature + '&time=' + time;
@@ -56,7 +53,6 @@
     </script>
 </head>
 <body onload="replaceIframe()">
-    <!-- START /asuthemes/4.0-rsp.1/headers/default.shtml -->
     <div id="asu_hdr" class="asu_hdr_gold">
         <div id="asu_mobile_hdr">
             <div id="asu_logo">
@@ -64,7 +60,7 @@
                         <img src="//www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo.png" alt="Arizona State University" height="32" width="203" style="margin-top:14px" title="Arizona State University" />
                     </a>
             </div><!-- /#asu_logo  -->
-    
+
             <img src="//www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_white.png" height="32" width="203" id="asu_print_logo" />
 
             <div id="asu_mobile_button" class="asuhide"><a href="javascript:toggleASU();">Menu</a></div>
@@ -98,8 +94,8 @@
 
                             <li class="parent"><a target="_top" href="http://www.asu.edu/colleges/">Colleges &amp; Schools</a>
                                     <ul>
-                                        <li><a target="_top" class="first" href="http://artsandsciences.asu.edu/" title="Arts and Sciences website">Arts and Sciences</a></li>     
-                                        <li><a target="_top" href="http://wpcarey.asu.edu/" title="W. P. Carey School of Business Web  and Morrison School of Agribusiness website">Business</a></li>          
+                                        <li><a target="_top" class="first" href="http://artsandsciences.asu.edu/" title="Arts and Sciences website">Arts and Sciences</a></li>
+                                        <li><a target="_top" href="http://wpcarey.asu.edu/" title="W. P. Carey School of Business Web  and Morrison School of Agribusiness website">Business</a></li>
                                         <li><a target="_top" href="http://herbergerinstitute.asu.edu" title="Herberger Institute for Design and the Arts website">Design and the Arts</a></li>
                                         <li><a target="_top" href="http://education.asu.edu/" title="Mary Lou Fulton Teachers College website">Education </a></li>
                                         <li><a target="_top" href="http://engineer.asu.edu/" title="Engineering website">Engineering</a></li>
@@ -109,13 +105,12 @@
                                         <li><a target="_top" href="http://cronkite.asu.edu" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a></li>
                                         <li><a target="_top" href="http://www.law.asu.edu/" title="Sandra Day O' Connor College of Law website">Law</a></li>
                                         <li><a target="_top" href="http://nursingandhealth.asu.edu/" title="College of Nursing and Health Innovation website">Nursing and Health</a></li>
-                                        <!-- li><a href="http://nursingandhealth.asu.edu/nutrition" title="School of Nutrition and Health Promotion website">Nutrition and Health Promotion</a></li -->
                                         <li><a target="_top" href="http://copp.asu.edu" title="College of Public Programs website">Public Programs</a></li>
                                         <li><a target="_top" href="http://schoolofsustainability.asu.edu" title="School of Sustainability website">Sustainability</a></li>
                                         <li><a target="_top" href="http://technology.poly.asu.edu/" title="College of Technology and Innovation website">Technology and Innovation</a></li>
                                         <li><a target="_top" href="http://uc.asu.edu/" title="University College website">University College</a></li>
                                     </ul>
-                                </li>               
+                                </li>
                                 <li class="parent"><a target="_top" href="http://www.asu.edu/map/">Map &amp; Locations</a>
                                     <ul>
                                         <li><a target="_top" class="border first" href="http://www.asu.edu/map/">Map</a></li>
@@ -131,8 +126,8 @@
                                         <li><a target="_top" href="http://wpcarey.asu.edu/mba/china-program/english/">China</a></li>
                                     </ul>
                                 </li>
-                                <li><a target="_top" href="http://www.asu.edu/contactasu/" title="Directory, Index and other info">Directory</a></li>  
-                           
+                                <li><a target="_top" href="http://www.asu.edu/contactasu/" title="Directory, Index and other info">Directory</a></li>
+
                         </ul>
                         <img class="asu_touch" src="//www.asu.edu/asuthemes/4.0-rsp.1/images/ipad_close.gif" alt="" />
                     </div><!-- /#asu_universal_nav -->
@@ -145,13 +140,13 @@
                     <form target="_top" action="https://search.asu.edu/search" method="get" name="gs">
                         <label class="hidden" for="asu_search_box">Search</label>
                         <input name="site" value="default_collection" type="hidden" />
-                        <input type="text" name="q" size="32" placeholder="Search ASU" id="asu_search_box" class="asu_search_box" onfocus="ASUHeader.searchFocus(this)" onblur="ASUHeader.searchBlur(this)" /> 
+                        <input type="text" name="q" size="32" placeholder="Search ASU" id="asu_search_box" class="asu_search_box" onfocus="ASUHeader.searchFocus(this)" onblur="ASUHeader.searchBlur(this)" />
                         <input type="submit" value="Search" title="Search" class="asu_search_button" />
-                        <input name="sort" value="date:D:L:d1" type="hidden" /> 
-                        <input name="output" value="xml_no_dtd" type="hidden" /> 
-                        <input name="ie" value="UTF-8" type="hidden" /> 
-                        <input name="oe" value="UTF-8" type="hidden" /> 
-                        <input name="client" value="asu_frontend" type="hidden" /> 
+                        <input name="sort" value="date:D:L:d1" type="hidden" />
+                        <input name="output" value="xml_no_dtd" type="hidden" />
+                        <input name="ie" value="UTF-8" type="hidden" />
+                        <input name="oe" value="UTF-8" type="hidden" />
+                        <input name="client" value="asu_frontend" type="hidden" />
                         <input name="proxystylesheet" value="asu_frontend" type="hidden" />
                     </form>
                 </div><!-- /#asu_search_module -->

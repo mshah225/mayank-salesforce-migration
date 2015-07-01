@@ -1,11 +1,11 @@
-public class ProfileService 
+public without sharing class ProfileService 
 {
 	/**
 	* Returns a list of objects that the profile has access to
 	* @param The id of the profile you'd like the list for
-	* @return An ObjectPermissions list of objects
+	* @return A Map<String, List<String>> of the ObjectPermissions object the user HAS access to
 	*/
-	public static List<ObjectPermissions> getAccessibleObjectsByProfile(Id profileId) 
+	public static Map<String, List<String>> getAccessibleObjectsByProfile(Id profileId) 
 	{
 		List<ObjectPermissions> objectPerms = [SELECT ParentId, SObjectType, PermissionsCreate, PermissionsDelete, PermissionsEdit, PermissionsModifyAllRecords, PermissionsRead, PermissionsViewAllRecords 
                                				   FROM ObjectPermissions 
@@ -14,9 +14,21 @@ public class ProfileService
                                    				   WHERE IsOwnedByProfile = true 
                                    				   AND PermissionSet.Profile.Id = :profileId)
                                				   ORDER BY SObjectType]; 
-        objectPerms.sort();
+        
+        Map<String, List<String>> permMap = new Map<String, List<String>>();
+        for (ObjectPermissions ob: objectPerms)
+        {
+            List<String> tempList = new List<String>();
+            tempList.add(String.valueOf(ob.PermissionsCreate));
+            tempList.add(String.valueOf(ob.PermissionsRead));
+            tempList.add(String.valueOf(ob.PermissionsEdit));
+            tempList.add(String.valueOf(ob.PermissionsDelete));
+            tempList.add(String.valueOf(ob.PermissionsModifyAllRecords));
+            tempList.add(String.valueOf(ob.PermissionsViewAllRecords));
+            permMap.put(ob.SObjectType, tempList);
+        }
 
-        return objectPerms;
+        return permMap;
 	}
 
 	/**
@@ -28,11 +40,11 @@ public class ProfileService
 	{
 		List<ObjectPermissions> objectHasAccess = new List<ObjectPermissions>();
         objectHasAccess = [SELECT ParentId, SObjectType, PermissionsCreate, PermissionsDelete, PermissionsEdit, PermissionsModifyAllRecords, PermissionsRead, PermissionsViewAllRecords 
-                     FROM ObjectPermissions 
-                     WHERE ParentId 
-                     IN (SELECT Id FROM PermissionSet 
-                         WHERE IsOwnedByProfile = true 
-                         AND PermissionSet.Profile.Id = :profileId)]; 
+                           FROM ObjectPermissions 
+                           WHERE ParentId 
+                           IN (SELECT Id FROM PermissionSet 
+                               WHERE IsOwnedByProfile = true 
+                               AND PermissionSet.Profile.Id = :profileId)]; 
         
         Set<String> hasAccessSet = new Set<String>();
         for (ObjectPermissions op: objectHasAccess)
@@ -61,10 +73,10 @@ public class ProfileService
 	/**
 	* Returns a list of fields that the profile has access to.
 	* @param The id of the profile and the name of the object you want the accessible fields for
-	* @return A FieldPermissions list of all the fields for the object that the profile has
+	* @return A Map<String, List<String>> of all the fields for the object that the profile has
 	* access to
 	*/
-	public static List<FieldPermissions> getAccessibleObjectFieldsByProfile(Id profileId, String objectName)
+	public static Map<String, List<String>> getAccessibleObjectFieldsByProfile(Id profileId, String objectName)
 	{
 		List<FieldPermissions> fieldPerms = [SELECT ParentId, SObjectType, Field, PermissionsEdit, PermissionsRead
                       						 FROM FieldPermissions 
@@ -73,6 +85,18 @@ public class ProfileService
                                          						 AND PermissionSet.Profile.Id = :profileId) 
                       						 AND SObjectType = :objectName
                       						 ORDER BY Field]; 
-        return fieldPerms;
+
+        Map<String, List<String>> fieldMap = new Map<String, List<String>>();
+        for (FieldPermissions fp: fieldPerms)
+        {
+            List<String> tempList = new List<String>();
+            tempList.add(String.valueOf(fp.PermissionsRead));
+            tempList.add(String.valueOf(fp.PermissionsEdit));
+            String tempString = String.valueOf(fp.Field);
+            tempString = tempString.substring(tempString.indexOf('.') + 1);
+            fieldMap.put(tempString, tempList);
+        }
+
+        return fieldMap;
 	}
 }

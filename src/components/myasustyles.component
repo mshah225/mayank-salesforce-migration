@@ -936,19 +936,8 @@
         border-bottom-left-radius: 2px !important;
         padding-bottom: 8px !important;
         padding-left: 10px !important;
-        padding-right: 71px !important;
+        padding-right: 60px !important;
     }
-
-    /*.hiddenPinBox {
-        background: #f0f0f0 !important;
-        border-top-left-radius: 2px !important;
-        border-bottom-left-radius: 2px !important;
-        padding-left: 10px !important;
-        padding-right: 30px !important;
-        padding-top: 5px !important;
-        width: auto !important;
-        max-width: 85px !important;
-    }*/
 
     .viewPin {
         width: 70px !important;

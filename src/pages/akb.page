@@ -107,7 +107,7 @@
 </head>
 <body onload="getLinks()">
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader />
+    <c:SCHeader/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications pinError="{!pinError}" 
@@ -321,11 +321,11 @@
                                                 myPin="{!myPin}"
                                                 newPin="{!newPin}"
                                                 changePin="{!changePin}"/>
-                    <c:SCMyCasesBox />
+                    <c:SCMyCasesBox/>
                 </div><!-- end col-md-4 -->
             </div>
         </div><!-- end row -->
-        <c:SCFooter />
+        <c:SCFooter/>
     </div><!-- end ASU Content -->
 
     <!-- Autocomplete Code -->

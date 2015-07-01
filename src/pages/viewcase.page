@@ -101,7 +101,7 @@
         ga('send', 'pageview');
     </script>
 
-    <c:SCBomgarScripts />
+    <c:SCBomgarScripts asurite="{!userContact.ASURite_Id__c}"/>
 
     <script>
         $(document).ready(function()

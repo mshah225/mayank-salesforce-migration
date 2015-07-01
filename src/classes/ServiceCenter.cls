@@ -3,29 +3,28 @@ public with sharing class ServiceCenter
     public final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
     public final Integer CLOSEDCASELIMIT = 5;
 
-    public Contact contact;
-    public Case c { get; set; }
-    public Boolean pinError { get;set; }
-    public Boolean pinSuccess { get;set; }
-    public Date d;
+    public Boolean pinError { get; set; }
+    public Boolean pinSuccess { get; set; }
+    public Contact userContact { get; set; }
+    public Case newCase { get; set; }
+    public Case suggestAnArticle { get; set; }
+    public Date today;
     public Decimal myPin;
-    public Decimal newPin { get;set; }
+    public Decimal newPin { get; set; }
     public Id caseId;
     public List<Opportunity> oppList;
-    public String userAlias;
-    public String pinMessage { get;set; }
+    public String pinMessage { get; set; }
     public Term__c termcAC;
     public Term__c termcB;
-    public Case suggestAnArticle {get; set;}
 
     public ServiceCenter() { setUpPage(); }
     public ServiceCenter(AKBController controller) { setUpPage(); }
 
     public void setUpPage()
     {
-        contact = ContactService.getLoggedInContact();
-        c = new Case();
-        d = date.today();
+        userContact = ContactService.getLoggedInContact();
+        newCase = new Case();
+        today = date.today();
         termcAC = [SELECT Session_A_C_Start_Date__c
                    FROM Term__c
                    WHERE session_A_C_Start_Date__c > :System.today()
@@ -36,39 +35,39 @@ public with sharing class ServiceCenter
                   LIMIT 1];
         oppList = [SELECT Career__c, Term__c, StageName, Admitted_Session__c
                    FROM Opportunity
-                   WHERE Contact__c = :contact.Id];
+                   WHERE Contact__c = :userContact.Id];
         suggestAnArticle = new Case();
     }
 
     public List<Case> getMyCases()
     {
-        List<Contact> contacts = new List<Contact> { contact };
+        List<Contact> contacts = new List<Contact> { userContact };
         Map<Id, List<Case>> openCaseMap = CaseService.getVisibleOpenCases(contacts);
 
-        return openCaseMap.get(contact.Id)==null ? new List<Case>() : openCaseMap.get(contact.Id);
+        return (openCaseMap.get(userContact.Id) == null) ? new List<Case>() : openCaseMap.get(userContact.Id);
     }
 
     public List<Case> getClosedCases()
     {
         List<Case> closedCases = new List<Case>();
 
-        List<Contact> contacts = new List<Contact> { contact };
+        List<Contact> contacts = new List<Contact> { userContact };
         Map<Id, List<Case>> closedCaseMap = CaseService.getVisibleClosedCases(contacts);
 
-        if (closedCaseMap.get(contact.Id) != null)
+        if (closedCaseMap.get(userContact.Id) != null)
         {
             // Limit the number of closed cases that are displayed to CLOSEDCASELIMIT
-            if (closedCaseMap.get(contact.Id).size() > CLOSEDCASELIMIT)
+            if (closedCaseMap.get(userContact.Id).size() > CLOSEDCASELIMIT)
             {
                 for (Integer i = 0; i < CLOSEDCASELIMIT; i++)
                 {
-                    closedCases.add(closedCaseMap.get(contact.Id).get(i));
+                    closedCases.add(closedCaseMap.get(userContact.Id).get(i));
 
                 }
             }
             else
             {
-                closedCases = closedCaseMap.get(contact.Id).clone();
+                closedCases = closedCaseMap.get(userContact.Id).clone();
             }
         }
 
@@ -89,7 +88,7 @@ public with sharing class ServiceCenter
                 WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
                 AND Incoming = false
                 AND CreatedDate > :launchDate
-                AND ToAddress = :contact.Email
+                AND ToAddress = :userContact.Email
                 ORDER BY CreatedDate DESC];
     }
 
@@ -121,46 +120,33 @@ public with sharing class ServiceCenter
 
     public Boolean getNormalPhone()
     {
-        if (contact.CAP__c != null) {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return (userContact.CAP__c == null) ? true : false;
     }
 
     public Boolean getRoverPhone()
     {
-        if (contact.CAP__c != null)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return (userContact.CAP__c != null) ? true : false;
     }
 
     public Boolean getHelpBox()
     {
-        if (contact == Null)
+        if (userContact == Null)
         {
             return true;
         }
-        else if ((oppList == Null && contact != null) || (oppList.size() == 0 && contact != null))
+        else if ((oppList == Null && userContact != null) || (oppList.size() == 0 && userContact != null))
         {
             return true;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && d < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && d < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (contact.Affiliation_Student__c == 'Current' || contact.Affiliation_Alumni__c == 'Current' || contact.Affiliation_Courtesy_Affiliate__c == 'Current' || contact.Affiliation_Employee__c == 'Current') && d < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (userContact.Affiliation_Student__c == 'Current' || userContact.Affiliation_Alumni__c == 'Current' || userContact.Affiliation_Courtesy_Affiliate__c == 'Current' || userContact.Affiliation_Employee__c == 'Current') && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -172,23 +158,23 @@ public with sharing class ServiceCenter
 
     public Boolean getQuestionsBox()
     {
-        if (contact == Null)
+        if (userContact == Null)
         {
             return false;
         }
-        else if ((oppList == Null && contact != null) || (oppList.size() == 0 && contact != null))
+        else if ((oppList == Null && userContact != null) || (oppList.size() == 0 && userContact != null))
         {
             return false;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && d < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return true;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && d < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (contact.Affiliation_Student__c == 'Current' || contact.Affiliation_Alumni__c == 'Current' || contact.Affiliation_Courtesy_Affiliate__c == 'Current' || contact.Affiliation_Employee__c == 'Current') && d < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (userContact.Affiliation_Student__c == 'Current' || userContact.Affiliation_Alumni__c == 'Current' || userContact.Affiliation_Courtesy_Affiliate__c == 'Current' || userContact.Affiliation_Employee__c == 'Current') && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
@@ -200,23 +186,23 @@ public with sharing class ServiceCenter
 
     public Boolean getMyCasesBox()
     {
-        if (contact == Null)
+        if (userContact == Null)
         {
             return true;
         }
-        else if ((oppList == Null && contact != null) || (oppList.size() == 0 && contact != null))
+        else if ((oppList == Null && userContact != null) || (oppList.size() == 0 && userContact != null))
         {
             return true;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && d < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && d < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (contact.Affiliation_Student__c == 'Current' || contact.Affiliation_Alumni__c == 'Current' || contact.Affiliation_Courtesy_Affiliate__c == 'Current' || contact.Affiliation_Employee__c == 'Current') && d < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (userContact.Affiliation_Student__c == 'Current' || userContact.Affiliation_Alumni__c == 'Current' || userContact.Affiliation_Courtesy_Affiliate__c == 'Current' || userContact.Affiliation_Employee__c == 'Current') && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -230,10 +216,9 @@ public with sharing class ServiceCenter
     {
         try
         {
-            c.ContactId = contact.Id;
-            System.Debug('Case Contact Id: ' + c.ContactId);
-            c.Web_Submission__c = 'My ASU Standard';
-            insert c;
+            newCase.ContactId = userContact.Id;
+            newCase.Web_Submission__c = 'My ASU Standard';
+            insert newCase;
             PageReference confirmPage = new PageReference('/studentSC?Confirm=newcase');
             confirmPage.setRedirect(true);
             return confirmPage;
@@ -250,27 +235,19 @@ public with sharing class ServiceCenter
 
     public Decimal getMyPin()
     {
-        if (contact != null)
-        {
-            myPin = contact.Self_Service_PIN__c;
-            return myPin;
-        }
-        else
-        {
-            return null;
-        }
+        return (userContact != null) ? userContact.Self_Service_PIN__c : null;
     }
 
     public PageReference changePin()
     {
         try
         {
-            contact.Self_Service_PIN__c = newPin;
-            if (contact.PIN_lockout__c == true)
+            userContact.Self_Service_PIN__c = newPin;
+            if (userContact.PIN_lockout__c == true)
             {
-                contact.PIN_lockout__c = false;
+                userContact.PIN_lockout__c = false;
             }
-            update contact;
+            update userContact;
             pinMessage = 'Your PIN has been updated.';
             pinError = false;
             pinSuccess = true;
@@ -295,16 +272,9 @@ public with sharing class ServiceCenter
 
     public PageReference suggestAnArticleSubmit()
     {
-        String userAlias = [SELECT Alias
-                     FROM User
-                     WHERE Id = :UserInfo.getUserId()].Alias;
-        Id contactId = [SELECT Id
-                     FROM Contact
-                     WHERE ASURITE_Id__c = :userAlias].Id;
-
         suggestAnArticle.Subject = 'Suggest An Article';
         suggestAnArticle.Description = suggestAnArticle.Description;
-        suggestAnArticle.ContactId = contactId;
+        suggestAnArticle.ContactId = userContact.Id;
         suggestAnArticle.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
         suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
         suggestAnArticle.Category__c = 'Knowledge';

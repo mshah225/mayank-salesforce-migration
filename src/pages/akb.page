@@ -99,11 +99,11 @@
         ga('set', 'dimension1', '{!funcGroup}');
         ga('set', 'dimension2', '{!artType}');
         ga('set', 'dimension3', '{!article.CreatedBy.Name}');
-        ga('set', 'dimension4', '{!currentUser}');
+        ga('set', 'dimension4', '{!userContact.Name}');
         ga('send', 'pageview');
     </script>
 
-    <c:SCBomgarScripts />
+    <c:SCBomgarScripts asurite="{!userContact.ASURite_Id__c}"/>
 </head>
 <body onload="getLinks()">
     <div id="main-search" class="main-search closed"></div>

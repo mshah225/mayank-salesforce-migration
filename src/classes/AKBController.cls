@@ -1,27 +1,27 @@
 public without sharing class AKBController 
 {    
-    public AKB_Article_Feedback__c feedbackHelpful { get;set; }
+    public AKB_Article_Feedback__c feedbackHelpful { get; set; }
     public AKB_Article_Feedback__c[] feedbackGiven;
-    public Case suggestAnArticle {get; set;}
-    public FAQ__kav faq {get;set;}
+    public Case suggestAnArticle { get; set;}
+    public FAQ__kav faq { get; set; }
     public How_To__kav howTo { get;set; }
-    public Informational__kav info { get;set; }
-    public KnowledgeArticleVersion article { get;set; }
-    public Id contactId;
+    public Informational__kav info { get; set; }
+    public KnowledgeArticleVersion article { get; set; }
+    public Contact userContact { get; set; }
     public Id articleId;
     public List<String> urls;
     public List<String> fixedLinks;
     public String titleKeyword;
     public String newLink;
-    public String urlsJSON { get;set; }
-    public String fixedLinksJSON { get;set; }
+    public String urlsJSON { get; set; }
+    public String fixedLinksJSON { get; set; }
     public String userAlias;
-    public String funcGroup { get;set; }
-    public String currentUser { get;set; }
-    public String artType { get;set; }
+    public String funcGroup { get; set; }
+    public String artType { get; set; }
    
     public AKBController() 
     {   
+        userContact = ContactService.getLoggedInContact();
         article = [SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId, CreatedBy.Name
                    FROM KnowledgeArticleVersion 
                    WHERE KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id') 
@@ -55,8 +55,6 @@ public without sharing class AKBController
         }
         feedbackHelpful = new AKB_Article_Feedback__c(); 
         suggestAnArticle = new Case();
-        getContactId();
-        currentUser = [SELECT Name FROM Contact WHERE Id = :contactId].Name;
     }
     
     public string getTitleKeyword() 
@@ -88,24 +86,13 @@ public without sharing class AKBController
         }
         return titleKeyword;
     }
-
-    public Id getContactId() 
-    {
-        userAlias = [SELECT Alias 
-                     FROM User 
-                     WHERE Id = :UserInfo.getUserId()].Alias;
-        contactId = [SELECT Id 
-                     FROM Contact 
-                     WHERE ASURITE_Id__c = :userAlias].Id;
-        return contactId;
-    }
     
     public PageReference helpfulYes() 
     {
         feedbackHelpful.Article_Id__c = ApexPages.currentPage().getParameters().get('id');
         feedbackHelpful.Article_Number__c = article.ArticleNumber;
         feedbackHelpful.Article_Title__c = article.Title;
-        feedbackHelpful.Contact__c = contactId;
+        feedbackHelpful.Contact__c = userContact.Id;
         feedbackHelpful.Helpful__c = true;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
         feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
@@ -136,7 +123,7 @@ public without sharing class AKBController
         feedbackHelpful.Article_Id__c = ApexPages.currentPage().getParameters().get('id');
         feedbackHelpful.Article_Number__c = article.ArticleNumber;
         feedbackHelpful.Article_Title__c = article.Title;
-        feedbackHelpful.Contact__c = contactId;
+        feedbackHelpful.Contact__c = userContact.Id;
         feedbackHelpful.Helpful__c = false;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
         feedbackHelpful.Comments__c = feedbackHelpful.Comments__c;
@@ -167,7 +154,7 @@ public without sharing class AKBController
     {
         suggestAnArticle.Subject = 'Suggest An Article';
         suggestAnArticle.Description = suggestAnArticle.Description;
-        suggestAnArticle.ContactId = contactId;
+        suggestAnArticle.ContactId = userContact.Id;
         suggestAnArticle.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
         suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
         suggestAnArticle.Category__c = 'Service Center Feedback';
@@ -186,7 +173,7 @@ public without sharing class AKBController
         feedbackGiven = [SELECT Article_Id__c 
                          FROM AKB_Article_Feedback__c 
                          WHERE Article_Id__c = :ApexPages.currentPage().getParameters().get('id') 
-                         AND Contact__c = :contactId];
+                         AND Contact__c = :userContact.Id];
         if (feedbackGiven.size() > 0) 
         {
             return false;

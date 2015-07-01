@@ -96,10 +96,10 @@
                         <apex:pageBlock >
                             <apex:pageBlockSection collapsible="false" columns="1">
                                 <label for="caseSubject" style="margin-bottom:0px;">Subject</label>
-                                <apex:inputField id="caseSubject" styleClass="caseField" value="{!c.subject}" required="true" label="" html-placeholder="Enter a subject"/>
+                                <apex:inputField id="caseSubject" styleClass="caseField" value="{!newCase.subject}" required="true" label="" html-placeholder="Enter a subject"/>
                                 <br />
                                 <label for="caseDesc" style="margin-bottom:0px;">Description</label>
-                                <apex:inputField id="caseDesc" styleClass="caseField" value="{!c.description}" required="true" style="height:100px;resize:none;" label="" html-placeholder="Enter a description"/>
+                                <apex:inputField id="caseDesc" styleClass="caseField" value="{!newCase.description}" required="true" style="height:100px;resize:none;" label="" html-placeholder="Enter a description"/>
                                 <apex:outputText id="newCaseHelpText">Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.</apex:outputText>
                             </apex:pageBlockSection>
                             <apex:pageblockbuttons location="bottom">

@@ -293,8 +293,8 @@ public without sharing class TerritoryAssignmentHelper
                     || OpportunityOldMap.get(OppsToAssign.Id).Type != OppsToAssign.Type
                     || OpportunityOldMap.get(OppsToAssign.Id).International_Student__c != OppsToAssign.International_Student__c
                     || OpportunityOldMap.get(OppsToAssign.Id).Location__c != OppsToAssign.Location__c
-                    || OpportunityOldMap.get(OppsToAssign.Id).Potential_National_Scholar__c != OppsToAssign.Potential_National_Scholar__c
-                    || OpportunityOldMap.get(OppsToAssign.Id).StageName != OppsToAssign.StageName)
+                    || OpportunityOldMap.get(OppsToAssign.Id).StageName != OppsToAssign.StageName
+                    || OpportunityOldMap.get(OppsToAssign.Id).Potential_National_Scholar__c != OppsToAssign.Potential_National_Scholar__c)
                 {
                     OppsToAssign.Territory_Assignment_Required__c = true;
                 }

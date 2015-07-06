@@ -4,7 +4,7 @@
 	sidebar="true">
 
 	<apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
-	<apex:stylesheet value="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+	<apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
 
 	<apex:includeScript value="/support/console/20.0/integration.js"/>
    	<script type="text/javascript">
@@ -25,6 +25,11 @@
    	</script>
 
 	<style>
+		body {
+			min-width: 1000px;
+			overflow-x: hidden;
+		}
+
 		h1 {
 			font-size: 16pt;
 		}
@@ -73,13 +78,14 @@
 			text-decoration: none !important;
 			transition: all 0.25s ease-in-out !important;
 			background: #a30046 !important;
-		    border: none !important;
+		    border: solid 1px #820038 !important;
 		    font-weight: 200 !important;
 		    color: white !important;
 		    padding: 8px !important;
 		    border-radius: 2px !important;
 		    font-size: 10pt !important;
 		    margin-top: 10px !important;
+			box-shadow: 0 1px 2px 0 #adadad;
 		}
 
 		.caseBtn:hover {
@@ -102,7 +108,7 @@
 		<tr style="vertical-align:top;">
 			<td style="width:20%;padding-left:20px;">
 				<apex:form id="serviceTransfer">
-					<h1>Service Departments</h1>
+					<h1>Service Departments:</h1>
 					<br />
 					<br />
 					<apex:repeat value="{!serviceCARS}" var="serviceKey">
@@ -133,7 +139,7 @@
 			</td>
 			<td style="width:20%;padding-left:20px;">
 				<apex:form id="collegeTransfer">
-					<h1>Colleges</h1>
+					<h1>Colleges:</h1>
 					<br />
 					<br />
 					<apex:repeat value="{!collegeCARS}" var="collegeKey">
@@ -163,20 +169,27 @@
 			</td>
 			<td style="width:30%;padding-left:20px;">
 				<div id="chatterBox">
-					<apex:outputPanel id="chatterPanel">
-						<h1 style="font-weight:200">You are transferring this case to:<br />{!selectedGroupName} - {!selectedCARLabel}</h1>
-					</apex:outputPanel>
-					<apex:form id="transferButton">
-						<br />
-						<apex:actionRegion>
-							<apex:commandLink action="{!transferCase}" styleClass="caseBtn">
-								<i class="fa fa-exchange" style="color:#fff;"></i>&nbsp;&nbsp;Transfer Case
-							</apex:commandLink>
-						</apex:actionRegion>
-					</apex:form>
+					<table style="width:100%;min-width:300px;overflow-x:hidden;">
+						<tr>
+							<td style="width:70%;">
+								<apex:outputPanel id="chatterPanel">
+									<h1 style="font-weight:200;font-size:13pt;">You are transferring this case to:
+									<br />
+									{!selectedGroupName}<apex:outputText rendered="{!NOT(CONTAINS(selectedCARLabel,'(General)'))}"> - {!selectedCARLabel}</apex:outputText></h1>
+								</apex:outputPanel>
+							</td>
+							<td style="width:30%;text-align:right;">
+								<apex:form id="transferButton">
+									<br />
+									<apex:actionRegion >
+										<apex:commandLink action="{!transferCase}" styleClass="caseBtn" value="Transfer Case"/>
+									</apex:actionRegion>
+								</apex:form>
+							</td>
+						</tr>
+					</table>
 					<br />
-					<br />
-					<i>(Optional) Enter Comments or @mention a user before transferring the case:</i>
+					<i>(Optional) Share comments or @mention a user before transferring the case:</i>
 					<br />
 					<chatter:feed entityId="{!Case.Id}" feedItemType="TextPost"/>
 				</div>

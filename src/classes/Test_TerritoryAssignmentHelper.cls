@@ -1,4 +1,4 @@
-@istest
+@isTest
 public without sharing class Test_TerritoryAssignmentHelper
 {
     @testSetup static void setup()
@@ -664,6 +664,52 @@ public without sharing class Test_TerritoryAssignmentHelper
         System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct transfer territory manager.');
     }
 
+    @isTest public static void testInternationalStageChange()
+    {
+        User conditAdmitManager = [SELECT Id FROM User WHERE Alias = 'testuser'];
+
+        Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
+        ATar1.Rule_Type__c = 'International Admitted - Conditional';
+        ATar1.International__c = true;
+        ATar1.User__c = conditAdmitManager.Id;
+        insert ATar1;
+
+        List<Contact> testContacts = ContactService.createMultipleTestContacts(1);
+
+        insert testContacts;
+
+        Contact admitCondCon = [SELECT Id, AccountId
+                                FROM Contact
+                                WHERE Id = :testContacts[0].Id];
+
+        Opportunity admitCondOpp = new Opportunity();
+        admitCondOpp.Name = 'Conditional Admit Opportunity 1';
+        admitCondOpp.StageName = 'Applied';
+        admitCondOpp.Career__c = 'Undergraduate';
+        admitCondOpp.CloseDate = Date.today() + 365;
+        admitCondOpp.Contact__c = admitCondCon.Id;
+        admitCondOpp.AccountId = admitCondCon.AccountId;
+        admitCondOpp.International_Student__c = true;
+
+        insert admitCondOpp;
+
+        admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :admitCondCon.Id];
+
+        System.assertNotEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct default territory manager.');
+
+        Test.startTest();
+
+        admitCondOpp.StageName = 'Admitted - Conditional';
+
+        update admitCondOpp;
+
+        Test.stopTest();
+
+        admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :admitCondCon.Id];
+
+        System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct conditioal admit territory manager.');        
+    }
+
     @isTest public static void testLocation()
     {
         User TestUser = [SELECT Id
@@ -1252,7 +1298,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         System.Debug('Lead Details: ' + leadList[0]);
         System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
-        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International','Rule did not assign correctly by rule type Default User');
+        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International||','Rule did not assign correctly by rule type Default User: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
     }
 
     @isTest public static void testLeadLastInstitution()

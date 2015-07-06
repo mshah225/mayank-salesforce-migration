@@ -1,0 +1,625 @@
+<!--
+* Name: ChangeCaseOwnerController.cls
+* Written by: Mathew Ruff
+* Date Created: Oct. 22nd 2014
+* 
+* Last Updated: Feb. 26th 2015
+* What was Changed: Adding queues to page based off completed naming convention (prefix) in DEV.
+-->
+<apex:page standardController="Case" extensions="ChangeCaseOwnerController" sidebar="true">
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>    
+    
+    <style>
+        body .bPageBlock .detailList tr td, body .bPageBlock .detailList tr th, body table.list tr td, body table.list tr th, body .hoverDetail .bPageBlock .detailList tr td, body .hoverDetail .bPageBlock .detailList tr th {
+            border: none !important;
+        }
+        
+        .bPageBlock .detailList tr td, .bPageBlock .detailList tr th, .hoverDetail .bPageBlock .detailList tr td, .hoverDetail .bPageBlock .detailList tr th {
+            border: none !important;
+        }
+        
+        .caseTab .tertiaryPalette, .individualPalette .caseBlock .tertiaryPalette, .layoutEdit .individualPalette .caseBlock .tertiaryPalette {
+            border-top: none !important;
+            //border-top:4px solid #a30046 !important;
+            border-radius: 0px !important;
+        }
+        
+        .zen .zen-tabMenu .zen-active {
+            background-image: none !important;
+        }
+        
+        .caseTab .brdPalette {
+            border-top-color: #a30046 !important;
+        }
+        
+        .caseTab .primaryPalette, .individualPalette .caseBlock .primaryPalette {
+            background-color: #a30046 !important;
+            border-color: #ffb310 !important;
+        }
+    
+        .even {
+            background-color: #f0f0f0 !important;
+        }
+        
+        .btn {
+            transition: background-color 0.5s ease; 
+            color: #fff !important;
+            background: #a30046 !important;
+            border: none !important;
+            padding: 5px !important;
+            font-weight: 200 !important;
+        }
+        
+        .btn:hover {
+            color: #fff !important;
+            background: #d23153 !important;
+            border: none !important;
+            padding: 5px !important;
+            font-weight: 200 !important;
+        }
+        
+        .userOutput {
+            transition: all 0.5s ease !important;
+        }
+        
+        .categoryLinks {
+            transition: color 0.5s ease;
+            font-weight:600;
+            margin-left:9px;
+            font-size:13pt;
+            text-decoration: none;
+        }
+        
+        .categoryLinks:hover {
+            color: #990033 !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+        }
+    </style>
+</head>
+<body>
+
+<apex:form >
+    <apex:messages id="messages" />
+    <apex:pageBlock mode="maindetail">
+        <apex:pageBlockSection id="assignToQueues" columns="2" title="Assign Case to Queue:" collapsible="false">
+
+            <apex:outputPanel id="departmentsPanel">
+                <span style="font-size:16pt;font-weight:600;">Departments</span><br />
+                <i>Click categories below to expand queue lists.</i>
+                <br /><br /><br />
+
+                <apex:commandLink id="onlineBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(online.size < 1,false,true)}"><i id="onlinefaPlusCircle" class="fa fa-plus-circle"></i><i id="onlinefaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> ASU Online</apex:commandLink>
+                <apex:outputPanel id="onlineTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="onlineTable" title="ASU Online" value="{!online}" var="ol" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="onlineId" value="{!ol.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!ol.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(online.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="admBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(adm.size < 1,false,true)}"><i id="admfaPlusCircle" class="fa fa-plus-circle"></i><i id="admfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Admission Services</apex:commandLink>
+                <apex:outputPanel id="admTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="admTable" title="ADM" value="{!adm}" var="ad" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="adm" value="{!ad.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!ad.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(adm.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="bbssBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(bbss.size < 1,false,true)}"><i id="bbssfaPlusCircle" class="fa fa-plus-circle"></i><i id="bbssfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> BBSS</apex:commandLink>
+                <apex:outputPanel id="bbssTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="bbssTable" title="BBSS" value="{!bbss}" var="bb" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="bbssId" value="{!bb.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!bb.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(bbss.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="daBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(da.size < 1,false,true)}"><i id="dafaPlusCircle" class="fa fa-plus-circle"></i><i id="dafaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Design and the Arts</apex:commandLink>
+                <apex:outputPanel id="daTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="daTable" title="DA" value="{!da}" var="design" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="daId" value="{!design.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!design.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(da.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="eduBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(edu.size < 1,false,true)}"><i id="edufaPlusCircle" class="fa fa-plus-circle"></i><i id="edufaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Education</apex:commandLink>
+                <apex:outputPanel id="eduTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="eduTable" title="EDU" value="{!edu}" var="ed" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="eduId" value="{!ed.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!ed.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(edu.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="esmBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(esm.size < 1,false,true)}"><i id="esmfaPlusCircle" class="fa fa-plus-circle"></i><i id="esmfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> ESM</apex:commandLink>
+                <apex:outputPanel id="esmTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="esmTable" title="ESM" value="{!esm}" var="es" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="esmId" value="{!es.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!es.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(esm.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="faBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(fa.size < 1,false,true)}"><i id="fafaPlusCircle" class="fa fa-plus-circle"></i><i id="fafaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Financial Aid</apex:commandLink>
+                <apex:outputPanel id="faTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="faTable" title="FA" value="{!fa}" var="fin" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="faId" value="{!fin.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!fin.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(fa.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="gradedBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(graded.size < 1,false,true)}"><i id="gradedfaPlusCircle" class="fa fa-plus-circle"></i><i id="gradedfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Graduate Education</apex:commandLink>
+                <apex:outputPanel id="gradedTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="gradedTable" title="GRADED" value="{!graded}" var="grad" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="gradedId" value="{!grad.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!grad.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(graded.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="helpBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(help.size < 1,false,true)}"><i id="helpfaPlusCircle" class="fa fa-plus-circle"></i><i id="helpfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Help Desk</apex:commandLink>
+                <apex:outputPanel id="helpTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="helpTable" title="Help Desk" value="{!help}" var="hel" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="helpId" value="{!hel.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!hel.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(help.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="honorsBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(honors.size < 1,false,true)}"><i id="honorsfaPlusCircle" class="fa fa-plus-circle"></i><i id="honorsfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Honors</apex:commandLink>
+                <apex:outputPanel id="honorsTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="honorsTable" title="Honors" value="{!honors}" var="hon" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="honorsId" value="{!hon.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!hon.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(honors.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="hsBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(hs.size < 1,false,true)}"><i id="hsfaPlusCircle" class="fa fa-plus-circle"></i><i id="hsfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Health Solutions</apex:commandLink>
+                <apex:outputPanel id="hsTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="hsTable" title="HS" value="{!hs}" var="health" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="healthId" value="{!health.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!health.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(hs.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="imBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(im.size < 1,false,true)}"><i id="imfaPlusCircle" class="fa fa-plus-circle"></i><i id="imfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Identity Management</apex:commandLink>
+                <apex:outputPanel id="imTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="imTable" title="IM" value="{!im}" var="ident" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="imId" value="{!ident.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!ident.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(im.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="jourBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(jour.size < 1,false,true)}"><i id="jourfaPlusCircle" class="fa fa-plus-circle"></i><i id="jourfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Journalism</apex:commandLink>
+                <apex:outputPanel id="jourTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="jourTable" title="JOUR" value="{!jour}" var="journal" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="jourId" value="{!journal.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!journal.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(jour.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+                <apex:commandLink id="lettersBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(letters.size < 1,false,true)}"><i id="lettersfaPlusCircle" class="fa fa-plus-circle"></i><i id="lettersfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Letters &amp; Sciences</apex:commandLink>
+                <apex:outputPanel id="lettersTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="lettersTable" title="LETTERS" value="{!letters}" var="let" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="lettersId" value="{!let.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!let.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(letters.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="libraryBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(library.size < 1,false,true)}"><i id="libraryfaPlusCircle" class="fa fa-plus-circle"></i><i id="libraryfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Library Services</apex:commandLink>
+                <apex:outputPanel id="libraryTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="libraryTable" title="LIBRARY" value="{!library}" var="lib" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="libraryId" value="{!lib.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!lib.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(library.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="ncBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(nc.size < 1,false,true)}"><i id="ncfaPlusCircle" class="fa fa-plus-circle"></i><i id="ncfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> New College</apex:commandLink>
+                <apex:outputPanel id="ncTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="ncTable" title="NC" value="{!nc}" var="newColl" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="ncId" value="{!newColl.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!newColl.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(nc.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="nursingBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(nursing.size < 1,false,true)}"><i id="nursingfaPlusCircle" class="fa fa-plus-circle"></i><i id="nursingfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Nursing</apex:commandLink>
+                <apex:outputPanel id="nursingTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="nursingTable" title="NURSING" value="{!nursing}" var="nurse" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="nursingId" value="{!nurse.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!nurse.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(nursing.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="ppBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(pp.size < 1,false,true)}"><i id="ppfaPlusCircle" class="fa fa-plus-circle"></i><i id="ppfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Public Programs</apex:commandLink>
+                <apex:outputPanel id="ppTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="ppTable" title="PP" value="{!pp}" var="publicP" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="ppId" value="{!publicP.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!publicP.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(pp.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="presBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(pres.size < 1,false,true)}"><i id="presfaPlusCircle" class="fa fa-plus-circle"></i><i id="presfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Office of the President</apex:commandLink>
+                <apex:outputPanel id="presTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="presTable" title="PRES" value="{!pres}" var="offPres" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="presId" value="{!offPres.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!offPres.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(pres.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="sbsBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(sbs.size < 1,false,true)}"><i id="sbsfaPlusCircle" class="fa fa-plus-circle"></i><i id="sbsfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Student Business Services</apex:commandLink>
+                <apex:outputPanel id="sbsTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="sbsTable" title="SBS" value="{!sbs}" var="studentBS" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="sbsId" value="{!studentBS.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!studentBS.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(sbs.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="sciBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(sci.size < 1,false,true)}"><i id="scifaPlusCircle" class="fa fa-plus-circle"></i><i id="scifaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Student-Centric Initiatives</apex:commandLink>
+                <apex:outputPanel id="sciTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="sciTable" title="SCI" value="{!sci}" var="studentCI" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="sciId" value="{!studentCI.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!studentCI.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(sci.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="techstudioBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(techstudio.size < 1,false,true)}"><i id="techstudiofaPlusCircle" class="fa fa-plus-circle"></i><i id="techstudiofaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Tech Studio</apex:commandLink>
+                <apex:outputPanel id="techstudioTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="techstudioTable" title="TECHSTUDIO" value="{!techstudio}" var="tech" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="techstudioId" value="{!tech.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!tech.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(techstudio.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="ursBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(urs.size < 1,false,true)}"><i id="ursfaPlusCircle" class="fa fa-plus-circle"></i><i id="ursfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> University Registar Services</apex:commandLink>
+                <apex:outputPanel id="ursTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="ursTable" title="URS" value="{!urs}" var="uniRS" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="ursId" value="{!uniRS.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!uniRS.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(urs.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+            </apex:outputPanel>
+
+
+            <apex:outputPanel id="collegesPanel">
+
+                <span style="font-size:16pt;font-weight:600;">Colleges</span><br />
+                <i>Click categories below to expand queue lists.</i>
+                <br /><br /><br />
+                
+                <apex:commandLink id="engBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(eng.size < 1,false,true)}"><i id="engfaPlusCircle" class="fa fa-plus-circle"></i><i id="engfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Engineering</apex:commandLink>
+                <apex:outputPanel id="engTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="engTable" title="Engineering" value="{!eng}" var="en" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="engId" value="{!en.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!en.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(eng.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="libartsBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(libarts.size < 1,false,true)}"><i id="libartsfaPlusCircle" class="fa fa-plus-circle"></i><i id="libartsfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Liberal Art Sciences</apex:commandLink>
+                <apex:outputPanel id="libartsTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="libartsTable" title="LIBARTS" value="{!libarts}" var="la" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="libartsId" value="{!la.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!la.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(libarts.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="susBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(sus.size < 1,false,true)}"><i id="susfaPlusCircle" class="fa fa-plus-circle"></i><i id="susfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> Sustainability</apex:commandLink>
+                <apex:outputPanel id="susTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="susTable" title="SUS" value="{!sus}" var="sustain" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="susId" value="{!sustain.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!sustain.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(sus.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+                <apex:commandLink id="wpcBtn" styleClass="categoryLinks" rerender="nothing" rendered="{!IF(wpc.size < 1,false,true)}"><i id="wpcfaPlusCircle" class="fa fa-plus-circle"></i><i id="wpcfaMinusCircle" class="fa fa-minus-circle" style="display:none"></i> W.P. Carey</apex:commandLink>
+                <apex:outputPanel id="wpcTablePanel" style="width:100%;display:none;">
+                    <apex:dataTable id="wpcTable" title="WPC" value="{!wpc}" var="wpCarey" cellpadding="10" rowClasses="even,odds" style="width:100%;float:left;margin-top:10px;margin-bottom:20px;">
+                        <apex:column >
+                            <apex:commandLink value="Assign" action="{!assignOwnerToQueue}" styleClass="btn" style="text-decoration:none">
+                                <apex:param name="wpcId" value="{!wpCarey.id}" assignTo="{!queueId}"/>
+                            </apex:commandLink>
+                            &nbsp;{!wpCarey.Name}
+                        </apex:column>
+                    </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(wpc.size < 1,false,true)}"><br /><br /><br /></apex:outputPanel>
+
+            </apex:outputPanel>
+
+
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:form>
+
+<script>
+    $( "[id$=admBtn]" ).click(function() {
+        $( "[id$=admTablePanel]" ).slideToggle( "700" );
+        $( "[id$=admfaPlusCircle]" ).toggle();
+        $( "[id$=admfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=bbssBtn]" ).click(function() {
+        $( "[id$=bbssTablePanel]" ).slideToggle( "700" );
+        $( "[id$=bbssfaPlusCircle]" ).toggle();
+        $( "[id$=bbssfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=daBtn]" ).click(function() {
+        $( "[id$=daTablePanel]" ).slideToggle( "700" );
+        $( "[id$=dafaPlusCircle]" ).toggle();
+        $( "[id$=dafaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=eduBtn]" ).click(function() {
+        $( "[id$=eduTablePanel]" ).slideToggle( "700" );
+        $( "[id$=edufaPlusCircle]" ).toggle();
+        $( "[id$=edufaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=engBtn]" ).click(function() {
+        $( "[id$=engTablePanel]" ).slideToggle( "700" );
+        $( "[id$=engfaPlusCircle]" ).toggle();
+        $( "[id$=engfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=esmBtn]" ).click(function() {
+        $( "[id$=esmTablePanel]" ).slideToggle( "700" );
+        $( "[id$=esmfaPlusCircle]" ).toggle();
+        $( "[id$=esmfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=faBtn]" ).click(function() {
+        $( "[id$=faTablePanel]" ).slideToggle( "700" );
+        $( "[id$=fafaPlusCircle]" ).toggle();
+        $( "[id$=fafaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=gradedBtn]" ).click(function() {
+        $( "[id$=gradedTablePanel]" ).slideToggle( "700" );
+        $( "[id$=gradedfaPlusCircle]" ).toggle();
+        $( "[id$=gradedfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=helpBtn]" ).click(function() {
+        $( "[id$=helpTablePanel]" ).slideToggle( "700" );
+        $( "[id$=helpfaPlusCircle]" ).toggle();
+        $( "[id$=helpfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=honorsBtn]" ).click(function() {
+        $( "[id$=honorsTablePanel]" ).slideToggle( "700" );
+        $( "[id$=honorsfaPlusCircle]" ).toggle();
+        $( "[id$=honorsfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=hsBtn]" ).click(function() {
+        $( "[id$=hsTablePanel]" ).slideToggle( "700" );
+        $( "[id$=hsfaPlusCircle]" ).toggle();
+        $( "[id$=hsfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=imBtn]" ).click(function() {
+        $( "[id$=imTablePanel]" ).slideToggle( "700" );
+        $( "[id$=imfaPlusCircle]" ).toggle();
+        $( "[id$=imfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=jourBtn]" ).click(function() {
+        $( "[id$=jourTablePanel]" ).slideToggle( "700" );
+        $( "[id$=jourfaPlusCircle]" ).toggle();
+        $( "[id$=jourfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=lettersBtn]" ).click(function() {
+        $( "[id$=lettersTablePanel]" ).slideToggle( "700" );
+        $( "[id$=lettersfaPlusCircle]" ).toggle();
+        $( "[id$=lettersfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=libartsBtn]" ).click(function() {
+        $( "[id$=libartsTablePanel]" ).slideToggle( "700" );
+        $( "[id$=libartsfaPlusCircle]" ).toggle();
+        $( "[id$=libartsfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=libraryBtn]" ).click(function() {
+        $( "[id$=libraryTablePanel]" ).slideToggle( "700" );
+        $( "[id$=libraryfaPlusCircle]" ).toggle();
+        $( "[id$=libraryfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=ncBtn]" ).click(function() {
+        $( "[id$=ncTablePanel]" ).slideToggle( "700" );
+        $( "[id$=ncfaPlusCircle]" ).toggle();
+        $( "[id$=ncfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=nursingBtn]" ).click(function() {
+        $( "[id$=nursingTablePanel]" ).slideToggle( "700" );
+        $( "[id$=nursingfaPlusCircle]" ).toggle();
+        $( "[id$=nursingfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=onlineBtn]" ).click(function() {
+        $( "[id$=onlineTablePanel]" ).slideToggle( "700" );
+        $( "[id$=onlinefaPlusCircle]" ).toggle();
+        $( "[id$=onlinefaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=ppBtn]" ).click(function() {
+        $( "[id$=ppTablePanel]" ).slideToggle( "700" );
+        $( "[id$=ppfaPlusCircle]" ).toggle();
+        $( "[id$=ppfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=presBtn]" ).click(function() {
+        $( "[id$=presTablePanel]" ).slideToggle( "700" );
+        $( "[id$=presfaPlusCircle]" ).toggle();
+        $( "[id$=presfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=sbsBtn]" ).click(function() {
+        $( "[id$=sbsTablePanel]" ).slideToggle( "700" );
+        $( "[id$=sbsfaPlusCircle]" ).toggle();
+        $( "[id$=sbsfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=sciBtn]" ).click(function() {
+        $( "[id$=sciTablePanel]" ).slideToggle( "700" );
+        $( "[id$=scifaPlusCircle]" ).toggle();
+        $( "[id$=scifaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=susBtn]" ).click(function() {
+        $( "[id$=susTablePanel]" ).slideToggle( "700" );
+        $( "[id$=susfaPlusCircle]" ).toggle();
+        $( "[id$=susfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=techstudioBtn]" ).click(function() {
+        $( "[id$=techstudioTablePanel]" ).slideToggle( "700" );
+        $( "[id$=techstudiofaPlusCircle]" ).toggle();
+        $( "[id$=techstudiofaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=ursBtn]" ).click(function() {
+        $( "[id$=ursTablePanel]" ).slideToggle( "700" );
+        $( "[id$=ursfaPlusCircle]" ).toggle();
+        $( "[id$=ursfaMinusCircle]" ).toggle();
+    });
+
+    $( "[id$=wpcBtn]" ).click(function() {
+        $( "[id$=wpcTablePanel]" ).slideToggle( "700" );
+        $( "[id$=wpcfaPlusCircle]" ).toggle();
+        $( "[id$=wpcfaMinusCircle]" ).toggle();
+    });
+</script>
+
+</body>
+</apex:page>

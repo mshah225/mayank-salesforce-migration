@@ -127,19 +127,17 @@ public with sharing class NewCorporateRelationsContactController
 
     public void validateContact()
     {
-    	contact.Email = contact.Corporate_Relations_Email__c;
         Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
-		Integer hasEmail = contact.Email == null ? 0 : 1;
 		Integer hasPhone = contact.Phone == null ? 0 : 1;
 
-		Integer result = hasMailingCode + hasEmail + hasPhone;
-		if (result >= 2)
+		Integer result = hasMailingCode + hasPhone;
+		if (result >= 1)
 		{
 			page2();
 		}
 		else
 		{
-			ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
+			ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.'));
             return;
 		}
     }
@@ -422,6 +420,7 @@ public with sharing class NewCorporateRelationsContactController
     {
     	try 
     	{
+    		contact.Corporate_Relations_Email__c = contact.Email;
 			contact.SF_First_Name__c = contact.FirstName;
             contact.SF_First_Name_Updated__c = Datetime.now();
             contact.SF_Last_Name__c = contact.LastName;

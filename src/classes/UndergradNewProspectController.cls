@@ -54,13 +54,21 @@ public class UndergradNewProspectController
 
     public Contact getContact()
     {
-        if (contact == null) contact= new Contact();
+        if (contact == null) 
+        {
+            contact= new Contact();
+        }
+
         return contact;
     }
 
     public Opportunity getOpportunity() 
     {
-        if (opportunity == null) opportunity = new Opportunity();
+        if (opportunity == null) 
+        {
+            opportunity = new Opportunity();
+        }
+
         oppRecType = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
         opportunity.RecordTypeId = oppRecType;
         return opportunity;
@@ -68,25 +76,41 @@ public class UndergradNewProspectController
 
     public Previous_Education__c getPreviousEducation() 
     {
-        if (previousEducation == null) previousEducation = new Previous_Education__c();
+        if (previousEducation == null) 
+        {
+            previousEducation = new Previous_Education__c();
+        }
+
         return previousEducation;
     }
 
     public CampaignMember getCampaignMemberInterest() 
     {
-        if (camMemInterest == null) camMemInterest = new CampaignMember();
+        if (camMemInterest == null) 
+        {
+            camMemInterest = new CampaignMember();
+        }
+
         return camMemInterest;
     }
 
     public CampaignMember getCampaignMemberEvent() 
     {
-        if(camMemEvent == null) camMemEvent = new CampaignMember();
+        if(camMemEvent == null) 
+        {
+            camMemEvent = new CampaignMember();
+        }
+
         return camMemEvent;
     }
 
     public Case getC() 
     {
-        if (c == null) c = new Case();
+        if (c == null) 
+        {
+            c = new Case();
+        }
+
         Id asuAdmissionRecId = [SELECT Id, Name FROM RecordType WHERE Name = 'ASU Admission Services' LIMIT 1].Id;
         c.RecordTypeId = asuAdmissionRecId;
         return c;
@@ -131,6 +155,7 @@ public class UndergradNewProspectController
         {
             asuLocationIntList.add(new SelectOption(i.Id , i.Name));
         }
+        
         return asuLocationIntList;
     }
 
@@ -149,6 +174,7 @@ public class UndergradNewProspectController
         {
             academicIntList.add(new SelectOption(i.Id , i.Name));
         }
+
         return academicIntList;
     }
 
@@ -167,6 +193,7 @@ public class UndergradNewProspectController
         {
             asuCollegesIntList.add(new SelectOption(i.Id , i.Name));
         }
+
         return asuCollegesIntList;
     }
 
@@ -211,7 +238,8 @@ public class UndergradNewProspectController
                     contact.SMS_Phone__c = SMSValidate.matcher(contact.SMS_Phone__c).replaceAll('');
                     System.Debug('Here\'s your SMS Phone number:' + contact.SMS_Phone__c);
                 }
-                contact.Email = contact.Lead_Email__c;
+
+                contact.Lead_Email__c = contact.Email;
                 contact.SF_Mobile_Updated__c = Datetime.now();
                 contact.SF_Mailing_Street__c = contact.MailingStreet;
                 contact.SF_Mailing_City__c = contact.MailingCity;
@@ -221,14 +249,13 @@ public class UndergradNewProspectController
                 contact.SF_Mailing_Address_Updated__c = Datetime.now();
                 contact.SF_Birthdate__c = contact.Birthdate;
                 contact.SF_Birthdate_Updated__c = Datetime.now();
+                
                 Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
-                Integer hasEmail = contact.Email == null ? 0 : 1;
                 Integer hasPhone = contact.Phone == null ? 0 : 1;
-
-                Integer result = hasMailingCode + hasEmail + hasPhone;
-                if (result < 2)
+                Integer result = hasMailingCode + hasPhone;
+                if (result < 1)
                 {
-                   ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out at least two of these three fields: Postal Code, Email, or Phone.'));
+                   ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.'));
                     return false;
                 }
 

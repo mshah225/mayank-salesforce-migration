@@ -1,120 +1,210 @@
 @isTest
-private class Test_UndergradNewProspectController {
-    
-    private static Contact contact;
-    private static Opportunity opportunity;
-    private static Previous_Education__c previousEducation;
-    private static CampaignMember camMemInterest;
-    private static CampaignMember camMemEvent;
-    private static Case c;
+private class Test_UndergradNewProspectController 
+{
     private static UndergradNewProspectController ug;
-    private static Campaign testEventCam;
-    private static Campaign testIntCam;
-    private static Account testAccount;
 
-    private static void setUp() {
-        ug = new UndergradNewProspectController();
-        contact = new Contact();
-        opportunity = new Opportunity();
-        previousEducation = new Previous_Education__c();
-        camMemInterest = new CampaignMember();
-        camMemEvent = new CampaignMember();
-        c = new Case();
-        testEventCam = new Campaign();
-        testIntCam = new Campaign();
-        testAccount = new Account();
-        
-        contact.FirstName = 'Jonny';
-        contact.LastName = 'Tester';
-        contact.MobilePhone = '923-345-3456';
-        contact.MailingStreet = '123 Sky Blvd.';
-        contact.MailingCity = 'Tempe';
-        contact.MailingPostalCode = '85281';
-        ug.setContact(contact);
-
-        testAccount.Name = 'Test School';
+    @testSetup static void setUpTest() 
+    {   
+        Account testAccount = new Account(
+            Name = 'Test School');
         insert testAccount;
 
-        opportunity.AccountId = testAccount.Id;
-        opportunity.Name = contact.FirstName + ' ' + contact.LastName;
-        opportunity.CloseDate = System.Today() + 365;
-        opportunity.Contact__c = contact.Id;
-        ug.setOpportunity(opportunity);
-
-        previousEducation.Account__c = testAccount.Id;
-        ug.setPreviousEducation(previousEducation);
-
-        ug.setCampaignMemberInterest(camMemInterest);
-
-        ug.setCampaignMemberEvent(camMemEvent);
-
-        ug.setCase(c);
-
-        testEventCam.Name = 'ASU Test Event';
-        testEventCam.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id;
+        Campaign testEventCam = new Campaign(
+            Name = 'ASU Test Event',
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id);
         insert testEventCam;
 
-        testIntCam.Name = 'ASU Test Interest';
-        insert testIntCam;
+        Campaign testEmailCam = new Campaign(
+            Name = 'Email',
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id);
+        insert testEmailCam;
 
+        Campaign testIntCam = new Campaign(
+            Name = 'ASU Test Interest',
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id);
+        insert testIntCam;
+    } 
+
+    private static void setUpController() 
+    {
+        ug = new UndergradNewProspectController();
         ug.getContact();
         ug.getOpportunity();
         ug.getPreviousEducation();
-        ug.getCampaignMemberInterest();
         ug.getCampaignMemberEvent();
+        ug.getCampaignMemberInterest();
         ug.getC();
-
-        List<SelectOption> asuLocationIntList = ug.getASULocationIntList();
-        List<SelectOption> academicIntList = ug.getAcademicIntList();
-        List<SelectOption> asuCollegesIntList = ug.getASUCollegesIntList();
-    } 
-
-    static testMethod void testUndergradControllerSearch() {
-        setUp();
-
-    	ug.elId = testEventCam.Id;
-        ug.smsText = true;
-        ug.eventSearchString = 'test';
+        ug.setContact(ug.contact);
+        ug.setOpportunity(ug.opportunity);
+        ug.setPreviousEducation(ug.previousEducation);
+        ug.setCampaignMemberEvent(ug.camMemEvent);
+        ug.setCampaignMemberInterest(ug.camMemInterest);
+        ug.setCase(ug.c);
+        ug.eventSearchString = 'ASU Test';
         ug.eventSearch();
         ug.getEventList();
-        
         ug.instSearch();
         ug.getInstList();
-        
-        ug.originSelection = '--Select--';
-        ug.pickSelection = 'Academic';
-        ug.selectedInterestId = testIntCam.Id;
-        ug.phoneOrig = testIntCam.Id;
-
-        PageReference s = ug.savePage(); 
-        PageReference save = new PageReference('/' + opportunity.Id);
-        System.assertNotEquals(save, s);       
+        ug.getASULocationIntList();
+        ug.getAcademicIntList();
+        ug.getASUCollegesIntList();
     }
 
-    static testMethod void testCampaignEvent() {
-        setUp();
+    @isTest static void testCaseCreation() 
+    {
+        Test.startTest();
+        setUpController();
 
-        ug.smsText = true;
-        ug.originSelection = '--Select--';
-        ug.elId = testEventCam.Id;
+        // Page selections
+        ug.originSelection = 'Email';
+        ug.pickSelection = '--Select--';
 
-        PageReference s = ug.savePage(); 
-        System.assertEquals(ug.elId, testEventCam.Id);         
+        // Create case
+        ug.c.Functional_Group__c = 'Business';
+        ug.c.Subject = 'Test Subject';
+
+        // Create contact
+        ug.contact.FirstName = 'Test';
+        ug.contact.LastName = 'Contact';
+        ug.contact.Lead_Email__c = 'test@email.com';
+        ug.contact.Phone = '(484) 484-4848';
+
+        // Create previous education
+        Id testSchool = [SELECT Id FROM Account WHERE Name = 'Test School'].Id;
+        ug.previousEducation.Account__c = testSchool;
+        ug.savePage();
+        Test.stopTest(); 
+
+        System.assertNotEquals(null, ug.contact);
+        System.assertNotEquals(null, ug.c);
     }
 
-    static testMethod void testCaseCreation() {
-        setUp();
+    @isTest static void testOptionalInterest() 
+    {
+        Test.startTest();
+        setUpController();
 
-        c.Functional_Group__c = 'Tech Studio';
+        // Page selections
+        ug.originSelection = 'Email';
+        Campaign interestTestCam = [SELECT Id, Name FROM Campaign WHERE Name = 'ASU Test Interest'];
+        ug.pickSelection = interestTestCam.Name;
+        ug.selectedInterestId = interestTestCam.Id;
+
+        // Create case
+        ug.c.Functional_Group__c = 'Business';
+        ug.c.Subject = 'Test Subject';
+
+        // Create contact
+        ug.contact.FirstName = 'Test';
+        ug.contact.LastName = 'Contact';
+        ug.contact.Lead_Email__c = 'test@email.com';
+        ug.contact.Phone = '(484) 484-4848';
+
+        // Create previous education
+        Id testSchool = [SELECT Id FROM Account WHERE Name = 'Test School'].Id;
+        ug.previousEducation.Account__c = testSchool;
+        ug.savePage();
+        Test.stopTest(); 
+
+        System.assertNotEquals(null, ug.contact);
+        System.assertNotEquals(null, ug.camMemInterest);
+    }
+
+    @isTest static void testSaveErrors() 
+    {
+        Test.setCurrentPage(Page.UndergradNewProspect);
+        setUpController();
+        ug.originSelection = 'Nothing';
+        ug.pickSelection = '--Select--';
+        Id testEl = [SELECT Id FROM Campaign WHERE Name = 'ASU Test Event'].Id;
+        ug.elId = testEl;
+        ug.savePage();
+        ApexPages.Message[] msgs = ApexPages.getMessages();
+        Boolean found = false;
+        for (ApexPages.Message msg : msgs)
+        {
+           if (msg.getSummary() == 'You must select either ONE case OR ONE event.')
+           {
+              found = true;
+           }
+        }
+        System.assert(found);
+
+        ug.originSelection = '--Select--';
+        ug.elId = null;
+        ug.savePage();
+        msgs = ApexPages.getMessages();
+        found = false;
+        for (ApexPages.Message msg : msgs)
+        {
+           if (msg.getSummary() == 'You must select either ONE case OR ONE event.')
+           {
+              found = true;
+           }
+        }
+        System.assert(found);
 
         ug.originSelection = 'Email';
+        ug.pickSelection = 'Something';
         ug.elId = null;
-        ug.pickSelection = '--Select--';
-        ug.selectedInterestId = null;
-        ug.instId = null;
-        ug.emailOrig = testEventCam.Id;
+        ug.savePage();
+        msgs = ApexPages.getMessages();
+        found = false;
+        for (ApexPages.Message msg : msgs)
+        {
+           if (msg.getSummary() == 'After selecting a type of interest, you must select an interest.')
+           {
+              found = true;
+           }
+        }
+        System.assert(found);
 
-        PageReference s = ug.savePage();
-        System.assertEquals(c.Status, 'Closed: Resolved');  
+        ug.originSelection = 'Email';
+        ug.pickSelection = '--Select--';
+        ug.c.Functional_Group__c = null;
+        ug.elId = null;
+        ug.savePage();
+        msgs = ApexPages.getMessages();
+        found = false;
+        for (ApexPages.Message msg : msgs)
+        {
+           if (msg.getSummary() == 'When selecting an Origin, you must also select a Functional Group.')
+           {
+              found = true;
+           }
+        }
+        System.assert(found);
+    }
+
+    @isTest static void testContactValidation()
+    {
+        setUpController();
+
+        ug.originSelection = 'Email';
+        ug.pickSelection = '--Select--';
+
+        ug.c.Functional_Group__c = 'Business';
+        ug.c.Subject = 'Test Subject';
+
+        ug.contact.FirstName = 'Test';
+        ug.contact.LastName = 'Contact';
+        ug.contact.Email = 'test@nomail.com';
+        ug.contact.MailingPostalCode = null;
+        ug.contact.Phone = null;
+
+        Id testSchool = [SELECT Id FROM Account WHERE Name = 'Test School'].Id;
+        ug.previousEducation.Account__c = testSchool;
+        ug.savePage();
+
+        ApexPages.Message[] msgs = ApexPages.getMessages();
+        Boolean found = false;
+        for (ApexPages.Message msg : msgs)
+        {
+           if (msg.getSummary() == 'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.')
+           {
+              found = true;
+           }
+        }
+        System.assert(found);
     }
 }

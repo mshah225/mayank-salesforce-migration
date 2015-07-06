@@ -1072,7 +1072,16 @@
             document.getElementById("normalPhone").addEventListener("click", function(event){
                 event.preventDefault();
             });
+
+            document.getElementById("normalPhone").addEventListener("contextmenu", function(event){
+                event.preventDefault();
+            });
+
             document.getElementById("roverPhone").addEventListener("click", function(event){
+                event.preventDefault();
+            });
+
+            document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
                 event.preventDefault();
             });
         }

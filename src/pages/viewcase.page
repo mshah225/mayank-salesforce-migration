@@ -830,7 +830,6 @@
             </ul>
         </div>
     </div><!-- End ASU Content -->
-
     <script>
         if (!(navigator.userAgent.match(/Android/i)
              || navigator.userAgent.match(/webOS/i)
@@ -843,7 +842,16 @@
             document.getElementById("normalPhone").addEventListener("click", function(event){
                 event.preventDefault();
             });
+
+            document.getElementById("normalPhone").addEventListener("contextmenu", function(event){
+                event.preventDefault();
+            });
+
             document.getElementById("roverPhone").addEventListener("click", function(event){
+                event.preventDefault();
+            });
+
+            document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
                 event.preventDefault();
             });
         }

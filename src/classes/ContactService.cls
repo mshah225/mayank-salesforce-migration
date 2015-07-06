@@ -35,6 +35,28 @@ public class ContactService
 	}
 
     /**
+    * Creates a number of test contacts. Usually for unit testing.
+    * @param The number of contacts to create
+    * @return A list of the contacts with all required fields;
+    */
+    public static List<Contact> createMultipleTestContacts(Integer numOfContacts)
+    {
+        List<Contact> contactList = new List<Contact>();
+
+        for (Integer i = 0; i < numOfContacts; i++)
+        {
+            Contact con = createTestContact();
+            con.FirstName = 'Test' + i;
+            con.LastName = 'Contact' + i;
+            con.Email = 'test.user' + i + '@test.example.com';
+            con.ASURite_ID__c = 'testuser' + i;
+            contactList.add(con);
+        }
+
+        return contactList;
+    }
+    
+    /**
     * The currently logged in contact somewhere. Usually the service center.
     * @return The logged in contact
     */

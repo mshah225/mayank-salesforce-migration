@@ -139,7 +139,6 @@
 		<p><i>To assign this case, select a department or college from the lists below:</i></p>
 		<apex:form>	
 			<apex:commandButton value="Go Back" action="{!page1}" styleClass="regBtn"/>
-			<br />
 		</apex:form>
 		<br />
 		<table id="pageTable" style="width:100%;min-width:900px;overflow-x:hidden;">

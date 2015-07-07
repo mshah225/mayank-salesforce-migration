@@ -1,19 +1,23 @@
 public with sharing class CaseTransferController
 {
 	private final Case c;
-	public Boolean showChatter { get;set; }
+	public Boolean page1 { get; set; }
+	public Boolean page2 { get; set; }
+	public Boolean page3 { get; set; }
+	public Boolean page4 { get; set; }
 	public Id selectedCARId { get;set; }
 	public List<Case_Assignment_Rule__c> allCARs;
 	public List<Case_Assignment_Rule__c> allGenCARs;
 	public List<Schema.PickListEntry> columnList;
-	public Map<String, List<Case_Assignment_Rule__c>> serviceCARS { get;set; }
-	public Map<String, List<Case_Assignment_Rule__c>> collegeCARS { get;set; }
-	public String selectedGroupName { get;set; }
-	public String selectedCARLabel { get;set; }
+	//public List<User> userList { get; set; }
+	public Map<String, List<Case_Assignment_Rule__c>> serviceCARS { get; set; }
+	public Map<String, List<Case_Assignment_Rule__c>> collegeCARS { get; set; }
+	public String selectedGroupName { get; set; }
+	public String selectedCARLabel { get; set; }
 
 	public CaseTransferController(ApexPages.StandardController stdController)
 	{
-		showChatter = false;
+		page1 = true;
 		serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
 		collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         this.c = (Case)stdController.getRecord();
@@ -61,6 +65,38 @@ public with sharing class CaseTransferController
         }
 	}
 
+	public void page1()
+	{
+		page1 = true;
+		page2 = false;
+		page3 = false;
+		page4 = false;
+	}
+
+	public void page2()
+	{
+		page1 = false;
+		page2 = true;
+		page3 = false;
+		page4 = false;
+	}
+
+	public void page3()
+	{
+		page1 = false;
+		page2 = false;
+		page3 = true;
+		page4 = false;
+	}
+
+	public void page4()
+	{
+		page1 = false;
+		page2 = false;
+		page3 = false;
+		page4 = true;
+	}
+
 	public List<Schema.PickListEntry> getColumnList()
 	{
 		Schema.DescribeFieldResult fieldResult = Case_Assignment_Rule__c.CTPColumn__c.getDescribe();
@@ -68,10 +104,53 @@ public with sharing class CaseTransferController
 		return columnList;
 	}
 
+	public List<User> getUserList()
+	{
+		List<GroupMember> groupsUserIsIn = [SELECT GroupId, UserOrGroupId, Group.Name 
+										    FROM GroupMember 
+										  	WHERE UserOrGroupId = :UserInfo.getUserId()];
+
+		Set<Id> idSet = new Set<Id>();
+		for (GroupMember gm : groupsUserIsIn)
+		{
+			List<GroupMember> individualGroupMembers = [SELECT UserOrGroupId 
+														FROM GroupMember 
+														WHERE GroupId = :gm.GroupId];
+
+			for (GroupMember igm : individualGroupMembers)
+			{
+				String groupId = igm.UserOrGroupId;
+				if (groupId.startsWith('005'))
+				{
+					idSet.add(igm.UserOrGroupId);
+				}
+
+				if(groupId.startsWith('00G'))
+				{
+					List<GroupMember> subGroupList = [SELECT GroupId, UserOrGroupId, Group.Name 
+											      	  FROM GroupMember 
+											  	  	  WHERE GroupId = :gm.UserOrGroupId];
+
+					for (GroupMember sgm : subGroupList)
+					{
+						String subGroupId = sgm.UserOrGroupId;
+						if (groupId.startsWith('005'))
+						{
+							idSet.add(sgm.UserOrGroupId);
+						}
+					}
+				}
+			}
+		}
+		List<User> userList = [SELECT Id, Name FROM User WHERE Id IN :idSet ORDER BY Name ASC];
+
+		return userList;
+	}
+
 	public void showChatterBox()
 	{
-		showChatter = true;
 		selectedCARLabel = [SELECT Label__c FROM Case_Assignment_Rule__c WHERE Id = :selectedCARId].Label__c;
+		page4();
 	}
 
 	public PageReference transferCase()

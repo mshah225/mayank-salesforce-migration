@@ -144,6 +144,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     }
                 }
 
+                existingCase.Most_Recent_Sent_To_Email__c = email.ToAddresses[0];
                 existingCase.Status = 'Re-Opened';
 
                 updateSObject(existingCase);
@@ -209,7 +210,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             theCase.Sub_Category__c = subCategoryName;
             theCase.Campus__c = campus;
             theCase.Functional_Group__c = functionalGroup;
-            theCase.Most_Recent_Functional_Group__c = functionalGroup;
             theCase.SuppliedEmail = email.fromAddress;
             theCase.SuppliedName = fname + ' ' + lname;
             theCase.Status = 'New';
@@ -241,6 +241,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             theCase.Subject = email.Subject;
             theCase.Description = email.plainTextBody;
+            theCase.Most_Recent_Sent_To_Email__c = email.toAddresses.get(0);
             String toAddressConcat = '';
             String ccAddressConcat = '';
 

@@ -1,23 +1,23 @@
 public with sharing class CaseTransferController
 {
 	private final Case c;
-	public Boolean page1 { get; set; }
-	public Boolean page2 { get; set; }
-	public Boolean page3 { get; set; }
-	public Boolean page4 { get; set; }
-	public Id selectedCARId { get;set; }
+	public Integer page { get; set; }
+	public Id selectedId { get;set; }
 	public List<Case_Assignment_Rule__c> allCARs;
 	public List<Case_Assignment_Rule__c> allGenCARs;
 	public List<Schema.PickListEntry> columnList;
-	//public List<User> userList { get; set; }
+	public List<User> userList { get; set; }
 	public Map<String, List<Case_Assignment_Rule__c>> serviceCARS { get; set; }
 	public Map<String, List<Case_Assignment_Rule__c>> collegeCARS { get; set; }
 	public String selectedGroupName { get; set; }
 	public String selectedCARLabel { get; set; }
+	public String source { get; set; }
+	public String searchString { get; set; }
 
 	public CaseTransferController(ApexPages.StandardController stdController)
 	{
-		page1 = true;
+		page = 1;
+		userList = new List<User>();
 		serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
 		collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         this.c = (Case)stdController.getRecord();
@@ -37,6 +37,7 @@ public with sharing class CaseTransferController
 				   AND (NOT Label__c LIKE '%(General)%')
 				   ORDER BY Label__c ASC];
 		allGenCARs.addAll(allCARS);
+		searchUsers();
 
 		for (Case_Assignment_Rule__c car : allGenCARs)
         {
@@ -65,36 +66,28 @@ public with sharing class CaseTransferController
         }
 	}
 
-	public void page1()
+	public PageReference page1()
 	{
-		page1 = true;
-		page2 = false;
-		page3 = false;
-		page4 = false;
+		page = 1;
+		return ApexPages.currentPage();
 	}
 
-	public void page2()
+	public PageReference page2()
 	{
-		page1 = false;
-		page2 = true;
-		page3 = false;
-		page4 = false;
+		page = 2;
+		return ApexPages.currentPage();
 	}
 
-	public void page3()
+	public PageReference page3()
 	{
-		page1 = false;
-		page2 = false;
-		page3 = true;
-		page4 = false;
+		page = 3;
+		return ApexPages.currentPage();
 	}
 
-	public void page4()
+	public PageReference page4()
 	{
-		page1 = false;
-		page2 = false;
-		page3 = false;
-		page4 = true;
+		page = 4;
+		return ApexPages.currentPage();
 	}
 
 	public List<Schema.PickListEntry> getColumnList()
@@ -104,9 +97,9 @@ public with sharing class CaseTransferController
 		return columnList;
 	}
 
-	public List<User> getUserList()
+	public void searchUsers()
 	{
-		List<GroupMember> groupsUserIsIn = [SELECT GroupId, UserOrGroupId, Group.Name 
+		/*List<GroupMember> groupsUserIsIn = [SELECT GroupId, UserOrGroupId, Group.Name 
 										    FROM GroupMember 
 										  	WHERE UserOrGroupId = :UserInfo.getUserId()];
 
@@ -142,15 +135,62 @@ public with sharing class CaseTransferController
 				}
 			}
 		}
-		List<User> userList = [SELECT Id, Name FROM User WHERE Id IN :idSet ORDER BY Name ASC];
+		List<User> userList = [SELECT Id, Name FROM User WHERE Id IN :idSet ORDER BY Name ASC];*/
 
-		return userList;
-	}
+		/*Id proId = [SELECT ProfileId FROM User WHERE Id = :UserInfo.getUserId()].ProfileId;
+		List<User> userList = [SELECT Id, Name FROM User WHERE ProfileId = :proId];
+		userList.sort();*/
 
-	public void showChatterBox()
-	{
-		selectedCARLabel = [SELECT Label__c FROM Case_Assignment_Rule__c WHERE Id = :selectedCARId].Label__c;
-		page4();
+		if (searchString == null)
+		{
+			userList = [SELECT Id, Name, UserRole.ParentRoleId 
+						FROM User 
+						WHERE UserRoleId = :UserInfo.getUserRoleId()
+						AND (NOT Name LIKE '%API%')
+						AND (NOT Name LIKE '%zz%')];
+
+			Id sServiceId = [SELECT Id FROM UserRole WHERE Name = 'S Service'].Id;
+			Set<Id> roleIdsToAdd = new Set<Id>();
+
+			for (User u : userList)
+			{
+				if (u.UserRole.ParentRoleId != null && u.UserRole.ParentRoleId != sServiceId)
+				{
+					roleIdsToAdd.add(u.UserRole.ParentRoleId);
+				}
+			}
+
+			List<User> usersToAdd = [SELECT Id, Name 
+									 FROM User 
+									 WHERE UserRoleId 
+									 IN :roleIdsToAdd];
+
+			userList.addAll(usersToAdd);
+			userList.sort();
+		}
+		else 
+		{
+			Id userRole = UserInfo.getUserRoleId();
+			String queryString = 'SELECT Id, Name, UserRole.ParentRoleId FROM User WHERE UserRoleId = :userRole AND (NOT Name LIKE \'%API%\') AND (NOT Name LIKE \'%zz%\') AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+			userList = Database.query(queryString);
+
+			Id sServiceId = [SELECT Id FROM UserRole WHERE Name = 'S Service'].Id;
+			Set<Id> roleIdsToAdd = new Set<Id>();
+
+			for (User u : userList)
+			{
+				if (u.UserRole.ParentRoleId != null && u.UserRole.ParentRoleId != sServiceId)
+				{
+					roleIdsToAdd.add(u.UserRole.ParentRoleId);
+				}
+			}
+
+			String query2String = 'SELECT Id, Name FROM User WHERE UserRoleId IN :roleIdsToAdd AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+			List<User> usersToAdd = Database.query(query2String);
+
+			userList.addAll(usersToAdd);
+			userList.sort();
+		}
 	}
 
 	public PageReference transferCase()
@@ -159,7 +199,7 @@ public with sharing class CaseTransferController
         {
         	Case_Assignment_Rule__c selectedCAR = [SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name, Queue_ID__c
 				   		   						   FROM Case_Assignment_Rule__c
-				   		   						   WHERE Id = :selectedCARId];
+				   		   						   WHERE Id = :selectedId];
             c.OwnerId = selectedCAR.Queue_ID__c;
             c.Functional_Group__c = selectedCAR.Functional_Group__c;
             c.Category__c = selectedCAR.Category__c;

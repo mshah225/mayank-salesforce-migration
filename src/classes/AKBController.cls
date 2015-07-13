@@ -157,7 +157,7 @@ public without sharing class AKBController
         suggestAnArticle.ContactId = userContact.Id;
         suggestAnArticle.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
         suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
-        suggestAnArticle.Category__c = 'Service Center Feedback';
+        suggestAnArticle.Category__c = 'Knowledge';
         suggestAnArticle.Origin__c = 'My ASU';
         suggestAnArticle.Visible_by_Contact__c = false;
         insert suggestAnArticle;

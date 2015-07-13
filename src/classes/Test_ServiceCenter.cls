@@ -191,11 +191,11 @@ private class Test_ServiceCenter
         System.runAs(testUser)
         {
             sc = new ServiceCenter();
-            Case c = sc.c;
+            Case c = sc.newCase;
             c.ContactId = testUser.Id;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
-            sc.c = c;
+            sc.newCase = c;
             PageReference confirmCaseTest = sc.SubmitCase();
             PageReference confirmCase = new PageReference('/studentSC?Confirm=case');
             sc.SubmitCase();
@@ -210,10 +210,10 @@ private class Test_ServiceCenter
         System.runAs(testUser)
         {
             sc = new ServiceCenter();
-            Case c = sc.c;
+            Case c = sc.newCase;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
-            sc.c = c;
+            sc.newCase = c;
             sc.SubmitCase();
             sc.getMyCases();
             sc.getClosedCases();
@@ -229,11 +229,11 @@ private class Test_ServiceCenter
         System.runAs(testUser)
         {
             sc = new ServiceCenter();
-            Case c = sc.c;
+            Case c = sc.newCase;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
             c.contact = testContact;
-            sc.c = c;
+            sc.newCase = c;
             sc.SubmitCase();
             sc.getMyCases();
             sc.getClosedCases();
@@ -261,13 +261,13 @@ private class Test_ServiceCenter
         setUp();
         System.runAs(testUser) {
             sc = new ServiceCenter();
-            sc.contact = testContact;
+            sc.userContact = testContact;
             sc.getMyPin();
             sc.newPin = 111111;
             sc.changePin();
             sc.newPin = 6758394;
             sc.changePin();
-            sc.contact = null;
+            sc.userContact = null;
         }
     }
 
@@ -277,9 +277,9 @@ private class Test_ServiceCenter
         System.runAs(testUser)
         {
             sc = new ServiceCenter();
-            sc.contact = testContact;
+            sc.userContact = testContact;
             sc.oppList.add(testOpp);
-            System.Debug('Test user contact getOppBoxes() Not Enrolled: ' + sc.contact);
+            System.Debug('Test user contact getOppBoxes() Not Enrolled: ' + sc.userContact);
             System.Debug('Test user opportunity getOppBoxes() Not Enrolled: ' + sc.oppList);
             sc.getNormalPhone();
             sc.getRoverPhone();
@@ -295,9 +295,9 @@ private class Test_ServiceCenter
         System.runAs(testUserAC)
         {
             sc = new ServiceCenter();
-            sc.contact = testContactAC;
+            sc.userContact = testContactAC;
             sc.oppList.add(testOppAC);
-            System.Debug('Test user contact getACOppBoxes(): ' + sc.contact);
+            System.Debug('Test user contact getACOppBoxes(): ' + sc.userContact);
             System.Debug('Test user opportunity getACOppBoxes(): ' + sc.oppList);
             sc.getNormalPhone();
             sc.getRoverPhone();
@@ -313,9 +313,9 @@ private class Test_ServiceCenter
         System.runAs(testUserB)
         {
             sc = new ServiceCenter();
-            sc.contact = testContactB;
+            sc.userContact = testContactB;
             sc.oppList.add(testOppB);
-            System.Debug('Test user contact getBOppBoxes(): ' + sc.contact);
+            System.Debug('Test user contact getBOppBoxes(): ' + sc.userContact);
             System.Debug('Test user opportunity getBOppBoxes(): ' + sc.oppList);
             sc.getNormalPhone();
             sc.getRoverPhone();
@@ -330,8 +330,8 @@ private class Test_ServiceCenter
         setUpACOpp();
         System.runAs(testUserAC) {
             sc = new ServiceCenter();
-            sc.contact = testContactAC;
-            System.Debug('Test user contact getOppBoxes() Not Enrolled: ' + sc.contact);
+            sc.userContact = testContactAC;
+            System.Debug('Test user contact getOppBoxes() Not Enrolled: ' + sc.userContact);
             System.Debug('Test user opportunity getOppBoxes() Not Enrolled: ' + sc.oppList);
             sc.getNormalPhone();
             sc.getRoverPhone();
@@ -348,10 +348,10 @@ private class Test_ServiceCenter
         System.runAs(testUser)
         {
             sc = new ServiceCenter();
-            Case c = sc.c;
+            Case c = sc.newCase;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
-            sc.c = c;
+            sc.newCase = c;
             sc.SubmitCase();
             System.currentPageReference().getParameters().put('id', c.Id);
             System.AssertNotEquals(null, sc.getCaseDetails());
@@ -368,10 +368,10 @@ private class Test_ServiceCenter
         System.runAs(testUser)
         {
             sc = new ServiceCenter();
-            Case c = sc.c;
+            Case c = sc.newCase;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
-            sc.c = c;
+            sc.newCase = c;
             sc.SubmitCase();
             sc.getMyCases();
             sc.caseId = c.Id;
@@ -391,10 +391,10 @@ private class Test_ServiceCenter
         System.runAs(testUser)
         {
             sc = new ServiceCenter();
-            Case c = sc.c;
+            Case c = sc.newCase;
             c.Subject = 'Test case';
             c.Description= 'here\'s my test';
-            sc.c = c;
+            sc.newCase = c;
             sc.SubmitCase();
             sc.getMyCases();
             sc.caseId = c.Id;

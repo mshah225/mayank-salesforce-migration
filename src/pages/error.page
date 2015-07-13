@@ -11,6 +11,11 @@
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/asu_header.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/myASUHeader.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
+    <style>
+        #asu_login_module:nth-child(2) {
+            padding-right: 7px !important;
+        }
+    </style>
     <!--[if IE 9]>
     <style type="text/css">
     #asu_universal_nav ul ul{filter:none;box-shadow:0 6px 6px 0 #999}#asu_universal_nav>ul>li.parent:hover>a{filter:none;box-shadow:6px 0 6px -6px #999,-6px 0 6px -6px #999}
@@ -182,14 +187,15 @@
     </div>
 
     <div id="asu_footer">
-		<ul class="default">
-			<li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
-			<li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>
-			<li><a href="http://www.asu.edu/privacy/">Privacy</a></li>
-			<li><a href="http://www.asu.edu/emergency/">Emergency</a></li>
-			<li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
-		</ul>
-	</div>
+        <ul class="default">
+            <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
+            <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>
+            <li><a href="http://www.asu.edu/privacy/">Privacy</a></li>
+            <li><a href="http://www.asu.edu/asujobs/">Jobs@ASU</a></li>
+            <li><a href="http://www.asu.edu/emergency/">Emergency</a></li>
+            <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
+        </ul>
+    </div>
 </body>
 </html>
 </apex:page>

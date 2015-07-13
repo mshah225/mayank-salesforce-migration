@@ -6,9 +6,13 @@
 		.mainTitle {
 			white-space: nowrap !important;
 		}
+
+		.mainForm td {
+			padding: 10px !important;
+		}
 	</style>
 
-	<apex:form id="auditForm" style="margin-top:20px;">
+	<apex:form id="auditForm" styleClass="mainForm" style="margin-top:20px;">
 		<apex:pageBlock id="optionsBlock" title="Filter Options">
 			<apex:outputText id="usersProfile">
 				<span style="font-weight:600;">Your Profile:</span> {!usersProfile}
@@ -34,7 +38,7 @@
 		    	</apex:actionStatus>
 		    	
 		    	<apex:outputPanel id="accessPanel">
-					<apex:outputText value="Select access: " style="font-weight:600;" rendered="{!IF(selectedProfileId != null,true,false)}"/>
+					<apex:outputText value="Select access: " style="font-weight:600;margin-left:20px;" rendered="{!IF(selectedProfileId != null,true,false)}"/>
 					<apex:selectList id="accessSelect" value="{!selectedAccess}" multiselect="false" size="1" rendered="{!IF(selectedProfileId != null,true,false)}">
 						<apex:actionSupport event="onchange" status="accessLoading" action="{!profilePermissionSearch}" reRender="objectListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel,backBtnPanel,breadCrumbs"/>
 						<apex:selectOptions value="{!accessOptions}"/>
@@ -70,18 +74,18 @@
 
 		<apex:outputPanel id="objectListPanel">
 			<apex:pageBlock rendered="{!IF(selectedAccess == 'Has Access' && drillDown == false,true,false)}" title="Viewing Object Permissions for {!selectedProfileName} Where Profile Has Access">
-				<apex:pageBlockTable value="{!objectPerms}" var="o" cellpadding="7" width="100%" rendered="{!IF(selectedAccess == 'Has Access',true,false)}">
-			        <apex:column headerValue="Object">
-			        	<apex:commandLink value="{!o.SObjectType}" action="{!drillDownFieldSearch}" reRender="objectListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel,backBtnPanel,breadCrumbs">
-			        		<apex:param name="selectedObject" assignTo="{!selectedObject}" value="{!o.SObjectType}"/>
+				<apex:pageBlockTable value="{!objectPerms}" var="key" cellpadding="7" width="100%" rendered="{!IF(selectedAccess == 'Has Access',true,false)}" style="text-transform:capitalize;">
+					<apex:column headerValue="Object">
+			        	<apex:commandLink value="{!key}" action="{!drillDownFieldSearch}" reRender="objectListPanel,profileHelpTextPanel,typeHelpTextPanel,drillDownPanel,backBtnPanel,breadCrumbs">
+			        		<apex:param name="selectedObject" assignTo="{!selectedObject}" value="{!key}"/>
 			        	</apex:commandLink>
 			        </apex:column>
-			        <apex:column value="{!o.PermissionsCreate}" headerValue="Create"/>
-					<apex:column value="{!o.PermissionsRead}" headerValue="Read"/>
-			        <apex:column value="{!o.PermissionsDelete}" headerValue="Delete"/>
-			        <apex:column value="{!o.PermissionsEdit}" headerValue="Edit"/>
-			        <apex:column value="{!o.PermissionsModifyAllRecords}" headerValue="Modify All"/>
-	                <apex:column value="{!o.PermissionsViewAllRecords}" headerValue="View All"/>
+					<apex:column headerValue="Create" value="{!objectPerms[key][0]}"/>
+					<apex:column headerValue="Read" value="{!objectPerms[key][1]}"/>
+					<apex:column headerValue="Edit" value="{!objectPerms[key][2]}"/>
+					<apex:column headerValue="Delete" value="{!objectPerms[key][3]}"/>
+					<apex:column headerValue="Modify All" value="{!objectPerms[key][4]}"/>
+					<apex:column headerValue="View All" value="{!objectPerms[key][5]}"/>
 				</apex:pageBlockTable>
 			</apex:pageBlock>
 
@@ -106,11 +110,16 @@
 			</apex:pageBlock>
 
 			<apex:pageBlock title="Viewing Field Permissions for {!selectedObject} Where The {!selectedProfileName} Profile Has Access" rendered="{!drillDown && selectedAccess == 'Has Access'}">
-				<apex:pageBlockTable value="{!fieldPerms}" var="f" cellpadding="7" width="100%">
-			        <apex:column value="{!f.Field}" headerValue="Field"/>
-					<apex:column value="{!f.PermissionsRead}" headerValue="Read"/>
-			        <apex:column value="{!f.PermissionsEdit}" headerValue="Edit"/>
-				</apex:pageBlockTable>
+				<apex:outputPanel rendered="{!IF(NOT(ISBLANK(fieldPerms)),true,false)}">
+					<apex:pageBlockTable value="{!fieldPerms}" var="key" cellpadding="7" width="100%" style="text-transform:capitalize;">
+				        <apex:column value="{!key}" headerValue="Field"/>
+						<apex:column value="{!fieldPerms[key][0]}" headerValue="Read"/>
+				        <apex:column value="{!fieldPerms[key][1]}" headerValue="Edit"/>
+					</apex:pageBlockTable>
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!IF(ISBLANK(fieldPerms),true,false)}">
+					<apex:outputText value="{!selectedProfileName} does not have access to any fields on {!selectedObject}"/>
+				</apex:outputPanel>
 			</apex:pageBlock>
 		</apex:outputPanel>
 	</apex:form>

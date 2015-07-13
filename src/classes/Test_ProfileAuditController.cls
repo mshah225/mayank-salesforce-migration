@@ -13,7 +13,9 @@ private class Test_ProfileAuditController
 		pac.profilePermissionSearch();
 		System.assertNotEquals(null, pac.objectPerms);
 		System.assertNotEquals(null, pac.selectedProfileName);
-		pac.selectedObject = pac.objectPerms[0].SObjectType;
+		List<String> tempList = new List<String>();
+		tempList.addAll(pac.objectPerms.keySet());
+		pac.selectedObject = tempList[0];
 		pac.drillDownSearch();
 		System.assertNotEquals(null, pac.fieldDrillList);
 	}

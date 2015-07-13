@@ -24,7 +24,6 @@
         window.ASUHeader = window.ASUHeader || {};
         ASUHeader.site_menu = ASUHeader.site_menu || {};
         ASUHeader.site_menu.json = '[{"title":"Home","path":"https://webapp4.asu.edu/myasu"},{"title":"Finances","path":"https://webapp4.asu.edu/myasu/student/finances"},{"title":"Service Center","path":"\/"},{"title":"Campus Services","path":"https://webapp4.asu.edu/myasu/student/campusservices"},{"title":"Profile","path":"https://webapp4.asu.edu/myasu/student/profile"}]';
-
         ASUHeader.site_menu.site_name = "Student Service Center";
         ASUHeader.user_signedin = true;
         ASUHeader.user_displayname = '{!$User.FirstName}';

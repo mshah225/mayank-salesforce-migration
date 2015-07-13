@@ -107,11 +107,12 @@ global class BomgarCreateCaseUtil
         return null;
     }
 
-    global static User lookupUserByAlias(String bomgarUsername)
+    global static User lookupUserByFederationId(String bomgarUsername)
     {
+        String federationId = bomgarUserName + '@admin.asu.edu';
         List<User> users = [SELECT Id
                             FROM User
-                            WHERE ContactId = Null AND Alias = :bomgarUsername];
+                            WHERE ContactId = Null AND FederationIdentifier = :federationId];
         if (users.size() > 1)
         {
             throw new BomgarCreateCaseException('Multiple Users Found for Bomgar Username[' + bomgarUsername + ']');
@@ -130,11 +131,11 @@ global class BomgarCreateCaseUtil
                                                WHERE bomgar__IsPrimary__c = true
                                                AND bomgar__ParticipantType__c = 'Representative'
                                                AND bomgar__BomgarSession__r.Id = :sessionId];
-        for (bomgar__Participant__c x : myList)
+        for (bomgar__Participant__c bomgarParticipant : myList)
         {
-            if (x != null && x.bomgar__Username__c != null)
+            if (bomgarParticipant != null && bomgarParticipant.bomgar__Username__c != null)
             {
-                User owner = lookupUserByAlias(x.bomgar__Username__c);
+                User owner = lookupUserByFederationId(bomgarParticipant.bomgar__Username__c);
                 if (owner != null)
                 {
                     return owner.Id;

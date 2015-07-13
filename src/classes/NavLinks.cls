@@ -1,5 +1,6 @@
-public class NavLinks {
-
+public class NavLinks 
+{
+    public NavLinks() {}
     public NavLinks(ServiceCenter controller) { }
     public NavLinks(AKBController controller) { }
     public NavLinks(ViewAllCasesController controller) { }

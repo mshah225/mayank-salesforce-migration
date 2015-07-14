@@ -15,6 +15,9 @@ implements ITrigger
     */
     public void bulkBefore()
     {
+        // Call the Group Service to map all the group names to their ids
+        groupNameMap = GroupService.mapGroupIdToName();
+
         if (Trigger.isInsert)
         {
             recruitmentCaseRT = new List<RecordType>([SELECT Id FROM RecordType WHERE SobjectType='Case' AND DeveloperName = 'ASU_Admission_Services']);
@@ -48,9 +51,6 @@ implements ITrigger
         }
         else if(Trigger.isUpdate)
         {
-            // Call the Group Service to map all the group names to their ids
-            groupNameMap = GroupService.mapGroupIdToName();
-
             for(Case c : (List<Case>)Trigger.new)
             {
                 //Handles Webform cases (webforms.asu.edu)
@@ -111,6 +111,18 @@ implements ITrigger
     {
         Case c = (Case)so;
 
+        // Set system info field for Most Recent Queue
+        if (groupNameMap.containsKey(c.OwnerId))
+        {
+            c.Most_Recent_Queue__c = groupNameMap.get(c.OwnerId);
+        }
+        // Set system info field for Most Recent Functional Group
+        if (c.Functional_Group__c != 'External Unit' && c.Functional_Group__c != null)
+        {
+            c.Most_Recent_Functional_Group__c = c.Functional_Group__c;
+        }
+
+        // Recruitment association for Territory Assignment
         if (recruitmentCaseRT.size() > 0 && c.RecordTypeId == recruitmentCaseRT[0].Id)
         {
             Contact con = relatedContactMap.get(c.ContactId);

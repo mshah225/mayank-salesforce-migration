@@ -3,9 +3,8 @@
 	showHeader="true"
 	sidebar="true">
 
-	<apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
 	<apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
-
+	<apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
 	<apex:includeScript value="/support/console/20.0/integration.js"/>
    	<script type="text/javascript">
         function setTabTitle()
@@ -25,17 +24,8 @@
    	</script>
 
 	<style>
-		body {
-			min-width: 1000px;
-			overflow-x: hidden;
-		}
-
 		h1 {
 			font-size: 16pt;
-		}
-
-		#chatterBox {
-			display: none;
 		}
 
 		.fa-lg {
@@ -76,8 +66,8 @@
 
 		.caseBtn {
 			text-decoration: none !important;
-			transition: all 0.25s ease-in-out !important;
-			background: #a30046 !important;
+		    transition: all 0.25s ease-in-out !important;
+		    background: #a30046 !important;
 		    border: solid 1px #820038 !important;
 		    font-weight: 200 !important;
 		    color: white !important;
@@ -85,11 +75,30 @@
 		    border-radius: 2px !important;
 		    font-size: 10pt !important;
 		    margin-top: 10px !important;
-			box-shadow: 0 1px 2px 0 #adadad;
+		    box-shadow: 0 1px 2px 0 #adadad;
 		}
 
 		.caseBtn:hover {
 			background: #d23153 !important;
+		}
+
+		.regBtn {
+			text-decoration: none !important;
+		    transition: all 0.25s ease-in-out !important;
+		    font-weight: 200 !important;
+		    padding: 8px !important;
+		    border-radius: 2px !important;
+		    font-size: 10pt !important;
+		    margin-top: 10px !important;
+		    box-shadow: 0 1px 2px 0 #adadad;
+		    border: 1px solid #b5b5b5;
+		    border-bottom-color: #7f7f7f;
+		    background: #f0f0f0 !important;
+		}
+
+		.regBtn:hover {
+			background: #fcfcfc !important;
+			color: #000 !important;
 		}
 
 		.caseTab .primaryPalette, .individualPalette .caseBlock .primaryPalette {
@@ -103,99 +112,165 @@
 	</style>
 
 	<h1 style="color:#990033;">Change Case Owner ({!Case.CaseNumber})</h1>
-	<p><i>To assign this case, select a department or college from the lists below:</i></p>
-	<table id="pageTable" style="width:100%;min-width:900px;overflow-x:hidden;">
-		<tr style="vertical-align:top;">
-			<td style="width:20%;padding-left:20px;">
-				<apex:form id="serviceTransfer">
-					<h1>Service Departments:</h1>
-					<br />
-					<br />
-					<apex:repeat value="{!serviceCARS}" var="serviceKey">
-						<div id="serviceSection">
-							<div id="serviceHeader" style="display:inline;">
-								<i class="fa fa-plus-circle fa-lg"></i>
-								<i class="fa fa-minus-circle fa-lg" style="display:none;"></i>
-								&nbsp;
-								<apex:outputText value="{!serviceKey}" style="font-weight:600;font-size:12pt;"/>
-							</div>
-							<br />
-							<br />
-							<div id="serviceList" style="display:none;">
-								<apex:repeat value="{!serviceCARS[serviceKey]}" var="sk">
-									<apex:commandLink id="serviceLink" value="{!sk.Label__c}" action="{!showChatterBox}" reRender="chatterPanel">
-										<apex:param name="selectedCARId" value="{!sk.Id}" assignTo="{!selectedCARId}"/>
-										<apex:param name="selectedGroupName" value="{!sk.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
-										<apex:param name="selectedCARLabel" value="{!sk.Label__c}" assignTo="{!selectedCARLabel}"/>
-									</apex:commandLink>
-									<br />
-									<br />
-								</apex:repeat>
-							</div>
-						</div>
+	<br />
+	<br />
+
+	<apex:outputPanel id="firstPage" rendered="{!IF(page = 1,true,false)}">
+		<p><i>Will you be transferring the case to a User or a Department?</i></p>
+		<br />
+		<apex:form>
+			<apex:commandLink action="{!page2}" styleClass="caseBtn" style="margin-right:20px;">
+				<i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;Transfer Case to User
+			</apex:commandLink>
+			<apex:outputText value="- OR -"/>	
+			<apex:commandLink action="{!page3}" styleClass="caseBtn" style="margin-left:20px;">
+				<i class="fa fa-building"></i>&nbsp;&nbsp;&nbsp;Transfer Case to Department
+			</apex:commandLink>
+		</apex:form>
+		<br />
+		<br />
+		<br />
+		<br />
+	</apex:outputPanel>
+
+	<apex:outputPanel id="userPage" rendered="{!IF(page = 2,true,false)}">
+		<apex:form>
+			<i>Select a User to Transfer the Case to:</i>
+			<br />
+			<br />
+			<apex:inputText value="{!searchString}" html-placeholder="Filter results" style="padding:5px;font-size:9pt;margin-right:10px;margin-bottom:10px;">
+				<apex:actionSupport event="onkeyup" action="{!searchUsers}" reRender="userList"/>
+			</apex:inputText>
+			<apex:commandButton value="Clear" onclick="this.form.reset();" action="{!searchUsers}" styleClass="caseBtn" style="padding:5px!important;"/>
+			<apex:pageBlock mode="maindetail">
+				<apex:pageBlockTable id="userList" value="{!userList}" var="ul" styleClass="userList">
+					<apex:column headerValue="User" style="padding:7px;" width="20%">
+						<apex:commandLink value="{!ul.Name}" action="{!page4}">
+							<apex:param name="selectedId" value="{!ul.Id}" assignTo="{!selectedId}"/>
+							<apex:param name="selectedGroupName" value="{!ul.Name}" assignTo="{!selectedGroupName}"/>
+							<apex:param name="source" value="page2" assignTo="{!source}"/>
+						</apex:commandLink>
+					</apex:column>
+					<apex:column headerValue="Title" value="{!ul.Title}" width="20%"/>
+					<apex:column headerValue="Role" value="{!ul.UserRole.Name}" width="20%"/>
+				</apex:pageBlockTable>
+			</apex:pageBlock>
+			<br />
+			<apex:commandLink action="{!page1}" styleClass="regBtn">
+				<i class="fa fa-chevron-circle-left"></i>&nbsp;&nbsp;&nbsp;Go Back
+			</apex:commandLink>
+			<br />
+			<br />
+			<br />
+		</apex:form>
+	</apex:outputPanel>
+
+	<apex:outputPanel id="departmentPage" rendered="{!IF(page = 3,true,false)}">
+		<p><i>To assign this case, select a department or college from the lists below:</i></p>
+		<table id="pageTable" style="width:100%;min-width:900px;overflow-x:hidden;">
+			<tr style="vertical-align:top;">
+				<td style="width:20%;padding-left:20px;">
+					<apex:form id="serviceTransfer">
+						<h1>Service Departments</h1>
 						<br />
-					</apex:repeat>
-				</apex:form>
-			</td>
-			<td style="width:20%;padding-left:20px;">
-				<apex:form id="collegeTransfer">
-					<h1>Colleges:</h1>
-					<br />
-					<br />
-					<apex:repeat value="{!collegeCARS}" var="collegeKey">
-						<div id="collegeSection">
-							<div id="collegeHeader" style="display:inline;">
-								<i class="fa fa-plus-circle fa-lg"></i>
-								<i class="fa fa-minus-circle fa-lg" style="display:none;"></i>
-								&nbsp;
-								<apex:outputText value="{!collegeKey}" style="font-weight:600;font-size:12pt;"/>
-							</div>
-							<br />
-							<br />
-							<div id="collegeList" style="display:none">
-								<apex:repeat value="{!collegeCARS[collegeKey]}" var="ck">
-									<apex:commandLink id="collegeLink" styleClass="collegeLink" action="{!showChatterBox}" value="{!ck.Label__c}" reRender="chatterPanel">
-										<apex:param name="selectedCARId" value="{!ck.Id}" assignTo="{!selectedCARId}"/>
-										<apex:param name="selectedGroupName" value="{!ck.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
-									</apex:commandLink>
-									<br />
-									<br />
-								</apex:repeat>
-							</div>
-						</div>
 						<br />
-					</apex:repeat>
-				</apex:form>
-			</td>
-			<td style="width:30%;padding-left:20px;">
-				<div id="chatterBox">
-					<table style="width:100%;min-width:300px;overflow-x:hidden;">
-						<tr>
-							<td style="width:70%;">
-								<apex:outputPanel id="chatterPanel">
-									<h1 style="font-weight:200;font-size:13pt;">You are transferring this case to:
-									<br />
-									{!selectedGroupName}<apex:outputText rendered="{!NOT(CONTAINS(selectedCARLabel,'(General)'))}"> - {!selectedCARLabel}</apex:outputText></h1>
-								</apex:outputPanel>
-							</td>
-							<td style="width:30%;text-align:right;">
-								<apex:form id="transferButton">
-									<br />
-									<apex:actionRegion >
-										<apex:commandLink action="{!transferCase}" styleClass="caseBtn" value="Transfer Case"/>
-									</apex:actionRegion>
-								</apex:form>
-							</td>
-						</tr>
-					</table>
-					<br />
-					<i>(Optional) Share comments or @mention a user before transferring the case:</i>
-					<br />
-					<chatter:feed entityId="{!Case.Id}" feedItemType="TextPost"/>
-				</div>
-			</td>
-		</tr>
-	</table>
+						<apex:repeat value="{!serviceCARS}" var="serviceKey">
+							<div id="serviceSection">
+								<div id="serviceHeader" style="display:inline;">
+									<i class="fa fa-plus-circle fa-lg"></i>
+									<i class="fa fa-minus-circle fa-lg" style="display:none;"></i>
+									&nbsp;
+									<apex:outputText value="{!serviceKey}" style="font-weight:600;font-size:12pt;"/>
+								</div>
+								<br />
+								<br />
+								<div id="serviceList" style="display:none;">
+									<apex:repeat value="{!serviceCARS[serviceKey]}" var="sk">
+										<apex:commandLink id="serviceLink" value="{!sk.Label__c}" action="{!page4}">
+											<apex:param name="selectedId" value="{!sk.Id}" assignTo="{!selectedId}"/>
+											<apex:param name="selectedGroupName" value="{!sk.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
+											<apex:param name="selectedCARLabel" value="{!sk.Label__c}" assignTo="{!selectedCARLabel}"/>
+											<apex:param name="source" value="page3" assignTo="{!source}"/>
+										</apex:commandLink>
+										<br />
+										<br />
+									</apex:repeat>
+								</div>
+							</div>
+							<br />
+						</apex:repeat>
+					</apex:form>
+				</td>
+				<td style="width:20%;padding-left:20px;">
+					<apex:form id="collegeTransfer">
+						<h1>Colleges</h1>
+						<br />
+						<br />
+						<apex:repeat value="{!collegeCARS}" var="collegeKey">
+							<div id="collegeSection">
+								<div id="collegeHeader" style="display:inline;">
+									<i class="fa fa-plus-circle fa-lg"></i>
+									<i class="fa fa-minus-circle fa-lg" style="display:none;"></i>
+									&nbsp;
+									<apex:outputText value="{!collegeKey}" style="font-weight:600;font-size:12pt;"/>
+								</div>
+								<br />
+								<br />
+								<div id="collegeList" style="display:none">
+									<apex:repeat value="{!collegeCARS[collegeKey]}" var="ck">
+										<apex:commandLink id="collegeLink" styleClass="collegeLink" action="{!page4}" value="{!ck.Label__c}">
+											<apex:param name="selectedId" value="{!ck.Id}" assignTo="{!selectedId}"/>
+											<apex:param name="selectedGroupName" value="{!ck.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
+											<apex:param name="selectedCARLabel" value="{!ck.Label__c}" assignTo="{!selectedCARLabel}"/>
+											<apex:param name="source" value="page3" assignTo="{!source}"/>
+										</apex:commandLink>
+										<br />
+										<br />
+									</apex:repeat>
+								</div>
+							</div>
+							<br />
+						</apex:repeat>
+					</apex:form>
+				</td>
+			</tr>
+		</table>
+		<br />
+		<apex:form>	
+			<apex:commandLink action="{!page1}" styleClass="regBtn">
+				<i class="fa fa-chevron-circle-left"></i>&nbsp;&nbsp;&nbsp;Go Back
+			</apex:commandLink>
+		</apex:form>
+		<br />
+	</apex:outputPanel>
+
+	<apex:outputPanel id="ChatterPage" rendered="{!IF(page = 4,true,false)}">
+		<apex:outputPanel id="chatterPanel">
+		<apex:pageMessages />
+			<h1 style="font-weight:200;font-size:13pt;">
+				You are transferring this case to:<br />{!selectedGroupName} <apex:outputText rendered="{!IF(selectedCARLabel != null,true,false)}">&nbsp;-&nbsp;{!selectedCARLabel}</apex:outputText>
+			</h1>
+		</apex:outputPanel>
+		<apex:form id="transferButton">
+			<br />
+			<apex:commandLink action="{!page2}" styleClass="regBtn" rendered="{!IF(source == 'page2',true,false)}" style="margin-right:10px;">
+				<i class="fa fa-chevron-circle-left"></i>&nbsp;&nbsp;&nbsp;Go Back
+			</apex:commandLink>
+			<apex:commandLink action="{!page3}" styleClass="regBtn" rendered="{!IF(source == 'page3',true,false)}" style="margin-right:10px;">
+				<i class="fa fa-chevron-circle-left"></i>&nbsp;&nbsp;&nbsp;Go Back
+			</apex:commandLink>
+			<apex:actionRegion>
+				<apex:commandLink action="{!transferCase}" styleClass="caseBtn">
+					<i class="fa fa-exchange"></i>&nbsp;&nbsp;&nbsp;Transfer Case
+				</apex:commandLink>
+			</apex:actionRegion>
+		</apex:form>
+		<br />
+		<br />
+		<i>(Optional) Share comments or @mention a user before transferring the case:</i>
+		<br />
+		<chatter:feed entityId="{!Case.Id}" feedItemType="TextPost"/>
+	</apex:outputPanel>
 
 	<script>
 		var $j = jQuery.noConflict();
@@ -213,13 +288,5 @@
 	        col.find( ".fa-plus-circle" ).toggle();
 	        col.find( ".fa-minus-circle" ).toggle();
 	    });
-
-	    $j( "[id$=collegeLink]" ).click(function() {
-   			$j( "[id$=chatterBox]" ).show();
-   		});
-
-   		$j( "[id$=serviceLink]" ).click(function() {
-   			$j( "[id$=chatterBox]" ).show();
-   		});
 	</script>
 </apex:page>

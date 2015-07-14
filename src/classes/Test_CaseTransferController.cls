@@ -46,11 +46,16 @@ private class Test_CaseTransferController {
 			Description = 'desc');
 		insert testCase;
 
+		User testUser = UserService.createTestUser();
+		Id pId = [SELECT Id FROM Profile WHERE Name LIKE 'ASU Service%' LIMIT 1].Id;
+		testUser.ProfileId = pId;
+		insert testUser;
+
 		PageReference pageRef = page.CaseTransfer;
 		Test.setCurrentPage(pageRef);
 	}
 
-	@isTest static void test_method_one() 
+	@isTest static void testTransferToDept() 
 	{
 		Case caseToTest = [SELECT Id FROM Case LIMIT 1];
 		ApexPages.StandardController sc = new ApexPages.StandardController(caseToTest);
@@ -60,10 +65,50 @@ private class Test_CaseTransferController {
 		Case_Assignment_Rule__c testCar = [SELECT Id, Label__c, CTPGroup__c 
 										   FROM Case_Assignment_Rule__c 
 										   WHERE Label__c = 'Engineering (Default)'];
-		ctc.selectedCARId = testCar.Id;
+
+		ctc.page3();
+		ctc.selectedId = testCar.Id;
 		ctc.selectedCARLabel = testCar.Label__c;
 		ctc.selectedGroupName = testCar.CTPGroup__c;
-		ctc.showChatterBox();
+		ctc.page4();
+		ctc.transferCase();
+		Test.stopTest();
+	}
+
+	@isTest static void testTransferToUser()
+	{
+		Case caseToTest = [SELECT Id FROM Case LIMIT 1];
+		ApexPages.StandardController sc = new ApexPages.StandardController(caseToTest);
+		CaseTransferController ctc = new CaseTransferController(sc);
+		Test.startTest();
+		User testUser = [SELECT Id, Name
+						 FROM User
+						 WHERE Name = 'Test User'];
+
+		ctc.page2();
+		ctc.selectedId = testUser.Id;
+		ctc.page4();
+		ctc.transferCase();
+		Test.stopTest();
+	}
+
+	@isTest static void testTransferToUserWithSearch()
+	{
+		Case caseToTest = [SELECT Id FROM Case LIMIT 1];
+		ApexPages.StandardController sc = new ApexPages.StandardController(caseToTest);
+		CaseTransferController ctc = new CaseTransferController(sc);
+		Test.startTest();
+		User testUser = [SELECT Id, Name
+						 FROM User
+						 WHERE Name = 'Test User'];
+
+		ctc.page2();
+		ctc.page1();
+		ctc.page2();
+		ctc.searchString = 'Test';
+		ctc.searchUsers();
+		ctc.selectedId = testUser.Id;
+		ctc.page4();
 		ctc.transferCase();
 		Test.stopTest();
 	}

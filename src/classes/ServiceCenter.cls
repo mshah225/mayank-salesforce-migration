@@ -3,8 +3,6 @@ public with sharing class ServiceCenter
     public final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
     public final Integer CLOSEDCASELIMIT = 5;
 
-    public Boolean pinError { get; set; }
-    public Boolean pinSuccess { get; set; }
     public Contact userContact { get; set; }
     public Case newCase { get; set; }
     public Case suggestAnArticle { get; set; }
@@ -13,7 +11,6 @@ public with sharing class ServiceCenter
     public Decimal newPin { get; set; }
     public Id caseId;
     public List<Opportunity> oppList;
-    public String pinMessage { get; set; }
     public Term__c termcAC;
     public Term__c termcB;
 
@@ -248,20 +245,20 @@ public with sharing class ServiceCenter
                 userContact.PIN_lockout__c = false;
             }
             update userContact;
-            pinMessage = 'Your PIN has been updated.';
-            pinError = false;
-            pinSuccess = true;
-            PageReference ref = ApexPages.currentPage();
-            return ref;
+
+            PageReference pinSuccess = ApexPages.currentPage();
+            pinSuccess.getParameters().put('PIN', 'success');
+            pinSuccess.setRedirect(true);
+            return pinSuccess;
         }
-        catch(DmlException e)
+        catch (DmlException e)
         {
             if (e.getMessage().contains('InvalidSelfServicePinException'))
             {
-                pinMessage = 'Your PIN cannot contain your year of birth.<br>Your PIN must not use more than 4 duplicate numbers.<br>Your PIN must be different than your previous PIN.<br>Your PIN cannot use more than 4 sequential numbers in your PIN. Forwards or backwards.<br>Your PIN must be between 6 and 10 characters.';
-                pinSuccess = false;
-                pinError = true;
-                return null;
+                PageReference pinError = ApexPages.currentPage();
+                pinError.getParameters().put('PIN', 'error');
+                pinError.setRedirect(true);
+                return pinError;
             }
             else
             {

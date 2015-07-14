@@ -110,12 +110,7 @@
     <c:SCHeader/>
 
     <div id="asu_content_well">
-        <c:SCPageNotifications pinError="{!pinError}" 
-                               pinMessage="{!pinMessage}" 
-                               pinSuccess="{!pinSuccess}" 
-                               feedback="{!$CurrentPage.parameters.Feedback}" 
-                               confirm="{!$CurrentPage.parameters.Confirm}" 
-                               suggest="{!$CurrentPage.parameters.Suggest}"/>
+        <c:SCPageNotifications/>
         
         <div class="container">
             <ol class="breadcrumb">

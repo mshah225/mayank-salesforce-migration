@@ -1,6 +1,6 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
-	<apex:attribute name="PIN" description="String to determine if the PIN update encountered an error or had success" type="String"/>
+	<apex:attribute name="pin" description="String to determine if the PIN update encountered an error or had success" type="String"/>
 	<apex:attribute name="feedback" description="String to determine if feedback is given" type="String"/>
 	<apex:attribute name="confirm" description="String to determine if AKB feedback or site feedback is given" type="String"/>
 	<apex:attribute name="suggest" description="String to determine if suggest an article feedback is given" type="String"/>

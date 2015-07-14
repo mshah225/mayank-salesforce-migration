@@ -1,11 +1,7 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
-	<apex:attribute name="pin" description="String to determine if the PIN update encountered an error or had success" type="String"/>
-	<apex:attribute name="feedback" description="String to determine if feedback is given" type="String"/>
-	<apex:attribute name="confirm" description="String to determine if AKB feedback or site feedback is given" type="String"/>
-	<apex:attribute name="suggest" description="String to determine if suggest an article feedback is given" type="String"/>
 	<center>
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.pin == 'error'}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.PIN == 'error'}">
 	        <div class="alert alert-danger">
 	            <button type='button' class='close' data-dismiss='alert'>×</button>
 	            <apex:outputText>
@@ -18,7 +14,7 @@
 	        </div>
 	    </apex:outputPanel>
 
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.pin == 'success'}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.PIN == 'success'}">
 	        <div class="alert alert-success">
 	            <button type='button' class='close' data-dismiss='alert'>×</button>
 	            <apex:outputText value="Your PIN has been updated."/>

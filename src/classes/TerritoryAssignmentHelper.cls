@@ -1,5 +1,5 @@
-public without sharing class TerritoryAssignmentHelper {
-
+public without sharing class TerritoryAssignmentHelper 
+{
     public static Boolean accountTADone = false;
     public static Boolean contactTADone = false;
     public static Boolean opportunityTADone = false;
@@ -8,6 +8,7 @@ public without sharing class TerritoryAssignmentHelper {
     public static Boolean territoryAssignmentRuleTADone = false;
     static List<sObject> triggerNew;
 
+    private static Map<String, List<PS_Country_Map__c>> psCountryMap = PSCountryMapService.mapPSCountryToIntegrationValue(); 
     private static Boolean batchMode = false;
 
     /**
@@ -24,7 +25,6 @@ public without sharing class TerritoryAssignmentHelper {
         {
             Map<String, String> KVMap = new Map<String, String>();
             Set<String> ZipsInTrigger = new Set<String>();
-
             for (Account InsZip :(List<Account>)Trigger.New)
             {
                 ZipsInTrigger.add(InsZip.ShippingPostalCode);
@@ -293,12 +293,16 @@ public without sharing class TerritoryAssignmentHelper {
                     || OpportunityOldMap.get(OppsToAssign.Id).Type != OppsToAssign.Type
                     || OpportunityOldMap.get(OppsToAssign.Id).International_Student__c != OppsToAssign.International_Student__c
                     || OpportunityOldMap.get(OppsToAssign.Id).Location__c != OppsToAssign.Location__c
+                    || OpportunityOldMap.get(OppsToAssign.Id).StageName != OppsToAssign.StageName
                     || OpportunityOldMap.get(OppsToAssign.Id).Potential_National_Scholar__c != OppsToAssign.Potential_National_Scholar__c)
                 {
                     OppsToAssign.Territory_Assignment_Required__c = true;
                 }
             }
         }
+
+        // Get all of the tars keyed by rule key. Used for international assignment now.
+        Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentRuleService.mapTerritoryAssignmentRulesToRuleKey();
 
         for(Opportunity Opp: (List<Opportunity>)Trigger.New)
         {
@@ -370,64 +374,53 @@ public without sharing class TerritoryAssignmentHelper {
 
                 if (Opp.International_Student__c)
                 {
+                    List<Territory_Assignment_Rule__c> possibleTars = new List<Territory_Assignment_Rule__c>();
                     Territory_Assignment_Rule__c tar = null;
-                    Decimal assignmentNumber = Opp.Opportunity_Assignment_Number_Rand__c;
-                    String country = thisContact.MailingCountry;
+                    Decimal oppAssignNumber = Opp.Opportunity_Assignment_Number_Rand__c;
+                    String oppCountry = thisContact.MailingCountry;
 
-                    // Handle the country issue with integration and country name mismatches using PS_Country_Map__c
-                    if (String.isEmpty(country))
+                    if (String.isNotEmpty(oppCountry))
                     {
-                        country = '';
-                    }
-                    else
-                    {
-                        try
-                        {
-                            country = [SELECT Country_Name__c FROM PS_Country_Map__c WHERE Integration_Value__c = :country LIMIT 1].Country_Name__c;
-                        }
-                        catch (Exception e)
-                        {
-                            System.debug('!!!ERROR: An issue occurred when searching PS_Country_Map__c for this opportunity\'s mailing country. Setting to default international TA: ' + e.getMessage());
-                            country = '';
-                        }
+                        oppCountry = getSFCountry(oppCountry);
                     }
 
                     // Avoid NPE on Opportunity Assignment Number Rand. At least one of these should be populated.
-                    if (assignmentNumber == null)
+                    if (oppAssignNumber == null)
                     {
-                        assignmentNumber = Opp.Opportunity_Assignment_Number__c;
+                        oppAssignNumber = Opp.Opportunity_Assignment_Number__c;
                     }
 
                     // Begin filter hierarchy
                     if (Opp.StageName == 'Admitted - Conditional')
                     {
-                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International Admitted - Conditional', assignmentNumber);
+                        possibleTars = mapOfTarsByRuleKey.get('International Admitted - Conditional');
                     }
                     else if (Opp.Type == 'Transfer')
                     {
-
-                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International' + '|' + 'Transfer' + '|' + country, assignmentNumber);
+                        possibleTars = mapOfTarsByRuleKey.get('International|Transfer|' + oppCountry);
 
                         /**
-                        * The country may be defined, but we don't have a Transfer TAR for it.
+                        * The oppCountry may be defined, but we don't have a Transfer TAR for it.
                         * Use the default TAR for International Transfer
                         */
-                        if (tar == null)
+                        if (possibleTars == null || possibleTars.isEmpty())
                         {
-                            tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|Transfer|', assignmentNumber);
+                            possibleTars = mapOfTarsByRuleKey.get('International|Transfer|');
                         }
                     }
-                    else if (String.isNotEmpty(country))
+                    else if (String.isNotEmpty(oppCountry))
                     {
-                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + Opp.Type + '|' + country, assignmentNumber);
+                        possibleTars = mapOfTarsByRuleKey.get('International|' + Opp.Type + '|' + oppCountry);
                     }
 
                     // Hit the default International manager
-                    if (tar == null)
+                    if (possibleTars == null || possibleTars.isEmpty())
                     {
-                        tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International||', assignmentNumber);
+                        possibleTars = mapOfTarsByRuleKey.get('International||');
                     }
 
+                    tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule(possibleTars, oppAssignNumber);
+                    
                     // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
                     if (tar != null)
                     {
@@ -915,6 +908,7 @@ public without sharing class TerritoryAssignmentHelper {
 
         // Build map with Territory_Assignment_Rule__c Rule_Key__c values
         Map<String,Territory_Assignment_Rule__c> TerritoryAssignmentRuleMap = new Map<String,Territory_Assignment_Rule__c>();
+
         List<Territory_Assignment_Rule__c> TerritoryAssignmentRuleList =[SELECT Id,Rule_Key__c,User__c,User__r.IsActive
                                                                          FROM Territory_Assignment_Rule__c];
 
@@ -964,6 +958,9 @@ public without sharing class TerritoryAssignmentHelper {
 
         System.debug('GRF TARMap: ' + TerritoryAssignmentRuleMap);
 
+        // Get all of the TARs keyed by Rule Key. Used for international assignments.
+        Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentRuleService.mapTerritoryAssignmentRulesToRuleKey();
+
         for (Lead l: (List<Lead>)Trigger.new)
         {
             if (l.Territory_Assignment_Required__c)
@@ -999,27 +996,55 @@ public without sharing class TerritoryAssignmentHelper {
 
                 if (l.International_Student__c)
                 {
-                    // If already set by International rule, skip it
-                    if (l.Territory_Assignment_Last_Rule_Type__c == 'International')
+                    List<Territory_Assignment_Rule__c> possibleTars = new List<Territory_Assignment_Rule__c>();
+                    Territory_Assignment_Rule__c tar = null;
+                    Decimal leadAssignNumber = l.Lead_Assignment_Number__c;
+                    String leadCountry = l.Silverpop_Mailing_Country__c;
+                    String leadType = l.Type__c;
+
+                    // Use the PSCountry mapping to get the correct integration value.
+                    if (String.isNotEmpty(leadCountry))
                     {
-                        continue;
+                        leadCountry = getSFCountry(leadCountry);
                     }
 
-                    Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule('International|' + '|', l.Lead_Assignment_Number__c);
+                    // Being filter hierarchy
+                    if (leadType == 'First Time Freshman' || leadType == 'Transfer' || leadType == 'Readmission')
+                    {
+                        possibleTars = mapOfTarsByRuleKey.get('International|' + leadType + '|' + leadCountry);
+
+                        /**
+                        * The lead's mailing country may be defined, but we don't have a TAR for 
+                        * it. Use the default TAR for this lead type instead.
+                        */
+                        if (possibleTars == null || possibleTars.isEmpty())
+                        {
+                            possibleTars = mapOfTarsByRuleKey.get('International|' + leadType + '|');
+                        }
+                    }
+
+                    // Use the default International manager
+                    if (possibleTars == null || possibleTars.isEmpty())
+                    {
+                        possibleTars = mapOfTarsByRuleKey.get('International||');
+                    }
+
+                    tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule(possibleTars, leadAssignNumber);
 
                     // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
                     if (tar != null)
                     {
-                        if (tar.User__r.IsActive == false)
+                        if (tar.User__r.IsActive)
                         {
-                            l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                            l.OwnerId = tar.User__c;
+                            l.Territory_Assignment_Last_Rule_Type__c = tar.Rule_Key__c;
+
+                            continue;
                         }
                         else
                         {
-                            l.OwnerId = tar.User__c;
-                            l.Territory_Assignment_Last_Rule_Type__c = 'International';
+                            l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
 
-                            continue;
                         }
                     }
                 }
@@ -1152,5 +1177,19 @@ public without sharing class TerritoryAssignmentHelper {
         }
 
         territoryAssignmentRuleTADone = true;
+    }
+
+    /**
+    * Helper method to get the correct Country text
+    */
+    private String getSFCountry(String country)
+    {
+        List<PS_Country_Map__c> possibleCountries = psCountryMap.get(country);
+
+        PS_Country_Map__c psCountry = possibleCountries.get(0);
+
+        String sfCountry = psCountry.Country_Name__c;
+
+        return sfCountry;
     }
 }

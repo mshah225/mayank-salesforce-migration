@@ -20,7 +20,7 @@ public class TerritoryAssignmentRuleService
 	* Returns a map of all the Territory Assignment Rules sorted by their Rule Key
 	* @return A map containing a set of Rule Keys and their associated Territory Assignment Rules
 	*/
-	public static Map<String, List<Territory_Assignment_Rule__c>> getTerritoryAssignmentRulesByRuleKey()
+	public static Map<String, List<Territory_Assignment_Rule__c>> mapTerritoryAssignmentRulesToRuleKey()
 	{
 		Map<String, List<Territory_Assignment_Rule__c>> tarMap = new Map<String, List<Territory_Assignment_Rule__c>>();
 
@@ -54,25 +54,23 @@ public class TerritoryAssignmentRuleService
 	}
 
 	/**
-	* Returns the appropriate Territory Assignment Rule for a given Rule Key and Opportunity Assignment Number
-	* @param A String containing the Rule Key
-	* @param A Decimal containing the Opportunity Assignment Number
-	* @return A Territory Assignment Rule that corresponds to the tarRuleKey and oppAssignmentNumber, or null if none could be found
+	* Returns the appropriate Territory Assignment Rule for a given list of TARs and an  Assignment Number
+	* @param A list of possible Territory Assignment Rules
+	* @param A Decimal containing the Opportunity or Lead Assignment Number
+	* @return A Territory Assignment Rule that corresponds to the tarList and assignmentNumber, or null if none could be found
 	*/
-	public static Territory_Assignment_Rule__c getTerritoryAssignmentRule(String tarRuleKey, Decimal oppAssignmentNumber)
+	public static Territory_Assignment_Rule__c getTerritoryAssignmentRule(List<Territory_Assignment_Rule__c> tarList, Decimal assignmentNumber)
 	{
 		Territory_Assignment_Rule__c tarToReturn;
 		Territory_Assignment_Rule__c defaultTar;
 
-        Map<String, List<Territory_Assignment_Rule__c>> tarsByRuleKey = TerritoryAssignmentRuleService.getTerritoryAssignmentRulesByRuleKey();
-
-        List<Territory_Assignment_Rule__c> tarList = tarsByRuleKey.get(tarRuleKey);
+		Boolean useDefaultTar = false;
 
         if (tarList == null)
         {
-        	tarToReturn = null;
+        	useDefaultTar = !useDefaultTar;
         }
-        else 
+        else
         {
         	// Find the right Territory Assignment Rule for our Opportunity Assignment Number
 			for (Territory_Assignment_Rule__c tar : tarList)
@@ -82,7 +80,7 @@ public class TerritoryAssignmentRuleService
 				{
 					defaultTar = tar;
 				}
-				else if (tar.Range_Start__c <= oppAssignmentNumber && tar.Range_End__c >= oppAssignmentNumber)
+				else if (tar.Range_Start__c <= assignmentNumber && tar.Range_End__c >= assignmentNumber)
 				{
 					tarToReturn = tar;
 				}

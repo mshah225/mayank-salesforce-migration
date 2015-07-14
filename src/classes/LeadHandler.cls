@@ -1,6 +1,5 @@
 public without sharing class LeadHandler
 	implements ITrigger
-
 {
 	private LeadStatus convertedStatus = new LeadStatus();
 	private List<Lead> leadsToConvert = new List<Lead>();
@@ -13,6 +12,7 @@ public without sharing class LeadHandler
 	 * This method is called prior to execution of a BEFORE trigger. Use this to cache
 	 * any data required into maps prior execution of the trigger.
 	 */
+	
 	public void bulkBefore() {}
 
 	/**
@@ -24,7 +24,10 @@ public without sharing class LeadHandler
 	public void bulkAfter()
 	{
 		// Grab the status for converted Leads
-		List<LeadStatus> statusList = new List<LeadStatus>([SELECT Id, MasterLabel FROM LeadStatus WHERE IsConverted=true LIMIT 1]);
+		List<LeadStatus> statusList = [SELECT Id, MasterLabel
+									   FROM LeadStatus
+									   WHERE IsConverted = true LIMIT 1];
+
 		if (statusList.size() > 0)
 			convertedStatus = statusList[0];
 	}
@@ -35,7 +38,12 @@ public without sharing class LeadHandler
 	 * This method is called iteratively for each record to be inserted during a BEFORE
 	 * trigger. Never execute any SOQL/SOSL etc in this and other iterative methods.
 	 */
-	public void beforeInsert(SObject so) {}
+	public void beforeInsert(SObject so) 
+	{
+		Lead newLead = (Lead) so;
+
+		newLead.Lead_Assignment_Number__c = OpportunityService.generateOpportunityAssignmentNumber();
+	}
 
 	/**
 	 * beforeUpdate
@@ -70,7 +78,8 @@ public without sharing class LeadHandler
 	 */
 	public void afterInsert(SObject so)
 	{
-		Lead l = (Lead)so;
+		Lead l = (Lead) so;
+
 		if (l.Convert_Perform_Conversion__c)
 		{
 			leadsToConvert.add(l);
@@ -85,8 +94,9 @@ public without sharing class LeadHandler
 	 */
 	public void afterUpdate(SObject oldSo, SObject so)
 	{
-		Lead l = (Lead)so;
-		Lead oldL = (Lead)oldSo;
+		Lead l = (Lead) so;
+		Lead oldL = (Lead) oldSo;
+
 		if (l.Convert_Perform_Conversion__c && oldL.Convert_Perform_Conversion__c == false)
 		{
 			leadsToConvert.add(l);
@@ -161,8 +171,9 @@ public without sharing class LeadHandler
 
 			leadConvertList.add(lc);
 			count++;
-			//ConvertLead allows up to 100 leads per call according to docs, but 99 seems to be the actual limit
-			//
+
+			// ConvertLead allows up to 100 leads per call according to docs, but 99 seems to be the actual limit
+
 			if (count == 100)
 			{
 				leadConvertBatches.add(leadConvertList.clone());
@@ -170,8 +181,8 @@ public without sharing class LeadHandler
 				count = 0;
 			}
 		}
+
 		// If we have any Leadconverts left over, add the final batch
-		//
 		if (count > 0)
 		{
 			leadConvertBatches.add(leadConvertList);
@@ -184,6 +195,7 @@ public without sharing class LeadHandler
 		}
 
 		reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
+
 		createConvertedPreviousEducation(leadsNeedingPreviousEducation);
 
 	}
@@ -230,15 +242,19 @@ public without sharing class LeadHandler
 			return;
 		}
 
-		List<Lead_Interest__c> leadInterestList = new List<Lead_Interest__c>([SELECT Id, OwnerId, IsDeleted, Name, RecordType.Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, Leads__c, Eligibility__c, Plan__c, Contact__c, Status__c, Term__c, Primary_Source__c, Secondary_Source__c, Type__c, College__c, Academic_Interest__c, Test_Record__c, Qualifying__c, Send_Email__c, External_Application_Number__c, Send_Email_ID__c from Lead_Interest__c WHERE Leads__c IN :leadIds]);
+		List<Lead_Interest__c> leadInterestList = [SELECT Id, OwnerId, IsDeleted, Name, RecordType.Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, Leads__c, Eligibility__c, Plan__c, Contact__c, Status__c, Term__c, Primary_Source__c, Secondary_Source__c, Type__c, College__c, Academic_Interest__c, Test_Record__c, Qualifying__c, Send_Email__c, External_Application_Number__c, Send_Email_ID__c
+												   FROM Lead_Interest__c
+												   WHERE Leads__c IN :leadIds];
 
 		if (leadInterestList.size() == 0)
 		{
 			return;
 		}
 
-		//Need to requery to get the Converted Contact Ids
-		Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>([SELECT Id, ConvertedContactId FROM Lead WHERE Id in :leadIds]);
+		// Need to requery to get the Converted Contact Ids
+		Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>([SELECT Id, ConvertedContactId
+															  FROM Lead
+															  WHERE Id IN :leadIds]);
 
 		for (Lead_Interest__c li: leadInterestList)
 		{

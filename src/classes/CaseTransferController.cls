@@ -1,5 +1,6 @@
 public with sharing class CaseTransferController
 {
+	public Boolean toUser;
 	private final Case c;
 	public Integer page { get; set; }
 	public Id selectedId { get;set; }
@@ -74,12 +75,14 @@ public with sharing class CaseTransferController
 
 	public PageReference page2()
 	{
+		toUser = true;
 		page = 2;
 		return ApexPages.currentPage();
 	}
 
 	public PageReference page3()
 	{
+		toUser = false;
 		page = 3;
 		return ApexPages.currentPage();
 	}
@@ -99,68 +102,54 @@ public with sharing class CaseTransferController
 
 	public void searchUsers()
 	{
-		/*List<GroupMember> groupsUserIsIn = [SELECT GroupId, UserOrGroupId, Group.Name 
-										    FROM GroupMember 
-										  	WHERE UserOrGroupId = :UserInfo.getUserId()];
-
-		Set<Id> idSet = new Set<Id>();
-		for (GroupMember gm : groupsUserIsIn)
-		{
-			List<GroupMember> individualGroupMembers = [SELECT UserOrGroupId 
-														FROM GroupMember 
-														WHERE GroupId = :gm.GroupId];
-
-			for (GroupMember igm : individualGroupMembers)
-			{
-				String groupId = igm.UserOrGroupId;
-				if (groupId.startsWith('005'))
-				{
-					idSet.add(igm.UserOrGroupId);
-				}
-
-				if(groupId.startsWith('00G'))
-				{
-					List<GroupMember> subGroupList = [SELECT GroupId, UserOrGroupId, Group.Name 
-											      	  FROM GroupMember 
-											  	  	  WHERE GroupId = :gm.UserOrGroupId];
-
-					for (GroupMember sgm : subGroupList)
-					{
-						String subGroupId = sgm.UserOrGroupId;
-						if (groupId.startsWith('005'))
-						{
-							idSet.add(sgm.UserOrGroupId);
-						}
-					}
-				}
-			}
-		}
-		List<User> userList = [SELECT Id, Name FROM User WHERE Id IN :idSet ORDER BY Name ASC];*/
-
-		/*Id proId = [SELECT ProfileId FROM User WHERE Id = :UserInfo.getUserId()].ProfileId;
-		List<User> userList = [SELECT Id, Name FROM User WHERE ProfileId = :proId];
-		userList.sort();*/
-
 		if (searchString == null)
 		{
-			userList = [SELECT Id, Name, UserRole.ParentRoleId 
+			Set<Id> uberRoleIds = new Set<Id>();
+			Set<Id> roleIdsToAdd = new Set<Id>();
+
+			List<User> uberRoles = [SELECT UserRole.Id 
+									FROM User 
+									WHERE (NOT Name LIKE '%API%')
+									AND (NOT Name LIKE '%zz%')
+									AND (NOT Name LIKE '%Guest%')
+									AND (NOT Name LIKE '%Admin%')
+									AND (NOT Name LIKE '%Expert%')
+									And UserRole.Name != null
+									AND UserRole.ParentRoleId = null];
+
+			userList = [SELECT Id, Name, UserRole.ParentRoleId, Title, UserRole.Name 
 						FROM User 
 						WHERE UserRoleId = :UserInfo.getUserRoleId()
+						AND Id != :UserInfo.getUserId()
 						AND (NOT Name LIKE '%API%')
 						AND (NOT Name LIKE '%zz%')];
 
-			Id sServiceId = [SELECT Id FROM UserRole WHERE Name = 'S Service'].Id;
-			Set<Id> roleIdsToAdd = new Set<Id>();
+			List<User> subordinateList = [SELECT UserRole.Id
+										  FROM User
+										  WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()];
+
+			if (subordinateList.size() > 0)
+			{
+				for (User su : subordinateList)
+				{
+					roleIdsToAdd.add(su.UserRole.Id);
+				}
+			}
+
+			for (User ub: uberRoles)
+			{
+				uberRoleIds.add(ub.UserRole.Id);
+			}
 
 			for (User u : userList)
 			{
-				if (u.UserRole.ParentRoleId != null && u.UserRole.ParentRoleId != sServiceId)
+				if (u.UserRole.ParentRoleId != null && !uberRoleIds.contains(u.UserRole.ParentRoleId))
 				{
 					roleIdsToAdd.add(u.UserRole.ParentRoleId);
 				}
 			}
 
-			List<User> usersToAdd = [SELECT Id, Name 
+			List<User> usersToAdd = [SELECT Id, Name, Title, UserRole.Name 
 									 FROM User 
 									 WHERE UserRoleId 
 									 IN :roleIdsToAdd];
@@ -170,22 +159,50 @@ public with sharing class CaseTransferController
 		}
 		else 
 		{
+			Set<Id> uberRoleIds = new Set<Id>();
+			Set<Id> roleIdsToAdd = new Set<Id>();
+
+			List<User> uberRoles = [SELECT UserRole.Id 
+									FROM User 
+									WHERE (NOT Name LIKE '%API%')
+									AND (NOT Name LIKE '%zz%')
+									AND (NOT Name LIKE '%Guest%')
+									AND (NOT Name LIKE '%Admin%')
+									AND (NOT Name LIKE '%Expert%')
+									And UserRole.Name != null
+									AND UserRole.ParentRoleId = null];
+
 			Id userRole = UserInfo.getUserRoleId();
-			String queryString = 'SELECT Id, Name, UserRole.ParentRoleId FROM User WHERE UserRoleId = :userRole AND (NOT Name LIKE \'%API%\') AND (NOT Name LIKE \'%zz%\') AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+			Id userId = UserInfo.getUserId();
+			String queryString = 'SELECT Id, Name, Title, UserRole.Name, UserRole.ParentRoleId FROM User WHERE UserRoleId = :userRole AND Id != :userId AND (NOT Name LIKE \'%API%\') AND (NOT Name LIKE \'%zz%\') AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
 			userList = Database.query(queryString);
 
-			Id sServiceId = [SELECT Id FROM UserRole WHERE Name = 'S Service'].Id;
-			Set<Id> roleIdsToAdd = new Set<Id>();
+			List<User> subordinateList = [SELECT UserRole.Id
+										  FROM User
+										  WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()];
+
+			if (subordinateList.size() > 0)
+			{
+				for (User su : subordinateList)
+				{
+					roleIdsToAdd.add(su.UserRole.Id);
+				}
+			}
+
+			for (User ub: uberRoles)
+			{
+				uberRoleIds.add(ub.UserRole.Id);
+			}
 
 			for (User u : userList)
 			{
-				if (u.UserRole.ParentRoleId != null && u.UserRole.ParentRoleId != sServiceId)
+				if (u.UserRole.ParentRoleId != null && !uberRoleIds.contains(u.UserRole.ParentRoleId))
 				{
 					roleIdsToAdd.add(u.UserRole.ParentRoleId);
 				}
 			}
 
-			String query2String = 'SELECT Id, Name FROM User WHERE UserRoleId IN :roleIdsToAdd AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+			String query2String = 'SELECT Id, Name, Title, UserRole.Name FROM User WHERE UserRoleId IN :roleIdsToAdd AND Id != :userId AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
 			List<User> usersToAdd = Database.query(query2String);
 
 			userList.addAll(usersToAdd);
@@ -197,13 +214,20 @@ public with sharing class CaseTransferController
 	{
         try
         {
-        	Case_Assignment_Rule__c selectedCAR = [SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name, Queue_ID__c
-				   		   						   FROM Case_Assignment_Rule__c
-				   		   						   WHERE Id = :selectedId];
-            c.OwnerId = selectedCAR.Queue_ID__c;
-            c.Functional_Group__c = selectedCAR.Functional_Group__c;
-            c.Category__c = selectedCAR.Category__c;
-            c.Sub_Category__c = selectedCAR.Sub_Category__c;
+        	if (!toUser)
+        	{
+	        	Case_Assignment_Rule__c selectedCAR = [SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name, Queue_ID__c
+					   		   						   FROM Case_Assignment_Rule__c
+					   		   						   WHERE Id = :selectedId];
+	            c.OwnerId = selectedCAR.Queue_ID__c;
+	            c.Functional_Group__c = selectedCAR.Functional_Group__c;
+            	c.Category__c = selectedCAR.Category__c;
+            	c.Sub_Category__c = selectedCAR.Sub_Category__c;
+	        }
+	        else
+	        {
+	        	c.OwnerId = selectedId;
+	        }
             update c;
         }
         catch (Exception e)

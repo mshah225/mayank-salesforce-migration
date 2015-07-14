@@ -138,19 +138,21 @@
 			<i>Select a User to Transfer the Case to:</i>
 			<br />
 			<br />
-			<apex:inputText value="{!searchString}" html-placeholder="Filter results">
+			<apex:inputText value="{!searchString}" html-placeholder="Filter results" style="padding:5px;font-size:9pt;margin-right:10px;margin-bottom:10px;">
 				<apex:actionSupport event="onkeyup" action="{!searchUsers}" reRender="userList"/>
 			</apex:inputText>
-			<apex:commandButton value="Clear" onclick="this.form.reset();" action="{!searchUsers}"/>
+			<apex:commandButton value="Clear" onclick="this.form.reset();" action="{!searchUsers}" styleClass="caseBtn" style="padding:5px!important;"/>
 			<apex:pageBlock mode="maindetail">
 				<apex:pageBlockTable id="userList" value="{!userList}" var="ul" styleClass="userList">
-					<apex:column headerValue="Users" style="padding:7px;">
+					<apex:column headerValue="User" style="padding:7px;" width="20%">
 						<apex:commandLink value="{!ul.Name}" action="{!page4}">
 							<apex:param name="selectedId" value="{!ul.Id}" assignTo="{!selectedId}"/>
 							<apex:param name="selectedGroupName" value="{!ul.Name}" assignTo="{!selectedGroupName}"/>
 							<apex:param name="source" value="page2" assignTo="{!source}"/>
 						</apex:commandLink>
 					</apex:column>
+					<apex:column headerValue="Title" value="{!ul.Title}" width="20%"/>
+					<apex:column headerValue="Role" value="{!ul.UserRole.Name}" width="20%"/>
 				</apex:pageBlockTable>
 			</apex:pageBlock>
 			<br />
@@ -244,6 +246,7 @@
 
 	<apex:outputPanel id="ChatterPage" rendered="{!IF(page = 4,true,false)}">
 		<apex:outputPanel id="chatterPanel">
+		<apex:pageMessages />
 			<h1 style="font-weight:200;font-size:13pt;">
 				You are transferring this case to:<br />{!selectedGroupName} <apex:outputText rendered="{!IF(selectedCARLabel != null,true,false)}">&nbsp;-&nbsp;{!selectedCARLabel}</apex:outputText>
 			</h1>

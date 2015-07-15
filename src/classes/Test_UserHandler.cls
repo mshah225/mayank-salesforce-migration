@@ -16,7 +16,7 @@ public class Test_UserHandler
 	}
 
 	@isTest static void insertCAPUser()
-	{
+	{		
 		Contact testContact = ContactService.createTestContact();
 		testContact.CAP_Possible__c = TRUE;
 		insert testContact;

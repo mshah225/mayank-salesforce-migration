@@ -13,10 +13,13 @@ public without sharing class UserHandler implements ITrigger
 			newUser.Role_Knowledge__c = true;
 		}
 
-		if(newUser.ContactId != null &&  newUser.Contact.CAP__c == null)
+		if(newUser.ContactId != null)
 		{
-			Profile newUserProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
-			newUser.ProfileId = newUserProfile.Id;
+			if(newUser.Contact.CAP__c != null)
+			{
+				Profile newUserProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
+				newUser.ProfileId = newUserProfile.Id;
+			}
 		}
 	}
 

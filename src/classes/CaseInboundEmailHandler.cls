@@ -99,7 +99,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             Id actualCaseId = Id.valueOf(caseId);
 
-            Case existingCase = CaseService.getCaseInformation(actualCaseId);
+            this.theCase = CaseService.getCaseInformation(actualCaseId);
 
             Integer iReopenClosedCaseThreshold;
             String reopenClosedCaseThreshold = getConfigurationSetting('Reopen Closed Case Threshold');
@@ -113,40 +113,37 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 iReopenClosedCaseThreshold = 0;
             }
 
-            Boolean caseCanBeReopened = iReopenClosedCaseThreshold != 0 && existingCase.Status.startsWith('Closed') && existingCase.ClosedDate != null && existingCase.ClosedDate > DateTime.Now().addDays(iReopenClosedCaseThreshold);
-            Boolean caseStatusIsNotNull = existingCase.Status != null;
-            Boolean caseStatusIsNotClosed = !existingCase.Status.startsWith('Closed');
+            Boolean caseCanBeReopened = iReopenClosedCaseThreshold != 0 && this.theCase.Status.startsWith('Closed') && this.theCase.ClosedDate != null && this.theCase.ClosedDate > DateTime.Now().addDays(iReopenClosedCaseThreshold);
+            Boolean caseStatusIsNotNull = this.theCase.Status != null;
 
             // If the case was closed within the last n days set in custom settings, re-open it.  Otherwise, create a new case below
-            if (caseStatusIsNotNull && (caseStatusIsNotClosed || caseCanBeReopened))
+            if (caseStatusIsNotNull && caseCanBeReopened)
             {
-                this.theCase = existingCase;
-
                 Id serviceRecordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service'].Id;
 
                 // Assign service cases back to the most recently associated Queue
-                if (existingCase.RecordTypeId == serviceRecordType)
+                if (this.theCase.RecordTypeId == serviceRecordType)
                 {
-                    String groupName = existingCase.Most_Recent_Queue__c;
+                    String groupName = this.theCase.Most_Recent_Queue__c;
 
                     Group groupToReopen = GroupService.getGroupDetails(groupName);
 
-                    existingCase.OwnerId = groupToReopen.Id;
+                    this.theCase.OwnerId = groupToReopen.Id;
 
-                    if (String.isEmpty(existingCase.Most_Recent_Functional_Group__c))
+                    if (String.isEmpty(this.theCase.Most_Recent_Functional_Group__c))
                     {
                         // Handle NPE on Most_Recent_Functional_Group__c
-                        existingCase.Most_Recent_Functional_Group__c = existingCase.Functional_Group__c;
+                        this.theCase.Most_Recent_Functional_Group__c = this.theCase.Functional_Group__c;
                     }
-                    else if (existingCase.Functional_Group__c.equals('External Unit'))
+                    else if (this.theCase.Functional_Group__c.equals('External Unit'))
                     {
-                        existingCase.Functional_Group__c = existingcase.Most_Recent_Functional_Group__c;
+                        this.theCase.Functional_Group__c = this.theCase.Most_Recent_Functional_Group__c;
                     }
                 }
 
-                existingCase.Status = 'Re-Opened';
+                this.theCase.Status = 'Re-Opened';
 
-                updateSObject(existingCase);
+                updateSObject(this.theCase);
             }
         }
 

@@ -4,6 +4,8 @@ public class Test_UserHandler
 	@isTest static void changeKnowledgePermission()
 	{
 		User updateUser = UserService.createTestUser();
+		Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+		updateUser.ProfileId = sysAdminProfile;
 		insert updateUser;
 
 		updateUser.Role_Knowledge__c = true;

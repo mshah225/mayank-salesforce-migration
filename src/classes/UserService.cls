@@ -14,9 +14,6 @@ public class UserService
 		testUser.EmailEncodingKey = 'ISO-8859-1';
 		testUser.LanguageLocaleKey = 'en_US';
 
-		Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
-		testUser.ProfileId = communityProfile.Id;
-
 		return testUser;
   	}
 

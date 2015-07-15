@@ -1,4 +1,4 @@
-public class CaseService
+public class CaseService 
 {
 	/**
 	* Returns all the fields on Case in a String
@@ -11,7 +11,7 @@ public class CaseService
 		Map<String, SObjectField> caseFieldMap = ObjectService.getObjectFieldMap('Case');
 
 		caseFields = ObjectService.objectFieldsToString(caseFieldMap);
-
+		
 		return caseFields;
 	}
 
@@ -20,36 +20,7 @@ public class CaseService
     * @param A list of contacts
     * @return A map containing the set of contactIds and their associated cases
     */
-    public static Case getCaseInformation(Id caseId)
-    {
-		Case caseInfo = null;
-        String caseFields = caseFieldsToString();
-
-        // Get the list of cases associated with our set of contacts
-        try
-        {
-        	String caseInfoQuery = 'SELECT ' + caseFields + ' ' +
-        							'FROM Case ' +
-        							'WHERE Id = :caseId';
-
-			System.debug('!!!FINE: caseInfoQuery is ' + caseInfoQuery);
-
-            caseInfo = Database.query(caseInfoQuery);
-        }
-        catch (Exception e)
-        {
-            throw new CaseServiceException('!!!ERROR!!!: An error occurred trying to get the Case\'s information\n' + e.getMessage());
-        }
-
-		return caseInfo;
-    }
-
-	/**
-    * Get these contact's open visible cases
-    * @param A list of contacts
-    * @return A map containing the set of contactIds and their associated cases
-    */
-    public static Map<Id, List<Case>> getVisibleOpenCases(List<Contact> listOfContacts)
+    public static Map<Id, List<Case>> getVisibleOpenCases(List<Contact> listOfContacts) 
     {
         List<Case> openCases = null;
         String caseFields = caseFieldsToString();
@@ -76,7 +47,7 @@ public class CaseService
         }
         catch (Exception e)
         {
-            throw new CaseServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s open visible cases\n' + e.getMessage());
+            throw new CaseServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s open visible cases\n' + e.getStackTraceString());
         }
 
         // Iterate through the list cases that we got back and associate them with the list of contacts passed in
@@ -130,7 +101,7 @@ public class CaseService
         }
         catch (Exception e)
         {
-            throw new CaseServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s closed visible cases\n' + e.getMessage());
+            throw new CaseServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s closed visible cases\n' + e.getStackTraceString());
         }
 
         // Iterate through the list cases that we got back and associate them with the list of contacts passed in

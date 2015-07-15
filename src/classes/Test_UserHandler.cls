@@ -3,7 +3,8 @@ public class Test_UserHandler
 {
 	@isTest static void changeKnowledgePermission()
 	{
-		User updateUser = [SELECT Role_Knowledge__c FROM User LIMIT 1];
+		User updateUser = UserService.createTestUser();
+		insert updateUser;
 
 		updateUser.Role_Knowledge__c = true;
 

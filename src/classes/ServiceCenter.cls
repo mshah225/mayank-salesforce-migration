@@ -8,6 +8,7 @@ public with sharing class ServiceCenter
     public Case suggestAnArticle { get; set; }
     public Date today;
     public Decimal myPin;
+    private Decimal origPin;
     public Decimal newPin { get; set; }
     public Id caseId;
     public List<Opportunity> oppList;
@@ -34,6 +35,7 @@ public with sharing class ServiceCenter
                    FROM Opportunity
                    WHERE Contact__c = :userContact.Id];
         suggestAnArticle = new Case();
+        origPin = userContact.Self_Service_PIN__c;
     }
 
     public List<Case> getMyCases()
@@ -232,18 +234,27 @@ public with sharing class ServiceCenter
 
     public Decimal getMyPin()
     {
-        return (userContact != null) ? userContact.Self_Service_PIN__c : null;
+        return userContact.Self_Service_PIN__c;
     }
 
     public PageReference changePin()
     {
         try
         {
+            if (origPin == newPin)
+            {
+                PageReference pinError = ApexPages.currentPage();
+                pinError.getParameters().put('PIN', 'error');
+                pinError.setRedirect(true);
+                return pinError;
+            }
+
             userContact.Self_Service_PIN__c = newPin;
             if (userContact.PIN_lockout__c == true)
             {
                 userContact.PIN_lockout__c = false;
             }
+
             update userContact;
 
             PageReference pinSuccess = ApexPages.currentPage();
@@ -253,17 +264,10 @@ public with sharing class ServiceCenter
         }
         catch (DmlException e)
         {
-            if (e.getMessage().contains('InvalidSelfServicePinException'))
-            {
-                PageReference pinError = ApexPages.currentPage();
-                pinError.getParameters().put('PIN', 'error');
-                pinError.setRedirect(true);
-                return pinError;
-            }
-            else
-            {
-                throw e;
-            }
+            PageReference pinError = ApexPages.currentPage();
+            pinError.getParameters().put('PIN', 'error');
+            pinError.setRedirect(true);
+            return pinError;
         }
     }
 

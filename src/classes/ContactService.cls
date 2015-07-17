@@ -55,7 +55,7 @@ public class ContactService
 
         return contactList;
     }
-
+    
     /**
     * The currently logged in contact somewhere. Usually the service center.
     * @return The logged in contact

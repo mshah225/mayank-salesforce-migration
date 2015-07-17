@@ -15,7 +15,8 @@ public without sharing class UserHandler implements ITrigger
 
 		if(newUser.ContactId != null)
 		{
-			if(newUser.Contact.CAP__c != null)
+			Contact newUserContact = [SELECT CAP__c FROM Contact WHERE Id = :newUser.ContactId];
+			if(newUserContact.CAP__c != null)
 			{
 				Profile newUserProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
 				newUser.ProfileId = newUserProfile.Id;

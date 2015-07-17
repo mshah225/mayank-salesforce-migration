@@ -30,6 +30,8 @@ public class Test_UserHandler
 		insert testGroup;
 
 		User testUser = UserService.createTestUser();
+		Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+		testUser.ProfileId = communityProfile;
 		testUser.ContactId = testContact.Id;
 		insert testUser;
 

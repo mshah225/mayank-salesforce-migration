@@ -86,7 +86,7 @@ public class CampaignMemberManagementController
         Id eventRecId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id;
         Id eossRecId = [SELECT Id FROM RecordType WHERE Name = 'EOSS Event'].Id;
 
-        eventList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c, Campaign.Interest_PeopleSoft_Major__c, Campaign.Event_Start_Date__c, Number_Of_Guests__c, Status, Last_Member_Status_Change__c 
+        eventList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c, Campaign.Interest_PeopleSoft_Major__c, Campaign.Event_Start_Date__c, Number_Of_Guests__c, Status, Last_Member_Status_Change__c, ContactId, CampaignId 
                      FROM CampaignMember 
                      WHERE ContactId = :ApexPages.currentPage().getParameters().get('id') 
                      AND (Campaign.RecordTypeId = :eventRecId OR Campaign.RecordTypeId = :eossRecId) 

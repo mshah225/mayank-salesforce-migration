@@ -69,7 +69,6 @@
             height: 15px;
             padding: 5px;
             font-size: 9pt;
-            border-radius: 4px !important;
             border: none !important;
         }
 
@@ -78,6 +77,7 @@
             background-color: lightgrey;
             color: #000 !important;
             background-image:none;
+            border-radius: none !important;
             padding: 4.5px;
             width: 120px;
         }
@@ -100,6 +100,52 @@
         
         .rich-tabpanel .subTab table {
             border: none !important;
+        }
+
+        .pbHeader .pbTitle h2, .pbHeader .pbTitle h3 {
+            white-space: nowrap;
+        }
+
+        .linkBtn {
+            transition: background-color 0.5s ease; 
+            padding: 5px;
+            background: #990033 !important;
+            color: #fff !important;
+            text-decoration: none !important;
+            border-radius: 2px;
+        }
+
+        .linkBtn:hover {
+            background: #a30046 !important;
+            padding: 5px;
+            color: #fff !important;
+            text-decoration: none !important;
+            border-radius: 2px;
+        }
+
+        .contactTab .secondaryPalette, .individualPalette .contactBlock .secondaryPalette {
+            border-top-color: #990033 !important;
+        }
+
+        input {  
+            width: 150px;  
+            transition: width 0.5s ease;  
+        }  
+          
+        input:focus {  
+            width: 250px; 
+        }
+
+        .none {
+            display: none !important;
+        }
+
+        .bigCols {
+            padding: 15px !important;
+        }
+
+        .remCols {
+            padding: 12px !important;
         }
     </style>
     
@@ -202,7 +248,7 @@
         </apex:tab>
 
         <apex:tab label="Corporate Relations" name="crTab" id="crTab" rendered="{!crProfile}">
-            <apex:tabPanel id="CRTabPanel" switchType="client" selectedTab="{!$Component.viewAffiliations}" tabClass="activeTab" inactiveTabClass="inactiveTab">
+            <apex:tabPanel id="CRTabPanel" switchType="client" selectedTab="{!$Component.viewAffiliations}" tabClass="activeTab" activeTabClass="activeSubTab" inactiveTabClass="inactiveSubTab">
                 <apex:tab id="viewAffiliations" name="viewAffiliations" label="View Affiliations" style="background-color:#f0f0f0;">
                     <apex:form style="font-size:9pt;overflow:auto;height:240px;max-width:1100px;">
                         <apex:pageBlock title="Campaigns this Contact is associated with.">
@@ -225,6 +271,7 @@
                         </apex:pageBlock>
                     </apex:form>
                 </apex:tab>
+
                 <apex:tab id="addAffiliation" name="addAffiliation" label="Add an Affiliation" style="background-color:#f0f0f0;">
                     <apex:form id="searchForm" style="font-size:9pt;overflow:auto;height:240px;max-width:1100px;">
                         <apex:outputPanel id="leftPanel" style="font-size:9pt;float:left;width:49.5%;">
@@ -312,6 +359,7 @@
                         </apex:outputPanel>
                     </apex:form>
                 </apex:tab>
+
                 <apex:tab id="editAffiliation" name="editAffiliation" label="Remove Affiliations" style="background-color:#f0f0f0;">
                     <apex:form id="inActivateCMForm" style="font-size:9pt;overflow:auto;height:240px;max-width:1100px;">
                         <apex:pageBlock title="Select a Cohort Campaign to Remove">
@@ -353,9 +401,7 @@
         </apex:tab>
         
         <apex:tab label="Interests" name="interests" id="interestTab" >
-            
             <apex:tabPanel switchType="client" selectedTab="assignedInterest" id="theTabPanel3" tabClass="activeSubTab" styleClass="subTab" inactiveTabClass="inactiveSubTab" width="100%">
-                
                 <apex:tab label="Assigned Interests" name="assignedInterests" id="assignedInterests" >
                     <apex:form id="viewInterests">
                         <apex:outputPanel layout="block" style="overflow:auto;height:295px;" >

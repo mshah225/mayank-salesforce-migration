@@ -100,6 +100,12 @@ public with sharing class CaseTransferController
 		return columnList;
 	}
 
+	public void resetSearch()
+	{
+		searchString = null;
+		searchUsers();
+	}
+
 	public void searchUsers()
 	{
 		if (searchString == null)
@@ -117,7 +123,7 @@ public with sharing class CaseTransferController
 									And UserRole.Name != null
 									AND UserRole.ParentRoleId = null];
 
-			userList = [SELECT Id, Name, UserRole.ParentRoleId, Title, UserRole.Name 
+			userList = [SELECT Id, Name, UserRole.ParentRoleId, Title, Department 
 						FROM User 
 						WHERE UserRoleId = :UserInfo.getUserRoleId()
 						AND Id != :UserInfo.getUserId()
@@ -149,7 +155,7 @@ public with sharing class CaseTransferController
 				}
 			}
 
-			List<User> usersToAdd = [SELECT Id, Name, Title, UserRole.Name 
+			List<User> usersToAdd = [SELECT Id, Name, Title, Department 
 									 FROM User 
 									 WHERE UserRoleId 
 									 IN :roleIdsToAdd];
@@ -174,7 +180,7 @@ public with sharing class CaseTransferController
 
 			Id userRole = UserInfo.getUserRoleId();
 			Id userId = UserInfo.getUserId();
-			String queryString = 'SELECT Id, Name, Title, UserRole.Name, UserRole.ParentRoleId FROM User WHERE UserRoleId = :userRole AND Id != :userId AND (NOT Name LIKE \'%API%\') AND (NOT Name LIKE \'%zz%\') AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+			String queryString = 'SELECT Id, Name, Title, Department, UserRole.ParentRoleId FROM User WHERE UserRoleId = :userRole AND Id != :userId AND (NOT Name LIKE \'%API%\') AND (NOT Name LIKE \'%zz%\') AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
 			userList = Database.query(queryString);
 
 			List<User> subordinateList = [SELECT UserRole.Id
@@ -202,7 +208,7 @@ public with sharing class CaseTransferController
 				}
 			}
 
-			String query2String = 'SELECT Id, Name, Title, UserRole.Name FROM User WHERE UserRoleId IN :roleIdsToAdd AND Id != :userId AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+			String query2String = 'SELECT Id, Name, Title, Department FROM User WHERE UserRoleId IN :roleIdsToAdd AND Id != :userId AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
 			List<User> usersToAdd = Database.query(query2String);
 
 			userList.addAll(usersToAdd);

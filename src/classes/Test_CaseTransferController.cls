@@ -105,6 +105,7 @@ private class Test_CaseTransferController {
 		ctc.page2();
 		ctc.page1();
 		ctc.page2();
+		ctc.resetSearch();
 		ctc.searchString = 'Test';
 		ctc.searchUsers();
 		ctc.selectedId = testUser.Id;

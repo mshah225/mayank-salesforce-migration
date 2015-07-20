@@ -68,7 +68,7 @@ public class CampaignMemberManagementController
                             AND Status = 'Inactive'
                             ORDER BY Campaign.Name];
         String profileName = [SELECT Profile.Name FROM User WHERE Id = :UserInfo.getUserId()].Profile.Name;
-        if (profileName.equals('ASU Corporate Relations') || profileName.equals('System Administrator')) 
+        if (profileName.equals('ASU Corporate Relations')) 
         {
             crProfile = true;
             renderedTab = 'crTab';
@@ -270,18 +270,10 @@ public class CampaignMemberManagementController
 
     public void parentCampaignSearch()
     {
-        if (parentCampaigns != null)
-        {
-            parentCampaigns = null;
-        }
-        if (childCampaigns != null) 
-        { 
-            childCampaigns = null;
-        }
-        if (selectedParentCampaignName != null) 
-        { 
-            selectedParentCampaignName = null; 
-        }
+        parentCampaigns = null;
+        childCampaigns = null;
+        selectedParentCampaignName = null; 
+
         String queryString = 'SELECT Id, Name FROM Campaign WHERE RecordTypeId = \'' + crRecordTypeId + '\' AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\' AND ParentId = null AND isActive = true AND Type = \'Corporate Relations\'';
         parentCampaigns = Database.query(queryString);
     }
@@ -312,10 +304,7 @@ public class CampaignMemberManagementController
     }
 
     public void parentCamNameSearch() {
-        if (parentCampaigns != null)
-        {
-            parentCampaigns.clear();
-        }
+        parentCampaigns.clear();
 
         selectedParentCampaignName = [SELECT Name 
                                       FROM Campaign

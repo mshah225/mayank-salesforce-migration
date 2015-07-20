@@ -14,6 +14,8 @@ public with sharing class CaseTransferController
 	public String selectedCARLabel { get; set; }
 	public String source { get; set; }
 	public String searchString { get; set; }
+	private String caseSub;
+	private String caseDesc;
 
 	public CaseTransferController(ApexPages.StandardController stdController)
 	{
@@ -65,6 +67,17 @@ public with sharing class CaseTransferController
 	        	}
 	        }
         }
+
+        Case temp = [SELECT Id, Subject, Description 
+        			 FROM Case 
+        			 WHERE Id = :c.Id];
+
+        caseSub = temp.Subject;
+        caseDesc = temp.Description;
+        if (caseSub == null || caseDesc == null)
+		{
+			ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'The Subject and Description are required fields for case transfer. Please fill out the missing fields before transferring the case.'));
+		}
 	}
 
 	public PageReference page1()
@@ -220,21 +233,29 @@ public with sharing class CaseTransferController
 	{
         try
         {
-        	if (!toUser)
-        	{
-	        	Case_Assignment_Rule__c selectedCAR = [SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name, Queue_ID__c
-					   		   						   FROM Case_Assignment_Rule__c
-					   		   						   WHERE Id = :selectedId];
-	            c.OwnerId = selectedCAR.Queue_ID__c;
-	            c.Functional_Group__c = selectedCAR.Functional_Group__c;
-            	c.Category__c = selectedCAR.Category__c;
-            	c.Sub_Category__c = selectedCAR.Sub_Category__c;
-	        }
-	        else
-	        {
-	        	c.OwnerId = selectedId;
-	        }
-            update c;
+	        if (caseSub != null && caseDesc != null)
+	        {	
+	        	if (!toUser)
+	        	{
+		        	Case_Assignment_Rule__c selectedCAR = [SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name, Queue_ID__c
+						   		   						   FROM Case_Assignment_Rule__c
+						   		   						   WHERE Id = :selectedId];
+		            c.OwnerId = selectedCAR.Queue_ID__c;
+		            c.Functional_Group__c = selectedCAR.Functional_Group__c;
+	            	c.Category__c = selectedCAR.Category__c;
+	            	c.Sub_Category__c = selectedCAR.Sub_Category__c;
+		        }
+		        else
+		        {
+		        	c.OwnerId = selectedId;
+		        }
+            	update c;
+        	}
+        	else{
+        		ApexPages.getMessages().clear();
+        		ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'The Subject and Description are required fields for case transfer. Please fill out the missing fields before transferring the case.'));
+    			return null;
+        	}
         }
         catch (Exception e)
         {

@@ -118,6 +118,7 @@
 	<br />
 	<h1 style="color:#990033;">Change Case Owner ({!Case.CaseNumber})</h1>
 	<br />
+	<apex:pageMessages/>
 	<br />
 
 	<apex:outputPanel id="firstPage" rendered="{!IF(page = 1,true,false)}">
@@ -256,7 +257,6 @@
 
 	<apex:outputPanel id="ChatterPage" rendered="{!IF(page = 4,true,false)}">
 		<apex:outputPanel id="chatterPanel">
-		<apex:pageMessages />
 			<h1 style="font-weight:200;font-size:13pt;">
 				You are transferring this case to:<br />{!selectedGroupName} <apex:outputText rendered="{!IF(selectedCARLabel != null,true,false)}">&nbsp;-&nbsp;{!selectedCARLabel}</apex:outputText>
 			</h1>

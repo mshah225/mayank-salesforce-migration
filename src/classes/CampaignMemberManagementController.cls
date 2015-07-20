@@ -203,7 +203,7 @@ public class CampaignMemberManagementController
     // Partnered Courses tab.
     public List<CampaignMember> getPartCourseList() 
     {
-        Id partCourseRecid = [SELECT Id FROM RecordType WHERE Name = 'Courses'].Id;
+        Id partCourseRecid = [SELECT Id FROM RecordType WHERE Name = 'Course'].Id;
 
         partCourseList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Event_Start_Date__c, Campaign.Event_End_Date__c, edX_Enrollment_Date__c, edX_Active_Enrollment__c, Campaign.Requested__c, Status, Last_Member_Status_Change__c 
                           FROM CampaignMember 

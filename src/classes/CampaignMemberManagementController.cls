@@ -19,7 +19,7 @@ public class CampaignMemberManagementController
     public String iSearchString { get;set; }
 
     // CR specific variables
-    public Contact contact;
+    public Contact campaignContact;
     public CampaignMember newParentCamMem { get; set; }
     public CampaignMember newChildCamMem { get; set; }
     public CampaignMember inActivateCamMem { get; set; }
@@ -48,22 +48,22 @@ public class CampaignMemberManagementController
 
     public CampaignMemberManagementController(ApexPages.StandardController controller) 
     { 
-        contact = [SELECT Id 
-                   FROM Contact 
-                   WHERE Id = :ApexPages.currentPage().getParameters().get('id')];
-        contId = contact.Id;
+        campaignContact = [SELECT Id 
+                           FROM Contact 
+                           WHERE Id = :ApexPages.currentPage().getParameters().get('id')];
+        contId = campaignContact.Id;
         crRecordTypeId = [SELECT Id
                           FROM RecordType 
                           WHERE Name = 'Corporate Relations'].Id;
         currentCampaigns = [SELECT Id, Campaign.Name, Campaign.ParentId 
                             FROM CampaignMember 
-                            WHERE ContactId = :contact.Id
+                            WHERE ContactId = :campaignContact.Id
                             AND Campaign_Type__c = 'Corporate Relations'
                             AND Status = 'Active'
                             ORDER BY Campaign.Name];
         inActiveCampaigns = [SELECT Id, Campaign.Name 
                             FROM CampaignMember 
-                            WHERE ContactId = :contact.Id
+                            WHERE ContactId = :campaignContact.Id
                             AND Campaign_Type__c = 'Corporate Relations'
                             AND Status = 'Inactive'
                             ORDER BY Campaign.Name];
@@ -220,7 +220,7 @@ public class CampaignMemberManagementController
         camMemEvent.Id = null;
         camMemEvent.LeadId = null;
         camMemEvent.CampaignId = elId;
-        camMemEvent.ContactId = contact.Id;
+        camMemEvent.ContactId = campaignContact.Id;
         camMemEvent.Status = 'Invited';
         
         insert camMemEvent;
@@ -235,7 +235,7 @@ public class CampaignMemberManagementController
         camMemInterest.Id = null;
         camMemInterest.LeadId = null;
         camMemInterest.CampaignId = intId;
-        camMemInterest.ContactId = contact.Id;
+        camMemInterest.ContactId = campaignContact.Id;
         camMemInterest.Status = 'Interested';
         
         insert camMemInterest;
@@ -255,7 +255,7 @@ public class CampaignMemberManagementController
                 sortList.add(cm);
                 for (CampaignMember ch: [SELECT Campaign.Name, Campaign.ParentId
                                          FROM CampaignMember 
-                                         WHERE ContactId = :contact.Id 
+                                         WHERE ContactId = :campaignContact.Id 
                                          AND Campaign_Type__c = 'Corporate Relations'
                                          AND Status = 'Active' 
                                          AND Campaign.ParentId = :cm.Campaign.Id
@@ -282,7 +282,7 @@ public class CampaignMemberManagementController
     {
         currentChildCams = [SELECT CampaignId 
                             FROM CampaignMember 
-                            WHERE ContactId = :contact.Id 
+                            WHERE ContactId = :campaignContact.Id 
                             AND Campaign.ParentId = :selectedParentCampaign
                             AND Status = 'Active'];
         childSearchSet = new Set<String>();
@@ -320,7 +320,7 @@ public class CampaignMemberManagementController
     public void assignToParentCampaign()
     {
         newParentCamMem = new CampaignMember();
-        newParentCamMem.ContactId = contact.Id;
+        newParentCamMem.ContactId = campaignContact.Id;
         newParentCamMem.CampaignId = selectedParentCampaign;
         newParentCamMem.Status = 'Active';
         searchString = null;
@@ -330,7 +330,7 @@ public class CampaignMemberManagementController
     public void assignToChildCampaign()
     {
         newChildCamMem = new CampaignMember();
-        newChildCamMem.ContactId = contact.Id;
+        newChildCamMem.ContactId = campaignContact.Id;
         newChildCamMem.CampaignId = selectedChildCampaign;
         newChildCamMem.Status = 'Active';
         childCamNameSearch();

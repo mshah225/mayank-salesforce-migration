@@ -29,7 +29,7 @@ public class ContactService
         testContact.Birthdate = Date.newInstance(1989, 8, 12);
         testContact.Self_Service_PIN__c = 57483638;
         testContact.PIN_lockout__c = true;
-        testContact.ASURite_ID__c = 'testuser';
+        testContact.ASURite_ID__c = 'tecontac';
 
 		return testContact;
 	}
@@ -49,7 +49,9 @@ public class ContactService
             con.FirstName = 'Test' + i;
             con.LastName = 'Contact' + i;
             con.Email = 'test.user' + i + '@test.example.com';
-            con.ASURite_ID__c = 'testuser' + i;
+            con.ASURite_ID__c = String.valueOf(i);
+            Integer tempEmplId = 1200000000 + i;
+            con.EMPLID__c = String.valueOf(tempEmplId);
             contactList.add(con);
         }
 

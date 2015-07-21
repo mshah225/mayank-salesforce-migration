@@ -149,6 +149,13 @@ public without sharing class LeadHandler
 				lc.setContactId(l.Convert_Contact__c);
 				lc.setAccountId(l.Convert_Contact_Account_ID__c);
 			}
+
+			// If Leads has Last Institution Attended populated, add to the List that
+			// needs a Previous Education entry added
+			if (l.Last_Institution_Attended__c != null)
+			{
+				leadsNeedingPreviousEducation.add(l.Id);
+			}
 			
 			// Reparent related Lead Interests if we're not creating an Opportunity
 			// Deactivate related Lead Interests if we are creating an Opportunity
@@ -189,7 +196,6 @@ public without sharing class LeadHandler
 		
 		reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
         createConvertedPreviousEducation(leadsNeedingPreviousEducation);
-
 	}
 
 	private void createConvertedPreviousEducation(Set<Id> leadIds)

@@ -1,11 +1,13 @@
 @isTest
-public with sharing class Test_ContactHandler {
+public with sharing class Test_ContactHandler 
+{
 	static Id ExtMasteredContactRTId;
 	static Id SFMasteredContactRTId;
 	static Id ExtMasteredContactAccountRTId;
 	static Id SFMasteredContactAccountRTId;
 	
-	static testMethod void testSFMasteredContacts() {
+	static testMethod void testSFMasteredContacts() 
+	{
 		Integer recordCount = 200;
 
 		getRecordTypeIDs();
@@ -17,14 +19,16 @@ public with sharing class Test_ContactHandler {
 		test.startTest();
 		insert testContacts;
 		
-		for (Integer i=0;i>recordCount;i++) {
+		for (Integer i=0;i>recordCount;i++) 
+		{
 			system.assertEquals(testContacts[i].RecordTypeId, SFMasteredContactRTId);
 			testContacts[i].EMPLID__c = i.format();
 			testContactIDs.add(testContacts[i].Id);
 		}
 
 		List<Account> testAccounts1 = new List<Account>([SELECT Id, RecordTypeId FROM Account WHERE Contact__c IN :testContactIDs]);
-		for (Account a: testAccounts1) {
+		for (Account a: testAccounts1) 
+		{
 			system.assertEquals(a.RecordTypeId, SFMasteredContactAccountRTId);
 		}
 		
@@ -33,11 +37,13 @@ public with sharing class Test_ContactHandler {
 		
 		List<Account> testAccounts2 = new List<Account>([SELECT Id, RecordTypeId FROM Account WHERE Contact__c IN :testContactIDs]);
 		
-		for (Integer i=0;i>recordCount;i++) {
+		for (Integer i=0;i>recordCount;i++) 
+		{
 			system.assertEquals(testContacts[i].RecordTypeId, ExtMasteredContactRTId);
 		}	
 		
-		for (Account a: testAccounts2) {
+		for (Account a: testAccounts2) 
+		{
 			system.assertEquals(a.RecordTypeId, ExtMasteredContactAccountRTId);
 		}
 		
@@ -47,7 +53,8 @@ public with sharing class Test_ContactHandler {
 		
 	}
 	
-	static testMethod void testExtMasteredContacts() {
+	static testMethod void testExtMasteredContacts() 
+	{
 		Integer recordCount = 200;
 
 		getRecordTypeIDs();
@@ -59,14 +66,16 @@ public with sharing class Test_ContactHandler {
 		test.startTest();
 		insert testContacts;
 		
-		for (Integer i=0;i>recordCount;i++) {
+		for (Integer i=0;i>recordCount;i++) 
+		{
 			system.assertEquals(testContacts[i].RecordTypeId, SFMasteredContactRTId);
 			testContacts[i].EMPLID__c = '';
 			testContactIDs.add(testContacts[i].Id);
 		}
 
 		List<Account> testAccounts1 = new List<Account>([SELECT Id, RecordTypeId FROM Account WHERE Contact__c IN :testContactIDs]);
-		for (Account a: testAccounts1) {
+		for (Account a: testAccounts1) 
+		{
 			system.assertEquals(a.RecordTypeId, ExtMasteredContactAccountRTId);
 		}
 		
@@ -75,44 +84,61 @@ public with sharing class Test_ContactHandler {
 		
 		List<Account> testAccounts2 = new List<Account>([SELECT Id, RecordTypeId FROM Account WHERE Contact__c IN :testContactIDs]);
 		
-		for (Integer i=0;i>recordCount;i++) {
+		for (Integer i=0;i>recordCount;i++) 
+		{
 			system.assertEquals(testContacts[i].RecordTypeId, SFMasteredContactRTId);
 		}	
 		
-		for (Account a: testAccounts2) {
+		for (Account a: testAccounts2) 
+		{
 			system.assertEquals(a.RecordTypeId, SFMasteredContactAccountRTId);
 		}
 				
 	}
 
-	static List<Contact> createContacts(Integer qty, boolean createEmplId) {
+	static List<Contact> createContacts(Integer qty, boolean createEmplId) 
+	{
 		List<Contact> testContacts = new List<Contact>();
-		for (integer i=0; i < qty; i++) {
+		for (integer i=0; i < qty; i++) 
+		{
 			Contact c = new Contact(LastName = 'LName'+i, FirstName = 'FName'+i);
 			if (createEmplId)
+			{
 				c.EMPLID__c = i.format();
+			}
 			testContacts.add(c);
 		}
 		
 		return testContacts;
 	}
 	
-	static void getRecordTypeIDs() {
-			List<RecordType> recordTypeList = new List<RecordType>([SELECT Id, sObjectType, DeveloperName FROM RecordType WHERE sObjectType IN ('Account', 'Contact')]);
-			for (RecordType rt: recordTypeList) {
-				if (rt.SobjectType == 'Contact') {
-					if (rt.DeveloperName == 'External_Mastered')
-						ExtMasteredContactRTId = rt.Id;
-					else if (rt.DeveloperName == 'SF_Mastered')
-						SFMasteredContactRTId = rt.Id;
+	static void getRecordTypeIDs() 
+	{
+		List<RecordType> recordTypeList = new List<RecordType>([SELECT Id, sObjectType, DeveloperName FROM RecordType WHERE sObjectType IN ('Account', 'Contact')]);
+		for (RecordType rt: recordTypeList) 
+		{
+			if (rt.SobjectType == 'Contact') 
+			{
+				if (rt.DeveloperName == 'External_Mastered')
+				{
+					ExtMasteredContactRTId = rt.Id;
 				}
-				else if (rt.SobjectType == 'Account') {
-					if (rt.DeveloperName == 'External_Mastered_Contact')
-						ExtMasteredContactAccountRTId = rt.Id;
-					else if (rt.DeveloperName == 'SF_Mastered_Contact')
-						SFMasteredContactAccountRTId = rt.Id;
+				else if (rt.DeveloperName == 'SF_Mastered')
+				{
+					SFMasteredContactRTId = rt.Id;
 				}
 			}
-		
+			else if (rt.SobjectType == 'Account') 
+			{
+				if (rt.DeveloperName == 'External_Mastered_Contact')
+				{
+					ExtMasteredContactAccountRTId = rt.Id;
+				}
+				else if (rt.DeveloperName == 'SF_Mastered_Contact')
+				{
+					SFMasteredContactAccountRTId = rt.Id;
+				}
+			}
+		}
 	}
 }

@@ -633,6 +633,10 @@
         #myasu-header-seo {
             display: block;
         }
+
+        .alert {
+            margin-top: -20px !important;
+        }
     }
 
     @media screen and (max-width: 931px) {

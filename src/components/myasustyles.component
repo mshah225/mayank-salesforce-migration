@@ -228,13 +228,13 @@
     }
 
     #myasu-header-seo {
-        margin-bottom: 7px !important;
-        margin-top: -5px !important;
+        margin-bottom: 2px !important;
+        margin-top: -2px !important;
     }
 
     #myasu-header-seo a {
-        font-size: 17pt !important;
-        font-weight: 400 !important;
+        font-size: 16pt !important;
+        font-weight: bold !important;
         color: #000 !important;
     }
 
@@ -427,8 +427,8 @@
     .username {
         font-size: 11pt;
         font-weight: 500;
-        margin-top: -12px;
-        margin-right: 5px;
+        margin-top: -10px;
+        margin-right: 8px;
     }
 
     .box {

@@ -97,7 +97,11 @@
         border-bottom: solid 1px #e6e6e6;
     }
 
-    .alert.alert-success, .alert.alert-danger {
+    .alert {
+        margin-bottom: 10px !important;
+    }
+
+    .alert.alert-success, .alert.alert-danger, .alert.alert-warning {
         border-radius: 0px;
     }
 
@@ -143,12 +147,12 @@
 
     .navbar {
         border-radius: 0 !important;
-        margin-bottom: 20px !important
+        margin-bottom: 10px !important
     }
 
     .navbar.navbar-default {
         height: 57px !important;
-        background-color: none !important;
+        background-color: #353535 !important;
         border: none !important;
     }
 
@@ -234,8 +238,16 @@
         color: #000 !important;
     }
 
-    #myasu-header-seo a:hover, #myasu-header-seo:active, #myasu-header-seo:focus {
+    #myasu-header-seo a:hover, #myasu-header-seo a:active, #myasu-header-seo a:focus {
         text-decoration: none !important;
+    }
+
+    #asu_login_module:nth-child(2) {
+        margin-right: -5px !important;
+    }
+
+    #asu_login_module, #asu_search {
+        padding-right: 0px !important;
     }
 
     @-moz-document url-prefix() {
@@ -277,6 +289,11 @@
 
     div#asu_content_well {
         margin-top: 10px !important;
+    }
+
+    #asu_content_well .container {
+        max-width: 1270px !important;
+        margin: auto !important;
     }
 
     div.move {
@@ -336,8 +353,25 @@
 
     .container {
         background: #fff !important;
-        width:        91% !important;
+        width: 91% !important;
         margin-top: 0px;
+        padding: 0px !important;
+    }
+
+    .myasu-cont {
+        width: 91% !important;
+        padding: 0px !important;
+        max-width: 1270px !important;
+        margin: auto !important;
+    }
+
+    #asu_mobile_hdr {
+        padding: 0px !important;
+    }
+
+    .row {
+        /*margin-right: -25px;
+        margin-left: -25px;*/
         padding: 0px !important;
     }
 
@@ -394,12 +428,7 @@
         font-size: 11pt;
         font-weight: 500;
         margin-top: -12px;
-        margin-right: 0px;
-    }
-
-    .firstbox {
-        margin-left: 10px;
-        width:95%;
+        margin-right: 5px;
     }
 
     .box {
@@ -635,7 +664,7 @@
         }
 
         .alert {
-            margin-top: -20px !important;
+            margin-top: -10px !important;
         }
     }
 
@@ -657,10 +686,6 @@
             display: none;
         }
 
-        .container {
-            margin-top: 50px; !important;
-        }
-
         .caseConfirm {
             margin-top: 50px;
             margin-bottom: -47px;
@@ -671,19 +696,26 @@
         }
 
         .alert {
-            margin-top: 35px !important;
-            margin-bottom: -30px !important;
+            margin-top: -15px;
+            padding: 10px;
+        }
+
+        div#asu_content_well {
+            margin-top: 45px !important;
+        }
+
+        #asu_hdr {
+            width: 100% !important;
+        }
+
+        #asu_logo {
+            padding: 12px !important;
         }
     }
 
     @media screen and (max-width: 995px) {
         .qlinks {
             display: none;
-        }
-
-        .firstbox {
-            margin-left: 0px !important;
-            width: 100% !important;
         }
     }
 
@@ -903,10 +935,6 @@
         padding: 0px !important;
     }
 
-    .alert.alert-success, .alert.alert-warning {
-        border-radius: 0px;
-    }
-
     .startBtn {
         height: 12px !important;
         font-size: 7pt !important;
@@ -1101,6 +1129,9 @@
 
     .breadcrumb {
         border-radius: 0px !important;
+        margin-bottom: 10px !important;
+        padding: 10px 0px 10px 2px;
+        background-color: #fff !important;
     }
 
     .breadcrumb a, .breadcrumb a:hover {

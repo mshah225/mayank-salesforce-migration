@@ -4,7 +4,7 @@
     docType="html-5.0"
     controller="AKBController"
     action="{!init}"
-    extensions="ServiceCenter,vfKeywordSearchController,AutoCompleteController,NavLinks,newCase">
+    extensions="ServiceCenter,vfKeywordSearchController,AutoCompleteController,NavLinks">
 <head>
     <title>My ASU | {!article.title}</title>
     <c:asu_responsive_header_section />

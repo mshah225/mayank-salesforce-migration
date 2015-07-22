@@ -22,7 +22,9 @@ public class UnifiedProspectPageController
     public List<Account> instList;
     public List<Campaign> eventList;
     public String career { get; set; }
-
+    public String collegeSelected { get; set; }
+    public String planSelected { get; set; }
+    
     public void setContact(Contact contact)
     {
         this.contact = contact;
@@ -103,6 +105,43 @@ public class UnifiedProspectPageController
         }
 
         return camMemEvent;
+    }
+    
+    public List<SelectOption> ProgramList
+    {
+        get
+        {
+            List<Program__c> ProgramTemp = [Select p.Name, p.Id From Program__c p WHERE Career__c = :career];
+            ProgramList = new List<SelectOption>();
+            ProgramList.add(new SelectOption('0', '-- None --'));
+            
+            for(Program__c temp : ProgramTemp)
+            {
+                ProgramList.add(new SelectOption(temp.Id, temp.Name));
+            }
+            return ProgramList;
+        }
+        set;
+    }
+
+    public List<SelectOption> PlanList
+    {
+        get
+        {
+            PlanList = new List<SelectOption>();
+            if(collegeSelected != null && collegeSelected != '0')
+            {
+                List<Plan__c> PlanTemp = [SELECT p.Name, p.Id FROM Plan__c p WHERE p.Program__c = :collegeSelected];
+                
+                PlanList.add(new SelectOption('0', '-- None --'));
+                for(Plan__c temp : PlanTemp)
+                {
+                    PlanList.add(new SelectOption(temp.Id, temp.Name));
+                }
+            }
+            return PlanList;
+        }
+        set;
     }
 
     public Case getC() 
@@ -214,7 +253,6 @@ public class UnifiedProspectPageController
             }
             else if (pickSelection != '--Select--' && selectedInterestId == null) 
             {
-                System.Debug('You should see the interest error here.');
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
                 return false;
             }
@@ -237,10 +275,8 @@ public class UnifiedProspectPageController
                 {
                     contact.SMS_Phone__c = contact.MobilePhone;
                     contact.SMS_Phone__c = SMSValidate.matcher(contact.SMS_Phone__c).replaceAll('');
-                    System.Debug('Here\'s your SMS Phone number:' + contact.SMS_Phone__c);
                 }
 
-                contact.Lead_Email__c = contact.Email;
                 contact.SF_Mobile_Updated__c = Datetime.now();
                 contact.SF_Mailing_Street__c = contact.MailingStreet;
                 contact.SF_Mailing_City__c = contact.MailingCity;
@@ -261,8 +297,6 @@ public class UnifiedProspectPageController
                 }
 
                 insert contact;
-                System.Debug('Inserted Contact');
-                System.Debug(contact);
     
                 //Create Opportunity
                 opportunity.Id = null;
@@ -279,11 +313,11 @@ public class UnifiedProspectPageController
                 String TodayString = DatePreString.format('yyyy-MM-dd');
                 opportunity.Contact__c = contact.id;
                 opportunity.Name = contact.FirstName + ' ' + contact.LastName + ' ' + TodayString;
-                opportunity.CloseDate = Date.Today()+365;
+                opportunity.CloseDate = Date.Today() + 365;
                 accId = [SELECT AccountId FROM Contact WHERE Id = :Contact.Id][0].AccountId;
                 opportunity.AccountId = accId;
-                opportunity.Career__c = 'Undergraduate';
                 opportunity.StageName = 'Prospect';
+                
                 if (contact.Country_of_Citizenship__r.Name == 'United States') 
                 {
                     opportunity.International_Student__c = false;
@@ -298,18 +332,14 @@ public class UnifiedProspectPageController
                 }
 
                 insert opportunity;
-                System.Debug('Inserted Opportunity');
-                System.Debug(opportunity);
     
                 //Create Previous Education
+                getPreviousEducation();
                 if (previousEducation.Account__c != null) 
                 {
-                    getPreviousEducation();
                     previousEducation.Id = null;
                     previousEducation.Contact__c = contact.id;
                     insert previousEducation;
-                    System.Debug('Inserted Previous Education');
-                    System.Debug(previousEducation);
                 }
     
                 //Create CampaignMember Event
@@ -324,8 +354,6 @@ public class UnifiedProspectPageController
                     camMemEvent.Inbound_Interaction__c = true;
     
                     insert camMemEvent;
-                    System.Debug('Inserted an Event Campaign Member');
-                    System.Debug(camMemEvent);
                 }
                 //Create Case
                 else if (originSelection != '--Select--' && elId == null) 
@@ -338,24 +366,33 @@ public class UnifiedProspectPageController
                     {
                         if (phoneOrig == null) 
                         {
-                        phoneOrig = [SELECT Id FROM Campaign WHERE Name = 'Phone Call' LIMIT 1].Id;
-                            c.Case_Source__c = phoneOrig;
+                            Campaign phoneCamp = [SELECT Id FROM Campaign WHERE Name = 'Phone Call' LIMIT 1];
+                            if(phoneCamp != null)
+                            {
+                                c.Case_Source__c = phoneCamp.Id;
+                            }
                         }
                     }
                     else if (originSelection == 'Email') 
                     {
                         if (emailOrig == null) 
                         {
-                            emailOrig = [SELECT Id FROM Campaign WHERE Name = 'Email' LIMIT 1].Id;
-                            c.Case_Source__c = emailOrig;
+                            Campaign emailCamp = [SELECT Id FROM Campaign WHERE Name = 'Email' LIMIT 1];
+                            if(emailCamp != null)
+                            {
+                                c.Case_Source__c = emailCamp.Id;
+                            }
                         }
                     }
                     else 
                     {
                         if (walkInOrig == null) 
                         {
-                            walkInOrig = [SELECT Id FROM Campaign WHERE Name = 'Walk In' LIMIT 1].Id;
-                            c.Case_Source__c = walkInOrig;
+                            Campaign walkCamp = [SELECT Id FROM Campaign WHERE Name = 'Walk In' LIMIT 1];
+                            if(walkCamp != null)
+                            {
+                                c.Case_Source__c = walkCamp.Id;
+                            }
                         }
                     }
 
@@ -368,14 +405,10 @@ public class UnifiedProspectPageController
                         c.Subject = c.Origin__c + ' Submission - ' + termName;
                     }
                     insert c;
-                    System.Debug('Inserted Case');
-                    System.Debug(c);
                     
                     //Update Opportunity's case with case Id
                     opportunity.Prospect_Case__c = c.Id;
                     update opportunity;
-                    System.Debug('Update opportuinty\'s prospect case id with the new case id.');
-                    System.Debug(opportunity); 
                 }
                 else if (originSelection != '--Select--' && elId != null) 
                 {
@@ -403,8 +436,6 @@ public class UnifiedProspectPageController
                         camMemInterest.Opportunity__c = opportunity.Id;
         
                         insert camMemInterest;
-                        System.Debug('Inserted an Interest Campaign Member');
-                        System.Debug(camMemInterest);
                     }
                     else 
                     {
@@ -419,10 +450,6 @@ public class UnifiedProspectPageController
         catch (Exception e) 
         {
             ApexPages.addMessages(e);
-            System.debug('Exception type caught: ' + e.getTypeName());
-            System.debug('Message: ' + e.getMessage());
-            System.debug('Line number: ' + e.getLineNumber());
-            System.debug('Stack trace: ' + e.getStackTraceString());
             return false;
         }
     }

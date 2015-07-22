@@ -103,7 +103,6 @@
 </head>
 
 <body id="contentBody" class="content">
-    <apex:pageMessages id="msgs" />
     <apex:form id="underGradForm" >
     <!--<apex:outputText id="myInt" value="{!selectedInterestId}"/>-->
         <apex:pageBlock title="ASU New Undergraduate Prospect Entry Form" id="undergradBlock">
@@ -115,7 +114,7 @@
                     </apex:facet>
                 </apex:actionStatus>
             </apex:pageBlockButtons>
-            <apex:pageMessages />
+            <apex:pageMessages id="msgs"/>
             
             <apex:pageBlockSection id="contactInfo" title="Contact Information" collapsible="false" columns="2">
                 <apex:inputField value="{!contact.FirstName}" required="true" id="firstname"/>
@@ -142,10 +141,10 @@
             </apex:pageBlockSection>
         </apex:pageBlock>
 
-        <apex:actionRegion>
+        <apex:actionRegion >
             <apex:pageBlock id="opportunity_info">
                 <apex:pageBlockSection title="Career Selection" collapsible="false" columns="1">
-                    <apex:inputField value="{!opportunity.Career__c}" id="career">
+                    <apex:inputField value="{!opportunity.Career__c}" required="true" id="career">
                         <apex:actionSupport event="onchange" 
                                             action="{!showOpportunityInfo}" 
                                             rerender="opportunity_info, msgs" 
@@ -160,23 +159,51 @@
 
                 <apex:pageBlockSection id="undergrad_opportunity_info" rendered="{!career == 'undergraduate'}" title="Undergraduate Opportunity Information" collapsible="false" columns="2">
                     <apex:inputField value="{!opportunity.Term__c}" id="term" required="true"/>
-                    <!--<apex:inputField value="{!opportunity.Last_HS_Attended__c}" id="institution" required="false"/>-->
+                    <apex:inputField value="{!contact.Last_HS_Attended__c}" id="institution" required="false"/>
                     <apex:inputField value="{!opportunity.Type}" id="degreetype" required="true"/>
                     <apex:inputField value="{!opportunity.International_Student__c}" id="international"/>
                     <div></div>
                     <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree"/>
                 </apex:pageBlockSection>
                 
-                <apex:pageBlockSection id="grad_opportunity_info" rendered="{!career == 'graduate'}" title="Graduate Opportunity Information" collapsible="false" columns="2">
+                <apex:pageBlockSection id="grad_opportunity_info" rendered="{!career == 'graduate' || career == 'law'}" title="Graduate Opportunity Information" collapsible="false" columns="2">
                     <apex:inputField value="{!opportunity.Type}" id="degreetype" required="true"/>
                     <apex:inputField value="{!contact.LeadSource}" id="lead_source" required="true"/>
-                    <apex:inputField value="{!opportunity.College__c}" id="college" required="true"/>
+                    <!--<apex:inputField value="{!opportunity.College__c}" id="college" required="true"/>-->
+                    
                     <apex:inputField value="{!contact.Lead_Source_Subtype__c}" id="lead_source_subtype"/>
-                    <apex:inputField value="{!opportunity.Academic_Plan__c}" id="academic_plan"/>
+                    <!--<apex:inputField value="{!opportunity.Academic_Plan__c}" id="academic_plan"/>-->
+                    
                     <apex:inputField value="{!opportunity.International_Student__c}" id="international_student"/>
                     <apex:inputField value="{!opportunity.Term__c}" id="term"/>
                     <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree"/>
                 </apex:pageBlockSection>
+                
+                <apex:actionRegion>
+                <apex:pageBlockSection rendered="{!career == 'graduate' || career == 'law'}" id="temp_block" collapsible="false" columns="2">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="collegeList">College</apex:outputLabel>
+                        <apex:selectList id="collegeList" value="{!collegeSelected}" size="1">
+                            <apex:selectOptions value="{!ProgramList}" />
+                            <apex:actionSupport event="onchange" 
+                                                reRender="temp_block, msgs" 
+                                                status="collegeEvent"/>
+                            <apex:actionStatus id="collegeEvent">
+                                <apex:facet name="start" >
+                                    <img src="/img/loading.gif" />
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                        
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="planList">Academic Plan</apex:outputLabel>
+                        <apex:selectList id="planList" value="{!planSelected}" size="1">
+                            <apex:selectOptions value="{!PlanList}" />
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                </apex:actionRegion>
 
                 <apex:pageBlockSection id="sourceEventBlock" title="Select a Case or Event" collapsible="false" columns="1">
                     <apex:tabPanel switchType="client" selectedTab="source" id="theTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab" width="100%">
@@ -293,7 +320,7 @@
                         </apex:actionStatus>
                         <br /><br />
 
-                        <apex:outputPanel  id="interestsPicks">
+                        <apex:outputPanel id="interestsPicks">
                             <apex:outputLabel value="ASU Location: " for="asuLocationIntList" rendered="{!IF(pickSelection == 'ASU Location',true,false)}"/>
                             <apex:selectList id="asuLocationIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'ASU Location',true,false)}">
                                  <apex:selectOptions value="{!asuLocationIntList}"/>

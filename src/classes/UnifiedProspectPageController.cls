@@ -331,6 +331,15 @@ public class UnifiedProspectPageController
                     opportunity.International_Student__c = true;
                 }
 
+                if(collegeSelected != null && collegeSelected != '0')
+                {
+                   opportunity.College__c = collegeSelected; 
+                }
+                if(planSelected != null && planSelected != '0')
+                {
+                   opportunity.Academic_Plan__c = planSelected; 
+                }
+
                 insert opportunity;
     
                 //Create Previous Education

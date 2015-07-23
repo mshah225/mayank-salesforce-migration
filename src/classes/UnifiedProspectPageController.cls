@@ -111,7 +111,7 @@ public class UnifiedProspectPageController
     {
         get
         {
-            List<Program__c> ProgramTemp = [Select p.Name, p.Id From Program__c p WHERE Career__c = :career];
+            List<Program__c> ProgramTemp = [SELECT p.Name, p.Id FROM Program__c p WHERE Career__c = :career];
             ProgramList = new List<SelectOption>();
             ProgramList.add(new SelectOption('0', '-- None --'));
             
@@ -348,12 +348,14 @@ public class UnifiedProspectPageController
                     getCampaignMemberEvent();
                     camMemEvent.Id = null;
                     camMemEvent.CampaignId = elId;
+                    //It appears that this value is not being preserved, but is instead being switched to 'Sent'?
                     camMemEvent.Status = 'Registered';
                     camMemEvent.ContactId = contact.Id;
                     camMemEvent.Opportunity__c = opportunity.Id;
                     camMemEvent.Inbound_Interaction__c = true;
     
                     insert camMemEvent;
+                    System.debug('CAM MEM EVENT ' + camMemEvent);
                 }
                 //Create Case
                 else if (originSelection != '--Select--' && elId == null) 
@@ -431,6 +433,7 @@ public class UnifiedProspectPageController
                         getCampaignMemberInterest();
                         camMemInterest.Id = null;
                         camMemInterest.CampaignId = selectedInterestId;
+                        //This doesn't seem to work either, Status once again is set to 'Sent'
                         camMemInterest.Status = 'Interested';
                         camMemInterest.ContactId = contact.Id;
                         camMemInterest.Opportunity__c = opportunity.Id;

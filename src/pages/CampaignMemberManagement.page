@@ -598,8 +598,8 @@
                             </apex:column>
                             <apex:column headerValue="Campaign Name" value="{!pc.Campaign.Name}"/>
                             <apex:column headerValue="Type" value="{!pc.Campaign.Type}"/>
-                            <apex:column headerValue="Start Date" value="{!pc.Campaign.Event_Start_Date__c}"/>
-                            <apex:column headervalue="End Date" value="{!pc.Campaign.Event_End_Date__c}"/>
+                            <apex:column headerValue="Start Date" value="{!pc.Campaign.StartDate}"/>
+                            <apex:column headervalue="End Date" value="{!pc.Campaign.EndDate}"/>
                             <apex:column headerValue="Member Enrollment Date" value="{!pc.edX_Enrollment_Date__c}"/>
                             <apex:column headerValue="edX Active Enrollment" value="{!pc.edX_Active_Enrollment__c}"/>
                         </apex:pageBlockTable>

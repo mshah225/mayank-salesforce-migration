@@ -205,7 +205,7 @@ public class CampaignMemberManagementController
     {
         Id partCourseRecid = [SELECT Id FROM RecordType WHERE Name = 'Course'].Id;
 
-        partCourseList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Event_Start_Date__c, Campaign.Event_End_Date__c, edX_Enrollment_Date__c, edX_Active_Enrollment__c, Campaign.Requested__c, Status, Last_Member_Status_Change__c 
+        partCourseList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.StartDate, Campaign.EndDate, edX_Enrollment_Date__c, edX_Active_Enrollment__c, Campaign.Requested__c, Status, Last_Member_Status_Change__c 
                           FROM CampaignMember 
                           WHERE ContactId = :ApexPages.currentPage().getParameters().get('id') 
                           AND Campaign.RecordTypeId = :partCourseRecid];

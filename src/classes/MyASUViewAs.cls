@@ -1,10 +1,15 @@
 public class MyASUViewAs 
 {
-	public static final String SECRET_KEY = '543d32e1eer10c3360X0916b16d4098q9ebc93d4';
-	public static final String GET_EFFECTIVE_IDENTITY_SERVICE_NAME = 'getEffIdent';
+	private static final String SECRET_KEY = '543d32e1eer10c3360X0916b16d4098q9ebc93d4';
+	private static final String GET_EFFECTIVE_IDENTITY_SERVICE_NAME = 'getEffIdent';
 
-	// Pass in the endpoint to be used using the string url
-  	public String getCalloutResponseContents() 
+	/**
+	* Returns the values needed to verify view as access from My ASU
+	* @param The masqScopeIdCookie passed in the URL from My ASU
+	* @param The user who is viewing as asurite
+	* @return A Map containing the values
+	*/
+  	public static Map<String, String> getCalloutResponseContents(String idCookie, String asurite) 
   	{
 		// Store these configuration parameters wherever you store your general app config/properties
 		String appid = 'salesforce_app';
@@ -12,8 +17,8 @@ public class MyASUViewAs
 		String myAsuUrl = 'https://webapp4-qa.asu.edu/myasu'; // prod url = https://webapp4.asu.edu/myasu
 
 		// Gather/determine input parameters to web service call
-		String realAsurite = 'meruff'; // the real user identity -- get this from asuwebauth/SSO
-		String scopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCooke'); // this is from a cookie that My ASU sets to be visible by the domain .asu.edu
+		String realAsurite = asurite; // the real user identity -- get this from asuwebauth/SSO
+		String scopeIdCookie = idCookie; // this is from a cookie that My ASU sets to be visible by the domain .asu.edu
 		if (scopeIdCookie == null)
 		{
 			scopeIdCookie = '';
@@ -26,8 +31,9 @@ public class MyASUViewAs
 		stringToSign += '&signaturetime=' + signatureTime;
 		stringToSign += '&real-asurite=' + realAsurite;
 		stringToSign += '&scopeid-cookie=' + scopeIdCookie;
-		String algorithmName = 'HmacSHA256';
-		Blob signature = Crypto.generateMac(algorithmName, Blob.valueOf(stringToSign), Blob.valueOf(sharedSecret));
+
+		Blob sigBlob = Crypto.generateMac('hmacSHA256', Blob.valueOf(stringToSign), Blob.valueOf(sharedSecret));
+		String signature = EncodingUtil.convertToHex(sigBlob);
 
 		// Build request url
 		String requestUrl = myAsuUrl;
@@ -36,7 +42,7 @@ public class MyASUViewAs
 		requestUrl += '&signaturetime=' + signatureTime;
 		requestUrl += '&real-asurite=' + EncodingUtil.urlEncode(realAsurite, 'UTF-8');
 		requestUrl += '&scopeid-cookie=' + EncodingUtil.urlEncode(scopeIdCookie, 'UTF-8');
-		requestUrl += '&signature=' + EncodingUtil.urlEncode(String.valueOf(signature), 'UTF-8');
+		requestUrl += '&signature=' + EncodingUtil.urlEncode(signature, 'UTF-8');
 
 	    // Instantiate a new http object
 	    Http h = new Http();
@@ -47,8 +53,23 @@ public class MyASUViewAs
 	    req.setMethod('GET');
 
 	    // Send the request, and return a response
-	    req.setTimeout(20000);
+	    // req.setTimeout(20000);
 	    HttpResponse res = h.send(req);
-	    return res.getBody();
+	    String xml = res.getBody();
+	    Dom.Document doc = new Dom.Document();
+	    doc.load(xml);
+        
+        // Retrieve the root element for this document.
+        Dom.XMLNode address = doc.getRootElement();
+
+        Map<String, String> viewAsValues = new Map<String, String>();
+        viewAsValues.put('authorizedToViewAs', address.getChildElement('authorizedToViewAs', null).getText());
+        viewAsValues.put('isViewingAs', address.getChildElement('isViewingAs', null).getText());
+        viewAsValues.put('effectiveAsurite', address.getChildElement('effectiveAsurite', null).getText());
+        viewAsValues.put('signoutUrl', address.getChildElement('signoutUrl', null).getText());
+        viewAsValues.put('viewAsUrl', address.getChildElement('viewAsUrl', null).getText());
+        viewAsValues.put('stopViewAsUrl', address.getChildElement('stopViewAsUrl', null).getText());
+
+	    return viewAsValues;
   	}
 }

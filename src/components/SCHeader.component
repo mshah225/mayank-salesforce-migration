@@ -1,5 +1,7 @@
 <apex:component controller="NavLinks">
 	<!-- This component renders the ASU responsive header for the Service Center -->
+    <apex:attribute name="firstName" description="The contacts first name" type="String"/>
+    <apex:attribute name="lastName" description="The contacts last name" type="String"/>
 	<!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
     <div id="asu_hdr" class="asu_hdr_white">
         <div id="asu_mobile_hdr">
@@ -19,7 +21,7 @@
                     Sign In / Sign Out
                 </h2>
                 <ul id="asu_login_module">
-                    <li>{!$User.FirstName}</li>
+                    <li>{!firstName}</li>
                     <li>
                         <a href="/secur/logout.jsp" target="_top">SIGN OUT</a>
                     </li>
@@ -125,7 +127,7 @@
 
                     <span class='tab'><a href="https://webapp4.asu.edu/myasu/student/profile" class="tracking">Profile</a></span>
                     <p class="username pull-right">
-                        {!$User.FirstName} {!$User.LastName}
+                        {!firstName} {!lastName}
                     </p>
                 </div>
             </div>
@@ -151,7 +153,7 @@
                     </apex:repeat>
 
                     <p class="username pull-right">
-                        {!$User.FirstName} {!$User.LastName}
+                        {!firstName} {!lastName}
                     </p>
                 </div>
             </div>

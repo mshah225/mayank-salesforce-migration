@@ -1,4 +1,4 @@
-public class CaseService 
+public without sharing class CaseService 
 {
 	/**
 	* Returns all the fields on Case in a String

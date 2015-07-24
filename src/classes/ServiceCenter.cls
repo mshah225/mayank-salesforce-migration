@@ -3,6 +3,7 @@ public with sharing class ServiceCenter
     public final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
     public final Integer CLOSEDCASELIMIT = 5;
 
+    public Boolean viewingAs { get; set; }
     public Contact userContact { get; set; }
     public Case newCase { get; set; }
     public Case suggestAnArticle { get; set; }
@@ -12,15 +13,48 @@ public with sharing class ServiceCenter
     public Decimal newPin { get; set; }
     public Id caseId;
     public List<Opportunity> oppList;
+    public Map<String, String> viewAsMap;
     public Term__c termcAC;
     public Term__c termcB;
+    public String firstName { get; set; }
+    public String lastName { get; set; }
 
     public ServiceCenter() { setUpPage(); }
     public ServiceCenter(AKBController controller) { setUpPage(); }
 
     public void setUpPage()
     {
-        userContact = ContactService.getLoggedInContact();
+        String scopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
+        if (scopeIdCookie != null || scopeIdCookie == '')
+        {
+            //String userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
+            //viewAsMap = MyASUViewAs.getCalloutResponseContents(scopeIdCookie, userAsurite);
+            //if (!viewAsMap.isEmpty())
+            //{
+                viewingAs = true;
+            //}
+            //else
+            //{
+            //    viewingAs = false;
+            //}
+        }
+        else 
+        {
+            viewingAs = false;
+        }
+
+        if (viewingAs)
+        {
+            System.debug('!!RUNNING VIEWINGAS CONTACT LOOKUP');
+            //userContact = ContactService.getContactToViewAs(viewAsMap.get('effectiveAsurite'));
+            userContact = ContactService.getContactToViewAs('jldalbey');
+        }
+        else
+        {
+            userContact = ContactService.getLoggedInContact();
+        }
+        firstName = userContact.FirstName;
+        lastName = userContact.LastName;
         newCase = new Case();
         today = date.today();
         termcAC = [SELECT Session_A_C_Start_Date__c
@@ -234,7 +268,14 @@ public with sharing class ServiceCenter
 
     public Decimal getMyPin()
     {
-        return userContact.Self_Service_PIN__c;
+        if (!viewingAs)
+        {
+            return userContact.Self_Service_PIN__c;
+        }
+        else 
+        {
+            return 11111111;
+        }
     }
 
     public PageReference changePin()

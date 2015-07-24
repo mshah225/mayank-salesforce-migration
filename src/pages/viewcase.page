@@ -1,9 +1,9 @@
-<apex:page docType="html-5.0"
-    showHeader="false"
+<apex:page showHeader="false"
     sidebar="false"
+    docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
-    extensions="NavLinks">
+    extensions="vfKeywordSearchController,AutoCompleteController,NavLinks">
 <head>
     <title>My ASU - {!caseDetails.Subject}</title>
     <c:asu_responsive_header_section />

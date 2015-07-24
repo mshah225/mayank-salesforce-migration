@@ -1,6 +1,15 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
 	<center>
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.masqScopeIdCookie != null}">
+	        <div class="alert alert-warning">
+	            <button type='button' class='close' data-dismiss='alert'>×</button>
+	            <apex:outputText>
+	            	You are currently viewing as a student and cannot take any actions on this page.
+	            </apex:outputText>
+	        </div>
+	    </apex:outputPanel>
+
 	    <apex:outputPanel rendered="{!$CurrentPage.parameters.PIN == 'error'}">
 	        <div class="alert alert-danger">
 	            <button type='button' class='close' data-dismiss='alert'>×</button>

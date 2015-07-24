@@ -3,7 +3,6 @@
     docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
-    tabStyle="Dashboard"
     extensions="vfKeywordSearchController,AutoCompleteController,NavLinks">
 <head>
     <title>My ASU - Service Center</title>
@@ -38,7 +37,7 @@
     </script>
 
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader />
+    <c:SCHeader firstName="{!firstName}" lastName="{!lastName}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications/>

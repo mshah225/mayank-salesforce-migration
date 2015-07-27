@@ -228,7 +228,7 @@
                     </apex:form> 
                 </apex:tab>
                 
-                <apex:tab label="New Registration" name="newRegTab" id="newRegTab" >
+                <apex:tab label="New Registration" name="newRegTab" id="newRegTab" rendered="{!IF(NOT(crProfile),true,false)}">
                     <apex:form id="browseEvents">
                         <apex:outputPanel layout="block" style="overflow:auto;height:295px;" >
                             <apex:actionRegion >
@@ -451,7 +451,7 @@
                     </apex:form> 
                 </apex:tab>
 
-                <apex:tab label="New Interest" name="newInterest" id="newInterest">
+                <apex:tab label="New Interest" name="newInterest" id="newInterest" rendered="{!IF(NOT(crProfile),true,false)}">
                     <apex:form id="browseInterests" style="display:initial;">
                         <apex:outputPanel layout="block" style="overflow:auto;height:295px;" id="interestBlock">
                             <apex:actionRegion >

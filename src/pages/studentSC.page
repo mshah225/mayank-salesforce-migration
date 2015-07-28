@@ -1,12 +1,12 @@
 <apex:page showHeader="false"
     sidebar="false"
+    cache="true"
     docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
-    tabStyle="Dashboard"
     extensions="vfKeywordSearchController,AutoCompleteController,NavLinks">
 <head>
-    <title>My ASU - Service Center</title>
+    <title>My ASU | Service Center</title>
     <c:asu_responsive_header_section />
     
     <style>

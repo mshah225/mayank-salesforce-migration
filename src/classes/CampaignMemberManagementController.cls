@@ -67,8 +67,23 @@ public class CampaignMemberManagementController
                             AND Campaign_Type__c = 'Corporate Relations'
                             AND Status = 'Inactive'
                             ORDER BY Campaign.Name];
-        String profileName = [SELECT Profile.Name FROM User WHERE Id = :UserInfo.getUserId()].Profile.Name;
-        if (profileName.equals('ASU Corporate Relations')) 
+        String profileName = [SELECT Profile.Name 
+                              FROM User 
+                              WHERE Id = :UserInfo.getUserId()].Profile.Name;
+        List<PermissionSetAssignment> userPermissions = [SELECT PermissionSet.Name 
+                                                         FROM PermissionSetAssignment 
+                                                         WHERE AssigneeId = :UserInfo.getUserId()];
+        Boolean hasCRPerm;
+        for (PermissionSetAssignment psa : userPermissions)
+        {
+            String temp = psa.PermissionSet.Name;
+            if (temp.contains('Corporate_Relations'))
+            {
+                hasCRPerm = true;
+            }
+        }
+
+        if ((profileName.equals('ASU Corporate Relations') || profileName.equals('System Administrator')) || hasCRPerm) 
         {
             crProfile = true;
             renderedTab = 'crTab';
@@ -205,7 +220,7 @@ public class CampaignMemberManagementController
     {
         Id partCourseRecid = [SELECT Id FROM RecordType WHERE Name = 'Course'].Id;
 
-        partCourseList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Event_Start_Date__c, Campaign.Event_End_Date__c, edX_Enrollment_Date__c, edX_Active_Enrollment__c, Campaign.Requested__c, Status, Last_Member_Status_Change__c 
+        partCourseList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.StartDate, Campaign.EndDate, edX_Enrollment_Date__c, edX_Active_Enrollment__c, Campaign.Requested__c, Status, Last_Member_Status_Change__c 
                           FROM CampaignMember 
                           WHERE ContactId = :ApexPages.currentPage().getParameters().get('id') 
                           AND Campaign.RecordTypeId = :partCourseRecid];

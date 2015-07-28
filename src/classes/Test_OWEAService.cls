@@ -3,10 +3,10 @@ private class Test_OWEAService
 {
     @isTest static void testGetOWEAs()
     {
-        OrgWideEmailAddress expectedAddress = [SELECT Id FROM OrgWideEmailAddress WHERE Address = 'salesforce.support@asu.edu'];
+        OrgWideEmailAddress expectedAddress = [SELECT Address FROM OrgWideEmailAddress LIMIT 1];
 
         Test.startTest();
-        OrgWideEmailAddress testAddress = OrgWideEmailAddressService.getOrgWideEmailAddress('salesforce.support@asu.edu');
+        OrgWideEmailAddress testAddress = OrgWideEmailAddressService.getOrgWideEmailAddress(expectedAddress.Address);
         Test.stopTest();
 
         System.assertEquals(expectedAddress.Id, testAddress.Id, 'OrgWideEmailAddressService did not return the expected address');

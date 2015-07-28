@@ -221,7 +221,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             theCase.Subject = email.Subject;
             theCase.Description = email.plainTextBody;
-            theCase.Most_Recent_Sent_To_Email__c = email.toAddresses.get(0);
             String toAddressConcat = '';
             String ccAddressConcat = '';
 
@@ -235,6 +234,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
 
                 toAddressConcat = toAddressConcat.subString(0,toAddressConcat.length()-1);
+
+                theCase.Most_Recent_Sent_To_Email__c = email.toAddresses.get(0);
             }
 
             if (email.CCAddresses != null && email.CCAddresses.size() > 0) 
@@ -245,6 +246,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
 
                 ccAddressConcat = ccAddressConcat.subString(0,ccAddressConcat.length()-1);
+
+                if (theCase.Most_Recent_Sent_To_Email__c == null)
+                {
+                    theCase.Most_Recent_Sent_To_Email__c = email.CCAddresses.get(0);
+                }
             }
 
             if (ccAddressConcat != '')

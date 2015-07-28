@@ -157,7 +157,7 @@ public class ContactService
     * @param contactId A Contact ID
     * @return contactInfo The corresponding Contact
     */
-    public static Case getContactInformation(Id contactId)
+    public static Contact getContactInformation(Id contactId)
     {
         Contact contactInfo = null;
         String contactFields = contactFieldsToString();
@@ -171,7 +171,7 @@ public class ContactService
         }
         catch (Exception e)
         {
-            throw new ContactServiceExceptionc('!!!ERROR!!!: An error occurred trying to get the Contact\'s information\n' + e.getMessage());
+            throw new ContactServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s information\n' + e.getMessage());
         }
 
         return contactInfo;

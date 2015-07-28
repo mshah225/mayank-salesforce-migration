@@ -5,7 +5,7 @@ public with sharing class ServiceCenter
 
     public Contact userContact { get; set; }
     public Case newCase { get; set; }
-    public Case suggestAnArticle { get; set; }
+    public Case suggestAnArticleSC { get; set; }
     public Date today;
     public Decimal myPin;
     private Decimal origPin;
@@ -34,7 +34,7 @@ public with sharing class ServiceCenter
         oppList = [SELECT Career__c, Term__c, StageName, Admitted_Session__c
                    FROM Opportunity
                    WHERE Contact__c = :userContact.Id];
-        suggestAnArticle = new Case();
+        suggestAnArticleSC = new Case();
         origPin = userContact.Self_Service_PIN__c;
     }
 
@@ -271,17 +271,16 @@ public with sharing class ServiceCenter
         }
     }
 
-    public PageReference suggestAnArticleSubmit()
+    public PageReference suggestAnArticleSubmitSC()
     {
-        suggestAnArticle.Subject = 'Suggest An Article';
-        suggestAnArticle.Description = suggestAnArticle.Description;
-        suggestAnArticle.ContactId = userContact.Id;
-        suggestAnArticle.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
-        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
-        suggestAnArticle.Category__c = 'Knowledge';
-        suggestAnArticle.Origin__c = 'My ASU';
-        suggestAnArticle.Visible_by_Contact__c = false;
-        insert suggestAnArticle;
+        suggestAnArticleSC.Subject = 'Suggest An Article';
+        suggestAnArticleSC.ContactId = userContact.Id;
+        suggestAnArticleSC.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
+        suggestAnArticleSC.Functional_Group__c = 'Student-Centric Initiatives';
+        suggestAnArticleSC.Category__c = 'Knowledge';
+        suggestAnArticleSC.Origin__c = 'My ASU';
+        suggestAnArticleSC.Visible_by_Contact__c = false;
+        insert suggestAnArticleSC;
 
         PageReference confirmPage = new PageReference('/studentSC' + '?Suggest=yes');
         confirmPage.setRedirect(true);

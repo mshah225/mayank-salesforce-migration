@@ -123,6 +123,36 @@ public class CaseService
     }
 
     /**
+    * Get all of the information pertaining to the provided case Id
+    * @param caseId A Case ID
+    * @return caseInfo The corresponding Case
+    */
+    public static Case getCaseInformation(Id caseId)
+    {
+        Case caseInfo = null;
+        String caseFields = caseFieldsToString();
+
+        // Get the list of cases associated with our set of contacts
+        try
+        {
+            String caseInfoQuery =
+                    'SELECT ' + caseFields + ' ' +
+                    'FROM Case ' +
+                    'WHERE Id = :caseId';
+
+            System.debug('!!!FINE: caseInfoQuery is ' + caseInfoQuery);
+
+            caseInfo = Database.query(caseInfoQuery);
+        }
+        catch (Exception e)
+        {
+            throw new CaseServiceException('!!!ERROR!!!: An error occurred trying to get the Case\'s information\n' + e.getMessage());
+        }
+
+        return caseInfo;
+    }
+
+    /**
     * Create a number of test cases. Usually for unit tests.
     * @param An integer describing the number of cases to create
     * @param The contact to associate the cases to

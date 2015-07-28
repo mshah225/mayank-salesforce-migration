@@ -73,5 +73,24 @@ public class ObjectService
 		return fieldsToString;
 	}
 
+	/**
+	* Returns a string list of all the fields for an object
+	* @param The object API Name
+	* @return A string list of all field names for the object
+	*/
+	public static List<String> getFieldLabelsToList(String objectName)
+	{
+		Map<String, Schema.SObjectField> obFields = getObjectFieldMap(objectName);
+
+		List<String> fieldLabelsToList = new List<String>();
+		for (String obf: obFields.keySet())
+		{
+			fieldLabelsToList.add(obFields.get(obf).getDescribe().getLabel());
+		}
+		fieldLabelsToList.sort();
+
+		return fieldLabelsToList;
+	}
+
 	public class ObjectServiceException extends Exception {}
 }

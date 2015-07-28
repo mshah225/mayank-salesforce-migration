@@ -1,7 +1,7 @@
 <apex:page sidebar="false" showHeader="false">
 <html>
 <head>
-    <title>My ASU - Error</title>
+    <title>My ASU | Error</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
@@ -52,7 +52,7 @@
     </script>
     <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
     <div id="main-search" class="main-search closed"></div>
-    <div id="asu_hdr" class="asu_hdr_white">
+    <div id="asu_hdr" class="asu_hdr_white myasu-cont">
         <div id="asu_mobile_hdr">
             <div id="asu_logo">
                 <a href="https://www.asu.edu/" target="_top" title="Arizona State University">
@@ -159,11 +159,11 @@
     <div style="clear:both;"></div>
     <!-- END /asuthemes/4.3/headers/default_myasu.shtml -->
 
-    <div id="myasu-header-seo"><a href="https://webapp4.asu.edu/myasu">My ASU</a></div>
+    <div id="myasu-header-seo" class="myasu-cont"><a href="https://webapp4.asu.edu/myasu">My ASU</a></div>
 
     <!-- MyASU Tab Bar -->
     <header class="navbar navbar-default" role="banner">
-        <div id="myasu-tabs">
+        <div id="myasu-tabs" class="myasu-cont">
             <div class="navbar-links">
                 <span class='tab'><a href="https://webapp4.asu.edu/myasu" class="tracking"><span class="fa fa-home" title="Home"></span></a></span>
             </div>
@@ -174,20 +174,22 @@
         <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
     </div>
 
-    <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <p>ASU was unable to process your request. We apologize for the inconvenience.<br /><br />
+    <div id="asu_content_well">    
+        <div class="container">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>ASU was unable to process your request. We apologize for the inconvenience.<br /><br />
 
-                Please return to the Service Center in <a href="https://webapp4.asu.edu/myasu" style="color:#990033;">My ASU</a> to ask questions, report an issue, and get help.<br /><br />
+                    Please return to the Service Center in <a href="https://webapp4.asu.edu/myasu" style="color:#990033;">My ASU</a> to ask questions, report an issue, and get help.<br /><br />
 
-                If you’re unable to access the My ASU Service Center or need immediate assistance, please call 1-855-ASU-5080.</p>
+                    If you’re unable to access the My ASU Service Center or need immediate assistance, please call 1-855-ASU-5080.</p>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="asu_footer">
-        <ul class="default">
+        <ul class="default myasu-cont">
             <li><a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a></li>
             <li><a href="http://www.asu.edu/accessibility/">Accessibility</a></li>
             <li><a href="http://www.asu.edu/privacy/">Privacy</a></li>

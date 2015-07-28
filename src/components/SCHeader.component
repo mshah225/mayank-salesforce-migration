@@ -3,7 +3,7 @@
     <apex:attribute name="firstName" description="The contacts first name" type="String"/>
     <apex:attribute name="lastName" description="The contacts last name" type="String"/>
 	<!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
-    <div id="asu_hdr" class="asu_hdr_white">
+    <div id="asu_hdr" class="asu_hdr_white myasu-cont">
         <div id="asu_mobile_hdr">
             <div id="asu_logo">
                 <a href="https://www.asu.edu/" target="_top" title="Arizona State University">
@@ -110,12 +110,12 @@
     <div style="clear:both;"></div>
     <!-- END /asuthemes/4.3/headers/default_myasu.shtml -->
 
-    <div id="myasu-header-seo"><a href="https://webapp4.asu.edu/myasu">My ASU</a></div>
+    <div id="myasu-header-seo" class="myasu-cont"><a href="https://webapp4.asu.edu/myasu">My ASU</a></div>
 
     <!-- MyASU Tab Bar -->
     <header class="navbar navbar-default" role="banner">
         <apex:outputPanel rendered="{!IF(ISNULL(linkList),true,false) || IF(ISBLANK(linkList),true,false)}">
-            <div id="myasu-tabs">
+            <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">
                     <span class='tab'><a href="https://webapp4.asu.edu/myasu" class="tracking"><span class="fa fa-home" title="Home"></span></a></span>
 
@@ -134,7 +134,7 @@
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!IF(ISNULL(linkList),false,true) || IF(ISBLANK(linkList),false,true)}">
-            <div id="myasu-tabs">
+            <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">
                     <apex:repeat value="{!linkList}" var="link" id="linkRepeater">
                         <span class='tab'>

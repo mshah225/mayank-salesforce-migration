@@ -1,11 +1,12 @@
 <apex:page showHeader="false"
     sidebar="false"
+    cache="true"
     docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
-    extensions="vfKeywordSearchController,AutoCompleteController,NavLinks">
+    extensions="NavLinks">
 <head>
-    <title>My ASU - {!caseDetails.Subject}</title>
+    <title>My ASU | {!caseDetails.Subject}</title>
     <c:asu_responsive_header_section />
     
     <style>
@@ -165,7 +166,7 @@
             </ol>
 
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-7">
                     <div class="box">
                         <div class="header">
                             <h6 class="floatleft"><b>Case &#35;{!caseDetails.CaseNumber} Details</b></h6>
@@ -231,7 +232,7 @@
                     </apex:outputPanel>
                 </div><!-- end col-md-8 -->
 
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}"
                                                 NormalPhone="{!NormalPhone}"
                                                 RoverPhone="{!RoverPhone}"

@@ -28,7 +28,7 @@ global class EmailPublisherLoader implements QuickAction.QuickActionDefaultsHand
 
             // Set the email information correctly
             EmailMessage caseEmailToSend = (EmailMessage)sendEmailDefaults.getTargetSObject();
-            Contact caseContact = ContactService.getContactInfo(currentCase.ContactId);
+            Contact caseContact = ContactService.getContactInformation(currentCase.ContactId);
             OrgWideEmailAddress oweaToUse = OrgWideEmailAddressService.getOrgWideEmailAddress(currentCase.Most_Recent_Sent_To_Email__c);
             caseEmailToSend.ToAddress = caseContact.Email;
             caseEmailToSend.FromAddress = oweaToUse.Address;

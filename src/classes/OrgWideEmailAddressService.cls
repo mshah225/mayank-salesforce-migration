@@ -36,11 +36,11 @@ public class OrgWideEmailAddressService
 		}
 		catch (Exception e)
 		{
-			throw new EmailServiceException('!!!ERROR!!!: An error occurred trying to get the OrgWideEmailAddress for this address: ' + emailAddress + '\n' + e.getMessage());
+			throw new OrgWideEmailAddressServiceException('!!!ERROR!!!: An error occurred trying to get the OrgWideEmailAddress for this address: ' + emailAddress + '\n' + e.getMessage());
 		}
 
 		return oweaToReturn;
 	}
 
-	public class EmailServiceException extends Exception {}
+	public class OrgWideEmailAddressServiceException extends Exception {}
 }

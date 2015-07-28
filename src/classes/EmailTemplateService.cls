@@ -1,4 +1,4 @@
-public class EmailTemplateService 
+public class EmailTemplateService
 {
 	/**
 	* Returns all the fields on EmailTemplate in a String
@@ -72,12 +72,16 @@ public class EmailTemplateService
 		else
 		{
 			// Use the default configuration if there is one
-			emailTemplateAPIName = confsByFunctionalGroup.get('Default').Template_Name__c;
+			Case_Default_Email_Templates__c defaultFGConf = confsByFunctionalGroup.get('Default');
 
-			// Throw an error if there is no default Custom Setting defined in this org
-			if (String.isEmpty(emailTemplateAPIName))
+			if (defaultFGConf == null)
 			{
+				// Throw an error if there is no default Custom Setting defined in this org
 				throw new EmailTemplateServiceException('!!!ERROR!!!: No default Case_Default_Email_Templates__c configuration exists for this org');
+			}
+			else
+			{
+				emailTemplateAPIName = defaultFGConf.Template_Name__c;
 			}
 		}
 

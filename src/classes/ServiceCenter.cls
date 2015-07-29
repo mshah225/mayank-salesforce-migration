@@ -18,25 +18,20 @@ public with sharing class ServiceCenter
     public Term__c termcB;
     public String firstName { get; set; }
     public String lastName { get; set; }
+    public String emplId { get; set; }
+    public String masqScopeIdCookie { get; set; }
 
     public ServiceCenter() { setUpPage(); }
     public ServiceCenter(AKBController controller) { setUpPage(); }
 
     public void setUpPage()
     {
-        String scopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
-        if (scopeIdCookie != null || scopeIdCookie == '')
+        masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
+        if (masqScopeIdCookie != null)
         {
-            //String userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
-            //viewAsMap = MyASUViewAs.getCalloutResponseContents(scopeIdCookie, userAsurite);
-            //if (!viewAsMap.isEmpty())
-            //{
-                viewingAs = true;
-            //}
-            //else
-            //{
-            //    viewingAs = false;
-            //}
+            String userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
+            viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
+            viewingAs = (!viewAsMap.isEmpty() && viewAsMap.get('authorizedToViewAs') == 'true' && viewAsMap.get('isViewingAs') == 'true') ? true : false;
         }
         else 
         {
@@ -45,16 +40,16 @@ public with sharing class ServiceCenter
 
         if (viewingAs)
         {
-            System.debug('!!RUNNING VIEWINGAS CONTACT LOOKUP');
-            //userContact = ContactService.getContactToViewAs(viewAsMap.get('effectiveAsurite'));
-            userContact = ContactService.getContactToViewAs('jldalbey');
+            userContact = ContactService.getContactToViewAs(viewAsMap.get('effectiveAsurite'));
         }
         else
         {
             userContact = ContactService.getLoggedInContact();
         }
+
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
+        emplId = userContact.EMPLID__c;
         newCase = new Case();
         today = date.today();
         termcAC = [SELECT Session_A_C_Start_Date__c
@@ -109,20 +104,34 @@ public with sharing class ServiceCenter
 
     public Case getCaseDetails()
     {
-        return [SELECT Id, CaseNumber, Functional_Group__c, Subject, Description, Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
-                FROM Case
-                WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
+        if (viewingAs)
+        {   
+            return CaseService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
+        }   
+        else
+        { 
+            return [SELECT Id, CaseNumber, Functional_Group__c, Subject, Description, Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
+                    FROM Case
+                    WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
+        }
     }
 
     public EmailMessage[] getEmailMessages() {
         Date launchDate = EMAILVISIBILITYDATE;
-        return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress
-                FROM EmailMessage
-                WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
-                AND Incoming = false
-                AND CreatedDate > :launchDate
-                AND ToAddress = :userContact.Email
-                ORDER BY CreatedDate DESC];
+        if(viewingAs)
+        {
+            return CaseService.getCaseEmailMessages(EMAILVISIBILITYDATE, ApexPages.currentPage().getParameters().get('id'), userContact.Email);
+        }
+        else
+        {
+            return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress
+                    FROM EmailMessage
+                    WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
+                    AND Incoming = false
+                    AND CreatedDate > :launchDate
+                    AND ToAddress = :userContact.Email
+                    ORDER BY CreatedDate DESC];
+        }
     }
 
     public PageReference viewCase()
@@ -131,6 +140,10 @@ public with sharing class ServiceCenter
         PageReference viewCasePage = new PageReference('/viewcase');
         viewCasePage.getParameters().put('id', caseId);
         viewCasePage.getParameters().put('source', 'studentSC');
+        if (viewingAs)
+        {
+            viewCasePage.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+        }
 
         return viewCasePage;
     }
@@ -247,6 +260,8 @@ public with sharing class ServiceCenter
 
     public PageReference submitCase()
     {
+        viewAsCatch();
+
         try
         {
             newCase.ContactId = userContact.Id;
@@ -268,18 +283,13 @@ public with sharing class ServiceCenter
 
     public Decimal getMyPin()
     {
-        if (!viewingAs)
-        {
-            return userContact.Self_Service_PIN__c;
-        }
-        else 
-        {
-            return 11111111;
-        }
+        return userContact.Self_Service_PIN__c;
     }
 
     public PageReference changePin()
     {
+        viewAsCatch();
+
         try
         {
             if (origPin == newPin)
@@ -327,5 +337,19 @@ public with sharing class ServiceCenter
         PageReference confirmPage = new PageReference('/studentSC' + '?Suggest=yes');
         confirmPage.setRedirect(true);
         return confirmPage;
+    }
+
+    public PageReference viewAsCatch()
+    {
+        if (viewingAs)
+        {
+            PageReference viewAsCatch = ApexPages.currentPage();
+            viewAsCatch.setRedirect(true);
+            return viewAsCatch;
+        }
+        else
+        {
+            return null;
+        }
     }
 }

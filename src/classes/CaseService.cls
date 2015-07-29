@@ -15,6 +15,36 @@ public without sharing class CaseService
 		return caseFields;
 	}
 
+    /**
+    * Returns the fields needed on the Service Center for a given case
+    * @param The Case Id to look up
+    * @return The Case Object
+    */
+    public static Case getCaseDetails(Id caseId)
+    {
+        Case requestedCase = [SELECT Id, CaseNumber, Functional_Group__c, Subject, Description, Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
+                              FROM Case
+                              WHERE Id = :caseId];
+        
+        return requestedCase;
+    }
+
+/**
+    * Returns the email messages for the requested case
+    * @param The Case Id to look up
+    * @return The Case Objects Email Messages
+    */
+    public static EmailMessage[] getCaseEmailMessages(Date launchDate, Id caseId, String contactEmail)
+    {
+        return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress
+                                   FROM EmailMessage
+                                   WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
+                                   AND Incoming = false
+                                   AND CreatedDate > :launchDate
+                                   AND ToAddress = :contactEmail
+                                   ORDER BY CreatedDate DESC];
+    }
+
 	/**
     * Get these contact's open visible cases
     * @param A list of contacts

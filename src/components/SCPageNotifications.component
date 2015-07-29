@@ -1,11 +1,11 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
 	<center>
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.masqScopeIdCookie != null}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.masqScopeIdCookie != ''}">
 	        <div class="alert alert-warning">
 	            <button type='button' class='close' data-dismiss='alert'>×</button>
 	            <apex:outputText>
-	            	You are currently viewing as a student and cannot take any actions on this page.
+	            	You are currently viewing as a student in read only mode. You will not be able to take any actions on this page.
 	            </apex:outputText>
 	        </div>
 	    </apex:outputPanel>

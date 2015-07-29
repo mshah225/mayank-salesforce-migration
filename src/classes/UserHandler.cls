@@ -13,9 +13,27 @@ public without sharing class UserHandler implements ITrigger
 			newUser.Role_Knowledge__c = true;
 		}
 
-		if(newUser.ContactId != null)
+		Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+		if(newUser.ProfileId == communityProfile)
 		{
-			Contact newUserContact = [SELECT CAP__c FROM Contact WHERE Id = :newUser.ContactId];
+			Contact newUserContact;
+			if(newUser.ContactId == null)
+			{
+				newUserContact = [SELECT Id, CAP__c FROM Contact WHERE ASURite_ID__c = :newUser.Alias AND FirstName = :newUser.FirstName AND LastName = :newUser.LastName LIMIT 1];
+				if(newUserContact == null)
+				{
+					newUser.ContactId.addError('No Contact for this user!');	
+				}
+				else
+				{
+					newUser.ContactId = newUserContact.Id;	
+				}
+			}
+			else
+			{
+				newUserContact = [SELECT CAP__c FROM Contact WHERE Id = :newUser.ContactId];
+			}
+
 			if(newUserContact.CAP__c != null)
 			{
 				Profile newUserProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];

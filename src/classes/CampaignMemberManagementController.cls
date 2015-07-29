@@ -73,13 +73,19 @@ public class CampaignMemberManagementController
         List<PermissionSetAssignment> userPermissions = [SELECT PermissionSet.Name 
                                                          FROM PermissionSetAssignment 
                                                          WHERE AssigneeId = :UserInfo.getUserId()];
-        Boolean hasCRPerm;
-        for (PermissionSetAssignment psa : userPermissions)
+        Boolean hasCRPerm = false;
+        if (userPermissions.size() > 0)
         {
-            String temp = psa.PermissionSet.Name;
-            if (temp.contains('Corporate_Relations'))
+            for (PermissionSetAssignment psa : userPermissions)
             {
-                hasCRPerm = true;
+                if (psa.PermissionSet.Name != null || psa.PermissionSet.Name != '')
+                {
+                    String temp = psa.PermissionSet.Name;
+                    if (temp.contains('Corporate_Relations'))
+                    {
+                        hasCRPerm = true;
+                    }
+                }
             }
         }
 

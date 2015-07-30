@@ -1,33 +1,85 @@
 @isTest
 public with sharing class Test_TopFiveArticleController
 {
+	// Create FAQ
+	public static void createFAQArticles(Integer howMany)
+	{
+	    for (Integer i = 0; i < howMany; i++)
+	    {
+	        FAQ__kav faqArticle = new FAQ__kav(
+	            Title = 'Testing FAQ Article' + i,
+	            Summary = 'Test FAQ From Apex' + i,
+	            Answer__c = 'TEST' + i,
+	            Question__c = 'TEST' + i,
+	            Language = 'en_US',
+	            IsVisibleInPKB = true,
+	            IsVisibleInCsp = true,
+	            IsVisibleInPrm = true,
+	            URLName = 'Top5-Testing-FAQ-Article-' + i);
+	        insert faqArticle;
+
+	        // Publish the FAQ Articles
+	        faqArticle = [SELECT KnowledgeArticleId
+	                    FROM FAQ__kav
+	                    WHERE Id = :faqArticle.id];
+	        KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
+	    }
+	}
+
+	// Create HowTo
+	public static void createHowToArticles(Integer howMany)
+	{
+	    for (Integer i = 0; i < howMany; i++)
+	    {
+	        How_To__kav howArticle = new How_To__kav(
+	            Title = 'Testing HowTo Article' + i,
+	            Summary = 'Testing HowTo From Apex' + i,
+	            Content__c = 'Test' + i,
+	            Language = 'en_US',
+	            IsVisibleInPKB = true,
+	            IsVisibleInCsp = true,
+	            IsVisibleInPrm = true,
+	            URLName = 'Top5-Testing-HowTo-Article' + i);
+	        insert howArticle;
+
+	        // Publish the How To Articles
+	        howArticle = [SELECT KnowledgeArticleId
+	                      FROM How_To__kav
+	                      WHERE Id = :howArticle.id];
+	        KbManagement.PublishingService.publishArticle(howArticle.KnowledgeArticleId, true);
+	    }
+	}
+
+	// Create Informational
+	public static void createInfoArticles(Integer howMany)
+	{
+	    for (Integer i = 0; i < howMany; i++)
+	    {
+	        Informational__kav infoArticle = new Informational__kav(
+	            Title = 'Testing Informational Article' + i,
+	            Summary = 'Testing From Apex' + i,
+	            Information__c = 'test from apex',
+	            Language = 'en_US',
+	            IsVisibleInPKB = true,
+	            IsVisibleInCsp = true,
+	            IsVisibleInPrm = true,
+	            URLName = 'Top5-Testing-Informational-Article' + i);
+	        insert infoArticle;
+
+	        // Publish the Informational Articles
+	        infoArticle = [SELECT KnowledgeArticleId
+	                       FROM Informational__kav
+	                       WHERE Id = :infoArticle.id];
+	        KbManagement.PublishingService.publishArticle(infoArticle.KnowledgeArticleId, true);
+	    }
+	}
+
 	@testSetup static void setUp()
 	{
-	    //setup test data	
-	    List<FAQ__kav> faqList = new List<FAQ__kav>();
-	    for (Integer i=0; i<=4; i++)
-	    {
-	    	FAQ__kav faq = new FAQ__kav(
-	    		Title='TestFaq' + i, 
-	    		UrlName = 'TestFaq1' + i
-    		);
-	    	faqList.add(faq);
-	    }
-	    insert faqList;
-	    
-	    List<FAQ__DataCategorySelection> faqDCSList = new List<FAQ__DataCategorySelection>();
-	    for (FAQ__kav faq: faqList)
-	    {
-	    	FAQ__DataCategorySelection faqDCS = new FAQ__DataCategorySelection(ParentId=faq.Id, DataCategoryGroupName='Finances', DataCategoryName='My_ASU_Financial_Aid');
-	    	faqDCSList.add(faqDCS);
-	    }
-	    insert faqDCSList;
-	    
-	    How_To__kav ht1 = new How_To__kav(Title='TestHT1', UrlName = 'TestHT1');
-	    insert ht1;
-
-	    Informational__kav inf1 = new Informational__kav(Title='TestInf1', UrlName = 'TestInf1');
-	    insert inf1;
+		// Input the number of each type of Article you'd like to create
+		createFAQArticles(10);
+		createHowToArticles(10);
+		createInfoArticles(10);
     }
 	
 	static testMethod void testDoGet()

@@ -31,7 +31,7 @@ public with sharing class ServiceCenter
         {
             String userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
             viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            viewingAs = (!viewAsMap.isEmpty() && viewAsMap.get('authorizedToViewAs') == 'true' && viewAsMap.get('isViewingAs') == 'true') ? true : false;
+            viewingAs = (!viewAsMap.isEmpty() && viewAsMap.get('authorizedToViewAs') == 'true' && viewAsMap.get('isViewingAs') == 'true' && userAsurite != viewAsMap.get('effectiveAsurite')) ? true : false;
         }
         else 
         {

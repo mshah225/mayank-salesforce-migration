@@ -2,7 +2,7 @@ public class ObjectService
 {
 	/**
 	* Returns all the fields for a specified object
-	* @param The object API name
+	* @param An object API name
 	* @return A map containing the fields of the specified object
 	*/
 	public static Map<String, SObjectField> getObjectFieldMap(String objectName)
@@ -43,21 +43,54 @@ public class ObjectService
 	}
 
 	/**
+	* Returns all the fields on an object in a string delimited by ','
+	* Overload of String objectFieldsToString
+	* @param An object API name
+	* @return A string of the field names
+	*/
+	public static String objectFieldsToString(String objectName)
+	{
+		String fieldsToString = null;
+
+		Map<String, SObjectField> objectFieldMap = getObjectFieldMap(objectName);
+
+		Set<String> fieldSet = objectFieldMap.keySet();
+		for(String s : fieldSet)
+		{
+			SObjectField fieldToken = objectFieldMap.get(s);
+			DescribeFieldResult selectedField = fieldToken.getDescribe();
+
+			if (fieldsToString == null)
+			{
+				fieldsToString = selectedField.getName();
+			}
+			else
+			{
+				fieldsToString = fieldsToString + ', ' + selectedField.getName();
+			}
+		}
+
+		return fieldsToString;
+	}
+
+	/**
 	* Returns a string list of all the fields for an object
 	* @param The object API Name
 	* @return A string list of all field names for the object
 	*/
-	public static List<String> getFieldLabelsToList(String objectName) 
-	{	
+	public static List<String> getFieldLabelsToList(String objectName)
+	{
 		Map<String, Schema.SObjectField> obFields = getObjectFieldMap(objectName);
 
 		List<String> fieldLabelsToList = new List<String>();
-		for (String obf: obFields.keySet()) 
-        {         
-            fieldLabelsToList.add(obFields.get(obf).getDescribe().getLabel());
-        }
-        fieldLabelsToList.sort();
+		for (String obf: obFields.keySet())
+		{
+			fieldLabelsToList.add(obFields.get(obf).getDescribe().getLabel());
+		}
+		fieldLabelsToList.sort();
 
-        return fieldLabelsToList;
+		return fieldLabelsToList;
 	}
+
+	public class ObjectServiceException extends Exception {}
 }

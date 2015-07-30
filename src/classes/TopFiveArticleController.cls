@@ -4,9 +4,10 @@ global class TopFiveArticleController
 	
 	global class ArticleInfo
 	{
-		string url;
-		string title;
-		integer rank;
+		public string id;
+		public string url;
+		public string title;
+		public integer rank;
 	}
 
     @HttpGet
@@ -20,28 +21,25 @@ global class TopFiveArticleController
         List<ArticleInfo> articles = new List<ArticleInfo>();
 
         integer articleRank = 0;
-        if (articleViewStatList.size() > 0)
-        {
-        	for (KnowledgeArticleViewStat kavs: [SELECT Id, ParentId FROM KnowledgeArticleViewStat WHERE Channel = 'AllChannels' ORDER BY ViewCount DESC LIMIT 5])
-        	{
-        		articleIds.add(kavs.ParentId);
-        	}
+    	for (KnowledgeArticleViewStat kavs: [SELECT Id, ParentId FROM KnowledgeArticleViewStat WHERE Channel = 'AllChannels' ORDER BY ViewCount DESC LIMIT 5])
+    	{
+    		articleIds.add(kavs.ParentId);
+    	}
 
-        	for (KnowledgeArticleVersion kav: [SELECT id,Title, UrlName, KnowledgeArticleId, PublishStatus, language 
-											   FROM KnowledgeArticleVersion 
-											   WHERE PublishStatus='Online'
-											   AND language ='en_US' 
-											   AND KnowledgeArticleId IN :articleIds]
-				)
-        	{
-				articleRank++;							   	
-        		ArticleInfo ai = new ArticleInfo();
-        		ai.rank = articleRank;
-        		ai.title = kav.Title;
-        		ai.url = urlPrefix + kav.UrlName;
-        		articles.add(ai);
-			}
-        }
+    	for (KnowledgeArticleVersion kav: [SELECT id,Title, UrlName, KnowledgeArticleId, PublishStatus, language 
+										   FROM KnowledgeArticleVersion 
+										   WHERE PublishStatus='Online'
+										   AND language ='en_US' 
+										   AND KnowledgeArticleId IN :articleIds]
+			)
+    	{
+			articleRank++;							   	
+    		ArticleInfo ai = new ArticleInfo();
+    		ai.rank = articleRank;
+    		ai.title = kav.Title;
+    		ai.url = urlPrefix + kav.UrlName;
+    		articles.add(ai);
+		}
         return articles;
     }
     
@@ -51,8 +49,8 @@ global class TopFiveArticleController
        	//string urlPrefix = getPkbSiteUrl();
         List<ArticleInfo> articles = new List<ArticleInfo>();
         integer articleRank = 0;
-    	Set<Id> kavIds = new Set<Id>();
-    	Set<Id> articleIds = new Set<Id>();
+    	List<Id> kavIds = new List<Id>();
+    	List<Id> articleIds = new List<Id>();
 
 		string kavQuery = 'SELECT Id, KnowledgeArticleId FROM KnowledgeArticleVersion WHERE PublishStatus=\'Online\' AND language =\'en_US\' AND isVisibleInPkb = true';
 		string dataCategory = '';
@@ -115,6 +113,14 @@ global class TopFiveArticleController
     	{
     		articleIds.add(kavs.ParentId);
     	}
+    	//We need this to deal with the case where none of these articles have been viewed (i.e. in testing)
+    	if(articleIds.size() == 0)
+    	{
+    		for(Integer x = 0; x < Math.min(kavIds.size(), 5); x++)
+    		{
+    			articleIds.add(kavIds.get(x));
+    		}
+    	}
 
     	System.debug('ARTICLE IDS ' + articleIds);
 
@@ -130,6 +136,7 @@ global class TopFiveArticleController
     		ai.rank = articleRank;
     		ai.title = kav.Title;
     		ai.url = getArticleUrl(kav);
+    		ai.id = kav.Id;
     		articles.add(ai);
 		}
 
@@ -139,7 +146,7 @@ global class TopFiveArticleController
 	global static string getArticleUrl(KnowledgeArticleVersion kav)
 	{
 		String urlPrefix = 'https://myasu.force.com/akb';
- 		return urlPrefix + '?=' + kav.Id;
+ 		return urlPrefix + '?id=' + kav.Id;
 	}
 	
 	global static string getMoreArticlesUrl(string dcGroup, string dataCategory)

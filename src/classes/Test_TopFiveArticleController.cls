@@ -1,9 +1,20 @@
 @isTest
 public with sharing class Test_TopFiveArticleController
 {
+	class TestArticleInfo
+	{
+		string id;
+		string url;
+		string title;
+		integer rank;
+	}
+
 	// Create FAQ
 	public static void createFAQArticles(Integer howMany)
 	{
+		List<FAQ__kav> faqList = new List<FAQ__kav>();
+        List<FAQ__DataCategorySelection> faqDCSList = new List<FAQ__DataCategorySelection>();
+
 	    for (Integer i = 0; i < howMany; i++)
 	    {
 	        FAQ__kav faqArticle = new FAQ__kav(
@@ -16,19 +27,30 @@ public with sharing class Test_TopFiveArticleController
 	            IsVisibleInCsp = true,
 	            IsVisibleInPrm = true,
 	            URLName = 'Top5-Testing-FAQ-Article-' + i);
-	        insert faqArticle;
-
-	        // Publish the FAQ Articles
-	        faqArticle = [SELECT KnowledgeArticleId
-	                    FROM FAQ__kav
-	                    WHERE Id = :faqArticle.id];
-	        KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
+	        faqList.add(faqArticle);
 	    }
+	    insert faqList;
+
+	    for(Integer i = 0; i < howMany; i++)
+	    {
+	    	FAQ__kav faqArticle = [SELECT Id, KnowledgeArticleId FROM FAQ__kav WHERE Id = :faqList[i].Id];
+	        KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
+	    	FAQ__DataCategorySelection faqDCS = new FAQ__DataCategorySelection(
+	    		ParentId = faqArticle.Id, 
+	    		DataCategoryGroupName = 'Finances', 
+	    		DataCategoryName = 'My_ASU_Financial_Aid'
+    		);
+	    	faqDCSList.add(faqDCS);
+	    }
+	    insert faqDCSList;
 	}
 
 	// Create HowTo
 	public static void createHowToArticles(Integer howMany)
 	{
+		List<How_To__kav> howtoList = new List<How_To__kav>();
+		List<How_To__DataCategorySelection> howToDCSList = new List<How_To__DataCategorySelection>();
+
 	    for (Integer i = 0; i < howMany; i++)
 	    {
 	        How_To__kav howArticle = new How_To__kav(
@@ -40,19 +62,31 @@ public with sharing class Test_TopFiveArticleController
 	            IsVisibleInCsp = true,
 	            IsVisibleInPrm = true,
 	            URLName = 'Top5-Testing-HowTo-Article' + i);
-	        insert howArticle;
-
-	        // Publish the How To Articles
-	        howArticle = [SELECT KnowledgeArticleId
-	                      FROM How_To__kav
-	                      WHERE Id = :howArticle.id];
-	        KbManagement.PublishingService.publishArticle(howArticle.KnowledgeArticleId, true);
+	        howToList.add(howArticle);
 	    }
+        insert howToList;
+
+	    for(Integer i = 0; i < howMany; i++)
+	    {
+	        How_To__kav howArticle = [SELECT KnowledgeArticleId FROM How_To__kav WHERE Id = :howToList[i].id];
+
+	        KbManagement.PublishingService.publishArticle(howArticle.KnowledgeArticleId, true);
+	    	How_To__DataCategorySelection howToDCS = new How_To__DataCategorySelection(
+	    		ParentId = howArticle.Id, 
+				DataCategoryGroupName = 'Campus_Services',
+				DataCategoryName = 'My_ASU_Devil2Devil'
+    		);
+	    	howToDCSList.add(howToDCS);
+	    }
+	    insert howToDCSList;
 	}
 
 	// Create Informational
 	public static void createInfoArticles(Integer howMany)
 	{
+		List<Informational__kav> infoList = new List<Informational__kav>();
+		List<Informational__DataCategorySelection> infoDCSList = new List<Informational__DataCategorySelection>();
+
 	    for (Integer i = 0; i < howMany; i++)
 	    {
 	        Informational__kav infoArticle = new Informational__kav(
@@ -64,14 +98,23 @@ public with sharing class Test_TopFiveArticleController
 	            IsVisibleInCsp = true,
 	            IsVisibleInPrm = true,
 	            URLName = 'Top5-Testing-Informational-Article' + i);
-	        insert infoArticle;
-
-	        // Publish the Informational Articles
-	        infoArticle = [SELECT KnowledgeArticleId
-	                       FROM Informational__kav
-	                       WHERE Id = :infoArticle.id];
-	        KbManagement.PublishingService.publishArticle(infoArticle.KnowledgeArticleId, true);
+	        infoList.add(infoArticle);
 	    }
+        insert infoList;
+
+	    for(Integer i = 0; i < howMany; i++)
+	    {
+	        Informational__kav infoArticle = [SELECT KnowledgeArticleId FROM Informational__kav WHERE Id = :infoList[i].id];
+
+	        KbManagement.PublishingService.publishArticle(infoArticle.KnowledgeArticleId, true);
+	    	Informational__DataCategorySelection infoDCS = new Informational__DataCategorySelection(
+	    		ParentId = infoArticle.Id, 
+				DataCategoryGroupName = 'Academics',
+				DataCategoryName = 'My_ASU_Programs_and'
+    		);
+	    	infoDCSList.add(infoDCS);
+	    }
+	    insert infoDCSList;
 	}
 
 	@testSetup static void setUp()
@@ -100,7 +143,16 @@ public with sharing class Test_TopFiveArticleController
 	    List<TopFiveArticleController.ArticleInfo> postResults4 = TopFiveArticleController.getTopFiveArticles2('Devil2Devil');
 	    List<TopFiveArticleController.ArticleInfo> postResults5 = TopFiveArticleController.getTopFiveArticles2('Account Charges');
 	    List<TopFiveArticleController.ArticleInfo> postResults6 = TopFiveArticleController.getTopFiveArticles2('Financial Aid and Scholarships');
-	    system.debug(postResults6);
+	    System.assert(postResults1.size() == 0);
+	    System.assert(postResults2.size() == 5);
+	    System.assert(postResults3.size() == 0);
+	    System.assert(postResults4.size() == 5);
+	    System.assert(postResults5.size() == 0);
 	    System.assert(postResults6.size() == 5);
+	    for(Integer x = 0; x < 5; x++)
+	    {
+	    	TopFiveArticleController.ArticleInfo ai = postResults6.get(x);
+	    	System.assert(ai.url == 'https://myasu.force.com/akb?id=' + ai.id);
+	    }
   }
 }

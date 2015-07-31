@@ -1,8 +1,8 @@
 <apex:page docType="html-5.0"
     showHeader="false"
     sidebar="false"
-    controller="ViewAllCasesController"
-    extensions="NavLinks">
+    controller="ServiceCenter"
+    extensions="ViewAllCasesController,NavLinks">
 <head>
     <title>My ASU | View All Cases</title>
     <c:asu_responsive_header_section />
@@ -19,7 +19,7 @@
     </style>
 </head>
 
-<body>
+<body onload="viewAsLinks()">
     <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
     <div id="main-search" class="main-search closed"></div>
     <div id="asu_hdr" class="asu_hdr_white myasu-cont">
@@ -146,7 +146,12 @@
 
                     <span class='tab'><a href="https://webapp4.asu.edu/myasu/student/profile" class="tracking">Profile</a></span>
                     <p class="username pull-right">
-                        {!$User.FirstName} {!$User.LastName}
+                        {!firstName} {!lastName}
+                        <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
+                            &nbsp;&nbsp;({!emplId})<br />
+                            <a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
+                            <a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
+                        </apex:outputPanel>
                     </p>
                 </div>
             </div>
@@ -172,7 +177,12 @@
                     </apex:repeat>
 
                     <p class="username pull-right">
-                        {!$User.FirstName} {!$User.LastName}
+                        {!firstName} {!lastName}
+                        <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
+                            &nbsp;&nbsp;({!emplId})<br />
+                            <a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
+                            <a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
+                        </apex:outputPanel>
                     </p>
                 </div>
             </div>
@@ -184,6 +194,7 @@
     </div>
 
     <div id="asu_content_well">
+        <c:SCPageNotifications viewingAs="{!viewingAs}"/>
         <div class="container">
             <ol class="breadcrumb">
                 <li><a href="/{!source}">Back</a></li>
@@ -200,7 +211,7 @@
                         <div id="openCases">
                             <apex:form >
                                 <apex:pageBlock mode="maindetail">
-                                    <apex:pageBlockTable rendered="{!(openCases.size >= 1)}" value="{!openCases}" var="case" styleClass="myCasesTable">
+                                    <apex:pageBlockTable rendered="{!(myCases.size >= 1)}" value="{!myCases}" var="case" styleClass="myCasesTable">
                                         <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                         <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                         <apex:column headerValue="Date Opened" width="15%" value="{!case.CreatedDate}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
@@ -210,7 +221,7 @@
                                             </apex:commandLink>
                                         </apex:column>
                                     </apex:pageBlockTable>
-                                    <apex:outputText rendered="{!(openCases.size = 0)}">
+                                    <apex:outputText rendered="{!(myCases.size = 0)}">
                                         <div class="padClass"> You do not have any open cases. </div>
                                     </apex:outputText>
                                 </apex:pageBlock>
@@ -228,7 +239,7 @@
                         <div id="closedCases">
                             <apex:form >
                                 <apex:pageBlock mode="maindetail">
-                                    <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="case" styleClass="myCasesTable">
+                                    <apex:pageBlockTable rendered="{!(allClosedCases.size >= 1)}" value="{!allClosedCases}" var="case" styleClass="myCasesTable">
                                         <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                         <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
                                         <apex:column headerValue="Date Closed" width="15%" value="{!case.ClosedDate}" style="background-color:white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"/>
@@ -238,7 +249,7 @@
                                             </apex:commandLink>
                                         </apex:column>
                                     </apex:pageBlockTable>
-                                    <apex:outputText rendered="{!(closedCases.size = 0)}">
+                                    <apex:outputText rendered="{!(allClosedCases.size = 0)}">
                                         <div class="padClass"> You do not have any closed cases. </div>
                                     </apex:outputText>
                                 </apex:pageBlock>
@@ -251,5 +262,27 @@
     </div>
 
     <c:SCFooter/>
+
+    <script>
+        function viewAsLinks() {
+            var masqCookie = "{!masqScopeIdCookie}";
+            var viewingAs = "{!viewingAs}";
+            if (masqCookie != "" && viewingAs == "true") {
+                $("a").each(function() {
+                    var href = this.href;
+                    if (href.indexOf("force") > -1)
+                    {
+                        if (href.indexOf("?") != -1) {
+                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        else {
+                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        $(this).attr("href", href);
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 </apex:page>

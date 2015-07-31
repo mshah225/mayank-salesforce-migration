@@ -2,9 +2,9 @@
     sidebar="false"
     cache="true"
     docType="html-5.0"
-    controller="AKBController"
+    controller="ServiceCenter"
     action="{!init}"
-    extensions="ServiceCenter,vfKeywordSearchController,AutoCompleteController,NavLinks">
+    extensions="AKBController,vfKeywordSearchController,AutoCompleteController,NavLinks">
 <head>
     <title>My ASU | {!article.title}</title>
     <c:asu_responsive_header_section />
@@ -102,14 +102,23 @@
         ga('send', 'pageview');
     </script>
 
-    <c:SCBomgarScripts asurite="{!userContact.ASURite_Id__c}"/>
+    <c:SCBomgarScripts asurite="{!asurite}"
+                       firstName="{!firstName}"
+                       lastName="{!lastName}"
+                       emplId="{!emplId}"
+                       viewingAs="{!viewingAs}"/>
 </head>
-<body onload="getLinks()">
+<body onload="getLinks(); viewAsLinks();">
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader firstName="{!firstName}" lastName="{!lastName}"/>
+    <c:SCHeader firstName="{!firstName}" 
+                lastName="{!lastName}" 
+                viewingAs="{!viewingAs}" 
+                emplId="{!emplId}" 
+                stopViewAsUrl="{!stopViewAsUrl}" 
+                viewAsUrl="{!viewAsUrl}"/>
 
     <div id="asu_content_well">
-        <c:SCPageNotifications/>
+        <c:SCPageNotifications viewingAs="{!viewingAs}"/>
         
         <div class="container">
             <ol class="breadcrumb">
@@ -130,7 +139,7 @@
                                         <div class="form-horizontal">
                                             <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"
                                             html-placeholder="Enter search terms"/>
-                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
+                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults" oncomplete="viewAsLinks()"/>
                                             <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
                                         </div>
                                         <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
@@ -162,6 +171,7 @@
                                             </tr>
                                         </table>
                                     </knowledge:articleList>
+                                    <br />
                                     <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
                                     Suggest An Article
                                     </button>
@@ -467,18 +477,24 @@
     </script>
 
     <script>
-        var masqCookie = "{!masqScopeIdCookie}";
-        if (masqCookie != "") {
-            $("a").each(function() {
-                var href = this.href;
-                if (href.indexOf("?") != -1) {
-                    href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
-                }
-                else {
-                    href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
-                }
-                $(this).attr("href", href);
-            });
+        function viewAsLinks() {
+            var masqCookie = "{!masqScopeIdCookie}";
+            var viewingAs = "{!viewingAs}";
+            if (masqCookie != "" && viewingAs == "true") {
+                $("a").each(function() {
+                    var href = this.href;
+                    if (href.indexOf("force") > -1)
+                    {
+                        if (href.indexOf("?") != -1) {
+                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        else {
+                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        $(this).attr("href", href);
+                    }
+                });
+            }
         }
     </script>
 </body>

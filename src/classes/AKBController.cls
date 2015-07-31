@@ -1,5 +1,7 @@
 public without sharing class AKBController 
 {    
+    private ServiceCenter sc;
+
     public AKB_Article_Feedback__c feedbackHelpful { get; set; }
     public AKB_Article_Feedback__c[] feedbackGiven;
     public Case suggestAnArticle { get; set;}
@@ -19,9 +21,10 @@ public without sharing class AKBController
     public String funcGroup { get; set; }
     public String artType { get; set; }
    
-    public AKBController() 
+    public AKBController(ServiceCenter sc) 
     {   
-        userContact = ContactService.getLoggedInContact();
+        this.sc = sc;
+        userContact = sc.userContact;
         article = [SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId, CreatedBy.Name
                    FROM KnowledgeArticleVersion 
                    WHERE KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id') 
@@ -89,6 +92,11 @@ public without sharing class AKBController
     
     public PageReference helpfulYes() 
     {
+        if (sc.viewingAs)
+        {
+            return null;
+        }
+
         feedbackHelpful.Article_Id__c = ApexPages.currentPage().getParameters().get('id');
         feedbackHelpful.Article_Number__c = article.ArticleNumber;
         feedbackHelpful.Article_Title__c = article.Title;
@@ -120,6 +128,11 @@ public without sharing class AKBController
     
     public PageReference helpfulNo() 
     {
+        if (sc.viewingAs)
+        {
+            return null;
+        }
+
         feedbackHelpful.Article_Id__c = ApexPages.currentPage().getParameters().get('id');
         feedbackHelpful.Article_Number__c = article.ArticleNumber;
         feedbackHelpful.Article_Title__c = article.Title;
@@ -149,23 +162,6 @@ public without sharing class AKBController
         confirmPage.setRedirect(true);
         return confirmPage;
     }
-
-    public PageReference suggestAnArticleSubmit() 
-    {
-        suggestAnArticle.Subject = 'Suggest An Article';
-        suggestAnArticle.Description = suggestAnArticle.Description;
-        suggestAnArticle.ContactId = userContact.Id;
-        suggestAnArticle.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
-        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
-        suggestAnArticle.Category__c = 'Knowledge';
-        suggestAnArticle.Origin__c = 'My ASU';
-        suggestAnArticle.Visible_by_Contact__c = false;
-        insert suggestAnArticle;
-        
-        PageReference confirmPage = new PageReference('/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Suggest=yes');
-        confirmPage.setRedirect(true);
-        return confirmPage;
-    }
     
     public Boolean getfeedbackVisible() 
     {
@@ -174,14 +170,8 @@ public without sharing class AKBController
                          FROM AKB_Article_Feedback__c 
                          WHERE Article_Id__c = :ApexPages.currentPage().getParameters().get('id') 
                          AND Contact__c = :userContact.Id];
-        if (feedbackGiven.size() > 0) 
-        {
-            return false;
-        } 
-        else 
-        {
-            return true;
-        }
+
+        return (feedbackGiven.size() > 0) ? false : true;
     }
     
     public void changeLink() 

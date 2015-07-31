@@ -85,7 +85,8 @@ public class Test_AKBController
         Test.startTest();
         System.runAs(testUser)
         {
-            AKBController akb = new AKBController();
+            ServiceCenter sc = new ServiceCenter();
+            AKBController akb = new AKBController(sc);
             akb.getTitleKeyword();
             System.AssertEquals(akb.article.KnowledgeArticleId, articleTest[0].KnowledgeArticleId);
         }
@@ -108,7 +109,8 @@ public class Test_AKBController
         Test.startTest();
         System.runAs(testUser)
         {
-            AKBController akb = new AKBController();
+            ServiceCenter sc = new ServiceCenter();
+            AKBController akb = new AKBController(sc);
             akb.getTitleKeyword();
             System.AssertEquals(akb.article.KnowledgeArticleId, articleTest[0].KnowledgeArticleId);
         }
@@ -131,7 +133,8 @@ public class Test_AKBController
         Test.startTest();
         System.runAs(testuser)
         {
-            AKBController akb = new AKBController();
+            ServiceCenter sc = new ServiceCenter();
+            AKBController akb = new AKBController(sc);
             akb.getTitleKeyword();
             System.AssertEquals(akb.article.KnowledgeArticleId, articleTest[0].KnowledgeArticleId);
         }
@@ -154,7 +157,8 @@ public class Test_AKBController
         Test.startTest();
         System.runAs(testuser)
         {
-            AKBController akb = new AKBController();
+            ServiceCenter sc = new ServiceCenter();
+            AKBController akb = new AKBController(sc);
             PageReference expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulYes().getUrl());
 
@@ -169,7 +173,7 @@ public class Test_AKBController
             akbPage = Page.akb;
             Test.setCurrentPage(akbPage);
             ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
-            akb = new AKBController();
+            akb = new AKBController(sc);
             expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulYes().getUrl());
 
@@ -184,7 +188,7 @@ public class Test_AKBController
             akbPage = Page.akb;
             Test.setCurrentPage(akbPage);
             ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
-            akb = new AKBController();
+            akb = new AKBController(sc);
             expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulYes().getUrl());
         }
@@ -207,7 +211,8 @@ public class Test_AKBController
         Test.startTest();
         System.runAs(testuser)
         {
-            AKBController akb = new AKBController();
+            ServiceCenter sc = new ServiceCenter();
+            AKBController akb = new AKBController(sc);
             akb.feedbackHelpful.comments__c = 'test';
             PageReference expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulNo().getUrl());
@@ -223,7 +228,7 @@ public class Test_AKBController
             akbPage = Page.akb;
             Test.setCurrentPage(akbPage);
             ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
-            akb = new AKBController();
+            akb = new AKBController(sc);
             akb.feedbackHelpful.comments__c = 'test';
             expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulNo().getUrl());
@@ -239,7 +244,7 @@ public class Test_AKBController
             akbPage = Page.akb;
             Test.setCurrentPage(akbPage);
             ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
-            akb = new AKBController();
+            akb = new AKBController(sc);
             akb.feedbackHelpful.comments__c = 'test';
             expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulNo().getUrl());
@@ -263,7 +268,8 @@ public class Test_AKBController
         Test.startTest();
         System.runAs(testUser)
         {
-            AKBController akb = new AKBController();
+            ServiceCenter sc = new ServiceCenter();
+            AKBController akb = new AKBController(sc);
             akb.getfeedbackVisible();
             akb.userContact = testContact;
             System.assertEquals(true, akb.getfeedbackVisible());
@@ -287,42 +293,13 @@ public class Test_AKBController
         Test.startTest();
         System.runAs(testUser)
         {
-            AKBController akb = new AKBController();
+            ServiceCenter sc = new ServiceCenter();
+            AKBController akb = new AKBController(sc);
             akb.feedbackHelpful.Article_Id__c = articleTest[0].Id;
             akb.feedbackHelpful.Contact__c = testContact.Id;
             akb.helpfulYes();
             System.AssertEquals(false, akb.getfeedbackVisible());
         }   
-        Test.stopTest();
-    }
-
-    @isTest static void testSuggestAnArticle() 
-    {
-        List<KnowledgeArticleVersion> articleTest = [SELECT KnowledgeArticleId 
-                                                     FROM KnowledgeArticleVersion 
-                                                     WHERE PublishStatus = 'Online' 
-                                                     AND Language = 'en_US' 
-                                                     AND ArticleType = 'FAQ__kav' 
-                                                     LIMIT 1];
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
-        Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
-        Id newCaseId;
-        PageReference akbPage = Page.akb;
-        Test.setCurrentPage(akbPage);
-        Test.startTest();
-        System.runAs(testUser)
-        {
-            ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
-            AKBController akb = new AKBController();
-            akb.suggestAnArticle.Description = 'Test Description';
-            PageReference page = akb.suggestAnArticleSubmit();
-            PageReference expected = new PageReference('/akb?Suggest=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
-            System.AssertEquals(expected.getUrl(), page.getUrl());
-            newCaseId = akb.suggestAnArticle.Id;
-        }
-        Case newCase = [SELECT Subject, Description FROM Case WHERE Id = :newCaseId];
-        System.AssertEquals(newCase.Subject, 'Suggest An Article');
-        System.AssertEquals(newCase.Description, 'Test Description');
         Test.stopTest();
     }
 
@@ -343,7 +320,8 @@ public class Test_AKBController
         Test.startTest();
         System.runAs(testUser)
         {
-            AKBController akb = new AKBController();
+            ServiceCenter sc = new ServiceCenter();
+            AKBController akb = new AKBController(sc);
             akb.urlsJSON = '["test-FAQ-asdf"]';
             String fixedIdLink = '["/akb?id=' + articleTest[0].KnowledgeArticleId + '"]';
             akb.changeLink();

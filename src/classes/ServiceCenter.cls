@@ -20,18 +20,27 @@ public with sharing class ServiceCenter
     public String lastName { get; set; }
     public String emplId { get; set; }
     public String masqScopeIdCookie { get; set; }
+    public String stopViewAsUrl { get; set; }
+    public String viewAsUrl { get; set; }
+    public String asurite { get; set; }
 
-    public ServiceCenter() { setUpPage(); }
-    public ServiceCenter(AKBController controller) { setUpPage(); }
-
-    public void setUpPage()
+    public ServiceCenter()
     {
         masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
         if (masqScopeIdCookie != null)
         {
             String userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
             viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            viewingAs = (!viewAsMap.isEmpty() && viewAsMap.get('authorizedToViewAs') == 'true' && viewAsMap.get('isViewingAs') == 'true' && userAsurite != viewAsMap.get('effectiveAsurite')) ? true : false;
+            if (!viewAsMap.isEmpty() && viewAsMap.get('authorizedToViewAs') == 'true' && viewAsMap.get('isViewingAs') == 'true' && userAsurite != viewAsMap.get('effectiveAsurite'))
+            {
+                viewingAs = true;
+                stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
+                viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
+            }
+            else
+            {
+                viewingAs = false;
+            }
         }
         else 
         {
@@ -50,6 +59,7 @@ public with sharing class ServiceCenter
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
+        asurite = userContact.ASURite_ID__c;
         newCase = new Case();
         today = date.today();
         termcAC = [SELECT Session_A_C_Start_Date__c
@@ -70,6 +80,7 @@ public with sharing class ServiceCenter
     public List<Case> getMyCases()
     {
         List<Contact> contacts = new List<Contact> { userContact };
+
         Map<Id, List<Case>> openCaseMap = CaseService.getVisibleOpenCases(contacts);
 
         return (openCaseMap.get(userContact.Id) == null) ? new List<Case>() : openCaseMap.get(userContact.Id);
@@ -118,7 +129,7 @@ public with sharing class ServiceCenter
 
     public EmailMessage[] getEmailMessages() {
         Date launchDate = EMAILVISIBILITYDATE;
-        if(viewingAs)
+        if (viewingAs)
         {
             return CaseService.getCaseEmailMessages(EMAILVISIBILITYDATE, ApexPages.currentPage().getParameters().get('id'), userContact.Email);
         }
@@ -260,7 +271,10 @@ public with sharing class ServiceCenter
 
     public PageReference submitCase()
     {
-        viewAsCatch();
+        if (viewingAs)
+        {
+            return null;
+        }
 
         try
         {
@@ -283,12 +297,22 @@ public with sharing class ServiceCenter
 
     public Decimal getMyPin()
     {
-        return userContact.Self_Service_PIN__c;
+        if (viewingAs)
+        {
+            return 111111;
+        }
+        else
+        {
+            return userContact.Self_Service_PIN__c;
+        }
     }
 
     public PageReference changePin()
     {
-        viewAsCatch();
+        if (viewingAs)
+        {
+            return null;
+        }
 
         try
         {
@@ -324,6 +348,11 @@ public with sharing class ServiceCenter
 
     public PageReference suggestAnArticleSubmit()
     {
+        if (viewingAs)
+        {
+            return null;
+        }
+
         suggestAnArticle.Subject = 'Suggest An Article';
         suggestAnArticle.Description = suggestAnArticle.Description;
         suggestAnArticle.ContactId = userContact.Id;
@@ -334,22 +363,8 @@ public with sharing class ServiceCenter
         suggestAnArticle.Visible_by_Contact__c = false;
         insert suggestAnArticle;
 
-        PageReference confirmPage = new PageReference('/studentSC' + '?Suggest=yes');
+        PageReference confirmPage = new PageReference(ApexPages.currentPage().getUrl() + '?Suggest=yes');
         confirmPage.setRedirect(true);
         return confirmPage;
-    }
-
-    public PageReference viewAsCatch()
-    {
-        if (viewingAs)
-        {
-            PageReference viewAsCatch = ApexPages.currentPage();
-            viewAsCatch.setRedirect(true);
-            return viewAsCatch;
-        }
-        else
-        {
-            return null;
-        }
     }
 }

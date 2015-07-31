@@ -1,7 +1,8 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
+	<apex:attribute name="viewingAs" description="Whether or not the user is currently viewing as" type="Boolean"/>
 	<center>
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.masqScopeIdCookie != ''}">
+	    <apex:outputPanel rendered="{!viewingAs}">
 	        <div class="alert alert-warning">
 	            <button type='button' class='close' data-dismiss='alert'>×</button>
 	            <apex:outputText>
@@ -30,7 +31,7 @@
 	        </div>
 	    </apex:outputPanel>
 
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback != null}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback == 'yes'}">
 	        <div class="alert alert-success feedbackConfirm">
 	            <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
 	            <p><strong>Thank you for your feedback.</strong> Your feedback helps ASU make the Knowledge Base better.</p>
@@ -53,7 +54,7 @@
 	        </div>
 	    </apex:outputPanel>
 
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest != null}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest == 'yes'}">
             <div class="alert alert-success feedbackConfirm">
                 <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
                 <p><strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.</p>

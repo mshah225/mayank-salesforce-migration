@@ -86,6 +86,11 @@
                 padding-top: 5px !important;
             }
         }
+
+        #articleContentDiv img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
     </style>
 
     <script>
@@ -332,68 +337,6 @@
         </div><!-- end row -->
         <c:SCFooter/>
     </div><!-- end ASU Content -->
-
-    <!-- Autocomplete Code -->
-    <script type="text/javascript">
-        var PLACEHOLDER = '';
-        var articleObjects;
-        var queryTerm;
-
-        $('[id$=articleTextBoxId]').autocomplete({
-            minLength: 2,
-            source: function(request, response) {
-                        queryTerm = request.term;
-                        AutoCompleteController.searchArticle(request.term, function(result, event){
-                            if(event.type == 'exception') {
-                                  alert(event.message);
-                            } else {
-                                 articleObjects = result;
-                                 response(articleObjects);
-                            }
-                        });
-                   },
-            focus: function( event, ui ) {
-                    $('[id$=articleTextBoxId]').val( ui.item.Title );
-                    return false;
-                    },
-            select: function( event, ui ) {
-                        $('[id$=articleTextBoxId]').val( ui.item.Title );
-                        $('[id$=searchArticleId]').val( ui.item.Id );
-                        return false;
-                    },
-         })
-         .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-            var entry = "<a href=/akb?id=" + item.KnowledgeArticleId + ">" + item.Title + "</a><hr>";
-
-            entry = entry.replace(queryTerm, "<b>" + queryTerm + "</b>");
-            return $( "<li></li>" )
-                .data( "item.autocomplete", item )
-                .append( entry )
-                .appendTo( ul );
-        };
-
-        $('[id$=articleTextBoxId]').val(PLACEHOLDER);
-        $('[id$=articleTextBoxId]').on("focus",  function(event){
-            $tgt = $(event.target);
-            if($tgt.val() === PLACEHOLDER ){
-                $tgt.val('');
-                $tgt.removeClass('placeHolder');
-            }
-        });
-        $('[id$=articleTextBoxId]').on( "blur",  function(event){
-            $tgt = $(event.target);
-            if($tgt.val() === '' ){
-                $tgt.val(PLACEHOLDER);
-                $tgt.addClass('placeHolder');
-            }
-        });
-    </script>
-
-    <script>
-        $( document ).ready(function() {
-            $( "#articleContentDiv img" ).addClass("img-responsive");
-        });
-    </script>
 
     <script>
         function getLinks()

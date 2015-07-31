@@ -363,7 +363,8 @@ public with sharing class ServiceCenter
         suggestAnArticle.Visible_by_Contact__c = false;
         insert suggestAnArticle;
 
-        PageReference confirmPage = new PageReference(ApexPages.currentPage().getUrl() + '?Suggest=yes');
+        PageReference confirmPage = ApexPages.currentPage();
+        confirmPage.getParameters().put('Suggest', 'yes');
         confirmPage.setRedirect(true);
         return confirmPage;
     }

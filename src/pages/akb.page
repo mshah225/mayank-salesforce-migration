@@ -144,8 +144,13 @@
                                         <div class="form-horizontal">
                                             <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"
                                             html-placeholder="Enter search terms"/>
-                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults" oncomplete="viewAsLinks()"/>
+                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults" oncomplete="viewAsLinks()" status="KBSearchStatus"/>
                                             <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
+                                            <apex:actionStatus id="KBSearchStatus">
+                                                <apex:facet name="start">
+                                                    <img src="/img/loading.gif" style="position: absolute;margin-left:-125px;margin-top:6px;"/>
+                                                </apex:facet>
+                                            </apex:actionStatus>
                                         </div>
                                         <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
                                     </div>
@@ -155,21 +160,20 @@
                                 <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
                                     <br />
                                     <hr />
-                                    <h5><b>Search Results for:</b> '{!searchstring}'</h5>
+                                    <h5><b>Results for:</b> '{!searchstring}'</h5>
                                     <div style="height:5px;"></div>
                                     <knowledge:articleList articleVar="articleSearch"
-                                        pageNumber="{!currentPageNumber}"
                                         Keyword="{!searchstring}"
-                                        hasMoreVar="true"
-                                        pageSize="10"
-                                        rendered="{!searchstring != ''}">
+                                        pageSize="10">
                                         <table>
                                             <tr>
                                                 <td style="vertical-align:top;">
                                                     &#8226;&nbsp;
                                                 </td>
                                                 <td>
-                                                    <apex:outputLink value="/akb?id={!articleSearch.id}">{!articleSearch.title}</apex:outputLink>
+                                                    <apex:outputLink value="/akb?id={!articleSearch.Id}">
+                                                        {!articleSearch.Title}
+                                                    </apex:outputLink>
                                                     <br />
                                                     <div style="height:6px;"></div>
                                                 </td>
@@ -178,7 +182,7 @@
                                     </knowledge:articleList>
                                     <br />
                                     <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
-                                    Suggest An Article
+                                        Suggest An Article
                                     </button>
                                 </apex:pageBlock>
 

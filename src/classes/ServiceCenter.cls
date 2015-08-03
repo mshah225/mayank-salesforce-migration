@@ -148,9 +148,20 @@ public with sharing class ServiceCenter
     public PageReference viewCase()
     {
         caseId = ApexPages.currentPage().getParameters().get('caseId');
+        String current = ApexPages.currentPage().getUrl();
+        current = current.split('apex/')[1];
         PageReference viewCasePage = new PageReference('/viewcase');
         viewCasePage.getParameters().put('id', caseId);
-        viewCasePage.getParameters().put('source', 'studentSC');
+        
+        if (current != 'viewAllCases')
+        {
+            viewCasePage.getParameters().put('source', current);
+        }
+        else
+        {   
+            viewCasePage.getParameters().put('source', 'viewAllCases');
+        }
+
         if (viewingAs)
         {
             viewCasePage.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);

@@ -416,11 +416,11 @@ private class Test_ServiceCenter
         System.runAs(testUser)
         {
             sc = new ServiceCenter();
-            sc.suggestAnArticle.Description = 'Test Description';
-            PageReference page = sc.suggestAnArticleSubmit();
+            sc.suggestAnArticleSC.Description = 'Test Description';
+            PageReference page = sc.suggestAnArticleSubmitSC();
             PageReference expected = new PageReference('/studentSC?Suggest=yes');
             System.AssertEquals(expected.getUrl(), page.getUrl());
-            newCaseId = sc.suggestAnArticle.Id;
+            newCaseId = sc.suggestAnArticleSC.Id;
         }
         Case newCase = [SELECT Subject, Description FROM Case WHERE Id = :newCaseId];
         System.AssertEquals(newCase.Subject, 'Suggest An Article');

@@ -297,12 +297,12 @@
                                         <apex:pageBlock mode="maindetail">
                                             <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                                             <br />
-                                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;"/>
+                                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticleAKB.Description}" style="width:100%;max-width:400px;height:100px;"/>
                                         </apex:pageBlock>
                                     </div>
                                     <div class="modal-footer">
                                         <div class="pull-left">
-                                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
+                                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmitAKB}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
                                             <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
                                         </div>
                                     </div>

@@ -314,11 +314,11 @@ public class Test_AKBController
         {
             ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
             AKBController akb = new AKBController();
-            akb.suggestAnArticle.Description = 'Test Description';
-            PageReference page = akb.suggestAnArticleSubmit();
+            akb.suggestAnArticleAKB.Description = 'Test Description';
+            PageReference page = akb.suggestAnArticleSubmitAKB();
             PageReference expected = new PageReference('/akb?Suggest=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), page.getUrl());
-            newCaseId = akb.suggestAnArticle.Id;
+            newCaseId = akb.suggestAnArticleAKB.Id;
         }
         Case newCase = [SELECT Subject, Description FROM Case WHERE Id = :newCaseId];
         System.AssertEquals(newCase.Subject, 'Suggest An Article');

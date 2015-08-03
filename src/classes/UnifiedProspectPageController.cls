@@ -251,7 +251,7 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 return false;
             }
-            else if (pickSelection != '--Select--' && selectedInterestId == null) 
+            else if (pickSelection != null && pickSelection != '--Select--' && selectedInterestId == null) 
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
                 return false;
@@ -340,7 +340,10 @@ public class UnifiedProspectPageController
                    opportunity.Academic_Plan__c = planSelected; 
                 }
 
-                insert opportunity;
+                if(career == 'graduate' && opportunity.College__c != null)
+                {
+                    insert opportunity;
+                }
     
                 //Create Previous Education
                 getPreviousEducation();
@@ -418,8 +421,11 @@ public class UnifiedProspectPageController
                     insert c;
                     
                     //Update Opportunity's case with case Id
-                    opportunity.Prospect_Case__c = c.Id;
-                    update opportunity;
+                    if(career == 'graduate' && opportunity.College__c != null)
+                    {
+                        opportunity.Prospect_Case__c = c.Id;
+                        update opportunity;
+                    }
                 }
                 else if (originSelection != '--Select--' && elId != null) 
                 {
@@ -435,7 +441,7 @@ public class UnifiedProspectPageController
                 }
                 
                 //Create CampaignMember Interest
-                if (pickSelection != '--Select--') 
+                if (pickSelection != null && pickSelection != '--Select--') 
                 {
                     if (selectedInterestId != null) 
                     {
@@ -470,7 +476,7 @@ public class UnifiedProspectPageController
     {
         if (save()) 
         {
-            PageReference save = new PageReference('/' + opportunity.Id);
+            PageReference save = new PageReference('/apex/Unified_Prospect_Page?saved=true');
             save.setRedirect(true);
             return save;
         }

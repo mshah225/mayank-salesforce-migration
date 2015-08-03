@@ -60,6 +60,20 @@ public class Test_AKBController
 
         Profile p = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
 
+        Term__c termAC = new Term__c();
+        Date dTac = Date.today().adddays(365);
+        Date dTb = Date.today().adddays(405);
+        termAC.Session_A_C_Start_Date__c = date.newinstance(dTac.year(), dTac.month(), dTac.day());
+        String ACYear = String.valueOf(dTac.year());
+        termAC.Year__c = ACYear;
+        insert termAC;
+
+        Term__c termB = new Term__c();
+        termB.Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day());
+        String BYear = String.valueOf(dTb.year());
+        termB.Year__c = BYear;
+        insert termB;
+
         Contact testContact = ContactService.createTestContact();
         insert testContact;
 

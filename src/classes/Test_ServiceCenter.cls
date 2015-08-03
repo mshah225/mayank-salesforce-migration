@@ -418,7 +418,7 @@ private class Test_ServiceCenter
             sc = new ServiceCenter();
             sc.suggestAnArticle.Description = 'Test Description';
             PageReference page = sc.suggestAnArticleSubmit();
-            PageReference expected = new PageReference('/studentSC?Suggest=yes');
+            PageReference expected = new PageReference('/apex/viewcase?Suggest=yes');
             System.AssertEquals(expected.getUrl(), page.getUrl());
             newCaseId = sc.suggestAnArticle.Id;
         }

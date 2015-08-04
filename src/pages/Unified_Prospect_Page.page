@@ -103,9 +103,12 @@
 </head>
 
 <body id="contentBody" class="content">
+    <apex:pageMessage rendered="{!$CurrentPage.parameters.saved == 'true'}" severity="confirm" >
+       Successfully saved new prospect.
+    </apex:pageMessage>
     <apex:form id="underGradForm" >
     <!--<apex:outputText id="myInt" value="{!selectedInterestId}"/>-->
-        <apex:pageBlock title="ASU New Undergraduate Prospect Entry Form" id="undergradBlock">
+        <apex:pageBlock title="ASU New Prospect Entry Form (Graduate and Undergraduate)" id="undergradBlock">
             <apex:pageBlockButtons >
                 <apex:commandButton styleClass="button" action="{!savePage}" value="Save" status="saveStatus"/>
                 <apex:actionStatus id="saveStatus">

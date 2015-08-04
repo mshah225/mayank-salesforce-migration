@@ -251,7 +251,7 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 return false;
             }
-            else if (pickSelection != '--Select--' && selectedInterestId == null) 
+            else if (pickSelection != null && pickSelection != '--Select--' && selectedInterestId == null) 
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
                 return false;
@@ -340,7 +340,10 @@ public class UnifiedProspectPageController
                    opportunity.Academic_Plan__c = planSelected; 
                 }
 
-                insert opportunity;
+                if(career == 'graduate' && collegeSelected != null)
+                {
+                    insert opportunity;
+                }
     
                 //Create Previous Education
                 getPreviousEducation();
@@ -410,7 +413,13 @@ public class UnifiedProspectPageController
                     c.Origin__c = originSelection;
                     c.Inbound_Interaction__c = true;
                     c.Priority = 'Normal';
-                    String termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
+                    String termName = opportunity.Term__c;
+
+                    if(career == 'graduate' && collegeSelected != null)
+                    {
+                        termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
+                    }
+
                     if (c.Subject == null && c.Description == null) 
                     {
                         c.Subject = c.Origin__c + ' Submission - ' + termName;
@@ -418,8 +427,11 @@ public class UnifiedProspectPageController
                     insert c;
                     
                     //Update Opportunity's case with case Id
-                    opportunity.Prospect_Case__c = c.Id;
-                    update opportunity;
+                    if(career == 'graduate' && collegeSelected != null)
+                    {
+                        opportunity.Prospect_Case__c = c.Id;
+                        update opportunity;
+                    }
                 }
                 else if (originSelection != '--Select--' && elId != null) 
                 {
@@ -435,7 +447,7 @@ public class UnifiedProspectPageController
                 }
                 
                 //Create CampaignMember Interest
-                if (pickSelection != '--Select--') 
+                if (pickSelection != null && pickSelection != '--Select--') 
                 {
                     if (selectedInterestId != null) 
                     {
@@ -470,7 +482,7 @@ public class UnifiedProspectPageController
     {
         if (save()) 
         {
-            PageReference save = new PageReference('/' + opportunity.Id);
+            PageReference save = new PageReference('/apex/Unified_Prospect_Page?saved=true');
             save.setRedirect(true);
             return save;
         }

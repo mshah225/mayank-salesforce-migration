@@ -165,7 +165,7 @@ public class ContactService
         // Get the list of cases associated with our set of contacts
         try
         {
-            String contactInfoQuery = 'SELECT ' + contactFields + ' WHERE Id = :contactId';
+            String contactInfoQuery = 'SELECT ' + contactFields + ' FROM Contact WHERE Id = :contactId';
 
             contactInfo = Database.query(contactInfoQuery);
         }

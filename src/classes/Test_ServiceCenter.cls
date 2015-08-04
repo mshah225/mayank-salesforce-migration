@@ -206,6 +206,18 @@ private class Test_ServiceCenter
     @isTest static void testCases()
     {
         setUp();
+        List<Case> testCaseList = new List<Case>();
+        for (Integer i = 0; i < 10; i++) {
+            Case testCase = new Case(
+                ContactId = testContact.Id,
+                Subject = 'test closed case' + i,
+                Description = 'test closed case' + i,
+                Status = 'Closed: Resolved',
+                Visible_by_Contact__c = true
+            );
+            testCaseList.add(testCase);
+        }
+        insert testCaseList;
         Test.startTest();
         System.runAs(testUser)
         {
@@ -264,6 +276,8 @@ private class Test_ServiceCenter
             sc.userContact = testContact;
             sc.getMyPin();
             sc.newPin = 111111;
+            sc.changePin();
+            sc.newPin = testContact.Self_Service_PIN__c;
             sc.changePin();
             sc.newPin = 6758394;
             sc.changePin();
@@ -406,7 +420,6 @@ private class Test_ServiceCenter
         System.assertEquals(source, 'viewAllCases?source=studentSC');
     }
 
-
     @isTest static void testSuggestAnArticle()
     {
         setUp();
@@ -425,5 +438,32 @@ private class Test_ServiceCenter
         Case newCase = [SELECT Subject, Description FROM Case WHERE Id = :newCaseId];
         System.AssertEquals(newCase.Subject, 'Suggest An Article');
         System.AssertEquals(newCase.Description, 'Test Description');
+    }
+
+    @isTest static void testViewAs()
+    {
+        setUp();
+        PageReference studentSC = Page.studentSC;
+        Test.setCurrentPage(studentSC);
+        System.runAs(testUser)
+        {
+            sc = new ServiceCenter();
+            sc.viewingAs = true;
+            sc.viewCase();
+            sc.submitCase();
+            sc.getMyPin();
+            sc.changePin();
+            sc.suggestAnArticleSubmit();
+
+            // Test to ensure the url does not contain any parameters from action methods
+            Boolean urlContains = false;
+            String url = ApexPages.currentPage().getUrl();
+            if (url.contains('error') || url.contains('success'))
+            {
+                urlContains = true;
+            }
+
+            System.assertEquals(false, urlContains);
+        }
     }
 }

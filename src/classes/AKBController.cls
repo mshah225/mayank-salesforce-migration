@@ -94,7 +94,10 @@ public without sharing class AKBController
     {
         if (sc.viewingAs)
         {
-            return null;
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', sc.masqScopeIdCookie);
+            go.setRedirect(true);
+            return go;
         }
 
         feedbackHelpful.Article_Id__c = ApexPages.currentPage().getParameters().get('id');
@@ -130,7 +133,10 @@ public without sharing class AKBController
     {
         if (sc.viewingAs)
         {
-            return null;
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', sc.masqScopeIdCookie);
+            go.setRedirect(true);
+            return go;
         }
 
         feedbackHelpful.Article_Id__c = ApexPages.currentPage().getParameters().get('id');

@@ -187,7 +187,7 @@
                         <p>ASU values your experience and wants to ensure that you receive quality service. The My ASU Service Center is your personalized online resource for reporting issues and getting help. How can ASU improve the way we provide support through the Service Center?</p><br />
 
                         <apex:outputText value="Feedback Comments:"/><br />
-                        <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width:100%;border:solid 1px #999;border-radius:2px;" rows="5" cols="120"/><br />
+                        <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width:100%;border:solid 1px #999;border-radius:2px;" rows="5" cols="120" required="true"/><br />
                         <apex:commandButton value="Submit" action="{!submit}" styleClass="kbbtn submitButton" style="margin-top:15px;width:45px;"/>
                     </apex:form>
                 </div>

@@ -72,4 +72,24 @@ public class MyASUViewAs
 
 	    return viewAsValues;
   	}
+
+	/**
+	* Checks View As Map response to ensure user has rights to View As
+	* @param The Map recieved from the My ASU web service.
+	* @return A boolean stating if the user will be viewing as or not.
+	*/
+	public static Boolean checkViewAsRights(Map<String, String> viewAsMap, String userAsurite)
+	{
+		if (!viewAsMap.isEmpty()
+				&& viewAsMap.get('authorizedToViewAs') == 'true'
+				&& viewAsMap.get('isViewingAs') == 'true'
+				&& userAsurite != viewAsMap.get('effectiveAsurite'))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

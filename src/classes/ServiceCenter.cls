@@ -13,7 +13,7 @@ public with sharing class ServiceCenter
     public Decimal newPin { get; set; }
     public Id caseId;
     public List<Opportunity> oppList;
-    public Map<String, String> viewAsMap;
+    private Map<String, String> viewAsMap;
     public Term__c termcAC;
     public Term__c termcB;
     public String firstName { get; set; }
@@ -23,33 +23,24 @@ public with sharing class ServiceCenter
     public String stopViewAsUrl { get; set; }
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
+    public String userAsurite;
 
     public ServiceCenter()
     {
+        viewingAs = false;
         masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
         if (masqScopeIdCookie != null)
         {
-            String userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
+            userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
             viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            if (!viewAsMap.isEmpty() && viewAsMap.get('authorizedToViewAs') == 'true' && viewAsMap.get('isViewingAs') == 'true' && userAsurite != viewAsMap.get('effectiveAsurite'))
-            {
-                viewingAs = true;
-                stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
-                viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
-            }
-            else
-            {
-                viewingAs = false;
-            }
-        }
-        else 
-        {
-            viewingAs = false;
+            viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
         }
 
         if (viewingAs)
         {
             userContact = ContactService.getContactToViewAs(viewAsMap.get('effectiveAsurite'));
+            stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
+            viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
         }
         else
         {
@@ -206,15 +197,27 @@ public with sharing class ServiceCenter
         {
             return true;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'A/C')
+                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'B')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (userContact.Affiliation_Student__c == 'Current' || userContact.Affiliation_Alumni__c == 'Current' || userContact.Affiliation_Courtesy_Affiliate__c == 'Current' || userContact.Affiliation_Employee__c == 'Current') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if (oppList[0].StageName != 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && (userContact.Affiliation_Student__c == 'Current'
+                        || userContact.Affiliation_Alumni__c == 'Current'
+                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                        || userContact.Affiliation_Employee__c == 'Current')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -230,19 +233,32 @@ public with sharing class ServiceCenter
         {
             return false;
         }
-        else if ((oppList == Null && userContact != null) || (oppList.size() == 0 && userContact != null))
+        else if ((oppList == Null && userContact != null)
+                    || (oppList.size() == 0 && userContact != null))
         {
             return false;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'A/C')
+                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return true;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'B')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (userContact.Affiliation_Student__c == 'Current' || userContact.Affiliation_Alumni__c == 'Current' || userContact.Affiliation_Courtesy_Affiliate__c == 'Current' || userContact.Affiliation_Employee__c == 'Current') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if (oppList[0].StageName != 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && (userContact.Affiliation_Student__c == 'Current'
+                        || userContact.Affiliation_Alumni__c == 'Current'
+                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                        || userContact.Affiliation_Employee__c == 'Current')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
@@ -258,19 +274,32 @@ public with sharing class ServiceCenter
         {
             return true;
         }
-        else if ((oppList == Null && userContact != null) || (oppList.size() == 0 && userContact != null))
+        else if ((oppList == Null && userContact != null)
+                    || (oppList.size() == 0 && userContact != null))
         {
             return true;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'A/C')
+                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'B')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (userContact.Affiliation_Student__c == 'Current' || userContact.Affiliation_Alumni__c == 'Current' || userContact.Affiliation_Courtesy_Affiliate__c == 'Current' || userContact.Affiliation_Employee__c == 'Current') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if (oppList[0].StageName != 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && (userContact.Affiliation_Student__c == 'Current'
+                        || userContact.Affiliation_Alumni__c == 'Current'
+                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                        || userContact.Affiliation_Employee__c == 'Current')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -284,7 +313,10 @@ public with sharing class ServiceCenter
     {
         if (viewingAs)
         {
-            return null;
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+            return go;
         }
 
         try
@@ -322,7 +354,10 @@ public with sharing class ServiceCenter
     {
         if (viewingAs)
         {
-            return null;
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+            return go;
         }
 
         try
@@ -361,7 +396,10 @@ public with sharing class ServiceCenter
     {
         if (viewingAs)
         {
-            return null;
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+            return go;
         }
 
         suggestAnArticle.Subject = 'Suggest An Article';

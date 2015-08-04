@@ -340,7 +340,7 @@ public class UnifiedProspectPageController
                    opportunity.Academic_Plan__c = planSelected; 
                 }
 
-                if(career == 'graduate' && opportunity.College__c != null)
+                if(career == 'graduate' && collegeSelected != null)
                 {
                     insert opportunity;
                 }
@@ -413,7 +413,13 @@ public class UnifiedProspectPageController
                     c.Origin__c = originSelection;
                     c.Inbound_Interaction__c = true;
                     c.Priority = 'Normal';
-                    String termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
+                    String termName = opportunity.Term__c;
+
+                    if(career == 'graduate' && collegeSelected != null)
+                    {
+                        termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
+                    }
+
                     if (c.Subject == null && c.Description == null) 
                     {
                         c.Subject = c.Origin__c + ' Submission - ' + termName;
@@ -421,7 +427,7 @@ public class UnifiedProspectPageController
                     insert c;
                     
                     //Update Opportunity's case with case Id
-                    if(career == 'graduate' && opportunity.College__c != null)
+                    if(career == 'graduate' && collegeSelected != null)
                     {
                         opportunity.Prospect_Case__c = c.Id;
                         update opportunity;

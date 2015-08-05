@@ -14,8 +14,7 @@ public class MyASUViewAs
 		// Store these configuration parameters wherever you store your general app config/properties
 		String appid = 'salesforce_app';
 		String sharedSecret = SECRET_KEY; // this is the secret key assigned to the appid
-		String myAsuUrl = 'https://webapp4-qa.asu.edu/myasu'; // prod url = https://webapp4.asu.edu/myasu
-		// TODO: update the myAsuUrl to prod before migration.
+		String myAsuUrl = [SELECT MyASUURL__c FROM View_As_URL__c WHERE Name = 'URL'].MyASUURL__c;
 
 		// Gather/determine input parameters to web service call
 		String realAsurite = asurite; // the real user identity -- get this from asuwebauth/SSO

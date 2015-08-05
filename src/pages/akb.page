@@ -4,10 +4,9 @@
     docType="html-5.0"
     controller="AKBController"
     action="{!init}"
-    extensions="ServiceCenter,vfKeywordSearchController,AutoCompleteController,NavLinks,newCase"
-    tabStyle="Case">
+    extensions="ServiceCenter,vfKeywordSearchController,AutoCompleteController,NavLinks">
 <head>
-    <title>My ASU - {!article.title}</title>
+    <title>My ASU | {!article.title}</title>
     <c:asu_responsive_header_section />
     
     <style>
@@ -110,12 +109,7 @@
     <c:SCHeader/>
 
     <div id="asu_content_well">
-        <c:SCPageNotifications pinError="{!pinError}" 
-                               pinMessage="{!pinMessage}" 
-                               pinSuccess="{!pinSuccess}" 
-                               feedback="{!$CurrentPage.parameters.Feedback}" 
-                               confirm="{!$CurrentPage.parameters.Confirm}" 
-                               suggest="{!$CurrentPage.parameters.Suggest}"/>
+        <c:SCPageNotifications/>
         
         <div class="container">
             <ol class="breadcrumb">
@@ -123,7 +117,7 @@
                 <li class="active" style="font-size:10pt;">View Article</li>
             </ol>
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-7">
                     <div class="box">
                         <div class="header">
                             <h6><b>Knowledge Article &#35;{!article.ArticleNumber}</b></h6>
@@ -256,7 +250,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <div class="box">
                         <div class="header">
                             <h6><b>Articles You May Find Helpful</b></h6>
@@ -284,6 +278,7 @@
                                 $( '[id$=relatedArticleLink]' ).first().hide();
                             </script>
 
+                            <br />
                             <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
                                 Suggest An Article
                             </button>

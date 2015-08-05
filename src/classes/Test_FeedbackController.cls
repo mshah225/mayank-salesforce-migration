@@ -62,7 +62,8 @@ private class Test_FeedbackController
 			sc.viewingAs = true;
 			fc.comments = 'test should return null PageReference while Viewing As';
 
-			System.assertEquals(fc.submit().getUrl(), null);
+			PageReference testURL = new PageReference('/apex/feedback');
+			System.assertEquals(fc.submit().getUrl(), testURL.getUrl());
 		}
 	}
 }

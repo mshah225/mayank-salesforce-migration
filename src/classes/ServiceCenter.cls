@@ -24,6 +24,7 @@ public with sharing class ServiceCenter
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
     public String userAsurite;
+    public String searchstring { get; set; }
 
     public ServiceCenter()
     {
@@ -416,5 +417,13 @@ public with sharing class ServiceCenter
         confirmPage.getParameters().put('Suggest', 'yes');
         confirmPage.setRedirect(true);
         return confirmPage;
+    }
+
+    public void checkSearchString()
+    {
+        if (searchstring.length() > 99)
+        {
+            searchstring = searchstring.substring(0,99);
+        }
     }
 }

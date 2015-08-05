@@ -4,7 +4,7 @@
     docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
-    extensions="AKBController,vfKeywordSearchController,AutoCompleteController,NavLinks">
+    extensions="AKBController,NavLinks">
 <head>
     <title>My ASU | {!article.title}</title>
     <c:asu_responsive_header_section />
@@ -152,7 +152,6 @@
                                                 </apex:facet>
                                             </apex:actionStatus>
                                         </div>
-                                        <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
                                     </div>
                                 </apex:pageBlock>
                             </apex:form>

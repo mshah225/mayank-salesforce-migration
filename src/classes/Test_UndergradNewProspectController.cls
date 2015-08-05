@@ -81,12 +81,15 @@ private class Test_UndergradNewProspectController
 
     @isTest static void testOptionalInterest() 
     {
-        Test.startTest();
+        Campaign interestTestCam = [SELECT Id, Name FROM Campaign WHERE Name = 'ASU Test Interest'];
+        Id testSchool = [SELECT Id FROM Account WHERE Name = 'Test School'].Id;
+
         setUpController();
+
+        Test.startTest();
 
         // Page selections
         ug.originSelection = 'Email';
-        Campaign interestTestCam = [SELECT Id, Name FROM Campaign WHERE Name = 'ASU Test Interest'];
         ug.pickSelection = interestTestCam.Name;
         ug.selectedInterestId = interestTestCam.Id;
 
@@ -101,16 +104,16 @@ private class Test_UndergradNewProspectController
         ug.contact.Phone = '(484) 484-4848';
 
         // Create previous education
-        Id testSchool = [SELECT Id FROM Account WHERE Name = 'Test School'].Id;
         ug.previousEducation.Account__c = testSchool;
         ug.savePage();
-        Test.stopTest(); 
+
+        Test.stopTest();
 
         System.assertNotEquals(null, ug.contact);
         System.assertNotEquals(null, ug.camMemInterest);
     }
 
-    @isTest static void testSaveErrors() 
+    @isTest static void testSaveErrors()
     {
         Test.setCurrentPage(Page.UndergradNewProspect);
         setUpController();

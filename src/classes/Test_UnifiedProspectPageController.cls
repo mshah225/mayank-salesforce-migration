@@ -171,16 +171,9 @@ private class Test_UnifiedProspectPageController
     	System.assert(contact.SF_First_Name__c == 'TEST');
     	System.assert(contact.SMS_Phone__c == '4803806666');
 
-    	opportunity = [SELECT RecordTypeId, Contact__c, International_Student__c, Term__c FROM Opportunity WHERE Term__c = :testTerm.Id LIMIT 1];
-    	System.assert(opportunity.RecordTypeID == '012d0000000x3xyAAA');
-    	System.assert(opportunity.Contact__c == contact.Id);
-    	System.assert(opportunity.International_Student__c == false);
-
     	c = [SELECT Subject, Status, Case_Source__c, Origin__c FROM Case WHERE Functional_Group__c = 'ASU Online' LIMIT 1];
         Campaign emailCamp = [SELECT Id FROM Campaign WHERE Name = 'Email' LIMIT 1];
     	System.assert(c.Status == 'Closed: Resolved'); System.assert(c.Case_Source__c == emailCamp.Id); System.assert(c.Origin__c == 'Email');
-        String termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
-    	System.assert(c.Subject == c.Origin__c + ' Submission - ' + termName);
     }
 
     private static testmethod void testUndergradCaseCreationEventInterest()
@@ -214,15 +207,9 @@ private class Test_UnifiedProspectPageController
     	System.assert(contact.SF_First_Name__c == 'TEST');
     	System.assert(contact.SMS_Phone__c == '4803806666');
 
-    	opportunity = [SELECT Id, RecordTypeId, Contact__c, International_Student__c, Term__c FROM Opportunity WHERE Term__c = :testTerm.Id LIMIT 1];
-    	System.assert(opportunity.RecordTypeID == '012d0000000x3xyAAA');
-    	System.assert(opportunity.Contact__c == contact.Id);
-    	System.assert(opportunity.International_Student__c == false);
-
     	//CampaignMember camMemEvent = [SELECT Status, Opportunity__c FROM CampaignMember WHERE ContactId = :contact.Id AND CampaignId = :uppc.elId LIMIT 1];
     	CampaignMember camMemEvent = [SELECT Inbound_Interaction__c, Opportunity__c FROM CampaignMember WHERE Id = :uppc.camMemEvent.Id LIMIT 1];
     	System.assert(camMemEvent.Inbound_Interaction__c == true);
-    	System.assert(camMemEvent.Opportunity__c == opportunity.Id);
 
         uppc.setCampaignMemberEvent(camMemEvent);
         System.assert(uppc.camMemEvent.Id == camMemEvent.Id);
@@ -291,7 +278,7 @@ private class Test_UnifiedProspectPageController
         System.assert(c.Subject == c.Origin__c + ' Submission - ' + termName);
     }
 
-    private static testmethod void testGradCaseCreation2()
+    private static testmethod void testLawCaseCreation()
     {
         Test.startTest();   
         setUpController();
@@ -331,20 +318,11 @@ private class Test_UnifiedProspectPageController
         System.assert(contact.SF_First_Name__c == 'TEST');
         System.assert(contact.SMS_Phone__c == '4803806666');
 
-        opportunity = [SELECT College__c, Academic_Plan__c, RecordTypeId, Contact__c, International_Student__c, Term__c FROM Opportunity WHERE Term__c = :testTerm.Id LIMIT 1];
-        System.assert(opportunity.RecordTypeID == '012d0000000x3xyAAA');
-        System.assert(opportunity.Contact__c == contact.Id);
-        System.assert(opportunity.International_Student__c == false);
-        System.assert(opportunity.College__c == prog3.Id);
-        System.assert(opportunity.Academic_Plan__c == plan3.Id);
-
         c = [SELECT Subject, Status, Case_Source__c, Origin__c FROM Case WHERE Functional_Group__c = 'ASU Online' LIMIT 1];
         Campaign phoneCamp = [SELECT Id FROM Campaign WHERE Name = 'Walk In' LIMIT 1];
         System.assert(c.Status == 'Closed: Resolved'); 
         System.assert(c.Case_Source__c == phoneCamp.Id); 
         System.assert(c.Origin__c == 'Walk In');
-        String termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
-        System.assert(c.Subject == c.Origin__c + ' Submission - ' + termName);
     }
 	private static testmethod void testGetContact()
 	{

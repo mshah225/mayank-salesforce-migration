@@ -180,5 +180,30 @@ public without sharing class ContactService
         return true;
     }
 
+    /**
+    * Get all of the information pertaining to the provided contact Id
+    * @param contactId A Contact ID
+    * @return contactInfo The corresponding Contact
+    */
+    public static Contact getContactInformation(Id contactId)
+    {
+        Contact contactInfo = null;
+        String contactFields = contactFieldsToString();
+
+        // Get the list of cases associated with our set of contacts
+        try
+        {
+            String contactInfoQuery = 'SELECT ' + contactFields + ' FROM Contact WHERE Id = :contactId';
+
+            contactInfo = Database.query(contactInfoQuery);
+        }
+        catch (Exception e)
+        {
+            throw new ContactServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s information\n' + e.getMessage());
+        }
+
+        return contactInfo;
+    }
+
 	public class ContactServiceException extends Exception {}
 }

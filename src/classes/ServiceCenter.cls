@@ -107,11 +107,11 @@ public with sharing class ServiceCenter
     public Case getCaseDetails()
     {
         if (viewingAs)
-        {   
+        {
             return CaseService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
-        }   
+        }
         else
-        { 
+        {
             return [SELECT Id, CaseNumber, Functional_Group__c, Subject, Description, Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
                     FROM Case
                     WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
@@ -143,13 +143,13 @@ public with sharing class ServiceCenter
         current = current.split('apex/')[1];
         PageReference viewCasePage = new PageReference('/viewcase');
         viewCasePage.getParameters().put('id', caseId);
-        
+
         if (current != 'viewAllCases')
         {
             viewCasePage.getParameters().put('source', current);
         }
         else
-        {   
+        {
             viewCasePage.getParameters().put('source', 'viewAllCases');
         }
 

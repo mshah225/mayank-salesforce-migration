@@ -115,11 +115,11 @@
 </head>
 <body onload="getLinks(); viewAsLinks();">
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader firstName="{!firstName}" 
-                lastName="{!lastName}" 
-                viewingAs="{!viewingAs}" 
-                emplId="{!emplId}" 
-                stopViewAsUrl="{!stopViewAsUrl}" 
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
                 viewAsUrl="{!viewAsUrl}"/>
 
     <div id="asu_content_well">

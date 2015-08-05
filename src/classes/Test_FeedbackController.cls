@@ -5,49 +5,64 @@ private class Test_FeedbackController
 	private static Case testCase;
 	private static User testUser;
 	private static FeedbackController fc;
+	private static ServiceCenter sc;
 
-	static void setUp() 
+	@testSetup static void setUp()
 	{
-		Profile p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
+		Term__c termAC = new Term__c();
+		Date dTac = Date.today().adddays(365);
+		Date dTb = Date.today().adddays(405);
+		termAC.Session_A_C_Start_Date__c = date.newinstance(dTac.year(), dTac.month(), dTac.day());
+		String ACYear = String.valueOf(dTac.year());
+		termAC.Year__c = ACYear;
+		insert termAC;
 
-		testContact = new Contact(
-			FirstName = 'John',
-			LastName = 'Doe',
-			ASURITE_Id__c = 'testing');
+		Term__c termB = new Term__c();
+		termB.Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day());
+		String BYear = String.valueOf(dTb.year());
+		termB.Year__c = BYear;
+		insert termB;
+
+		Profile p = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
+
+		testContact = ContactService.createTestContact();
 		insert testContact;
 
-		testUser = new User(
-			FirstName = 'John',
-			LastName = 'Doe',
-			Alias = 'testing',
-			Username = 'username@test.com',
-	        Email = 'test@nomail.com',
-	        CommunityNickname = 'testingNick',
-	        TimeZoneSidKey = 'America/Phoenix',
-	        LocaleSidKey = 'en_US',
-	        EmailEncodingKey = 'ISO-8859-1',
-	        LanguageLocaleKey = 'en_US',
-	        ProfileId = p.Id,
-	        ContactId = testContact.Id);
+		testUser = UserService.createTestUser();
+		testUser.ProfileId = p.Id;
+		testUser.ContactId = testContact.Id;
 		insert testUser;
-
-		testCase = new Case(
-			Description = 'Test Description');
-
-		fc = new FeedbackController();
 	}
 
 	@isTest static void testFeedbackCase() 
 	{
-		setUp();
-		fc.c = testCase;
-		fc.comments = testCase.Description;
+		testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
 		PageReference setPage = Page.feedback;
 		Test.setCurrentPage(setPage);
-		PageReference submitTest = new PageReference('/studentSC?Confirm=feedback');
 		System.runAs(testUser) 
 		{
-			System.assertEquals(fc.submit().getUrl(),submitTest.getUrl());
+			sc = new ServiceCenter();
+			fc = new FeedbackController(sc);
+			fc.comments = 'Test description submission.';
+
+			PageReference submitTest = new PageReference('/studentSC?Confirm=feedback');
+			System.assertEquals(fc.submit().getUrl(), submitTest.getUrl());
+		}
+	}
+
+	@isTest static void testViewAsFeedback()
+	{
+		testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+		PageReference setPage = Page.feedback;
+		Test.setCurrentPage(setPage);
+		System.runAs(testUser)
+		{
+			sc = new ServiceCenter();
+			fc = new FeedbackController(sc);
+			sc.viewingAs = true;
+			fc.comments = 'test should return null PageReference while Viewing As';
+
+			System.assertEquals(fc.submit().getUrl(), null);
 		}
 	}
 }

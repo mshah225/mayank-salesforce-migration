@@ -1,6 +1,7 @@
 <apex:page sidebar="false"
     showHeader="false"
-    controller="FeedbackController">
+    controller="ServiceCenter"
+    extensions="FeedbackController">
 <html>
 <head>
     <title>My ASU | Service Center Feedback</title>
@@ -48,7 +49,7 @@
     </style>
 </head>
 
-<body>
+<body onload="viewAsLinks()">
     <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
     <div id="main-search" class="main-search closed"></div>
     <div id="asu_hdr" class="asu_hdr_white myasu-cont">
@@ -165,6 +166,17 @@
         <div id="myasu-tabs" class="myasu-cont">
             <div class="navbar-links">
                 <span class='tab'><a href="https://webapp4.asu.edu/myasu" class="tracking"><span class="fa fa-home" title="Home"></span></a></span>
+
+                <apex:outputPanel rendered="{!viewingAs}">
+                    <p class="username pull-right">
+                    {!firstName} {!lastName}
+                        <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
+                            &nbsp;&nbsp;({!emplId})<br />
+                            <a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
+                            <a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
+                        </apex:outputPanel>
+                    </p>
+                </apex:outputPanel>
             </div>
         </div>
     </header>
@@ -173,7 +185,8 @@
         <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
     </div>
 
-    <div id="asu_content_well">    
+    <div id="asu_content_well">
+        <c:SCPageNotifications viewingAs="{!viewingAs}"/>
         <div class="container">
             <ol class="breadcrumb">
                 <li><a href="/studentSC">Back</a></li>
@@ -207,6 +220,28 @@
             <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
         </ul>
     </div>
+
+    <script>
+        function viewAsLinks() {
+            var masqCookie = "{!masqScopeIdCookie}";
+            var viewingAs = "{!viewingAs}";
+            if (masqCookie != "" && viewingAs == "true") {
+                $("a").each(function() {
+                    var href = this.href;
+                    if (href.indexOf("force") > -1)
+                    {
+                        if (href.indexOf("?") != -1) {
+                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        else {
+                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        $(this).attr("href", href);
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 </html>
 </apex:page>

@@ -298,7 +298,7 @@
                 </apex:tab>
 
                 <apex:tab id="addAffiliation" name="addAffiliation" label="Add an Affiliation" style="background-color:#f0f0f0;">
-                    <apex:form id="searchForm" style="font-size:9pt;overflow:auto;height:240px;max-width:1100px;">
+                    <apex:form id="searchForm" style="font-size:9pt;overflow:auto;height:295px;max-width:1100px;">
                         <apex:outputPanel id="leftPanel" style="font-size:9pt;float:left;width:49.5%;">
                             <apex:outputPanel id="searchPanel">
                                 <apex:pageBlock id="searchBlock">
@@ -386,7 +386,7 @@
                 </apex:tab>
 
                 <apex:tab id="editAffiliation" name="editAffiliation" label="Remove Affiliations" style="background-color:#f0f0f0;">
-                    <apex:form id="inActivateCMForm" style="font-size:9pt;overflow:auto;height:240px;max-width:1100px;">
+                    <apex:form id="inActivateCMForm" style="font-size:9pt;overflow:auto;height:295px;max-width:1100px;">
                         <apex:pageBlock title="Select a Cohort Campaign to Remove">
                         <apex:pageMessages />
                             <apex:outputPanel style="overflow:auto;">

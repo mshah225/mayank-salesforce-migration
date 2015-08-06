@@ -1,14 +1,14 @@
 public with sharing class CaseTransferController
 {
-	public Integer page { get; set; }
-	public Id selectedId { get;set; }
-	public List<User> userList { get; set; }
-	public Map<String, List<Case_Assignment_Rule__c>> serviceCARS { get; set; }
-	public Map<String, List<Case_Assignment_Rule__c>> collegeCARS { get; set; }
-	public String selectedGroupName { get; set; }
-	public String selectedCARLabel { get; set; }
-	public String source { get; set; }
-	public String searchString { get; set; }
+    public Integer page { get; set; }
+    public Id selectedId { get;set; }
+    public List<User> userList { get; set; }
+    public Map<String, List<Case_Assignment_Rule__c>> serviceCARS { get; set; }
+    public Map<String, List<Case_Assignment_Rule__c>> collegeCARS { get; set; }
+    public String selectedGroupName { get; set; }
+    public String selectedCARLabel { get; set; }
+    public String source { get; set; }
+    public String searchString { get; set; }
     private Boolean toUser;
     private String caseSub;
     private String caseDesc;

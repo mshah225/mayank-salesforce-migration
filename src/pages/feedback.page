@@ -186,7 +186,9 @@
     </div>
 
     <div id="asu_content_well">
-        <c:SCPageNotifications viewingAs="{!viewingAs}"/>
+        <c:SCPageNotifications viewingAs="{!viewingAs}"
+                               firstName="{!firstName}"
+                               lastName="{!lastName}"/>
         <div class="container">
             <ol class="breadcrumb">
                 <li><a href="/studentSC">Back</a></li>

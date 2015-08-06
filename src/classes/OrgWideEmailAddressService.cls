@@ -26,9 +26,7 @@ public class OrgWideEmailAddressService
 
 		try
 		{
-			String oweaQuery = 'SELECT ' + oweaFieldsToString() + ' ' +
-								'FROM OrgWideEmailAddress ' + 
-								'WHERE Address = :emailAddress';
+			String oweaQuery = 'SELECT ' + oweaFieldsToString() + ' FROM OrgWideEmailAddress WHERE Address = :emailAddress';
 
 			System.debug(oweaQuery);
 

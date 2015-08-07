@@ -1013,7 +1013,12 @@ public with sharing class Test_CaseHandler {
     
     static testmethod void TestFAChangeStateWithSufficientLinks()
     {
-        Id fa_id = [SELECT Id FROM Group WHERE Name = 'Financial Aid (Case)' LIMIT 1].Id;
+        Id fa_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'Financial Aid (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
 
         Contact con = createContact();
         Case c = createCase(fa_id);
@@ -1022,14 +1027,24 @@ public with sharing class Test_CaseHandler {
         Test.startTest();
         update c;
         Test.stopTest();
-        Case stat = [SELECT Status, Visible_by_Contact__c FROM Case WHERE Id = :c.Id LIMIT 1];
+        Case stat = [
+            SELECT Status, Visible_by_Contact__c
+            FROM Case
+            WHERE Id = :c.Id LIMIT 1
+        ];
+
         System.assert(stat.Status == 'Closed: Resolved');
         System.assert(stat.Visible_by_Contact__c == FALSE);
     }
 
     static testmethod void TestRegChangeStateWithSufficientLinks()
     {
-        Id reg_id = [SELECT Id FROM Group WHERE Name = 'University Registrar Services (Case)' LIMIT 1].Id;
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
 
         Contact con = createContact();
         Case c = createCase(reg_id);
@@ -1038,14 +1053,24 @@ public with sharing class Test_CaseHandler {
         Test.startTest();
         update c;
         Test.stopTest();
-        Case stat = [SELECT Status, Visible_by_Contact__c FROM Case WHERE Id = :c.Id LIMIT 1];
+        Case stat = [
+            SELECT Status, Visible_by_Contact__c
+            FROM Case
+            WHERE Id = :c.Id LIMIT 1
+        ];
+
         System.assert(stat.Status == 'New');
         System.assert(stat.Visible_by_Contact__c == TRUE);
     }
     
     static testmethod void TestChangeStateWithoutSufficientLinks()
     {
-        Id reg_id = [SELECT Id FROM Group WHERE Name = 'University Registrar Services (Case)' LIMIT 1].Id;
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
 
         Contact con = createContact();
         Case c = createCase(reg_id);

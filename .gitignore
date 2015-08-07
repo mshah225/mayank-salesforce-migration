@@ -9,10 +9,9 @@ salesforce.schema
 /debug/
 /deploy/
 /build/
-asu-salesforce-metadata.sublime-project
-asu-salesforce-metadata.sublime-settings
-asu-salesforce-metadata.sublime-workspace
-asu-salesforce-metadata.iml
-
+*.sublime-project
+*.sublime-settings
+*.sublime-workspace
+*.iml
 .DS_Store
 *.log

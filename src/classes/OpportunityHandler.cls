@@ -73,7 +73,24 @@ public without sharing class OpportunityHandler
    * This method is called iteratively for each record to be updated during a BEFORE
    * trigger.
    */
-  public void beforeUpdate(SObject oldSo, SObject so){}
+  public void beforeUpdate(SObject oldSo, SObject so)
+  {
+    Opportunity oldOpp = (Opportunity) oldSo;  
+    Opportunity newOpp = (Opportunity) so;  
+    if(oldOpp.Academic_Plan__c != newOpp.Academic_Plan__c || oldOpp.Admitted_Plan__c != newOpp.Admitted_Plan__c)
+    {
+      if(newOpp.Admitted_Plan__c != null)
+      {
+        Id admitted_plan_id = [SELECT Admitted_Plan__r.Program__r.Id FROM Opportunity WHERE Id = :newOpp.Id].Id;
+        newOpp.College__c = admitted_plan_id;
+      }  
+      else if(newOpp.Academic_Plan__c != null)
+      {
+        Id academic_plan_id = [SELECT Academic_Plan__r.Program__r.Id FROM Opportunity WHERE Id = :newOpp.Id].Id;
+        newOpp.College__c = academic_plan_id;
+      }
+    }
+  }
 
   /**
    * beforeDelete

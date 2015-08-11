@@ -1,46 +1,54 @@
 public without sharing class UserHandler implements ITrigger
 {
-	public void bulkBefore() {}
-
-	public void bulkAfter() {}
-
-	public void beforeInsert(SObject so) 
+	public void bulkBefore() 
 	{
-		User newUser = (User) so;
-
-		if (newUser.UserPermissionsKnowledgeUser)
+		if(Trigger.isInsert)
 		{
-			newUser.Role_Knowledge__c = true;
-		}
+			List<User> newUsers = Trigger.new; 
+			Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+			Id communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
 
-		Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-		if(newUser.ProfileId == communityProfile)
-		{
-			Contact newUserContact;
-			if(newUser.ContactId == null)
+			for(Integer x = 0; x < newUsers.size(); x++)
 			{
-				newUserContact = [SELECT Id, CAP__c FROM Contact WHERE ASURite_ID__c = :newUser.Alias AND FirstName = :newUser.FirstName AND LastName = :newUser.LastName LIMIT 1];
-				if(newUserContact == null)
-				{
-					newUser.ContactId.addError('No Contact for this user!');	
-				}
-				else
-				{
-					newUser.ContactId = newUserContact.Id;	
-				}
-			}
-			else
-			{
-				newUserContact = [SELECT CAP__c FROM Contact WHERE Id = :newUser.ContactId];
-			}
+				User newUser = newUsers.get(0);
 
-			if(newUserContact.CAP__c != null)
-			{
-				Profile newUserProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
-				newUser.ProfileId = newUserProfile.Id;
+				if (newUser.UserPermissionsKnowledgeUser)
+				{
+					newUser.Role_Knowledge__c = true;
+				}
+
+				if(newUser.ProfileId == communityProfile)
+				{
+					Contact newUserContact;
+					if(newUser.ContactId == null)
+					{
+						newUserContact = [SELECT Id, CAP__c FROM Contact WHERE ASURite_ID__c = :newUser.Alias AND FirstName = :newUser.FirstName AND LastName = :newUser.LastName LIMIT 1];
+						if(newUserContact == null)
+						{
+							newUser.ContactId.addError('No Contact for this user!');	
+						}
+						else
+						{
+							newUser.ContactId = newUserContact.Id;	
+						}
+					}
+					else
+					{
+						newUserContact = [SELECT CAP__c FROM Contact WHERE Id = :newUser.ContactId];
+					}
+
+					if(newUserContact.CAP__c != null)
+					{
+						newUser.ProfileId = communityCapProfile;
+					}
+				}
 			}
 		}
 	}
+
+	public void bulkAfter() {}
+
+	public void beforeInsert(SObject so) {}
 
 	public void beforeUpdate(SObject oldSo, SObject so) 
 	{

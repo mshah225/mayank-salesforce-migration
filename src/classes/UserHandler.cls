@@ -7,6 +7,8 @@ public without sharing class UserHandler implements ITrigger
 			List<User> newUsers = Trigger.new; 
 			Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
 			Id communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
+			List<Id> contactIds = new List<Id>();
+			Map<Id, User> contactToUser = new Map<Id, User>();
 
 			for(Integer x = 0; x < newUsers.size(); x++)
 			{
@@ -19,27 +21,22 @@ public without sharing class UserHandler implements ITrigger
 
 				if(newUser.ProfileId == communityProfile)
 				{
-					Contact newUserContact;
-					if(newUser.ContactId == null)
-					{
-						newUserContact = [SELECT Id, CAP__c FROM Contact WHERE ASURite_ID__c = :newUser.Alias AND FirstName = :newUser.FirstName AND LastName = :newUser.LastName LIMIT 1];
-						if(newUserContact == null)
-						{
-							newUser.ContactId.addError('No Contact for this user!');	
-						}
-						else
-						{
-							newUser.ContactId = newUserContact.Id;	
-						}
-					}
-					else
-					{
-						newUserContact = [SELECT CAP__c FROM Contact WHERE Id = :newUser.ContactId];
-					}
+					contactIds.add(newUser.ContactId);
+					contactToUser.put(newUser.ContactId, newUser);
+				}
+			}
 
-					if(newUserContact.CAP__c != null)
+			if(contactIds.size() > 0)
+			{
+				System.debug('CONTACT IDS: ' + contactIds);
+				List<Contact> newUserContacts = [SELECT Id, CAP__c FROM Contact WHERE Id IN :contactIds];
+				for(Integer x = 0; x < newUserContacts.size(); x++)
+				{
+					System.debug('NEW USER CONTACTS: ' + newUserContacts);
+					User u = contactToUser.get(newUserContacts.get(x).Id);
+					if(newUserContacts.get(x).CAP__c != null)
 					{
-						newUser.ProfileId = communityCapProfile;
+						u.ProfileId = communityCapProfile;
 					}
 				}
 			}

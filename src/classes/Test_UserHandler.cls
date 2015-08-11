@@ -43,30 +43,4 @@ public class Test_UserHandler
 
 		System.assert(testUser.ProfileId == communityCapProfile.Id);
 	}
-
-	@isTest static void insertCAPUserNotLinked()
-	{		
-		Contact testContact = ContactService.createTestContact();
-		testContact.FirstName = 'Test';
-		testContact.LastName = 'User';
-		testContact.ASURite_ID__c = 'testuser';
-		testContact.CAP_Possible__c = TRUE;
-		insert testContact;
-
-		Student_Group__c testGroup = new Student_Group__c();
-		testGroup.SG_Status__c = TRUE;
-		testGroup.SG_PeopleSoft_Code__c = 'CP00';
-		testGroup.SG_Contact__c = testContact.Id;
-		insert testGroup;
-
-		User testUser = UserService.createTestUser();
-		Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-		testUser.ProfileId = communityProfile;
-		insert testUser;
-
-		Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
-		testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
-
-		System.assert(testUser.ProfileId == communityCapProfile.Id);
-	}	
 }

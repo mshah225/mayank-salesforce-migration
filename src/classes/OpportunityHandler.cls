@@ -29,6 +29,54 @@ public without sharing class OpportunityHandler
       }      
     }
 
+    if(Trigger.isUpdate)
+    {
+      List<Opportunity> oldOpps = Trigger.old;
+      List<Opportunity> newOpps = Trigger.new;
+      List<Id> admittedPlanIds = new List<Id>();
+      List<Id> academicPlanIds = new List<Id>();
+      Map<Id, Id> admittedPlanPrograms = new Map<Id, Id>();
+      Map<Id, Id> academicPlanPrograms = new Map<Id, Id>();
+
+      for(Integer x = 0; x < newOpps.size(); x++)
+      {
+        admittedPlanIds.add(newOpps.get(x).Admitted_Plan__c);
+        academicPlanIds.add(newOpps.get(x).Academic_Plan__c);
+      }
+
+      //List<Opportunity> planIds = [SELECT Id, Academic_Plan__c, Academic_Plan__r.Id, Admitted_Plan__r.Program__r.Id, Academic_Plan__r.Program__r.Id FROM Opportunity WHERE Id in :oppIds]; 
+      List<Plan__c> admittedPrograms = [SELECT Id, Program__c FROM Plan__c WHERE Id in :admittedPlanIds];
+      List<Plan__c> academicPrograms = [SELECT Id, Program__c FROM Plan__c WHERE Id in :academicPlanIds];
+      for(Integer x = 0; x < admittedPrograms.size(); x++)
+      {
+        Plan__c c = admittedPrograms.get(x);
+        admittedPlanPrograms.put(c.Id, c.Program__c);
+      }
+
+      for(Integer x = 0; x < academicPrograms.size(); x++)
+      {
+        Plan__c c = academicPrograms.get(x);
+        academicPlanPrograms.put(c.Id, c.Program__c);
+      }
+
+      for(Integer x = 0; x < oldOpps.size(); x++)
+      {
+        Opportunity oldOpp = oldOpps.get(x);
+        Opportunity newOpp = newOpps.get(x);  
+
+        if(oldOpp.Academic_Plan__c != newOpp.Academic_Plan__c || oldOpp.Admitted_Plan__c != newOpp.Admitted_Plan__c)
+        {
+          if(newOpp.Admitted_Plan__c != null)
+          {
+            newOpp.College__c = admittedPlanPrograms.get(newOpp.Admitted_Plan__c);
+          }  
+          else if(newOpp.Academic_Plan__c != null)
+          {
+            newOpp.College__c = academicPlanPrograms.get(newOpp.Academic_Plan__c);
+          }
+        }
+      }
+    }
   }
   
   /**
@@ -75,21 +123,7 @@ public without sharing class OpportunityHandler
    */
   public void beforeUpdate(SObject oldSo, SObject so)
   {
-    Opportunity oldOpp = (Opportunity) oldSo;  
-    Opportunity newOpp = (Opportunity) so;  
-    if(oldOpp.Academic_Plan__c != newOpp.Academic_Plan__c || oldOpp.Admitted_Plan__c != newOpp.Admitted_Plan__c)
-    {
-      if(newOpp.Admitted_Plan__c != null)
-      {
-        Id admitted_plan_id = [SELECT Admitted_Plan__r.Program__r.Id FROM Opportunity WHERE Id = :newOpp.Id].Id;
-        newOpp.College__c = admitted_plan_id;
-      }  
-      else if(newOpp.Academic_Plan__c != null)
-      {
-        Id academic_plan_id = [SELECT Academic_Plan__r.Program__r.Id FROM Opportunity WHERE Id = :newOpp.Id].Id;
-        newOpp.College__c = academic_plan_id;
-      }
-    }
+
   }
 
   /**

@@ -1,129 +1,118 @@
-public class ChatterAutoAddUsers {
-
+public class ChatterAutoAddUsers
+{
     @future
-    public static void AddToServiceGroup(Set<Id> userId) {
-    
-        //Grab the group ids for each chatter group.
-        List<CollaborationGroup> recG = [SELECT Id FROM CollaborationGroup WHERE Name = 'ASU Recruitment' LIMIT 1];
-        List<CollaborationGroup> servG = [SELECT Id FROM CollaborationGroup WHERE Name = 'ASU Service' LIMIT 1];
-        List<CollaborationGroup> knowG = [SELECT Id FROM CollaborationGroup WHERE Name = 'Knowledge Users' LIMIT 1];
-        List<CollaborationGroup> allG = [SELECT Id FROM CollaborationGroup WHERE Name = 'ASU - Everyone' LIMIT 1];
-        
-        
-        //Let's create our new collaboration group objects
-        List<CollaborationGroupMember> recGroup = new List<CollaborationGroupMember>();
-        List<CollaborationGroupMember> marGroup = new List<CollaborationGroupMember>();
-        List<CollaborationGroupMember> servGroup = new List<CollaborationGroupMember>();
-        List<CollaborationGroupMember> knowGroup = new List<CollaborationGroupMember>(); 
-        List<CollaborationGroupMember> allGroup = new List<CollaborationGroupMember>();          
-                   
-        
-        //Create a list to add the RECRUITMENT users
-        //---------------------------------------------------
-        if(recG.size() > 0) {
-            List<User> recList = [SELECT Id 
-                        FROM User 
-                        WHERE FederationIdentifier != null 
-                        AND ProfileId IN (SELECT Id FROM Profile WHERE Name LIKE 'ASU Recruit%') 
-                        AND isActive = true 
-                        AND Id NOT IN (SELECT MemberId FROM CollaborationGroupMember WHERE CollaborationGroupId = :recG[0].Id)];
-        
-        
-            for(integer i = 0; i < recList.size(); i++)
+    public static void AddToServiceGroup(Set<Id> userIds)
+    {
+        Id recGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'ASU Recruitment'].Id;
+        Id servGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'ASU Service'].Id;
+        Id knowGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'Knowledge Users'].Id;
+        Id allGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'ASU - Everyone'].Id;
+        Id crGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'Corporate Relations'].Id;
+        Id commId = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+        Id commCapId = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
+
+        List<CollaborationGroupMember> recGroupMembers = [SELECT MemberId FROM
+                CollaborationGroupMember WHERE CollaborationGroupId = :recGroupId];
+        List<CollaborationGroupMember> servGroupMembers = [SELECT MemberId FROM
+                CollaborationGroupMember WHERE CollaborationGroupId = :servGroupId];
+        List<CollaborationGroupMember> knowGroupMembers = [SELECT MemberId FROM
+                CollaborationGroupMember WHERE CollaborationGroupId = :knowGroupId];
+        List<CollaborationGroupMember> allGroupMembers = [SELECT MemberId FROM
+                CollaborationGroupMember WHERE CollaborationGroupId = :allGroupId];
+        List<CollaborationGroupMember> crGroupMembers = [SELECT MemberId FROM
+                CollaborationGroupMember WHERE CollaborationGroupId = :crGroupId];
+
+        Set<Id> recGroupMemberIds = new Set<Id>();
+        for (CollaborationGroupMember cgm : recGroupMembers)
+        {
+            recGroupMemberIds.add(cgm.MemberId);
+        }
+
+        Set<Id> servGroupMemberIds = new Set<Id>();
+        for (CollaborationGroupMember cgm : servGroupMembers)
+        {
+            servGroupMemberIds.add(cgm.MemberId);
+        }
+
+        Set<Id> knowGroupMemberIds = new Set<Id>();
+        for (CollaborationGroupMember cgm : knowGroupMembers)
+        {
+            knowGroupMemberIds.add(cgm.MemberId);
+        }
+
+        Set<Id> allGroupMemberIds = new Set<Id>();
+        for (CollaborationGroupMember cgm : allGroupMembers)
+        {
+            allGroupMemberIds.add(cgm.MemberId);
+        }
+
+        Set<Id> crGroupMemberIds = new Set<Id>();
+        for (CollaborationGroupMember cgm : crGroupMembers)
+        {
+            crGroupMemberIds.add(cgm.MemberId);
+        }
+
+        List<Profile> recProfIds = [SELECT Id FROM Profile WHERE Name LIKE 'ASU Recruit%'];
+        List<Profile> servProfIds = [SELECT Id FROM Profile WHERE Name LIKE 'ASU Service%'];
+        Id knowProfId = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
+        Id crProfId = [SELECT Id FROM Profile WHERE Name = 'ASU Corporate Relations'].Id;
+
+        List<User> userList = [SELECT Id, ProfileId, isActive FROM User WHERE Id IN :userIds];
+        List<CollaborationGroupMember> collabMembersToInsert = new List<CollaborationGroupMember>();
+
+        for (User u : userList)
+        {
+            for (Profile rp : recProfIds)
             {
-                recGroup.add(new CollaborationGroupMember (CollaborationGroupId = recG[0].Id, MemberId = recList[i].Id));  
+                if (u.ProfileId == rp.Id && !recGroupMemberIds.contains(u.Id))
+                {
+                    collabMembersToInsert.add(new CollaborationGroupMember(CollaborationGroupId =
+                            recGroupId, MemberId = u.Id));
+                }
             }
-            insert recGroup;
-        } 
-        else {
-            System.Debug('User Search for Recruitment Users Failure');
-        }
-        
-        
-        
-        //Create a list to add the MARKETING users
-        //---------------------------------------------------
-        if(recG.size() > 0) {    
-            List<User> marList = [SELECT Id 
-                        FROM User 
-                        WHERE FederationIdentifier != null 
-                        AND ProfileId IN (SELECT Id FROM Profile WHERE Name = 'ASU Marketing User') 
-                        AND isActive = true 
-                        AND Id NOT IN (SELECT MemberId FROM CollaborationGroupMember WHERE CollaborationGroupId = :recG[0].Id)];
-        
-            for(integer i = 0; i < marList.size(); i++)
+
+            for (Profile sp : servProfIds)
             {
-                marGroup.add(new CollaborationGroupMember (CollaborationGroupId = recG[0].Id, MemberId = marList[i].Id));  
+                if (u.ProfileId == sp.Id && !servGroupMemberIds.contains(u
+                        .Id))
+                {
+                    collabMembersToInsert.add(new CollaborationGroupMember(CollaborationGroupId =
+                            servGroupId, MemberId = u.Id));
+                }
             }
-            insert marGroup;
-        }
-        else {
-            System.Debug('User Search for Marketing Users Failure');
-        }
-        
-        
-        
-        //Create a list to add the KNOWLEDGE users
-        //---------------------------------------------------
-        if(knowG.size() > 0) {    
-            List<User> knowList = [SELECT Id 
-                        FROM User 
-                        WHERE FederationIdentifier != null 
-                        AND ProfileId IN (SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User') 
-                        AND isActive = true 
-                        AND Id NOT IN (SELECT MemberId FROM CollaborationGroupMember WHERE CollaborationGroupId = :knowG[0].Id)];
-        
-            for(integer i = 0; i < knowList.size(); i++)
+
+            if (u.ProfileId == crProfId && !crGroupMemberIds.contains(u
+                    .Id))
             {
-                knowGroup.add(new CollaborationGroupMember (CollaborationGroupId = knowG[0].Id, MemberId = knowList[i].Id));  
+                collabMembersToInsert.add(new CollaborationGroupMember(CollaborationGroupId =
+                        crGroupId, MemberId = u.Id));
             }
-            insert knowGroup;
-        }
-        else {
-            System.Debug('User Search for Knowledge Users Failure');
-        }
-        
-        
-        
-        //Create a list to add the SERVICE users
-        //---------------------------------------------------
-        if(servG.size() > 0) {
-            List<User> servList = [SELECT Id 
-                        FROM User 
-                        WHERE FederationIdentifier != null 
-                        AND ProfileId IN (SELECT Id FROM Profile WHERE Name LIKE 'ASU Service%') 
-                        AND isActive = true 
-                        AND Id NOT IN (SELECT MemberId FROM CollaborationGroupMember WHERE CollaborationGroupId = :servG[0].Id)];
-        
-            for(integer i = 0; i < servList.size(); i++)
+
+            if (u.ProfileId == knowProfId && !knowGroupMemberIds.contains(u
+                    .Id))
             {
-                servGroup.add(new CollaborationGroupMember (CollaborationGroupId = servG[0].Id, MemberId = servList[i].Id));  
+                collabMembersToInsert.add(new CollaborationGroupMember(CollaborationGroupId =
+                        knowGroupId, MemberId = u.Id));
             }
-            insert servGroup;
-        }
-        else {
-            System.Debug('User Search for Service Users Failure');
-        }
-        
-        
-        //Create a list to add all users to ASU All Chatter group.
-        //-------------------------------------------------------------
-        if(allG.size() > 0) {
-            List<User> allList = [SELECT Id
-                            FROM User
-                            WHERE FederationIdentifier != null
-                            AND (ProfileId != '00ed00000019z5nAAA' and ProfileId != '00ed00000019z5sAAA')
-                            AND isActive = true
-                            AND Id NOT IN (SELECT MemberId FROM CollaborationGroupMember WHERE CollaborationGroupId = :allG[0].Id)];
-    
-            for(integer i = 0; i < allList.size(); i++)
+
+            if ((u.ProfileId != commId || u.ProfileId != commCapId) && !allGroupMemberIds.contains(u
+                    .Id))
             {
-                allGroup.add(new CollaborationGroupMember (CollaborationGroupId = allG[0].Id, MemberId = allList[i].Id));
+                collabMembersToInsert.add(new CollaborationGroupMember(CollaborationGroupId =
+                        allGroupId, MemberId = u.Id));
             }
-            insert allGroup;
         }
-        else {
-            System.Debug('User Search for All Users Failure');
+
+        if (collabMembersToInsert.size() > 0)
+        {
+            try
+            {
+                insert collabMembersToInsert;
+            }
+            catch (Exception e)
+            {
+                System.debug('!!!!!!!!!!!!!!!!' + e);
+            }
         }
     }
 }

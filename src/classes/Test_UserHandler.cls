@@ -1,7 +1,7 @@
-@isTest
+@isTest(SeeAllData=true)
 public class Test_UserHandler 
 {
-	@isTest static void changeKnowledgePermission()
+    @isTest static void changeKnowledgePermission()
 	{
 		User updateUser = UserService.createTestUser();
 		Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
@@ -68,5 +68,41 @@ public class Test_UserHandler
 		testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
 
 		System.assert(testUser.ProfileId == communityCapProfile.Id);
-	}	
+	}
+
+	@isTest static void testChatterAutoAdd()
+    {
+        List<User> testUserList = UserService.createMultipleTestUsers(3);
+        List<AggregateResult> beforeCount = [SELECT COUNT(MemberId) FROM CollaborationGroupMember WHERE
+                CollaborationGroup.Name = 'ASU Service'];
+
+        testUserList[0].ProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Marketing User'].Id;
+        testUserList[1].ProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Service - ESM Online'].Id;
+        testUserList[2].ProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Recruiting User'].Id;
+
+        Test.startTest();
+        insert testUserList;
+        Test.stopTest();
+
+        List<AggregateResult> afterCount = [SELECT COUNT(MemberId) FROM CollaborationGroupMember
+        WHERE CollaborationGroup.Name = 'ASU Service'];
+
+        System.assert(beforeCount.size() < afterCount.size());
+    }
+
+    @isTest static void testUpdateUserProfile()
+    {
+        User testUser = UserService.createTestUser();
+        testUser.ProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Marketing User'].Id;
+
+        insert testUser;
+
+        User testUpdateUser = [SELECT Id, ProfileId FROM User WHERE Username = 'test.user@test.example.com'];
+        testUpdateUser.ProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Service - ESM Online'].Id;
+
+
+        Test.startTest();
+        update testUpdateUser;
+        Test.stopTest();
+    }
 }

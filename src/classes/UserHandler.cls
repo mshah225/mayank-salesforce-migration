@@ -1,46 +1,51 @@
 public without sharing class UserHandler implements ITrigger
 {
-	public void bulkBefore() {}
-
-	public void bulkAfter() {}
-
-	public void beforeInsert(SObject so) 
+	public void bulkBefore() 
 	{
-		User newUser = (User) so;
-
-		if (newUser.UserPermissionsKnowledgeUser)
+		if(Trigger.isInsert)
 		{
-			newUser.Role_Knowledge__c = true;
-		}
+			List<User> newUsers = Trigger.new; 
+			Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+			Id communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
+			List<Id> contactIds = new List<Id>();
+			Map<Id, User> contactToUser = new Map<Id, User>();
 
-		Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-		if(newUser.ProfileId == communityProfile)
-		{
-			Contact newUserContact;
-			if(newUser.ContactId == null)
+			for(Integer x = 0; x < newUsers.size(); x++)
 			{
-				newUserContact = [SELECT Id, CAP__c FROM Contact WHERE ASURite_ID__c = :newUser.Alias AND FirstName = :newUser.FirstName AND LastName = :newUser.LastName LIMIT 1];
-				if(newUserContact == null)
+				User newUser = newUsers.get(0);
+
+				if (newUser.UserPermissionsKnowledgeUser)
 				{
-					newUser.ContactId.addError('No Contact for this user!');	
+					newUser.Role_Knowledge__c = true;
 				}
-				else
+
+				if(newUser.ProfileId == communityProfile)
 				{
-					newUser.ContactId = newUserContact.Id;	
+					contactIds.add(newUser.ContactId);
+					contactToUser.put(newUser.ContactId, newUser);
 				}
 			}
-			else
-			{
-				newUserContact = [SELECT CAP__c FROM Contact WHERE Id = :newUser.ContactId];
-			}
 
-			if(newUserContact.CAP__c != null)
+			if(contactIds.size() > 0)
 			{
-				Profile newUserProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
-				newUser.ProfileId = newUserProfile.Id;
+				System.debug('CONTACT IDS: ' + contactIds);
+				List<Contact> newUserContacts = [SELECT Id, CAP__c FROM Contact WHERE Id IN :contactIds];
+				for(Integer x = 0; x < newUserContacts.size(); x++)
+				{
+					System.debug('NEW USER CONTACTS: ' + newUserContacts);
+					User u = contactToUser.get(newUserContacts.get(x).Id);
+					if(newUserContacts.get(x).CAP__c != null)
+					{
+						u.ProfileId = communityCapProfile;
+					}
+				}
 			}
 		}
 	}
+
+	public void bulkAfter() {}
+
+	public void beforeInsert(SObject so) {}
 
 	public void beforeUpdate(SObject oldSo, SObject so) 
 	{

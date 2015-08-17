@@ -1,46 +1,65 @@
 public without sharing class UserHandler implements ITrigger
 {
-	public void bulkBefore() {}
+	public void bulkBefore() 
+	{
+		if(Trigger.isInsert)
+		{
+			List<User> newUsers = Trigger.new; 
+			Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+			Id communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
+            List<String> asurites = new List<String>();
+            Map<String, Contact> asuritesToContact = new Map<String, Contact>();
+            Map<String, User> asuritesToUser = new Map<String, User>();
+
+			for(Integer x = 0; x < newUsers.size(); x++)
+			{
+				User newUser = newUsers.get(0);
+
+				if (newUser.UserPermissionsKnowledgeUser)
+				{
+					newUser.Role_Knowledge__c = true;
+				}
+
+				if(newUser.ProfileId == communityProfile)
+				{
+                    asurites.add(newUser.FederationIdentifier.split('@').get(0));
+					asuritesToUser.put(newUser.FederationIdentifier.split('@').get(0), newUser);
+                    System.debug(newUser.FederationIdentifier.split('@').get(0));
+				}
+			}
+
+            if(asurites.size() > 0)
+			{
+                List<Contact> newUserContactsByASURITE = [SELECT Id, ASURITE_Id__c, CAP__c FROM Contact WHERE ASURITE_Id__c IN :asurites];
+				for(Integer x = 0; x < newUserContactsByASURITE.size(); x++)
+                {
+                    Contact c = newUserContactsByASURITE.get(x);
+                    asuritesToContact.put(c.ASURITE_Id__c, c);
+                }
+                
+                List<String> asuritesKeys = new List<String>(asuritesToContact.keySet());
+                
+                for(Integer x = 0; x < asuritesKeys.size(); x++)
+                {
+                    String asurite = asuritesKeys.get(x);
+                    Contact c = asuritesToContact.get(asurite);
+                    User u = asuritesToUser.get(asurite);
+                    u.ContactId = c.Id;
+
+                    if(c.CAP__c != null)
+                    {
+						u.ProfileId = communityCapProfile;
+                    }
+                }
+			}
+            
+            //throw new ContactServiceException('This is the Contact: ' + );
+		}
+	}
 
 	public void bulkAfter() {}
 
-	public void beforeInsert(SObject so) 
-	{
-		User newUser = (User) so;
-
-		if (newUser.UserPermissionsKnowledgeUser)
-		{
-			newUser.Role_Knowledge__c = true;
-		}
-
-		Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-		if(newUser.ProfileId == communityProfile)
-		{
-			Contact newUserContact;
-			if(newUser.ContactId == null)
-			{
-				newUserContact = [SELECT Id, CAP__c FROM Contact WHERE ASURite_ID__c = :newUser.Alias AND FirstName = :newUser.FirstName AND LastName = :newUser.LastName LIMIT 1];
-				if(newUserContact == null)
-				{
-					newUser.ContactId.addError('No Contact for this user!');	
-				}
-				else
-				{
-					newUser.ContactId = newUserContact.Id;	
-				}
-			}
-			else
-			{
-				newUserContact = [SELECT CAP__c FROM Contact WHERE Id = :newUser.ContactId];
-			}
-
-			if(newUserContact.CAP__c != null)
-			{
-				Profile newUserProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
-				newUser.ProfileId = newUserProfile.Id;
-			}
-		}
-	}
+	public void beforeInsert(SObject so) {}
 
 	public void beforeUpdate(SObject oldSo, SObject so) 
 	{

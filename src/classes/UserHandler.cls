@@ -7,8 +7,9 @@ public without sharing class UserHandler implements ITrigger
 			List<User> newUsers = Trigger.new; 
 			Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
 			Id communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
-			List<Id> contactIds = new List<Id>();
-			Map<Id, User> contactToUser = new Map<Id, User>();
+            List<String> asurites = new List<String>();
+            Map<String, Contact> asuritesToContact = new Map<String, Contact>();
+            Map<String, User> asuritesToUser = new Map<String, User>();
 
 			for(Integer x = 0; x < newUsers.size(); x++)
 			{
@@ -21,25 +22,38 @@ public without sharing class UserHandler implements ITrigger
 
 				if(newUser.ProfileId == communityProfile)
 				{
-					contactIds.add(newUser.ContactId);
-					contactToUser.put(newUser.ContactId, newUser);
+                    asurites.add(newUser.FederationIdentifier.split('@').get(0));
+					asuritesToUser.put(newUser.FederationIdentifier.split('@').get(0), newUser);
+                    System.debug(newUser.FederationIdentifier.split('@').get(0));
 				}
 			}
 
-			if(contactIds.size() > 0)
+            if(asurites.size() > 0)
 			{
-				System.debug('CONTACT IDS: ' + contactIds);
-				List<Contact> newUserContacts = [SELECT Id, CAP__c FROM Contact WHERE Id IN :contactIds];
-				for(Integer x = 0; x < newUserContacts.size(); x++)
-				{
-					System.debug('NEW USER CONTACTS: ' + newUserContacts);
-					User u = contactToUser.get(newUserContacts.get(x).Id);
-					if(newUserContacts.get(x).CAP__c != null)
-					{
+                List<Contact> newUserContactsByASURITE = [SELECT Id, ASURITE_Id__c, CAP__c FROM Contact WHERE ASURITE_Id__c IN :asurites];
+				for(Integer x = 0; x < newUserContactsByASURITE.size(); x++)
+                {
+                    Contact c = newUserContactsByASURITE.get(x);
+                    asuritesToContact.put(c.ASURITE_Id__c, c);
+                }
+                
+                List<String> asuritesKeys = new List<String>(asuritesToContact.keySet());
+                
+                for(Integer x = 0; x < asuritesKeys.size(); x++)
+                {
+                    String asurite = asuritesKeys.get(x);
+                    Contact c = asuritesToContact.get(asurite);
+                    User u = asuritesToUser.get(asurite);
+                    u.ContactId = c.Id;
+
+                    if(c.CAP__c != null)
+                    {
 						u.ProfileId = communityCapProfile;
-					}
-				}
+                    }
+                }
 			}
+            
+            //throw new ContactServiceException('This is the Contact: ' + );
 		}
 	}
 

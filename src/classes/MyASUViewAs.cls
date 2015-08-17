@@ -1,4 +1,4 @@
-public class MyASUViewAs 
+public without sharing class MyASUViewAs
 {
     private static final String SECRET_KEY = '543d32e1eer10c3360X0916b16d4098q9ebc93d4';
     private static final String GET_EFFECTIVE_IDENTITY_SERVICE_NAME = 'getEffIdent';
@@ -83,7 +83,8 @@ public class MyASUViewAs
         if (!viewAsMap.isEmpty()
                 && viewAsMap.get('authorizedToViewAs') == 'true'
                 && viewAsMap.get('isViewingAs') == 'true'
-                && userAsurite != viewAsMap.get('effectiveAsurite'))
+                && userAsurite != viewAsMap.get('effectiveAsurite')
+            )
         {
             return true;
         }
@@ -91,5 +92,52 @@ public class MyASUViewAs
         {
             return false;
         }
+    }
+
+    /**
+    * Calls the ContactService getContactToViewAs method to get the current
+    * contact for the user viewing as.
+    * @param The ASURITE to lookup the contact to view as
+    * @return The contact object
+    */
+    public static Contact getViewAsContact(String asurite)
+    {
+        Contact viewAsContact = ContactService.getContactToViewAs(asurite);
+
+        return viewAsContact;
+    }
+
+    /**
+    * Calls the CaseService to get all case details for a given case during view as.
+    * @param The case Id.
+    * @return The case object and it's fields.
+    */
+    public static Case getViewAsCaseDetails(Id caseId)
+    {
+        return CaseService.getCaseDetails(caseId);
+    }
+
+    /**
+    * Calls the CaseService to get all open cases for the given list of contacts.
+    * @param A list of contacts to get open cases for.
+    * @return A map with the open cases found for the contacts in the list.
+    */
+    public static Map<Id, List<Case>> getViewAsOpenCases(List<Contact> contacts)
+    {
+        Map<Id, List<Case>> viewAsOpenCases = CaseService.getVisibleOpenCases(contacts);
+
+        return viewAsOpenCases;
+    }
+
+    /**
+    * Calls the CaseService to get all closed cases for the given list of contacts.
+    * @param A list of contacts to get closed cases for.
+    * @return A map with the closed cases found for the contacts in the list.
+    */
+    public static Map<Id, List<Case>> getViewAsClosedCases(List<Contact> contacts)
+    {
+        Map<Id, List<Case>> viewAsClosedCases = CaseService.getVisibleClosedCases(contacts);
+
+        return viewAsClosedCases;
     }
 }

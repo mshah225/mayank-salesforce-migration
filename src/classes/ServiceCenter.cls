@@ -4,9 +4,9 @@ public with sharing class ServiceCenter
     public final Integer CLOSEDCASELIMIT = 5;
 
     public Boolean viewingAs { get; set; }
-    public Contact userContact { get; set; }
     public Case newCase { get; set; }
     public Case suggestAnArticle { get; set; }
+    public Contact userContact { get; set; }
     public Date today;
     public Decimal myPin;
     private Decimal origPin;
@@ -14,8 +14,6 @@ public with sharing class ServiceCenter
     public Id caseId;
     public List<Opportunity> oppList;
     private Map<String, String> viewAsMap;
-    public Term__c termcAC;
-    public Term__c termcB;
     public String firstName { get; set; }
     public String lastName { get; set; }
     public String emplId { get; set; }
@@ -25,6 +23,8 @@ public with sharing class ServiceCenter
     public String asurite { get; set; }
     public String userAsurite;
     public String searchstring { get; set; }
+    public Term__c termcAC;
+    public Term__c termcB;
 
     public ServiceCenter()
     {
@@ -32,14 +32,19 @@ public with sharing class ServiceCenter
         masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
         if (masqScopeIdCookie != null)
         {
-            userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
+            userAsurite = [
+                SELECT ASURite_Id__c
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+            ].ASURite_Id__C;
+
             viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
             viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
         }
 
         if (viewingAs)
         {
-            userContact = ContactService.getContactToViewAs(viewAsMap.get('effectiveAsurite'));
+            userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
             stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
             viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
         }
@@ -54,17 +59,23 @@ public with sharing class ServiceCenter
         asurite = userContact.ASURite_ID__c;
         newCase = new Case();
         today = date.today();
-        termcAC = [SELECT Session_A_C_Start_Date__c
-                   FROM Term__c
-                   WHERE session_A_C_Start_Date__c > :System.today()
-                   LIMIT 1];
-        termcB = [SELECT Session_B_Start_Date__c
-                  FROM Term__c
-                  WHERE session_B_Start_Date__c > :System.today()
-                  LIMIT 1];
-        oppList = [SELECT Career__c, Term__c, StageName, Admitted_Session__c
-                   FROM Opportunity
-                   WHERE Contact__c = :userContact.Id];
+        termcAC = [
+            SELECT Session_A_C_Start_Date__c
+            FROM Term__c
+            WHERE session_A_C_Start_Date__c > :System.today()
+            LIMIT 1
+        ];
+        termcB = [
+            SELECT Session_B_Start_Date__c
+            FROM Term__c
+            WHERE session_B_Start_Date__c > :System.today()
+            LIMIT 1
+        ];
+        oppList = [
+            SELECT Career__c, Term__c, StageName, Admitted_Session__c
+            FROM Opportunity
+            WHERE Contact__c = :userContact.Id
+        ];
         suggestAnArticle = new Case();
         origPin = userContact.Self_Service_PIN__c;
     }
@@ -73,7 +84,16 @@ public with sharing class ServiceCenter
     {
         List<Contact> contacts = new List<Contact> { userContact };
 
-        Map<Id, List<Case>> openCaseMap = CaseService.getVisibleOpenCases(contacts);
+        Map<Id, List<Case>> openCaseMap;
+
+        if (viewingAs)
+        {
+            openCaseMap = MyASUViewAs.getViewAsOpenCases(contacts);
+        }
+        else
+        {
+            openCaseMap = CaseService.getVisibleOpenCases(contacts);
+        }
 
         return (openCaseMap.get(userContact.Id) == null) ? new List<Case>() : openCaseMap.get(userContact.Id);
     }
@@ -83,7 +103,17 @@ public with sharing class ServiceCenter
         List<Case> closedCases = new List<Case>();
 
         List<Contact> contacts = new List<Contact> { userContact };
-        Map<Id, List<Case>> closedCaseMap = CaseService.getVisibleClosedCases(contacts);
+
+        Map<Id, List<Case>> closedCaseMap;
+
+        if (viewingAs)
+        {
+            closedCaseMap = MyASUViewAs.getViewAsClosedCases(contacts);
+        }
+        else
+        {
+            closedCaseMap = CaseService.getVisibleClosedCases(contacts);
+        }
 
         if (closedCaseMap.get(userContact.Id) != null)
         {
@@ -93,7 +123,6 @@ public with sharing class ServiceCenter
                 for (Integer i = 0; i < CLOSEDCASELIMIT; i++)
                 {
                     closedCases.add(closedCaseMap.get(userContact.Id).get(i));
-
                 }
             }
             else
@@ -109,13 +138,18 @@ public with sharing class ServiceCenter
     {
         if (viewingAs)
         {
-            return CaseService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
+            return MyASUViewAs.getViewAsCaseDetails(
+                ApexPages.currentPage().getParameters().get('Id')
+            );
         }
         else
         {
-            return [SELECT Id, CaseNumber, Functional_Group__c, Subject, Description, Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
-                    FROM Case
-                    WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
+            return [
+                SELECT Id, CaseNumber, Functional_Group__c, Subject, Description,
+                Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
+                FROM Case
+                WHERE Id = :ApexPages.currentPage().getParameters().get('Id')
+            ];
         }
     }
 
@@ -123,17 +157,24 @@ public with sharing class ServiceCenter
         Date launchDate = EMAILVISIBILITYDATE;
         if (viewingAs)
         {
-            return CaseService.getCaseEmailMessages(EMAILVISIBILITYDATE, ApexPages.currentPage().getParameters().get('id'), userContact.Email);
+            return CaseService.getCaseEmailMessages(
+                EMAILVISIBILITYDATE,
+                ApexPages.currentPage().getParameters().get('id'),
+                userContact.Email
+            );
         }
         else
         {
-            return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress
-                    FROM EmailMessage
-                    WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
-                    AND Incoming = false
-                    AND CreatedDate > :launchDate
-                    AND ToAddress = :userContact.Email
-                    ORDER BY CreatedDate DESC];
+            return [
+                SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject,
+                TextBody, FromAddress, ToAddress, CCAddress
+                FROM EmailMessage
+                WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
+                AND Incoming = false
+                AND CreatedDate > :launchDate
+                AND ToAddress = :userContact.Email
+                ORDER BY CreatedDate DESC
+            ];
         }
     }
 
@@ -317,6 +358,7 @@ public with sharing class ServiceCenter
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
             go.setRedirect(true);
+
             return go;
         }
 
@@ -324,9 +366,12 @@ public with sharing class ServiceCenter
         {
             newCase.ContactId = userContact.Id;
             newCase.Web_Submission__c = 'My ASU Standard';
+
             insert newCase;
+
             PageReference confirmPage = new PageReference('/studentSC?Confirm=newcase');
             confirmPage.setRedirect(true);
+
             return confirmPage;
         }
         catch (Exception e)
@@ -335,6 +380,7 @@ public with sharing class ServiceCenter
             System.Debug ('Message: ' + e.getMessage());
             System.Debug ('Cause: ' + e.getCause());
             System.Debug ('Stack Trace: ' + e.getStackTraceString());
+
             return null;
        }
     }
@@ -358,6 +404,7 @@ public with sharing class ServiceCenter
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
             go.setRedirect(true);
+
             return go;
         }
 
@@ -368,6 +415,7 @@ public with sharing class ServiceCenter
                 PageReference pinError = ApexPages.currentPage();
                 pinError.getParameters().put('PIN', 'error');
                 pinError.setRedirect(true);
+
                 return pinError;
             }
 
@@ -382,6 +430,7 @@ public with sharing class ServiceCenter
             PageReference pinSuccess = ApexPages.currentPage();
             pinSuccess.getParameters().put('PIN', 'success');
             pinSuccess.setRedirect(true);
+
             return pinSuccess;
         }
         catch (DmlException e)
@@ -389,6 +438,7 @@ public with sharing class ServiceCenter
             PageReference pinError = ApexPages.currentPage();
             pinError.getParameters().put('PIN', 'error');
             pinError.setRedirect(true);
+
             return pinError;
         }
     }
@@ -400,22 +450,31 @@ public with sharing class ServiceCenter
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
             go.setRedirect(true);
+
             return go;
         }
 
         suggestAnArticle.Subject = 'Suggest An Article';
         suggestAnArticle.Description = suggestAnArticle.Description;
         suggestAnArticle.ContactId = userContact.Id;
-        suggestAnArticle.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
+        suggestAnArticle.OwnerId = [
+            SELECT Id
+            FROM Group
+            WHERE Name = 'Student-Centric Initiatives (Case)'
+            AND Type = 'Queue'
+        ].Id;
+
         suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
         suggestAnArticle.Category__c = 'Knowledge';
         suggestAnArticle.Origin__c = 'My ASU';
         suggestAnArticle.Visible_by_Contact__c = false;
+
         insert suggestAnArticle;
 
         PageReference confirmPage = ApexPages.currentPage();
         confirmPage.getParameters().put('Suggest', 'yes');
         confirmPage.setRedirect(true);
+
         return confirmPage;
     }
 

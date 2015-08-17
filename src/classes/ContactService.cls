@@ -1,4 +1,4 @@
-public without sharing class ContactService
+public class ContactService
 {
 	/**
 	* Returns all the fields on Case in a String
@@ -68,7 +68,11 @@ public without sharing class ContactService
 
         try
         {
-			loggedInContactId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
+			loggedInContactId = [
+                SELECT ContactId
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+            ].ContactId;
 
 			String selectContactInfoByLoggedInUser = 'SELECT ' + contactFields + ' ' +
         											 'FROM Contact ' +
@@ -78,7 +82,10 @@ public without sharing class ContactService
         }
         catch (Exception e)
         {
-            throw new ContactServiceException('!!!ERROR!!!: An error occurred trying to get the logged in Contact\n' + e.getMessage());
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to get the logged in Contact\n' +
+                e.getMessage()
+            );
         }
 
         return loggedInContact;
@@ -106,7 +113,10 @@ public without sharing class ContactService
         }
         catch (Exception e)
         {
-            throw new ContactServiceException('!!!ERROR!!!: An error occurred trying to get the Contact by ASURITE\n' + e.getMessage());
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to get the Contact by ASURITE\n' +
+                e.getMessage()
+            );
         }
 
         return viewAsContact;
@@ -199,7 +209,10 @@ public without sharing class ContactService
         }
         catch (Exception e)
         {
-            throw new ContactServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s information\n' + e.getMessage());
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to get the Contact\'s information\n' +
+                e.getMessage()
+            );
         }
 
         return contactInfo;

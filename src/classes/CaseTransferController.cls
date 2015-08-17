@@ -253,7 +253,11 @@ public with sharing class CaseTransferController
 				}
 			}
 
-			String query2String = 'SELECT Id, Name, Title, Department FROM User WHERE UserRoleId IN :roleIdsToAdd AND Id != :userId AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+			String query2String = 'SELECT Id, Name, Title, Department ' +
+                                  'FROM User ' +
+                                  'WHERE UserRoleId IN :roleIdsToAdd ' +
+                                  'AND Id !=  :userId ' +
+                                  'AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
 			List<User> usersToAdd = Database.query(query2String);
 
 			userList.addAll(usersToAdd);

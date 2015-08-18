@@ -408,17 +408,16 @@ public with sharing class ServiceCenter
             return go;
         }
 
-        try
+        if (origPin == newPin)
         {
-            if (origPin == newPin)
-            {
-                PageReference pinError = ApexPages.currentPage();
-                pinError.getParameters().put('PIN', 'error');
-                pinError.setRedirect(true);
+            PageReference pinError = ApexPages.currentPage();
+            pinError.getParameters().put('PIN', 'error');
+            pinError.setRedirect(true);
+            return pinError;
+        }
 
-                return pinError;
-            }
-
+        if (ContactService.isPinValid(newPin, userContact.Birthdate))
+        {
             userContact.Self_Service_PIN__c = newPin;
             if (userContact.PIN_lockout__c == true)
             {
@@ -430,17 +429,16 @@ public with sharing class ServiceCenter
             PageReference pinSuccess = ApexPages.currentPage();
             pinSuccess.getParameters().put('PIN', 'success');
             pinSuccess.setRedirect(true);
-
             return pinSuccess;
         }
-        catch (DmlException e)
+        else
         {
             PageReference pinError = ApexPages.currentPage();
             pinError.getParameters().put('PIN', 'error');
             pinError.setRedirect(true);
-
             return pinError;
         }
+
     }
 
     public PageReference suggestAnArticleSubmit()

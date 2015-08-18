@@ -61,24 +61,9 @@ public without sharing class UserHandler implements ITrigger
 
 	public void beforeFinally() {}
 
-	public void afterInsert(SObject so)
-    {
-        User newUser = (User) so;
+	public void afterInsert(SObject so) { }
 
-        UserService.addUsersToChatterGroups(newUser.ProfileId, newUser.Id, null, null);
-    }
-
-	public void afterUpdate(SObject oldSo, SObject so)
-    {
-        User newUser = (User) so;
-        User oldUser = (User) oldSo;
-
-        if (newUser.ProfileId != oldUser.ProfileId)
-        {
-            UserService.addUsersToChatterGroups(newUser.ProfileId, newUser.Id, oldUser
-                    .ProfileId, oldUser.Id);
-        }
-    }
+	public void afterUpdate(SObject oldSo, SObject so) { }
 
 	public void afterDelete(SObject so) {}
 

@@ -69,7 +69,7 @@
             var viewingAs = "{!viewingAs}"
 
             if (viewingAs != "true")
-            {    
+            {
                 var jsonString = null;
                 var jsonObject = {};
                     jsonObject.employeeNumber = "{!emplId}";

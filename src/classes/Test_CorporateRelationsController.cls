@@ -7,22 +7,22 @@ private class Test_CorporateRelationsController
 	private static Contact testContact;
 	private static Relationship__c testR;
 	private static CampaignMember testCM;
-	private static Id cohortId;
+	private static Id crId;
 	private static NewCorporateRelationsContactController ncr;
 
 	private static void setupData() 
 	{	
-		cohortId = [SELECT Id FROM RecordType WHERE Name = 'Cohort'].Id;
+		crId = [SELECT Id FROM RecordType WHERE Name = 'Corporate Relations'].Id;
 
 		testCampaign = new Campaign(
 			Name = 'Test Campaign',
-			RecordTypeId = cohortId);
+			RecordTypeId = crId);
 		insert testCampaign;
 
 		testChildCampaign = new Campaign(
 			Name = 'Test Child Campaign',
 			ParentId = testCampaign.Id,
-			RecordTypeId = cohortId);
+			RecordTypeId = crId);
 		insert testChildCampaign;
 
 		testAccount = new Account(

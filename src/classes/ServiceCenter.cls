@@ -3,45 +3,97 @@ public with sharing class ServiceCenter
     public final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
     public final Integer CLOSEDCASELIMIT = 5;
 
-    public Contact userContact { get; set; }
+    public Boolean viewingAs { get; set; }
     public Case newCase { get; set; }
-    public Case suggestAnArticleSC { get; set; }
+    public Case suggestAnArticle { get; set; }
+    public Contact userContact { get; set; }
     public Date today;
     public Decimal myPin;
     private Decimal origPin;
     public Decimal newPin { get; set; }
     public Id caseId;
     public List<Opportunity> oppList;
+    private Map<String, String> viewAsMap;
+    public String firstName { get; set; }
+    public String lastName { get; set; }
+    public String emplId { get; set; }
+    public String masqScopeIdCookie { get; set; }
+    public String stopViewAsUrl { get; set; }
+    public String viewAsUrl { get; set; }
+    public String asurite { get; set; }
+    public String userAsurite;
+    public String searchstring { get; set; }
     public Term__c termcAC;
     public Term__c termcB;
 
-    public ServiceCenter() { setUpPage(); }
-    public ServiceCenter(AKBController controller) { setUpPage(); }
-
-    public void setUpPage()
+    public ServiceCenter()
     {
-        userContact = ContactService.getLoggedInContact();
+        viewingAs = false;
+        masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
+        if (masqScopeIdCookie != null)
+        {
+            userAsurite = [
+                SELECT ASURite_Id__c
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+            ].ASURite_Id__C;
+
+            viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
+            viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
+        }
+
+        if (viewingAs)
+        {
+            userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
+            stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
+            viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
+        }
+        else
+        {
+            userContact = ContactService.getLoggedInContact();
+        }
+
+        firstName = userContact.FirstName;
+        lastName = userContact.LastName;
+        emplId = userContact.EMPLID__c;
+        asurite = userContact.ASURite_ID__c;
         newCase = new Case();
         today = date.today();
-        termcAC = [SELECT Session_A_C_Start_Date__c
-                   FROM Term__c
-                   WHERE session_A_C_Start_Date__c > :System.today()
-                   LIMIT 1];
-        termcB = [SELECT Session_B_Start_Date__c
-                  FROM Term__c
-                  WHERE session_B_Start_Date__c > :System.today()
-                  LIMIT 1];
-        oppList = [SELECT Career__c, Term__c, StageName, Admitted_Session__c
-                   FROM Opportunity
-                   WHERE Contact__c = :userContact.Id];
-        suggestAnArticleSC = new Case();
+        termcAC = [
+            SELECT Session_A_C_Start_Date__c
+            FROM Term__c
+            WHERE session_A_C_Start_Date__c > :System.today()
+            LIMIT 1
+        ];
+        termcB = [
+            SELECT Session_B_Start_Date__c
+            FROM Term__c
+            WHERE session_B_Start_Date__c > :System.today()
+            LIMIT 1
+        ];
+        oppList = [
+            SELECT Career__c, Term__c, StageName, Admitted_Session__c
+            FROM Opportunity
+            WHERE Contact__c = :userContact.Id
+        ];
+        suggestAnArticle = new Case();
         origPin = userContact.Self_Service_PIN__c;
     }
 
     public List<Case> getMyCases()
     {
         List<Contact> contacts = new List<Contact> { userContact };
-        Map<Id, List<Case>> openCaseMap = CaseService.getVisibleOpenCases(contacts);
+
+        Map<Id, List<Case>> openCaseMap;
+
+        if (viewingAs)
+        {
+            openCaseMap = MyASUViewAs.getViewAsOpenCases(contacts);
+        }
+        else
+        {
+            openCaseMap = CaseService.getVisibleOpenCases(contacts);
+        }
 
         return (openCaseMap.get(userContact.Id) == null) ? new List<Case>() : openCaseMap.get(userContact.Id);
     }
@@ -51,7 +103,17 @@ public with sharing class ServiceCenter
         List<Case> closedCases = new List<Case>();
 
         List<Contact> contacts = new List<Contact> { userContact };
-        Map<Id, List<Case>> closedCaseMap = CaseService.getVisibleClosedCases(contacts);
+
+        Map<Id, List<Case>> closedCaseMap;
+
+        if (viewingAs)
+        {
+            closedCaseMap = MyASUViewAs.getViewAsClosedCases(contacts);
+        }
+        else
+        {
+            closedCaseMap = CaseService.getVisibleClosedCases(contacts);
+        }
 
         if (closedCaseMap.get(userContact.Id) != null)
         {
@@ -61,7 +123,6 @@ public with sharing class ServiceCenter
                 for (Integer i = 0; i < CLOSEDCASELIMIT; i++)
                 {
                     closedCases.add(closedCaseMap.get(userContact.Id).get(i));
-
                 }
             }
             else
@@ -75,28 +136,69 @@ public with sharing class ServiceCenter
 
     public Case getCaseDetails()
     {
-        return [SELECT Id, CaseNumber, Functional_Group__c, Subject, Description, Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
+        if (viewingAs)
+        {
+            return MyASUViewAs.getViewAsCaseDetails(
+                ApexPages.currentPage().getParameters().get('Id')
+            );
+        }
+        else
+        {
+            return [
+                SELECT Id, CaseNumber, Functional_Group__c, Subject, Description,
+                Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
                 FROM Case
-                WHERE Id = :ApexPages.currentPage().getParameters().get('Id')];
+                WHERE Id = :ApexPages.currentPage().getParameters().get('Id')
+            ];
+        }
     }
 
     public EmailMessage[] getEmailMessages() {
         Date launchDate = EMAILVISIBILITYDATE;
-        return [SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject, TextBody, FromAddress, ToAddress, CCAddress
+        if (viewingAs)
+        {
+            return CaseService.getCaseEmailMessages(
+                EMAILVISIBILITYDATE,
+                ApexPages.currentPage().getParameters().get('id'),
+                userContact.Email
+            );
+        }
+        else
+        {
+            return [
+                SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject,
+                TextBody, FromAddress, ToAddress, CCAddress
                 FROM EmailMessage
                 WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
                 AND Incoming = false
                 AND CreatedDate > :launchDate
                 AND ToAddress = :userContact.Email
-                ORDER BY CreatedDate DESC];
+                ORDER BY CreatedDate DESC
+            ];
+        }
     }
 
     public PageReference viewCase()
     {
         caseId = ApexPages.currentPage().getParameters().get('caseId');
+        String current = ApexPages.currentPage().getUrl();
+        current = current.split('apex/')[1];
         PageReference viewCasePage = new PageReference('/viewcase');
         viewCasePage.getParameters().put('id', caseId);
-        viewCasePage.getParameters().put('source', 'studentSC');
+
+        if (current != 'viewAllCases')
+        {
+            viewCasePage.getParameters().put('source', current);
+        }
+        else
+        {
+            viewCasePage.getParameters().put('source', 'viewAllCases');
+        }
+
+        if (viewingAs)
+        {
+            viewCasePage.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+        }
 
         return viewCasePage;
     }
@@ -137,15 +239,27 @@ public with sharing class ServiceCenter
         {
             return true;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'A/C')
+                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'B')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (userContact.Affiliation_Student__c == 'Current' || userContact.Affiliation_Alumni__c == 'Current' || userContact.Affiliation_Courtesy_Affiliate__c == 'Current' || userContact.Affiliation_Employee__c == 'Current') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if (oppList[0].StageName != 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && (userContact.Affiliation_Student__c == 'Current'
+                        || userContact.Affiliation_Alumni__c == 'Current'
+                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                        || userContact.Affiliation_Employee__c == 'Current')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -161,19 +275,32 @@ public with sharing class ServiceCenter
         {
             return false;
         }
-        else if ((oppList == Null && userContact != null) || (oppList.size() == 0 && userContact != null))
+        else if ((oppList == Null && userContact != null)
+                    || (oppList.size() == 0 && userContact != null))
         {
             return false;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'A/C')
+                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return true;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'B')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (userContact.Affiliation_Student__c == 'Current' || userContact.Affiliation_Alumni__c == 'Current' || userContact.Affiliation_Courtesy_Affiliate__c == 'Current' || userContact.Affiliation_Employee__c == 'Current') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if (oppList[0].StageName != 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && (userContact.Affiliation_Student__c == 'Current'
+                        || userContact.Affiliation_Alumni__c == 'Current'
+                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                        || userContact.Affiliation_Employee__c == 'Current')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
@@ -189,19 +316,32 @@ public with sharing class ServiceCenter
         {
             return true;
         }
-        else if ((oppList == Null && userContact != null) || (oppList.size() == 0 && userContact != null))
+        else if ((oppList == Null && userContact != null)
+                    || (oppList.size() == 0 && userContact != null))
         {
             return true;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'A/C')
+                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
-        else if ((oppList[0].StageName == 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if ((oppList[0].StageName == 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && oppList[0].Admitted_Session__c == 'B')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
-        else if (oppList[0].StageName != 'Enrolled' && oppList[0].Career__c == 'Undergraduate' && (userContact.Affiliation_Student__c == 'Current' || userContact.Affiliation_Alumni__c == 'Current' || userContact.Affiliation_Courtesy_Affiliate__c == 'Current' || userContact.Affiliation_Employee__c == 'Current') && today < date.valueOf(termcB.Session_B_Start_Date__c))
+        else if (oppList[0].StageName != 'Enrolled'
+                    && oppList[0].Career__c == 'Undergraduate'
+                    && (userContact.Affiliation_Student__c == 'Current'
+                        || userContact.Affiliation_Alumni__c == 'Current'
+                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                        || userContact.Affiliation_Employee__c == 'Current')
+                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -213,13 +353,25 @@ public with sharing class ServiceCenter
 
     public PageReference submitCase()
     {
+        if (viewingAs)
+        {
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+
+            return go;
+        }
+
         try
         {
             newCase.ContactId = userContact.Id;
             newCase.Web_Submission__c = 'My ASU Standard';
+
             insert newCase;
+
             PageReference confirmPage = new PageReference('/studentSC?Confirm=newcase');
             confirmPage.setRedirect(true);
+
             return confirmPage;
         }
         catch (Exception e)
@@ -228,17 +380,34 @@ public with sharing class ServiceCenter
             System.Debug ('Message: ' + e.getMessage());
             System.Debug ('Cause: ' + e.getCause());
             System.Debug ('Stack Trace: ' + e.getStackTraceString());
+
             return null;
        }
     }
 
     public Decimal getMyPin()
     {
-        return userContact.Self_Service_PIN__c;
+        if (viewingAs)
+        {
+            return 111111;
+        }
+        else
+        {
+            return userContact.Self_Service_PIN__c;
+        }
     }
 
     public PageReference changePin()
     {
+        if (viewingAs)
+        {
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+
+            return go;
+        }
+
         try
         {
             if (origPin == newPin)
@@ -246,6 +415,7 @@ public with sharing class ServiceCenter
                 PageReference pinError = ApexPages.currentPage();
                 pinError.getParameters().put('PIN', 'error');
                 pinError.setRedirect(true);
+
                 return pinError;
             }
 
@@ -260,6 +430,7 @@ public with sharing class ServiceCenter
             PageReference pinSuccess = ApexPages.currentPage();
             pinSuccess.getParameters().put('PIN', 'success');
             pinSuccess.setRedirect(true);
+
             return pinSuccess;
         }
         catch (DmlException e)
@@ -267,23 +438,51 @@ public with sharing class ServiceCenter
             PageReference pinError = ApexPages.currentPage();
             pinError.getParameters().put('PIN', 'error');
             pinError.setRedirect(true);
+
             return pinError;
         }
     }
 
-    public PageReference suggestAnArticleSubmitSC()
+    public PageReference suggestAnArticleSubmit()
     {
-        suggestAnArticleSC.Subject = 'Suggest An Article';
-        suggestAnArticleSC.ContactId = userContact.Id;
-        suggestAnArticleSC.OwnerId = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'].Id;
-        suggestAnArticleSC.Functional_Group__c = 'Student-Centric Initiatives';
-        suggestAnArticleSC.Category__c = 'Knowledge';
-        suggestAnArticleSC.Origin__c = 'My ASU';
-        suggestAnArticleSC.Visible_by_Contact__c = false;
-        insert suggestAnArticleSC;
+        if (viewingAs)
+        {
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
 
-        PageReference confirmPage = new PageReference('/studentSC' + '?Suggest=yes');
+            return go;
+        }
+
+        suggestAnArticle.Subject = 'Suggest An Article';
+        suggestAnArticle.Description = suggestAnArticle.Description;
+        suggestAnArticle.ContactId = userContact.Id;
+        suggestAnArticle.OwnerId = [
+            SELECT Id
+            FROM Group
+            WHERE Name = 'Student-Centric Initiatives (Case)'
+            AND Type = 'Queue'
+        ].Id;
+
+        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
+        suggestAnArticle.Category__c = 'Knowledge';
+        suggestAnArticle.Origin__c = 'My ASU';
+        suggestAnArticle.Visible_by_Contact__c = false;
+
+        insert suggestAnArticle;
+
+        PageReference confirmPage = ApexPages.currentPage();
+        confirmPage.getParameters().put('Suggest', 'yes');
         confirmPage.setRedirect(true);
+
         return confirmPage;
+    }
+
+    public void checkSearchString()
+    {
+        if (searchstring.length() > 99)
+        {
+            searchstring = searchstring.substring(0,99);
+        }
     }
 }

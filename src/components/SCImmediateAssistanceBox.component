@@ -1,12 +1,12 @@
 <apex:component allowDML="true">
-	<!-- This component renders the Immediate Assitance Box -->
-	<apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean"/>
-	<apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean"/>
-	<apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean"/>
-	<apex:attribute name="myPin" description="The user's contact's PIN" type="Decimal"/>
-	<apex:attribute name="newPin" description="The new PIN" type="Decimal"/>
-	<apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action"/>
-	<apex:outputPanel rendered="{!HelpBox}">
+    <!-- This component renders the Immediate Assitance Box -->
+    <apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean"/>
+    <apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean"/>
+    <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean"/>
+    <apex:attribute name="myPin" description="The user's contact's PIN" type="Decimal"/>
+    <apex:attribute name="newPin" description="The new PIN" type="Decimal"/>
+    <apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action"/>
+    <apex:outputPanel rendered="{!HelpBox}">
         <div class="box">
             <div class="header">
                 <h6><b>Immediate Assistance</b></h6>

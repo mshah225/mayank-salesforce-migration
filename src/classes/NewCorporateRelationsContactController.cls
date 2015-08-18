@@ -2,7 +2,7 @@ public with sharing class NewCorporateRelationsContactController
 {	
 	public Account account { get;set; }
 	public Contact contact { get;set; }
-	public RecordType cohortRecordType { get;set; }
+	public RecordType crRecordType { get;set; }
 	public Relationship__c relationship { get;set; }
 	public Boolean showCancel { get;set; }
 	public Boolean clickedAccount { get;set; }
@@ -12,8 +12,8 @@ public with sharing class NewCorporateRelationsContactController
 	public List<SelectOption> campaignOptions;
 	public List<SelectOption> childCampaignOptions { get;set; }
 	public List<SelectOption> relTypeOptions;
-	public List<Campaign> cohortCampaigns;
-	public List<Campaign> childCohortCampaigns;
+	public List<Campaign> crCampaigns;
+	public List<Campaign> childCrCampaigns;
 	public Set<String> currentSet;
 	public String selectedParentId { get;set; }
 	public String selectedChildId { get;set; }
@@ -23,27 +23,27 @@ public with sharing class NewCorporateRelationsContactController
 		page = 1;
 		account = new Account();
 		contact = new Contact();
-		cohortRecordType = new RecordType();
+		crRecordType = new RecordType();
 		currentSet = new Set<String>();
 		relationship = new Relationship__c();
 		relationshipList = new List<Relationship__c>();
 		campaignMemberList = new List<CampaignMember>();
-		cohortRecordType = [SELECT Id 
+		crRecordType = [SELECT Id 
 							FROM RecordType 
-							WHERE Name = 'Cohort'];
+							WHERE Name = 'Corporate Relations'];
 	}
 
 	public List<SelectOption> getCampaignOptions() 
 	{
-		cohortCampaigns = [SELECT Id, Name, RecordTypeId 
+		crCampaigns = [SELECT Id, Name, RecordTypeId
 					       FROM Campaign 
-					       WHERE RecordTypeId = :cohortRecordType.Id 
+					       WHERE RecordTypeId = :crRecordType.Id 
 					       AND IsActive = true
 					       AND ParentId = null 
 					       ORDER BY Name ASC];
         campaignOptions = new List<SelectOption>();
         campaignOptions.add(new SelectOption( '' ,'--Select--'));
-        for (Campaign c : cohortCampaigns ) 
+        for (Campaign c : crCampaigns )
         {
             campaignOptions.add(new SelectOption(c.Id , c.Name));
         }
@@ -52,14 +52,14 @@ public with sharing class NewCorporateRelationsContactController
 
     public void populateChildCampaigns() 
     {
-        childCohortCampaigns = [SELECT Id, Name, RecordTypeId 
+        childCrCampaigns = [SELECT Id, Name, RecordTypeId
 					       		FROM Campaign 
-					       		WHERE RecordTypeId = :cohortRecordType.Id 
+					       		WHERE RecordTypeId = :crRecordType.Id 
 					       		AND IsActive = true 
 					       		AND ParentId = :selectedParentId
 					       		ORDER BY Name ASC];
         childCampaignOptions = new List<SelectOption>();
-        if (childCohortCampaigns == null)
+        if (childCrCampaigns == null)
         {
         	childCampaignOptions.add(new SelectOption( '' ,'--Select--'));
         }
@@ -67,7 +67,7 @@ public with sharing class NewCorporateRelationsContactController
         {
         	childCampaignOptions.add(new SelectOption( '' ,'None'));
         }
-        for (Campaign c : childCohortCampaigns ) 
+        for (Campaign c : childCrCampaigns )
         {
             childCampaignOptions.add(new SelectOption(c.Id , c.Name));
         }

@@ -6,58 +6,78 @@ public class ChatterAutoAddUsers
         List<User> userList = [SELECT Id, ProfileId, isActive FROM User WHERE Id IN :userIds];
         List<CollaborationGroupMember> collabMembersToInsert = new List<CollaborationGroupMember>();
         CollaborationGroupMember newCollabMember;
-        
-        Id recGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'ASU Recruitment'].Id;
-        Id servGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'ASU Service'].Id;
-        Id knowGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'Knowledge Users'].Id;
-        Id allGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'ASU - Everyone'].Id;
-        Id crGroupId = [SELECT Id FROM CollaborationGroup WHERE Name = 'Corporate Relations'].Id;
-        Id commId = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-        Id commCapId = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
-        Id collabGroupId;
 
-        List<CollaborationGroupMember> recGroupMembers = [
-                SELECT MemberId
-                FROM
-                        CollaborationGroupMember
-                WHERE CollaborationGroupId = :recGroupId
-        ];
+        List<CollaborationGroup> recGroup = [SELECT Id FROM CollaborationGroup WHERE Name =
+                'ASU Recruitment' LIMIT 1];
+        List<CollaborationGroup> servGroup = [SELECT Id FROM CollaborationGroup WHERE Name =
+                'ASU Service' LIMIT 1];
+        List<CollaborationGroup> allGroup = [SELECT Id FROM CollaborationGroup WHERE Name =
+                'ASU - Everyone' LIMIT 1];
 
-        List<CollaborationGroupMember> servGroupMembers = [
-                SELECT MemberId
-                FROM
-                        CollaborationGroupMember
-                WHERE CollaborationGroupId = :servGroupId
-        ];
-
-        List<CollaborationGroupMember> allGroupMembers = [
-                SELECT MemberId
-                FROM
-                        CollaborationGroupMember
-                WHERE CollaborationGroupId = :allGroupId
-        ];
-
-        Set<Id> recGroupMemberIds = new Set<Id>();
-        for (CollaborationGroupMember cgm : recGroupMembers)
-        {
-            recGroupMemberIds.add(cgm.MemberId);
-        }
-
-        Set<Id> servGroupMemberIds = new Set<Id>();
-        for (CollaborationGroupMember cgm : servGroupMembers)
-        {
-            servGroupMemberIds.add(cgm.MemberId);
-        }
-
-        Set<Id> allGroupMemberIds = new Set<Id>();
-        for (CollaborationGroupMember cgm : allGroupMembers)
-        {
-            allGroupMemberIds.add(cgm.MemberId);
-        }
+        List<CollaborationGroupMember> recGroupMembers;
+        List<CollaborationGroupMember> servGroupMembers;
+        List<CollaborationGroupMember> allGroupMembers;
 
         Map<String, String> chatterSettingsMap = new Map<String, String>();
         Map<String, String> chatterGroupsMap = new Map<String, String>();
         Map<String, String> profilesMap = new Map<String, String>();
+
+        Set<Id> recGroupMemberIds = new Set<Id>();
+        Set<Id> servGroupMemberIds = new Set<Id>();
+        Set<Id> allGroupMemberIds = new Set<Id>();
+
+        Id commId = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+        Id commCapId = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
+        Id collabGroupId;
+        Boolean foundGroups;
+
+        if (recGroup.size() > 0)
+        {
+            recGroupMembers = [
+                SELECT MemberId
+                FROM CollaborationGroupMember
+                WHERE CollaborationGroupId = :recGroup[0].Id
+            ];
+
+            foundGroups = true;
+
+            for (CollaborationGroupMember cgm : recGroupMembers)
+            {
+                recGroupMemberIds.add(cgm.MemberId);
+            }
+        }
+
+        if (servGroup.size() > 0)
+        {
+            servGroupMembers = [
+                SELECT MemberId
+                FROM CollaborationGroupMember
+                WHERE CollaborationGroupId = :servGroup[0].Id
+            ];
+
+            foundGroups = true;
+
+            for (CollaborationGroupMember cgm : servGroupMembers)
+            {
+                servGroupMemberIds.add(cgm.MemberId);
+            }
+        }
+
+        if (allGroup.size() > 0)
+        {
+            allGroupMembers = [
+                SELECT MemberId
+                FROM CollaborationGroupMember
+                WHERE CollaborationGroupId = :allGroup[0].Id
+            ];
+
+            foundGroups = true;
+
+            for (CollaborationGroupMember cgm : allGroupMembers)
+            {
+                allGroupMemberIds.add(cgm.MemberId);
+            }
+        }
 
         List<Chatter_Auto_Add_Users__c> chatterSettingsList = [
                 SELECT Profile__c, Chatter_Group_Name__c

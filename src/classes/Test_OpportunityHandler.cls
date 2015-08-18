@@ -93,6 +93,10 @@ public with sharing class Test_OpportunityHandler {
 
     static testMethod void testCollegeFieldUpdate()
     {
+        Contact con1 = ContactService.createTestContact();
+        Opportunity op1 = OpportunityService.createOpportunity();
+        Account acc1 = AccountService.createAccount();
+
         List<Opportunity> opps = OpportunityService.createMultipleOpportunities(3);
         insert opps;
         Opportunity o1 = opps[0];

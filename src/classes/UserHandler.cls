@@ -20,7 +20,7 @@ public without sharing class UserHandler implements ITrigger
 					newUser.Role_Knowledge__c = true;
 				}
 
-				if(newUser.ProfileId == communityProfile)
+				if(newUser.FederationIdentifier != null && newUser.ProfileId == communityProfile)
 				{
                     asurites.add(newUser.FederationIdentifier.split('@').get(0));
 					asuritesToUser.put(newUser.FederationIdentifier.split('@').get(0), newUser);

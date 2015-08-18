@@ -1,6 +1,20 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
+	<apex:attribute name="viewingAs" description="Whether or not the user is currently viewing as" type="Boolean"/>
+    <apex:attribute name="firstName" description="The first name of the current user"
+                    type="String"/>
+    <apex:attribute name="lastName" description="The last name of the current user"
+                    type="String"/>
 	<center>
+	    <apex:outputPanel rendered="{!viewingAs}">
+	        <div class="alert alert-warning">
+	            <button type='button' class='close' data-dismiss='alert'>×</button>
+	            <apex:outputText>
+	            	You are currently viewing as {!firstName} {!lastName} in read only mode. You will not be able to take any actions on this page.
+	            </apex:outputText>
+	        </div>
+	    </apex:outputPanel>
+
 	    <apex:outputPanel rendered="{!$CurrentPage.parameters.PIN == 'error'}">
 	        <div class="alert alert-danger">
 	            <button type='button' class='close' data-dismiss='alert'>×</button>
@@ -21,7 +35,7 @@
 	        </div>
 	    </apex:outputPanel>
 
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback != null}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback == 'yes'}">
 	        <div class="alert alert-success feedbackConfirm">
 	            <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
 	            <p><strong>Thank you for your feedback.</strong> Your feedback helps ASU make the Knowledge Base better.</p>
@@ -44,7 +58,7 @@
 	        </div>
 	    </apex:outputPanel>
 
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest != null}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest == 'yes'}">
             <div class="alert alert-success feedbackConfirm">
                 <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
                 <p><strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.</p>

@@ -1,5 +1,13 @@
 <apex:page showHeader="false" sidebar="false" controller="SCLaunchController" action="{!init}">
-  <head>
-  	<meta http-equiv="refresh" content="0; url=/studentSC" />
-  </head>
+  	<script>
+		var masqCookie = "{!masqScopeIdCookie}";
+		if (masqCookie != "")
+		{
+			window.location.href = "/studentSC?masqScopeIdCookie=" + masqCookie;
+		}
+		else
+		{
+			window.location.href = "/studentSC";
+		}
+	</script>
 </apex:page>

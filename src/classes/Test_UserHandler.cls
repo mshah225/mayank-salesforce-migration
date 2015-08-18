@@ -18,14 +18,19 @@ public class Test_UserHandler
 	}
 
 	@isTest static void insertCAPUser()
-	{		
+	{
+        Account acc = new Account(Name='Test Account Name');
+        insert acc;
+        
 		Contact testContact = ContactService.createTestContact();
 		testContact.FirstName = 'Test';
 		testContact.LastName = 'User';
 		testContact.ASURite_ID__c = 'testuser';
 		testContact.CAP_Possible__c = TRUE;
+        testContact.ACcountId = acc.Id;
 		insert testContact;
-
+        
+        Test.startTest();
 		Student_Group__c testGroup = new Student_Group__c();
 		testGroup.SG_Status__c = TRUE;
 		testGroup.SG_PeopleSoft_Code__c = 'CP00';
@@ -35,8 +40,11 @@ public class Test_UserHandler
 		User testUser = UserService.createTestUser();
 		Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
 		testUser.ProfileId = communityProfile;
-		testUser.ContactId = testContact.Id;
+        
+        testUser.isActive = true;
+        testUser.FederationIdentifier = 'testuser@asu.edu';
 		insert testUser;
+        Test.stopTest();
 
 		Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
 		testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
@@ -44,29 +52,17 @@ public class Test_UserHandler
 		System.assert(testUser.ProfileId == communityCapProfile.Id);
 	}
 
-	@isTest static void insertCAPUserNotLinked()
+	@isTest static void insertNonCAPUser()
 	{		
-		Contact testContact = ContactService.createTestContact();
-		testContact.FirstName = 'Test';
-		testContact.LastName = 'User';
-		testContact.ASURite_ID__c = 'testuser';
-		testContact.CAP_Possible__c = TRUE;
-		insert testContact;
-
-		Student_Group__c testGroup = new Student_Group__c();
-		testGroup.SG_Status__c = TRUE;
-		testGroup.SG_PeopleSoft_Code__c = 'CP00';
-		testGroup.SG_Contact__c = testContact.Id;
-		insert testGroup;
-
 		User testUser = UserService.createTestUser();
-		Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-		testUser.ProfileId = communityProfile;
+		Id chatterProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'].Id;
+		testUser.ProfileId = chatterProfile;
+        testUser.FederationIdentifier = 'testuser@asu.edu';
 		insert testUser;
 
 		Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
 		testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
 
-		System.assert(testUser.ProfileId == communityCapProfile.Id);
-	}
+		System.assert(testUser.ProfileId != communityCapProfile.Id);
+	}	
 }

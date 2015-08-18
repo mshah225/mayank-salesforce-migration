@@ -1,4 +1,4 @@
-public class CaseService 
+public class CaseService
 {
 	/**
 	* Returns all the fields on Case in a String
@@ -14,6 +14,42 @@ public class CaseService
 		
 		return caseFields;
 	}
+
+    /**
+    * Returns the fields needed on the Service Center for a given case
+    * @param The Case Id to look up
+    * @return The Case Object
+    */
+    public static Case getCaseDetails(Id caseId)
+    {
+        Case requestedCase = [
+            SELECT Id, CaseNumber, Functional_Group__c, Subject, Description,
+            Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
+            FROM Case
+            WHERE Id = :caseId
+        ];
+        
+        return requestedCase;
+    }
+
+/**
+    * Returns the email messages for the requested case
+    * @param The Case Id to look up
+    * @return The Case Objects Email Messages
+    */
+    public static EmailMessage[] getCaseEmailMessages(Date launchDate, Id caseId, String contactEmail)
+    {
+        return [
+            SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate,
+            Subject, TextBody, FromAddress, ToAddress, CCAddress
+            FROM EmailMessage
+            WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
+            AND Incoming = false
+            AND CreatedDate > :launchDate
+            AND ToAddress = :contactEmail
+            ORDER BY CreatedDate DESC
+        ];
+    }
 
 	/**
     * Get these contact's open visible cases
@@ -47,7 +83,10 @@ public class CaseService
         }
         catch (Exception e)
         {
-            throw new CaseServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s open visible cases\n' + e.getStackTraceString());
+            throw new CaseServiceException(
+                '!!!ERROR!!!: An error occurred trying to get the Contact\'s open visible cases\n' +
+                e.getStackTraceString()
+            );
         }
 
         // Iterate through the list cases that we got back and associate them with the list of contacts passed in
@@ -91,17 +130,20 @@ public class CaseService
         try
         {
            	String selectClosedVisibleCases = 'SELECT ' + caseFields + ' ' +
-        									'FROM Case ' +
-        									'WHERE IsClosed = true ' +
-        									'AND Visible_by_Contact__c = true ' +
-        									'AND ContactId IN :contactIds ' +
-        									'ORDER BY ClosedDate DESC';
+        									  'FROM Case ' +
+        									  'WHERE IsClosed = true ' +
+        									  'AND Visible_by_Contact__c = true ' +
+        									  'AND ContactId IN :contactIds ' +
+        									  'ORDER BY ClosedDate DESC';
 
             closedCases = Database.query(selectClosedVisibleCases);
         }
         catch (Exception e)
         {
-            throw new CaseServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s closed visible cases\n' + e.getStackTraceString());
+            throw new CaseServiceException(
+                 '!!!ERROR!!!: An error occurred trying to get the Contact\'s ' +
+                 'closed visible cases\n' + e.getStackTraceString()
+            );
         }
 
         // Iterate through the list cases that we got back and associate them with the list of contacts passed in
@@ -135,10 +177,9 @@ public class CaseService
         // Get the list of cases associated with our set of contacts
         try
         {
-            String caseInfoQuery =
-                    'SELECT ' + caseFields + ' ' +
-                    'FROM Case ' +
-                    'WHERE Id = :caseId';
+            String caseInfoQuery = 'SELECT ' + caseFields + ' ' +
+                                   'FROM Case ' +
+                                   'WHERE Id = :caseId';
 
             System.debug('!!!FINE: caseInfoQuery is ' + caseInfoQuery);
 
@@ -146,7 +187,10 @@ public class CaseService
         }
         catch (Exception e)
         {
-            throw new CaseServiceException('!!!ERROR!!!: An error occurred trying to get the Case\'s information\n' + e.getMessage());
+            throw new CaseServiceException(
+                '!!!ERROR!!!: An error occurred trying to get ' +
+                'the Case\'s information\n' + e.getMessage()
+            );
         }
 
         return caseInfo;

@@ -2,9 +2,9 @@
     sidebar="false"
     cache="true"
     docType="html-5.0"
-    controller="AKBController"
+    controller="ServiceCenter"
     action="{!init}"
-    extensions="ServiceCenter,vfKeywordSearchController,AutoCompleteController,NavLinks">
+    extensions="AKBController,NavLinks">
 <head>
     <title>My ASU | {!article.title}</title>
     <c:asu_responsive_header_section />
@@ -86,6 +86,11 @@
                 padding-top: 5px !important;
             }
         }
+
+        #articleContentDiv img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
     </style>
 
     <script>
@@ -102,14 +107,25 @@
         ga('send', 'pageview');
     </script>
 
-    <c:SCBomgarScripts asurite="{!userContact.ASURite_Id__c}"/>
+    <c:SCBomgarScripts asurite="{!asurite}"
+                       firstName="{!firstName}"
+                       lastName="{!lastName}"
+                       emplId="{!emplId}"
+                       viewingAs="{!viewingAs}"/>
 </head>
-<body onload="getLinks()">
+<body onload="getLinks(); viewAsLinks();">
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader/>
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
+                viewAsUrl="{!viewAsUrl}"/>
 
     <div id="asu_content_well">
-        <c:SCPageNotifications/>
+        <c:SCPageNotifications viewingAs="{!viewingAs}"
+                               firstName="{!firstName}"
+                               lastName="{!lastName}"/>
         
         <div class="container">
             <ol class="breadcrumb">
@@ -130,10 +146,14 @@
                                         <div class="form-horizontal">
                                             <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"
                                             html-placeholder="Enter search terms"/>
-                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
+                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults" oncomplete="viewAsLinks()" status="KBSearchStatus"/>
                                             <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
+                                            <apex:actionStatus id="KBSearchStatus">
+                                                <apex:facet name="start">
+                                                    <img src="/img/loading.gif" style="position: absolute;margin-left:-125px;margin-top:6px;"/>
+                                                </apex:facet>
+                                            </apex:actionStatus>
                                         </div>
-                                        <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
                                     </div>
                                 </apex:pageBlock>
                             </apex:form>
@@ -141,29 +161,29 @@
                                 <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
                                     <br />
                                     <hr />
-                                    <h5><b>Search Results for:</b> '{!searchstring}'</h5>
+                                    <h5><b>Results for:</b> '{!searchstring}'</h5>
                                     <div style="height:5px;"></div>
                                     <knowledge:articleList articleVar="articleSearch"
-                                        pageNumber="{!currentPageNumber}"
                                         Keyword="{!searchstring}"
-                                        hasMoreVar="true"
-                                        pageSize="10"
-                                        rendered="{!searchstring != ''}">
+                                        pageSize="10">
                                         <table>
                                             <tr>
                                                 <td style="vertical-align:top;">
                                                     &#8226;&nbsp;
                                                 </td>
                                                 <td>
-                                                    <apex:outputLink value="/akb?id={!articleSearch.id}">{!articleSearch.title}</apex:outputLink>
+                                                    <apex:outputLink value="/akb?id={!articleSearch.Id}">
+                                                        {!articleSearch.Title}
+                                                    </apex:outputLink>
                                                     <br />
                                                     <div style="height:6px;"></div>
                                                 </td>
                                             </tr>
                                         </table>
                                     </knowledge:articleList>
+                                    <br />
                                     <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
-                                    Suggest An Article
+                                        Suggest An Article
                                     </button>
                                 </apex:pageBlock>
 
@@ -297,12 +317,12 @@
                                         <apex:pageBlock mode="maindetail">
                                             <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                                             <br />
-                                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticleAKB.Description}" style="width:100%;max-width:400px;height:100px;"/>
+                                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;"/>
                                         </apex:pageBlock>
                                     </div>
                                     <div class="modal-footer">
                                         <div class="pull-left">
-                                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmitAKB}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
+                                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
                                             <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
                                         </div>
                                     </div>
@@ -322,12 +342,6 @@
         </div><!-- end row -->
         <c:SCFooter/>
     </div><!-- end ASU Content -->
-
-    <script>
-        $( document ).ready(function() {
-            $( "#articleContentDiv img" ).addClass("img-responsive");
-        });
-    </script>
 
     <script>
         function getLinks()
@@ -407,6 +421,28 @@
             document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
                 event.preventDefault();
             });
+        }
+    </script>
+
+    <script>
+        function viewAsLinks() {
+            var masqCookie = "{!masqScopeIdCookie}";
+            var viewingAs = "{!viewingAs}";
+            if (masqCookie != "" && viewingAs == "true") {
+                $("a").each(function() {
+                    var href = this.href;
+                    if (href.indexOf("force") > -1)
+                    {
+                        if (href.indexOf("?") != -1) {
+                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        else {
+                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        $(this).attr("href", href);
+                    }
+                });
+            }
         }
     </script>
 </body>

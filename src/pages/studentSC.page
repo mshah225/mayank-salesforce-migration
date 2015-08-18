@@ -4,7 +4,7 @@
     docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
-    extensions="vfKeywordSearchController,AutoCompleteController,NavLinks">
+    extensions="NavLinks">
 <head>
     <title>My ASU | Service Center</title>
     <c:asu_responsive_header_section />
@@ -30,18 +30,29 @@
         ga('send', 'pageview');
     </script>
 
-    <c:SCBomgarScripts asurite="{!userContact.ASURite_Id__c}"/>
+    <c:SCBomgarScripts asurite="{!asurite}"
+                       firstName="{!firstName}"
+                       lastName="{!lastName}"
+                       emplId="{!emplId}"
+                       viewingAs="{!viewingAs}"/>
 </head>
-<body>
+<body onload="viewAsLinks()">
     <script>
         if (window.top !== window.self) top.location.replace(self.location.href);
     </script>
 
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader />
+    <c:SCHeader firstName="{!firstName}" 
+                lastName="{!lastName}" 
+                viewingAs="{!viewingAs}" 
+                emplId="{!emplId}" 
+                stopViewAsUrl="{!stopViewAsUrl}" 
+                viewAsUrl="{!viewAsUrl}"/>
 
     <div id="asu_content_well">
-        <c:SCPageNotifications/>
+        <c:SCPageNotifications viewingAs="{!viewingAs}"
+                               firstName="{!firstName}"
+                               lastName="{!lastName}"/>
 
         <apex:form id="suggestAnArticle">
             <!-- Modal -->
@@ -56,12 +67,12 @@
                             <apex:pageBlock mode="maindetail">
                                 <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                                 <br />
-                                <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticleSC.Description}" style="width:100%;max-width:400px;height:100px;"/>
+                                <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;"/>
                             </apex:pageBlock>
                         </div>
                         <div class="modal-footer">
                             <div class="pull-left">
-                                <apex:commandButton value="Submit" action="{!suggestAnArticleSubmitSC}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
+                                <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
                                 <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
                             </div>
                         </div>
@@ -86,11 +97,14 @@
                                         <div class="form-horizontal">
                                             <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"
                                             html-placeholder="Enter search terms"/>
-                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
+                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults" oncomplete="viewAsLinks()" status="KBSearchStatus"/>
                                             <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
+                                            <apex:actionStatus id="KBSearchStatus">
+                                                <apex:facet name="start">
+                                                    <img src="/img/loading.gif" style="position: absolute;margin-left:-125px;margin-top:6px;"/>
+                                                </apex:facet>
+                                            </apex:actionStatus>
                                         </div>
-
-                                        <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
                                     </div>
                                 </apex:pageBlock>
                             </apex:form>
@@ -98,26 +112,26 @@
                             <hr />
                             <apex:form id="theSearchResults">
                                 <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
-                                    <h5><b>Search Results for:</b> '{!searchstring}'</h5>
+                                    <h5><b>Results for:</b> '{!searchstring}'</h5>
                                     <div style="height:5px;"/>
                                     <knowledge:articleList articleVar="article"
-                                        pageNumber="{!currentPageNumber}"
                                         Keyword="{!searchstring}"
-                                        hasMoreVar="true"
-                                        pageSize="10"
-                                        rendered="{!searchstring != ''}">
+                                        pageSize="10">
                                         <table>
                                             <tr>
                                                 <td style="vertical-align:top;">
                                                     &#8226;&nbsp;
                                                 </td>
                                                 <td>
-                                                    <apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink><br />
+                                                    <apex:outputLink value="/akb?id={!article.Id}">
+                                                        {!article.Title}
+                                                    </apex:outputLink><br />
                                                     <div style="height:6px;"/>
                                                 </td>
                                             </tr>
                                         </table>
                                     </knowledge:articleList>
+                                    <br />
                                     <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
                                         Suggest An Article
                                     </button>
@@ -187,6 +201,28 @@
             document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
                 event.preventDefault();
             });
+        }
+    </script>
+
+    <script>
+        function viewAsLinks() {
+            var masqCookie = "{!masqScopeIdCookie}";
+            var viewingAs = "{!viewingAs}";
+            if (masqCookie != "" && viewingAs == "true") {
+                $("a").each(function() {
+                    var href = this.href;
+                    if (href.indexOf("force") > -1)
+                    {
+                        if (href.indexOf("?") != -1) {
+                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        else {
+                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        $(this).attr("href", href);
+                    }
+                });
+            }
         }
     </script>
 </body>

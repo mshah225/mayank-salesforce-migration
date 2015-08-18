@@ -68,7 +68,11 @@ public class ContactService
 
         try
         {
-			loggedInContactId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
+			loggedInContactId = [
+                SELECT ContactId
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+            ].ContactId;
 
 			String selectContactInfoByLoggedInUser = 'SELECT ' + contactFields + ' ' +
         											 'FROM Contact ' +
@@ -78,10 +82,44 @@ public class ContactService
         }
         catch (Exception e)
         {
-            throw new ContactServiceException('!!!ERROR!!!: An error occurred trying to get the logged in Contact\n' + e.getMessage());
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to get the logged in Contact\n' +
+                e.getMessage()
+            );
         }
 
         return loggedInContact;
+    }
+
+    /**
+    * The contact to view as in the service center.
+    * @param The asurite from the My ASU webservice you want to view as
+    * @return The contact and all of its fields
+    */
+    public static Contact getContactToViewAs(String asurite)
+    {
+        //Id viewAsContactId = null;
+        Contact viewAsContact = null;
+        String contactFields = contactFieldsToString();
+        System.debug(asurite);
+
+        try
+        {
+            String selectContactInfoByAsurite = 'SELECT ' + contactFields + ' ' + 
+                                                'FROM Contact ' +
+                                                'WHERE ASURite_Id__c = :asurite';
+
+            viewAsContact = Database.query(selectContactInfoByAsurite);
+        }
+        catch (Exception e)
+        {
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to get the Contact by ASURITE\n' +
+                e.getMessage()
+            );
+        }
+
+        return viewAsContact;
     }
 
     /**
@@ -171,7 +209,10 @@ public class ContactService
         }
         catch (Exception e)
         {
-            throw new ContactServiceException('!!!ERROR!!!: An error occurred trying to get the Contact\'s information\n' + e.getMessage());
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to get the Contact\'s information\n' +
+                e.getMessage()
+            );
         }
 
         return contactInfo;

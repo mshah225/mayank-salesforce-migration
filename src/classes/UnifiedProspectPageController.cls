@@ -72,7 +72,14 @@ public class UnifiedProspectPageController
             opportunity = new Opportunity();
         }
 
-        oppRecType = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
+        if(career == 'graduate' || career == 'law')
+        {
+            oppRecType = [SELECT Id FROM RecordType WHERE Name = 'Graduate Prospect' LIMIT 1].Id;
+        }
+        else
+        {
+            oppRecType = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
+        }
         opportunity.RecordTypeId = oppRecType;
         return opportunity;
     }
@@ -111,7 +118,7 @@ public class UnifiedProspectPageController
     {
         get
         {
-            List<Program__c> ProgramTemp = [SELECT p.Name, p.Id FROM Program__c p WHERE Career__c = :career];
+            List<Program__c> ProgramTemp = [SELECT p.Name, p.Id FROM Program__c p WHERE Career__c = :career AND Program_Status__c = true];
             ProgramList = new List<SelectOption>();
             ProgramList.add(new SelectOption('0', '-- None --'));
             
@@ -261,6 +268,16 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'When selecting an Origin, you must also select a Functional Group.'));
                 return false;
             }
+            else if(contact.Phone == null && contact.MailingPostalCode == null)
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must provide either a Phone number or a Zip code!'));
+                return false;
+            }
+            else if(career == 'graduate' && collegeSelected == '0')
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a college!'));
+                return false;
+            }
             else 
             {
                 //Create Contact
@@ -300,13 +317,13 @@ public class UnifiedProspectPageController
     
                 //Create Opportunity
                 opportunity.Id = null;
-                if (oppRecType != null) 
+                if(career == 'undergraduate')
                 {
-                    opportunity.RecordTypeId = oppRecType;
+                    opportunity.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
                 }
-                else 
+                else
                 {
-                    opportunity.RecordTypeId = '012d0000000x3xyAAA';
+                    opportunity.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Graduate Prospect' LIMIT 1].Id;
                 }
 
                 Datetime DatePreString = Datetime.now();
@@ -340,10 +357,7 @@ public class UnifiedProspectPageController
                    opportunity.Academic_Plan__c = planSelected; 
                 }
 
-                if(career == 'graduate' && collegeSelected != null)
-                {
-                    insert opportunity;
-                }
+                insert opportunity;
     
                 //Create Previous Education
                 getPreviousEducation();
@@ -415,10 +429,7 @@ public class UnifiedProspectPageController
                     c.Priority = 'Normal';
                     String termName = opportunity.Term__c;
 
-                    if(career == 'graduate' && collegeSelected != null)
-                    {
-                        termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
-                    }
+                    termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
 
                     if (c.Subject == null && c.Description == null) 
                     {
@@ -427,11 +438,8 @@ public class UnifiedProspectPageController
                     insert c;
                     
                     //Update Opportunity's case with case Id
-                    if(career == 'graduate' && collegeSelected != null)
-                    {
-                        opportunity.Prospect_Case__c = c.Id;
-                        update opportunity;
-                    }
+                    opportunity.Prospect_Case__c = c.Id;
+                    update opportunity;
                 }
                 else if (originSelection != '--Select--' && elId != null) 
                 {

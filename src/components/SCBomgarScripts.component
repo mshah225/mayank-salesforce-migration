@@ -11,7 +11,12 @@
         // Start 'Finances' Chat
         function startFAChat()
         {
+            document.getElementById("faChatBtn").firstChild.data = "Starting Chat...";
+            document.getElementById("faChatBtn").setAttribute("style","width:100px");
+            document.getElementById("faChatBtn").disabled = true;
+
             var viewingAs = "{!viewingAs}"
+
             if (viewingAs != "true")
             {
                 var jsonString = null;
@@ -20,6 +25,7 @@
                     jsonObject.description = document.getElementById('FADesc').value;
                     jsonObject.asuriteId = "{!asurite}";
                     jsonObject.externalKey = 'Finances';
+
                 try
                 {
                     jsonString = JSON.stringify(jsonObject);
@@ -28,6 +34,7 @@
                 {
 
                 }
+
                 if (jsonString == null)
                 {
                     jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('FADesc').value + '", "asuriteId":"{!asurite}", "externalKey":"Finances"}';
@@ -60,15 +67,20 @@
         // Start 'Other' Chat
         function startSFDCChat()
         {
+            document.getElementById("otherChatBtn").firstChild.data = "Starting Chat...";
+            document.getElementById("otherChatBtn").setAttribute("style","width:100px");
+            document.getElementById("otherChatBtn").disabled = true;
             var viewingAs = "{!viewingAs}"
+
             if (viewingAs != "true")
-            {    
+            {
                 var jsonString = null;
                 var jsonObject = {};
                     jsonObject.employeeNumber = "{!emplId}";
                     jsonObject.description = document.getElementById('SFDCDesc').value;
                     jsonObject.asuriteId = "{!asurite}";
                     jsonObject.externalKey = 'Other';
+
                 try
                 {
                     jsonString = JSON.stringify(jsonObject);
@@ -77,6 +89,7 @@
                 {
 
                 }
+
                 if (jsonString == null)
                 {
                     jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('SFDCDesc').value + '", "asuriteId":"{!asurite}", "externalKey":"Other"}';

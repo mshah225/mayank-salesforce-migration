@@ -485,4 +485,19 @@ public with sharing class ServiceCenter
             searchstring = searchstring.substring(0,99);
         }
     }
+
+    public PageReference viewAllResults()
+    {
+        PageReference viewAllArts = new PageReference('/viewAllArticles');
+
+        if (searchstring != null)
+        {
+            viewAllArts.getParameters().put('q', searchstring);
+
+        }
+
+        viewAllArts.setRedirect(true);
+
+        return viewAllArts;
+    }
 }

@@ -1,24 +1,11 @@
-<apex:page showHeader="false"
+<apex:page docType="html-5.0"
+    showHeader="false"
     sidebar="false"
-    cache="true"
-    docType="html-5.0"
     controller="ServiceCenter"
-    action="{!init}"
-    extensions="NavLinks">
+    extensions="ViewAllArticlesController,NavLinks">
 <head>
-    <title>My ASU | Service Center</title>
+    <title>My ASU | Search For Articles</title>
     <c:asu_responsive_header_section />
-    
-    <style>
-        .checkboxHidden {
-            visibility:hidden;
-        }
-
-        .contactPhone td {
-            padding: 0px !important;
-        }
-
-    </style>
 
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -29,25 +16,16 @@
         ga('create', 'UA-47141114-2', 'auto');
         ga('send', 'pageview');
     </script>
-
-    <c:SCBomgarScripts asurite="{!asurite}"
-                       firstName="{!firstName}"
-                       lastName="{!lastName}"
-                       emplId="{!emplId}"
-                       viewingAs="{!viewingAs}"/>
 </head>
-<body onload="viewAsLinks()">
-    <script>
-        if (window.top !== window.self) top.location.replace(self.location.href);
-    </script>
 
+<body onload="viewAsLinks()">
     <div id="main-search" class="main-search closed"></div>
 
-    <c:SCHeader firstName="{!firstName}" 
-                lastName="{!lastName}" 
-                viewingAs="{!viewingAs}" 
-                emplId="{!emplId}" 
-                stopViewAsUrl="{!stopViewAsUrl}" 
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
                 viewAsUrl="{!viewAsUrl}"/>
 
     <div id="asu_content_well">
@@ -109,24 +87,28 @@
         </apex:form>
 
         <div class="container">
+            <ol class="breadcrumb">
+                <li><a href="/{!source}">Back</a></li>
+                <li class="active" style="font-size:10pt;">Search For Articles</li>
+            </ol>
+
             <div class="row">
-                <div class="col-md-7">
-                    <div class="box firstbox">
+                <div class="col-md-12">
+                    <div class="box">
                         <div class="header">
-                            <h6><b>ASU Knowledge Base</b></h6>
+                            <h6><b>Article Search</b></h6>
                         </div>
 
-                        <div class="content box-padding" id="search_content" >
+                        <div class="content box-padding" id="search_content">
                             <apex:form id="autoCompleteForm" styleClass="searchKB">
                                 <apex:pageBlock mode="maindetail">
-                                    <p>Search for any issue or question to learn how ASU can help!</p>
-                                    <br />
+                                    <p>Search for any issue or question to learn how ASU can help!</p><br />
                                     <div class="searchKB2">
                                         <div class="form-horizontal">
                                             <apex:inputText id="articleTextBoxId"
                                                             value="{!searchstring}"
                                                             styleClass="searchBox"
-                                                            html-placeholder="Enter search terms"/>
+                                                html-placeholder="What would you like to know?"/>
 
                                             <apex:commandButton value="Search"
                                                                 action="{!checkSearchString}"
@@ -139,11 +121,12 @@
                                             <apex:commandButton value="Clear"
                                                                 styleClass="kbbtn searchBtn"
                                                                 style="width:37px;"
-                                                                onclick="this.form.reset();return false;"/>
+                                                                action="{!clearSearchString}"/>
 
                                             <apex:actionStatus id="KBSearchStatus">
                                                 <apex:facet name="start">
-                                                    <img src="/img/loading.gif" style="position: absolute;margin-left:-125px;margin-top:6px;"/>
+                                                    <img src="/img/loading.gif"
+                                                         style="position:absolute;margin-left:-125px;margin-top:6px;"/>
                                                 </apex:facet>
                                             </apex:actionStatus>
                                         </div>
@@ -158,7 +141,7 @@
                                     <div style="height:5px;"></div>
                                     <knowledge:articleList articleVar="article"
                                                            Keyword="{!searchstring}"
-                                                           pageSize="10">
+                                                           pageSize="20">
                                         <table>
                                             <tr>
                                                 <td style="vertical-align:top;">
@@ -167,8 +150,15 @@
                                                 <td>
                                                     <apex:outputLink value="/akb?id={!article.Id}">
                                                         {!article.Title}
-                                                    </apex:outputLink><br />
-                                                    <div style="height:6px;"></div>
+                                                    </apex:outputLink>
+                                                    <br />
+                                                    <apex:outputText value="Date Updated: " />
+                                                    <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                                        <apex:param value="{!article
+                                                        .LastModifiedDate}" />
+                                                    </apex:outputText>
+                                                    <br />
+                                                    <div style="height:15px;"></div>
                                                 </td>
                                             </tr>
                                         </table>
@@ -179,19 +169,14 @@
                                             data-target="#suggestAnArticle">
                                         Suggest An Article
                                     </button>
-                                    <div class="pull-right">
-                                        <apex:commandLink styleClass="btn"
-                                                          style="padding:5px"
-                                                          value="View All Results"
-                                                          action="{!viewAllResults}"/>
-                                    </div>
                                 </apex:pageBlock>
 
                                 <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
-                                    <h5><b>Top 5 Help Articles</b></h5>
+                                    <h5><b>Popular Articles</b></h5>
                                     <div style="height:5px;"></div>
                                     <knowledge:articleList articleVar="article"
-                                                           sortBy="mostViewed">
+                                                           sortBy="mostViewed"
+                                                           pageSize="20">
                                         <table>
                                             <tr>
                                                 <td style="vertical-align:top;">
@@ -202,7 +187,13 @@
                                                         {!article.title}
                                                     </apex:outputLink>
                                                     <br />
-                                                    <div style="height:6px;"></div>
+                                                    <apex:outputText value="Date Updated: " />
+                                                    <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                                        <apex:param value="{!article
+                                                        .LastModifiedDate}" />
+                                                    </apex:outputText>
+                                                    <br />
+                                                    <div style="height:15px;"></div>
                                                 </td>
                                             </tr>
                                         </table>
@@ -211,58 +202,12 @@
                             </apex:form>
                         </div>
                     </div>
-                    <div class="box firstbox">
-                        <iframe src="https://webapp4.asu.edu/narrowcasting/ad/SMALL/myasu-servicecenter-1/true?rotate=true&interval=6000"
-                                scrolling="no"
-                                frameborder="0"
-                                width="100%"
-                                height="57"
-                                style="margin-bottom: -5px;">
-                        </iframe>
-                    </div>
-                </div><!-- end col-md-7 -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="col-md-5">
-                    <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}"
-                                                NormalPhone="{!NormalPhone}"
-                                                RoverPhone="{!RoverPhone}"
-                                                myPin="{!myPin}"
-                                                newPin="{!newPin}"
-                                                changePin="{!changePin}"/>
-
-                    <c:SCMyCasesBox />
-                </div><!-- end col-md-5 -->
-            </div><!-- end first row -->
-        </div><!-- End main container -->
-        <c:SCFooter />
-    </div><!-- End ASU Content -->
-
-    <script>
-        if (!(navigator.userAgent.match(/Android/i)
-             || navigator.userAgent.match(/webOS/i)
-             || navigator.userAgent.match(/iPhone/i)
-             || navigator.userAgent.match(/iPad/i)
-             || navigator.userAgent.match(/iPod/i)
-             || navigator.userAgent.match(/BlackBerry/i)
-             || navigator.userAgent.match(/Windows Phone/i)))
-        {
-            document.getElementById("normalPhone").addEventListener("click", function(event){
-                event.preventDefault();
-            });
-
-            document.getElementById("normalPhone").addEventListener("contextmenu", function(event){
-                event.preventDefault();
-            });
-
-            document.getElementById("roverPhone").addEventListener("click", function(event){
-                event.preventDefault();
-            });
-
-            document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
-                event.preventDefault();
-            });
-        }
-    </script>
+    <c:SCFooter/>
 
     <script>
         function viewAsLinks() {
@@ -271,8 +216,7 @@
             if (masqCookie != "" && viewingAs == "true") {
                 $("a").each(function() {
                     var href = this.href;
-                    if (href.indexOf("force") > -1)
-                    {
+                    if (href.indexOf("force") > -1) {
                         if (href.indexOf("?") != -1) {
                             href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
                         }

@@ -1,23 +1,23 @@
 public class OpportunityService 
 {
-	public static Opportunity createOpportunity()
-	{
-		Id undergradProspectId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
-		Account a = AccountService.createAccount();
-		insert a;
+    public static Opportunity createOpportunity()
+    {
+        Id undergradProspectId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
+        Account a = AccountService.createAccount();
+        insert a;
 
-		Contact c = ContactService.createTestContact();
-		insert c;
+        Contact c = ContactService.createTestContact();
+        insert c;
 
-		Opportunity o = new Opportunity();
-		o.Contact__c = c.Id;
-		o.RecordTypeId = undergradProspectId;
-		o.StageName = 'Prospect';
-		o.CloseDate = Date.today();
-		o.Name = 'Test Opportunity';
-		o.AccountId = a.Id;
-		return o;
-	}
+        Opportunity o = new Opportunity();
+        o.Contact__c = c.Id;
+        o.RecordTypeId = undergradProspectId;
+        o.StageName = 'Prospect';
+        o.CloseDate = Date.today();
+        o.Name = 'Test Opportunity';
+        o.AccountId = a.Id;
+        return o;
+    }
 
     public static List<Opportunity> createMultipleOpportunities(Integer numOfOpps)
     {
@@ -30,25 +30,25 @@ public class OpportunityService
 
         for (Integer i = 0; i < numOfOpps; i++)
         {
-        	Id undergradProspectId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
+            Id undergradProspectId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
 
-			Opportunity o = new Opportunity();
-			o.Contact__c = contactList[i].Id;
-			o.RecordTypeId = undergradProspectId;
-			o.StageName = 'Prospect';
-			o.CloseDate = Date.today();
-			o.Name = 'Test Opportunity ' + i;
-			o.AccountId = accountList[i].Id;
-			oppList.add(o);
+            Opportunity o = new Opportunity();
+            o.Contact__c = contactList[i].Id;
+            o.RecordTypeId = undergradProspectId;
+            o.StageName = 'Prospect';
+            o.CloseDate = Date.today();
+            o.Name = 'Test Opportunity ' + i;
+            o.AccountId = accountList[i].Id;
+            oppList.add(o);
         }
 
         return oppList;
     }
 
-	public static Integer generateOpportunityAssignmentNumber()
-	{
-		Double randNumber = Math.random()*100;
+    public static Integer generateOpportunityAssignmentNumber()
+    {
+        Double randNumber = Math.random()*100;
 
-		return randNumber.intValue();
-	}
+        return randNumber.intValue();
+    }
 }

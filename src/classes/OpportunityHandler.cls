@@ -33,10 +33,60 @@ public without sharing class OpportunityHandler implements ITrigger
                         oppToContactMap.put(o.Id, accountMap.get(o.AccountId).contact__c);
                     }
                 }        
-            }      
+            }
+
+            List<Opportunity> newOpps = Trigger.new;
+            List<Id> admittedPlanIds = new List<Id>();
+            List<Id> academicPlanIds = new List<Id>();
+            Map<Id, Id> admittedPlanPrograms = new Map<Id, Id>();
+            Map<Id, Id> academicPlanPrograms = new Map<Id, Id>();
+
+            for(Integer x = 0; x < newOpps.size(); x++)
+            {
+                admittedPlanIds.add(newOpps.get(x).Admitted_Plan__c);
+                academicPlanIds.add(newOpps.get(x).Academic_Plan__c);
+            }
+
+            List<Plan__c> admittedPrograms = [SELECT Id, Program__c FROM Plan__c WHERE Id in :admittedPlanIds];
+            List<Plan__c> academicPrograms = [SELECT Id, Program__c FROM Plan__c WHERE Id in :academicPlanIds];
+            for(Integer x = 0; x < admittedPrograms.size(); x++)
+            {
+                Plan__c c = admittedPrograms.get(x);
+                admittedPlanPrograms.put(c.Id, c.Program__c);
+            }
+
+            for(Integer x = 0; x < academicPrograms.size(); x++)
+            {
+                Plan__c c = academicPrograms.get(x);
+                academicPlanPrograms.put(c.Id, c.Program__c);
+            }
+
+            for(Integer x = 0; x < newOpps.size(); x++)
+            {
+                Id oldAdmittedPlan = null;
+                Id oldAcademicPlan = null;
+                if(Trigger.isUpdate)
+                {
+                    Opportunity oldOpp = (Opportunity)Trigger.old.get(x);
+                    oldAdmittedPlan = oldOpp.Admitted_Plan__c;
+                    oldAcademicPlan = oldOpp.Academic_Plan__c;
+                }
+                Opportunity newOpp = newOpps.get(x);  
+                if(newOpp.Academic_Plan__c != oldAcademicPlan || newOpp.Admitted_Plan__c != oldAdmittedPlan)
+                {
+                    if(newOpp.Admitted_Plan__c != null)
+                    {
+                        newOpp.College__c = admittedPlanPrograms.get(newOpp.Admitted_Plan__c);
+                    }  
+                    else if(newOpp.Academic_Plan__c != null)
+                    {
+                        newOpp.College__c = academicPlanPrograms.get(newOpp.Academic_Plan__c);
+                    }
+                }
+            }
         }
 
-        if(Trigger.isUpdate)
+        /*if(Trigger.isUpdate)
         {
             List<Opportunity> oldOpps = Trigger.old;
             List<Opportunity> newOpps = Trigger.new;
@@ -82,7 +132,7 @@ public without sharing class OpportunityHandler implements ITrigger
                     }
                 }
             }
-        }
+        }*/
     }
   
     /**

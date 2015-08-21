@@ -4,7 +4,6 @@ public without sharing class AKBController
 
     public AKB_Article_Feedback__c feedbackHelpful { get; set; }
     public AKB_Article_Feedback__c[] feedbackGiven;
-    public Case suggestAnArticle { get; set;}
     public FAQ__kav faq { get; set; }
     public How_To__kav howTo { get;set; }
     public Informational__kav info { get; set; }
@@ -57,7 +56,6 @@ public without sharing class AKBController
             artType = howTo.ArticleType;
         }
         feedbackHelpful = new AKB_Article_Feedback__c(); 
-        suggestAnArticle = new Case();
     }
     
     public string getTitleKeyword() 

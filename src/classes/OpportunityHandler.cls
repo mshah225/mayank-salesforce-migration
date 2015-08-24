@@ -33,12 +33,8 @@ public without sharing class OpportunityHandler implements ITrigger
                         oppToContactMap.put(o.Id, accountMap.get(o.AccountId).contact__c);
                     }
                 }        
-            }      
-        }
+            }
 
-        if(Trigger.isUpdate)
-        {
-            List<Opportunity> oldOpps = Trigger.old;
             List<Opportunity> newOpps = Trigger.new;
             List<Id> admittedPlanIds = new List<Id>();
             List<Id> academicPlanIds = new List<Id>();
@@ -65,12 +61,18 @@ public without sharing class OpportunityHandler implements ITrigger
                 academicPlanPrograms.put(c.Id, c.Program__c);
             }
 
-            for(Integer x = 0; x < oldOpps.size(); x++)
+            for(Integer x = 0; x < newOpps.size(); x++)
             {
-                Opportunity oldOpp = oldOpps.get(x);
+                Id oldAdmittedPlan = null;
+                Id oldAcademicPlan = null;
+                if(Trigger.isUpdate)
+                {
+                    Opportunity oldOpp = (Opportunity)Trigger.old.get(x);
+                    oldAdmittedPlan = oldOpp.Admitted_Plan__c;
+                    oldAcademicPlan = oldOpp.Academic_Plan__c;
+                }
                 Opportunity newOpp = newOpps.get(x);  
-
-                if(oldOpp.Academic_Plan__c != newOpp.Academic_Plan__c || oldOpp.Admitted_Plan__c != newOpp.Admitted_Plan__c)
+                if(newOpp.Academic_Plan__c != oldAcademicPlan || newOpp.Admitted_Plan__c != oldAdmittedPlan)
                 {
                     if(newOpp.Admitted_Plan__c != null)
                     {

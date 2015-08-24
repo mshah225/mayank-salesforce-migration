@@ -91,6 +91,56 @@ public with sharing class Test_OpportunityHandler {
 
 // Validate that Lead Interest Contacts were updated (contact__c field)
 
+    static testMethod void testCollegeFieldInsert()
+    {
+        Contact con1 = ContactService.createTestContact();
+        Opportunity op1 = OpportunityService.createOpportunity();
+        Account acc1 = AccountService.createAccount();
+
+        List<Opportunity> opps = OpportunityService.createMultipleOpportunities(4);
+        Id program1 = insertProgram('Test Program 1', '12345');
+        Id program2 = insertProgram('Test Program 2', '23456');
+        Id academicPlan1 = insertPlan('Academic Plan 1', '12345', program1);
+        Id admittedPlan1 = insertPlan('Admitted Plan 1', '23456', program2);
+
+        opps.get(0).Admitted_Plan__c = admittedPlan1;
+        opps.get(1).Academic_Plan__c = academicPlan1;
+        opps.get(2).Admitted_Plan__c = admittedPlan1;
+        opps.get(2).Academic_Plan__c = academicPlan1;
+        opps.get(3).Academic_Plan__c = academicPlan1;
+        opps.get(3).College__c = program2;
+
+        insert opps;
+
+        Test.startTest();
+        System.assert(opps.get(0).College__c == null);
+        Opportunity o1 = [SELECT College__c FROM Opportunity WHERE Name = 'Test Opportunity 0'];
+        System.assert(o1.College__c == program2);
+
+        System.assert(opps.get(1).College__c == null);
+        Opportunity o2 = [SELECT College__c FROM Opportunity WHERE Name = 'Test Opportunity 1'];
+        System.assert(o2.College__c == program1);
+
+        System.assert(opps.get(2).College__c == null);
+        Opportunity o3 = [SELECT College__c FROM Opportunity WHERE Name = 'Test Opportunity 2'];
+        System.assert(o3.College__c == program2);
+
+        System.assert(opps.get(3).College__c == program2);
+        Opportunity o4 = [SELECT College__c FROM Opportunity WHERE Name = 'Test Opportunity 3'];
+        System.assert(o4.College__c == program1);
+
+        o1.Name = 'Opportunity Update';
+        update o1;
+        o1 = [SELECT College__c FROM Opportunity WHERE Id = :o1.Id];
+        System.assert(o1.College__c == program2);
+
+        o2.Admitted_Plan__c = null;
+        update o2;
+        o2 = [SELECT College__c FROM Opportunity WHERE Id = :o2.Id];
+        System.assert(o2.College__c == program1);
+        Test.stopTest();
+    }
+
     static testMethod void testCollegeFieldUpdate()
     {
         Contact con1 = ContactService.createTestContact();

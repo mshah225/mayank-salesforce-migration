@@ -1,5 +1,4 @@
-trigger addToGroup on User (after insert, after update) {
-
+trigger addToGroup on User (after insert, after update)
+{
     ChatterAutoAddUsers.AddToServiceGroup(trigger.newMap.keySet());
-    
 }

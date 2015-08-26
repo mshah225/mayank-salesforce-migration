@@ -4,7 +4,7 @@
     docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
-    extensions="NavLinks">
+    extensions="NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | Service Center</title>
     <c:asu_responsive_header_section />
@@ -129,7 +129,7 @@
                                                             html-placeholder="Enter search terms"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!checkSearchString}"
+                                                                action="{!articleSearch}"
                                                                 id="submitButton"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
@@ -153,37 +153,106 @@
                             <br />
                             <hr />
                             <apex:form id="theSearchResults">
-                                <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
-                                    <h5><b>Results for:</b> '{!searchstring}'</h5>
-                                    <div style="height:5px;"></div>
-                                    <knowledge:articleList articleVar="article"
-                                                           Keyword="{!searchstring}"
-                                                           pageSize="10">
-                                        <table>
-                                            <tr>
-                                                <td style="vertical-align:top;">
-                                                    &#8226;&nbsp;
-                                                </td>
-                                                <td>
-                                                    <apex:outputLink value="/akb?id={!article.Id}">
-                                                        {!article.Title}
-                                                    </apex:outputLink><br />
-                                                    <div style="height:6px;"></div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </knowledge:articleList>
+                                <apex:pageBlock id="searchResults"
+                                                mode="maindetail"
+                                                rendered="{!searchstring != ''}">
+                                    <h5><b>Showing (blank) of {!maxSize} results for</b>
+                                        '{!searchstring}'</h5>
                                     <br />
-                                    <button class="btn kbbtn"
-                                            data-toggle="modal"
-                                            data-target="#suggestAnArticle">
-                                        Suggest An Article
-                                    </button>
-                                    <div class="pull-right">
-                                        <apex:commandLink styleClass="btn"
-                                                          style="padding:5px"
-                                                          value="View All Results"
-                                                          action="{!viewAllResults}"/>
+                                    PageSize = {!pageSize}
+                                    <br />
+                                    PageNumber = {!pageNumber}
+                                    <br />
+                                    MaxSize = {!maxSize}
+                                    <div style="height:5px;"></div>
+                                    <apex:dataList value="{!articleList}" var="article">
+                                        <apex:outputLink value="/akb?id={!article.Id}">
+                                        {!article.Title}
+                                        </apex:outputLink>
+                                        <br />
+                                        <div style="height:8px;"></div>
+                                    </apex:dataList>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <nav>
+                                                <ul class="pagination" style="display:inline;">
+                                                    <li class="{!IF(prevRequired = true, '','disabled')}">
+                                                        <apex:commandLink action="{!previous}"
+                                                                          reRender="searchResults"
+                                                                          status="KBSearchStatus"
+                                                                          rendered="{!IF(prevRequired =
+                                                                          true, true,'false')}">
+                                                            <span class="glyphicon
+                                                                  glyphicon-chevron-left"
+                                                                  style="color:#990033;"></span>
+                                                        </apex:commandLink>
+
+                                                        <apex:outputLink rendered="{!IF(prevRequired =
+                                                                         true, false, true)}"
+                                                                         disabled="true"
+                                                                         value="#">
+                                                            <span class="glyphicon
+                                                                  glyphicon-chevron-left"
+                                                                  style="color:#990033;"></span>
+                                                        </apex:outputLink>
+                                                    </li>
+                                                    <li>
+                                                        <span style="color:white;
+                                                        background-color:#333;border: solid 1px
+                                                        #333;">
+                                                            {!pageNumber}
+                                                        </span>
+                                                    </li>
+                                                    <li class="{!IF(nextRequired = true,
+                                                              '','disabled')}">
+                                                        <apex:commandLink action="{!next}"
+                                                                          reRender="searchResults"
+                                                                          status="KBSearchStatus"
+                                                                          rendered="{!IF(nextRequired =
+                                                                          true, true,'false')}">
+                                                            <span class="glyphicon
+                                                                  glyphicon-chevron-right"
+                                                                  style="color:#990033;"></span>
+                                                        </apex:commandLink>
+
+                                                        <apex:outputLink rendered="{!IF(nextRequired =
+                                                                         true, false, true)}"
+                                                                         disabled="true"
+                                                                         value="#">
+                                                            <span class="glyphicon
+                                                                  glyphicon-chevron-right"
+                                                                  style="color:#990033;"></span>
+                                                        </apex:outputLink>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+
+                                            <div class="pull-right visible-sm visible-md
+                                            visible-lg">
+                                                <button class="btn kbbtn"
+                                                        data-toggle="modal"
+                                                        data-target="#suggestAnArticle">
+                                                    Suggest An Article
+                                                </button>
+                                                <apex:commandLink styleClass="btn"
+                                                                  style="padding:4px"
+                                                                  value="View All Results"
+                                                                  action="{!viewAllResults}"/>
+                                            </div>
+
+                                            <div class="pull-left visible-xs">
+                                                <button class="btn kbbtn"
+                                                        data-toggle="modal"
+                                                        data-target="#suggestAnArticle">
+                                                    Suggest An Article
+                                                </button>
+                                                <apex:commandLink styleClass="btn"
+                                                                  style="padding:4px"
+                                                                  value="View All Results"
+                                                                  action="{!viewAllResults}"/>
+                                            </div>
+                                        </div>
                                     </div>
                                 </apex:pageBlock>
 

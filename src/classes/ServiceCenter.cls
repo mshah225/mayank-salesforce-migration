@@ -22,7 +22,6 @@ public with sharing class ServiceCenter
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
     public String userAsurite;
-    public String searchstring { get; set; }
     public Term__c termcAC;
     public Term__c termcB;
 
@@ -474,28 +473,5 @@ public with sharing class ServiceCenter
         confirmPage.setRedirect(true);
 
         return confirmPage;
-    }
-
-    public void checkSearchString()
-    {
-        if (searchstring.length() > 99)
-        {
-            searchstring = searchstring.substring(0,99);
-        }
-    }
-
-    public PageReference viewAllResults()
-    {
-        PageReference viewAllArts = new PageReference('/viewAllArticles');
-
-        if (searchstring != null)
-        {
-            viewAllArts.getParameters().put('q', searchstring);
-
-        }
-
-        viewAllArts.setRedirect(true);
-
-        return viewAllArts;
     }
 }

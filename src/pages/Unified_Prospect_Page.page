@@ -146,8 +146,6 @@
         <apex:actionRegion >
             <apex:pageBlock id="opportunity_info">
                 <apex:pageBlockSection title="Career Selection" collapsible="false" columns="2">
-                    <apex:inputField value="{!contact.LeadSource}" id="lead_source" required="true"/>
-                    <apex:inputField value="{!contact.Lead_Source_Subtype__c}" id="lead_source_subtype"/>
                     <apex:inputField value="{!opportunity.Career__c}" required="true" id="career">
                         <apex:actionSupport event="onchange" 
                                             action="{!showOpportunityInfo}" 
@@ -169,6 +167,8 @@
                     <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree"/>
                     <apex:inputField value="{!opportunity.Military_Status__c}" id="military"/>
                     <apex:inputField value="{!previousEducation.Account__c}" id="previous_education_account" />
+                    <apex:inputField value="{!contact.LeadSource}" id="lead_source" required="true"/>
+                    <apex:inputField value="{!contact.Lead_Source_Subtype__c}" id="lead_source_subtype"/>
                 </apex:pageBlockSection>
                 
                 <apex:pageBlockSection id="grad_opportunity_info" rendered="{!career == 'graduate' || career == 'law'}" title="Graduate Opportunity Information" collapsible="false" columns="2">
@@ -178,6 +178,9 @@
                     <apex:inputField value="{!opportunity.Term__c}" id="term"/>
                     <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree"/>
                     <apex:inputField value="{!opportunity.Military_Status__c}" id="military"/>
+                    <apex:inputField value="{!previousEducation.Account__c}" id="previous_education_account" />
+                    <apex:inputField value="{!contact.LeadSource}" id="lead_source" required="true"/>
+                    <apex:inputField value="{!contact.Lead_Source_Subtype__c}" id="lead_source_subtype"/>
                 </apex:pageBlockSection>
                 
                 <apex:actionRegion>

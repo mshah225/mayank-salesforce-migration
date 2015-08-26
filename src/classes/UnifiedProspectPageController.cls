@@ -288,7 +288,7 @@ public class UnifiedProspectPageController
                 contact.SF_Last_Name_Updated__c = Datetime.now();
                 contact.SF_Mobile__c = contact.MobilePhone;
                 Pattern SMSValidate = Pattern.compile('[^0-9]');
-                if (smsText == true) 
+                if (contact.MobilePhone != null && smsText == true) 
                 {
                     contact.SMS_Phone__c = contact.MobilePhone;
                     contact.SMS_Phone__c = SMSValidate.matcher(contact.SMS_Phone__c).replaceAll('');

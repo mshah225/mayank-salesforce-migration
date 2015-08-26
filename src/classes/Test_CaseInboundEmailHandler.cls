@@ -2,7 +2,7 @@
 public with sharing class Test_CaseInboundEmailHandler {
 
 
-	@testSetup static void setup() 
+	@testSetup static void initialize()
 	{
 		Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
 		
@@ -19,8 +19,6 @@ public with sharing class Test_CaseInboundEmailHandler {
 			testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Lead');
 	    	insert testQueue;
 		}
-		
-
 
 	    String queueId = String.valueOf(testQueue.Id).substring(0,15);
 	    String fallbackQueueId = String.valueOf(testQueue.Id).substring(0,15);
@@ -216,5 +214,106 @@ public with sharing class Test_CaseInboundEmailHandler {
 		email.subject = 'Test 2';
 		emailServiceObj.handleInboundEmail(email, env );  
 		                    
-	} 
+	}
+
+	@isTest static void createLostEmail()
+    {
+        Contact testContact = ContactService.createTestContact();
+
+        insert testContact;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+
+        List<String> toAddresses = new List<String>();
+        toAddresses.add('example@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'LostEmailTest';
+        email.fromAddress = testContact.Email;
+        email.fromName = testContact.FirstName + ' ' + testContact.LastName;
+        env.fromAddress = testContact.Email;
+
+        Test.startTest();
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.generateLostEmail(email);
+        Test.stopTest();
+
+        LostEmail__c expectedLostEmail = new LostEmail__c();
+        expectedLostEmail.Sender__c = email.fromAddress;
+        expectedLostEmail.Subject__c = email.subject;
+        expectedLostEmail.Recipient__c = 'example@test.test';
+        expectedLostEmail.RejectedAttachments__c = false;
+
+        LostEmail__c actualLostEmail = [
+                SELECT Sender__c, Subject__c, PlainTextBody__c, HtmlTextBody__c, Recipient__c, RejectedAttachments__c
+                FROM LostEmail__c
+                LIMIT 1
+        ];
+
+        System.assertEquals(expectedLostEmail.Sender__c, actualLostEmail.Sender__c, 'Unexpected differences in the LostEmails');
+        System.assertEquals(expectedLostEmail.Subject__c, actualLostEmail.Subject__c, 'Unexpected differences in the LostEmails');
+        System.assertEquals(expectedLostEmail.Recipient__c, actualLostEmail.Recipient__c, 'Unexpected differences in the LostEmails');
+        System.assertEquals(expectedLostEmail.RejectedAttachments__c, actualLostEmail.RejectedAttachments__c, 'Unexpected differences in the LostEmails');
+    }
+
+    @isTest static void createLostEmailWithAttachment()
+    {
+        Contact testContact = ContactService.createTestContact();
+
+        insert testContact;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+
+        List<String> toAddresses = new List<String>();
+        toAddresses.add('example@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'LostEmailTest';
+        email.fromAddress = testContact.Email;
+        email.fromName = testContact.FirstName + ' ' + testContact.LastName;
+        env.fromAddress = testContact.Email;
+
+        // Create some attachments
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+        // set the body of the attachment
+        inAtt.body = blob.valueOf('test');
+        inAtt.fileName = 'attach.pdf';
+        inAtt.mimeTypeSubType = 'plain/txt';
+
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { inAtt };
+
+        Messaging.InboundEmail.TextAttachment tattachment = new Messaging.InboundEmail.TextAttachment();
+        String csv = 'this is just a test';
+        tattachment.body = csv;
+        tattachment.fileName = 'data.txt';
+        tattachment.mimeTypeSubType = 'text/plain';
+
+        email.textAttachments = new Messaging.inboundEmail.TextAttachment[] { tattachment };
+
+        Test.startTest();
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.generateLostEmail(email);
+        Test.stopTest();
+
+        LostEmail__c expectedLostEmail = new LostEmail__c();
+        expectedLostEmail.Sender__c = email.fromAddress;
+        expectedLostEmail.Subject__c = email.subject;
+        expectedLostEmail.Recipient__c = 'example@test.test';
+        expectedLostEmail.RejectedAttachments__c = false;
+
+        LostEmail__c actualLostEmail = [
+                SELECT Sender__c, Subject__c, PlainTextBody__c, HtmlTextBody__c, Recipient__c, RejectedAttachments__c
+                FROM LostEmail__c
+                LIMIT 1
+        ];
+
+        System.assertEquals(expectedLostEmail.Sender__c, actualLostEmail.Sender__c, 'Unexpected differences in the LostEmails');
+        System.assertEquals(expectedLostEmail.Subject__c, actualLostEmail.Subject__c, 'Unexpected differences in the LostEmails');
+        System.assertEquals(expectedLostEmail.Recipient__c, actualLostEmail.Recipient__c, 'Unexpected differences in the LostEmails');
+        System.assertEquals(expectedLostEmail.RejectedAttachments__c, actualLostEmail.RejectedAttachments__c, 'Unexpected differences in the LostEmails');
+
+        List<Attachment> attachments = [SELECT Id FROM Attachment WHERE ParentId = :actualLostEmail.Id];
+
+        System.assert(attachments.size() == 2, 'Unexpected number of Attachments for this LostEmail');
+    }
 }

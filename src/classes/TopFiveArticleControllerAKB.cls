@@ -10,39 +10,6 @@ global class TopFiveArticleControllerAKB
 		public integer rank;
 	}
 
-    @HttpGet
-    global static List<ArticleInfo> getTopFiveArticles()
-    {
-       	string urlPrefix = 'http://utocomm-uto.cs10.force.com/pkb/articles/FAQ/';
-       	//string urlPrefix = 'http://asu.secure.force.com/kb/articles/FAQ/';
-       	//string urlPrefix = getPkbSiteUrl();
-        List<KnowledgeArticleViewStat> articleViewStatList = [SELECT Id, ParentId FROM KnowledgeArticleViewStat ORDER BY ViewCount DESC LIMIT 5];
-        Set<Id> articleIds = new Set<Id>();
-        List<ArticleInfo> articles = new List<ArticleInfo>();
-
-        integer articleRank = 0;
-    	for (KnowledgeArticleViewStat kavs: [SELECT Id, ParentId FROM KnowledgeArticleViewStat WHERE Channel = 'AllChannels' ORDER BY ViewCount DESC LIMIT 5])
-    	{
-    		articleIds.add(kavs.ParentId);
-    	}
-
-    	for (KnowledgeArticleVersion kav: [SELECT id,Title, UrlName, KnowledgeArticleId, PublishStatus, language 
-										   FROM KnowledgeArticleVersion 
-										   WHERE PublishStatus='Online'
-										   AND language ='en_US' 
-										   AND KnowledgeArticleId IN :articleIds]
-			)
-    	{
-			articleRank++;							   	
-    		ArticleInfo ai = new ArticleInfo();
-    		ai.rank = articleRank;
-    		ai.title = kav.Title;
-    		ai.url = urlPrefix + kav.UrlName;
-    		articles.add(ai);
-		}
-        return articles;
-    }
-    
     @HttpPost
     global static List<ArticleInfo> getTopFiveArticles2(String listName)
     {
@@ -145,16 +112,58 @@ global class TopFiveArticleControllerAKB
 
 	global static string getArticleUrl(KnowledgeArticleVersion kav)
 	{
-		String urlPrefix = 'https://myasu.force.com/akb';
- 		return urlPrefix + '?id=' + kav.Id;
+ 		return getUrlPrefix() + 'SCLaunch?akb_article_id=' + kav.Id;
 	}
 	
 	global static string getMoreArticlesUrl(string dcGroup, string dataCategory)
 	{
-		string url;
-		url = 'https://asu.secure.force.com/kb/pkb_Home?l=en_US&c=';
-			
-       	url += dcGroup.replace('__c', '') + '%3A' + dataCategory.replace('__c','');
-       	return url;
+        String baseUrl = getUrlPrefix() + 'kb/pkb_Home?l=en_US&c=';
+       	baseUrl += dcGroup.replace('__c', '') + '%3A' + dataCategory.replace('__c','');
+       	return baseUrl;
 	}
+
+    global static string getUrlPrefix()
+    {
+        String urlPrefix = 'https://myasu.force.com/';
+        if(isSandbox())
+        {
+            List<String> tokens = URL.getSalesforceBaseUrl().getHost().split('\\.');
+            List<String> tokens2 = tokens[0].split('--');
+            urlPrefix = 'https://' + tokens2[1] + '-myasu.' + tokens[1] + '.force.com/';
+        }
+        return urlPrefix;
+    }
+
+    global static Boolean isSandbox() {
+        String host = URL.getSalesforceBaseUrl().getHost();
+        String server = host.substring(0,host.indexOf('.'));
+
+        // It's easiest to check for 'my domain' sandboxes first 
+        // even though that will be rare
+        if(server.contains('--'))
+            return true;
+
+        // tapp0 is a unique "non-cs" server so we check it now
+        if(server == 'tapp0')
+            return true;
+
+        // If server is 'cs' followed by a number it's a sandbox
+        if(server.length()>2){
+            if(server.substring(0,2)=='cs'){
+                try{
+                    Integer.valueOf(server.substring(2,server.length()));
+                }
+                catch(exception e){
+                    //started with cs, but not followed by a number
+                    return false;
+                }
+
+                //cs followed by a number, that's a hit
+                return true;
+            }
+        }
+
+        // If we made it here it's a production box
+        return false;
+    }
 }

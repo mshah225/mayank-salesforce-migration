@@ -2,10 +2,13 @@ public with sharing class vfListPaginationController
 {
     private final Integer PAGE_SIZE = 10;
     private String baseQuery;
+    public Integer pageNumber = 1;
     public Integer maxSize { get; set; }
     public List<KnowledgeARticleVersion> articleList { get; set; }
     public String searchstring { get; set; }
-    public Integer pageNumber = 1;
+    public Integer lowListNum { get; set; }
+    public Integer highListNum { get; set; }
+    public Decimal maxPages { get; set; }
 
     public vfListPaginationController() { }
     public vfListPaginationController(ServiceCenter controller) { }
@@ -30,21 +33,63 @@ public with sharing class vfListPaginationController
         return null;
     }
 
-    public void articleSearch()
-    {
-        if (searchstring.length() > 99)
-        {
-            searchstring = searchstring.substring(0,99);
+    public void articleSearch() {
+        if (searchstring.length() > 99) {
+            searchstring = searchstring.substring(0, 99);
         }
 
-        baseQuery  = 'SELECT Id, Title, UrlName, LastPublishedDate,LastModifiedById ' +
+        String[] queryArray = searchstring.split(' ');
+        System.debug('!!!!!!!String array size: ' + queryArray.size());
+        String queryString = '';
+        if (queryArray.size() > 1)
+        {
+            Boolean firstRun = true;
+            for (String s: queryArray)
+            {
+                if (firstRun)
+                {
+                    s = 'WHERE (Title LIKE \'%' + String.escapeSingleQuotes(s) + '%\'';
+                }
+                else
+                {
+                    s = 'OR Title LIKE \'%' + String.escapeSingleQuotes(s) + '%\'';
+                }
+
+                queryString = queryString + s;
+                firstRun = false;
+            }
+        }
+        else
+        {
+            queryString = 'WHERE (Title LIKE \'%' + String.escapeSingleQuotes(searchstring) + '%\'';
+        }
+
+        baseQuery  = 'SELECT Id, Title, UrlName, LastPublishedDate, LastModifiedById ' +
                      'FROM KnowledgeArticleVersion ' +
-                     'WHERE Title LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\' ' +
+                     queryString + ')' +
                      'AND (PublishStatus = \'online\' AND Language = \'en_US\')';
+        System.debug('!!!!Query ' + baseQuery);
         maxSize = Database.query(baseQuery).size();
 
         Integer offsetNum = (pageNumber - 1) * PAGE_SIZE;
         String query = baseQuery + ' LIMIT ' + PAGE_SIZE + ' OFFSET ' + offsetNum;
+
+        String strMaxSize = maxSize.format();
+        String strPAGE_SIZE = PAGE_SIZE.format();
+        maxPages = Math.ceil(Decimal.valueOf(strMaxSize)/Decimal.valueOf(strPAGE_SIZE));
+
+        lowListNum = offsetNum + 1;
+        if (pageNumber == maxPages)
+        {
+            highListNum = maxSize;
+        }
+        else
+        {
+            highListNum = pageNumber * PAGE_SIZE;
+        }
+
+        searchstring = searchstring.capitalize();
+
         try
         {
             articleList = Database.query(query);
@@ -53,6 +98,13 @@ public with sharing class vfListPaginationController
         {
             ApexPages.addMessages(e);
         }
+    }
+
+    public void startSearch()
+    {
+        pageNumber = 1;
+
+        articleSearch();
     }
 
     public Boolean getNextRequired()

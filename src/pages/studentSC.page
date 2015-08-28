@@ -129,7 +129,7 @@
                                                             html-placeholder="Enter search terms"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!articleSearch}"
+                                                                action="{!startSearch}"
                                                                 id="submitButton"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
@@ -156,16 +156,17 @@
                                 <apex:pageBlock id="searchResults"
                                                 mode="maindetail"
                                                 rendered="{!searchstring != ''}">
-                                    <h5><b>Showing (blank) of {!maxSize} results for</b>
-                                        '{!searchstring}'</h5>
-                                    <br />
-                                    PageSize = {!pageSize}
-                                    <br />
-                                    PageNumber = {!pageNumber}
-                                    <br />
-                                    MaxSize = {!maxSize}
-                                    <div style="height:5px;"></div>
-                                    <apex:dataList value="{!articleList}" var="article">
+                                    <apex:outputPanel rendered="{!articleList.size > 0}">
+                                        Showing {!lowListNum}-{!highListNum} of {!maxSize}
+                                        results for <b>'{!searchstring}'</b>
+                                    </apex:outputPanel>
+                                    <apex:outputText rendered="{!articleList.size < 1}">
+                                        No results found for <b>'{!searchstring}'</b>
+                                    </apex:outputText>
+                                    <div style="height:8px;"></div>
+                                    <apex:dataList value="{!articleList}"
+                                                   var="article"
+                                                   style="padding-left:18px;">
                                         <apex:outputLink value="/akb?id={!article.Id}">
                                         {!article.Title}
                                         </apex:outputLink>
@@ -191,10 +192,10 @@
                                                         <apex:outputLink rendered="{!IF(prevRequired =
                                                                          true, false, true)}"
                                                                          disabled="true"
-                                                                         value="#">
+                                                                         value="#/">
                                                             <span class="glyphicon
                                                                   glyphicon-chevron-left"
-                                                                  style="color:#990033;"></span>
+                                                                  style="color:#ccc;"></span>
                                                         </apex:outputLink>
                                                     </li>
                                                     <li>
@@ -219,10 +220,10 @@
                                                         <apex:outputLink rendered="{!IF(nextRequired =
                                                                          true, false, true)}"
                                                                          disabled="true"
-                                                                         value="#">
+                                                                         value="#/">
                                                             <span class="glyphicon
                                                                   glyphicon-chevron-right"
-                                                                  style="color:#990033;"></span>
+                                                                  style="color:#ccc;"></span>
                                                         </apex:outputLink>
                                                     </li>
                                                 </ul>
@@ -241,7 +242,8 @@
                                                                   action="{!viewAllResults}"/>
                                             </div>
 
-                                            <div class="pull-left visible-xs">
+                                            <div class="pull-left visible-xs"
+                                                 style="clear:both;margin-top:20px;">
                                                 <button class="btn kbbtn"
                                                         data-toggle="modal"
                                                         data-target="#suggestAnArticle">

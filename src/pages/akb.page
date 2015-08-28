@@ -4,7 +4,7 @@
     docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
-    extensions="AKBController,NavLinks">
+    extensions="AKBController,NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | {!article.title}</title>
     <c:asu_responsive_header_section />
@@ -141,13 +141,28 @@
                         <div class="content">
                             <apex:form id="autoCompleteForm" styleClass="searchKB">
                                 <apex:pageBlock mode="maindetail">
-                                    <p>Search the Knowledge Base for more articles.</p><br />
+                                    <p>Search for any issue or question to learn how ASU can help!</p>
+                                    <br />
                                     <div class="searchKB2">
                                         <div class="form-horizontal">
-                                            <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"
-                                            html-placeholder="Enter search terms"/>
-                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults" oncomplete="viewAsLinks()" status="KBSearchStatus"/>
-                                            <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
+                                            <apex:inputText id="articleTextBoxId"
+                                                            value="{!searchstring}"
+                                                            styleClass="searchBox"
+                                                            html-placeholder="Enter search terms"/>
+
+                                            <apex:commandButton value="Search"
+                                                                action="{!startSearch}"
+                                                                id="submitButton"
+                                                                styleClass="kbbtn searchBtn"
+                                                                reRender="theSearchResults"
+                                                                oncomplete="viewAsLinks()"
+                                                                status="KBSearchStatus"/>
+
+                                            <apex:commandButton value="Clear"
+                                                                styleClass="kbbtn searchBtn"
+                                                                style="width:37px;"
+                                                                onclick="this.form.reset();return false;"/>
+
                                             <apex:actionStatus id="KBSearchStatus">
                                                 <apex:facet name="start">
                                                     <img src="/img/loading.gif" style="position: absolute;margin-left:-125px;margin-top:6px;"/>
@@ -157,34 +172,112 @@
                                     </div>
                                 </apex:pageBlock>
                             </apex:form>
+                            <br />
+                            <hr />
                             <apex:form id="theSearchResults">
-                                <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
+                                <apex:pageBlock id="searchResults"
+                                                mode="maindetail"
+                                                rendered="{!searchstring != ''}">
+                                    <apex:outputPanel rendered="{!articleList.size > 0}">
+                                        Showing {!lowListNum}-{!highListNum} of {!maxSize}
+                                        results for <b>'{!searchstring}'</b>
+                                    </apex:outputPanel>
+                                    <apex:outputText rendered="{!articleList.size < 1}">
+                                        No results found for <b>'{!searchstring}'</b>
+                                    </apex:outputText>
+                                    <div style="height:8px;"></div>
+                                    <apex:dataList value="{!articleList}"
+                                                   var="article"
+                                                   style="padding-left:18px;">
+                                        <apex:outputLink value="/akb?id={!article.Id}">
+                                                {!article.Title}
+                                        </apex:outputLink>
+                                        <br />
+                                        <div style="height:8px;"></div>
+                                    </apex:dataList>
                                     <br />
-                                    <hr />
-                                    <h5><b>Results for:</b> '{!searchstring}'</h5>
-                                    <div style="height:5px;"></div>
-                                    <knowledge:articleList articleVar="articleSearch"
-                                        Keyword="{!searchstring}"
-                                        pageSize="10">
-                                        <table>
-                                            <tr>
-                                                <td style="vertical-align:top;">
-                                                    &#8226;&nbsp;
-                                                </td>
-                                                <td>
-                                                    <apex:outputLink value="/akb?id={!articleSearch.Id}">
-                                                        {!articleSearch.Title}
-                                                    </apex:outputLink>
-                                                    <br />
-                                                    <div style="height:6px;"></div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </knowledge:articleList>
-                                    <br />
-                                    <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
-                                        Suggest An Article
-                                    </button>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <nav>
+                                                <ul class="pagination" style="display:inline;">
+                                                    <li class="{!IF(prevRequired = true, '','disabled')}">
+                                                        <apex:commandLink action="{!previous}"
+                                                                          reRender="searchResults"
+                                                                          status="KBSearchStatus"
+                                                                          rendered="{!IF(prevRequired =
+                                                                          true, true,'false')}">
+                                                            <span class="glyphicon
+                                                                  glyphicon-chevron-left"
+                                                                  style="color:#990033;"></span>
+                                                        </apex:commandLink>
+
+                                                        <apex:outputLink rendered="{!IF(prevRequired =
+                                                                         true, false, true)}"
+                                                                         disabled="true"
+                                                                         value="#/">
+                                                            <span class="glyphicon
+                                                                  glyphicon-chevron-left"
+                                                                  style="color:#ccc;"></span>
+                                                        </apex:outputLink>
+                                                    </li>
+                                                    <li>
+                                                        <span style="color:white;
+                                                        background-color:#333;border: solid 1px
+                                                        #333;">
+                                                                {!pageNumber}
+                                                        </span>
+                                                    </li>
+                                                    <li class="{!IF(nextRequired = true,
+                                                              '','disabled')}">
+                                                        <apex:commandLink action="{!next}"
+                                                                          reRender="searchResults"
+                                                                          status="KBSearchStatus"
+                                                                          rendered="{!IF(nextRequired =
+                                                                          true, true,'false')}">
+                                                            <span class="glyphicon
+                                                                  glyphicon-chevron-right"
+                                                                  style="color:#990033;"></span>
+                                                        </apex:commandLink>
+
+                                                        <apex:outputLink rendered="{!IF(nextRequired =
+                                                                         true, false, true)}"
+                                                                         disabled="true"
+                                                                         value="#/">
+                                                            <span class="glyphicon
+                                                                  glyphicon-chevron-right"
+                                                                  style="color:#ccc;"></span>
+                                                        </apex:outputLink>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+
+                                            <div class="pull-right visible-sm visible-md
+                                            visible-lg">
+                                                <button class="btn kbbtn"
+                                                        data-toggle="modal"
+                                                        data-target="#suggestAnArticle">
+                                                    Suggest An Article
+                                                </button>
+                                                <apex:commandLink styleClass="btn"
+                                                                  style="padding:4px"
+                                                                  value="View All Results"
+                                                                  action="{!viewAllResults}"/>
+                                            </div>
+
+                                            <div class="pull-left visible-xs"
+                                                 style="clear:both;margin-top:20px;">
+                                                <button class="btn kbbtn"
+                                                        data-toggle="modal"
+                                                        data-target="#suggestAnArticle">
+                                                    Suggest An Article
+                                                </button>
+                                                <apex:commandLink styleClass="btn"
+                                                                  style="padding:4px"
+                                                                  value="View All Results"
+                                                                  action="{!viewAllResults}"/>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </apex:pageBlock>
 
                                 <apex:outputPanel rendered="{!searchString == null}">
@@ -202,21 +295,57 @@
                                 <div id="articleContentDiv" class="articleContent">
                                     <apex:pageBlock tabStyle="Case">
                                         <apex:pageBlockSection columns="1">
-                                            <apex:outputText value="Category" rendered="{!IF(faq.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                                            <apex:outputText rendered="{!IF(faq.Functional_Group__c != null,true,false)}" value="{!faq.Functional_Group__c}"/>
-                                            <apex:outputText value="Category" rendered="{!IF(info.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                                            <apex:outputText rendered="{!IF(info.Functional_Group__c != null,true,false)}" value="{!info.Functional_Group__c}"/>
-                                            <apex:outputText value="Category" rendered="{!IF(howTo.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                                            <apex:outputText rendered="{!IF(howTo.Functional_Group__c != null,true,false)}" value="{!howTo.Functional_Group__c}"/>
+                                            <apex:outputText value="Category"
+                                                             rendered="{!IF(faq.Functional_Group__c != null,true,false)}"
+                                                             style="font-size:8pt;font-weight:bold;margin-left:-5px;                                                                   color:#4a4a5b"/>
+
+                                            <apex:outputText rendered="{!IF(faq.Functional_Group__c != null,true,false)}"
+                                                             value="{!faq.Functional_Group__c}"/>
+
+                                            <apex:outputText value="Category"
+                                                             rendered="{!IF(info.Functional_Group__c != null,true,false)}"
+                                                             style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
+
+                                            <apex:outputText rendered="{!IF(info.Functional_Group__c != null,true,false)}"
+                                                             value="{!info.Functional_Group__c}"/>
+
+                                            <apex:outputText value="Category"
+                                                             rendered="{!IF(howTo.Functional_Group__c != null,true,false)}"
+                                                             style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
+
+                                            <apex:outputText rendered="{!IF(howTo.Functional_Group__c != null,true,false)}"
+                                                             value="{!howTo.Functional_Group__c}"/>
+
                                             <apex:outputText rendered="{!IF(faq.Functional_Group__c != null || info.Functional_Group__c != null || howTo.Functional_Group__c != null,true,false)}">
-                                            <hr />
+                                                <hr />
                                             </apex:outputText>
-                                            <apex:outputField value="{!info.Information__c}" rendered="{!IF(article.ArticleType = 'Informational__kav',true,false)}" label=""/>
-                                            <apex:outputText value="Question" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                                            <apex:outputField value="{!faq.Question__c}" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" label="" styleClass="noLabel"/>
-                                            <apex:outputText value="Answer" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-4px;color:#4a4a5b"/>
-                                            <apex:outputField value="{!faq.Answer__c}" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" label="" styleClass="noLabel"/>
-                                            <apex:outputField value="{!howto.Content__c}" rendered="{!IF(article.ArticleType = 'How_To__kav',true,false)}" label=""/>
+
+                                            <apex:outputField value="{!info.Information__c}"
+                                                              rendered="{!IF(article.ArticleType = 'Informational__kav',true,false)}"
+                                                              label=""/>
+                                            <apex:outputText value="Question"
+                                                             rendered="{!IF(article.ArticleType =
+                                                              'FAQ__kav',true,false)}"
+                                                             style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
+
+                                            <apex:outputField value="{!faq.Question__c}"
+                                                              rendered="{!IF(article.ArticleType
+                                                              = 'FAQ__kav',true,false)}"
+                                                              label=""
+                                                              styleClass="noLabel"/>
+
+                                            <apex:outputText value="Answer"
+                                                             rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}"
+                                                             style="font-size:8pt;font-weight:bold;margin-left:-4px;color:#4a4a5b"/>
+
+                                            <apex:outputField value="{!faq.Answer__c}"
+                                                              rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}"
+                                                              label=""
+                                                              styleClass="noLabel"/>
+
+                                            <apex:outputField value="{!howto.Content__c}"
+                                                              rendered="{!IF(article.ArticleType = 'How_To__kav',true,false)}"
+                                                              label=""/>
                                         </apex:pageblocksection>
                                     </apex:pageBlock>
                                 </div>

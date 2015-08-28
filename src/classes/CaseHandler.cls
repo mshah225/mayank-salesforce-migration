@@ -1,5 +1,6 @@
 public without sharing class CaseHandler
-  implements ITrigger {
+  implements ITrigger
+{
     
   Map<ID, Contact> relatedContactMap = new Map<ID, Contact>();
   Map<Id, Campaign> sourceMap = new Map<Id, Campaign>();
@@ -75,8 +76,14 @@ public without sharing class CaseHandler
               c.Subject = subjectSplit[0];
             }
 
-            Id fa_id = [SELECT Id FROM Group WHERE Name = 'Financial Aid (Case)' LIMIT 1].Id;
-            if(c.OwnerId == fa_id)
+            Id faCaseQueue = [
+                    SELECT Id
+                    FROM Group
+                    WHERE Name = 'Financial Aid (Case)'
+                    AND Type = 'Queue' LIMIT 1
+            ].Id;
+
+            if(c.OwnerId == faCaseQueue)
             {
               c.Visible_By_Contact__c = FALSE;
               c.Status = 'Closed: Resolved';
@@ -340,7 +347,7 @@ public without sharing class CaseHandler
    * This method is called iteratively for each record deleted during an AFTER
    * trigger.
    */
-  public void afterDelete(SObject so){}
+  public void afterDelete(SObject so) {}
 
   /**
    * andFinally
@@ -348,8 +355,6 @@ public without sharing class CaseHandler
    * This method is called once all records have been processed by the trigger. Use this 
    * method to accomplish any final operations such as creation or updates of other records.
    */
-  public void andFinally() {
-
-  }
+  public void andFinally() {}
 
 }

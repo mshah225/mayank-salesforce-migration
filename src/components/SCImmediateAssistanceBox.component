@@ -1,12 +1,12 @@
 <apex:component allowDML="true">
-	<!-- This component renders the Immediate Assitance Box -->
-	<apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean"/>
-	<apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean"/>
-	<apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean"/>
-	<apex:attribute name="myPin" description="The user's contact's PIN" type="Decimal"/>
-	<apex:attribute name="newPin" description="The new PIN" type="Decimal"/>
-	<apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action"/>
-	<apex:outputPanel rendered="{!HelpBox}">
+    <!-- This component renders the Immediate Assitance Box -->
+    <apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean"/>
+    <apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean"/>
+    <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean"/>
+    <apex:attribute name="myPin" description="The user's contact's PIN" type="Decimal"/>
+    <apex:attribute name="newPin" description="The new PIN" type="Decimal"/>
+    <apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action"/>
+    <apex:outputPanel rendered="{!HelpBox}">
         <div class="box">
             <div class="header">
                 <h6><b>Immediate Assistance</b></h6>
@@ -187,7 +187,8 @@
                         <h5>Get Help with Finances</h5><br /><br />
                         <textarea id="FADesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea><br />
                         <apex:pageBlockButtons location="bottom">
-                            <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;" onClick="startFAChat();">Start Chat</button>
+                            <button id="faChatBtn" name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;"
+                                     onClick="startFAChat();">Start Chat</button>
                         </apex:pageBlockButtons>
                     </apex:pageBlock>
                 </div>
@@ -197,7 +198,7 @@
                         <h5>Get Help</h5><br /><br />
                         <textarea id="SFDCDesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea><br />
                         <apex:pageBlockButtons location="bottom">
-                            <button name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;" onClick="startSFDCChat();">Start Chat</button>
+                            <button id="otherChatBtn" name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;" onClick="startSFDCChat();">Start Chat</button>
                         </apex:pageBlockButtons>
                     </apex:pageBlock>
                 </div>

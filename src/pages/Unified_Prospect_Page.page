@@ -103,9 +103,12 @@
 </head>
 
 <body id="contentBody" class="content">
+    <apex:pageMessage rendered="{!$CurrentPage.parameters.saved == 'true'}" severity="confirm" >
+       Successfully saved new prospect.
+    </apex:pageMessage>
     <apex:form id="underGradForm" >
     <!--<apex:outputText id="myInt" value="{!selectedInterestId}"/>-->
-        <apex:pageBlock title="ASU New Undergraduate Prospect Entry Form" id="undergradBlock">
+        <apex:pageBlock title="ASU New Prospect Entry Form (Graduate and Undergraduate)" id="undergradBlock">
             <apex:pageBlockButtons >
                 <apex:commandButton styleClass="button" action="{!savePage}" value="Save" status="saveStatus"/>
                 <apex:actionStatus id="saveStatus">
@@ -120,7 +123,7 @@
                 <apex:inputField value="{!contact.FirstName}" required="true" id="firstname"/>
                 <apex:inputField value="{!contact.Lead_Email__c}" required="true" id="email" label="Email" type="email"/>
                 <apex:inputField value="{!contact.LastName}" required="true" id="lastname"/>
-                <apex:inputField value="{!contact.Phone}" required="true" id="phone" type="tel"/>
+                <apex:inputField value="{!contact.Phone}" id="phone" type="tel"/>
                 <apex:inputField value="{!contact.Gender__c}" id="gender"/>
                 <apex:inputField value="{!contact.MobilePhone}" id="mobilephone" label="Mobile Phone" type="tel"/>
                 <apex:inputField value="{!contact.Birthdate}" id="birthdate" type="date" style="width:130px;"/>
@@ -128,7 +131,6 @@
                     <apex:outputLabel for="smsTextCheck">SMS Permission</apex:outputLabel>
                     <apex:inputCheckbox id="smsTextCheck" value="{!smsText}"/>
                 </apex:pageBlockSectionItem>
-                <apex:inputField value="{!contact.Military_Veteran_Status__c}" id="military"/>
                 <apex:inputField value="{!contact.MailingStreet}" id="streetaddress" style="width:144px;height:30px;"/>
                 <div></div>
                 <apex:inputField value="{!contact.MailingCity}" id="city"/>
@@ -143,7 +145,9 @@
 
         <apex:actionRegion >
             <apex:pageBlock id="opportunity_info">
-                <apex:pageBlockSection title="Career Selection" collapsible="false" columns="1">
+                <apex:pageBlockSection title="Career Selection" collapsible="false" columns="2">
+                    <apex:inputField value="{!contact.LeadSource}" id="lead_source" required="true"/>
+                    <apex:inputField value="{!contact.Lead_Source_Subtype__c}" id="lead_source_subtype"/>
                     <apex:inputField value="{!opportunity.Career__c}" required="true" id="career">
                         <apex:actionSupport event="onchange" 
                                             action="{!showOpportunityInfo}" 
@@ -158,32 +162,29 @@
                 </apex:pageBlockSection>
 
                 <apex:pageBlockSection id="undergrad_opportunity_info" rendered="{!career == 'undergraduate'}" title="Undergraduate Opportunity Information" collapsible="false" columns="2">
+                    <apex:inputField value='{!opportunity.RecordTypeId}' id="recordtypeid" />
                     <apex:inputField value="{!opportunity.Term__c}" id="term" required="true"/>
-                    <apex:inputField value="{!contact.Last_HS_Attended__c}" id="institution" required="false"/>
                     <apex:inputField value="{!opportunity.Type}" id="degreetype" required="true"/>
                     <apex:inputField value="{!opportunity.International_Student__c}" id="international"/>
-                    <div></div>
                     <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree"/>
+                    <apex:inputField value="{!opportunity.Military_Status__c}" id="military"/>
+                    <apex:inputField value="{!previousEducation.Account__c}" id="previous_education_account" />
                 </apex:pageBlockSection>
                 
                 <apex:pageBlockSection id="grad_opportunity_info" rendered="{!career == 'graduate' || career == 'law'}" title="Graduate Opportunity Information" collapsible="false" columns="2">
+                    <apex:inputField value='{!opportunity.RecordTypeId}' id="recordtypeid" />
                     <apex:inputField value="{!opportunity.Type}" id="degreetype" required="true"/>
-                    <apex:inputField value="{!contact.LeadSource}" id="lead_source" required="true"/>
-                    <!--<apex:inputField value="{!opportunity.College__c}" id="college" required="true"/>-->
-                    
-                    <apex:inputField value="{!contact.Lead_Source_Subtype__c}" id="lead_source_subtype"/>
-                    <!--<apex:inputField value="{!opportunity.Academic_Plan__c}" id="academic_plan"/>-->
-                    
                     <apex:inputField value="{!opportunity.International_Student__c}" id="international_student"/>
                     <apex:inputField value="{!opportunity.Term__c}" id="term"/>
                     <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree"/>
+                    <apex:inputField value="{!opportunity.Military_Status__c}" id="military"/>
                 </apex:pageBlockSection>
                 
                 <apex:actionRegion>
                 <apex:pageBlockSection rendered="{!career == 'graduate' || career == 'law'}" id="temp_block" collapsible="false" columns="2">
                     <apex:pageBlockSectionItem >
                         <apex:outputLabel for="collegeList">College</apex:outputLabel>
-                        <apex:selectList id="collegeList" value="{!collegeSelected}" size="1">
+                        <apex:selectList id="collegeList" value="{!collegeSelected}" size="1" required="true">
                             <apex:selectOptions value="{!ProgramList}" />
                             <apex:actionSupport event="onchange" 
                                                 reRender="temp_block, msgs" 

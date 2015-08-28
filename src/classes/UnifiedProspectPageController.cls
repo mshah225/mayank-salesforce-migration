@@ -72,7 +72,14 @@ public class UnifiedProspectPageController
             opportunity = new Opportunity();
         }
 
-        oppRecType = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
+        if(career == 'graduate' || career == 'law')
+        {
+            oppRecType = [SELECT Id FROM RecordType WHERE Name = 'Graduate Prospect' LIMIT 1].Id;
+        }
+        else
+        {
+            oppRecType = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
+        }
         opportunity.RecordTypeId = oppRecType;
         return opportunity;
     }
@@ -111,7 +118,7 @@ public class UnifiedProspectPageController
     {
         get
         {
-            List<Program__c> ProgramTemp = [SELECT p.Name, p.Id FROM Program__c p WHERE Career__c = :career];
+            List<Program__c> ProgramTemp = [SELECT p.Name, p.Id FROM Program__c p WHERE Career__c = :career AND Program_Status__c = true];
             ProgramList = new List<SelectOption>();
             ProgramList.add(new SelectOption('0', '-- None --'));
             
@@ -251,7 +258,7 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 return false;
             }
-            else if (pickSelection != '--Select--' && selectedInterestId == null) 
+            else if (pickSelection != null && pickSelection != '--Select--' && selectedInterestId == null) 
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
                 return false;
@@ -259,6 +266,16 @@ public class UnifiedProspectPageController
             else if (originSelection != '--Select--' && elId == null && c.Functional_Group__c == null) 
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'When selecting an Origin, you must also select a Functional Group.'));
+                return false;
+            }
+            else if(contact.Phone == null && contact.MailingPostalCode == null)
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must provide either a Phone number or a Zip code!'));
+                return false;
+            }
+            else if(career == 'graduate' && collegeSelected == '0')
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a college!'));
                 return false;
             }
             else 
@@ -300,13 +317,13 @@ public class UnifiedProspectPageController
     
                 //Create Opportunity
                 opportunity.Id = null;
-                if (oppRecType != null) 
+                if(career == 'undergraduate')
                 {
-                    opportunity.RecordTypeId = oppRecType;
+                    opportunity.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
                 }
-                else 
+                else
                 {
-                    opportunity.RecordTypeId = '012d0000000x3xyAAA';
+                    opportunity.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Graduate Prospect' LIMIT 1].Id;
                 }
 
                 Datetime DatePreString = Datetime.now();
@@ -410,7 +427,10 @@ public class UnifiedProspectPageController
                     c.Origin__c = originSelection;
                     c.Inbound_Interaction__c = true;
                     c.Priority = 'Normal';
-                    String termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
+                    String termName = opportunity.Term__c;
+
+                    termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
+
                     if (c.Subject == null && c.Description == null) 
                     {
                         c.Subject = c.Origin__c + ' Submission - ' + termName;
@@ -435,7 +455,7 @@ public class UnifiedProspectPageController
                 }
                 
                 //Create CampaignMember Interest
-                if (pickSelection != '--Select--') 
+                if (pickSelection != null && pickSelection != '--Select--') 
                 {
                     if (selectedInterestId != null) 
                     {
@@ -470,7 +490,7 @@ public class UnifiedProspectPageController
     {
         if (save()) 
         {
-            PageReference save = new PageReference('/' + opportunity.Id);
+            PageReference save = new PageReference('/apex/Unified_Prospect_Page?saved=true');
             save.setRedirect(true);
             return save;
         }

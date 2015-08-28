@@ -10,39 +10,6 @@ global class TopFiveArticleControllerAKB
 		public integer rank;
 	}
 
-    @HttpGet
-    global static List<ArticleInfo> getTopFiveArticles()
-    {
-       	string urlPrefix = 'http://utocomm-uto.cs10.force.com/pkb/articles/FAQ/';
-       	//string urlPrefix = 'http://asu.secure.force.com/kb/articles/FAQ/';
-       	//string urlPrefix = getPkbSiteUrl();
-        List<KnowledgeArticleViewStat> articleViewStatList = [SELECT Id, ParentId FROM KnowledgeArticleViewStat ORDER BY ViewCount DESC LIMIT 5];
-        Set<Id> articleIds = new Set<Id>();
-        List<ArticleInfo> articles = new List<ArticleInfo>();
-
-        integer articleRank = 0;
-    	for (KnowledgeArticleViewStat kavs: [SELECT Id, ParentId FROM KnowledgeArticleViewStat WHERE Channel = 'AllChannels' ORDER BY ViewCount DESC LIMIT 5])
-    	{
-    		articleIds.add(kavs.ParentId);
-    	}
-
-    	for (KnowledgeArticleVersion kav: [SELECT id,Title, UrlName, KnowledgeArticleId, PublishStatus, language 
-										   FROM KnowledgeArticleVersion 
-										   WHERE PublishStatus='Online'
-										   AND language ='en_US' 
-										   AND KnowledgeArticleId IN :articleIds]
-			)
-    	{
-			articleRank++;							   	
-    		ArticleInfo ai = new ArticleInfo();
-    		ai.rank = articleRank;
-    		ai.title = kav.Title;
-    		ai.url = urlPrefix + kav.UrlName;
-    		articles.add(ai);
-		}
-        return articles;
-    }
-    
     @HttpPost
     global static List<ArticleInfo> getTopFiveArticles2(String listName)
     {

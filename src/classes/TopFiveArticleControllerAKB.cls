@@ -145,7 +145,7 @@ global class TopFiveArticleControllerAKB
 
 	global static string getArticleUrl(KnowledgeArticleVersion kav)
 	{
- 		return getUrlPrefix() + 'akb?id=' + kav.Id;
+ 		return getUrlPrefix() + 'SCLaunch?akb_article_id=' + kav.Id;
 	}
 	
 	global static string getMoreArticlesUrl(string dcGroup, string dataCategory)

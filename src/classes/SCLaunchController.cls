@@ -3,6 +3,7 @@ public without sharing class SCLaunchController {
     public string headers {get; set;}
     public List<Link> linkList {get; set;}
     public Map<String, String> linkMap {get; set;}
+    public String redirectUrl {get; set;}
     
     public PageReference init() {
         Cookie linksCookie;
@@ -12,6 +13,7 @@ public without sharing class SCLaunchController {
         String navbarParm = '';
         String timeParm = '';
         String signatureParm = '';
+        redirectUrl = '/studentSC';
         
         system.debug('parms: ' + ApexPages.currentPage().getParameters());
         
@@ -65,9 +67,15 @@ public without sharing class SCLaunchController {
         }
         
         if (asuriteIdParm != null)
+        {
             autoProvisionCommunityUser(asuriteIdParm);
-        
-        
+        }
+
+        if(ApexPages.currentPage().getParameters().get('akb_article_id') != null)
+        {
+           redirectUrl = '/akb?id=' + ApexPages.currentPage().getParameters().get('akb_article_id'); 
+        }
+
         system.debug('asuriteId: ' + asuriteIdParm);
         system.debug('navbar: ' + navbarParm);
         system.debug('time: ' + timeParm);

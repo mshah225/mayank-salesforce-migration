@@ -103,7 +103,7 @@ global class TopFiveArticleControllerAKB
     		ai.rank = articleRank;
     		ai.title = kav.Title;
     		ai.url = getArticleUrl(kav);
-    		ai.id = kav.Id;
+    		ai.id = kav.KnowledgeArticleId;
     		articles.add(ai);
 		}
 

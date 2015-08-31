@@ -145,12 +145,15 @@ public with sharing class CaseTransferController
                                     And UserRole.Name != null
                                     AND UserRole.ParentRoleId = null];
 
-            userList = [SELECT Id, Name, UserRole.ParentRoleId, Title, Department
-                        FROM User
-                        WHERE UserRoleId = :UserInfo.getUserRoleId()
-                        AND Id != :UserInfo.getUserId()
-                        AND (NOT Name LIKE '%API%')
-                        AND (NOT Name LIKE '%zz%')];
+            String cleanSearchUsers = String.escapeSingleQuotes(searchString);
+
+            userList = [
+                    SELECT Id, Name, UserRole.ParentRoleId, Title, Department
+                    FROM User
+                    WHERE UserRoleId = :UserInfo.getUserRoleId()
+                    AND Id != :UserInfo.getUserId()
+                    AND Name LIKE '%:cleanSearchUsers%'
+            ];
 
             List<User> subordinateList = [SELECT UserRole.Id
                                           FROM User
@@ -247,14 +250,17 @@ public with sharing class CaseTransferController
                 // Transfer to a department by setting the case information according to the selected CAR
                 if (!toUser)
                 {
-                    Case_Assignment_Rule__c selectedCAR = [SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name, Queue_ID__c
-                                                           FROM Case_Assignment_Rule__c
-                                                           WHERE Id = :selectedId];
+                    Case_Assignment_Rule__c selectedCAR = [
+                            SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name, Queue_ID__c, Case_Feed_Email_Template_Id__c
+                            FROM Case_Assignment_Rule__c
+                            WHERE Id = :selectedId
+                    ];
                     c.OwnerId = selectedCAR.Queue_ID__c;
                     c.Functional_Group__c = selectedCAR.Functional_Group__c;
                     c.Category__c = selectedCAR.Category__c;
                     c.Sub_Category__c = selectedCAR.Sub_Category__c;
-                    c.Most_Recent_Sent_To_Email__c = selectedCAR.Email_Address__c;
+                    c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
+                    c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
                 }
                 else
                 {

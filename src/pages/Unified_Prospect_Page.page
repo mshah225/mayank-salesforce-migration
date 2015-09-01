@@ -106,7 +106,7 @@
     <apex:pageMessage rendered="{!$CurrentPage.parameters.saved == 'true'}" severity="confirm" >
        Successfully saved new prospect.
     </apex:pageMessage>
-    <apex:form id="underGradForm" >
+    <apex:form id="unifiedForm" >
     <!--<apex:outputText id="myInt" value="{!selectedInterestId}"/>-->
         <apex:pageBlock title="ASU New Prospect Entry Form (Graduate and Undergraduate)" id="undergradBlock">
             <apex:pageBlockButtons >
@@ -215,6 +215,44 @@
                     </apex:selectList>
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
+            <apex:pageBlockSection rendered="{!career == 'undergraduate'}" id="interestBlock" title="Interests (Optional)" columns="1">
+                <apex:actionRegion>
+                    <h1>Interest - Select a type, and then an interest:</h1>
+                    <br /><br />
+                    <apex:outputLabel value="Select an option: " for="asuLocationIntList"/>
+                    <apex:selectList id="interestPickList" value="{!pickSelection}" size="1" multiselect="false">
+                         <apex:selectOption itemValue="--Select--" />
+                         <apex:selectOption itemValue="ASU Location" />
+                         <apex:selectOption itemValue="ASU Colleges" />
+                         <apex:selectOption itemValue="Academic" />
+                         <apex:actionSupport event="onchange" reRender="interestsPicks" status="intEvent"/>
+                    </apex:selectList>
+                    <apex:actionStatus id="intEvent">
+                        <apex:facet name="start" >
+                            <img src="/img/loading.gif" />
+                        </apex:facet>
+                    </apex:actionStatus>
+                    <br /><br />
+
+                    <apex:outputPanel id="interestsPicks">
+                        <apex:outputLabel value="ASU Location: " for="asuLocationIntList" rendered="{!IF(pickSelection == 'ASU Location',true,false)}"/>
+                        <apex:selectList id="asuLocationIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'ASU Location',true,false)}">
+                             <apex:selectOptions value="{!asuLocationIntList}"/>
+                        </apex:selectList>
+
+                        <apex:outputLabel value="College Interest: " for="asuCollegesIntList" rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}"/>
+                        <apex:selectList id="asuCollegesIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}">
+                             <apex:selectOptions value="{!asuCollegesIntList}"/>
+                        </apex:selectList>
+
+                        <apex:outputLabel value="Academic Interest: " for="academicIntList" rendered="{!IF(pickSelection == 'Academic',true,false)}"/>
+                        <apex:selectList id="academicIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'Academic',true,false)}">
+                             <apex:selectOptions value="{!academicIntList}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:actionRegion>
+            </apex:pageBlockSection>
+            <script>twistSection(document.getElementById("{!$Component.interestBlock}").childNodes[0].childNodes[0]); </script>
         </apex:pageBlock>
 
         <apex:pageBlock>
@@ -313,45 +351,6 @@
                     </apex:tab>
                 </apex:tabPanel>
             </apex:pageBlockSection>
-            
-            <apex:pageBlockSection rendered="{!career == 'undergraduate'}" id="interestBlock" title="Interests (Optional)" columns="1">
-                <apex:actionRegion >
-                    <h1>Interest - Select a type, and then an interest:</h1>
-                    <br /><br />
-                    <apex:outputLabel value="Select an option: " for="asuLocationIntList"/>
-                    <apex:selectList id="interestPickList" value="{!pickSelection}" size="1" multiselect="false">
-                         <apex:selectOption itemValue="--Select--" />
-                         <apex:selectOption itemValue="ASU Location" />
-                         <apex:selectOption itemValue="ASU Colleges" />
-                         <apex:selectOption itemValue="Academic" />
-                         <apex:actionSupport event="onchange" reRender="interestsPicks" status="intEvent"/>
-                    </apex:selectList>
-                    <apex:actionStatus id="intEvent">
-                        <apex:facet name="start" >
-                            <img src="/img/loading.gif" />
-                        </apex:facet>
-                    </apex:actionStatus>
-                    <br /><br />
-
-                    <apex:outputPanel id="interestsPicks">
-                        <apex:outputLabel value="ASU Location: " for="asuLocationIntList" rendered="{!IF(pickSelection == 'ASU Location',true,false)}"/>
-                        <apex:selectList id="asuLocationIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'ASU Location',true,false)}">
-                             <apex:selectOptions value="{!asuLocationIntList}"/>
-                        </apex:selectList>
-
-                        <apex:outputLabel value="College Interest: " for="asuCollegesIntList" rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}"/>
-                        <apex:selectList id="asuCollegesIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}">
-                             <apex:selectOptions value="{!asuCollegesIntList}"/>
-                        </apex:selectList>
-
-                        <apex:outputLabel value="Academic Interest: " for="academicIntList" rendered="{!IF(pickSelection == 'Academic',true,false)}"/>
-                        <apex:selectList id="academicIntList" value="{!selectedInterestId}" size="1" multiselect="false" rendered="{!IF(pickSelection == 'Academic',true,false)}">
-                             <apex:selectOptions value="{!academicIntList}"/>
-                        </apex:selectList>
-                    </apex:outputPanel>
-                </apex:actionRegion>
-            </apex:pageBlockSection>
-            <script>twistSection(document.getElementById("{!$Component.interestBlock}").childNodes[0].childNodes[0]); </script>
         </apex:pageBlock>
     </apex:form>
 </body>

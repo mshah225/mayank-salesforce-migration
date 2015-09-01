@@ -145,14 +145,11 @@ public with sharing class CaseTransferController
                                     And UserRole.Name != null
                                     AND UserRole.ParentRoleId = null];
 
-            String cleanSearchUsers = String.escapeSingleQuotes(searchString);
-
             userList = [
                     SELECT Id, Name, UserRole.ParentRoleId, Title, Department
                     FROM User
                     WHERE UserRoleId = :UserInfo.getUserRoleId()
                     AND Id != :UserInfo.getUserId()
-                    AND Name LIKE '%:cleanSearchUsers%'
             ];
 
             List<User> subordinateList = [SELECT UserRole.Id
@@ -205,8 +202,16 @@ public with sharing class CaseTransferController
 
             Id userRole = UserInfo.getUserRoleId();
             Id userId = UserInfo.getUserId();
-            String queryString = 'SELECT Id, Name, Title, Department, UserRole.ParentRoleId FROM User WHERE UserRoleId = :userRole AND Id != :userId AND (NOT Name LIKE \'%API%\') AND (NOT Name LIKE \'%zz%\') AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
-            userList = Database.query(queryString);
+
+            String cleanedSearchString = '%' + String.escapeSingleQuotes(searchString) + '%';
+
+            userList = [
+                    SELECT Id, Name, UserRole.ParentRoleId, Title, Department
+                    FROM User
+                    WHERE UserRoleId = :UserInfo.getUserRoleId()
+                    AND Id != :UserInfo.getUserId()
+                    AND Name LIKE :cleanedSearchString
+            ];
 
             List<User> subordinateList = [SELECT UserRole.Id
                                           FROM User

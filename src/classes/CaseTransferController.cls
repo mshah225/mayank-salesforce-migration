@@ -76,9 +76,11 @@ public with sharing class CaseTransferController
 	        }
         }
 
-        Case temp = [SELECT Id, Subject, Description 
-        			 FROM Case 
-        			 WHERE Id = :c.Id];
+        Case temp = [
+                SELECT Id, Subject, Description
+                FROM Case
+                WHERE Id = :c.Id
+        ];
 
         caseSub = temp.Subject;
         caseDesc = temp.Description;
@@ -139,15 +141,17 @@ public with sharing class CaseTransferController
             Set<Id> uberRoleIds = new Set<Id>();
             Set<Id> roleIdsToAdd = new Set<Id>();
 
-            List<User> uberRoles = [SELECT UserRole.Id
-            FROM User
-            WHERE (NOT Name LIKE '%API%')
-            AND (NOT Name LIKE '%zz%')
-            AND (NOT Name LIKE '%Guest%')
-            AND (NOT Name LIKE '%Admin%')
-            AND (NOT Name LIKE '%Expert%')
-            And UserRole.Name != null
-            AND UserRole.ParentRoleId = null];
+            List<User> uberRoles = [
+                    SELECT UserRole.Id
+                    FROM User
+                    WHERE (NOT Name LIKE '%API%')
+                    AND (NOT Name LIKE '%zz%')
+                    AND (NOT Name LIKE '%Guest%')
+                    AND (NOT Name LIKE '%Admin%')
+                    AND (NOT Name LIKE '%Expert%')
+                    AND UserRole.Name != null
+                    AND UserRole.ParentRoleId = null
+            ];
 
             userList = [
                     SELECT Id, Name, UserRole.ParentRoleId, Title, Department
@@ -157,9 +161,11 @@ public with sharing class CaseTransferController
             ];
 
 
-            List<User> subordinateList = [SELECT UserRole.Id
-                                          FROM User
-                                          WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()];
+            List<User> subordinateList = [
+                    SELECT UserRole.Id
+                    FROM User
+                    WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
+            ];
 
             if (subordinateList.size() > 0)
             {
@@ -195,15 +201,17 @@ public with sharing class CaseTransferController
             Set<Id> uberRoleIds = new Set<Id>();
             Set<Id> roleIdsToAdd = new Set<Id>();
 
-            List<User> uberRoles = [SELECT UserRole.Id
-                                    FROM User
-                                    WHERE (NOT Name LIKE '%API%')
-                                    AND (NOT Name LIKE '%zz%')
-                                    AND (NOT Name LIKE '%Guest%')
-                                    AND (NOT Name LIKE '%Admin%')
-                                    AND (NOT Name LIKE '%Expert%')
-                                    And UserRole.Name != null
-                                    AND UserRole.ParentRoleId = null];
+            List<User> uberRoles = [
+                    SELECT UserRole.Id
+                    FROM User
+                    WHERE (NOT Name LIKE '%API%')
+                    AND (NOT Name LIKE '%zz%')
+                    AND (NOT Name LIKE '%Guest%')
+                    AND (NOT Name LIKE '%Admin%')
+                    AND (NOT Name LIKE '%Expert%')
+                    AND UserRole.Name != null
+                    AND UserRole.ParentRoleId = null
+            ];
 
             Id userRole = UserInfo.getUserRoleId();
             Id userId = UserInfo.getUserId();
@@ -218,9 +226,11 @@ public with sharing class CaseTransferController
                     AND Name LIKE :cleanedSearchString
             ];
 
-            List<User> subordinateList = [SELECT UserRole.Id
-                                          FROM User
-                                          WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()];
+            List<User> subordinateList = [
+                    SELECT UserRole.Id
+                    FROM User
+                    WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
+            ];
 
             if (subordinateList.size() > 0)
             {

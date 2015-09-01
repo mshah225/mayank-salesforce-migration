@@ -504,12 +504,12 @@ public without sharing class CampaignMemberHandler implements ITrigger
             'Flinn Semifinalist', 
             'Flinn Finalist'};
                 
-                // Build a List of all Campaign Members for Contacts who have a Scholarship that should indicate that they are a National Merit Scholar
-                List<CampaignMember> nmsList = new List<CampaignMember>([SELECT Id, ContactId 
-                                                                         FROM CampaignMember 
-                                                                         WHERE ContactId IN :interestContactIds 
-                                                                         AND Campaign.RecordType.DeveloperName = 'Scholarship' 
-                                                                         AND Campaign.Name IN :NationalMeritCampaignNames]);
+        // Build a List of all Campaign Members for Contacts who have a Scholarship that should indicate that they are a National Merit Scholar
+        List<CampaignMember> nmsList = new List<CampaignMember>([SELECT Id, ContactId 
+                                                                 FROM CampaignMember 
+                                                                 WHERE ContactId IN :interestContactIds 
+                                                                 AND Campaign.RecordType.DeveloperName = 'Scholarship' 
+                                                                 AND Campaign.Name IN :NationalMeritCampaignNames]);
         
         //Extract the Contact IDs from our CM set
         for (CampaignMember cm: nmsList) 
@@ -518,13 +518,16 @@ public without sharing class CampaignMemberHandler implements ITrigger
         }
         
         //If any of the CMs we are working with have Opportunities or Leads
-        if (interestOpportunityIds.size() > 0 || interestLeadIds.size() > 0)
+        if (interestOpportunityIds.size() > 0)
         {
             //Get info about those Opportunities / Leads
             interestOpportunities = new List<Opportunity>([SELECT Id, Contact__c, primary_interest__c, primary_interest__r.Type, National_Merit_Semifinalist__c 
                                                            FROM Opportunity 
                                                            WHERE Id IN :interestOpportunityIds]);
-            
+        }
+
+        if(interestContactIds.size() > 0 || interestLeadIds.size() > 0)
+        {
             interestLeads = new List<Lead>([SELECT Id, primary_interest__c, primary_interest__r.Type 
                                             FROM Lead 
                                             WHERE Id IN :interestLeadIds]);

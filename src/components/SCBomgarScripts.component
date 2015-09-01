@@ -1,5 +1,9 @@
 <apex:component >
     <apex:attribute name="asurite" description="The contacts ASURITE Id" type="String"/>
+    <apex:attribute name="firstName" description="The contacts first name" type="String"/>
+    <apex:attribute name="lastName" description="The contacts last name" type="String"/>
+    <apex:attribute name="emplId" description="The contacts Employee/Affiliate Id" type="String"/>
+    <apex:attribute name="viewingAs" description="Whether or not the user is currently viewing as" type="Boolean"/>
     <!-- This component renders the Bomgar Scripts to start chat -->
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
     <script>
@@ -7,43 +11,54 @@
         // Start 'Finances' Chat
         function startFAChat()
         {
-            var jsonString = null;
-            var jsonObject = {};
-                jsonObject.employeeNumber = "{!$User.EmplId__c}";
-                jsonObject.description = document.getElementById('FADesc').value;
-                jsonObject.asuriteId = "{!asurite}";
-                jsonObject.externalKey = 'Finances';
-            try
-            {
-                jsonString = JSON.stringify(jsonObject);
-            }
-            catch (e)
-            {
+            document.getElementById("faChatBtn").firstChild.data = "Starting Chat...";
+            document.getElementById("faChatBtn").setAttribute("style","width:100px");
+            document.getElementById("faChatBtn").disabled = true;
 
-            }
-            if (jsonString == null)
-            {
-                jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('FADesc').value + '", "asuriteId":"{!asurite}", "externalKey":"Finances"}';
-            }
+            var viewingAs = "{!viewingAs}"
 
-            BG.start(BG.START_TYPE.CHAT,
+            if (viewingAs != "true")
             {
-                issue:
+                var jsonString = null;
+                var jsonObject = {};
+                    jsonObject.employeeNumber = "{!emplId}";
+                    jsonObject.description = document.getElementById('FADesc').value;
+                    jsonObject.asuriteId = "{!asurite}";
+                    jsonObject.externalKey = 'Finances';
+
+                try
                 {
-                    codeName: 'studentfinances_chat',
-                    customerName: "{!$User.FirstName} {!$User.LastName}",
-                    companyName: 'ASU',
-                    details: document.getElementById('FADesc').value
-                },
-                attributes:
-                {
-                    externalKey: ('SFDC:' + jsonString)
-                },
-                uiOptions:
-                {
-                    fallbackToFullWindow:true
+                    jsonString = JSON.stringify(jsonObject);
                 }
-            });
+                catch (e)
+                {
+
+                }
+
+                if (jsonString == null)
+                {
+                    jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('FADesc').value + '", "asuriteId":"{!asurite}", "externalKey":"Finances"}';
+                }
+
+                BG.start(BG.START_TYPE.CHAT,
+                {
+                    issue:
+                    {
+                        codeName: 'studentfinances_chat',
+                        customerName: "{!firstName} {!lastName}",
+                        companyName: 'ASU',
+                        details: document.getElementById('FADesc').value
+                    },
+                    attributes:
+                    {
+                        externalKey: ('SFDC:' + jsonString)
+                    },
+                    uiOptions:
+                    {
+                        fallbackToFullWindow:true
+                    }
+                });
+            }
         }
     </script>
 
@@ -52,43 +67,53 @@
         // Start 'Other' Chat
         function startSFDCChat()
         {
-            var jsonString = null;
-            var jsonObject = {};
-                jsonObject.employeeNumber = "{!$User.EmplId__c}";
-                jsonObject.description = document.getElementById('SFDCDesc').value;
-                jsonObject.asuriteId = "{!asurite}";
-                jsonObject.externalKey = 'Other';
-            try
-            {
-                jsonString = JSON.stringify(jsonObject);
-            }
-            catch (e)
-            {
+            document.getElementById("otherChatBtn").firstChild.data = "Starting Chat...";
+            document.getElementById("otherChatBtn").setAttribute("style","width:100px");
+            document.getElementById("otherChatBtn").disabled = true;
+            var viewingAs = "{!viewingAs}"
 
-            }
-            if (jsonString == null)
+            if (viewingAs != "true")
             {
-                jsonString = '{"employeeNumber":"{!$User.EmplId__c}", "description":"' + document.getElementById('SFDCDesc').value + '", "asuriteId":"{!asurite}", "externalKey":"Other"}';
-            }
+                var jsonString = null;
+                var jsonObject = {};
+                    jsonObject.employeeNumber = "{!emplId}";
+                    jsonObject.description = document.getElementById('SFDCDesc').value;
+                    jsonObject.asuriteId = "{!asurite}";
+                    jsonObject.externalKey = 'Other';
 
-            BG.start(BG.START_TYPE.CHAT,
-            {
-                issue:
+                try
                 {
-                    codeName: 'salesforce_chat',
-                    customerName: "{!$User.FirstName} {!$User.LastName}",
-                    companyName: 'ASU',
-                    details: document.getElementById('SFDCDesc').value
-                },
-                attributes:
-                {
-                    externalKey: ('SFDC:' + jsonString)
-                },
-                uiOptions:
-                {
-                    fallbackToFullWindow:true
+                    jsonString = JSON.stringify(jsonObject);
                 }
-            });
+                catch (e)
+                {
+
+                }
+
+                if (jsonString == null)
+                {
+                    jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('SFDCDesc').value + '", "asuriteId":"{!asurite}", "externalKey":"Other"}';
+                }
+
+                BG.start(BG.START_TYPE.CHAT,
+                {
+                    issue:
+                    {
+                        codeName: 'salesforce_chat',
+                        customerName: "{!firstName} {!lastName}",
+                        companyName: 'ASU',
+                        details: document.getElementById('SFDCDesc').value
+                    },
+                    attributes:
+                    {
+                        externalKey: ('SFDC:' + jsonString)
+                    },
+                    uiOptions:
+                    {
+                        fallbackToFullWindow:true
+                    }
+                });
+            }
         }
     </script>
 </apex:component>

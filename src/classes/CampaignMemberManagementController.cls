@@ -48,31 +48,44 @@ public class CampaignMemberManagementController
 
     public CampaignMemberManagementController(ApexPages.StandardController controller) 
     { 
-        campaignContact = [SELECT Id 
-                           FROM Contact 
-                           WHERE Id = :ApexPages.currentPage().getParameters().get('id')];
+        campaignContact = [
+            SELECT Id
+            FROM Contact
+            WHERE Id = :ApexPages.currentPage().getParameters().get('id')
+        ];
         contId = campaignContact.Id;
-        crRecordTypeId = [SELECT Id
-                          FROM RecordType 
-                          WHERE Name = 'Corporate Relations'].Id;
-        currentCampaigns = [SELECT Id, Campaign.Name, Campaign.ParentId 
-                            FROM CampaignMember 
-                            WHERE ContactId = :campaignContact.Id
-                            AND Campaign_Type__c = 'Corporate Relations'
-                            AND Status = 'Active'
-                            ORDER BY Campaign.Name];
-        inActiveCampaigns = [SELECT Id, Campaign.Name 
-                            FROM CampaignMember 
-                            WHERE ContactId = :campaignContact.Id
-                            AND Campaign_Type__c = 'Corporate Relations'
-                            AND Status = 'Inactive'
-                            ORDER BY Campaign.Name];
-        String profileName = [SELECT Profile.Name 
-                              FROM User 
-                              WHERE Id = :UserInfo.getUserId()].Profile.Name;
-        List<PermissionSetAssignment> userPermissions = [SELECT PermissionSet.Name 
-                                                         FROM PermissionSetAssignment 
-                                                         WHERE AssigneeId = :UserInfo.getUserId()];
+        crRecordTypeId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Corporate Relations'
+            AND SobjectType = 'Campaign'
+        ].Id;
+        currentCampaigns = [
+            SELECT Id, Campaign.Name, Campaign.ParentId
+            FROM CampaignMember
+            WHERE ContactId = :campaignContact.Id
+            AND Campaign_Type__c = 'Corporate Relations'
+            AND Status = 'Active'
+            ORDER BY Campaign.Name
+        ];
+        inActiveCampaigns = [
+            SELECT Id, Campaign.Name
+            FROM CampaignMember
+            WHERE ContactId = :campaignContact.Id
+            AND Campaign_Type__c = 'Corporate Relations'
+            AND Status = 'Inactive'
+            ORDER BY Campaign.Name
+        ];
+        String profileName = [
+            SELECT Profile.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+        ].Profile.Name;
+        List<PermissionSetAssignment> userPermissions = [
+            SELECT PermissionSet.Name
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :UserInfo.getUserId()
+        ];
         Boolean hasCRPerm = false;
         if (userPermissions.size() > 0)
         {
@@ -89,7 +102,9 @@ public class CampaignMemberManagementController
             }
         }
 
-        if ((profileName.equals('ASU Corporate Relations') || profileName.equals('System Administrator')) || hasCRPerm) 
+        if ((profileName.equals('ASU Corporate Relations')
+                || profileName.equals('System Administrator'))
+                || hasCRPerm)
         {
             crProfile = true;
             renderedTab = 'crTab';
@@ -104,14 +119,30 @@ public class CampaignMemberManagementController
     // Event tab.
     public List<CampaignMember> getEventList() 
     {
-        Id eventRecId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id;
-        Id eossRecId = [SELECT Id FROM RecordType WHERE Name = 'EOSS Event'].Id;
+        Id eventRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Event'
+            AND SobjectType = 'Campaign'
+        ].Id;
+        Id eossRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'EOSS Event'
+            AND SobjectType = 'Campaign'
+        ].Id;
 
-        eventList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c, Campaign.Interest_PeopleSoft_Major__c, Campaign.Event_Start_Date__c, Number_Of_Guests__c, Status, Last_Member_Status_Change__c, ContactId, CampaignId 
-                     FROM CampaignMember 
-                     WHERE ContactId = :ApexPages.currentPage().getParameters().get('id') 
-                     AND (Campaign.RecordTypeId = :eventRecId OR Campaign.RecordTypeId = :eossRecId) 
-                     LIMIT 40];
+        eventList = [
+            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
+                    Campaign.Interest_PeopleSoft_Major__c, Campaign.Event_Start_Date__c,
+                    Number_Of_Guests__c, Status, Last_Member_Status_Change__c,
+                    ContactId, CampaignId
+            FROM CampaignMember
+            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
+            AND (Campaign.RecordTypeId = :eventRecId OR Campaign.RecordTypeId = :eossRecId)
+            LIMIT 40
+        ];
+
         if (eventList != null) 
         {
             return eventList;
@@ -124,10 +155,21 @@ public class CampaignMemberManagementController
 
     public void doEventSearch() 
     {
-        Id eventRecId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id;
-        Id eossRecId = [SELECT Id FROM RecordType WHERE Name = 'EOSS Event'].Id;
+        Id eventRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Event'
+            AND SobjectType = 'Campaign'
+        ].Id;
+        Id eossRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'EOSS Event'
+            AND SobjectType = 'Campaign'
+        ].Id;
         
         String eSearchQuery = 'SELECT Id, Name, Type, Category__c, Event_Start_Date__c, Event_Start_Time__c, Campus_Location__c, Event_Location__c, RecordTypeId FROM Campaign WHERE (Name LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\' OR Type LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\' OR Category__c LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\') AND (Campaign.RecordTypeId = :eventRecId OR Campaign.RecordTypeId = :eossRecId) AND IsActive = true ORDER BY Name ASC LIMIT 40';
+
         eventSearchResults = Database.query(eSearchQuery);
     }
 
@@ -139,13 +181,21 @@ public class CampaignMemberManagementController
     // Interest tab.
     public List<CampaignMember> getInterestList() 
     {
-        Id intRecId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id;
+        Id intRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Interest'
+            AND SobjectType = 'Campaign'
+        ].Id;
 
-        interestList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c, Campaign.Interest_PeopleSoft_Major__c, Status, Last_Member_Status_Change__c 
-                        FROM CampaignMember 
-                        WHERE Campaign.RecordTypeId = :intRecId 
-                        AND ContactId = :ApexPages.currentPage().getParameters().get('id') 
-                        LIMIT 40];
+        interestList = [
+            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
+                    Campaign.Interest_PeopleSoft_Major__c, Status, Last_Member_Status_Change__c
+            FROM CampaignMember
+            WHERE Campaign.RecordTypeId = :intRecId
+            AND ContactId = :ApexPages.currentPage().getParameters().get('id')
+            LIMIT 40
+        ];
 
         if (interestList != null) 
         {
@@ -159,9 +209,15 @@ public class CampaignMemberManagementController
 
     public void doInterestSearch() 
     {
-        Id intRecId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id;
+        Id intRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Interest'
+            AND SobjectType = 'Campaign'
+        ].Id;
         
         String iSearchQuery = 'SELECT Id, Name, Type, Campaign_External_ID__c FROM Campaign WHERE (Name LIKE \'%' + String.escapeSingleQuotes(iSearchString) + '%\' OR Type LIKE \'%' + String.escapeSingleQuotes(iSearchString) + '%\') AND Campaign.RecordTypeId = :intRecId AND IsActive = true ORDER BY Name ASC LIMIT 40';
+
         interestSearchResults = Database.query(iSearchQuery);
     }
 
@@ -173,12 +229,20 @@ public class CampaignMemberManagementController
     // Scholarship tab.
     public List<CampaignMember> getScholarList() 
     {
-        Id schRecId = [SELECT Id FROM RecordType WHERE Name = 'Scholarship'].Id;
+        Id schRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Scholarship'
+            AND SobjectType = 'Campaign'
+        ].Id;
 
-        scholarList = [SELECT Id, Campaign.Name, Campaign.Type, Amount__c, Award_Date__c, Letter_Date__c, Status, Last_Member_Status_Change__c 
-                       FROM CampaignMember 
-                       WHERE ContactId = :ApexPages.currentPage().getParameters().get('id') 
-                       AND Campaign.RecordTypeId = :schRecId];
+        scholarList = [
+            SELECT Id, Campaign.Name, Campaign.Type, Amount__c, Award_Date__c,
+                    Letter_Date__c, Status, Last_Member_Status_Change__c
+            FROM CampaignMember
+            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
+            AND Campaign.RecordTypeId = :schRecId
+        ];
         
         return scholarList;
     }
@@ -186,12 +250,20 @@ public class CampaignMemberManagementController
     // Cohort tab.
     public List<CampaignMember> getCohortList() 
     {
-        Id cohRecId = [SELECT Id FROM RecordType WHERE Name = 'Cohort'].Id;
+        Id cohRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Cohort'
+            AND SobjectType = 'Campaign'
+        ].Id;
 
-        cohortList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c, Status, Last_Member_Status_Change__c 
-                      FROM CampaignMember 
-                      WHERE ContactId = :ApexPages.currentPage().getParameters().get('id') 
-                      AND Campaign.RecordTypeId = :cohRecId];
+        cohortList = [
+            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
+                    Status, Last_Member_Status_Change__c
+            FROM CampaignMember
+            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
+            AND Campaign.RecordTypeId = :cohRecId
+        ];
         
         return cohortList;
     }
@@ -199,11 +271,20 @@ public class CampaignMemberManagementController
     // Other Sources tab.
     public List<CampaignMember> getoSourceList() 
     {
-        Id sourceRecId = [SELECT Id FROM RecordType WHERE Name = 'Other Source'].Id;
-        oSourceList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c, Status, Last_Member_Status_Change__c 
-                       FROM CampaignMember 
-                       WHERE ContactId = :ApexPages.currentPage().getParameters().get('id') 
-                       AND Campaign.RecordTypeId = :sourceRecId];
+        Id sourceRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Other Source'
+            AND SobjectType = 'Campaign'
+        ].Id;
+
+        oSourceList = [
+            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
+                    Status, Last_Member_Status_Change__c
+            FROM CampaignMember
+            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
+            AND Campaign.RecordTypeId = :sourceRecId
+        ];
         
         return oSourceList;
     }
@@ -211,12 +292,20 @@ public class CampaignMemberManagementController
     // Marketing/Communications tab.
     public List<CampaignMember> getMarkCommList() 
     {
-        Id markCommRecid = [SELECT Id FROM RecordType WHERE Name = 'Communication'].Id;
+        Id markCommRecid = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Communication'
+            AND SobjectType = 'Campaign'
+        ].Id;
 
-        markCommList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c, Status, Last_Member_Status_Change__c 
-                        FROM CampaignMember 
-                        WHERE ContactId = :ApexPages.currentPage().getParameters().get('id') 
-                        AND Campaign.RecordTypeId = :markCommRecId];
+        markCommList = [
+            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
+                    Status, Last_Member_Status_Change__c
+            FROM CampaignMember
+            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
+            AND Campaign.RecordTypeId = :markCommRecId
+        ];
         
         return markCommList;
     }
@@ -224,12 +313,21 @@ public class CampaignMemberManagementController
     // Partnered Courses tab.
     public List<CampaignMember> getPartCourseList() 
     {
-        Id partCourseRecid = [SELECT Id FROM RecordType WHERE Name = 'Course'].Id;
+        Id partCourseRecid = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Course'
+            AND SobjectType = 'Campaign'
+        ].Id;
 
-        partCourseList = [SELECT Id, Campaign.Name, Campaign.Type, Campaign.StartDate, Campaign.EndDate, edX_Enrollment_Date__c, edX_Active_Enrollment__c, Campaign.Requested__c, Status, Last_Member_Status_Change__c 
-                          FROM CampaignMember 
-                          WHERE ContactId = :ApexPages.currentPage().getParameters().get('id') 
-                          AND Campaign.RecordTypeId = :partCourseRecid];
+        partCourseList = [
+            SELECT Id, Campaign.Name, Campaign.Type, Campaign.StartDate,
+                    Campaign.EndDate, edX_Enrollment_Date__c, edX_Active_Enrollment__c,
+                    Campaign.Requested__c, Status, Last_Member_Status_Change__c
+            FROM CampaignMember
+            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
+            AND Campaign.RecordTypeId = :partCourseRecid
+        ];
         
         return partCourseList;
     }
@@ -245,6 +343,7 @@ public class CampaignMemberManagementController
         camMemEvent.Status = 'Invited';
         
         insert camMemEvent;
+
         System.Debug('Inserted a Event Campaign Member');
         System.Debug(camMemEvent);
     }
@@ -260,6 +359,7 @@ public class CampaignMemberManagementController
         camMemInterest.Status = 'Interested';
         
         insert camMemInterest;
+
         System.Debug('Inserted an Interest Campaign Member');
         System.Debug(camMemInterest);
     }
@@ -274,13 +374,15 @@ public class CampaignMemberManagementController
             if (cm.Campaign.ParentId == null)
             {
                 sortList.add(cm);
-                for (CampaignMember ch: [SELECT Campaign.Name, Campaign.ParentId
-                                         FROM CampaignMember 
-                                         WHERE ContactId = :campaignContact.Id 
-                                         AND Campaign_Type__c = 'Corporate Relations'
-                                         AND Status = 'Active' 
-                                         AND Campaign.ParentId = :cm.Campaign.Id
-                                         ORDER BY Campaign.Name])
+                for (CampaignMember ch: [
+                        SELECT Campaign.Name, Campaign.ParentId
+                        FROM CampaignMember
+                        WHERE ContactId = :campaignContact.Id
+                        AND Campaign_Type__c = 'Corporate Relations'
+                        AND Status = 'Active'
+                        AND Campaign.ParentId = :cm.Campaign.Id
+                        ORDER BY Campaign.Name
+                ])
                 {
                     sortList.add(ch);
                 }
@@ -301,13 +403,17 @@ public class CampaignMemberManagementController
 
     public void childCampaignSearch()
     {
-        currentChildCams = [SELECT CampaignId 
-                            FROM CampaignMember 
-                            WHERE ContactId = :campaignContact.Id 
-                            AND Campaign.ParentId = :selectedParentCampaign
-                            AND Status = 'Active'];
+        currentChildCams = [
+            SELECT CampaignId
+            FROM CampaignMember
+            WHERE ContactId = :campaignContact.Id
+            AND Campaign.ParentId = :selectedParentCampaign
+            AND Status = 'Active'
+        ];
+
         childSearchSet = new Set<String>();
         fixedChildCampaigns = new List<Campaign>();
+
         for (CampaignMember c: currentChildCams)
         {
             childSearchSet.add(c.CampaignId);
@@ -327,15 +433,19 @@ public class CampaignMemberManagementController
     public void parentCamNameSearch() {
         parentCampaigns.clear();
 
-        selectedParentCampaignName = [SELECT Name 
-                                      FROM Campaign
-                                      WHERE Id = :selectedParentCampaign].Name;
+        selectedParentCampaignName = [
+            SELECT Name
+            FROM Campaign
+            WHERE Id = :selectedParentCampaign
+        ].Name;
     }
 
     public void childCamNameSearch() {
-        selectedChildCampaignName = [SELECT Name 
-                                     FROM Campaign
-                                     WHERE Id = :selectedChildCampaign].Name;
+        selectedChildCampaignName = [
+            SELECT Name
+            FROM Campaign
+            WHERE Id = :selectedChildCampaign
+        ].Name;
     }
 
     public void assignToParentCampaign()
@@ -361,21 +471,28 @@ public class CampaignMemberManagementController
     public void inActivateCM() 
     {
         List<CampaignMember> childKillList = new List<CampaignMember>();
-        inActivateCamMem = [SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name 
-                            FROM CampaignMember
-                            WHERE Id = :inActivateCMId];
-        User currentUser = [SELECT Id, UserRole.Name 
-                            FROM User 
-                            WHERE Id = :UserInfo.getUserId()];
+        inActivateCamMem = [
+            SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name
+            FROM CampaignMember
+            WHERE Id = :inActivateCMId
+        ];
+        User currentUser = [
+            SELECT Id, UserRole.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+        ];
+
         if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name)
         {
-            
             inActivateCamMem.Status = 'Inactive';
             if (inActivateCamMem.Campaign.ParentId == null)
             {
-                childKillList = [SELECT Id, Status
-                                 FROM CampaignMember
-                                 WHERE Campaign.ParentId = :inActivateCamMem.CampaignId];
+                childKillList = [
+                    SELECT Id, Status
+                    FROM CampaignMember
+                    WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
+                ];
+
                 for (CampaignMember kill: childKillList)
                 {
                     kill.Status = 'Inactive';
@@ -390,6 +507,7 @@ public class CampaignMemberManagementController
             {
 
             }
+
             shouldRedirect = true;
         }
         else{
@@ -405,6 +523,7 @@ public class CampaignMemberManagementController
             System.debug(newChildCamMem);
             System.debug(newParentCamMem);
             currentSet = new Set<String>();
+
             for (CampaignMember c: currentCampaigns)
             {
                 currentSet.add(c.Campaign.Name);
@@ -426,11 +545,15 @@ public class CampaignMemberManagementController
             }
             else
             {
-                activateParentCamMem = [SELECT Id 
-                                        FROM CampaignMember
-                                        WHERE Campaign.Name = :selectedParentCampaignName
-                                        AND ContactId = :ApexPages.currentPage().getParameters().get('id')];
+                activateParentCamMem = [
+                    SELECT Id
+                    FROM CampaignMember
+                    WHERE Campaign.Name = :selectedParentCampaignName
+                    AND ContactId = :ApexPages.currentPage().getParameters().get('id')
+                ];
+
                 activateParentCamMem.Status = 'Active';
+
                 update activateParentCamMem;
             }
             if(selectedChildCampaign != null)
@@ -445,11 +568,15 @@ public class CampaignMemberManagementController
                 }
                 else 
                 {
-                    activateChildCamMem = [SELECT Id 
-                                           FROM CampaignMember
-                                           WHERE Campaign.Name = :selectedChildCampaignName
-                                           AND ContactId = :ApexPages.currentPage().getParameters().get('id')];
+                    activateChildCamMem = [
+                        SELECT Id
+                        FROM CampaignMember
+                        WHERE Campaign.Name = :selectedChildCampaignName
+                        AND ContactId = :ApexPages.currentPage().getParameters().get('id')
+                    ];
+
                     activateChildCamMem.Status = 'Active';
+
                     update activateChildCamMem;
                 }
             }

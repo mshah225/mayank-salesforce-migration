@@ -1,28 +1,28 @@
 public with sharing class CaseTransferController
 {
-    public Integer page { get; set; }
-    public Id selectedId { get;set; }
-    public List<User> userList { get; set; }
-    public Map<String, List<Case_Assignment_Rule__c>> serviceCARS { get; set; }
-    public Map<String, List<Case_Assignment_Rule__c>> collegeCARS { get; set; }
-    public String selectedGroupName { get; set; }
-    public String selectedCARLabel { get; set; }
-    public String source { get; set; }
-    public String searchString { get; set; }
-    private Boolean toUser;
-    private String caseSub;
-    private String caseDesc;
-    private final Case c;
-    private List<Case_Assignment_Rule__c> allCARs;
-    private List<Case_Assignment_Rule__c> allGenCARs;
-    private List<Schema.PickListEntry> columnList;
+	public Boolean toUser;
+	private final Case c;
+	public Integer page { get; set; }
+	public Id selectedId { get;set; }
+	public List<Case_Assignment_Rule__c> allCARs;
+	public List<Case_Assignment_Rule__c> allGenCARs;
+	public List<Schema.PickListEntry> columnList;
+	public List<User> userList { get; set; }
+	public Map<String, List<Case_Assignment_Rule__c>> serviceCARS { get; set; }
+	public Map<String, List<Case_Assignment_Rule__c>> collegeCARS { get; set; }
+	public String selectedGroupName { get; set; }
+	public String selectedCARLabel { get; set; }
+	public String source { get; set; }
+	public String searchString { get; set; }
+	private String caseSub;
+	private String caseDesc;
 
-    public CaseTransferController(ApexPages.StandardController stdController)
-    {
-        page = 1;
-        userList = new List<User>();
-        serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
-        collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
+	public CaseTransferController(ApexPages.StandardController stdController)
+	{
+		page = 1;
+		userList = new List<User>();
+		serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
+		collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         this.c = (Case)stdController.getRecord();
 
         // The general list of CARs. Their labels should have '(General)' in them.
@@ -47,80 +47,84 @@ public with sharing class CaseTransferController
                 AND (NOT Label__c LIKE '%(General)%')
                 ORDER BY Label__c ASC
         ];
+		allGenCARs.addAll(allCARS);
+		searchUsers();
 
-        allGenCARs.addAll(allCARS);
-        searchUsers();
-
-        for (Case_Assignment_Rule__c car : allGenCARs)
+		for (Case_Assignment_Rule__c car : allGenCARs)
         {
-            if (car.CTPColumn__c.equals('Service Departments'))
-            {
-                if (serviceCARS.containsKey(car.CTPGroup__c))
-                {
-                    serviceCARS.get(car.CTPGroup__c).add(car);
-                }
-                else
-                {
-                    serviceCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c> { car });
-                }
-            }
-            else if (car.CTPColumn__c.equals('Colleges'))
-            {
-                if (collegeCARS.containsKey(car.CTPGroup__c))
-                {
-                    collegeCARS.get(car.CTPGroup__c).add(car);
-                }
-                else
-                {
-                    collegeCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c> { car });
-                }
-            }
+        	if (car.CTPColumn__c.equals('Service Departments'))
+			{
+	        	if (serviceCARS.containsKey(car.CTPGroup__c))
+	        	{
+	        		serviceCARS.get(car.CTPGroup__c).add(car);
+	        	}
+	        	else
+	        	{
+	        		serviceCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c> { car });
+	        	}
+	        }
+	        else if (car.CTPColumn__c.equals('Colleges'))
+	        {
+	        	if (collegeCARS.containsKey(car.CTPGroup__c))
+	        	{
+	        		collegeCARS.get(car.CTPGroup__c).add(car);
+	        	}
+	        	else
+	        	{
+	        		collegeCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c> { car });
+	        	}
+	        }
         }
 
         Case temp = [SELECT Id, Subject, Description 
-                     FROM Case
-                     WHERE Id = :c.Id];
+        			 FROM Case 
+        			 WHERE Id = :c.Id];
 
         caseSub = temp.Subject;
         caseDesc = temp.Description;
         if (caseSub == null || caseDesc == null)
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'The Subject and Description are required fields for case transfer. Please fill out the missing fields before transferring the case.'));
-        }
-    }
+		{
+			ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'The Subject and Description are required fields for case transfer. Please fill out the missing fields before transferring the case.'));
+		}
+	}
 
-    public PageReference page1()
-    {
-        page = 1;
-        return ApexPages.currentPage();
-    }
+	public PageReference page1()
+	{
+		page = 1;
 
-    public PageReference page2()
-    {
-        toUser = true;
-        page = 2;
-        return ApexPages.currentPage();
-    }
+		return ApexPages.currentPage();
+	}
 
-    public PageReference page3()
-    {
-        toUser = false;
-        page = 3;
-        return ApexPages.currentPage();
-    }
+	public PageReference page2()
+	{
+		toUser = true;
+		page = 2;
+		
+		return ApexPages.currentPage();
+	}
 
-    public PageReference page4()
-    {
-        page = 4;
-        return ApexPages.currentPage();
-    }
+	public PageReference page3()
+	{
+		toUser = false;
+		page = 3;
+		
+		return ApexPages.currentPage();
+	}
 
-    public List<Schema.PickListEntry> getColumnList()
-    {
-        Schema.DescribeFieldResult fieldResult = Case_Assignment_Rule__c.CTPColumn__c.getDescribe();
-        columnList = fieldResult.getPicklistValues();
-        return columnList;
-    }
+	public PageReference page4()
+	{
+		page = 4;
+
+		return ApexPages.currentPage();
+	}
+
+	public List<Schema.PickListEntry> getColumnList()
+	{
+		Schema.DescribeFieldResult fieldResult = Case_Assignment_Rule__c.CTPColumn__c.getDescribe();
+		columnList = fieldResult.getPicklistValues();
+
+		return columnList;
+	}
 
     public void resetSearch()
     {
@@ -136,14 +140,14 @@ public with sharing class CaseTransferController
             Set<Id> roleIdsToAdd = new Set<Id>();
 
             List<User> uberRoles = [SELECT UserRole.Id
-                                    FROM User
-                                    WHERE (NOT Name LIKE '%API%')
-                                    AND (NOT Name LIKE '%zz%')
-                                    AND (NOT Name LIKE '%Guest%')
-                                    AND (NOT Name LIKE '%Admin%')
-                                    AND (NOT Name LIKE '%Expert%')
-                                    And UserRole.Name != null
-                                    AND UserRole.ParentRoleId = null];
+            FROM User
+            WHERE (NOT Name LIKE '%API%')
+            AND (NOT Name LIKE '%zz%')
+            AND (NOT Name LIKE '%Guest%')
+            AND (NOT Name LIKE '%Admin%')
+            AND (NOT Name LIKE '%Expert%')
+            And UserRole.Name != null
+            AND UserRole.ParentRoleId = null];
 
             userList = [
                     SELECT Id, Name, UserRole.ParentRoleId, Title, Department
@@ -151,6 +155,7 @@ public with sharing class CaseTransferController
                     WHERE UserRoleId = :UserInfo.getUserRoleId()
                     AND Id != :UserInfo.getUserId()
             ];
+
 
             List<User> subordinateList = [SELECT UserRole.Id
                                           FROM User
@@ -286,11 +291,13 @@ public with sharing class CaseTransferController
             System.debug('Message: ' + e.getMessage());
             System.debug('Line number: ' + e.getLineNumber());
             System.debug('Stack trace: ' + e.getStackTraceString());
+
             return null;
         }
 
         PageReference save = new PageReference('/' + c.Id);
         save.setRedirect(true);
+
         return save;
     }
 }

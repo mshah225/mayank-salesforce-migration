@@ -144,9 +144,7 @@ public with sharing class CaseTransferController
             List<User> uberRoles = [
                     SELECT UserRole.Id
                     FROM User
-                    WHERE (NOT Name LIKE '%API%')
-                    AND (NOT Name LIKE '%zz%')
-                    AND (NOT Name LIKE '%Guest%')
+                    WHERE (NOT Name LIKE '%Guest%')
                     AND (NOT Name LIKE '%Admin%')
                     AND (NOT Name LIKE '%Expert%')
                     AND UserRole.Name != null
@@ -204,9 +202,7 @@ public with sharing class CaseTransferController
             List<User> uberRoles = [
                     SELECT UserRole.Id
                     FROM User
-                    WHERE (NOT Name LIKE '%API%')
-                    AND (NOT Name LIKE '%zz%')
-                    AND (NOT Name LIKE '%Guest%')
+                    WHERE (NOT Name LIKE '%Guest%')
                     AND (NOT Name LIKE '%Admin%')
                     AND (NOT Name LIKE '%Expert%')
                     AND UserRole.Name != null

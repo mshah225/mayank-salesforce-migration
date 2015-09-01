@@ -5,6 +5,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     private Map<String, String> configMap = new Map<String, String>();
     private Id queueId;
     private Id templateId;
+    private Id caseFeedTemplateId;
     private String categoryName;
     private String subCategoryName;
     private String origin;
@@ -235,7 +236,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 toAddressConcat = toAddressConcat.subString(0,toAddressConcat.length()-1);
 
-                theCase.Most_Recent_Sent_To_Email__c = email.toAddresses.get(0);
+                theCase.Case_Feed_Email__c = email.toAddresses.get(0);
             }
 
             if (email.CCAddresses != null && email.CCAddresses.size() > 0) 
@@ -247,9 +248,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 ccAddressConcat = ccAddressConcat.subString(0,ccAddressConcat.length()-1);
 
-                if (theCase.Most_Recent_Sent_To_Email__c == null)
+                if (theCase.Case_Feed_Email__c == null)
                 {
-                    theCase.Most_Recent_Sent_To_Email__c = email.CCAddresses.get(0);
+                    theCase.Case_Feed_Email__c = email.CCAddresses.get(0);
                 }
             }
 
@@ -823,10 +824,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
     private void setCaseAssignmentRule(String[] toEmailAddresses, String[] ccEmailAddresses) 
     {
-        Case_Assignment_Rule__c[] assignmentRuleList = [SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Customer_Notice_Email_From_Name__c,Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
-                                                        FROM Case_Assignment_Rule__c
-                                                        WHERE Email_Address__c IN :toEmailAddresses
-                                                        ORDER BY Priority__c];
+        Case_Assignment_Rule__c[] assignmentRuleList = [
+                SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Customer_Notice_Email_From_Name__c,Reply_To_Email_Address__c, Email_Template_ID__c, Case_Feed_Email_Template_Id__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
+                FROM Case_Assignment_Rule__c
+                WHERE Email_Address__c IN :toEmailAddresses
+                ORDER BY Priority__c
+        ];
 
         if (assignmentRuleList.size() > 0) 
         {
@@ -840,6 +843,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             if (assignmentRuleList[0].Email_Template_ID__c != null && assignmentRuleList[0].Email_Template_ID__c != '')
             {
                 templateId = ID.valueOf(assignmentRuleList[0].Email_Template_ID__c);
+            }
+
+            if (assignmentRuleList[0].Case_Feed_Email_Template_Id__c != null && assignmentRuleList[0].Case_Feed_Email_Template_Id__c != '')
+            {
+                caseFeedTemplateId = ID.valueOf(assignmentRuleList[0].Case_Feed_Email_Template_Id__c);
             }
 
             if (assignmentRuleList[0].Reply_To_Email_Address__c != null && assignmentRuleList[0].Reply_To_Email_Address__c != '')
@@ -872,7 +880,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         else 
         {
             assignmentRuleList = [SELECT Id, Name, Category__c, Sub_Category__c,
-            Email_Address__c, Customer_Notice_Email_From_Name__c, Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
+            Email_Address__c, Customer_Notice_Email_From_Name__c, Reply_To_Email_Address__c, Email_Template_ID__c, Case_Feed_Email_Template_Id__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
                                     FROM Case_Assignment_Rule__c
                                     WHERE Email_Address__c IN :ccEmailAddresses
                                     ORDER BY Priority__c];
@@ -889,6 +897,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 if (assignmentRuleList[0].Email_Template_ID__c != null && assignmentRuleList[0].Email_Template_ID__c != '')
                 {
                     templateId = ID.valueOf(assignmentRuleList[0].Email_Template_ID__c);
+                }
+
+                if (assignmentRuleList[0].Case_Feed_Email_Template_Id__c != null && assignmentRuleList[0].Case_Feed_Email_Template_Id__c != '')
+                {
+                    caseFeedTemplateId = ID.valueOf(assignmentRuleList[0].Case_Feed_Email_Template_Id__c);
                 }
 
                 if (assignmentRuleList[0].Reply_To_Email_Address__c != null && assignmentRuleList[0].Reply_To_Email_Address__c != '')
@@ -927,7 +940,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             if (defaultEmailAddress != null && defaultEmailAddress != '') 
             {
                 assignmentRuleListDefault = [SELECT Id, Name, Category__c, Sub_Category__c,
-                Email_Address__c, Customer_Notice_Email_From_Name__c, Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
+                Email_Address__c, Customer_Notice_Email_From_Name__c, Reply_To_Email_Address__c, Case_Feed_Email_Template_Id__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
                                              FROM Case_Assignment_Rule__c
                                              WHERE Email_Address__c = :defaultEmailAddress];
             }
@@ -944,6 +957,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 if (assignmentRuleListDefault[0].Email_Template_ID__c != null && assignmentRuleListDefault[0].Email_Template_ID__c != '')
                 {
                     templateId = ID.valueOf(assignmentRuleListDefault[0].Email_Template_ID__c);
+                }
+
+                if (assignmentRuleListDefault[0].Case_Feed_Email_Template_Id__c != null && assignmentRuleListDefault[0].Case_Feed_Email_Template_Id__c != '')
+                {
+                    caseFeedTemplateId = ID.valueOf(assignmentRuleListDefault[0].Case_Feed_Email_Template_Id__c);
                 }
 
                 if (assignmentRuleListDefault[0].Reply_To_Email_Address__c != null && assignmentRuleListDefault[0].Reply_To_Email_Address__c != '')

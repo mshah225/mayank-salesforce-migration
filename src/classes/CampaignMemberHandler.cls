@@ -462,7 +462,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
 */
     public void andFinally() 
     {
-        Set<Id> interestOpportunityIds = new Set<Id>();
+        /*Set<Id> interestOpportunityIds = new Set<Id>();
         Set<Id> interestContactIds = new Set<Id>();
         Set<Id> interestLeadIds = new Set<Id>();
         Set<Id> nationalMeritContactIds = new Set<Id>();
@@ -596,7 +596,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
             if (oppCmList != null && oppCmList.size() > 0) 
             {
                 Id interestCampaignId;
-                //Get the ID of the Campaign of the first PSMajor Interest CM (i.e. the most recently changed)
+                //Go through each of the CMs on the opportunity's Contact and see if any are PSMajors. We always take the first one as it's the most recently changed.
                 for (CampaignMember cm: oppCmList) 
                 {
                     if (cm.Campaign.Type == 'PSMajors') 
@@ -605,7 +605,8 @@ public without sharing class CampaignMemberHandler implements ITrigger
                         break;
                     }
                 }
-                // If we did not find a PSMajors Interest record, use the most recent Interest in the list as a whole
+
+                // If we did not find a PSMajors Interest record, use the most recent Interest in the list as a whole (doesn't matter if it's not a PSMajor)
                 if (interestCampaignId == null)
                 {
                     interestCampaignId = oppCmList[0].CampaignId;
@@ -678,23 +679,120 @@ public without sharing class CampaignMemberHandler implements ITrigger
         if (leadsToUpdate.size() > 0) 
         {
             update leadsToUpdate;
-        }
-        
+        }*/
+
+        List<Id> contactIdsToFalsify = new List<Id>();
+        List<Id> leadIdsToFalsify = new List<Id>();
+
+        List<Id> primaryContactIds = new List<Id>();
+        List<Id> primaryLeadIds = new List<Id>();
+
+        List<Lead> leadsToUpdate = new List<Lead>();
+        List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+
         if(objectsToFalsify.size() > 0 || primaries.size() > 0)
         {
             List<CampaignMember> itemsToUpdate = new List<CampaignMember>();
             for(CampaignMember cm : objectsToFalsify)
             {
                 cm.Is_Primary_Interest__c = FALSE;
+                if(cm.ContactId != null)
+                {
+                    contactIdsToFalsify.add(cm.ContactId);
+                }
+
+                if(cm.LeadId != null)
+                {
+                   leadIdsToFalsify.add(cm.LeadId); 
+                }
+                //For each Old Primary
+                //If it has a Contact with an Opportunity, update that Opportunity to not be Primary
+                //If it has a Lead, update that Lead to not be Primary
                 itemsToUpdate.add(cm);
             }
             for(CampaignMember cm : primaries)
             {
                 cm.Is_Primary_Interest__c = TRUE;
+                if(cm.ContactId != null)
+                {
+                    primaryContactIds.add(cm.ContactId);
+                }
+
+                if(cm.LeadId != null)
+                {
+                   primaryLeadIds.add(cm.LeadId); 
+                }
+                //For each New Primary
+                //If it has a Contact with an Opportunity, update that Opportunity to be Primary
+                //If it has a Lead, update that Lead to be Primary
                 itemsToUpdate.add(cm);
             }
+
             run = FALSE;
             update itemsToUpdate;
+
+            //Update all changed Opportunities and Leads
+            if(contactIdsToFalsify.size() > 0)
+            {
+                List<Opportunity> opps = [SELECT Id, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :contactIdsToFalsify];
+                for(Opportunity o : opps)
+                {
+                    if(o.Primary_Interest__c == TRUE)
+                    {
+                        o.Primary_Interest__c = FALSE;
+                        opportunitiesToUpdate.add(o);
+                    }
+                }
+            }
+
+            if(primaryContactIds.size() > 0)
+            {
+                List<Opportunity> opps = [SELECT Id, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :primaryContactIds];
+                for(Opportunity o : opps)
+                {
+                    if(o.Primary_Interest__c == FALSE)
+                    {
+                        o.Primary_Interest__c = TRUE;
+                        opportunitiesToUpdate.add(o);
+                    }
+                }
+            }
+
+            if(leadIdsToFalsify.size() > 0)
+            {
+                List<Lead> leads = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :leadIdsToFalsify];
+                for(Lead l : leads)
+                {
+                    if(l.Primary_Interest__c == TRUE)
+                    {
+                        l.Primary_Interest__c = FALSE;
+                        leadsToUpdate.add(l);
+                    }
+                }
+            }
+
+            if(parimaryLeadIds.size() > 0)
+            {
+                List<Lead> leads = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :primaryLeadIds];
+                for(Lead l : leads)
+                {
+                    if(l.Primary_Interest__c == FALSE)
+                    {
+                        l.Primary_Interest__c = TRUE;
+                        leadsToUpdate.add(l);
+                    }
+                }
+            }
+
+            if(opportunitiesToUpdate.size() > 0)
+            {
+                update opportunitiesToUpdate;
+            }
+
+            if(leadsToUpdate.size() > 0)
+            {
+                update leadsToUpdate;
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ public class UnifiedProspectPageController
     public String originSelection { get;set; }
     public String eventSearchString { get;set; }
     public Boolean smsText { get;set; }
+    public List<SelectOption> careers;
     public List<Account> instList;
     public List<Campaign> eventList;
     public String career { get; set; }
@@ -181,6 +182,19 @@ public class UnifiedProspectPageController
         return instList;
     }
 
+    public List<SelectOption> getCareers()
+    {
+        if(careers == null)
+        {
+            careers = new List<SelectOption>();
+            careers.add(new SelectOption('--Select--', '--Select--'));
+            careers.add(new SelectOption('undergraduate', 'Undergraduate'));
+            careers.add(new SelectOption('graduate', 'Graduate'));
+            careers.add(new SelectOption('law', 'Law'));
+        }
+        return careers;
+    }
+
     public void instSearch() 
     {
         String instSearchTerm = 'SELECT Id, Name, BillingCity, BillingState, Institution_Type__c FROM Account WHERE Id = ' + instId;
@@ -248,7 +262,12 @@ public class UnifiedProspectPageController
         getC();
         try 
         {
-            if (originSelection != '--Select--' && elId != null) 
+            if(career == '--Select--')
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a career!'));
+                return false; 
+            }
+            else if (originSelection != '--Select--' && elId != null) 
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 return false; 
@@ -325,6 +344,7 @@ public class UnifiedProspectPageController
                 {
                     opportunity.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Graduate Prospect' LIMIT 1].Id;
                 }
+                opportunity.Career__c = career;
 
                 Datetime DatePreString = Datetime.now();
                 String TodayString = DatePreString.format('yyyy-MM-dd');
@@ -502,7 +522,6 @@ public class UnifiedProspectPageController
 
     public PageReference showOpportunityInfo()
     {
-        career = opportunity.Career__c.toLowerCase();
         return null;
     }
 }

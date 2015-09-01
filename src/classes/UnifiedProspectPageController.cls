@@ -1,7 +1,7 @@
 public class UnifiedProspectPageController 
 {
     public Contact contact;
-    public Case c;
+    public Case caseC;
     public CampaignMember camMemInterest;
     public CampaignMember camMemEvent;
     public Opportunity opportunity;
@@ -51,9 +51,9 @@ public class UnifiedProspectPageController
         this.camMemEvent = camMemEvent;
     }
 
-    public void setCase(Case c)
+    public void setCaseC(Case caseC)
     {
-        this.c = c;
+        this.caseC = caseC;
     }
 
     public Contact getContact()
@@ -152,16 +152,16 @@ public class UnifiedProspectPageController
         set;
     }
 
-    public Case getC() 
+    public Case getCaseC() 
     {
-        if (c == null) 
+        if (caseC == null) 
         {
-            c = new Case();
+            caseC = new Case();
+            Id asuAdmissionRecId = [SELECT Id, Name FROM RecordType WHERE Name = 'ASU Admission Services' LIMIT 1].Id;
+            caseC.RecordTypeId = asuAdmissionRecId;
         }
 
-        Id asuAdmissionRecId = [SELECT Id, Name FROM RecordType WHERE Name = 'ASU Admission Services' LIMIT 1].Id;
-        c.RecordTypeId = asuAdmissionRecId;
-        return c;
+        return caseC;
     }
     
     public List<Campaign> getEventList() 
@@ -259,7 +259,7 @@ public class UnifiedProspectPageController
     }
 
     public Boolean save() {
-        getC();
+        getCaseC();
         try 
         {
             if(career == '--Select--')
@@ -282,7 +282,7 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
                 return false;
             }
-            else if (originSelection != '--Select--' && elId == null && c.Functional_Group__c == null) 
+            else if (originSelection != '--Select--' && elId == null && caseC.Functional_Group__c == null) 
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'When selecting an Origin, you must also select a Functional Group.'));
                 return false;
@@ -401,15 +401,14 @@ public class UnifiedProspectPageController
                     camMemEvent.Inbound_Interaction__c = true;
     
                     insert camMemEvent;
-                    System.debug('CAM MEM EVENT ' + camMemEvent);
                 }
                 //Create Case
                 else if (originSelection != '--Select--' && elId == null) 
                 {
-                    c.Id = null;
-                    c.Status = 'Closed: Resolved';
-                    c.ContactId = contact.Id;
-                    c.Opportunity__c = opportunity.Id;
+                    caseC.Id = null;
+                    caseC.Status = 'Closed: Resolved';
+                    caseC.ContactId = contact.Id;
+                    caseC.Opportunity__c = opportunity.Id;
                     if (originSelection == 'Incoming Call') 
                     {
                         if (phoneOrig == null) 
@@ -417,7 +416,7 @@ public class UnifiedProspectPageController
                             Campaign phoneCamp = [SELECT Id FROM Campaign WHERE Name = 'Phone Call' LIMIT 1];
                             if(phoneCamp != null)
                             {
-                                c.Case_Source__c = phoneCamp.Id;
+                                caseC.Case_Source__c = phoneCamp.Id;
                             }
                         }
                     }
@@ -428,7 +427,7 @@ public class UnifiedProspectPageController
                             Campaign emailCamp = [SELECT Id FROM Campaign WHERE Name = 'Email' LIMIT 1];
                             if(emailCamp != null)
                             {
-                                c.Case_Source__c = emailCamp.Id;
+                                caseC.Case_Source__c = emailCamp.Id;
                             }
                         }
                     }
@@ -439,26 +438,26 @@ public class UnifiedProspectPageController
                             Campaign walkCamp = [SELECT Id FROM Campaign WHERE Name = 'Walk In' LIMIT 1];
                             if(walkCamp != null)
                             {
-                                c.Case_Source__c = walkCamp.Id;
+                                caseC.Case_Source__c = walkCamp.Id;
                             }
                         }
                     }
 
-                    c.Origin__c = originSelection;
-                    c.Inbound_Interaction__c = true;
-                    c.Priority = 'Normal';
+                    caseC.Origin__c = originSelection;
+                    caseC.Inbound_Interaction__c = true;
+                    caseC.Priority = 'Normal';
                     String termName = opportunity.Term__c;
 
                     termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
 
-                    if (c.Subject == null && c.Description == null) 
+                    if (caseC.Subject == null && caseC.Description == null) 
                     {
-                        c.Subject = c.Origin__c + ' Submission - ' + termName;
+                        caseC.Subject = caseC.Origin__c + ' Submission - ' + termName;
                     }
-                    insert c;
+                    insert caseC;
                     
                     //Update Opportunity's case with case Id
-                    opportunity.Prospect_Case__c = c.Id;
+                    opportunity.Prospect_Case__c = caseC.Id;
                     update opportunity;
                 }
                 else if (originSelection != '--Select--' && elId != null) 
@@ -518,10 +517,5 @@ public class UnifiedProspectPageController
         {
             return null;
         }
-    }
-
-    public PageReference showOpportunityInfo()
-    {
-        return null;
     }
 }

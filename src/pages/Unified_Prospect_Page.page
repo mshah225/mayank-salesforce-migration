@@ -146,11 +146,9 @@
         <apex:pageBlock id="opportunity_info">
             <apex:pageBlockSection title="Career Selection" collapsible="false" columns="2">
                 <apex:actionRegion>
-                    <!--<apex:inputField value="{!opportunity.Career__c}" required="true" id="career">-->
                     <apex:selectList value="{!career}" size="1" multiselect="false">
                         <apex:selectOptions value="{!careers}" id="career" />
                         <apex:actionSupport event="onchange" 
-                            action="{!showOpportunityInfo}" 
                             rerender="opportunity_info, msgs" 
                             status="careerEvent" />
                         <apex:actionStatus id="careerEvent">
@@ -189,6 +187,13 @@
             <apex:pageBlockSection rendered="{!career == 'graduate' || career == 'law'}" id="temp_block" collapsible="false" columns="2">
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel for="collegeList">College</apex:outputLabel>
+                    <apex:actionRegion>
+                    <div class="requiredBlock"
+                        style="background-color: #c00;
+                                height: 18px;
+                                width: 3px;
+                                float: left;
+                    "></div>
                     <apex:selectList id="collegeList" value="{!collegeSelected}" size="1" required="true">
                         <apex:selectOptions value="{!ProgramList}" />
                         <apex:actionSupport event="onchange" 
@@ -200,6 +205,7 @@
                             </apex:facet>
                         </apex:actionStatus>
                     </apex:selectList>
+                    </apex:actionRegion>
                 </apex:pageBlockSectionItem>
                     
                 <apex:pageBlockSectionItem >
@@ -209,7 +215,9 @@
                     </apex:selectList>
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
+        </apex:pageBlock>
 
+        <apex:pageBlock>
             <apex:pageBlockSection id="sourceEventBlock" title="Select a Case or Event" collapsible="false" columns="1">
                 <apex:tabPanel switchType="client" selectedTab="source" id="theTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab" width="100%">
                     <apex:tab label="Case" name="source" id="sourceTab" >
@@ -226,24 +234,24 @@
                                     </apex:selectList><br /><br />
 
                                     <apex:outputLabel for="cFuncGroup">Functional Group:</apex:outputLabel><br />
-                                    <apex:inputField id="cFuncGroup" value="{!c.Functional_Group__c}"/><br /><br />
+                                    <apex:inputField id="cFuncGroup" value="{!caseC.Functional_Group__c}"/><br /><br />
                                     
-                                    <apex:inputField id="cStatus" value="{!c.Status}" style="display:none;"/>
+                                    <apex:inputField id="cStatus" value="{!caseC.Status}" style="display:none;"/>
 
                                     <apex:outputLabel for="cCate">Category:</apex:outputLabel><br />
-                                    <apex:inputField id="cCate" value="{!c.Category__c}"/><br /><br />
+                                    <apex:inputField id="cCate" value="{!caseC.Category__c}"/><br /><br />
 
                                     <apex:outputLabel for="cSubCate">Sub-Category:</apex:outputLabel><br />
-                                    <apex:inputField id="cSubCate" value="{!c.Sub_Category__c}"/><br /><br />
+                                    <apex:inputField id="cSubCate" value="{!caseC.Sub_Category__c}"/><br /><br />
                                 </td>
                                 <td style="padding-left:20px;border-left:solid 1px #ccc;width:80%;">
                                     <apex:outputText ><b>Notes (Optional):</b></apex:outputText><br /><br />
 
                                     <apex:outputLabel for="cSub">Subject:</apex:outputLabel><br />
-                                    <apex:inputField id="cSub" value="{!c.Subject}" style="width:250px;padding:5px;"/><br /><br />
+                                    <apex:inputField id="cSub" value="{!caseC.Subject}" style="width:250px;padding:5px;"/><br /><br />
 
                                     <apex:outputLabel for="cDesc">Description:</apex:outputLabel><br />
-                                    <apex:inputField id="cDesc" value="{!c.Description}" style="width:250px;height:150px;padding:5px;"/>
+                                    <apex:inputField id="cDesc" value="{!caseC.Description}" style="width:250px;height:150px;padding:5px;"/>
                                 </td>
                             </tr>
                         </table>

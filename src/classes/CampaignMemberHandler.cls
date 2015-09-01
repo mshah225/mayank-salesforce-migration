@@ -23,7 +23,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
         List<CampaignMember> listOfAffectedCMs;
         List<CampaignMember> triggerObjectListContact = new List<CampaignMember>();
         List<CampaignMember> triggerObjectListLead = new List<CampaignMember>();
-		List<CampaignMember> triggerObjectListContactOld = new List<CampaignMember>();
+        List<CampaignMember> triggerObjectListContactOld = new List<CampaignMember>();
         List<CampaignMember> triggerObjectListLeadOld = new List<CampaignMember>();
         Map<Id, String> campaignRecordTypesById = new Map<Id, String>();
 
@@ -35,7 +35,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
         }
         else if(Trigger.isDelete)
         {
-        	listOfAffectedCMs = Trigger.old;
+            listOfAffectedCMs = Trigger.old;
         }
         
         for (Integer x = 0; x < listOfAffectedCMs.size(); x++) 
@@ -52,7 +52,8 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 }
                 contactIds.add(cm.ContactId);
             }
-            else if(cm.LeadId != null)
+            
+            if(cm.LeadId != null)
             {
                 triggerObjectListLead.add(cm);
                 if(Trigger.isUpdate)
@@ -72,7 +73,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
 
         if(Trigger.isInsert || Trigger.isUpdate)
         {
-        	//Get all Opportunities that are linked to the Contacts we are Inserting / Updating, ordered by Created Date
+            //Get all Opportunities that are linked to the Contacts we are Inserting / Updating, ordered by Created Date
             List<Opportunity> OpportunityList = new List<Opportunity>([SELECT Id, Contact__c FROM Opportunity WHERE Contact__c IN :contactIds AND IsClosed = false ORDER BY CreatedDate DESC]);
             
             //If we got any opportunities
@@ -319,11 +320,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
     }
     
     /** 
-	 * bulkAfter
-	 *
-	 * This method is called prior to execution of an AFTER trigger. Use this to cache
-	 * any data required into maps prior execution of the trigger.
-	 */
+     * bulkAfter
+     *
+     * This method is called prior to execution of an AFTER trigger. Use this to cache
+     * any data required into maps prior execution of the trigger.
+     */
     public void bulkAfter() 
     {
         //If we're deleting, get the IDs of the CMs we're deleting
@@ -339,11 +340,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
     }
     
     /**
-	 * beforeInsert
-	 *
-	 * This method is called iteratively for each record to be inserted during a BEFORE
-	 * trigger. Never execute any SOQL/SOSL etc in this and other iterative methods.
-	 */
+     * beforeInsert
+     *
+     * This method is called iteratively for each record to be inserted during a BEFORE
+     * trigger. Never execute any SOQL/SOSL etc in this and other iterative methods.
+     */
     public void beforeInsert(SObject so) 
     {
         CampaignMember cm = (CampaignMember)so;

@@ -199,6 +199,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 theCase.SuppliedName = fname + ' ' + lname;
                 theCase.Status = 'New';
                 theCase.Priority = 'Normal';
+                theCase.Case_Feed_Email__c = replyToAddress;
                 theCase.Case_Feed_Email_Template_Id__c = caseFeedTemplateId;
 
                 // The Queue ID should be set as long as a Cse Assignment Rule was found; just in case, adding
@@ -238,8 +239,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     }
 
                     toAddressConcat = toAddressConcat.subString(0,toAddressConcat.length()-1);
-
-                    theCase.Case_Feed_Email__c = email.toAddresses.get(0);
                 }
 
                 if (email.CCAddresses != null && email.CCAddresses.size() > 0)
@@ -250,11 +249,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     }
 
                     ccAddressConcat = ccAddressConcat.subString(0,ccAddressConcat.length()-1);
-
-                    if (theCase.Case_Feed_Email__c == null)
-                    {
-                        theCase.Case_Feed_Email__c = email.CCAddresses.get(0);
-                    }
                 }
 
                 if (ccAddressConcat != '')

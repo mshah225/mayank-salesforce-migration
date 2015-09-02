@@ -418,7 +418,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         catch (Exception e)
         {
             // Catch any exceptions and create a lost email.
-            generateLostEmail(email, e);
+            String error = e.getMessage() + '\n' + e.getStackTraceString();
+            generateLostEmail(email, error);
         }
 
         return result;
@@ -1104,7 +1105,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     }
 
     // Make this public for unit test access
-    public LostEmail__C generateLostEmail(Messaging.InboundEmail email, Exception error)
+    public LostEmail__C generateLostEmail(Messaging.InboundEmail email, String error)
     {
         loadConfigurationSettings();
 
@@ -1116,7 +1117,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         lostEmail.Subject__c = email.subject;
         lostEmail.PlainTextBody__c = email.plainTextBody;
         lostEmail.HtmlTextBody__c = email.htmlBody;
-        lostEmail.Cause__c = error.getMessage() + '\n' + error.getStackTraceString();
+        lostEmail.Cause__c = error;
 
         // Convert the List into a concatenated string
         String recipientsString = '';

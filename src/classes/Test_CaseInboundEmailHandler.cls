@@ -233,9 +233,10 @@ public with sharing class Test_CaseInboundEmailHandler {
         email.fromName = testContact.FirstName + ' ' + testContact.LastName;
         env.fromAddress = testContact.Email;
 
+        String testError = 'Test error';
         Test.startTest();
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.generateLostEmail(email);
+        emailServiceObj.generateLostEmail(email, testError);
         Test.stopTest();
 
         LostEmail__c expectedLostEmail = new LostEmail__c();
@@ -243,9 +244,10 @@ public with sharing class Test_CaseInboundEmailHandler {
         expectedLostEmail.Subject__c = email.subject;
         expectedLostEmail.Recipient__c = 'example@test.test';
         expectedLostEmail.RejectedAttachments__c = false;
+        expectedLostEmail.Cause__c = testError;
 
         LostEmail__c actualLostEmail = [
-                SELECT Sender__c, Subject__c, PlainTextBody__c, HtmlTextBody__c, Recipient__c, RejectedAttachments__c
+                SELECT Sender__c, Subject__c, PlainTextBody__c, HtmlTextBody__c, Recipient__c, RejectedAttachments__c, Cause__c
                 FROM LostEmail__c
                 LIMIT 1
         ];
@@ -254,6 +256,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals(expectedLostEmail.Subject__c, actualLostEmail.Subject__c, 'Unexpected differences in the LostEmails');
         System.assertEquals(expectedLostEmail.Recipient__c, actualLostEmail.Recipient__c, 'Unexpected differences in the LostEmails');
         System.assertEquals(expectedLostEmail.RejectedAttachments__c, actualLostEmail.RejectedAttachments__c, 'Unexpected differences in the LostEmails');
+        System.assertEquals(expectedLostEmail.Cause__c, actualLostEmail.Cause__c, 'Unexpected differences in the LostEmails');
     }
 
     @isTest static void createLostEmailWithAttachment()
@@ -290,9 +293,10 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         email.textAttachments = new Messaging.inboundEmail.TextAttachment[] { tattachment };
 
+        String testError = 'Test error';
         Test.startTest();
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.generateLostEmail(email);
+        emailServiceObj.generateLostEmail(email, testError);
         Test.stopTest();
 
         LostEmail__c expectedLostEmail = new LostEmail__c();
@@ -300,9 +304,10 @@ public with sharing class Test_CaseInboundEmailHandler {
         expectedLostEmail.Subject__c = email.subject;
         expectedLostEmail.Recipient__c = 'example@test.test';
         expectedLostEmail.RejectedAttachments__c = false;
+        expectedLostEmail.Cause__c = testError;
 
         LostEmail__c actualLostEmail = [
-                SELECT Sender__c, Subject__c, PlainTextBody__c, HtmlTextBody__c, Recipient__c, RejectedAttachments__c
+                SELECT Sender__c, Subject__c, PlainTextBody__c, HtmlTextBody__c, Recipient__c, RejectedAttachments__c, Cause__c
                 FROM LostEmail__c
                 LIMIT 1
         ];
@@ -311,9 +316,11 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals(expectedLostEmail.Subject__c, actualLostEmail.Subject__c, 'Unexpected differences in the LostEmails');
         System.assertEquals(expectedLostEmail.Recipient__c, actualLostEmail.Recipient__c, 'Unexpected differences in the LostEmails');
         System.assertEquals(expectedLostEmail.RejectedAttachments__c, actualLostEmail.RejectedAttachments__c, 'Unexpected differences in the LostEmails');
+        System.assertEquals(expectedLostEmail.Cause__c, actualLostEmail.Cause__c, 'Unexpected differences in the LostEmails');
 
         List<Attachment> attachments = [SELECT Id FROM Attachment WHERE ParentId = :actualLostEmail.Id];
 
+        //
         System.assert(attachments.size() == 2, 'Unexpected number of Attachments for this LostEmail');
     }
 }

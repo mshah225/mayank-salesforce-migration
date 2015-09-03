@@ -190,7 +190,6 @@ public class UnifiedProspectPageController
             careers.add(new SelectOption('--Select--', '--Select--'));
             careers.add(new SelectOption('undergraduate', 'Undergraduate'));
             careers.add(new SelectOption('graduate', 'Graduate'));
-            careers.add(new SelectOption('law', 'Law'));
         }
         return careers;
     }

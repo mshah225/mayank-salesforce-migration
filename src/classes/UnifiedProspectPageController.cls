@@ -262,241 +262,244 @@ public class UnifiedProspectPageController
         getCaseC();
         try 
         {
+            Boolean error = false;
             if(career == '--Select--')
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a career!'));
-                return false; 
+                error = true;
+            }
+            if (originSelection != '--Select--' && elId != null) 
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
+                error = true;
+            }
+            if (originSelection == '--Select--' && elId == null) 
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
+                error = true;
+            }
+            if (pickSelection != null && pickSelection != '--Select--' && selectedInterestId == null) 
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
+                error = true;
+            }
+            if (originSelection != '--Select--' && elId == null && caseC.Functional_Group__c == null) 
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'When selecting an Origin, you must also select a Functional Group.'));
+                error = true;
+            }
+            if(contact.Phone == null && contact.MailingPostalCode == null)
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must provide either a Phone number or a Zip code!'));
+                error = true;
+            }
+            if(career == 'graduate' && collegeSelected == '0')
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a college!'));
+                error = true;
+            }
+            if(error)
+            {
+               return false; 
+            }
+
+            //Create Contact
+            contact.Id = null;
+            contact.SF_First_Name__c = contact.FirstName;
+            contact.SF_First_Name_Updated__c = Datetime.now();
+            contact.SF_Last_Name__c = contact.LastName;
+            contact.SF_Last_Name_Updated__c = Datetime.now();
+            contact.SF_Mobile__c = contact.MobilePhone;
+            Pattern SMSValidate = Pattern.compile('[^0-9]');
+            if (contact.MobilePhone != null && smsText == true) 
+            {
+                contact.SMS_Phone__c = contact.MobilePhone;
+                contact.SMS_Phone__c = SMSValidate.matcher(contact.SMS_Phone__c).replaceAll('');
+            }
+
+            contact.SF_Mobile_Updated__c = Datetime.now();
+            contact.SF_Mailing_Street__c = contact.MailingStreet;
+            contact.SF_Mailing_City__c = contact.MailingCity;
+            contact.SF_Mailing_Country__c = contact.MailingCountryCode;
+            contact.SF_Mailing_State__c = contact.MailingStateCode;
+            contact.SF_Mailing_ZIP__c = contact.MailingPostalCode;
+            contact.SF_Mailing_Address_Updated__c = Datetime.now();
+            contact.SF_Birthdate__c = contact.Birthdate;
+            contact.SF_Birthdate_Updated__c = Datetime.now();
+            
+            Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
+            Integer hasPhone = contact.Phone == null ? 0 : 1;
+            Integer result = hasMailingCode + hasPhone;
+            if (result < 1)
+            {
+               ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.'));
+                return false;
+            }
+
+            insert contact;
+
+            //Create Opportunity
+            opportunity.Id = null;
+            if(career == 'undergraduate')
+            {
+                opportunity.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
+            }
+            else
+            {
+                opportunity.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Graduate Prospect' LIMIT 1].Id;
+            }
+            opportunity.Career__c = career;
+
+            Datetime DatePreString = Datetime.now();
+            String TodayString = DatePreString.format('yyyy-MM-dd');
+            opportunity.Contact__c = contact.id;
+            opportunity.Name = contact.FirstName + ' ' + contact.LastName + ' ' + TodayString;
+            opportunity.CloseDate = Date.Today() + 365;
+            accId = [SELECT AccountId FROM Contact WHERE Id = :Contact.Id][0].AccountId;
+            opportunity.AccountId = accId;
+            opportunity.StageName = 'Prospect';
+            
+            if (contact.Country_of_Citizenship__r.Name == 'United States') 
+            {
+                opportunity.International_Student__c = false;
+            }
+            else if (contact.Country_of_Citizenship__c == null) 
+            {
+                opportunity.International_Student__c = false;
+            }
+            else 
+            {
+                opportunity.International_Student__c = true;
+            }
+
+            if(collegeSelected != null && collegeSelected != '0')
+            {
+               opportunity.College__c = collegeSelected; 
+            }
+            if(planSelected != null && planSelected != '0')
+            {
+               opportunity.Academic_Plan__c = planSelected; 
+            }
+
+            insert opportunity;
+
+            //Create Previous Education
+            getPreviousEducation();
+            if (previousEducation.Account__c != null) 
+            {
+                previousEducation.Id = null;
+                previousEducation.Contact__c = contact.id;
+                insert previousEducation;
+            }
+
+            //Create CampaignMember Event
+            if (elId != null && originSelection == '--Select--') 
+            {
+                getCampaignMemberEvent();
+                camMemEvent.Id = null;
+                camMemEvent.CampaignId = elId;
+                //It appears that this value is not being preserved, but is instead being switched to 'Sent'?
+                camMemEvent.Status = 'Registered';
+                camMemEvent.ContactId = contact.Id;
+                camMemEvent.Opportunity__c = opportunity.Id;
+                camMemEvent.Inbound_Interaction__c = true;
+
+                insert camMemEvent;
+            }
+            //Create Case
+            else if (originSelection != '--Select--' && elId == null) 
+            {
+                caseC.Id = null;
+                caseC.Status = 'Closed: Resolved';
+                caseC.ContactId = contact.Id;
+                caseC.Opportunity__c = opportunity.Id;
+                if (originSelection == 'Incoming Call') 
+                {
+                    if (phoneOrig == null) 
+                    {
+                        Campaign phoneCamp = [SELECT Id FROM Campaign WHERE Name = 'Phone Call' LIMIT 1];
+                        if(phoneCamp != null)
+                        {
+                            caseC.Case_Source__c = phoneCamp.Id;
+                        }
+                    }
+                }
+                else if (originSelection == 'Email') 
+                {
+                    if (emailOrig == null) 
+                    {
+                        Campaign emailCamp = [SELECT Id FROM Campaign WHERE Name = 'Email' LIMIT 1];
+                        if(emailCamp != null)
+                        {
+                            caseC.Case_Source__c = emailCamp.Id;
+                        }
+                    }
+                }
+                else 
+                {
+                    if (walkInOrig == null) 
+                    {
+                        Campaign walkCamp = [SELECT Id FROM Campaign WHERE Name = 'Walk In' LIMIT 1];
+                        if(walkCamp != null)
+                        {
+                            caseC.Case_Source__c = walkCamp.Id;
+                        }
+                    }
+                }
+
+                caseC.Origin__c = originSelection;
+                caseC.Inbound_Interaction__c = true;
+                caseC.Priority = 'Normal';
+                String termName = opportunity.Term__c;
+
+                termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
+
+                if (caseC.Subject == null && caseC.Description == null) 
+                {
+                    caseC.Subject = caseC.Origin__c + ' Submission - ' + termName;
+                }
+                insert caseC;
+                
+                //Update Opportunity's case with case Id
+                opportunity.Prospect_Case__c = caseC.Id;
+                update opportunity;
             }
             else if (originSelection != '--Select--' && elId != null) 
             {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
-                return false; 
+                return false;
             }
             else if (originSelection == '--Select--' && elId == null) 
             {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
-                return false;
-            }
-            else if (pickSelection != null && pickSelection != '--Select--' && selectedInterestId == null) 
-            {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
-                return false;
-            }
-            else if (originSelection != '--Select--' && elId == null && caseC.Functional_Group__c == null) 
-            {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'When selecting an Origin, you must also select a Functional Group.'));
-                return false;
-            }
-            else if(contact.Phone == null && contact.MailingPostalCode == null)
-            {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must provide either a Phone number or a Zip code!'));
-                return false;
-            }
-            else if(career == 'graduate' && collegeSelected == '0')
-            {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a college!'));
                 return false;
             }
             else 
             {
-                //Create Contact
-                contact.Id = null;
-                contact.SF_First_Name__c = contact.FirstName;
-                contact.SF_First_Name_Updated__c = Datetime.now();
-                contact.SF_Last_Name__c = contact.LastName;
-                contact.SF_Last_Name_Updated__c = Datetime.now();
-                contact.SF_Mobile__c = contact.MobilePhone;
-                Pattern SMSValidate = Pattern.compile('[^0-9]');
-                if (contact.MobilePhone != null && smsText == true) 
-                {
-                    contact.SMS_Phone__c = contact.MobilePhone;
-                    contact.SMS_Phone__c = SMSValidate.matcher(contact.SMS_Phone__c).replaceAll('');
-                }
-
-                contact.SF_Mobile_Updated__c = Datetime.now();
-                contact.SF_Mailing_Street__c = contact.MailingStreet;
-                contact.SF_Mailing_City__c = contact.MailingCity;
-                contact.SF_Mailing_Country__c = contact.MailingCountryCode;
-                contact.SF_Mailing_State__c = contact.MailingStateCode;
-                contact.SF_Mailing_ZIP__c = contact.MailingPostalCode;
-                contact.SF_Mailing_Address_Updated__c = Datetime.now();
-                contact.SF_Birthdate__c = contact.Birthdate;
-                contact.SF_Birthdate_Updated__c = Datetime.now();
-                
-                Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
-                Integer hasPhone = contact.Phone == null ? 0 : 1;
-                Integer result = hasMailingCode + hasPhone;
-                if (result < 1)
-                {
-                   ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.'));
-                    return false;
-                }
-
-                insert contact;
-    
-                //Create Opportunity
-                opportunity.Id = null;
-                if(career == 'undergraduate')
-                {
-                    opportunity.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
-                }
-                else
-                {
-                    opportunity.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Graduate Prospect' LIMIT 1].Id;
-                }
-                opportunity.Career__c = career;
-
-                Datetime DatePreString = Datetime.now();
-                String TodayString = DatePreString.format('yyyy-MM-dd');
-                opportunity.Contact__c = contact.id;
-                opportunity.Name = contact.FirstName + ' ' + contact.LastName + ' ' + TodayString;
-                opportunity.CloseDate = Date.Today() + 365;
-                accId = [SELECT AccountId FROM Contact WHERE Id = :Contact.Id][0].AccountId;
-                opportunity.AccountId = accId;
-                opportunity.StageName = 'Prospect';
-                
-                if (contact.Country_of_Citizenship__r.Name == 'United States') 
-                {
-                    opportunity.International_Student__c = false;
-                }
-                else if (contact.Country_of_Citizenship__c == null) 
-                {
-                    opportunity.International_Student__c = false;
-                }
-                else 
-                {
-                    opportunity.International_Student__c = true;
-                }
-
-                if(collegeSelected != null && collegeSelected != '0')
-                {
-                   opportunity.College__c = collegeSelected; 
-                }
-                if(planSelected != null && planSelected != '0')
-                {
-                   opportunity.Academic_Plan__c = planSelected; 
-                }
-
-                insert opportunity;
-    
-                //Create Previous Education
-                getPreviousEducation();
-                if (previousEducation.Account__c != null) 
-                {
-                    previousEducation.Id = null;
-                    previousEducation.Contact__c = contact.id;
-                    insert previousEducation;
-                }
-    
-                //Create CampaignMember Event
-                if (elId != null && originSelection == '--Select--') 
-                {
-                    getCampaignMemberEvent();
-                    camMemEvent.Id = null;
-                    camMemEvent.CampaignId = elId;
-                    //It appears that this value is not being preserved, but is instead being switched to 'Sent'?
-                    camMemEvent.Status = 'Registered';
-                    camMemEvent.ContactId = contact.Id;
-                    camMemEvent.Opportunity__c = opportunity.Id;
-                    camMemEvent.Inbound_Interaction__c = true;
-    
-                    insert camMemEvent;
-                }
-                //Create Case
-                else if (originSelection != '--Select--' && elId == null) 
-                {
-                    caseC.Id = null;
-                    caseC.Status = 'Closed: Resolved';
-                    caseC.ContactId = contact.Id;
-                    caseC.Opportunity__c = opportunity.Id;
-                    if (originSelection == 'Incoming Call') 
-                    {
-                        if (phoneOrig == null) 
-                        {
-                            Campaign phoneCamp = [SELECT Id FROM Campaign WHERE Name = 'Phone Call' LIMIT 1];
-                            if(phoneCamp != null)
-                            {
-                                caseC.Case_Source__c = phoneCamp.Id;
-                            }
-                        }
-                    }
-                    else if (originSelection == 'Email') 
-                    {
-                        if (emailOrig == null) 
-                        {
-                            Campaign emailCamp = [SELECT Id FROM Campaign WHERE Name = 'Email' LIMIT 1];
-                            if(emailCamp != null)
-                            {
-                                caseC.Case_Source__c = emailCamp.Id;
-                            }
-                        }
-                    }
-                    else 
-                    {
-                        if (walkInOrig == null) 
-                        {
-                            Campaign walkCamp = [SELECT Id FROM Campaign WHERE Name = 'Walk In' LIMIT 1];
-                            if(walkCamp != null)
-                            {
-                                caseC.Case_Source__c = walkCamp.Id;
-                            }
-                        }
-                    }
-
-                    caseC.Origin__c = originSelection;
-                    caseC.Inbound_Interaction__c = true;
-                    caseC.Priority = 'Normal';
-                    String termName = opportunity.Term__c;
-
-                    termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1].Term__r.Name;
-
-                    if (caseC.Subject == null && caseC.Description == null) 
-                    {
-                        caseC.Subject = caseC.Origin__c + ' Submission - ' + termName;
-                    }
-                    insert caseC;
-                    
-                    //Update Opportunity's case with case Id
-                    opportunity.Prospect_Case__c = caseC.Id;
-                    update opportunity;
-                }
-                else if (originSelection != '--Select--' && elId != null) 
-                {
-                    return false;
-                }
-                else if (originSelection == '--Select--' && elId == null) 
-                {
-                    return false;
-                }
-                else 
-                {
-                    return false;
-                }
-                
-                //Create CampaignMember Interest
-                if (pickSelection != null && pickSelection != '--Select--') 
-                {
-                    if (selectedInterestId != null) 
-                    {
-                        getCampaignMemberInterest();
-                        camMemInterest.Id = null;
-                        camMemInterest.CampaignId = selectedInterestId;
-                        //This doesn't seem to work either, Status once again is set to 'Sent'
-                        camMemInterest.Status = 'Interested';
-                        camMemInterest.ContactId = contact.Id;
-                        camMemInterest.Opportunity__c = opportunity.Id;
-        
-                        insert camMemInterest;
-                    }
-                    else 
-                    {
-                        ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
-                        return false;
-                    }
-                }
-                //Save success, return true.
-                return true;
+                return false;
             }
+            
+            //Create CampaignMember Interest
+            if (pickSelection != null && pickSelection != '--Select--') 
+            {
+                if (selectedInterestId != null) 
+                {
+                    getCampaignMemberInterest();
+                    camMemInterest.Id = null;
+                    camMemInterest.CampaignId = selectedInterestId;
+                    //This doesn't seem to work either, Status once again is set to 'Sent'
+                    camMemInterest.Status = 'Interested';
+                    camMemInterest.ContactId = contact.Id;
+                    camMemInterest.Opportunity__c = opportunity.Id;
+    
+                    insert camMemInterest;
+                }
+                else 
+                {
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
+                    return false;
+                }
+            }
+            //Save success, return true.
+            return true;
         } 
         catch (Exception e) 
         {

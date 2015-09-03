@@ -79,12 +79,12 @@
     <body>
         <apex:form >
             <apex:pageBlock mode="maindetail">
-                <apex:inputText id="searchBox" value="{!searchString}" style="border-radius:2px;width:100%;max-width:400px;height:20px;" html-placeholder="Enter Search Terms Here" styleClass="form-control">
+                <!--<apex:inputText id="searchBox" value="{!searchString}" style="border-radius:2px;width:100%;max-width:400px;height:20px;" html-placeholder="Enter Search Terms Here" styleClass="form-control">
                     <apex:actionSupport event="onkeyup" action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()"/>
-                </apex:inputText>
-                
-                <!--<apex:commandButton action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()" value="Search" id="submitButton" styleClass="myBtn"/>
-                <apex:commandButton value="Reset" action="{!clear}" reRender="list" status="actStatusId" styleClass="myBtn" oncomplete="tableSort()"/>-->
+                </apex:inputText>-->
+                <apex:inputText id="searchBox" value="{!searchString}" style="border-radius:2px;width:100%;max-width:400px;height:20px;" html-placeholder="Enter Search Terms Here" styleClass="form-control" />
+                <apex:commandButton action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()" value="Search" id="submitButton" styleClass="myBtn"/>
+                <apex:commandButton value="Reset" action="{!clear}" reRender="list" status="actStatusId" styleClass="myBtn" oncomplete="tableSort()"/>
                 
                 <apex:commandButton id="clearBox" styleClass="clearBtn" onclick="this.form.reset()" value="X" reRender="clearBox"/>
                 <br /><br /><small><i>Search for User Id, Name, Profile Name, Contact Name, Contact Id, EmplId, ASURITE Id, Alias, Federation Id, or ASU User Type</i></small>

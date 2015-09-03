@@ -7,8 +7,16 @@ public without sharing class CampaignMemberHandler implements ITrigger
     Set<Id> cmIds2 = new Set<Id>();
     Set<CampaignMember> objectsToFalsify = new Set<CampaignMember>();
     Set<CampaignMember> primaries = new Set<CampaignMember>();
+    List<Id> contactIdsToFalsify = new List<Id>();
+    List<Id> leadIdsToFalsify = new List<Id>();
+
+    List<Id> primaryContactIds = new List<Id>();
+    List<Id> primaryLeadIds = new List<Id>();
+
+    List<Lead> leadsToUpdate = new List<Lead>();
+    List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
     private static Boolean run = true;
-    
+
     /**
      * bulkBefore
      *
@@ -331,11 +339,147 @@ public without sharing class CampaignMemberHandler implements ITrigger
         if (Trigger.IsDelete) 
         {
             cmIds = Trigger.oldMap.keySet();
+            for(Id i : cmIds)
+            {
+                CampaignMember cm = (CampaignMember) Trigger.oldMap.get(i);
+                if(cm.ContactId != null)
+                {
+                    contactIdsToFalsify.add(cm.ContactId);
+                }
+                if(cm.LeadId != null)
+                {
+                    leadIdsToFalsify.add(cm.LeadId);
+                }
+            }
         }
         //Else, get the IDs of the CMs we're inserting / updating / whatever
         else
         {
             cmIds = Trigger.newMap.keySet();
+            for(Id i : cmIds)
+            {
+                CampaignMember cm = (CampaignMember) Trigger.newMap.get(i);
+                if(cm.Is_Primary_Interest__c == TRUE)
+                {
+                    if(cm.ContactId != null)
+                    {
+                        primaryContactIds.add(cm.ContactId);
+                    }
+                    if(cm.LeadId != null)
+                    {
+                        primaryLeadIds.add(cm.LeadId);
+                    } 
+                }
+                else
+                {
+                    if(cm.ContactId != null)
+                    {
+                        contactIdsToFalsify.add(cm.ContactId);
+                    }
+                    if(cm.LeadId != null)
+                    {
+                        leadIdsToFalsify.add(cm.LeadId);
+                    }
+                }
+            }
+        }
+
+        //Update all changed Opportunities and Leads
+        if(contactIdsToFalsify.size() > 0)
+        {
+            List<Opportunity> opps = [SELECT Id, Contact__c, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :contactIdsToFalsify];
+
+            for(Opportunity o : opps)
+            {
+                if(o.Primary_Interest__c != null)
+                {
+                    o.Primary_Interest__c = null;
+                    opportunitiesToUpdate.add(o);
+                }
+            }
+        }
+
+        System.debug([SELECT Id, ContactId FROM CampaignMember WHERE Campaign_Type__c = 'PSMajors']);
+
+        if(primaryContactIds.size() > 0)
+        {
+            List<Opportunity> opps = [SELECT Id, Contact__c, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :primaryContactIds];
+            System.debug('OPPS: ' + opps);
+            List<Id> opportunityContactIds = new List<Id>();
+
+            for(Opportunity o : opps)
+            {
+                opportunityContactIds.add(o.Contact__c);
+            }
+            System.debug('OPPORTUNITY CONTACT IDS: ' + opportunityContactIds);
+
+            Map<Id, Id> cmIDsByContactIds = new Map<Id, Id>();
+            List<CampaignMember> opportunityCMs = [SELECT ContactId, CampaignId, Id FROM CampaignMember Where ContactId IN :opportunityContactIds];
+            System.debug('OPPORTUNITY CMS: ' + opportunityCMs);
+            for(CampaignMember cm : opportunityCMs)
+            {
+                cmIDsByContactIds.put(cm.ContactId, cm.CampaignId);
+            }
+            System.debug('CM IDS BY CONTACT IDS: ' + cmIDsByContactIds);
+
+            for(Opportunity o : opps)
+            {
+                if(o.Primary_Interest__c == null)
+                {
+                    o.Primary_Interest__c = cmIDsByContactIds.get(o.Contact__c);
+                    opportunitiesToUpdate.add(o);
+                }
+            }
+        }
+
+        if(leadIdsToFalsify.size() > 0)
+        {
+            List<Lead> leads = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :leadIdsToFalsify];
+            for(Lead l : leads)
+            {
+                if(l.Primary_Interest__c != null)
+                {
+                    l.Primary_Interest__c = null;
+                    leadsToUpdate.add(l);
+                }
+            }
+        }
+
+        if(primaryLeadIds.size() > 0)
+        {
+            List<Lead> leads = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :primaryLeadIds];
+            List<Id> leadIds = new List<Id>();
+
+            for(Lead l : leads)
+            {
+                leadIds.add(l.Id);
+            }
+
+            Map<Id, Id> cmIDsByLeadIds = new Map<Id, Id>();
+            List<CampaignMember> leadCMs = [SELECT LeadId, CampaignId, Id FROM CampaignMember Where LeadId IN :leadIds];
+            for(CampaignMember cm : leadCMs)
+            {
+                cmIDsByLeadIds.put(cm.LeadId, cm.CampaignId);
+            }
+
+            for(Lead l : leads)
+            {
+                if(l.Primary_Interest__c == null)
+                {
+                    l.Primary_Interest__c = cmIDsByLeadIds.get(l.Id);
+                    leadsToUpdate.add(l);
+                }
+            }
+        }
+
+        if(opportunitiesToUpdate.size() > 0)
+        {
+            update opportunitiesToUpdate;
+        }
+
+        if(leadsToUpdate.size() > 0)
+        {
+            update leadsToUpdate;
         }
     }
     
@@ -462,7 +606,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
 */
     public void andFinally() 
     {
-        /*Set<Id> interestOpportunityIds = new Set<Id>();
+        Set<Id> interestOpportunityIds = new Set<Id>();
         Set<Id> interestContactIds = new Set<Id>();
         Set<Id> interestLeadIds = new Set<Id>();
         Set<Id> nationalMeritContactIds = new Set<Id>();
@@ -470,10 +614,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
         Map<Id, List<CampaignMember>> interestRecordsByContactOrLeadMap = new Map<Id, List<CampaignMember>>(); 
         List<Opportunity> interestOpportunities = new List<Opportunity>();
         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
-        List<CampaignMember> campaignMembersToUpdate = new List<CampaignMember>();
-        
-        List<Lead> interestLeads = new List<Lead>();
-        List<Lead> leadsToUpdate = new List<Lead>();
         
         //Get all Interest / Scholarship CMs from the list that is being affected
         List<CampaignMember> cmList = new List<CampaignMember>([SELECT Id, CampaignId, Opportunity__c, ContactId, LeadId, Campaign.RecordType.DeveloperName FROM CampaignMember WHERE Id IN :cmIds AND Campaign.RecordType.DeveloperName IN ('Interest', 'Scholarship')]);
@@ -488,10 +628,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
             if (cm.ContactId != null)
             {
                 interestContactIds.add(cm.ContactId);
-            }
-            if (cm.LeadId != null)
-            {
-                interestLeadIds.add(cm.LeadId);
             }
         }
         
@@ -527,49 +663,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                                                            WHERE Id IN :interestOpportunityIds]);
         }
 
-        if(interestContactIds.size() > 0 || interestLeadIds.size() > 0)
-        {
-            interestLeads = new List<Lead>([SELECT Id, primary_interest__c, primary_interest__r.Type 
-                                            FROM Lead 
-                                            WHERE Id IN :interestLeadIds]);
-            
-            //Get all Interest CMs for those Contacts / Leads, ordered by Last Member Status Change
-            //Note that these may include CMs that we're not affecting in this trigger!
-            List<CampaignMember> allCmList = new List<CampaignMember>([SELECT Id, Status, ContactId, LeadId, CampaignId, Campaign.Type, CreatedDate 
-                                                                       FROM CampaignMember 
-                                                                       WHERE (ContactId IN :interestContactIds OR LeadId IN :interestLeadIds) 
-                                                                       AND Campaign.Type IN ('PSMajors', 'Academic', 'ASU College', 'Degree Search by Interest') 
-                                                                       AND Campaign.RecordType.DeveloperName = 'Interest' 
-                                                                       AND Status = 'Interested' 
-                                                                       ORDER BY Last_Member_Status_Change__c DESC]);
-            
-            //Parse the CMs up into lists by their Contact / Lead. This will remain ordered by Last Member Status Change
-            for (CampaignMember cm: allCmList)
-            {
-                if (interestRecordsByContactOrLeadMap.containsKey(cm.ContactId))
-                {
-                    interestRecordsByContactOrLeadMap.get(cm.ContactId).add(cm);
-                }
-                else if (interestRecordsByContactOrLeadMap.containsKey(cm.LeadId)) 
-                {
-                    interestRecordsByContactOrLeadMap.get(cm.LeadId).add(cm);
-                }
-                else 
-                {
-                    List<CampaignMember> mapCmList = new List<CampaignMember>();
-                    mapCmList.add(cm);
-                    if (cm.ContactId != null) 
-                    {
-                        interestRecordsByContactOrLeadMap.put(cm.ContactId, mapCmList);
-                    }
-                    else if (cm.LeadId != null) 
-                    {
-                        interestRecordsByContactOrLeadMap.put(cm.LeadId, mapCmList);
-                    }
-                }
-            }
-        }
-        
         //For each Opportunity attached to the CMs we are affecting
         for (Opportunity o: interestOpportunities) 
         {
@@ -585,42 +678,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 updateOpportunity = true;
             }
             
-            List<CampaignMember> oppCmList;
-            //If this Opportunity's Contact has Campaign Members that were affected by this trigger's change, get those CMs
-            if (interestRecordsByContactOrLeadMap.containsKey(o.Contact__c)) 
-            {
-                oppCmList = interestRecordsByContactOrLeadMap.get(o.Contact__c);
-            }
-            
-            //If we have affected CMs
-            if (oppCmList != null && oppCmList.size() > 0) 
-            {
-                Id interestCampaignId;
-                //Go through each of the CMs on the opportunity's Contact and see if any are PSMajors. We always take the first one as it's the most recently changed.
-                for (CampaignMember cm: oppCmList) 
-                {
-                    if (cm.Campaign.Type == 'PSMajors') 
-                    {
-                        interestCampaignId = cm.CampaignId;
-                        break;
-                    }
-                }
-
-                // If we did not find a PSMajors Interest record, use the most recent Interest in the list as a whole (doesn't matter if it's not a PSMajor)
-                if (interestCampaignId == null)
-                {
-                    interestCampaignId = oppCmList[0].CampaignId;
-                }
-                
-                //We now have the primary interest CM for the Opportunity
-                //If the primary Interest record we found isn't already set on the Opportunity, it's time to update it
-                if (interestCampaignId != null && o.Primary_Interest__c != interestCampaignId) 
-                {
-                    o.Primary_Interest__c = interestCampaignId;
-                    updateOpportunity = true;
-                }
-            }
-            
             if (updateOpportunity)
             {
                 opportunitiesToUpdate.add(o);
@@ -632,63 +689,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
         {
             update opportunitiestoUpdate;
         }
-        
-        //For each Lead attached to the CMs we are affecting
-        for (Lead l: interestLeads) 
-        {
-            List<CampaignMember> leadCmList;
-            
-            //If this Lead has Campaign Members that were affected by this trigger's change, get those CMs
-            if (interestRecordsByContactOrLeadMap.containsKey(l.Id)) 
-            {
-                leadCmList = interestRecordsByContactOrLeadMap.get(l.Id);
-            }
-            
-            //If we have affected CMs 
-            if (leadCmList != null && leadCmList.size() > 0) 
-            {
-                Id interestCampaignId;
-                
-                //Get the ID of the Campaign of the first PSMajor Interest CM (i.e. the most recently changed)
-                for (CampaignMember cm: leadCmList) 
-                {
-                    if (cm.Campaign.Type == 'PSMajors') 
-                    {
-                        interestCampaignId = cm.CampaignId;
-                        break;
-                    }
-                }
-                
-                // If we did not find a PSMajors Interest record, use the most recent Interest in the list as a whole
-                if (interestCampaignId == null)
-                {
-                    interestCampaignId = leadCmList[0].CampaignId;
-                }
-                
-                //We now have the primary interest CM for the Lead 
-                // If the Interest record we found isn't already set on the Lead, it's time to update it
-                if (interestCampaignId != null && l.Primary_Interest__c != interestCampaignId) 
-                {
-                    l.Primary_Interest__c = interestCampaignId;
-                    leadsToUpdate.add(l);
-                }
-            }
-        }
-        
-        //Update the Leads if we need to
-        if (leadsToUpdate.size() > 0) 
-        {
-            update leadsToUpdate;
-        }*/
-
-        List<Id> contactIdsToFalsify = new List<Id>();
-        List<Id> leadIdsToFalsify = new List<Id>();
-
-        List<Id> primaryContactIds = new List<Id>();
-        List<Id> primaryLeadIds = new List<Id>();
-
-        List<Lead> leadsToUpdate = new List<Lead>();
-        List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
 
         if(objectsToFalsify.size() > 0 || primaries.size() > 0)
         {
@@ -705,11 +705,10 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 {
                    leadIdsToFalsify.add(cm.LeadId); 
                 }
-                //For each Old Primary
-                //If it has a Contact with an Opportunity, update that Opportunity to not be Primary
-                //If it has a Lead, update that Lead to not be Primary
+                //For each Old Primary //If it has a Contact with an Opportunity, update that Opportunity to not be Primary //If it has a Lead, update that Lead to not be Primary
                 itemsToUpdate.add(cm);
             }
+
             for(CampaignMember cm : primaries)
             {
                 cm.Is_Primary_Interest__c = TRUE;
@@ -734,25 +733,46 @@ public without sharing class CampaignMemberHandler implements ITrigger
             //Update all changed Opportunities and Leads
             if(contactIdsToFalsify.size() > 0)
             {
-                List<Opportunity> opps = [SELECT Id, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :contactIdsToFalsify];
+                List<Opportunity> opps = [SELECT Id, Contact__c, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :contactIdsToFalsify];
+
                 for(Opportunity o : opps)
                 {
-                    if(o.Primary_Interest__c == TRUE)
+                    if(o.Primary_Interest__c != null)
                     {
-                        o.Primary_Interest__c = FALSE;
+                        o.Primary_Interest__c = null;
                         opportunitiesToUpdate.add(o);
                     }
                 }
             }
 
+            System.debug([SELECT Id, ContactId FROM CampaignMember WHERE Campaign_Type__c = 'PSMajors']);
+
             if(primaryContactIds.size() > 0)
             {
-                List<Opportunity> opps = [SELECT Id, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :primaryContactIds];
+                List<Opportunity> opps = [SELECT Id, Contact__c, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :primaryContactIds];
+                System.debug('OPPS: ' + opps);
+                List<Id> opportunityContactIds = new List<Id>();
+
                 for(Opportunity o : opps)
                 {
-                    if(o.Primary_Interest__c == FALSE)
+                    opportunityContactIds.add(o.Contact__c);
+                }
+                System.debug('OPPORTUNITY CONTACT IDS: ' + opportunityContactIds);
+
+                Map<Id, Id> cmIDsByContactIds = new Map<Id, Id>();
+                List<CampaignMember> opportunityCMs = [SELECT ContactId, Id FROM CampaignMember Where ContactId IN :opportunityContactIds];
+                System.debug('OPPORTUNITY CMS: ' + opportunityCMs);
+                for(CampaignMember cm : opportunityCMs)
+                {
+                    cmIDsByContactIds.put(cm.ContactId, cm.Id);
+                }
+                System.debug('CM IDS BY CONTACT IDS: ' + cmIDsByContactIds);
+
+                for(Opportunity o : opps)
+                {
+                    if(o.Primary_Interest__c == null)
                     {
-                        o.Primary_Interest__c = TRUE;
+                        o.Primary_Interest__c = cmIDsByContactIds.get(o.Contact__c);
                         opportunitiesToUpdate.add(o);
                     }
                 }
@@ -763,22 +783,36 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 List<Lead> leads = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :leadIdsToFalsify];
                 for(Lead l : leads)
                 {
-                    if(l.Primary_Interest__c == TRUE)
+                    if(l.Primary_Interest__c != null)
                     {
-                        l.Primary_Interest__c = FALSE;
+                        l.Primary_Interest__c = null;
                         leadsToUpdate.add(l);
                     }
                 }
             }
 
-            if(parimaryLeadIds.size() > 0)
+            if(primaryLeadIds.size() > 0)
             {
                 List<Lead> leads = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :primaryLeadIds];
+                List<Id> leadIds = new List<Id>();
+
                 for(Lead l : leads)
                 {
-                    if(l.Primary_Interest__c == FALSE)
+                    leadIds.add(l.Id);
+                }
+
+                Map<Id, Id> cmIDsByLeadIds = new Map<Id, Id>();
+                List<CampaignMember> leadCMs = [SELECT LeadId, Id FROM CampaignMember Where LeadId IN :leadIds];
+                for(CampaignMember cm : leadCMs)
+                {
+                    cmIDsByLeadIds.put(cm.LeadId, cm.Id);
+                }
+
+                for(Lead l : leads)
+                {
+                    if(l.Primary_Interest__c == null)
                     {
-                        l.Primary_Interest__c = TRUE;
+                        l.Primary_Interest__c = cmIDsByLeadIds.get(l.Id);
                         leadsToUpdate.add(l);
                     }
                 }

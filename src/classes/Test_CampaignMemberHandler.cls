@@ -138,12 +138,15 @@ public class Test_CampaignMemberHandler {
         Test.stopTest();
 
         List<CampaignMember> cmListNew = new List<CampaignMember>([SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp.Id]);
+        System.debug('NEW CM LIST: ' + cmListNew);
         for (CampaignMember cm: cmListNew) 
         {
         	system.assert(cm.Opportunity__c != null);
         }
 
-        List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
+
+        List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
+        System.debug('NEW OPP LIST: ' + newOppList);
         for (Opportunity o: newOppList) 
         {
         	system.assertEquals(camp.Id, o.primary_interest__c);

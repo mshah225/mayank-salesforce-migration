@@ -2,9 +2,9 @@
     showHeader="false"
     sidebar="false"
     controller="ServiceCenter"
-    extensions="ViewAllArticlesController,NavLinks">
+    extensions="vfListPaginationController,NavLinks">
 <head>
-    <title>My ASU | Search For Articles</title>
+    <title>My ASU | Article Search</title>
     <c:asu_responsive_header_section />
 
     <script>
@@ -100,91 +100,160 @@
                         </div>
 
                         <div class="content box-padding" id="search_content">
-                            <apex:form id="autoCompleteForm" styleClass="searchKB">
+                            <apex:form id="searchForm" styleClass="searchKB">
                                 <apex:pageBlock mode="maindetail">
-                                    <p>Search for any issue or question to learn how ASU can help!</p><br />
+                                    <p>Search for any issue or question to learn how ASU can help!</p>
+                                    <br />
                                     <div class="searchKB2">
                                         <div class="form-horizontal">
                                             <apex:inputText id="articleTextBoxId"
                                                             value="{!searchstring}"
                                                             styleClass="searchBox"
-                                                html-placeholder="What would you like to know?"/>
+                                                            html-placeholder="Enter search terms"
+                                                            html-pattern=".{2,}"
+                                                            required="true"
+                                                            title="Please enter a minimum of 2
+                                                            characters"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!checkSearchString}"
+                                                                action="{!startSearch}"
                                                                 id="submitButton"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
-                                                                oncomplete="viewAsLinks()"
-                                                                status="KBSearchStatus"/>
+                                                                oncomplete="viewAsLinks()"/>
 
                                             <apex:commandButton value="Clear"
                                                                 styleClass="kbbtn searchBtn"
                                                                 style="width:37px;"
                                                                 action="{!clearSearchString}"/>
-
-                                            <apex:actionStatus id="KBSearchStatus">
-                                                <apex:facet name="start">
-                                                    <img src="/img/loading.gif"
-                                                         style="position:absolute;margin-left:-125px;margin-top:6px;"/>
-                                                </apex:facet>
-                                            </apex:actionStatus>
                                         </div>
                                     </div>
                                 </apex:pageBlock>
                             </apex:form>
                             <br />
-                            <hr />
                             <apex:form id="theSearchResults">
-                                <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
-                                    <h5><b>Results for:</b> '{!searchstring}'</h5>
-                                    <div style="height:5px;"></div>
-                                    <knowledge:articleList articleVar="article"
-                                                           Keyword="{!searchstring}"
-                                                           pageSize="20">
-                                        <table>
-                                            <tr>
-                                                <td style="vertical-align:top;">
-                                                    &#8226;&nbsp;
-                                                </td>
-                                                <td>
-                                                    <apex:outputLink value="/akb?id={!article.Id}">
-                                                        {!article.Title}
-                                                    </apex:outputLink>
-                                                    <br />
-                                                    <apex:outputText value="Date Updated: " />
-                                                    <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
-                                                        <apex:param value="{!article
-                                                        .LastModifiedDate}" />
-                                                    </apex:outputText>
-                                                    <br />
-                                                    <div style="height:15px;"></div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </knowledge:articleList>
+                                <apex:pageBlock id="searchResults"
+                                                mode="maindetail"
+                                                rendered="{!searchstring != ''}">
                                     <br />
-                                    <button class="btn kbbtn"
-                                            data-toggle="modal"
-                                            data-target="#suggestAnArticle">
-                                        Suggest An Article
-                                    </button>
+                                    <apex:outputPanel rendered="{!maxSize != 0}">
+                                        <h5><b>Showing {!lowListNum}-{!highListNum} of
+                                                {!maxSize} results for '{!searchstring}'</b></h5>
+                                    </apex:outputPanel>
+
+                                    <apex:outputText rendered="{!maxSize == 0}">
+                                        <h5><b>No results found for '{!searchstring}'</b></h5>
+                                    </apex:outputText>
+                                    <hr style="margin-top:5px;"/>
+                                    <apex:repeat value="{!articleList}" var="kav">
+                                        <apex:dataTable value="{!kav}"
+                                                        var="article"
+                                                        style="padding-left:18px;width:100%;"
+                                                        styleClass="list-group">
+                                            <apex:column styleClass="list-group-item">
+                                                <apex:outputLink value="/akb?id={!article
+                                                .KnowledgeArticleId}&source=viewAllArticles">
+                                                        <b>{!article.Title}</b>
+                                                </apex:outputLink>
+                                                <br />
+                                                <apex:outputText value="Date Updated: " />
+                                                <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                                    <apex:param value="{!article.LastModifiedDate}" />
+                                                </apex:outputText>
+                                            </apex:column>
+                                        </apex:dataTable>
+                                    </apex:repeat>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <nav>
+                                                <ul class="pagination" style="display:inline;">
+                                                    <li class="{!IF(prevRequired = true, '','disabled')}">
+                                                        <apex:commandLink action="{!previous}"
+                                                                          reRender="searchResults"
+                                                                          status="KBSearchStatus"
+                                                                          rendered="{!IF(prevRequired =
+                                                                      true, true,'false')}">
+                                                        <span class="glyphicon
+                                                              glyphicon-chevron-left"
+                                                              style="color:#990033;"></span>
+                                                        </apex:commandLink>
+
+                                                        <apex:outputLink rendered="{!IF(prevRequired =
+                                                                     true, false, true)}"
+                                                                         disabled="true"
+                                                                         value="#/">
+                                                        <span class="glyphicon
+                                                              glyphicon-chevron-left"
+                                                              style="color:#ccc;"></span>
+                                                        </apex:outputLink>
+                                                    </li>
+                                                    <li>
+                                                    <span style="color:white;
+                                                    background-color:#333;border: solid 1px
+                                                    #333;">
+                                                            {!pageNumber}
+                                                    </span>
+                                                    </li>
+                                                    <li class="{!IF(nextRequired = true,
+                                                          '','disabled')}">
+                                                        <apex:commandLink action="{!next}"
+                                                                          reRender="searchResults"
+                                                                          status="KBSearchStatus"
+                                                                          rendered="{!IF(nextRequired =
+                                                                      true, true,'false')}">
+                                                        <span class="glyphicon
+                                                              glyphicon-chevron-right"
+                                                              style="color:#990033;"></span>
+                                                        </apex:commandLink>
+
+                                                        <apex:outputLink rendered="{!IF(nextRequired =
+                                                                     true, false, true)}"
+                                                                         disabled="true"
+                                                                         value="#/">
+                                                        <span class="glyphicon
+                                                              glyphicon-chevron-right"
+                                                              style="color:#ccc;"></span>
+                                                        </apex:outputLink>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+
+                                            <div class="pull-right visible-sm visible-md
+                                        visible-lg">
+                                                <button class="btn kbbtn"
+                                                        data-toggle="modal"
+                                                        data-target="#suggestAnArticle">
+                                                    Suggest An Article
+                                                </button>
+                                            </div>
+
+                                            <div class="pull-left visible-xs"
+                                                 style="clear:both;margin-top:20px;">
+                                                <button class="btn kbbtn"
+                                                        data-toggle="modal"
+                                                        data-target="#suggestAnArticle">
+                                                    Suggest An Article
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </apex:pageBlock>
 
                                 <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
-                                    <h5><b>Popular Articles</b></h5>
-                                    <div style="height:5px;"></div>
+                                    <br />
+                                    <h5><b>Popular Help Articles</b></h5>
+                                    <hr style="margin-top:5px;"/>
                                     <knowledge:articleList articleVar="article"
                                                            sortBy="mostViewed"
                                                            pageSize="20">
-                                        <table>
-                                            <tr>
-                                                <td style="vertical-align:top;">
-                                                    &#8226;&nbsp;
-                                                </td>
+                                        <table class="list-group" style="width:100%;
+                                        margin-bottom:0px;">
+                                            <tr class="list-group-item">
                                                 <td>
-                                                    <apex:outputLink value="/akb?id={!article.id}">
-                                                        {!article.title}
+                                                    <apex:outputLink value="/akb?id={!article
+                                                    .id}&source=viewAllArticles">
+                                                        <b>{!article.title}</b>
                                                     </apex:outputLink>
                                                     <br />
                                                     <apex:outputText value="Date Updated: " />
@@ -192,8 +261,6 @@
                                                         <apex:param value="{!article
                                                         .LastModifiedDate}" />
                                                     </apex:outputText>
-                                                    <br />
-                                                    <div style="height:15px;"></div>
                                                 </td>
                                             </tr>
                                         </table>

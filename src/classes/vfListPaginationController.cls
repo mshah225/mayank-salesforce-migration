@@ -1,18 +1,40 @@
 public with sharing class vfListPaginationController
 {
-    private final Integer PAGE_SIZE = 10;
+    private Integer PAGE_SIZE;
     private String baseQuery;
     public Integer pageNumber = 1;
     public Integer maxSize { get; set; }
-    public List<KnowledgeARticleVersion> articleList { get; set; }
+    public List<List<KnowledgeARticleVersion>> articleList { get; set; }
+    public List<List<KnowledgeArticleVersion>> sizeQuery;
     public String searchstring { get; set; }
     public Integer lowListNum { get; set; }
     public Integer highListNum { get; set; }
     public Decimal maxPages { get; set; }
 
-    public vfListPaginationController() { }
-    public vfListPaginationController(ServiceCenter controller) { }
+    public vfListPaginationController() { setUp(); }
+    public vfListPaginationController(ServiceCenter controller) { setUp(); }
     public vfListPaginationController(AKBController controller) { }
+
+    public void setUp()
+    {
+        String strurl = ApexPages.currentPage().getUrl();
+        strurl = strurl.split('apex/')[1];
+        if (strurl.contains('viewAllArticles'))
+        {
+            PAGE_SIZE = 20;
+        }
+        else
+        {
+            PAGE_SIZE = 10;
+        }
+
+        String q = ApexPages.currentPage().getParameters().get('q');
+        if (q != null)
+        {
+            searchString = q;
+            articleSearch();
+        }
+    }
 
     public Integer getPageSize() { return PAGE_SIZE; }
     public Integer getPageNumber() { return pageNumber; }
@@ -33,53 +55,47 @@ public with sharing class vfListPaginationController
         return null;
     }
 
-    public void articleSearch() {
-        if (searchstring.length() > 99) {
+    public void articleSearch()
+    {
+        if (searchstring.length() > 99)
+        {
             searchstring = searchstring.substring(0, 99);
         }
 
-        String[] queryArray = searchstring.split(' ');
-        System.debug('!!!!!!!String array size: ' + queryArray.size());
-        String queryString = '';
-        if (queryArray.size() > 1)
-        {
-            Boolean firstRun = true;
-            for (String s: queryArray)
-            {
-                if (firstRun)
-                {
-                    s = 'WHERE (Title LIKE \'%' + String.escapeSingleQuotes(s) + '%\'';
-                }
-                else
-                {
-                    s = 'OR Title LIKE \'%' + String.escapeSingleQuotes(s) + '%\'';
-                }
-
-                queryString = queryString + s;
-                firstRun = false;
-            }
-        }
-        else
-        {
-            queryString = 'WHERE (Title LIKE \'%' + String.escapeSingleQuotes(searchstring) + '%\'';
-        }
-
-        baseQuery  = 'SELECT Id, Title, UrlName, LastPublishedDate, LastModifiedById ' +
-                     'FROM KnowledgeArticleVersion ' +
-                     queryString + ')' +
-                     'AND (PublishStatus = \'online\' AND Language = \'en_US\')';
-        System.debug('!!!!Query ' + baseQuery);
-        maxSize = Database.query(baseQuery).size();
-
+        maxSize = 0;
+        String queryString = String.escapeSingleQuotes(searchstring);
         Integer offsetNum = (pageNumber - 1) * PAGE_SIZE;
-        String query = baseQuery + ' LIMIT ' + PAGE_SIZE + ' OFFSET ' + offsetNum;
+
+        baseQuery = 'FIND \'*' + queryString + '*\'' +
+                    'IN ALL FIELDS ' +
+                    'RETURNING KnowledgeArticleVersion (Id, KnowledgeArticleId, ' +
+                        'Title, LastModifiedDate ' +
+                    'WHERE PublishStatus = \'Online\' AND Language = \'en_US\')';
+        sizeQuery = Search.query(baseQuery);
+
+        for (List<KnowledgeArticleVersion> kav : sizeQuery)
+        {
+            maxSize = maxSize + kav.size();
+        }
 
         String strMaxSize = maxSize.format();
         String strPAGE_SIZE = PAGE_SIZE.format();
-        maxPages = Math.ceil(Decimal.valueOf(strMaxSize)/Decimal.valueOf(strPAGE_SIZE));
+        maxPages = Math.ceil(Decimal.valueOf(strMaxSize) / Decimal.valueOf(strPAGE_SIZE));
 
-        lowListNum = offsetNum + 1;
-        if (pageNumber == maxPages)
+        if (maxSize == 0)
+        {
+            lowListNum = 0;
+        }
+        else
+        {
+            lowListNum = offsetNum + 1;
+        }
+
+        if (maxSize == 0)
+        {
+            highListNum = 0;
+        }
+        else if (pageNumber == maxPages)
         {
             highListNum = maxSize;
         }
@@ -88,16 +104,17 @@ public with sharing class vfListPaginationController
             highListNum = pageNumber * PAGE_SIZE;
         }
 
-        searchstring = searchstring.capitalize();
+        baseQuery = 'FIND \'*' + queryString + '*\'' +
+                    'IN ALL FIELDS ' +
+                    'RETURNING KnowledgeArticleVersion (Id, KnowledgeArticleId, ' +
+                        'Title, LastModifiedDate ' +
+                    'WHERE PublishStatus = \'Online\' AND Language = \'en_US\' ' +
+                    'LIMIT ' + PAGE_SIZE + 'OFFSET ' + offsetNum + ')';
 
-        try
-        {
-            articleList = Database.query(query);
-        }
-        catch (Exception e)
-        {
-            ApexPages.addMessages(e);
-        }
+        System.debug('!!!!Query ' + baseQuery);
+        articleList = Search.query(baseQuery);
+
+        searchstring = searchstring.capitalize();
     }
 
     public void startSearch()
@@ -129,5 +146,10 @@ public with sharing class vfListPaginationController
         viewAllArts.setRedirect(true);
 
         return viewAllArts;
+    }
+
+    public void clearSearchString()
+    {
+        searchString = '';
     }
 }

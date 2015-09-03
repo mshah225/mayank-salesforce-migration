@@ -77,7 +77,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
         {
             campaignRecordTypesById.put(c.Id, c.RecordType.DeveloperName);
         }
-        System.debug('Campaign Record Types By Id ' + campaignRecordTypesById);
 
         if(Trigger.isInsert || Trigger.isUpdate)
         {
@@ -124,8 +123,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                                         AND Campaign.RecordType.DeveloperName = 'Interest' 
                                         AND Campaign.Type IN :acceptableMajors];
 
-            System.debug('CMs For Contact ' + cmsForContacts);
-
             for(CampaignMember cm : cmsForContacts)
             {              
                 if(CampaignMembersByContactMap.containsKey(cm.ContactId))
@@ -140,8 +137,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 }
             }
 
-            System.debug('Campaign Members By Contact Map 1 ' + CampaignMembersByContactMap);
-            
             //When inserting or updating, need to add the new CMs to the map
             if(Trigger.isInsert || Trigger.isUpdate)
             {
@@ -172,8 +167,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 }
             }
 
-            System.debug('Campaign Members By Contact Map 2 ' + CampaignMembersByContactMap);
-            
             List<CampaignMember> cmsForLeads = [SELECT Id, Status, CreatedDate, LeadId, Is_Primary_Interest__c, Campaign_Type__c, Last_Member_Status_Change__c, Campaign.RecordType.DeveloperName
                                     FROM CampaignMember 
                                     WHERE LeadId IN :leadIds 
@@ -322,9 +315,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 }
             }
         }
-        
-        System.debug('Primary ' + primaries);
-        System.debug('Objects To Falsify ' + objectsToFalsify);
     }
     
     /** 
@@ -399,29 +389,21 @@ public without sharing class CampaignMemberHandler implements ITrigger
             }
         }
 
-        System.debug([SELECT Id, ContactId FROM CampaignMember WHERE Campaign_Type__c = 'PSMajors']);
-
         if(primaryContactIds.size() > 0)
         {
             List<Opportunity> opps = [SELECT Id, Contact__c, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :primaryContactIds];
-            System.debug('OPPS: ' + opps);
             List<Id> opportunityContactIds = new List<Id>();
 
             for(Opportunity o : opps)
             {
                 opportunityContactIds.add(o.Contact__c);
             }
-            System.debug('OPPORTUNITY CONTACT IDS: ' + opportunityContactIds);
-
             Map<Id, Id> cmIDsByContactIds = new Map<Id, Id>();
             List<CampaignMember> opportunityCMs = [SELECT ContactId, CampaignId, Id FROM CampaignMember Where ContactId IN :opportunityContactIds];
-            System.debug('OPPORTUNITY CMS: ' + opportunityCMs);
             for(CampaignMember cm : opportunityCMs)
             {
                 cmIDsByContactIds.put(cm.ContactId, cm.CampaignId);
             }
-            System.debug('CM IDS BY CONTACT IDS: ' + cmIDsByContactIds);
-
             for(Opportunity o : opps)
             {
                 if(o.Primary_Interest__c == null)
@@ -745,28 +727,21 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 }
             }
 
-            System.debug([SELECT Id, ContactId FROM CampaignMember WHERE Campaign_Type__c = 'PSMajors']);
-
             if(primaryContactIds.size() > 0)
             {
                 List<Opportunity> opps = [SELECT Id, Contact__c, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :primaryContactIds];
-                System.debug('OPPS: ' + opps);
                 List<Id> opportunityContactIds = new List<Id>();
 
                 for(Opportunity o : opps)
                 {
                     opportunityContactIds.add(o.Contact__c);
                 }
-                System.debug('OPPORTUNITY CONTACT IDS: ' + opportunityContactIds);
-
                 Map<Id, Id> cmIDsByContactIds = new Map<Id, Id>();
                 List<CampaignMember> opportunityCMs = [SELECT ContactId, Id FROM CampaignMember Where ContactId IN :opportunityContactIds];
-                System.debug('OPPORTUNITY CMS: ' + opportunityCMs);
                 for(CampaignMember cm : opportunityCMs)
                 {
                     cmIDsByContactIds.put(cm.ContactId, cm.Id);
                 }
-                System.debug('CM IDS BY CONTACT IDS: ' + cmIDsByContactIds);
 
                 for(Opportunity o : opps)
                 {

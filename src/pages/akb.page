@@ -113,7 +113,7 @@
                        emplId="{!emplId}"
                        viewingAs="{!viewingAs}"/>
 </head>
-<body onload="getLinks(); viewAsLinks();">
+<body>
     <div id="main-search" class="main-search closed"></div>
     <c:SCHeader firstName="{!firstName}"
                 lastName="{!lastName}"
@@ -344,29 +344,26 @@
     </div><!-- end ASU Content -->
 
     <script>
-        function getLinks()
+        var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+        var addLink;
+        var linkArray = [];
+        var articleLinks = []
+
+        for (i = 0; i < links.length; i++)
         {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var addLink;
-            var linkArray = [];
-            var articleLinks = []
-
-            for (i = 0; i < links.length; i++)
+            if (links[i].href.indexOf('/articles') > -1)
             {
-                if (links[i].href.indexOf('/articles') > -1)
-                {
-                    articleLinks.push(links[i]);
-                }
+                articleLinks.push(links[i]);
             }
-
-            for (i = 0; i < articleLinks.length; i++)
-            {
-                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
-                linkArray.push(addlink);
-            }
-            linkArray = JSON.stringify(linkArray);
-            setLink(linkArray);
         }
+
+        for (i = 0; i < articleLinks.length; i++)
+        {
+            addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
+            linkArray.push(addlink);
+        }
+        linkArray = JSON.stringify(linkArray);
+        setLink(linkArray);
 
         function changeLinkOnPage(newLinks)
         {
@@ -425,6 +422,8 @@
     </script>
 
     <script>
+        viewAsLinks();
+
         function viewAsLinks() {
             var masqCookie = "{!masqScopeIdCookie}";
             var viewingAs = "{!viewingAs}";

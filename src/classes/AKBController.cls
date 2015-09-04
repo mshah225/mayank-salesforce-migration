@@ -186,6 +186,13 @@ public without sharing class AKBController
         System.Debug('Deserialized URLs: ' + urls);
         for(String s: urls) 
         {
+            if (s.contains('?'))
+            {
+                String[] tempArr = s.split('\\?');
+                System.debug('TempArr: ' + tempArr);
+                s = tempArr[0];
+            }
+
             System.Debug('URLName: ' + s);
             try 
             {

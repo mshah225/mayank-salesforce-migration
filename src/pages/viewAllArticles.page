@@ -89,7 +89,7 @@
         <div class="container">
             <ol class="breadcrumb">
                 <li><a href="/{!source}">Back</a></li>
-                <li class="active" style="font-size:10pt;">Search For Articles</li>
+                <li class="active" style="font-size:10pt;">Search for Knowledge Articles</li>
             </ol>
 
             <div class="row">
@@ -109,7 +109,7 @@
                                             <apex:inputText id="articleTextBoxId"
                                                             value="{!searchstring}"
                                                             styleClass="searchBox"
-                                                            html-placeholder="Enter search terms"
+                                                  html-placeholder="Search the Knowledge Base"
                                                             html-pattern=".{2,}"
                                                             required="true"
                                                             title="Please enter a minimum of 2
@@ -148,18 +148,18 @@
                                     <apex:repeat value="{!articleList}" var="kav">
                                         <apex:dataTable value="{!kav}"
                                                         var="article"
-                                                        style="padding-left:18px;width:100%;"
-                                                        styleClass="list-group">
-                                            <apex:column styleClass="list-group-item">
+                                                        style="width:100%;">
+                                            <apex:column style="vertical-align:top;width:10px;">
+                                                &#8226;&nbsp;
+                                            </apex:column>
+
+                                            <apex:column>
                                                 <apex:outputLink value="/akb?id={!article
                                                 .KnowledgeArticleId}&source=viewAllArticles">
-                                                        <b>{!article.Title}</b>
+                                                        {!article.Title}
                                                 </apex:outputLink>
                                                 <br />
-                                                <apex:outputText value="Date Updated: " />
-                                                <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
-                                                    <apex:param value="{!article.LastModifiedDate}" />
-                                                </apex:outputText>
+                                                <div style="height:15px;"></div>
                                             </apex:column>
                                         </apex:dataTable>
                                     </apex:repeat>
@@ -242,25 +242,24 @@
 
                                 <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
                                     <br />
-                                    <h5><b>Popular Help Articles</b></h5>
+                                    <h5><b>Popular Knowledge Articles</b></h5>
                                     <hr style="margin-top:5px;"/>
                                     <knowledge:articleList articleVar="article"
                                                            sortBy="mostViewed"
                                                            pageSize="20">
-                                        <table class="list-group" style="width:100%;
+                                        <table style="width:100%;
                                         margin-bottom:0px;">
-                                            <tr class="list-group-item">
+                                            <tr>
+                                                <td style="vertical-align:top;width:10px;">
+                                                    &#8226;&nbsp;
+                                                </td>
                                                 <td>
                                                     <apex:outputLink value="/akb?id={!article
                                                     .id}&source=viewAllArticles">
-                                                        <b>{!article.title}</b>
+                                                        {!article.title}
                                                     </apex:outputLink>
                                                     <br />
-                                                    <apex:outputText value="Date Updated: " />
-                                                    <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
-                                                        <apex:param value="{!article
-                                                        .LastModifiedDate}" />
-                                                    </apex:outputText>
+                                                    <div style="height:15px;"></div>
                                                 </td>
                                             </tr>
                                         </table>

@@ -148,7 +148,7 @@
                                             <apex:inputText id="articleTextBoxId"
                                                             value="{!searchstring}"
                                                             styleClass="searchBox"
-                                                            html-placeholder="Enter search terms"
+                                                   html-placeholder="Search the Knowledge Base"
                                                             html-pattern=".{2,}"
                                                             required="true"
                                                             title="Please enter a minimum of 2
@@ -197,92 +197,10 @@
                                         </apex:dataList>
                                     </apex:repeat>
 
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <nav>
-                                                <ul class="pagination" style="display:inline;">
-                                                    <li class="{!IF(prevRequired = true, '','disabled')}">
-                                                        <apex:commandLink action="{!previous}"
-                                                                          reRender="searchResults"
-                                                                          status="KBSearchStatus"
-                                                                          rendered="{!IF(prevRequired =
-                                                                          true, true,'false')}">
-                                                            <span class="glyphicon
-                                                                  glyphicon-chevron-left"
-                                                                  style="color:#990033;"></span>
-                                                        </apex:commandLink>
-
-                                                        <apex:outputLink rendered="{!IF(prevRequired =
-                                                                         true, false, true)}"
-                                                                         disabled="true"
-                                                                         value="#/">
-                                                            <span class="glyphicon
-                                                                  glyphicon-chevron-left"
-                                                                  style="color:#ccc;"></span>
-                                                        </apex:outputLink>
-                                                    </li>
-
-                                                    <li>
-                                                        <span style="color:white;
-                                                        background-color:#333;border: solid 1px
-                                                        #333;">
-                                                                {!pageNumber}
-                                                        </span>
-                                                    </li>
-
-                                                    <li class="{!IF(nextRequired = true,
-                                                              '','disabled')}">
-                                                        <apex:commandLink action="{!next}"
-                                                                          reRender="searchResults"
-                                                                          status="KBSearchStatus"
-                                                                          rendered="{!IF(nextRequired =
-                                                                          true, true,'false')}">
-                                                            <span class="glyphicon
-                                                                  glyphicon-chevron-right"
-                                                                  style="color:#990033;"></span>
-                                                        </apex:commandLink>
-
-                                                        <apex:outputLink rendered="{!IF(nextRequired =
-                                                                         true, false, true)}"
-                                                                         disabled="true"
-                                                                         value="#/">
-                                                            <span class="glyphicon
-                                                                  glyphicon-chevron-right"
-                                                                  style="color:#ccc;"></span>
-                                                        </apex:outputLink>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-
-                                            <div class="pull-right visible-sm visible-md
-                                            visible-lg">
-                                                <button class="btn kbbtn"
-                                                        data-toggle="modal"
-                                                        data-target="#suggestAnArticle">
-                                                    Suggest An Article
-                                                </button>
-
-                                                <apex:commandLink styleClass="btn"
-                                                                  style="padding:4px"
-                                                                  value="View All Results"
-                                                                  action="{!viewAllResults}"/>
-                                            </div>
-
-                                            <div class="pull-left visible-xs"
-                                                 style="clear:both;margin-top:20px;">
-                                                <button class="btn kbbtn"
-                                                        data-toggle="modal"
-                                                        data-target="#suggestAnArticle">
-                                                    Suggest An Article
-                                                </button>
-
-                                                <apex:commandLink styleClass="btn"
-                                                                  style="padding:4px"
-                                                                  value="View All Results"
-                                                                  action="{!viewAllResults}"/>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <apex:commandLink styleClass="btn"
+                                                      style="padding:4px"
+                                                      value="View All Results"
+                                                      action="{!viewAllResults}"/>
                                 </apex:pageBlock>
                             </apex:form>
                             <hr />
@@ -290,8 +208,13 @@
                             <br />
                             <br />
                             <apex:form id="articleContentForm">
-                                <apex:actionFunction name="setLink" action="{!changeLink}" oncomplete="changeLinkOnPage('{!fixedLinksJSON}')" reRender="url1">
-                                    <apex:param name="urlNameToChange" value="" assignTo="{!urlsJSON}" />
+                                <apex:actionFunction name="setLink"
+                                                     action="{!changeLink}"
+                                                     oncomplete="changeLinkOnPage('{!fixedLinksJSON}')"
+                                                     reRender="url1">
+                                    <apex:param name="urlNameToChange"
+                                                value=""
+                                                assignTo="{!urlsJSON}" />
                                 </apex:actionFunction>
                                 <div id="articleContentDiv" class="articleContent">
                                     <apex:pageBlock tabStyle="Case">
@@ -351,17 +274,51 @@
                                     </apex:pageBlock>
                                 </div>
                             </apex:form>
-                            <div class="page-header">
-                                <h5>Article Feedback</h5>
-                            </div>
+                            <br />
+                            <br />
+                            <apex:outputPanel rendered="{!IF(article.ArticleType = 'FAQ__kav',true,
+                                    false)}">
+                                <apex:outputText value="Date Updated: " />
+                                <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                    <apex:param value="{!faq.LastModifiedDate}" />
+                                </apex:outputText>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel rendered="{!IF(howto.ArticleType = 'How_To__kav',true,
+                                    false)}">
+                                <apex:outputText value="Date Updated: " />
+                                <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                    <apex:param value="{!howTo.LastModifiedDate}" />
+                                </apex:outputText>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel rendered="{!IF(info.ArticleType =
+                                    'Informational__kav',true,
+                                    false)}">
+                                <apex:outputText value="Date Updated: " />
+                                <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                    <apex:param value="{!info.LastModifiedDate}" />
+                                </apex:outputText>
+                            </apex:outputPanel>
+
+                            <hr style="margin-top:5px;margin-bottom:5px;" />
+
+                            <h5><b>Article Feedback</b></h5>
+                            <br />
+                            <br />
                             <apex:form id="feedbackButtons">
                                 <apex:outputPanel rendered="{!feedbackVisible}">
-                                    <p>&nbsp;Was this article helpful?</p>
+                                    <p>Is this article helpful?</p>
+
+                                    <apex:commandButton value="Yes"
+                                                        action="{!helpfulYes}"
+                                                        styleClass="btn btn-default"
+                                                        style="width:25px;height:15px;padding:3px;"/>
                                     &nbsp;
-                                    <apex:commandButton value="Yes" action="{!helpfulYes}" styleClass="btn btn-default" style="width:25px;height:15px;padding:3px;"/>
-                                    &nbsp;
-                                    <!-- Button trigger modal -->
-                                    <button class="btn btn-default" data-toggle="modal" data-target="#feedbackNoComments" style="width:25px;height:15px;padding:3px;">
+                                    <button class="btn btn-default"
+                                            data-toggle="modal"
+                                            data-target="#feedbackNoComments"
+                                            style="width:25px;height:15px;padding:3px;">
                                         No
                                     </button>
                                 </apex:outputPanel>
@@ -373,23 +330,50 @@
 
                              <apex:form id="feedbackNoComments">
                                  <!-- Modal -->
-                                 <div class="modal fade" id="feedbackNoComments" tabindex="-1" role="dialog" aria-labelledby="feedbackCommentsLabel" aria-hidden="true">
+                                 <div class="modal fade"
+                                      id="feedbackNoComments"
+                                      tabindex="-1" role="dialog"
+                                      aria-labelledby="feedbackCommentsLabel"
+                                      aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                <h6 class="modal-title" id="feedbackCommentsLabel">Feedback - {!article.title}</h6>
+                                                <button type="button"
+                                                        class="close"
+                                                        data-dismiss="modal">
+                                                    <span aria-hidden="true">&times;</span>
+                                                    <span class="sr-only">Close</span>
+                                                </button>
+
+                                                <h6 class="modal-title"
+                                                    id="feedbackCommentsLabel">
+                                                    Feedback - {!article.title}
+                                                </h6>
                                             </div>
+
                                             <div class="modal-body">
                                                 <p>Please tell us how we can make this article more useful.</p>
                                                 <apex:pageBlock mode="maindetail">
-                                                    <apex:inputField id="articleFeedback" required="true" value="{!feedbackHelpful.Comments__c}" style="width:100%;max-width:400px;height:100px;"/>
+                                                    <apex:inputField id="articleFeedback"
+                                                                     required="true"
+                                                                     value="{!feedbackHelpful.Comments__c}"
+                                                                     style="width:100%;max-width:400px;height:100px;"/>
                                                 </apex:pageBlock>
                                             </div>
                                             <div class="modal-footer">
                                                 <div class="pull-left">
-                                                    <apex:commandButton value="Submit" action="{!helpfulNo}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
+                                                    <apex:commandButton
+                                                            value="Submit"
+                                                            action="{!helpfulNo}"
+                                                            styleClass="btn btn-default"
+                                                            style="width:40px;height:15px;padding:3px;"/>
+
+                                                    <button type="button"
+                                                            class="btn btn-default"
+                                                            data-dismiss="modal"
+                                                            style="width:35px;height:15px;padding:3px;margin-top:0px;">
+                                                        Close
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

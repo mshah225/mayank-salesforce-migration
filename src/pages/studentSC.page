@@ -126,7 +126,7 @@
                                             <apex:inputText id="articleTextBoxId"
                                                             value="{!searchstring}"
                                                             styleClass="searchBox"
-                                                            html-placeholder="Enter search terms"
+                                                            html-placeholder="Search the Knowledge Base"
                                                             html-pattern=".{2,}"
                                                             required="true"
                                                             title="Please enter a minimum of 2
@@ -175,95 +175,15 @@
                                             <div style="height:15px;"></div>
                                         </apex:dataList>
                                     </apex:repeat>
-                                    <br />
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <nav>
-                                                <ul class="pagination" style="display:inline;">
-                                                    <li class="{!IF(prevRequired = true, '','disabled')}">
-                                                        <apex:commandLink action="{!previous}"
-                                                                          reRender="searchResults"
-                                                                          status="KBSearchStatus"
-                                                                          rendered="{!IF(prevRequired =
-                                                                          true, true,'false')}">
-                                                            <span class="glyphicon
-                                                                  glyphicon-chevron-left"
-                                                                  style="color:#990033;"></span>
-                                                        </apex:commandLink>
 
-                                                        <apex:outputLink rendered="{!IF(prevRequired =
-                                                                         true, false, true)}"
-                                                                         disabled="true"
-                                                                         value="#/">
-                                                            <span class="glyphicon
-                                                                  glyphicon-chevron-left"
-                                                                  style="color:#ccc;"></span>
-                                                        </apex:outputLink>
-                                                    </li>
-                                                    <li>
-                                                        <span style="color:white;
-                                                        background-color:#333;border: solid 1px
-                                                        #333;">
-                                                            {!pageNumber}
-                                                        </span>
-                                                    </li>
-                                                    <li class="{!IF(nextRequired = true,
-                                                              '','disabled')}">
-                                                        <apex:commandLink action="{!next}"
-                                                                          reRender="searchResults"
-                                                                          status="KBSearchStatus"
-                                                                          rendered="{!IF(nextRequired =
-                                                                          true, true,'false')}">
-                                                            <span class="glyphicon
-                                                                  glyphicon-chevron-right"
-                                                                  style="color:#990033;"></span>
-                                                        </apex:commandLink>
-
-                                                        <apex:outputLink rendered="{!IF(nextRequired =
-                                                                         true, false, true)}"
-                                                                         disabled="true"
-                                                                         value="#/">
-                                                            <span class="glyphicon
-                                                                  glyphicon-chevron-right"
-                                                                  style="color:#ccc;"></span>
-                                                        </apex:outputLink>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-
-                                            <div class="pull-right visible-sm visible-md
-                                            visible-lg">
-                                                <button class="btn kbbtn"
-                                                        data-toggle="modal"
-                                                        data-target="#suggestAnArticle">
-                                                    Suggest An Article
-                                                </button>
-
-                                                <apex:commandLink styleClass="btn"
+                                    <apex:commandLink styleClass="btn"
                                                                   style="padding:4px"
                                                                   value="View All Results"
                                                                   action="{!viewAllResults}"/>
-                                            </div>
-
-                                            <div class="pull-left visible-xs"
-                                                 style="clear:both;margin-top:20px;">
-                                                <button class="btn kbbtn"
-                                                        data-toggle="modal"
-                                                        data-target="#suggestAnArticle">
-                                                    Suggest An Article
-                                                </button>
-
-                                                <apex:commandLink styleClass="btn"
-                                                                  style="padding:4px"
-                                                                  value="View All Results"
-                                                                  action="{!viewAllResults}"/>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </apex:pageBlock>
 
                                 <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
-                                    <h5><b>Top 5 Help Articles</b></h5>
+                                    <h5><b>Top 5 Knowledge Articles</b></h5>
 
                                     <div style="height:10px;"></div>
 

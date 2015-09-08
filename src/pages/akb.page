@@ -113,7 +113,7 @@
                        emplId="{!emplId}"
                        viewingAs="{!viewingAs}"/>
 </head>
-<body onload="getLinks(); viewAsLinks();">
+<body>
     <div id="main-search" class="main-search closed"></div>
     <c:SCHeader firstName="{!firstName}"
                 lastName="{!lastName}"
@@ -458,60 +458,6 @@
     </div><!-- end ASU Content -->
 
     <script>
-        function getLinks()
-        {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var addLink;
-            var linkArray = [];
-            var articleLinks = []
-
-            for (i = 0; i < links.length; i++)
-            {
-                if (links[i].href.indexOf('/articles') > -1)
-                {
-                    articleLinks.push(links[i]);
-                }
-            }
-
-            for (i = 0; i < articleLinks.length; i++)
-            {
-                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
-                linkArray.push(addlink);
-            }
-            linkArray = JSON.stringify(linkArray);
-            setLink(linkArray);
-        }
-
-        function changeLinkOnPage(newLinks)
-        {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var articleLinks = []
-            var parsed = JSON.parse(newLinks);
-            var arr = [];
-
-            for (i = 0; i < links.length; i++)
-            {
-                if (links[i].href.indexOf('/articles') > -1)
-                {
-                    articleLinks.push(links[i]);
-                }
-            }
-
-            for (var x in parsed)
-            {
-                arr.push(parsed[x]);
-            }
-
-            for (i = 0; i < articleLinks.length; i++)
-            {
-                articleLinks[i].href = arr[i];
-                articleLinks[i].target = "_self";
-            }
-            return false;
-        }
-    </script>
-
-    <script>
         if (!(navigator.userAgent.match(/Android/i)
              || navigator.userAgent.match(/webOS/i)
              || navigator.userAgent.match(/iPhone/i)
@@ -535,6 +481,56 @@
             document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
                 event.preventDefault();
             });
+        }
+    </script>
+
+    <script>
+        getLinks();
+
+        function getLinks() {
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var addLink;
+            var linkArray = [];
+            var articleLinks = []
+
+            for (i = 0; i < links.length; i++) {
+                if (links[i].href.indexOf('/articles') > -1) {
+                    articleLinks.push(links[i]);
+                }
+            }
+
+            for (i = 0; i < articleLinks.length; i++) {
+                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
+                linkArray.push(addlink);
+            }
+
+            linkArray = JSON.stringify(linkArray);
+            setLink(linkArray);
+        }
+
+        function changeLinkOnPage(newLinks) {
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var articleLinks = []
+            var parsed = JSON.parse(newLinks);
+            var arr = [];
+
+            for (i = 0; i < links.length; i++) {
+                if (links[i].href.indexOf('/articles') > -1) {
+                    articleLinks.push(links[i]);
+                }
+            }
+
+            for (var x in parsed) {
+                arr.push(parsed[x]);
+            }
+
+            for (i = 0; i < articleLinks.length; i++) {
+                articleLinks[i].href = arr[i];
+                articleLinks[i].target = "_self";
+            }
+
+            viewAsLinks();
+            return false;
         }
     </script>
 

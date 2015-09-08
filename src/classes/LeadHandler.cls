@@ -187,7 +187,10 @@ public without sharing class LeadHandler
 		}
 		
 		reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
-        
+
+        List<Opportunity> oppsToUpdate = LeadService.mapLeadDataToOpportunity(leadIdsCleanUpLeadInterests);
+
+        update oppsToUpdate;
 	}
 	
 	private void reparentRelatedLeadInterests(Set<Id> leadIds) 

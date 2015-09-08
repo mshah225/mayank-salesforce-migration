@@ -133,7 +133,7 @@ private class Test_UnifiedProspectPageController
         uppc = new UnifiedProspectPageController();
         contact = uppc.getContact();
         opportunity = uppc.getOpportunity();
-        c = uppc.getC();
+        c = uppc.getCaseC();
         contact.FirstName = 'Test';
         contact.LastName = 'Testerson';
         contact.Lead_Email__c = 'test@asu.edu';
@@ -159,7 +159,7 @@ private class Test_UnifiedProspectPageController
 
         uppc.setContact(contact);
         uppc.setOpportunity(opportunity);
-        uppc.setCase(c);
+        uppc.setCaseC(c);
 
         uppc.pickSelection = '--Select--';
 
@@ -263,7 +263,7 @@ private class Test_UnifiedProspectPageController
 
         uppc.setContact(contact);
         uppc.setOpportunity(opportunity);
-        uppc.setCase(c);
+        uppc.setCaseC(c);
 
         uppc.pickSelection = '--Select--';
 
@@ -319,7 +319,7 @@ private class Test_UnifiedProspectPageController
 
         uppc.setContact(contact);
         uppc.setOpportunity(opportunity);
-        uppc.setCase(c);
+        uppc.setCaseC(c);
 
         uppc.pickSelection = '--Select--';
 
@@ -374,7 +374,7 @@ private class Test_UnifiedProspectPageController
     {
         Test.startTest();
         uppc = new UnifiedProspectPageController();
-        c = uppc.getC();
+        c = uppc.getCaseC();
         Id asuAdmissionRecId = [SELECT Id, Name FROM RecordType WHERE Name = 'ASU Admission Services' LIMIT 1].Id;
         System.assert(c.RecordTypeId == asuAdmissionRecId);
     }

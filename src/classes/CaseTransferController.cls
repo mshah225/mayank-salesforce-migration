@@ -24,26 +24,28 @@ public with sharing class CaseTransferController
 		serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
 		collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         this.c = (Case)stdController.getRecord();
-		allGenCARs = [
-			SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
-            Functional_Group__c, Label__c, Name, Queue_ID__c
-            FROM Case_Assignment_Rule__c
-            WHERE CTPColumn__c != null
-            AND CTPGroup__c != null
-            AND Label__c != null
-            AND CTPVisible__c = true
-            AND Label__c LIKE '%(General)%'
+
+        // The general list of CARs. Their labels should have '(General)' in them.
+        allGenCARs = [
+                SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Label__c, Name, Queue_ID__c
+                FROM Case_Assignment_Rule__c
+                WHERE CTPColumn__c != null
+                AND CTPGroup__c != null
+                AND Label__c != null
+                AND CTPVisible__c = true
+                AND Label__c LIKE '%(General)%'
         ];
-		allCARs = [
-            SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
-            Functional_Group__c, Label__c, Name, Queue_ID__c
-            FROM Case_Assignment_Rule__c
-            WHERE CTPColumn__c != null
-            AND CTPGroup__c != null
-            AND Label__c != null
-            AND CTPVisible__c = true
-            AND (NOT Label__c LIKE '%(General)%')
-            ORDER BY Label__c ASC
+
+        // All the CARs for this org that do not have the '(General)' tag
+        allCARs = [
+                SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Label__c, Name, Queue_ID__c
+                FROM Case_Assignment_Rule__c
+                WHERE CTPColumn__c != null
+                AND CTPGroup__c != null
+                AND Label__c != null
+                AND CTPVisible__c = true
+                AND (NOT Label__c LIKE '%(General)%')
+                ORDER BY Label__c ASC
         ];
 		allGenCARs.addAll(allCARS);
 		searchUsers();
@@ -74,9 +76,11 @@ public with sharing class CaseTransferController
 	        }
         }
 
-        Case temp = [SELECT Id, Subject, Description 
-        			 FROM Case 
-        			 WHERE Id = :c.Id];
+        Case temp = [
+                SELECT Id, Subject, Description
+                FROM Case
+                WHERE Id = :c.Id
+        ];
 
         caseSub = temp.Subject;
         caseDesc = temp.Description;
@@ -124,182 +128,167 @@ public with sharing class CaseTransferController
 		return columnList;
 	}
 
-	public void resetSearch()
-	{
-		searchString = null;
-		searchUsers();
-	}
+    public void resetSearch()
+    {
+        searchString = null;
+        searchUsers();
+    }
 
-	public void searchUsers()
-	{
-		if (searchString == null)
-		{
-			Set<Id> uberRoleIds = new Set<Id>();
-			Set<Id> roleIdsToAdd = new Set<Id>();
+    public void searchUsers()
+    {
+        if (searchString == null)
+        {
+            Set<Id> uberRoleIds = new Set<Id>();
+            Set<Id> roleIdsToAdd = new Set<Id>();
 
-			List<User> uberRoles = [
-                SELECT UserRole.Id
-                FROM User
-                WHERE (NOT Name LIKE '%API%')
-                AND (NOT Name LIKE '%zz%')
-                AND (NOT Name LIKE '%Guest%')
-                AND (NOT Name LIKE '%Admin%')
-                AND (NOT Name LIKE '%Expert%')
-                And UserRole.Name != null
-                AND UserRole.ParentRoleId = null
+            List<User> uberRoles = [
+                    SELECT UserRole.Id
+                    FROM User
+                    WHERE (NOT Name LIKE '%Guest%')
+                    AND (NOT Name LIKE '%Admin%')
+                    AND (NOT Name LIKE '%Expert%')
+                    AND UserRole.Name != null
+                    AND UserRole.ParentRoleId = null
             ];
 
-			userList = [
-                SELECT Id, Name, UserRole.ParentRoleId, Title, Department
-                FROM User
-                WHERE UserRoleId = :UserInfo.getUserRoleId()
-                AND Id != :UserInfo.getUserId()
-                AND (NOT Name LIKE '%API%')
-                AND (NOT Name LIKE '%zz%')
+            userList = [
+                    SELECT Id, Name, UserRole.ParentRoleId, Title, Department
+                    FROM User
+                    WHERE UserRoleId = :UserInfo.getUserRoleId()
+                    AND Id != :UserInfo.getUserId()
             ];
 
-			List<User> subordinateList = [
-                SELECT UserRole.Id
-                FROM User
-                WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
+
+            List<User> subordinateList = [
+                    SELECT UserRole.Id
+                    FROM User
+                    WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
             ];
 
-			if (subordinateList.size() > 0)
-			{
-				for (User su : subordinateList)
-				{
-					roleIdsToAdd.add(su.UserRole.Id);
-				}
-			}
+            if (subordinateList.size() > 0)
+            {
+                for (User su : subordinateList)
+                {
+                    roleIdsToAdd.add(su.UserRole.Id);
+                }
+            }
 
-			for (User ub: uberRoles)
-			{
-				uberRoleIds.add(ub.UserRole.Id);
-			}
+            for (User ub: uberRoles)
+            {
+                uberRoleIds.add(ub.UserRole.Id);
+            }
 
-			for (User u : userList)
-			{
-				if (u.UserRole.ParentRoleId != null && !uberRoleIds.contains(u.UserRole.ParentRoleId))
-				{
-					roleIdsToAdd.add(u.UserRole.ParentRoleId);
-				}
-			}
+            for (User u : userList)
+            {
+                if (u.UserRole.ParentRoleId != null && !uberRoleIds.contains(u.UserRole.ParentRoleId))
+                {
+                    roleIdsToAdd.add(u.UserRole.ParentRoleId);
+                }
+            }
 
-			List<User> usersToAdd = [
-                SELECT Id, Name, Title, Department
-                FROM User
-                WHERE UserRoleId IN :roleIdsToAdd
+            List<User> usersToAdd = [SELECT Id, Name, Title, Department
+                                     FROM User
+                                     WHERE UserRoleId
+                                     IN :roleIdsToAdd];
+
+            userList.addAll(usersToAdd);
+            userList.sort();
+        }
+        else
+        {
+            Set<Id> uberRoleIds = new Set<Id>();
+            Set<Id> roleIdsToAdd = new Set<Id>();
+
+            List<User> uberRoles = [
+                    SELECT UserRole.Id
+                    FROM User
+                    WHERE (NOT Name LIKE '%Guest%')
+                    AND (NOT Name LIKE '%Admin%')
+                    AND (NOT Name LIKE '%Expert%')
+                    AND UserRole.Name != null
+                    AND UserRole.ParentRoleId = null
             ];
 
-			userList.addAll(usersToAdd);
-			userList.sort();
-		}
-		else 
-		{
-			Set<Id> uberRoleIds = new Set<Id>();
-			Set<Id> roleIdsToAdd = new Set<Id>();
+            Id userRole = UserInfo.getUserRoleId();
+            Id userId = UserInfo.getUserId();
 
-			List<User> uberRoles = [
-                SELECT UserRole.Id
-                FROM User
-                WHERE (NOT Name LIKE '%API%')
-                AND (NOT Name LIKE '%zz%')
-                AND (NOT Name LIKE '%Guest%')
-                AND (NOT Name LIKE '%Admin%')
-                AND (NOT Name LIKE '%Expert%')
-                And UserRole.Name != null
-                AND UserRole.ParentRoleId = null
+            String cleanedSearchString = '%' + String.escapeSingleQuotes(searchString) + '%';
+
+            userList = [
+                    SELECT Id, Name, UserRole.ParentRoleId, Title, Department
+                    FROM User
+                    WHERE UserRoleId = :UserInfo.getUserRoleId()
+                    AND Id != :UserInfo.getUserId()
+                    AND Name LIKE :cleanedSearchString
             ];
 
-			Id userRole = UserInfo.getUserRoleId();
-			Id userId = UserInfo.getUserId();
-			String queryString = 'SELECT Id, Name, Title, Department, UserRole.ParentRoleId ' +
-                                 'FROM User ' +
-                                 'WHERE UserRoleId = :userRole ' +
-                                 'AND Id != :userId ' +
-                                 'AND (NOT Name LIKE \'%API%\') ' +
-                                 'AND (NOT Name LIKE \'%zz%\') ' +
-                                 'AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
-			userList = Database.query(queryString);
-
-			List<User> subordinateList = [
-                SELECT UserRole.Id
-                FROM User
-                WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
+            List<User> subordinateList = [
+                    SELECT UserRole.Id
+                    FROM User
+                    WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
             ];
 
-			if (subordinateList.size() > 0)
-			{
-				for (User su : subordinateList)
-				{
-					roleIdsToAdd.add(su.UserRole.Id);
-				}
-			}
+            if (subordinateList.size() > 0)
+            {
+                for (User su : subordinateList)
+                {
+                    roleIdsToAdd.add(su.UserRole.Id);
+                }
+            }
 
-			for (User ub: uberRoles)
-			{
-				uberRoleIds.add(ub.UserRole.Id);
-			}
+            for (User ub: uberRoles)
+            {
+                uberRoleIds.add(ub.UserRole.Id);
+            }
 
-			for (User u : userList)
-			{
-				if (u.UserRole.ParentRoleId != null && !uberRoleIds.contains(u.UserRole.ParentRoleId))
-				{
-					roleIdsToAdd.add(u.UserRole.ParentRoleId);
-				}
-			}
+            for (User u : userList)
+            {
+                if (u.UserRole.ParentRoleId != null && !uberRoleIds.contains(u.UserRole.ParentRoleId))
+                {
+                    roleIdsToAdd.add(u.UserRole.ParentRoleId);
+                }
+            }
 
-			String query2String = 'SELECT Id, Name, Title, Department ' +
-                                  'FROM User ' +
-                                  'WHERE UserRoleId IN :roleIdsToAdd ' +
-                                  'AND Id !=  :userId ' +
-                                  'AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
-			List<User> usersToAdd = Database.query(query2String);
+            String query2String = 'SELECT Id, Name, Title, Department FROM User WHERE UserRoleId IN :roleIdsToAdd AND Id != :userId AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+            List<User> usersToAdd = Database.query(query2String);
 
-			userList.addAll(usersToAdd);
-			userList.sort();
-		}
-	}
+            userList.addAll(usersToAdd);
+            userList.sort();
+        }
+    }
 
-	public PageReference transferCase()
-	{
+    public PageReference transferCase()
+    {
         try
         {
-	        if (caseSub != null && caseDesc != null)
-	        {	
-	        	if (!toUser)
-	        	{
-		        	Case_Assignment_Rule__c selectedCAR = [
-                        SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Case_Record_Type_Id__c,
-                        Email_Address__c, Functional_Group__c, Category__c, Sub_Category__c,
-                        Label__c, Name, Queue_ID__c
-                        FROM Case_Assignment_Rule__c
-                        WHERE Id = :selectedId
+            if (caseSub != null && caseDesc != null)
+            {
+                // Transfer to a department by setting the case information according to the selected CAR
+                if (!toUser)
+                {
+                    Case_Assignment_Rule__c selectedCAR = [
+                            SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c, Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name, Queue_ID__c, Case_Feed_Email_Template_Id__c
+                            FROM Case_Assignment_Rule__c
+                            WHERE Id = :selectedId
                     ];
-
-		            c.OwnerId = selectedCAR.Queue_ID__c;
-		            c.Functional_Group__c = selectedCAR.Functional_Group__c;
-	            	c.Category__c = selectedCAR.Category__c;
-	            	c.Sub_Category__c = selectedCAR.Sub_Category__c;
-                    c.RecordTypeId = selectedCAR.Case_Record_Type_Id__c;
-		        }
-		        else
-		        {
-		        	c.OwnerId = selectedId;
-		        }
-
-            	update c;
-        	}
-        	else{
-        		ApexPages.getMessages().clear();
-        		ApexPages.addmessage(new ApexPages.message(
-                    ApexPages.severity.ERROR,'The Subject and Description are required ' +
-                    'fields for case transfer. Please fill out the missing fields before ' +
-                    'transferring the case.')
-                );
-
-    			return null;
-        	}
+                    c.OwnerId = selectedCAR.Queue_ID__c;
+                    c.Functional_Group__c = selectedCAR.Functional_Group__c;
+                    c.Category__c = selectedCAR.Category__c;
+                    c.Sub_Category__c = selectedCAR.Sub_Category__c;
+                    c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
+                    c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
+                }
+                else
+                {
+                    c.OwnerId = selectedId;
+                }
+                update c;
+            }
+            else{
+                ApexPages.getMessages().clear();
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'The Subject and Description are required fields for case transfer. Please fill out the missing fields before transferring the case.'));
+                return null;
+            }
         }
         catch (Exception e)
         {

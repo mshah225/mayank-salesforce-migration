@@ -17,9 +17,9 @@ public with sharing class vfListPaginationController
 
     public void setUp()
     {
-        String strurl = ApexPages.currentPage().getUrl();
-        strurl = strurl.split('apex/')[1];
-        if (strurl.contains('viewAllArticles'))
+        String strurl = getVFPageName();
+        System.debug('!!!VF PAGE NAME : ' + strurl);
+        if (strurl == 'viewAllArticles')
         {
             PAGE_SIZE = 20;
         }
@@ -151,5 +151,16 @@ public with sharing class vfListPaginationController
     public void clearSearchString()
     {
         searchString = '';
+    }
+
+    public string getVFPageName()
+    {
+        String pageName = ApexPages.CurrentPage().getUrl();
+        pageName = pageName.replaceFirst('/apex/','');
+        pageName = EncodingUtil.urlEncode(pageName, 'UTF-8');
+        String[] pageNameExtra = pageName.split('%3F',0);
+        pageName = pageNameExtra[0];
+
+        return pageName;
     }
 }

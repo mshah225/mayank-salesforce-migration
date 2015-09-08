@@ -1,45 +1,23 @@
 public with sharing class ViewAllCasesController 
 {
-    Contact loggedInContact;
-    Id caseId;
+    private ServiceCenter sc;
+    public ViewAllCasesController(ServiceCenter sc) { this.sc = sc; }
 
-    public ViewAllCasesController() 
+    public List<Case> getAllClosedCases()
     {
-        loggedInContact = ContactService.getLoggedInContact();
+        List<Contact> loggedInContacts = new List<Contact> { sc.userContact };
+
+        Map<Id, List<Case>> closedCaseMap;
+
+        if (sc.viewingAs)
+        {
+            closedCaseMap = MyASUViewAs.getViewAsClosedCases(loggedInContacts);
+        }
+        else
+        {
+            closedCaseMap = CaseService.getVisibleClosedCases(loggedInContacts);
+        }
+
+        return closedCaseMap.get(sc.userContact.Id) == null ? new List<Case>() : closedCaseMap.get(sc.userContact.Id);
     }
-
-    public List<Case> getOpenCases()
-    {
-        List<Contact> loggedInContacts = new List<Contact> { loggedInContact };
-
-        Map<Id, List<Case>> openCaseMap = CaseService.getVisibleOpenCases(loggedInContacts);
-
-        return openCaseMap.get(loggedInContact.Id)==null ? new List<Case>() : openCaseMap.get(loggedInContact.Id);
-    }
-
-    public List<Case> getClosedCases()
-    {
-        List<Contact> loggedInContacts = new List<Contact> { loggedInContact };
-
-        Map<Id, List<Case>> closedCaseMap = CaseService.getVisibleClosedCases(loggedInContacts);
-
-        return closedCaseMap.get(loggedInContact.Id)==null ? new List<Case>() : closedCaseMap.get(loggedInContact.Id);
-    }
-
-    public PageReference viewCase()
-    {
-        caseId = ApexPages.currentPage().getParameters().get('caseId');
-        PageReference viewCasePage = Page.viewcase;
-        viewCasePage.getParameters().put('id', caseId);
-        viewCasePage.getParameters().put('source', 'viewAllCases');
-
-        return viewCasePage;
-    }
-
-    public String getSource()
-    {
-        String source = ApexPages.currentPage().getParameters().get('source');
-
-        return source;
-    } 
 }

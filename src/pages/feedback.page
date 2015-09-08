@@ -1,6 +1,7 @@
 <apex:page sidebar="false"
     showHeader="false"
-    controller="FeedbackController">
+    controller="ServiceCenter"
+    extensions="FeedbackController">
 <html>
 <head>
     <title>My ASU | Service Center Feedback</title>
@@ -165,6 +166,17 @@
         <div id="myasu-tabs" class="myasu-cont">
             <div class="navbar-links">
                 <span class='tab'><a href="https://webapp4.asu.edu/myasu" class="tracking"><span class="fa fa-home" title="Home"></span></a></span>
+
+                <apex:outputPanel rendered="{!viewingAs}">
+                    <p class="username pull-right">
+                    {!firstName} {!lastName}
+                        <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
+                            &nbsp;&nbsp;({!emplId})<br />
+                            <a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
+                            <a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
+                        </apex:outputPanel>
+                    </p>
+                </apex:outputPanel>
             </div>
         </div>
     </header>
@@ -173,7 +185,10 @@
         <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
     </div>
 
-    <div id="asu_content_well">    
+    <div id="asu_content_well">
+        <c:SCPageNotifications viewingAs="{!viewingAs}"
+                               firstName="{!firstName}"
+                               lastName="{!lastName}"/>
         <div class="container">
             <ol class="breadcrumb">
                 <li><a href="/studentSC">Back</a></li>
@@ -187,7 +202,7 @@
                         <p>ASU values your experience and wants to ensure that you receive quality service. The My ASU Service Center is your personalized online resource for reporting issues and getting help. How can ASU improve the way we provide support through the Service Center?</p><br />
 
                         <apex:outputText value="Feedback Comments:"/><br />
-                        <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width:100%;border:solid 1px #999;border-radius:2px;" rows="5" cols="120"/><br />
+                        <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width:100%;border:solid 1px #999;border-radius:2px;" rows="5" cols="120" required="true"/><br />
                         <apex:commandButton value="Submit" action="{!submit}" styleClass="kbbtn submitButton" style="margin-top:15px;width:45px;"/>
                     </apex:form>
                 </div>
@@ -207,6 +222,30 @@
             <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
         </ul>
     </div>
+
+    <script>
+        viewAsLinks();
+
+        function viewAsLinks() {
+            var masqCookie = "{!masqScopeIdCookie}";
+            var viewingAs = "{!viewingAs}";
+            if (masqCookie != "" && viewingAs == "true") {
+                $("a").each(function() {
+                    var href = this.href;
+                    if (href.indexOf("force") > -1)
+                    {
+                        if (href.indexOf("?") != -1) {
+                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        else {
+                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        $(this).attr("href", href);
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 </html>
 </apex:page>

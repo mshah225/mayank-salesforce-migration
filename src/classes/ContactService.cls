@@ -54,7 +54,6 @@ public class ContactService
             con.EMPLID__c = String.valueOf(tempEmplId);
             contactList.add(con);
         }
-
         return contactList;
     }
     

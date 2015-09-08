@@ -137,14 +137,14 @@ public without sharing class LeadHandler
 		Set<Id> LeadsRequiringLIReparenting = new Set<Id>();
 		Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
 		Integer count = 0;
-		
-		for (Lead l: leadsToConvert) 
+
+		for (Lead l: leadsToConvert)
 		{
 			Database.LeadConvert lc = new Database.LeadConvert();
 			lc.SetLeadId(l.Id);
 			lc.setConvertedStatus(convertedStatus.MasterLabel);
 
-			if (l.Convert_Contact__c != null) 
+			if (l.Convert_Contact__c != null)
 			{
 				lc.setContactId(l.Convert_Contact__c);
 				lc.setAccountId(l.Convert_Contact_Account_ID__c);
@@ -156,7 +156,7 @@ public without sharing class LeadHandler
 			{
 				leadsNeedingPreviousEducation.add(l.Id);
 			}
-			
+
 			// Reparent related Lead Interests if we're not creating an Opportunity
 			// Deactivate related Lead Interests if we are creating an Opportunity
 			if (!l.Convert_Create_Opportunity__c)
@@ -169,12 +169,12 @@ public without sharing class LeadHandler
 			}
 
 			lc.setDoNotCreateOpportunity(!l.Convert_Create_Opportunity__c);
-						
+
 			leadConvertList.add(lc);
 			count++;
 
 			// ConvertLead allows up to 100 leads per call according to docs, but 99 seems to be the actual limit
-			if (count == 100) 
+			if (count == 100)
 			{
 				leadConvertBatches.add(leadConvertList.clone());
 				leadConvertList.clear();
@@ -182,83 +182,22 @@ public without sharing class LeadHandler
 			}
 		}
 
-		// If we have any Leadconverts left over, add the final batch 
+		// If we have any Leadconverts left over, add the final batch
 		if (count > 0)
 		{
 			leadConvertBatches.add(leadConvertList);
 		}
-			
-		for (List<Database.Leadconvert> lcList: leadConvertBatches) 
+
+		for (List<Database.Leadconvert> lcList: leadConvertBatches)
 		{
 	        List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcList, false);
 	        leadConversionResults.addAll(lcResultList);
 		}
-		
-		reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
-        createConvertedPreviousEducation(leadsNeedingPreviousEducation);
-	}
 
-	private void createConvertedPreviousEducation(Set<Id> leadIds)
-	{
-		if (leadIds.size() == 0)
-		{
-			return;
-		}
-
-		List<Lead> leadList = new List<Lead>([SELECT Id, ConvertedContactId, Last_Institution_Attended__c, Last_Institution_Attended__r.Institution_Type__c, Last_Institution_GPA__c, Last_Institution_GPA_Scale__c, College_Transfer_Hours__c, High_School_Class_Percent__c, High_School_Class_Rank__c, High_School_Class_Size__c FROM Lead WHERE Id in :leadIds]);
-		List<Previous_Education__c> peList = new List<Previous_Education__c>();
-
-		for (Lead l: leadList)
-		{
-			Previous_Education__c pe = new Previous_Education__c(Contact__c = l.ConvertedContactId,
-																 Account__c = l.Last_Institution_Attended__c);
-
-			if (l.Last_Institution_Attended__r.Institution_Type__c == 'HS')
-			{
-				pe.Class_Rank__c = l.High_School_Class_Rank__c;
-				pe.Class_Size__c = l.High_School_Class_Size__c;
-			}
-
-			pe.GPA__c = l.Last_Institution_GPA__c;
-			peList.add(pe);
-		}
-
-		try
-		{
-			insert peList;
-		}
-		catch (Exception e)
-		{
-			throw e;
-		}
-	}
-	
-	private void reparentRelatedLeadInterests(Set<Id> leadIds) 
-	{
-		if (leadIds.size() == 0)
-		{
-			return;
-		}
-			
-		List<Lead_Interest__c> leadInterestList = [SELECT Id, OwnerId, IsDeleted, Name, RecordType.Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, Leads__c, Eligibility__c, Plan__c, Contact__c, Status__c, Term__c, Primary_Source__c, Secondary_Source__c, Type__c, College__c, Academic_Interest__c, Test_Record__c, Qualifying__c, Send_Email__c, External_Application_Number__c, Send_Email_ID__c 
-												   FROM Lead_Interest__c 
-												   WHERE Leads__c IN :leadIds];
-
-		if (leadInterestList.size() == 0)
-		{
-			return;
-		}
-
-		// Need to requery to get the Converted Contact Ids
-		Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>([SELECT Id, ConvertedContactId 
-															  FROM Lead 
-															  WHERE Id IN :leadIds]);
-		
-		for (Lead_Interest__c li: leadInterestList) 
-		{
-			li.Contact__c = leadToContactIdMap.get(li.leads__c).ConvertedContactId;
-		}
-		
+		List<Lead_Interest__c> leadInterestList = LeadService.reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
 		update leadInterestList;
-	}
+
+        List<Previous_Education__c> previousEducationList = LeadService.createConvertedPreviousEducation(leadsNeedingPreviousEducation);
+	    insert previousEducationList;
+    }
 }

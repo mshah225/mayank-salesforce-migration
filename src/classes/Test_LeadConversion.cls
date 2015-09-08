@@ -1,7 +1,7 @@
 @isTest
 public class Test_LeadConversion
 {
-	static final Integer MAX_LEAD = 400;  // The number of leads to convert at once
+	static final Integer MAX_LEAD = 200;  // The number of leads to convert at once
 	static final Integer QUERY_LIMIT_THRESHOLD = 85;  // The number of acceptable queries to run during lead conversion
 	
 	@testSetup
@@ -58,5 +58,6 @@ public class Test_LeadConversion
 
 		// Acceptable query threshold is less than 85% of the maximum query limit
 		System.assert(soqlQueries < QUERY_LIMIT_THRESHOLD, 'Exceeded the acceptable SOQL query limit during conversion of ' + MAX_LEAD + ' leads: ' + soqlQueries);
+
 	}
 }

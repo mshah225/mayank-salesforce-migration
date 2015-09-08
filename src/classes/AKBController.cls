@@ -1,5 +1,5 @@
 public without sharing class AKBController 
-{    
+{
     private ServiceCenter sc;
 
     public AKB_Article_Feedback__c feedbackHelpful { get; set; }

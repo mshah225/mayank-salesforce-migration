@@ -13,7 +13,6 @@ public with sharing class vfListPaginationController
 
     public vfListPaginationController() { setUp(); }
     public vfListPaginationController(ServiceCenter controller) { setUp(); }
-    public vfListPaginationController(AKBController controller) { }
 
     public void setUp()
     {

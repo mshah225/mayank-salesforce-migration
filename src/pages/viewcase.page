@@ -155,7 +155,7 @@
     </script>
 </head>
 
-<body onload="viewAsLinks()">
+<body>
     <div id="main-search" class="main-search closed"></div>
     <c:SCHeader firstName="{!firstName}" 
                 lastName="{!lastName}" 
@@ -285,6 +285,8 @@
     </script>
 
     <script>
+        viewAsLinks();
+
         function viewAsLinks() {
             var masqCookie = "{!masqScopeIdCookie}";
             var viewingAs = "{!viewingAs}";

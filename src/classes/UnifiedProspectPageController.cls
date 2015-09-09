@@ -25,6 +25,7 @@ public class UnifiedProspectPageController
     public String career { get; set; }
     public String collegeSelected { get; set; }
     public String planSelected { get; set; }
+    public Boolean error { get; set; }
     
     public void setContact(Contact contact)
     {
@@ -261,10 +262,20 @@ public class UnifiedProspectPageController
         getCaseC();
         try 
         {
-            Boolean error = false;
+            error = false;
+            if(contact.Phone == null && contact.MailingPostalCode == null)
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must provide either a Phone number or a Zip code!'));
+                error = true;
+            }
             if(career == '--Select--')
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a career!'));
+                error = true;
+            }
+            if(career == 'graduate' && collegeSelected == '0')
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a college!'));
                 error = true;
             }
             if (originSelection != '--Select--' && elId != null) 
@@ -277,26 +288,17 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 error = true;
             }
-            if (pickSelection != null && pickSelection != '--Select--' && selectedInterestId == null) 
-            {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
-                error = true;
-            }
             if (originSelection != '--Select--' && elId == null && caseC.Functional_Group__c == null) 
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'When selecting an Origin, you must also select a Functional Group.'));
                 error = true;
             }
-            if(contact.Phone == null && contact.MailingPostalCode == null)
+            if (pickSelection != null && pickSelection != '--Select--' && selectedInterestId == null) 
             {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must provide either a Phone number or a Zip code!'));
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
                 error = true;
             }
-            if(career == 'graduate' && collegeSelected == '0')
-            {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a college!'));
-                error = true;
-            }
+
             if(error)
             {
                return false; 

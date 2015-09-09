@@ -103,12 +103,11 @@
 </head>
 
 <body id="contentBody" class="content">
-    <apex:pageMessage rendered="{!$CurrentPage.parameters.saved == 'true'}" severity="confirm" >
-       Successfully saved new prospect.
-    </apex:pageMessage>
     <apex:form id="unifiedForm" >
-    <!--<apex:outputText id="myInt" value="{!selectedInterestId}"/>-->
         <apex:pageBlock title="ASU New Prospect Entry Form (Graduate and Undergraduate)" id="undergradBlock">
+            <apex:pageMessage rendered="{!$CurrentPage.parameters.saved == 'true' && error == false}" severity="confirm" >
+               Successfully saved new prospect.
+            </apex:pageMessage>
             <apex:pageMessages id="msgs"/>
             
             <apex:pageBlockSection id="contactInfo" title="Contact Information" collapsible="false" columns="2">
@@ -220,7 +219,7 @@
                          <apex:selectOption itemValue="ASU Location" />
                          <apex:selectOption itemValue="ASU Colleges" />
                          <apex:selectOption itemValue="Academic" />
-                         <apex:actionSupport event="onchange" reRender="interestsPicks" status="intEvent"/>
+                         <apex:actionSupport event="onchange" reRender="interestsPicks, msgs" status="intEvent"/>
                     </apex:selectList>
                     <apex:actionStatus id="intEvent">
                         <apex:facet name="start" >
@@ -278,7 +277,7 @@
                                     <apex:inputField id="cSubCate" value="{!caseC.Sub_Category__c}"/><br /><br />
                                 </td>
                                 <td style="padding-left:20px;border-left:solid 1px #ccc;width:80%;">
-                                    <apex:outputText ><b>Notes (Optional):</b></apex:outputText><br /><br />
+                                    <apex:outputText ><b>Notes</b></apex:outputText><br /><br />
 
                                     <apex:outputLabel for="cSub">Subject:</apex:outputLabel><br />
                                     <apex:inputField id="cSub" value="{!caseC.Subject}" style="width:250px;padding:5px;"/><br /><br />
@@ -311,8 +310,8 @@
                                     <apex:outputPanel layout="block" style="overflow:auto;height:250px">
                                         <apex:outputLabel for="eventSearchInput"><b>Search:</b></apex:outputLabel><br /><br />
                                         <apex:inputText id="eventSearchInput" value="{!eventSearchString}" html-placeholder="Enter search terms" style="width:250px;padding:5px;">
-                                            <apex:actionSupport event="onkeyup" action="{!eventSearch}" reRender="eventList,eventPanel" status="actStatusEvent"/>
-                                            <apex:actionSupport event="onchange" action="{!eventSearch}" reRender="eventList,eventPanel" status="actStatusEvent"/>
+                                            <apex:actionSupport event="onkeyup" action="{!eventSearch}" reRender="eventList,eventPanel,msgs" status="actStatusEvent"/>
+                                            <apex:actionSupport event="onchange" action="{!eventSearch}" reRender="eventList,eventPanel,msgs" status="actStatusEvent"/>
                                         </apex:inputText>
                                         <apex:actionStatus id="actStatusEvent">
                                             <apex:facet name="start" >
@@ -325,7 +324,7 @@
                                         <apex:outputPanel id="eventPanel">
                                             <apex:dataTable id="eventList" value="{!eventList}" var="el" width="100%" cellpadding="8" rowClasses="even,odds" rendered="{!IF(eventSearchString != null,true,false)}">
                                                 <apex:column >
-                                                    <apex:commandLink value="Select" reRender="elIdInput" status="actStatusEvent1">
+                                                    <apex:commandLink value="Select" reRender="elIdInput,msgs" status="actStatusEvent1">
                                                         <apex:param name="elId" value="{!el.Id}" assignTo="{!elId}"/>
                                                         <apex:param name="eventName" value="{!el.Name}" assignTo="{!eventName}"/>
                                                     </apex:commandLink>

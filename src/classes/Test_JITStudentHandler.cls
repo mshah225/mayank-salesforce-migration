@@ -1,20 +1,22 @@
 @isTest
 public with sharing class Test_JITStudentHandler
 {
-    @isTest static void testJITServiceCenterJustFedId()
+    @testSetup static void setUpData()
     {
         Contact testContact = ContactService.createTestContact();
-        testContact.ASURite_ID__c = 'testus';
-        insert testContact;
+        testContact.ASURite_ID__c = 'testJIT';
 
-        Map<String, String> chatterUserMap = new Map<String, String>();
-        chatterUserMap.put('User.FederationIdentifier', 'testus@asu.edu');
+        insert testContact;
+    }
+
+    @isTest static void testJITServiceCenterJustFedId()
+    {
+        Map<String, String> attributes = new Map<String, String>();
+        attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
 
         JITStudentHandler jit = new JITStudentHandler();
 
-        Test.startTest();
-        User testUser = jit.createUser(null, null, null, null, chatterUserMap, null);
-        Test.stopTest();
+        User testUser = jit.createUser(null, null, null, null, attributes, null);
 
         System.debug(testUser);
         System.assertNotEquals(null, testUser);
@@ -22,22 +24,16 @@ public with sharing class Test_JITStudentHandler
 
     @isTest static void testServiceCenterUserCreation()
     {
-        Map<String, String> chatterUserMap = new Map<String, String>();
-        chatterUserMap.put('User.Username', 'thesetestresultsdoe@asu.edu');
-        chatterUserMap.put('User.FederationIdentifier', 'testus@asu.edu');
-        chatterUserMap.put('User.Email', 'testus@asu.edu');
-        chatterUserMap.put('User.FirstName', 'Crazy');
-        chatterUserMap.put('User.LastName', 'Test');
+        Map<String, String> attributes = new Map<String, String>();
+        attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
+        attributes.put('User.FirstName', 'Crazy');
+        attributes.put('User.LastName', 'Test');
 
         JITStudentHandler jit = new JITStudentHandler();
 
-        Test.startTest();
-        User testUser = jit.createUser(null, null, null, null, chatterUserMap, null);
-        Test.stopTest();
+        User testUser = jit.createUser(null, null, null, null, attributes, null);
 
         System.debug(testUser);
-        System.assertEquals('thesetestresultsdoe@asu.edu', testUser.UserName);
-        System.assertEquals('Crazy', testUser.FirstName);
-        System.assertEquals('Test', testUser.LastName);
+        System.assertNotEquals(null, testUser);
     }
 }

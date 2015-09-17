@@ -4,7 +4,9 @@ global class JITStudentHandler implements Auth.SamlJitHandler
             String federationIdentifier, Map<String, String> attributes, String assertion)
     {
         String fedId = attributes.get('User.FederationIdentifier');
-        List<User> dupeCheck = [
+
+        List<User> dupeCheck = new List<User>();
+        dupeCheck = [
             SELECT Id, FirstName, LastName, Username, ProfileId, Alias, TimeZoneSidKey, Email,
                 EmailEncodingKey, LocaleSidKey, LanguageLocaleKey, FederationIdentifier,
                 CommunityNickname
@@ -50,32 +52,14 @@ global class JITStudentHandler implements Auth.SamlJitHandler
             {
                 String fedId = attributes.get('User.FederationIdentifier');
                 String[] fedIdSplit = fedId.split('@');
-                u.FederationIdentifier = fedIdSplit[0] + '@asu.edu';
+                String asurite = fedIdSplit[0];
+                u.FederationIdentifier = asurite + '@asu.edu';
 
                 List<Contact> contactLookup = [
                         SELECT Id, FirstName, LastName, CAP__c
                         FROM Contact
-                        WHERE ASURite_ID__c = :fedIdSplit[0]
-                        LIMIT 1
+                        WHERE ASURite_ID__c = :asurite
                 ];
-
-                if (attributes.containsKey('User.Username'))
-                {
-                    u.Username = attributes.get('User.Username');
-                }
-                else
-                {
-                    u.UserName = 'community_' + u.FederationIdentifier;
-                }
-
-                if (attributes.containsKey('User.Email'))
-                {
-                    u.Email = attributes.get('User.Email');
-                }
-                else
-                {
-                    u.Email = fedIdSplit[0] + '@asu.edu';
-                }
 
                 if (attributes.containsKey('User.FirstName')
                         && attributes.containsKey('User.LastName'))
@@ -100,8 +84,10 @@ global class JITStudentHandler implements Auth.SamlJitHandler
                     u.ProfileId = p.Id;
                 }
 
-                u.CommunityNickname = fedIdSplit[0];
-                u.Alias = fedIdSplit[0];
+                u.Username = 'community_' + asurite + '@asu.edu';
+                u.Email = attributes.get('User.FederationIdentifier');
+                u.CommunityNickname = asurite + '_comm';
+                u.Alias = asurite;
                 u.TimeZoneSidKey = 'America/Phoenix';
                 u.LocaleSidKey = 'en_US';
                 u.EmailEncodingKey = 'ISO-8859-1';

@@ -5,7 +5,9 @@ global class JITUserHandler implements Auth.SamlJitHandler
     {
         String fedId = attributes.get('User.FederationIdentifier');
         String[] fedIdSplit = fedId.split('@');
-        String searchFedId = fedIdSplit[0] + '@admin.asu.edu';
+        String asurite = fedIdSplit[0];
+        String searchFedId = asurite + '@admin.asu.edu';
+
         List<User> dupeCheck = [
             SELECT Id, FirstName, LastName, Username, ProfileId, Alias, TimeZoneSidKey, Email,
                 EmailEncodingKey, LocaleSidKey, LanguageLocaleKey, FederationIdentifier
@@ -51,25 +53,8 @@ global class JITUserHandler implements Auth.SamlJitHandler
             {
                 String fedId = attributes.get('User.FederationIdentifier');
                 String[] fedIdSplit = fedId.split('@');
-                u.FederationIdentifier = fedIdSplit[0] + '@admin.asu.edu';
-
-                if (attributes.containsKey('User.Username'))
-                {
-                    u.Username = attributes.get('User.Username');
-                }
-                else
-                {
-                    u.UserName = fedIdSplit[0] + '@asu.edu';
-                }
-
-                if (attributes.containsKey('User.Email'))
-                {
-                    u.Email = attributes.get('User.Email');
-                }
-                else
-                {
-                    u.Email = fedIdSplit[0] + '@asu.edu';
-                }
+                String asurite = fedIdSplit[0];
+                u.FederationIdentifier = asurite + '@admin.asu.edu';
 
                 if (attributes.containsKey('User.FirstName')
                         && attributes.containsKey('User.LastName'))
@@ -82,7 +67,7 @@ global class JITUserHandler implements Auth.SamlJitHandler
                     List<Contact> contactLookup = [
                         SELECT FirstName, LastName
                         FROM Contact
-                        WHERE ASURite_ID__c = :fedIdSplit[0]
+                        WHERE ASURite_ID__c = :asurite
                         LIMIT 1
                     ];
 
@@ -90,8 +75,25 @@ global class JITUserHandler implements Auth.SamlJitHandler
                     u.LastName = contactLookup[0].LastName;
                 }
 
-                //u.CommunityNickname = fedIdSplit[0] + 'comm';
-                u.Alias = fedIdSplit[0];
+                String fullURL = URL.getSalesforceBaseUrl().toExternalForm();
+                System.debug(fullURL);
+
+                String[] splitArray = fullURL.split('\\.');
+                System.debug(splitArray[0]);
+
+                if(splitArray[0].contains('--'))
+                {
+                    String[] finalArray = splitArray[0].split('--');
+                    system.debug(finalArray[1]);
+
+                    u.UserName = asurite + '@asu.edu.' + finalArray[1];
+                }
+                else {
+                    u.UserName = asurite + '@asu.edu';
+                }
+
+                u.Email = asurite + '@asu.edu';
+                u.Alias = asurite;
                 Profile p = [SELECT Id FROM Profile WHERE Name = 'Chatter Free User'];
                 u.ProfileId = p.Id;
                 u.TimeZoneSidKey = 'America/Phoenix';

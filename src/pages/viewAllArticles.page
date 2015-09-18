@@ -116,7 +116,7 @@
                                                             characters"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!startSearch}"
+                                                                action="{!articleSearch}"
                                                                 id="submitButton"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
@@ -145,24 +145,22 @@
                                         <h5><b>No results found for '{!searchstring}'</b></h5>
                                     </apex:outputText>
                                     <hr style="margin-top:5px;"/>
-                                    <apex:repeat value="{!articleList}" var="kav">
-                                        <apex:dataTable value="{!kav}"
-                                                        var="article"
-                                                        style="width:100%;">
-                                            <apex:column style="vertical-align:top;width:10px;">
-                                                &#8226;&nbsp;
-                                            </apex:column>
+                                    <apex:dataTable value="{!currentViewList}"
+                                                    var="article"
+                                                    style="width:100%;">
+                                        <apex:column style="vertical-align:top;width:10px;">
+                                            &#8226;&nbsp;
+                                        </apex:column>
 
-                                            <apex:column>
-                                                <apex:outputLink value="/akb?id={!article
-                                                .KnowledgeArticleId}&source=viewAllArticles">
-                                                    <b>{!article.Title}</b>
-                                                </apex:outputLink>
-                                                <br />
-                                                <div style="height:15px;"></div>
-                                            </apex:column>
-                                        </apex:dataTable>
-                                    </apex:repeat>
+                                        <apex:column>
+                                            <apex:outputLink value="/akb?id={!article
+                                            .KnowledgeArticleId}&source=viewAllArticles">
+                                                {!article.Title}
+                                            </apex:outputLink>
+                                            <br />
+                                            <div style="height:15px;"></div>
+                                        </apex:column>
+                                    </apex:dataTable>
                                     <br />
                                     <div class="row">
                                         <div class="col-md-12">
@@ -301,7 +299,7 @@
                                                 <td>
                                                     <apex:outputLink value="/akb?id={!article
                                                     .id}&source=viewAllArticles">
-                                                        <b>{!article.title}</b>
+                                                        {!article.title}
                                                     </apex:outputLink>
                                                     <br />
                                                     <div style="height:15px;"></div>

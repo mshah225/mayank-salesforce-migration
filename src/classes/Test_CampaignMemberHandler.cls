@@ -142,7 +142,7 @@ public class Test_CampaignMemberHandler {
         system.assert(cm1.Is_Primary_Interest__c == true);
         system.assertEquals(camp1.Id, opp.primary_interest__c);
 
-        /*cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
         update cm1;
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         cm1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
@@ -160,7 +160,7 @@ public class Test_CampaignMemberHandler {
 
         system.assert(cm3.Opportunity__c == opp.Id);
         system.assert(cm3.Is_Primary_Interest__c == true);
-        system.assertEquals(camp3.Id, opp.primary_interest__c);*/
+        system.assertEquals(camp3.Id, opp.primary_interest__c);
 
         Test.stopTest();
 	}

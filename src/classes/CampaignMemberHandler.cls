@@ -7,9 +7,12 @@ public without sharing class CampaignMemberHandler implements ITrigger
     Set<Id> cmIds2 = new Set<Id>();
     Set<CampaignMember> objectsToFalsify = new Set<CampaignMember>();
     Set<CampaignMember> primaries = new Set<CampaignMember>();
+    Set<CampaignMember> localObjectsToFalsify = new Set<CampaignMember>();
+    Set<CampaignMember> localPrimaries = new Set<CampaignMember>();
+    List<Id> contactIdsToConsider = new List<Id>();
+    List<Id> leadIdsToConsider = new List<Id>();
     List<Id> contactIdsToFalsify = new List<Id>();
     List<Id> leadIdsToFalsify = new List<Id>();
-
     List<Id> primaryContactIds = new List<Id>();
     List<Id> primaryLeadIds = new List<Id>();
 
@@ -25,6 +28,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkBefore() 
     {
+        System.debug('BULK BEFORE');
         Set<Id> contactIds = new Set<Id>();
         Set<Id> leadIds = new Set<Id>();
         Set<Id> campaignIds = new Set<Id>();
@@ -325,8 +329,9 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkAfter() 
     {
+        System.debug('BULK AFTER');
         //If we're deleting, get the IDs of the CMs we're deleting
-        if (Trigger.IsDelete) 
+        /*if (Trigger.IsDelete) 
         {
             cmIds = Trigger.oldMap.keySet();
             System.debug('CM IDS: ' + cmIds);
@@ -479,7 +484,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     leadsToUpdate.add(l);
                 }
             }
-        }
+        }*/
     }
     
     /**
@@ -491,17 +496,21 @@ public without sharing class CampaignMemberHandler implements ITrigger
     public void beforeInsert(SObject so) 
     {
         CampaignMember cm = (CampaignMember)so;
+        Boolean addtoLocalObjectsToFalsfiy = false;
+        Boolean addToLocalPrimaries = false;
 
         if(objectsToFalsify.contains(cm))
         {
           objectsToFalsify.remove(cm);
           cm.Is_Primary_Interest__c = FALSE;
+          addtoLocalObjectsToFalsfiy = true;
         }
         
         if(primaries.contains(cm))
         {
           primaries.remove(cm);
           cm.Is_Primary_Interest__c = TRUE;
+          addToLocalPrimaries = true;
         }
 
         //Update the Last Member Status Change date of the CM to now
@@ -511,6 +520,16 @@ public without sharing class CampaignMemberHandler implements ITrigger
         if (cm.Opportunity__c == null && OpportunitiesByContactMap.containsKey(cm.ContactId)) 
         {
             cm.Opportunity__c = OpportunitiesByContactMap.get(cm.ContactId)[0].Id;
+        }
+
+        if(addtoLocalObjectsToFalsfiy)
+        {
+          localObjectsToFalsify.add(cm);
+        }
+
+        if(addToLocalPrimaries)
+        {
+          localPrimaries.add(cm);
         }
     }
     
@@ -605,6 +624,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
 */
     public void andFinally() 
     {
+        System.debug('AND FINALLY');
         Set<Id> interestOpportunityIds = new Set<Id>();
         Set<Id> interestContactIds = new Set<Id>();
         Set<Id> interestLeadIds = new Set<Id>();
@@ -612,7 +632,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
         
         Map<Id, List<CampaignMember>> interestRecordsByContactOrLeadMap = new Map<Id, List<CampaignMember>>(); 
         List<Opportunity> interestOpportunities = new List<Opportunity>();
-        //List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
         
         //Get all Interest / Scholarship CMs from the list that is being affected
         List<CampaignMember> cmList = new List<CampaignMember>([SELECT Id, CampaignId, Opportunity__c, ContactId, LeadId, Campaign.RecordType.DeveloperName FROM CampaignMember WHERE Id IN :cmIds AND Campaign.RecordType.DeveloperName IN ('Interest', 'Scholarship')]);
@@ -689,6 +708,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
             for(CampaignMember cm : objectsToFalsify)
             {
                 cm.Is_Primary_Interest__c = FALSE;
+                itemsToUpdate.add(cm);
+
+                //For each Old Primary 
+                //If it has a Contact with an Opportunity, update that Opportunity to not be Primary 
+                //If it has a Lead, update that Lead to not be Primary
                 if(cm.ContactId != null)
                 {
                     contactIdsToFalsify.add(cm.ContactId);
@@ -698,13 +722,16 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 {
                    leadIdsToFalsify.add(cm.LeadId); 
                 }
-                //For each Old Primary //If it has a Contact with an Opportunity, update that Opportunity to not be Primary //If it has a Lead, update that Lead to not be Primary
-                itemsToUpdate.add(cm);
             }
 
             for(CampaignMember cm : primaries)
             {
                 cm.Is_Primary_Interest__c = TRUE;
+                itemsToUpdate.add(cm);
+
+                //For each New Primary
+                //If it has a Contact with an Opportunity, update that Opportunity to be Primary
+                //If it has a Lead, update that Lead to be Primary
                 if(cm.ContactId != null)
                 {
                     primaryContactIds.add(cm.ContactId);
@@ -714,10 +741,35 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 {
                    primaryLeadIds.add(cm.LeadId); 
                 }
-                //For each New Primary
-                //If it has a Contact with an Opportunity, update that Opportunity to be Primary
-                //If it has a Lead, update that Lead to be Primary
-                itemsToUpdate.add(cm);
+            }
+
+            System.debug('LOCAL OBJECTS TO FALSIFY: ' + localObjectsToFalsify);
+            System.debug('LOCAL PRIMARIES: ' + localPrimaries);
+
+            for(CampaignMember cm : localObjectsToFalsify)
+            {
+                if(cm.ContactId != null)
+                {
+                    contactIdsToFalsify.add(cm.ContactId);
+                }
+
+                if(cm.LeadId != null)
+                {
+                   leadIdsToFalsify.add(cm.LeadId); 
+                }
+            }
+
+            for(CampaignMember cm : localPrimaries)
+            {
+                if(cm.ContactId != null)
+                {
+                    primaryContactIds.add(cm.ContactId);
+                }
+
+                if(cm.LeadId != null)
+                {
+                   primaryLeadIds.add(cm.LeadId); 
+                }
             }
 
             run = FALSE;
@@ -748,10 +800,10 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     opportunityContactIds.add(o.Contact__c);
                 }
                 Map<Id, Id> cmIDsByContactIds = new Map<Id, Id>();
-                List<CampaignMember> opportunityCMs = [SELECT ContactId, Id FROM CampaignMember Where ContactId IN :opportunityContactIds];
+                List<CampaignMember> opportunityCMs = [SELECT Id, ContactId, CampaignId FROM CampaignMember Where ContactId IN :opportunityContactIds];
                 for(CampaignMember cm : opportunityCMs)
                 {
-                    cmIDsByContactIds.put(cm.ContactId, cm.Id);
+                    cmIDsByContactIds.put(cm.ContactId, cm.CampaignId);
                 }
 
                 for(Opportunity o : opps)
@@ -788,10 +840,10 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 }
 
                 Map<Id, Id> cmIDsByLeadIds = new Map<Id, Id>();
-                List<CampaignMember> leadCMs = [SELECT LeadId, Id FROM CampaignMember Where LeadId IN :leadIds];
+                List<CampaignMember> leadCMs = [SELECT LeadId, CampaignId, Id FROM CampaignMember Where LeadId IN :leadIds];
                 for(CampaignMember cm : leadCMs)
                 {
-                    cmIDsByLeadIds.put(cm.LeadId, cm.Id);
+                    cmIDsByLeadIds.put(cm.LeadId, cm.CampaignId);
                 }
 
                 for(Lead l : leads)
@@ -803,16 +855,18 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     }
                 }
             }
-        }
 
-        if(opportunitiesToUpdate.size() > 0)
-        {
-            update opportunitiesToUpdate;
-        }
+            if(opportunitiesToUpdate.size() > 0)
+            {
+                System.debug('OPPORTUNITIES TO UPDATE: ' + opportunitiesToUpdate);
+                update opportunitiesToUpdate;
+            }
 
-        if(leadsToUpdate.size() > 0)
-        {
-            update leadsToUpdate;
+            if(leadsToUpdate.size() > 0)
+            {
+                System.debug('LEADS TO UPDATE: ' + leadsToupdate);
+                update leadsToUpdate;
+            }
         }
     }
 }

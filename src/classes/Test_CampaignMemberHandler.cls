@@ -121,6 +121,7 @@ public class Test_CampaignMemberHandler {
         CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp1.Id);
         system.assert(cm1.Is_Primary_Interest__c == false);
         
+        System.debug('TEST 1');
         insert cm1;
 
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
@@ -134,6 +135,7 @@ public class Test_CampaignMemberHandler {
         system.assert(cm2.Is_Primary_Interest__c == false);
 
         Test.startTest();
+        System.debug('TEST 2');
         insert cm2;
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         cm2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
@@ -143,6 +145,7 @@ public class Test_CampaignMemberHandler {
         system.assertEquals(camp1.Id, opp.primary_interest__c);
 
         cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        System.debug('TEST 3');
         update cm1;
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         cm1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
@@ -154,6 +157,7 @@ public class Test_CampaignMemberHandler {
         CampaignMember cm3 = createCampaignMemberNoInsert(contact, camp3.Id);
         system.assert(cm3.Is_Primary_Interest__c == false);
 
+        System.debug('TEST 4');
         insert cm3;
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         cm3 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp3.Id LIMIT 1];

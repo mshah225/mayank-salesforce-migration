@@ -38,15 +38,15 @@ public with sharing class LeadService
             Lead leadData = contactIdToLeadMap.get(opp.Contact__c);
 
             opp.Career__c = leadData.Career__c;
-//            opp.Enrollment_Term__c = leadData.Enrollment_Term__c;
+            opp.Term__c = leadData.Enrollment_Term__c;
             opp.First_Generation__c = leadData.First_Generation__c;
             opp.Online_Degree__c = leadData.Online__c;
             opp.International_Student__c = leadData.International_Student__c;
             opp.Potential_National_Scholar__c = leadData.Potential_National_Scholar__c;
-//            opp.Potential_WUE__c = leadData.Potential_WUE__c;
+            opp.Potential_WUE__c = leadData.Potential_WUE__c;
             opp.Search_Segment__c = leadData.Search_Segment__c;
             opp.Self_Reported_SES__c = leadData.Self_Reported_SES__c;
-//            opp.Veteran_Status__c = leadData.Veteran_Status__c;
+            opp.Military_Status__c = leadData.Veteran_Status__c;
         }
 
         return opportunitiesToUpdate;

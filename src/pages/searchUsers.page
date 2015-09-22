@@ -82,9 +82,7 @@
                 <apex:commandButton id="clearBox" action="{!search}" styleClass="clearBtn" onclick="this.form.reset()" value="X" reRender="clearBox"/>
                 <br />
                 <br />
-                <apex:inputCheckbox label="Hide Community Users" id="hideCommunity" value="{!hideCommunity}">
-                    <apex:actionSupport event="onclick" action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()"/>
-                </apex:inputCheckbox>
+                <apex:inputCheckbox selected="true" label="Hide Community Users" id="hideCommunity" value="{!hideCommunity}" />
                 Hide Community Users
                 <br />
                 <br />

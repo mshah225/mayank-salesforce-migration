@@ -68,10 +68,6 @@
             }
         </style>
         
-        <!--<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
-        <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" />
-        <apex:stylesheet value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/css/theme.blue.css" />-->
-        
         <apex:includeScript value="{!$Resource.jQuery_1_11_1_Min}"/>
         <apex:includeScript value="{!$Resource.tablesorter_min_js}"/>
         <apex:stylesheet value="{!$Resource.Theme_Blue_css}"/>
@@ -79,15 +75,20 @@
     <body>
         <apex:form >
             <apex:pageBlock mode="maindetail">
-                <apex:inputText id="searchBox" value="{!searchString}" style="border-radius:2px;width:100%;max-width:400px;height:20px;" html-placeholder="Enter Search Terms Here" styleClass="form-control">
-                    <apex:actionSupport event="onkeyup" action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()"/>
-                </apex:inputText>
+                <apex:inputText id="searchBox" value="{!searchString}" style="border-radius:2px;width:100%;max-width:400px;height:20px;" html-placeholder="Enter Search Terms Here" styleClass="form-control" />
+                <apex:commandButton action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()" value="Search" id="submitButton" styleClass="myBtn"/>
+                <apex:commandButton value="Reset" action="{!clear}" reRender="list" status="actStatusId" styleClass="myBtn" oncomplete="tableSort()"/>
                 
-                <!--<apex:commandButton action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()" value="Search" id="submitButton" styleClass="myBtn"/>
-                <apex:commandButton value="Reset" action="{!clear}" reRender="list" status="actStatusId" styleClass="myBtn" oncomplete="tableSort()"/>-->
-                
-                <apex:commandButton id="clearBox" styleClass="clearBtn" onclick="this.form.reset()" value="X" reRender="clearBox"/>
-                <br /><br /><small><i>Search for User Id, Name, Profile Name, Contact Name, Contact Id, EmplId, ASURITE Id, Alias, Federation Id, or ASU User Type</i></small>
+                <apex:commandButton id="clearBox" action="{!search}" styleClass="clearBtn" onclick="this.form.reset()" value="X" reRender="clearBox"/>
+                <br />
+                <br />
+                <apex:inputCheckbox label="Hide Community Users" id="hideCommunity" value="{!hideCommunity}">
+                    <apex:actionSupport event="onclick" action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()"/>
+                </apex:inputCheckbox>
+                Hide Community Users
+                <br />
+                <br />
+                <small><i>Search for User Id, Name, Profile Name, EmplId, ASURITE Id, Alias, Federation Id</i></small>
                 <div style="margin-right:auto;margin-left:auto;">
                     <apex:actionStatus id="actStatusId" onstop="tableSort()">
                         <apex:facet name="start" >
@@ -95,8 +96,6 @@
                         </apex:facet>
                     </apex:actionStatus>
                 </div>
-                <!-- Debug Javascript
-                <button onclick="tableSort()">Sort</button>-->
                 <br />
                 <apex:outputText rendered="{!searchString != null}">
                     You searched for: {!searchString}
@@ -117,21 +116,11 @@
                                 <apex:outputText rendered="{!ISNULL(u.Contact.ASURite_ID__c)}">--</apex:outputText>
                             </apex:column>
                             
-                            <apex:column headerValue="Contact">
-                                <apex:outputLink rendered="{!NOT(ISNULL(u.Contact.Name))}" styleClass="clickLink" value="/{!u.ContactId}?noredirect=1" target="_blank">{!u.Contact.Name}</apex:outputLink>
-                                <apex:outputText rendered="{!ISNULL(u.Contact.Name)}">--</apex:outputText>
-                            </apex:column>
-                            
                             <apex:column headerValue="User Id" value="{!u.Id}" />
                             
                             <apex:column headerValue="Federation Id">
                                 <apex:outputText rendered="{!NOT(ISNULL(u.FederationIdentifier))}" value="{!u.FederationIdentifier}" />
                                 <apex:outputText rendered="{!ISNULL(u.FederationIdentifier)}">--</apex:outputText>
-                            </apex:column>
-                            
-                            <apex:column headerValue="ASU User Type">
-                                <apex:outputText rendered="{!NOT(ISNULL(u.asu_user_type__c))}" value="{!u.asu_user_type__c}"/>
-                                <apex:outputText rendered="{!ISNULL(u.asu_user_type__c)}">--</apex:outputText>
                             </apex:column>
                             
                             <apex:column headerValue="Profile" value="{!u.Profile.Name}" />

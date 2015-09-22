@@ -13,6 +13,11 @@ public with sharing class SearchUsers {
     List <User> uList = [SELECT Id, Name, Profile.Name, Contact.Name, ContactId, Contact.ASURite_Id__c, Alias, FederationIdentifier, ASU_User_Type__c, IsActive FROM User ORDER BY Name ASC LIMIT 50];
     public string searchString { get;set; }
     public Boolean hideCommunity {get;set;}
+
+    public SearchUsers()
+    {
+        hideCommunity = false;
+    }
     
     //Return the list to the page
     public List<User> getUList() {

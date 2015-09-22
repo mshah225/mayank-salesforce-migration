@@ -23,34 +23,6 @@
         word-break: break-word !important;
     }
 
-    .searchKB2 {
-        margin-bottom: -10px !important;
-    }
-
-    .searchBox {
-        height: 29px !important;
-        width: 63% !important;
-        max-width: 400px !important;
-        border-radius: 2px !important;
-        border: solid 1px #999 !important;
-        padding-left: 5px !important;
-        font-size: 1em !important;
-        -webkit-box-sizing: border-box !important;
-        -moz-box-sizing: border-box !important;
-        box-sizing: border-box !important;
-        padding: 4px !important;
-        vertical-align: bottom !important;
-    }
-
-    .searchBtn {
-        padding: 4px !important;
-        font-size: 1em !important;
-        height: 19px !important;
-        vertical-align: bottom !important;
-        margin: 0 !important;
-        margin-left: 2px !important;
-    }
-
     input[type=text]:focus, textarea:focus, input[type=submit]:focus {
         outline: none !important;
     }
@@ -63,92 +35,14 @@
         margin-left: 0 !important;
     }
 
-    .caSearchText {
-        height: 20px;
-    }
-
-    .outputText {
-        border-bottom: 1px dotted #000;
-    }
-
-    .contactPhone td {
-        padding: 0px !important;
-    }
-
-    .btn.kbbtn.btnLink:hover {
-        color: #fff !important;
-    }
-
-    .btn.btn-default.btn-success {
-        background-color: #568E14 !important;
-        color: #fff !important;
-        border: none !important;
-        border-radius: 2px !important;
-        padding: 5px;
-        padding-left: 10px;
-        padding-right:10px;
-    }
-
-    .btn.btn-default.btn-success:hover {
-        background-color: #4D8012 !important;
-    }
-
-    .myCasesTable tr {
-        border-bottom: solid 1px #e6e6e6;
-    }
-
-    .alert.alert-success, .alert.alert-danger {
-        border-radius: 0px;
-    }
-
-    .outputText:hover {
-        color: #990033;
-        text-decoration: none !important;
-    }
-
-    .btn.kbbtn.btnLink:hover {
-        color: #fff !important;
-    }
-
-    .caseField {
-        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-        box-sizing: border-box;
-        width: 100% !important;
-    }
-
-    .box a:hover {
-        color: #990033 !important;
-    }
-
-    .btn.btn-danger {
-        background-color: #990033 !important;
-        color: #fff !important;
-    }
-
-    .btn.btn-danger:hover {
-        background-color: #880022 !important;
-        color: #fff !important;
-    }
-
-    .btn.btn-warning {
-        background-color: #ffcb66 !important;
-        color: #000 !important;
-    }
-
-    .btn.btn-warning:hover {
-        background-color: #eeB30f !important;
-        color: #000 !important;
-    }
-
     .navbar {
         border-radius: 0 !important;
-        margin-bottom: 20px !important
+        margin-bottom: 10px !important
     }
 
     .navbar.navbar-default {
         height: 57px !important;
-        background-color: none !important;
+        background-color: #353535 !important;
         border: none !important;
     }
 
@@ -188,24 +82,28 @@
         margin-top: -5px !important;
       }
 
-    .navbar a {
+    /*.navbar a {
         color: #000 !important;
         font-size: 10pt !important;
     }
 
     .navbar a:hover {
         color: #990033 !important;
-    }
+    }*/
 
-    .navbar li {
+    /*.navbar li {
         margin-left: 0 !important;
         margin-right: 0 !important;
-    }
+    }*/
 
     a.navbar-brand.myasu {
         font-size: 15pt !important;
         margin-bottom: -5px !important;
         font-weight: 200 !important;
+    }
+
+    #myasu-tabs span.tab {
+        margin-left: -4px !important;
     }
 
     #myasu-tabs span.tab a {
@@ -224,18 +122,26 @@
     }
 
     #myasu-header-seo {
-        margin-bottom: 7px !important;
-        margin-top: -5px !important;
+        margin-bottom: 2px !important;
+        margin-top: -2px !important;
     }
 
     #myasu-header-seo a {
-        font-size: 17pt !important;
-        font-weight: 400 !important;
+        font-size: 16pt !important;
+        font-weight: bold !important;
         color: #000 !important;
     }
 
-    #myasu-header-seo a:hover, #myasu-header-seo:active, #myasu-header-seo:focus {
+    #myasu-header-seo a:hover, #myasu-header-seo a:active, #myasu-header-seo a:focus {
         text-decoration: none !important;
+    }
+
+    #asu_login_module:nth-child(2) {
+        margin-right: -5px !important;
+    }
+
+    #asu_login_module, #asu_search {
+        padding-right: 0px !important;
     }
 
     @-moz-document url-prefix() {
@@ -265,60 +171,139 @@
         font-weight: bold;
     }
 
-    img.asuarrow {
-        clip:rect(40px,200px,300px,0px);
-        margin-left: 270px;
-        margin-bottom: 65px;
+    .page-title {
+        padding: 5px;
+        background-color: #505558;
+        position: absolute;
+        width: 100%;
+        height: 35px;
+        border-top: 2px solid #505558 !important;
+        text-indent: 10px;
+        margin-bottom: 10px;
     }
 
-    .icon-bar {
-        background-color: #000 !important;
+    .username {
+        font-size: 11pt;
+        font-weight: 500;
+        margin-top: 8px;
+        margin-right: 8px;
+        line-height: 20px;
+    }
+
+    .viewAsLink {
+        padding: 0px !important;
+        font-size: 8pt !important;
+        background-color: #e4e4e4 !important;
+        padding: 2px 3px 2px 3px !important;
+        color: #333 !important;
+        margin-left: 2px !important;
+    }
+
+    .alert {
+        margin-bottom: 10px !important;
+    }
+
+    .alert.alert-success, .alert.alert-danger, .alert.alert-warning {
+        border-radius: 0px;
+    }
+
+    .searchKB2 {
+        margin-bottom: -10px !important;
+    }
+
+    .searchBox {
+        height: 29px !important;
+        width: 63% !important;
+        max-width: 400px !important;
+        border-radius: 2px !important;
+        border: solid 1px #999 !important;
+        padding-left: 5px !important;
+        font-size: 1em !important;
+        -webkit-box-sizing: border-box !important;
+        -moz-box-sizing: border-box !important;
+        box-sizing: border-box !important;
+        padding: 4px !important;
+        vertical-align: bottom !important;
+    }
+
+    .searchBtn {
+        padding: 4px !important;
+        font-size: 1em !important;
+        height: 19px !important;
+        vertical-align: bottom !important;
+        margin: 0 !important;
+        margin-left: 2px !important;
+    }
+
+    .caSearchText {
+        height: 20px;
+    }
+
+    .outputText {
+        border-bottom: 1px dotted #000;
+    }
+
+    .contactPhone td {
+        padding: 0px !important;
+    }
+
+    .btn.kbbtn.btnLink:hover {
+        color: #fff !important;
+    }
+
+    .btn.btn-default.btn-success {
+        background-color: #568E14 !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 2px !important;
+        padding: 5px;
+        padding-left: 10px;
+        padding-right:10px;
+    }
+
+    .btn.btn-default.btn-success:hover {
+        background-color: #4D8012 !important;
+    }
+
+    .myCasesTable tr {
+        border-bottom: solid 1px #e6e6e6;
+    }
+
+    .outputText:hover {
+        color: #990033;
+        text-decoration: none !important;
+    }
+
+    .btn.kbbtn.btnLink:hover {
+        color: #fff !important;
+    }
+
+    .caseField {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: 100% !important;
+    }
+
+    .box a:hover {
+        color: #990033 !important;
     }
 
     div#asu_content_well {
         margin-top: 10px !important;
     }
 
-    div.move {
-        font-size: 13pt;
-        margin-top: 15px;
-        background-image: none;
-        float: left;
-        display: inline;
-        padding-left: 18px;
+    #asu_content_well li {
+        padding: 0px !important;
     }
 
-    div.move:hover {
-        color: #990033;
+    #asu_content_well a {
+        border-bottom: none;
     }
 
-    div.movemyasu {
-        font-size:    16pt;
-        margin-top: 10px;
-        padding-left: 8px;
-        margin-right: -10px;
-        background-image: none;
-        float: left;
-        display: inline;
-    }
-
-    div.movemyasu:hover {
-        color: #990033;
-    }
-
-    #utility-area {
-        float: right;
-        right: 0;
-        padding-right: 5px;
-    }
-
-    #utility-area a {
-        color: #000;
-    }
-
-    #utility-area .user-name {
-        font-size: 12pt;
-        font-weight: bold;
+    #asu_content_well .container {
+        max-width: 1270px !important;
+        margin: auto !important;
     }
 
     .bPageBlock.brandSecondaryBrd.apexDefaultPageBlock.secondaryPalette {
@@ -329,26 +314,27 @@
         background-color: #fcfcfc;
     }
 
-    .myCasesTable{
+    .myCasesTable {
         margin-top: 5px;
         box-shadow: 0 1px 1px rgba(0,0,0,0.05);
     }
 
     .container {
         background: #fff !important;
-        width:        91% !important;
+        width: 91% !important;
         margin-top: 0px;
         padding: 0px !important;
     }
 
-    .splitcontentleft {
-        float: left;
+    .myasu-cont {
+        width: 91% !important;
+        padding: 0px !important;
+        max-width: 1270px !important;
+        margin: auto !important;
     }
 
-    .splitcontentright {
-        float: right;
-        margin-left:    50px;
-
+    #asu_mobile_hdr {
+        padding: 0px !important;
     }
 
     .pbTitle {
@@ -363,45 +349,6 @@
         text-align: center;
     }
 
-    .help a {
-        color: black;
-        border-bottom: 1px dotted #000;
-    }
-
-    .help a:hover {
-        color: #990033;
-        text-decoration: none;
-    }
-
-    .page-title {
-        padding: 5px;
-        background-color: #505558;
-        position: absolute;
-        width: 100%;
-        height: 35px;
-        border-top: 2px solid #505558 !important;
-        text-indent: 10px;
-        margin-bottom: 10px;
-    }
-
-    .qlinks {
-        position: absolute !important;
-        margin-left: 25px !important;
-        top: 100 !important;
-    }
-
-    .username {
-        font-size: 11pt;
-        font-weight: 500;
-        margin-top: -12px;
-        margin-right: 0px;
-    }
-
-    .firstbox {
-        margin-left: 10px;
-        width:95%;
-    }
-
     .box {
         border: solid 1px #e8e8e8;
         margin-bottom: 20px;
@@ -410,10 +357,10 @@
 
     .header {
         width: 100%;
-        background: -webkit-linear-gradient(#fff, #e9e9e9); /* For Safari 5.1 to 6.0 */
-        background: -o-linear-gradient(#fff, #e9e9e9); /* For Opera 11.1 to 12.0 */
-        background: -moz-linear-gradient(#fff, #e9e9e9); /* For Firefox 3.6 to 15 */
-        background: linear-gradient(#fff, #e9e9e9); /* Standard syntax */
+        background: -webkit-linear-gradient(#fff, #e9e9e9);
+        background: -o-linear-gradient(#fff, #e9e9e9);
+        background: -moz-linear-gradient(#fff, #e9e9e9);
+        background: linear-gradient(#fff, #e9e9e9);
         border-bottom: solid 1px #b0b0b0;
         padding: 3px;
         height: 27px;
@@ -435,46 +382,6 @@
 
     .row-fluid {
         width: 100% !important;
-    }
-
-    #asu_content_well li {
-        padding: 0px !important;
-    }
-
-    #asu_content_well a {
-        border-bottom: none;
-    }
-
-    .asu_black_footer li {
-        color: #fff !important;
-        text-decoration: none !important;
-    }
-
-    .asu_black_footer a:hover{
-        color: #FFB310 !important;
-        text-decoration: underline !important;
-    }
-
-    .asu_black_footer {
-        background: #4c4c4c !important;
-        padding-bottom: 5px !important;
-    }
-
-    div.content1 ul {
-        text-decoration: none;
-    }
-
-    .content1 a {
-        border-bottom: none !important;
-    }
-
-    .sparky {
-        margin-bottom: -60px !important;
-        margin-left: 35px !important;
-    }
-
-    .scimage {
-        margin-top: -30px !important;
     }
 
     .pbBody tbody:hover {
@@ -533,229 +440,12 @@
         color: #990033;
     }
 
-    .feeditemActionMenu, .feeditemActionMenuButton {
-        display: none !important;
-    }
-
-     .chatterUserGuestBadge, .cxlikeitemaction,
-     .cxfeeditemlikedot, .visibilityicon, .publisherattachPollPost {
-         display: none !important;
-     }
-
-     .feeditemfirstentity, .feeditemtimestamp, .rstitle {
-       pointer-events: none;
-       cursor: default;
-    }
-
-    .publishercontainer .bottomBar {
-        height: 50px !important;
-    }
-
     .asu-student-mobile-menu li {
         height: 52px !important;
     }
 
-    @media screen and (min-width: 61px) and (max-width: 920px) {
-        body {
-            overflow-x: hidden;
-        }
-
-        div.move {
-            font-size: 10pt;
-        }
-
-        div.movemyasu {
-            margin-top: 13px;
-            font-size: 11pt;
-        }
-
-        #utility-area {
-            display: none;
-        }
-    }
-
-    @media screen and (min-width: 61px) and (max-width: 550px) {
-        body {
-            overflow-x: hidden;
-        }
-
-        .container {
-            width: 100% !important;
-            padding-right: 5px !important;
-            padding-left: 5px !important;
-        }
-
-    }
-
-    @media screen and (min-width: 61px) and (max-width: 768px) {
-        a.navbar-brand.myasu {
-            text-indent: 10px;
-            padding-right: 5px;
-        }
-
-        .navbar-collapse {
-            max-height: auto !important;
-            overflow-x: auto !important;
-        }
-
-        .container {
-            width: 98% !important;
-        }
-    }
-
-    @media screen and (min-width: 61px) and (max-width: 930px) {
-        #asu_mobile_button.asuhide {
-            /*display: block !important;
-            margin-right: 3px !important;*/
-        }
-    }
-
-    @media screen and (max-width: 930px) {
-        #asu_universal_nav_new .tlb a {
-            color: #505558;
-            font-weight: 600 !important;
-        }
-    }
-
-    #asu_universal_nav_new a {
-        font-weight: 300 !important;
-    }
-
-    @media screen and (min-width: 931px) {
-        li.asu-student-mobile-menu, a.asu-student-mobile-menu {
-            display: none !important;
-        }
-
-        .page-title {
-            display: none;
-        }
-
-        #myasu-header-seo {
-            display: block;
-        }
-
-        .alert {
-            margin-top: -20px !important;
-        }
-    }
-
-    @media screen and (max-width: 931px) {
-        header.navbar.navbar-default {
-            display: none !important;
-        }
-
-        .sparky, .arttype, .casedescription,
-        .caseDescripHeader {
-            display: none;
-        }
-
-        .page-title {
-            display: initial;
-        }
-
-        #myasu-header-seo {
-            display: none;
-        }
-
-        .container {
-            margin-top: 50px; !important;
-        }
-
-        .caseConfirm {
-            margin-top: 50px;
-            margin-bottom: -47px;
-        }
-
-        .caseConfirm p {
-            font-size: 9pt;
-        }
-
-        .alert {
-            margin-top: 35px !important;
-            margin-bottom: -30px !important;
-        }
-    }
-
-    @media screen and (max-width: 995px) {
-        .qlinks {
-            display: none;
-        }
-
-        .firstbox {
-            margin-left: 0px !important;
-            width: 100% !important;
-        }
-    }
-
-    @media screen and (max-width: 390px) {
-        .page-title h2 {
-            font-size: 16pt !important;
-        }
-    }
-
-    .cxfeedinnerwrapper, #feedwrapper, .postTo, .publisherVisibilityWidget,
-        .bottomBarLeft, #chatterLinkFileAction, .chatterPublisherFileActionContainerLeft {
-        display: none !important;
-    }
-
-    #chatterUploadFileAction, .contentPublisherSlideDown.customPanel.alignTop {
-        border-bottom: solid 1px #c5cacc !important;
-    }
-
-    .contentPublisherSlideDown td a {
-        background: #990033 !important;
-        color: #fff !important;
-        width: 160px;
-        margin-top: -7px;
-        padding: 8px;
-    }
-
-    .contentPublisherSlideDown td a:hover {
-        background: #8A002E !important;
-        color:#fff !important;
-        text-decoration: none !important;
-    }
-
-    div.contentPublisherSlideDown.customPanel.alignTop {
-        height: 55px;
-    }
-
-    div.publisherWrapper {
-        width: 100%;
-        max-width: 400px;
-    }
-
     .btn:hover, button:hover {
         background: #e6e6e6;
-    }
-
-    div#publisherBottomBar.bottomBar {
-        height: 35px !important;
-        padding: 1px;
-    }
-
-    .zen .zen-highlightBtn {
-        background: #990033 !important;
-        border: none !important;
-    }
-
-    .publishercontainer input[type="text"] {
-        width: 200px !important;
-        float: left !important;
-    }
-
-    .postInput label {
-        font-size: 8pt !important;
-    }
-
-    .contentPublisherSlideDown table.postInput th {
-        width: 50px !important;
-    }
-
-    @media screen and (max-width: 390px) {
-        .publishercontainer input[type="text"] {
-            width: 160px !important;
-        }
     }
 
     /* Styling for AutoComplete */
@@ -821,36 +511,6 @@
         border:none !important;
     }
 
-    /* Arrow styling for active tab on myASU */
-    .arrow {
-        border-radius: 5px;
-        display: inline-block;
-        position: relative;
-    }
-
-
-    .arrow:after,
-    .arrow:before {
-        border-left: 15px solid transparent;
-        border-right: 15px solid transparent;
-        border-top: 15px solid #e9e9e9;
-        bottom: -8px;
-        content: '';
-        left: 50%;
-        margin-left: -16px;
-        position: absolute;
-    }
-
-    /* Styling for second triangle (border) */
-    .arrow:before {
-        border-left: 14px solid transparent;
-        border-right: 14px solid transparent;
-        border-top: 14px solid;
-        border-top-color: #b0b0b0;
-        bottom: -9px;
-        margin-left: -15px;
-    }
-
     /* Visualforce Component Styling */
     .artbuttons {
         width: initial !important;
@@ -901,20 +561,6 @@
 
     .contactPhone td {
         padding: 0px !important;
-    }
-
-    .alert.alert-success, .alert.alert-warning {
-        border-radius: 0px;
-    }
-
-    .startBtn {
-        height: 12px !important;
-        font-size: 7pt !important;
-        padding: 2px !important;
-        background: #990033 !important;
-        margin-top: -5px !important;
-        margin-left: -15px !important;
-        width: 45px !important;
     }
 
     .modal-content {
@@ -1059,6 +705,100 @@
         padding-top: 5%;
     }
 
+    .message {
+        border-radius: 0px !important;
+    }
+
+    .confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1 {
+        border-color: #390;
+        background-color: #dff0d8 !important;
+    }
+
+    .errorM6, .errorM4, .errorM3, .errorM2, .errorS1 {
+        border-color: #c00;
+        background-color: #fcf8e3 !important;
+    }
+
+    .breadcrumb {
+        border-radius: 0px !important;
+        margin-bottom: 10px !important;
+        padding: 10px 0px 10px 2px;
+        background-color: #fff !important;
+    }
+
+    .breadcrumb a, .breadcrumb a:hover {
+        color: #990033 !important;
+        font-size: 10pt;
+    }
+
+    .padClass {
+        padding: 7px !important;
+    }
+
+    @media screen and (min-width: 61px) and (max-width: 550px) {
+        .container {
+            width: 100% !important;
+            padding-right: 5px !important;
+            padding-left: 5px !important;
+        }
+
+    }
+
+    @media screen and (min-width: 61px) and (max-width: 768px) {
+        .container {
+            width: 98% !important;
+        }
+    }
+
+    @media screen and (min-width: 931px) {
+        li.asu-student-mobile-menu, a.asu-student-mobile-menu {
+            display: none !important;
+        }
+
+        .page-title {
+            display: none;
+        }
+
+        #myasu-header-seo {
+            display: block;
+        }
+
+        .alert {
+            margin-top: -10px !important;
+        }
+    }
+
+    @media screen and (max-width: 931px) {
+        header.navbar.navbar-default {
+            display: none !important;
+        }
+
+        .page-title {
+            display: initial;
+        }
+
+        #myasu-header-seo {
+            display: none;
+        }
+
+        .alert {
+            margin-top: -15px;
+            padding: 10px;
+        }
+
+        div#asu_content_well {
+            margin-top: 45px !important;
+        }
+
+        #asu_hdr {
+            width: 100% !important;
+        }
+
+        #asu_logo {
+            padding: 12px !important;
+        }
+    }
+
     @media screen and (max-width: 767px) {
         .qMarkMobile {
             display:initial !important;
@@ -1083,37 +823,6 @@
         #pinFormDiv {
             margin-left: 0px !important;
         }
-    }
-
-    .message {
-        border-radius: 0px !important;
-    }
-
-    .confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1 {
-        border-color: #390;
-        background-color: #dff0d8 !important;
-    }
-
-    .errorM6, .errorM4, .errorM3, .errorM2, .errorS1 {
-        border-color: #c00;
-        background-color: #fcf8e3 !important;
-    }
-
-    .breadcrumb {
-        border-radius: 0px !important;
-    }
-
-    .breadcrumb a, .breadcrumb a:hover {
-        color: #990033 !important;
-        font-size: 10pt;
-    }
-
-    .padClass {
-            padding: 7px !important;
-    }
-
-    #closePinMessages .btn:hover {
-        background-color: transparent !important;
     }
 </style>
 </apex:component>

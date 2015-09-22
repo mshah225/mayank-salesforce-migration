@@ -1,25 +1,68 @@
 @isTest
-public class Test_UserHandler 
+public class Test_UserHandler
 {
-	@testSetup static void setup()
-	{
-		User testUser = UserService.createTestUser();
-		Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
-		testUser.ProfileId = sysAdminProfile;
+    @isTest static void changeKnowledgePermission()
+    {
+        User updateUser = UserService.createTestUser();
+        Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+        updateUser.ProfileId = sysAdminProfile;
+        insert updateUser;
 
-		insert testUser;
-	}
+        updateUser.Role_Knowledge__c = true;
 
-	@isTest static void changeKnowledgePermission()
-	{
-		User updateUser = [SELECT Role_Knowledge__c FROM User LIMIT 1];
+        update updateUser;
 
-		updateUser.Role_Knowledge__c = true;
+        updateUser = [SELECT Role_Knowledge__c FROM User WHERE Id =: updateUser.Id];
 
-		update updateUser;
+        System.assert(!updateUser.Role_Knowledge__c);
+    }
 
-		updateUser = [SELECT Role_Knowledge__c FROM User WHERE Id =: updateUser.Id];
+    @isTest static void insertCAPUser()
+    {
+        Account acc = new Account(Name='Test Account Name');
+        insert acc;
+        
+        Contact testContact = ContactService.createTestContact();
+        testContact.FirstName = 'Test';
+        testContact.LastName = 'User';
+        testContact.ASURite_ID__c = 'testuser';
+        testContact.CAP_Possible__c = TRUE;
+        testContact.ACcountId = acc.Id;
+        insert testContact;
+        
+        Test.startTest();
+        Student_Group__c testGroup = new Student_Group__c();
+        testGroup.SG_Status__c = TRUE;
+        testGroup.SG_PeopleSoft_Code__c = 'CP00';
+        testGroup.SG_Contact__c = testContact.Id;
+        insert testGroup;
 
-		System.assert(!updateUser.Role_Knowledge__c);
-	}
+        User testUser = UserService.createTestUser();
+        Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+        testUser.ProfileId = communityProfile;
+        
+        testUser.isActive = true;
+        testUser.FederationIdentifier = 'testuser@asu.edu';
+        insert testUser;
+        Test.stopTest();
+
+        Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
+        testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
+
+        System.assert(testUser.ProfileId == communityCapProfile.Id);
+    }
+
+    @isTest static void insertNonCAPUser()
+    {
+        User testUser = UserService.createTestUser();
+        Id chatterProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'].Id;
+        testUser.ProfileId = chatterProfile;
+        testUser.FederationIdentifier = 'testuser@asu.edu';
+        insert testUser;
+
+        Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
+        testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
+
+        System.assert(testUser.ProfileId != communityCapProfile.Id);
+    }
 }

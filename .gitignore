@@ -3,13 +3,15 @@ salesforce.schema
 .project
 /Referenced Packages/
 /.settings/
+/.idea/
+/IlluminatedCloud/
 /config/
 /debug/
 /deploy/
 /build/
-asu-salesforce-metadata.sublime-project
-asu-salesforce-metadata.sublime-settings
-asu-salesforce-metadata.sublime-workspace
-
+*.sublime-project
+*.sublime-settings
+*.sublime-workspace
+*.iml
 .DS_Store
 *.log

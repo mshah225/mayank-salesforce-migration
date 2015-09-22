@@ -68,10 +68,6 @@
             }
         </style>
         
-        <!--<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
-        <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" />
-        <apex:stylesheet value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/css/theme.blue.css" />-->
-        
         <apex:includeScript value="{!$Resource.jQuery_1_11_1_Min}"/>
         <apex:includeScript value="{!$Resource.tablesorter_min_js}"/>
         <apex:stylesheet value="{!$Resource.Theme_Blue_css}"/>
@@ -79,9 +75,6 @@
     <body>
         <apex:form >
             <apex:pageBlock mode="maindetail">
-                <!--<apex:inputText id="searchBox" value="{!searchString}" style="border-radius:2px;width:100%;max-width:400px;height:20px;" html-placeholder="Enter Search Terms Here" styleClass="form-control">
-                    <apex:actionSupport event="onkeyup" action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()"/>
-                </apex:inputText>-->
                 <apex:inputText id="searchBox" value="{!searchString}" style="border-radius:2px;width:100%;max-width:400px;height:20px;" html-placeholder="Enter Search Terms Here" styleClass="form-control" />
                 <apex:commandButton action="{!search}" reRender="init" status="actStatusId" oncomplete="tableSort()" value="Search" id="submitButton" styleClass="myBtn"/>
                 <apex:commandButton value="Reset" action="{!clear}" reRender="list" status="actStatusId" styleClass="myBtn" oncomplete="tableSort()"/>
@@ -103,8 +96,6 @@
                         </apex:facet>
                     </apex:actionStatus>
                 </div>
-                <!-- Debug Javascript
-                <button onclick="tableSort()">Sort</button>-->
                 <br />
                 <apex:outputText rendered="{!searchString != null}">
                     You searched for: {!searchString}

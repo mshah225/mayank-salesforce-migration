@@ -193,6 +193,7 @@ public class Test_CampaignMemberHandler {
         system.assert(cm1.Is_Primary_Interest__c == false);
         
         Test.startTest();
+        System.debug('INSERTING 1');
         insert cm1;
 
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
@@ -202,19 +203,22 @@ public class Test_CampaignMemberHandler {
         system.assert(cm1.Is_Primary_Interest__c == true);
         system.assertEquals(camp1.Id, opp.primary_interest__c);
 
+        System.debug('DELETING 1');
         delete cm1;
+        opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         system.assertEquals(opp.primary_interest__c, null);
 
         CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
         system.assert(cm2.Is_Primary_Interest__c == false);
 
+        System.debug('INSERTING 2');
         insert cm2;
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         cm2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
         System.debug('OPP: ' + opp);
         Test.stopTest();
 
-        system.assertEquals(opp.primary_interest__c, null);
+        system.assertEquals(opp.primary_interest__c, camp2.Id);
 	}
 
 	private static testMethod void testLeadPrimaryInterestAdd()
@@ -306,7 +310,7 @@ public class Test_CampaignMemberHandler {
         l = [SELECT Id, primary_interest__c FROM Lead WHERE Id = :l.Id];
         cm2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
 
-        system.assertEquals(l.primary_interest__c, null); 
+        system.assertEquals(l.primary_interest__c, camp2.Id); 
 	}
 
 	// Testing Scholarships

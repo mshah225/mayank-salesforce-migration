@@ -748,10 +748,10 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     opportunityContactIds.add(o.Contact__c);
                 }
                 Map<Id, Id> cmIDsByContactIds = new Map<Id, Id>();
-                List<CampaignMember> opportunityCMs = [SELECT ContactId, Id FROM CampaignMember Where ContactId IN :opportunityContactIds];
+                List<CampaignMember> opportunityCMs = [SELECT ContactId, CampaignId FROM CampaignMember Where ContactId IN :opportunityContactIds];
                 for(CampaignMember cm : opportunityCMs)
                 {
-                    cmIDsByContactIds.put(cm.ContactId, cm.Id);
+                    cmIDsByContactIds.put(cm.ContactId, cm.CampaignId);
                 }
 
                 for(Opportunity o : opps)
@@ -788,10 +788,10 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 }
 
                 Map<Id, Id> cmIDsByLeadIds = new Map<Id, Id>();
-                List<CampaignMember> leadCMs = [SELECT LeadId, Id FROM CampaignMember Where LeadId IN :leadIds];
+                List<CampaignMember> leadCMs = [SELECT LeadId, CampaignId FROM CampaignMember Where LeadId IN :leadIds];
                 for(CampaignMember cm : leadCMs)
                 {
-                    cmIDsByLeadIds.put(cm.LeadId, cm.Id);
+                    cmIDsByLeadIds.put(cm.LeadId, cm.CampaignId);
                 }
 
                 for(Lead l : leads)
@@ -807,6 +807,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
 
         if(opportunitiesToUpdate.size() > 0)
         {
+            System.debug('OPPORTUNITIES TO UPDATE: ' + opportunitiesToUpdate);
             update opportunitiesToUpdate;
         }
 

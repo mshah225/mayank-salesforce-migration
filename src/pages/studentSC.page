@@ -133,7 +133,7 @@
                                                             characters"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!startSearch}"
+                                                                action="{!articleSearch}"
                                                                 id="submitButton"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
@@ -164,17 +164,15 @@
 
                                     <div style="height:10px;"></div>
 
-                                    <apex:repeat value="{!articleList}" var="kav">
-                                        <apex:dataList value="{!kav}"
-                                                       var="article"
-                                                       style="padding-left:18px;">
-                                            <apex:outputLink value="/akb?id={!article.KnowledgeArticleId}">
-                                                {!article.Title}
-                                            </apex:outputLink>
-                                            <br />
-                                            <div style="height:15px;"></div>
-                                        </apex:dataList>
-                                    </apex:repeat>
+                                    <apex:dataList value="{!currentViewList}"
+                                                   var="article"
+                                                   style="padding-left:18px;">
+                                        <apex:outputLink value="/akb?id={!article.KnowledgeArticleId}">
+                                            {!article.Title}
+                                        </apex:outputLink>
+                                        <br />
+                                        <div style="height:15px;"></div>
+                                    </apex:dataList>
 
                                     <apex:commandLink styleClass="btn"
                                                                   style="padding:4px"

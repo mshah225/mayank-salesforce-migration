@@ -3,7 +3,6 @@ private class Test_vfListPaginationController
 {
     @testSetup static void setUp()
     {
-        // create a FAQ
         FAQ__kav faqArticle = new FAQ__kav(
                 Title = 'testFAQ',
                 Summary = 'test from apex',
@@ -16,13 +15,11 @@ private class Test_vfListPaginationController
                 URLName = 'test-FAQ-asdf');
         insert faqArticle;
 
-        // publish the faq
         faqArticle = [SELECT KnowledgeArticleId
         FROM FAQ__kav
         WHERE Id = :faqArticle.id];
         KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
 
-        // create a HowTo
         How_To__kav howArticle = new How_To__kav(
                 Title = 'testHowTo',
                 Summary = 'test from apex',
@@ -34,13 +31,11 @@ private class Test_vfListPaginationController
                 URLName = 'testHowTo-asdf');
         insert howArticle;
 
-        // publish the howTo
         howArticle = [SELECT KnowledgeArticleId
         FROM How_To__kav
         WHERE Id = :howArticle.id];
         KbManagement.PublishingService.publishArticle(howArticle.KnowledgeArticleId, true);
 
-        // create an info
         Informational__kav infoArticle = new Informational__kav(
                 Title = 'testInfo',
                 Summary = 'test from apex',
@@ -52,7 +47,6 @@ private class Test_vfListPaginationController
                 URLName = 'testInfo-asdf');
         insert infoArticle;
 
-        // publish the info
         infoArticle = [SELECT KnowledgeArticleId
         FROM Informational__kav
         WHERE Id = :infoArticle.id];
@@ -65,12 +59,12 @@ private class Test_vfListPaginationController
         Test.setCurrentPage(viewAllArticles);
         vfListPaginationController vf = new vfListPaginationController();
 
-
         vf.searchstring = 'test';
+        vf.articleSearch();
+        vf.next();
+        vf.firstPage();
         vf.getNextRequired();
         vf.getPrevRequired();
-        vf.next();
-        vf.previous();
         vf.clearSearchString();
 
         System.assertEquals('', vf.searchstring);
@@ -84,8 +78,7 @@ private class Test_vfListPaginationController
         vfListPaginationController vf = new vfListPaginationController();
 
         vf.getPageNumber();
-        vf.getPageSize();
-        vf.startSearch();
+        vf.articleSearch();
         vf.viewAllResults();
 
         // Test long search string

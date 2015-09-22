@@ -116,7 +116,7 @@
                                                             characters"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!startSearch}"
+                                                                action="{!articleSearch}"
                                                                 id="submitButton"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
@@ -145,56 +145,77 @@
                                         <h5><b>No results found for '{!searchstring}'</b></h5>
                                     </apex:outputText>
                                     <hr style="margin-top:5px;"/>
-                                    <apex:repeat value="{!articleList}" var="kav">
-                                        <apex:dataTable value="{!kav}"
-                                                        var="article"
-                                                        style="width:100%;">
-                                            <apex:column style="vertical-align:top;width:10px;">
-                                                &#8226;&nbsp;
-                                            </apex:column>
+                                    <apex:dataTable value="{!currentViewList}"
+                                                    var="article"
+                                                    style="width:100%;">
+                                        <apex:column style="vertical-align:top;width:10px;">
+                                            &#8226;&nbsp;
+                                        </apex:column>
 
-                                            <apex:column>
-                                                <apex:outputLink value="/akb?id={!article
-                                                .KnowledgeArticleId}&source=viewAllArticles">
-                                                        {!article.Title}
-                                                </apex:outputLink>
-                                                <br />
-                                                <div style="height:15px;"></div>
-                                            </apex:column>
-                                        </apex:dataTable>
-                                    </apex:repeat>
+                                        <apex:column>
+                                            <apex:outputLink value="/akb?id={!article
+                                            .KnowledgeArticleId}&source=viewAllArticles">
+                                                {!article.Title}
+                                            </apex:outputLink>
+                                            <br />
+                                            <div style="height:15px;"></div>
+                                        </apex:column>
+                                    </apex:dataTable>
                                     <br />
                                     <div class="row">
                                         <div class="col-md-12">
                                             <nav>
                                                 <ul class="pagination" style="display:inline;">
                                                     <li class="{!IF(prevRequired = true, '','disabled')}">
+                                                        <apex:commandLink action="{!firstPage}"
+                                                                          reRender="searchResults"
+                                                                          status="KBSearchStatus"
+                                                                          rendered="{!IF(prevRequired =
+                                                                                  true, true,'false')}">
+                                                            <span class="glyphicon
+                                                            glyphicon-fast-backward"
+                                                                  style="color:#990033;"></span>
+                                                        </apex:commandLink>
+
+                                                        <apex:outputLink rendered="{!IF(prevRequired =
+                                                                true, false, true)}"
+                                                                         disabled="true"
+                                                                         value="#/">
+                                                            <span class="glyphicon
+                                                            glyphicon-fast-backward"
+                                                                  style="color:#ccc;"></span>
+                                                        </apex:outputLink>
+                                                    </li>
+
+                                                    <li class="{!IF(prevRequired = true, '','disabled')}">
                                                         <apex:commandLink action="{!previous}"
                                                                           reRender="searchResults"
                                                                           status="KBSearchStatus"
                                                                           rendered="{!IF(prevRequired =
                                                                       true, true,'false')}">
-                                                        <span class="glyphicon
-                                                              glyphicon-chevron-left"
-                                                              style="color:#990033;"></span>
+                                                            <span class="glyphicon
+                                                            glyphicon-step-backward"
+                                                                  style="color:#990033;"></span>
                                                         </apex:commandLink>
 
                                                         <apex:outputLink rendered="{!IF(prevRequired =
                                                                      true, false, true)}"
                                                                          disabled="true"
                                                                          value="#/">
-                                                        <span class="glyphicon
-                                                              glyphicon-chevron-left"
-                                                              style="color:#ccc;"></span>
+                                                            <span class="glyphicon
+                                                            glyphicon-step-backward"
+                                                                  style="color:#ccc;"></span>
                                                         </apex:outputLink>
                                                     </li>
+
                                                     <li>
-                                                    <span style="color:white;
-                                                    background-color:#333;border: solid 1px
-                                                    #333;">
-                                                            {!pageNumber}
-                                                    </span>
+                                                        <span style="color:white;
+                                                        background-color:#333;border: solid 1px
+                                                        #333;">
+                                                                {!pageNumber}
+                                                        </span>
                                                     </li>
+
                                                     <li class="{!IF(nextRequired = true,
                                                           '','disabled')}">
                                                         <apex:commandLink action="{!next}"
@@ -202,18 +223,40 @@
                                                                           status="KBSearchStatus"
                                                                           rendered="{!IF(nextRequired =
                                                                       true, true,'false')}">
-                                                        <span class="glyphicon
-                                                              glyphicon-chevron-right"
-                                                              style="color:#990033;"></span>
+                                                            <span class="glyphicon
+                                                            glyphicon-step-forward"
+                                                                  style="color:#990033;"></span>
                                                         </apex:commandLink>
 
                                                         <apex:outputLink rendered="{!IF(nextRequired =
                                                                      true, false, true)}"
                                                                          disabled="true"
                                                                          value="#/">
-                                                        <span class="glyphicon
-                                                              glyphicon-chevron-right"
-                                                              style="color:#ccc;"></span>
+                                                            <span class="glyphicon
+                                                            glyphicon-step-forward"
+                                                                  style="color:#ccc;"></span>
+                                                        </apex:outputLink>
+                                                    </li>
+
+                                                    <li class="{!IF(nextRequired = true,
+                                                            '','disabled')}">
+                                                        <apex:commandLink action="{!lastPage}"
+                                                                          reRender="searchResults"
+                                                                          status="KBSearchStatus"
+                                                                          rendered="{!IF(nextRequired =
+                                                                                  true, true,'false')}">
+                                                            <span class="glyphicon
+                                                            glyphicon-fast-forward"
+                                                                  style="color:#990033;"></span>
+                                                        </apex:commandLink>
+
+                                                        <apex:outputLink rendered="{!IF(nextRequired =
+                                                                true, false, true)}"
+                                                                         disabled="true"
+                                                                         value="#/">
+                                                            <span class="glyphicon
+                                                            glyphicon-fast-forward"
+                                                                  style="color:#ccc;"></span>
                                                         </apex:outputLink>
                                                     </li>
                                                 </ul>

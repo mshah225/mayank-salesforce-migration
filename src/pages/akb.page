@@ -155,7 +155,7 @@
                                                             characters"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!startSearch}"
+                                                                action="{!articleSearch}"
                                                                 id="submitButton"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
@@ -186,16 +186,14 @@
 
                                     <div style="height:10px;"></div>
 
-                                    <apex:repeat value="{!articleList}" var="kav">
-                                        <apex:dataList value="{!kav}"
-                                                       var="article"
-                                                       style="padding-left:18px;">
-                                            <apex:outputLink value="/akb?id={!article.KnowledgeArticleId}">
-                                                    {!article.Title}
-                                            </apex:outputLink>
-                                            <div style="height:15px;"></div>
-                                        </apex:dataList>
-                                    </apex:repeat>
+                                    <apex:dataList value="{!currentViewList}"
+                                                   var="article"
+                                                   style="padding-left:18px;">
+                                        <apex:outputLink value="/akb?id={!article.KnowledgeArticleId}">
+                                                {!article.Title}
+                                        </apex:outputLink>
+                                        <div style="height:15px;"></div>
+                                    </apex:dataList>
 
                                     <apex:commandLink styleClass="btn"
                                                       style="padding:4px"
@@ -274,8 +272,7 @@
                                     </apex:pageBlock>
                                 </div>
                             </apex:form>
-                            <br />
-                            <br />
+
                             <apex:outputPanel rendered="{!IF(article.ArticleType = 'FAQ__kav',true,
                                     false)}">
                                 <apex:outputText value="Date Updated: " />
@@ -301,7 +298,7 @@
                                 </apex:outputText>
                             </apex:outputPanel>
 
-                            <hr style="margin-top:5px;margin-bottom:5px;" />
+                            <hr style="margin-top:10px;margin-bottom:10px;" />
 
                             <h5><b>Article Feedback</b></h5>
                             <br />

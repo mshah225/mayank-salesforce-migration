@@ -1,22 +1,18 @@
 <apex:page standardController="Case"
-	extensions="CaseTransferController"
-	showHeader="true"
-	sidebar="true">
-
+           extensions="CaseTransferController"
+           showHeader="true"
+           sidebar="true">
 	<apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
 	<apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
-	<apex:includeScript value="/support/console/20.0/integration.js"/>
+	<apex:includeScript value="/support/console/22.0/integration.js"/>
    	<script type="text/javascript">
-        function setTabTitle()
-        {
+        function setTabTitle() {
         	sforce.console.setTabTitle('Transfer Case {!Case.CaseNumber}');
         }
 
         var previousOnload = window.onload;
-       	window.onload = function()
-       	{
-            if (previousOnload)
-            {
+       	window.onload = function() {
+            if (previousOnload) {
                 previousOnload();
             }
             setTimeout('setTabTitle()', '500');
@@ -128,15 +124,21 @@
 			<apex:commandLink action="{!page2}" styleClass="caseBtn" style="margin-right:20px;">
 				<i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;Transfer Case to User
 			</apex:commandLink>
-			<apex:outputText value="- OR -"/>	
+
+			<apex:outputText value="- OR -"/>
+
 			<apex:commandLink action="{!page3}" styleClass="caseBtn" style="margin-left:20px;">
 				<i class="fa fa-building"></i>&nbsp;&nbsp;&nbsp;Transfer Case to Department
 			</apex:commandLink>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <apex:commandLink styleClass="regBtn" onclick="history.go(-1);return false;">
+                <i class="fa fa-chevron-circle-left"></i>&nbsp;&nbsp;&nbsp;Go Back
+            </apex:commandLink>
 		</apex:form>
-		<br />
-		<br />
-		<br />
-		<br />
 	</apex:outputPanel>
 
 	<apex:outputPanel id="userPage" rendered="{!IF(page = 2,true,false)}">
@@ -144,26 +146,57 @@
 			<i>Select a User to Transfer the Case to:</i>
 			<br />
 			<br />
-			<apex:inputText value="{!searchString}" html-placeholder="Filter results" html-autofocus="true" style="padding:5px;font-size:9pt;margin-right:10px;margin-bottom:10px;">
-				<apex:actionSupport event="onkeyup" action="{!searchUsers}" reRender="userList" status="searchStatus"/>
+			<apex:inputText value="{!searchString}"
+                            html-placeholder="Filter results"
+                            html-autofocus="true"
+                            style="padding:5px;font-size:9pt;margin-right:10px;margin-bottom:10px;">
+				<apex:actionSupport event="onkeyup"
+                                    action="{!searchUsers}"
+                                    reRender="userList"
+                                    status="searchStatus"/>
 			</apex:inputText>
+
 			<apex:actionStatus id="searchStatus">
 	            <apex:facet name="start" >
 	                <img src="/img/loading.gif" style="position:absolute;margin-left:-35px;margin-top:15px;"/>
 	            </apex:facet>
 	        </apex:actionStatus>
-			<apex:commandButton value="Clear" action="{!resetSearch}" styleClass="caseBtn" style="padding:5px!important;"/>
+
+			<apex:commandButton value="Clear"
+                                action="{!resetSearch}"
+                                styleClass="caseBtn"
+                                style="padding:5px!important;"/>
+
 			<apex:pageBlock mode="maindetail">
-				<apex:pageBlockTable id="userList" value="{!userList}" var="ul" styleClass="userList">
-					<apex:column headerValue="User" style="padding:7px;" width="20%">
+				<apex:pageBlockTable id="userList"
+                                     value="{!userList}"
+                                     var="ul"
+                                     styleClass="userList">
+					<apex:column headerValue="User"
+                                 style="padding:7px;"
+                                 width="20%">
 						<apex:commandLink value="{!ul.Name}" action="{!page4}">
-							<apex:param name="selectedId" value="{!ul.Id}" assignTo="{!selectedId}"/>
-							<apex:param name="selectedGroupName" value="{!ul.Name}" assignTo="{!selectedGroupName}"/>
-							<apex:param name="source" value="page2" assignTo="{!source}"/>
+							<apex:param name="selectedId"
+                                        value="{!ul.Id}"
+                                        assignTo="{!selectedId}"/>
+
+							<apex:param name="selectedGroupName"
+                                        value="{!ul.Name}"
+                                        assignTo="{!selectedGroupName}"/>
+
+							<apex:param name="source"
+                                        value="page2"
+                                        assignTo="{!source}"/>
 						</apex:commandLink>
 					</apex:column>
-					<apex:column headerValue="Title" value="{!ul.Title}" width="20%"/>
-					<apex:column headerValue="Department" value="{!ul.Department}" width="20%"/>
+
+					<apex:column headerValue="Title"
+                                 value="{!ul.Title}"
+                                 width="20%"/>
+
+					<apex:column headerValue="Department"
+                                 value="{!ul.Department}"
+                                 width="20%"/>
 				</apex:pageBlockTable>
 			</apex:pageBlock>
 			<br />
@@ -197,11 +230,24 @@
 								<br />
 								<div id="serviceList" style="display:none;">
 									<apex:repeat value="{!serviceCARS[serviceKey]}" var="sk">
-										<apex:commandLink id="serviceLink" value="{!sk.Label__c}" action="{!page4}">
-											<apex:param name="selectedId" value="{!sk.Id}" assignTo="{!selectedId}"/>
-											<apex:param name="selectedGroupName" value="{!sk.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
-											<apex:param name="selectedCARLabel" value="{!sk.Label__c}" assignTo="{!selectedCARLabel}"/>
-											<apex:param name="source" value="page3" assignTo="{!source}"/>
+										<apex:commandLink id="serviceLink"
+                                                          value="{!sk.Label__c}"
+                                                          action="{!page4}">
+											<apex:param name="selectedId"
+                                                        value="{!sk.Id}"
+                                                        assignTo="{!selectedId}"/>
+
+											<apex:param name="selectedGroupName"
+                                                        value="{!sk.CTPGroup__c}"
+                                                        assignTo="{!selectedGroupName}"/>
+
+											<apex:param name="selectedCARLabel"
+                                                        value="{!sk.Label__c}"
+                                                        assignTo="{!selectedCARLabel}"/>
+
+											<apex:param name="source"
+                                                        value="page3"
+                                                        assignTo="{!source}"/>
 										</apex:commandLink>
 										<br />
 										<br />
@@ -229,11 +275,25 @@
 								<br />
 								<div id="collegeList" style="display:none">
 									<apex:repeat value="{!collegeCARS[collegeKey]}" var="ck">
-										<apex:commandLink id="collegeLink" styleClass="collegeLink" action="{!page4}" value="{!ck.Label__c}">
-											<apex:param name="selectedId" value="{!ck.Id}" assignTo="{!selectedId}"/>
-											<apex:param name="selectedGroupName" value="{!ck.CTPGroup__c}" assignTo="{!selectedGroupName}"/>
-											<apex:param name="selectedCARLabel" value="{!ck.Label__c}" assignTo="{!selectedCARLabel}"/>
-											<apex:param name="source" value="page3" assignTo="{!source}"/>
+										<apex:commandLink id="collegeLink"
+                                                          styleClass="collegeLink"
+                                                          action="{!page4}"
+                                                          value="{!ck.Label__c}">
+											<apex:param name="selectedId"
+                                                        value="{!ck.Id}"
+                                                        assignTo="{!selectedId}"/>
+
+											<apex:param name="selectedGroupName"
+                                                        value="{!ck.CTPGroup__c}"
+                                                        assignTo="{!selectedGroupName}"/>
+
+											<apex:param name="selectedCARLabel"
+                                                        value="{!ck.Label__c}"
+                                                        assignTo="{!selectedCARLabel}"/>
+
+											<apex:param name="source"
+                                                        value="page3"
+                                                        assignTo="{!source}"/>
 										</apex:commandLink>
 										<br />
 										<br />
@@ -247,7 +307,7 @@
 			</tr>
 		</table>
 		<br />
-		<apex:form>	
+		<apex:form>
 			<apex:commandLink action="{!page1}" styleClass="regBtn">
 				<i class="fa fa-chevron-circle-left"></i>&nbsp;&nbsp;&nbsp;Go Back
 			</apex:commandLink>
@@ -258,17 +318,28 @@
 	<apex:outputPanel id="ChatterPage" rendered="{!IF(page = 4,true,false)}">
 		<apex:outputPanel id="chatterPanel">
 			<h1 style="font-weight:200;font-size:13pt;">
-				You are transferring this case to:<br />{!selectedGroupName} <apex:outputText rendered="{!IF(selectedCARLabel != null,true,false)}">&nbsp;-&nbsp;{!selectedCARLabel}</apex:outputText>
+				You are transferring this case to:<br />{!selectedGroupName}
+                <apex:outputText rendered="{!IF(selectedCARLabel != null,true,false)}">
+                    &nbsp;-&nbsp;{!selectedCARLabel}
+                </apex:outputText>
 			</h1>
 		</apex:outputPanel>
 		<apex:form id="transferButton" style="margin-top:10px;">
 			<br />
-			<apex:commandLink action="{!page2}" styleClass="regBtn" rendered="{!IF(source == 'page2',true,false)}" style="margin-right:10px;">
+			<apex:commandLink action="{!page2}"
+                              styleClass="regBtn"
+                              rendered="{!IF(source == 'page2',true,false)}"
+                              style="margin-right:10px;">
 				<i class="fa fa-chevron-circle-left"></i>&nbsp;&nbsp;&nbsp;Go Back
 			</apex:commandLink>
-			<apex:commandLink action="{!page3}" styleClass="regBtn" rendered="{!IF(source == 'page3',true,false)}" style="margin-right:10px;">
+
+			<apex:commandLink action="{!page3}"
+                              styleClass="regBtn"
+                              rendered="{!IF(source == 'page3',true,false)}"
+                              style="margin-right:10px;">
 				<i class="fa fa-chevron-circle-left"></i>&nbsp;&nbsp;&nbsp;Go Back
 			</apex:commandLink>
+
 			<apex:actionRegion>
 				<apex:commandLink action="{!transferCase}" styleClass="caseBtn">
 					<i class="fa fa-exchange"></i>&nbsp;&nbsp;&nbsp;Transfer Case

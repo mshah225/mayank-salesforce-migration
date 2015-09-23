@@ -29,7 +29,7 @@ public with sharing class SearchUsers {
         String searchQuery = 'SELECT Id, Name, Profile.Name, Contact.Name, ContactId, Contact.ASURite_Id__c, EmplId__c, Contact.EMPLID__c, Alias, FederationIdentifier, ASU_User_Type__c, IsActive FROM User WHERE (Name LIKE \'%' + searchString + '%\' OR Profile.Name LIKE \'%' + searchString + '%\' OR Contact.Name LIKE \'%' + searchString + '%\' OR Contact.ASURite_Id__c LIKE \'%' + searchString + '%\' OR EmplId__c = :searchString OR Contact.EMPLID__c = :searchString OR Id = :searchString OR ContactId = :searchString OR Alias LIKE \'%' + searchString + '%\' OR FederationIdentifier LIKE \'%' + searchString + '%\' OR ASU_User_Type__c LIKE \'%' + searchString + '%\'';
         if(hideCommunity)
         {
-            searchQuery += ') AND Profile.Name != \'ASU Community\' ';    
+            searchQuery += ') AND Profile.Name != \'ASU Community\' AND Profile.Name != \'ASU Community CAP\' ';    
         } 
         else
         {

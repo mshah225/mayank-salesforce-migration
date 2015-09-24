@@ -168,9 +168,12 @@
                 <apex:inputField label="Previous Institution" value="{!previousEducation.Account__c}" id="previous_education_account" tabOrderHint="108"/>
             </apex:pageBlockSection>
             
-            <apex:pageBlockSection id="grad_opportunity_info" rendered="{!career == 'graduate' || career == 'law'}" title="Graduate Opportunity Information" collapsible="false" columns="2">
+            <apex:pageBlockSection id="grad_opportunity_info" rendered="{!career == 'graduate' || career == 'law'}" title="Graduate Opportunity Information" collapsible="false" columns="1">
+                <apex:pageBlockSection columns="2">
                 <apex:inputField value="{!opportunity.Type}" id="degreetype" required="true" taborderhint="200"/>
-                <apex:inputField value="{!contact.LeadSource}" id="lead_source" required="true" taborderhint="203"/>
+                <div></div>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="2" id="college_section">
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel for="collegeList">College</apex:outputLabel>
                     <apex:actionRegion>
@@ -183,7 +186,7 @@
                         <apex:selectList id="collegeList" value="{!collegeSelected}" size="1" required="true" tabindex="201">
                             <apex:selectOptions value="{!ProgramList}" />
                             <apex:actionSupport event="onchange" 
-                                                reRender="grad_opportunity_info, msgs" 
+                                                reRender="college_section, msgs" 
                                                 status="collegeEvent"/>
                             <apex:actionStatus id="collegeEvent">
                                 <apex:facet name="start" >
@@ -193,13 +196,16 @@
                         </apex:selectList>
                     </apex:actionRegion>
                 </apex:pageBlockSectionItem>
-                <apex:inputField value="{!contact.Lead_Source_Subtype__c}" id="lead_source_subtype" taborderhint="204"/>
                 <apex:pageBlockSectionItem id="academic_plan">
                     <apex:outputLabel for="planList">Academic Plan</apex:outputLabel>
                     <apex:selectList id="planList" value="{!planSelected}" size="1" tabindex="202">
                         <apex:selectOptions value="{!PlanList}" />
                     </apex:selectList>
                 </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="2">
+                <apex:inputField value="{!contact.LeadSource}" id="lead_source" required="true" taborderhint="203"/>
+                <apex:inputField value="{!contact.Lead_Source_Subtype__c}" id="lead_source_subtype" taborderhint="204"/>
                 <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree" taborderhint="205"/>
                 <apex:inputField value="{!opportunity.Term__c}" id="term" taborderhint="208"/>
                 <apex:inputField value="{!opportunity.International_Student__c}" id="international_student" taborderhint="206"/>
@@ -207,6 +213,7 @@
                 <apex:inputField label="Previous Institution" value="{!previousEducation.Account__c}" id="previous_education_account" taborderhint="207"/>
                 <div></div>
                 <apex:inputField value="{!opportunity.Military_Status__c}" id="military" taborderhint="209"/>
+                </apex:pageBlockSection>
             </apex:pageBlockSection>
             
             <apex:pageBlockSection rendered="{!career == 'undergraduate'}" id="interestBlock" title="Interests (Optional)" columns="1">

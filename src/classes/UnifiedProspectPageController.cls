@@ -260,6 +260,7 @@ public class UnifiedProspectPageController
 
     public Boolean save() {
         getCaseC();
+        List<CampaignMember> cams = new List<CampaignMember>();
         try 
         {
             error = false;
@@ -405,7 +406,7 @@ public class UnifiedProspectPageController
                 camMemEvent.Opportunity__c = opportunity.Id;
                 camMemEvent.Inbound_Interaction__c = true;
 
-                insert camMemEvent;
+                cams.add(camMemEvent);
             }
             //Create Case
             else if (originSelection != '--Select--' && elId == null) 
@@ -491,7 +492,7 @@ public class UnifiedProspectPageController
                     camMemInterest.ContactId = contact.Id;
                     camMemInterest.Opportunity__c = opportunity.Id;
     
-                    insert camMemInterest;
+                    cams.add(camMemInterest);
                 }
                 else 
                 {
@@ -499,6 +500,12 @@ public class UnifiedProspectPageController
                     return false;
                 }
             }
+
+            if(cams.size() > 0)
+            {
+                insert cams;
+            }
+
             //Save success, return true.
             return true;
         } 

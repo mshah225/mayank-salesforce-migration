@@ -174,27 +174,27 @@
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel for="collegeList">College</apex:outputLabel>
                     <apex:actionRegion>
-                    <div class="requiredBlock"
-                        style="background-color: #c00;
-                                height: 18px;
-                                width: 3px;
-                                float: left;
-                    "></div>
-                    <apex:selectList id="collegeList" value="{!collegeSelected}" size="1" required="true" tabindex="201">
-                        <apex:selectOptions value="{!ProgramList}" />
-                        <apex:actionSupport event="onchange" 
-                                            reRender="grad_opportunity_info, msgs" 
-                                            status="collegeEvent"/>
-                        <apex:actionStatus id="collegeEvent">
-                            <apex:facet name="start" >
-                                <img src="/img/loading.gif" />
-                            </apex:facet>
-                        </apex:actionStatus>
-                    </apex:selectList>
+                        <div class="requiredBlock"
+                            style="background-color: #c00;
+                                    height: 18px;
+                                    width: 3px;
+                                    float: left;
+                        "></div>
+                        <apex:selectList id="collegeList" value="{!collegeSelected}" size="1" required="true" tabindex="201">
+                            <apex:selectOptions value="{!ProgramList}" />
+                            <apex:actionSupport event="onchange" 
+                                                reRender="grad_opportunity_info, msgs" 
+                                                status="collegeEvent"/>
+                            <apex:actionStatus id="collegeEvent">
+                                <apex:facet name="start" >
+                                    <img src="/img/loading.gif" />
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </apex:selectList>
                     </apex:actionRegion>
                 </apex:pageBlockSectionItem>
                 <apex:inputField value="{!contact.Lead_Source_Subtype__c}" id="lead_source_subtype" taborderhint="204"/>
-                <apex:pageBlockSectionItem >
+                <apex:pageBlockSectionItem id="academic_plan">
                     <apex:outputLabel for="planList">Academic Plan</apex:outputLabel>
                     <apex:selectList id="planList" value="{!planSelected}" size="1" tabindex="202">
                         <apex:selectOptions value="{!PlanList}" />

@@ -1,10 +1,9 @@
-<apex:page showHeader="false"
-    sidebar="false"
-    cache="true"
-    docType="html-5.0"
-    controller="ServiceCenter"
-    action="{!init}"
-    extensions="NavLinks,vfListPaginationController">
+<apex:page docType="html-5.0"
+           showHeader="false"
+           sidebar="false"
+           controller="ServiceCenter"
+           action="{!init}"
+           extensions="NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | Service Center</title>
     <c:asu_responsive_header_section />
@@ -69,11 +68,13 @@
                                     class="close"
                                     data-dismiss="modal">
                                 <span aria-hidden="true">&times;</span>
-                                <span class="sr-only">
-                                    Close
-                                </span>
+
+                                <span class="sr-only">Close</span>
                             </button>
-                            <h6 class="modal-title" id="suggestAnArticleLabel">Suggest An Article</h6>
+
+                            <h6 class="modal-title" id="suggestAnArticleLabel">
+                                Suggest An Article
+                            </h6>
                         </div>
 
                         <div class="modal-body">
@@ -130,14 +131,15 @@
                                                             html-pattern=".{2,}"
                                                             required="true"
                                                             title="Please enter a minimum of 2
-                                                            characters"/>
+                                                            characters"
+                                                            maxlength="99"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!articleSearch}"
                                                                 id="submitButton"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
-                                                                oncomplete="viewAsLinks()"/>
+                                                                oncomplete="viewAsLinks()"
+                                                                status="searchStatus"/>
 
                                             <apex:commandButton value="Clear"
                                                                 styleClass="kbbtn searchBtn"
@@ -148,64 +150,57 @@
                                 </apex:pageBlock>
                             </apex:form>
                             <br />
-                            <hr />
-                            <apex:form id="theSearchResults">
-                                <apex:pageBlock id="searchResults"
-                                                mode="maindetail"
-                                                rendered="{!searchstring != ''}">
-                                    <apex:outputPanel rendered="{!maxSize != 0}">
-                                        <h5><b>Showing {!lowListNum}-{!highListNum} of
-                                            {!maxSize} results for '{!searchstring}'</b></h5>
+                            <apex:form id="theSearchResults" style="min-height:200px;">
+                                <apex:pageBlock id="searchResults" mode="maindetail">
+                                    <br />
+                                    <apex:outputPanel rendered="{!searchstring != ''}">
+                                        <h5><b>Showing results for '{!searchstring}'</b></h5>
                                     </apex:outputPanel>
 
-                                    <apex:outputText rendered="{!maxSize == 0}">
-                                        <h5><b>No results found for '{!searchstring}'</b></h5>
-                                    </apex:outputText>
+                                    <apex:outputPanel rendered="{!searchstring == ''}">
+                                        <h5><b>Top 5 Knowledge Articles</b></h5>
+                                    </apex:outputPanel>
 
-                                    <div style="height:10px;"></div>
+                                    <apex:actionStatus id="searchStatus" >
+                                        <apex:facet name="start" >
+                                            <img src="/img/loading.gif"
+                                                 style="position:absolute;margin:1px 0px 0px 5px;"/>
+                                        </apex:facet>
+                                    </apex:actionStatus>
 
-                                    <apex:dataList value="{!currentViewList}"
-                                                   var="article"
-                                                   style="padding-left:18px;">
-                                        <apex:outputLink value="/akb?id={!article.KnowledgeArticleId}">
-                                            {!article.Title}
-                                        </apex:outputLink>
-                                        <br />
-                                        <div style="height:15px;"></div>
-                                    </apex:dataList>
-
-                                    <apex:commandLink styleClass="btn"
-                                                                  style="padding:4px"
-                                                                  value="View All Results"
-                                                                  action="{!viewAllResults}"/>
-                                </apex:pageBlock>
-
-                                <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
-                                    <h5><b>Top 5 Knowledge Articles</b></h5>
-
-                                    <div style="height:10px;"></div>
+                                    <hr style="margin-top:5px;"/>
 
                                     <knowledge:articleList articleVar="article"
-                                                           sortBy="mostViewed">
+                                                           sortBy="mostViewed"
+                                                           keyword="{!searchstring}"
+                                                           pageSize="{!IF(searchstring != '',10,5)}">
                                         <table>
                                             <tr>
                                                 <td style="vertical-align:top;">
                                                     &#8226;&nbsp;
                                                 </td>
+
                                                 <td>
                                                     <apex:outputLink value="/akb?id={!article.id}">
                                                         {!article.title}
                                                     </apex:outputLink>
-                                                    <br />
-                                                    <div style="height:15px;"></div>
                                                 </td>
                                             </tr>
                                         </table>
+
+                                        <div style="height:15px;"></div>
                                     </knowledge:articleList>
+
+                                    <apex:commandLink styleClass="btn"
+                                                      style="padding:4px"
+                                                      value="View All Results"
+                                                      action="{!viewAllResults}"
+                                                      rendered="{!searchstring != ''}"/>
                                 </apex:pageBlock>
                             </apex:form>
                         </div>
                     </div>
+
                     <div class="box firstbox">
                         <iframe src="https://webapp4.asu.edu/narrowcasting/ad/SMALL/myasu-servicecenter-1/true?rotate=true&interval=6000"
                                 scrolling="no"

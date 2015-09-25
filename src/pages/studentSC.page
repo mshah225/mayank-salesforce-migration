@@ -154,7 +154,7 @@
                                 <apex:pageBlock id="searchResults" mode="maindetail">
                                     <br />
                                     <apex:outputPanel rendered="{!searchstring != ''}">
-                                        <h5><b>Showing results for '{!searchstring}'</b></h5>
+                                        <h5><b>Showing top results for '{!searchstring}'</b></h5>
                                     </apex:outputPanel>
 
                                     <apex:outputPanel rendered="{!searchstring == ''}">

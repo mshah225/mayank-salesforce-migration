@@ -139,7 +139,7 @@
                                     <br />
                                     <apex:outputPanel rendered="{!searchstring != '' && maxSize !=
                                             0}">
-                                        <h5><b>Showing results for '{!searchstring}'</b></h5>
+                                        <h5><b>Showing top results for '{!searchstring}'</b></h5>
                                     </apex:outputPanel>
 
                                     <apex:outputText rendered="{!searchstring != '' && maxSize ==

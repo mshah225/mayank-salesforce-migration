@@ -175,7 +175,7 @@
                                                 mode="maindetail"
                                                 rendered="{!searchstring != ''}">
                                     <br />
-                                    <h5><b>Showing results for '{!searchstring}'</b></h5>
+                                    <h5><b>Showing top results for '{!searchstring}'</b></h5>
 
                                     <apex:actionStatus id="searchStatus" >
                                         <apex:facet name="start" >

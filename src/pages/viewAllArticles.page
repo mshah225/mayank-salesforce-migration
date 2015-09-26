@@ -121,7 +121,8 @@
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
                                                                 oncomplete="viewAsLinks();
-                                                                checkNumbers();"/>
+                                                                checkNumbers();"
+                                                                status="searchStatus"/>
 
                                             <apex:commandButton value="Clear"
                                                                 styleClass="kbbtn searchBtn"
@@ -150,6 +151,13 @@
                                     <apex:outputPanel rendered="{!searchstring == ''}">
                                         <h5><b>Popular Knowledge Articles</b></h5>
                                     </apex:outputPanel>
+
+                                    <apex:actionStatus id="searchStatus" >
+                                        <apex:facet name="start" >
+                                            <img src="/img/loading.gif"
+                                                 style="position:absolute;margin:1px 0px 0px 5px;"/>
+                                        </apex:facet>
+                                    </apex:actionStatus>
 
                                     <hr style="margin-top:5px;"/>
 

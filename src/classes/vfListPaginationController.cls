@@ -1,147 +1,39 @@
 public with sharing class vfListPaginationController
 {
-    private Integer PAGE_SIZE;
-    private String baseQuery;
-    public Integer pageNumber;
-    public Integer maxSize { get; set; }
-    public List<List<KnowledgeARticleVersion>> articleList { get; set; }
-    public List<List<KnowledgeArticleVersion>> baseSearchList;
-    public List<KnowledgeArticleVersion> currentViewList { get; set; }
+    public Integer pageSize;
+    public List<KnowledgeArticleVersion> articleList;
     public String searchstring { get; set; }
-    public Integer lowListNum { get; set; }
-    public Integer highListNum { get; set; }
-    public Decimal maxPages { get; set; }
 
-    public vfListPaginationController() { setUp(); }
-    public vfListPaginationController(ServiceCenter controller) { setUp(); }
+    public vfListPaginationController() { setUpPage(); }
+    public vfListPaginationController(ServiceCenter controller) { setUpPage(); }
 
-    public void setUp()
+    public void setUpPage()
     {
         String strurl = getVFPageName();
-        System.debug('!!!VF PAGE NAME : ' + strurl);
 
         if (strurl == 'viewAllArticles')
         {
-            PAGE_SIZE = 20;
+            pageSize = 20;
         }
         else
         {
-            PAGE_SIZE = 10;
+            pageSize = 10;
         }
 
-        String q = ApexPages.currentPage().getParameters().get('q');
-
-        if (ApexPages.currentPage().getParameters().get('q') != null)
-        {
-            searchString = q;
-            articleSearch();
-        }
+        String qryString = 'SELECT Id, Title, UrlName, LastPublishedDate,LastModifiedById ' +
+                'FROM KnowledgeArticleVersion ' +
+                'WHERE PublishStatus = \'online\' ' +
+                'AND Language = \'en_US\'';
+        articleList = Database.query(qryString);
+        maxSize = articleList.size();
+        checkSearchParams();
     }
 
-    public Integer getPageNumber() { return pageNumber; }
+    Integer currentPage = 1;
+    Integer maxSize = 1;
 
-    public void articleSearch()
-    {
-        searchstring = (searchString.length() > 99) ? searchstring.substring(0, 99) : searchstring;
-        currentViewList = new List<KnowledgeArticleVersion>();
-        pageNumber = 1;
-        maxSize = 0;
-        String queryString = String.escapeSingleQuotes(searchstring);
-        Integer offsetNum = (pageNumber - 1) * PAGE_SIZE;
-
-        baseQuery = 'FIND \'' + queryString + '*\'' +
-                    'IN ALL FIELDS ' +
-                    'RETURNING KnowledgeArticleVersion (Id, KnowledgeArticleId, ' +
-                        'Title, LastModifiedDate ' +
-                    'WHERE PublishStatus = \'Online\' AND Language = \'en_US\')';
-        baseSearchList = Search.query(baseQuery);
-
-        for (List<KnowledgeArticleVersion> kav : baseSearchList)
-        {
-            maxSize = maxSize + kav.size();
-        }
-
-        String strMaxSize = maxSize.format();
-        String strPAGE_SIZE = PAGE_SIZE.format();
-        maxPages = Math.ceil(Decimal.valueOf(strMaxSize) / Decimal.valueOf(strPAGE_SIZE));
-        lowListNum = (maxSize == 0) ? 0 : offsetNum + 1;
-
-        if (maxSize == 0)
-        {
-            highListNum = 0;
-        }
-        else if (pageNumber == maxPages)
-        {
-            highListNum = maxSize;
-        }
-        else
-        {
-            highListNum = pageNumber * PAGE_SIZE;
-        }
-
-        System.debug('!!!! Query ' + baseQuery);
-        articleList = Search.query(baseQuery);
-        Integer maxIndex = (maxSize < PAGE_SIZE) ? maxSize : PAGE_SIZE;
-
-        for (List<KnowledgeArticleVersion> listKav : baseSearchList)
-        {
-            for (Integer i = 0; i < maxIndex; i++)
-            {
-                System.debug('!!!! Article: ' + baseSearchList[0][i]);
-                currentViewList.add(baseSearchList[0][i]);
-            }
-        }
-
-        System.debug('!!!! CurrentViewList: ' + currentViewList);
-    }
-
-    public Boolean getNextRequired()
-    {
-        return pageNumber * PAGE_SIZE < maxSize;
-    }
-
-    public Boolean getPrevRequired()
-    {
-        return pageNumber > 1;
-    }
-
-    public PageReference viewAllResults()
-    {
-        PageReference viewAllArts = new PageReference('/viewAllArticles');
-
-        if (searchstring != null)
-        {
-            viewAllArts.getParameters().put('q', searchstring);
-        }
-
-        viewAllArts.setRedirect(true);
-
-        return viewAllArts;
-    }
-
-    public void next()
-    {
-        pageNumber++;
-        navigateSearchResults(pageNumber);
-    }
-
-    public void previous()
-    {
-        pageNumber--;
-        navigateSearchResults(pageNumber);
-    }
-
-    public void firstPage()
-    {
-        pageNumber = 1;
-        navigateSearchResults(pageNumber);
-    }
-
-    public void lastPage()
-    {
-        pageNumber = Integer.valueOf(maxPages);
-        navigateSearchResults(pageNumber);
-    }
+    public Integer getMaxSize() { return maxSize; }
+    public Integer getPageSize() { return pageSize; }
 
     public void clearSearchString()
     {
@@ -159,21 +51,67 @@ public with sharing class vfListPaginationController
         return pageName;
     }
 
-    public void navigateSearchResults(Integer pageNumber)
+    public void checkSearchParams()
     {
-        currentViewList.clear();
-        Integer maxIndex = pageNumber * PAGE_SIZE;
-        Integer minIndex = maxIndex - 20;
-        maxIndex = (maxIndex > maxSize) ? maxSize : maxIndex;
-        lowListNum = (minIndex == 0) ? 1 : minIndex;
-        highListNum = maxIndex;
+        String q = ApexPages.currentPage().getParameters().get('q');
 
-        for (List<KnowledgeArticleVersion> listKav : baseSearchList)
+        if (ApexPages.currentPage().getParameters().get('q') != null)
         {
-            for (Integer i = minIndex; i < maxIndex; i++)
-            {
-                currentViewList.add(baseSearchList[0][i]);
-            }
+            searchstring = (q.length() > 99) ? q.substring(0, 99) : q;
         }
+    }
+
+    public boolean getPrevRequired()
+    {
+        return currentPage > 1;
+    }
+
+    public boolean getNextRequired()
+    {
+        return currentPage * pageSize < maxSize;
+    }
+
+    public Decimal getCurrentPageNumber()
+    {
+        return this.currentPage;
+    }
+
+    public PageReference next()
+    {
+        if (maxSize > this.currentPage * pageSize)
+        {
+            this.currentPage = this.currentPage + 1;
+        }
+
+        return null;
+    }
+
+    public PageReference previous()
+    {
+        if (this.currentPage > 1)
+        {
+            this.currentPage = this.currentPage - 1;
+        }
+
+        return null;
+    }
+
+    public void resetForm()
+    {
+        currentPage = 1;
+    }
+
+    public PageReference viewAllResults()
+    {
+        PageReference viewAllArts = new PageReference('/viewAllArticles');
+
+        if (searchstring != null)
+        {
+            viewAllArts.getParameters().put('q', searchstring);
+        }
+
+        viewAllArts.setRedirect(true);
+
+        return viewAllArts;
     }
 }

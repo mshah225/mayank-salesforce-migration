@@ -1,10 +1,9 @@
-<apex:page showHeader="false"
-    sidebar="false"
-    cache="true"
-    docType="html-5.0"
-    controller="ServiceCenter"
-    action="{!init}"
-    extensions="AKBController,NavLinks,vfListPaginationController">
+<apex:page docType="html-5.0"
+           showHeader="false"
+           sidebar="false"
+           controller="ServiceCenter"
+           action="{!init}"
+           extensions="AKBController,NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | {!article.title}</title>
     <c:asu_responsive_header_section />
@@ -148,18 +147,19 @@
                                             <apex:inputText id="articleTextBoxId"
                                                             value="{!searchstring}"
                                                             styleClass="searchBox"
-                                                   html-placeholder="Search the Knowledge Base"
+                                                            html-placeholder="Search the Knowledge Base"
                                                             html-pattern=".{2,}"
                                                             required="true"
                                                             title="Please enter a minimum of 2
-                                                            characters"/>
+                                                            characters"
+                                                            maxlength="99"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!articleSearch}"
                                                                 id="submitButton"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
-                                                                oncomplete="viewAsLinks()"/>
+                                                                oncomplete="viewAsLinks()"
+                                                                status="searchStatus"/>
 
                                             <apex:commandButton value="Clear"
                                                                 styleClass="kbbtn searchBtn"
@@ -174,31 +174,43 @@
                                 <apex:pageBlock id="searchResults"
                                                 mode="maindetail"
                                                 rendered="{!searchstring != ''}">
-                                    <hr />
-                                    <apex:outputPanel rendered="{!maxSize != 0}">
-                                        <h5><b>Showing {!lowListNum}-{!highListNum} of
-                                                {!maxSize} results for '{!searchstring}'</b></h5>
-                                    </apex:outputPanel>
+                                    <br />
+                                    <h5><b>Showing top results for '{!searchstring}'</b></h5>
 
-                                    <apex:outputText rendered="{!maxSize == 0}">
-                                        <h5><b>No results found for '{!searchstring}'</b></h5>
-                                    </apex:outputText>
+                                    <apex:actionStatus id="searchStatus" >
+                                        <apex:facet name="start" >
+                                            <img src="/img/loading.gif"
+                                                 style="position:absolute;margin:1px 0px 0px 5px;"/>
+                                        </apex:facet>
+                                    </apex:actionStatus>
 
-                                    <div style="height:10px;"></div>
+                                    <hr style="margin-top:5px;"/>
 
-                                    <apex:dataList value="{!currentViewList}"
-                                                   var="article"
-                                                   style="padding-left:18px;">
-                                        <apex:outputLink value="/akb?id={!article.KnowledgeArticleId}">
-                                                {!article.Title}
-                                        </apex:outputLink>
+                                    <knowledge:articleList articleVar="articleList"
+                                                           keyword="{!searchstring}"
+                                                           pageSize="10">
+                                        <table>
+                                            <tr>
+                                                <td style="vertical-align:top;">
+                                                    &#8226;&nbsp;
+                                                </td>
+
+                                                <td>
+                                                    <apex:outputLink value="/akb?id={!articleList.id}">
+                                                        {!articleList.title}
+                                                    </apex:outputLink>
+                                                </td>
+                                            </tr>
+                                        </table>
+
                                         <div style="height:15px;"></div>
-                                    </apex:dataList>
+                                    </knowledge:articleList>
 
                                     <apex:commandLink styleClass="btn"
                                                       style="padding:4px"
                                                       value="View All Results"
-                                                      action="{!viewAllResults}"/>
+                                                      action="{!viewAllResults}"
+                                                      rendered="{!searchstring != ''}"/>
                                 </apex:pageBlock>
                             </apex:form>
                             <hr />
@@ -397,8 +409,10 @@
                                             &#8226;&nbsp;
                                         </td>
                                         <td>
-                                            <apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink>
-                                            <br />
+                                            <apex:outputLink value="/akb?id={!relatedart.id}">
+                                                {!relatedart.title}
+                                            </apex:outputLink>
+
                                             <div style="height:10px;"></div>
                                         </td>
                                     </tr>

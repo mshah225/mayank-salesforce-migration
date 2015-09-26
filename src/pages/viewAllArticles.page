@@ -1,8 +1,9 @@
 <apex:page docType="html-5.0"
-    showHeader="false"
-    sidebar="false"
-    controller="ServiceCenter"
-    extensions="vfListPaginationController,NavLinks">
+           showHeader="false"
+           sidebar="false"
+           controller="ServiceCenter"
+           action="{!init}"
+           extensions="vfListPaginationController,NavLinks">
 <head>
     <title>My ASU | Article Search</title>
     <c:asu_responsive_header_section />
@@ -34,7 +35,6 @@
                                lastName="{!lastName}"/>
 
         <apex:form id="suggestAnArticle">
-            <!-- Modal -->
             <div class="modal fade"
                  id="suggestAnArticle"
                  tabindex="-1" role="dialog"
@@ -109,18 +109,20 @@
                                             <apex:inputText id="articleTextBoxId"
                                                             value="{!searchstring}"
                                                             styleClass="searchBox"
-                                                  html-placeholder="Search the Knowledge Base"
+                                                            html-placeholder="Search the Knowledge Base"
                                                             html-pattern=".{2,}"
                                                             required="true"
                                                             title="Please enter a minimum of 2
-                                                            characters"/>
+                                                            characters"
+                                                            maxlength="99"/>
 
                                             <apex:commandButton value="Search"
-                                                                action="{!articleSearch}"
-                                                                id="submitButton"
+                                                                action="{!resetForm}"
                                                                 styleClass="kbbtn searchBtn"
                                                                 reRender="theSearchResults"
-                                                                oncomplete="viewAsLinks()"/>
+                                                                oncomplete="viewAsLinks();
+                                                                checkNumbers();"
+                                                                status="searchStatus"/>
 
                                             <apex:commandButton value="Clear"
                                                                 styleClass="kbbtn searchBtn"
@@ -131,139 +133,107 @@
                                 </apex:pageBlock>
                             </apex:form>
                             <br />
+
                             <apex:form id="theSearchResults">
                                 <apex:pageBlock id="searchResults"
-                                                mode="maindetail"
-                                                rendered="{!searchstring != ''}">
+                                                mode="maindetail">
                                     <br />
-                                    <apex:outputPanel rendered="{!maxSize != 0}">
-                                        <h5><b>Showing {!lowListNum}-{!highListNum} of
-                                                {!maxSize} results for '{!searchstring}'</b></h5>
+                                    <apex:outputPanel rendered="{!searchstring != '' && maxSize !=
+                                            0}">
+                                        <h5><b>Showing top results for '{!searchstring}'</b></h5>
                                     </apex:outputPanel>
 
-                                    <apex:outputText rendered="{!maxSize == 0}">
+                                    <apex:outputText rendered="{!searchstring != '' && maxSize ==
+                                            0}">
                                         <h5><b>No results found for '{!searchstring}'</b></h5>
                                     </apex:outputText>
-                                    <hr style="margin-top:5px;"/>
-                                    <apex:dataTable value="{!currentViewList}"
-                                                    var="article"
-                                                    style="width:100%;">
-                                        <apex:column style="vertical-align:top;width:10px;">
-                                            &#8226;&nbsp;
-                                        </apex:column>
 
-                                        <apex:column>
-                                            <apex:outputLink value="/akb?id={!article
-                                            .KnowledgeArticleId}&source=viewAllArticles">
-                                                {!article.Title}
-                                            </apex:outputLink>
-                                            <br />
-                                            <div style="height:15px;"></div>
-                                        </apex:column>
-                                    </apex:dataTable>
-                                    <br />
+                                    <apex:outputPanel rendered="{!searchstring == ''}">
+                                        <h5><b>Popular Knowledge Articles</b></h5>
+                                    </apex:outputPanel>
+
+                                    <apex:actionStatus id="searchStatus" >
+                                        <apex:facet name="start" >
+                                            <img src="/img/loading.gif"
+                                                 style="position:absolute;margin:1px 0px 0px 5px;"/>
+                                        </apex:facet>
+                                    </apex:actionStatus>
+
+                                    <hr style="margin-top:5px;"/>
+
+                                    <knowledge:articleList articleVar="article"
+                                                           pageNumber="{!currentPageNumber}"
+                                                           hasMoreVar="false"
+                                                           keyword="{!searchString}"
+                                                           pageSize="{!pageSize}"
+                                                           sortBy="mostViewed">
+                                        <apex:outputLink value="/akb?id={!article.Id}">
+                                            &#8226;&nbsp;{!article.title}
+                                        </apex:outputLink>
+
+                                        <div style="height:15px;"></div>
+                                    </knowledge:articleList>
+
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <nav>
-                                                <ul class="pagination" style="display:inline;">
-                                                    <li class="{!IF(prevRequired = true, '','disabled')}">
-                                                        <apex:commandLink action="{!firstPage}"
-                                                                          reRender="searchResults"
-                                                                          status="KBSearchStatus"
-                                                                          rendered="{!IF(prevRequired =
-                                                                                  true, true,'false')}">
-                                                            <span class="glyphicon
-                                                            glyphicon-fast-backward"
-                                                                  style="color:#990033;"></span>
-                                                        </apex:commandLink>
+                                            <ul class="pagination" style="display:inline">
+                                                <li>
+                                                    <apex:commandLink action="{!previous}"
+                                                                      reRender="theSearchResults"
+                                                                      rendered="{!IF(prevRequired = true,
+                                                                              true, false)}">
+                                                        <span class="glyphicon glyphicon-step-backward"
+                                                              style="color:#990033;"></span>
+                                                    </apex:commandLink>
 
-                                                        <apex:outputLink rendered="{!IF(prevRequired =
-                                                                true, false, true)}"
-                                                                         disabled="true"
-                                                                         value="#/">
-                                                            <span class="glyphicon
-                                                            glyphicon-fast-backward"
-                                                                  style="color:#ccc;"></span>
-                                                        </apex:outputLink>
-                                                    </li>
+                                                    <apex:outputLink rendered="{!IF(prevRequired = true,
+                                                            false, true)}"
+                                                                     disabled="true"
+                                                                     value="#/">
+                                                        <span class="glyphicon glyphicon-step-backward"
+                                                              style="color:#ccc;"></span>
+                                                    </apex:outputLink>
+                                                </li>
 
-                                                    <li class="{!IF(prevRequired = true, '','disabled')}">
-                                                        <apex:commandLink action="{!previous}"
-                                                                          reRender="searchResults"
-                                                                          status="KBSearchStatus"
-                                                                          rendered="{!IF(prevRequired =
-                                                                      true, true,'false')}">
-                                                            <span class="glyphicon
-                                                            glyphicon-step-backward"
-                                                                  style="color:#990033;"></span>
-                                                        </apex:commandLink>
+                                                <li>
+                                                    <span style="color:white;background-color:#333;border: solid 1px #333;">
+                                                        {!currentPageNumber}
+                                                    </span>
+                                                </li>
 
-                                                        <apex:outputLink rendered="{!IF(prevRequired =
-                                                                     true, false, true)}"
-                                                                         disabled="true"
-                                                                         value="#/">
-                                                            <span class="glyphicon
-                                                            glyphicon-step-backward"
-                                                                  style="color:#ccc;"></span>
-                                                        </apex:outputLink>
-                                                    </li>
+                                                <li>
+                                                    <apex:commandLink id="nextBtn"
+                                                                      action="{!next}"
+                                                                      rendered="{!IF(nextRequired = true,
+                                                                              true, false)}"
+                                                                      oncomplete="checkNumbers()"
+                                                                      reRender="theSearchResults">
+                                                        <span class="glyphicon glyphicon-step-forward"
+                                                              style="color:#990033;"></span>
+                                                    </apex:commandLink>
 
-                                                    <li>
-                                                        <span style="color:white;
-                                                        background-color:#333;border: solid 1px
-                                                        #333;">
-                                                                {!pageNumber}
-                                                        </span>
-                                                    </li>
+                                                    <apex:outputLink rendered="{!IF(nextRequired
+                                                                             = true, false, true)}"
+                                                                     disabled="true"
+                                                                     value="#/">
+                                                        <span class="glyphicon
+                                                        glyphicon-step-forward"
+                                                              style="color:#ccc;"></span>
+                                                    </apex:outputLink>
 
-                                                    <li class="{!IF(nextRequired = true,
-                                                          '','disabled')}">
-                                                        <apex:commandLink action="{!next}"
-                                                                          reRender="searchResults"
-                                                                          status="KBSearchStatus"
-                                                                          rendered="{!IF(nextRequired =
-                                                                      true, true,'false')}">
-                                                            <span class="glyphicon
-                                                            glyphicon-step-forward"
-                                                                  style="color:#990033;"></span>
-                                                        </apex:commandLink>
-
-                                                        <apex:outputLink rendered="{!IF(nextRequired =
-                                                                     true, false, true)}"
-                                                                         disabled="true"
-                                                                         value="#/">
-                                                            <span class="glyphicon
-                                                            glyphicon-step-forward"
-                                                                  style="color:#ccc;"></span>
-                                                        </apex:outputLink>
-                                                    </li>
-
-                                                    <li class="{!IF(nextRequired = true,
-                                                            '','disabled')}">
-                                                        <apex:commandLink action="{!lastPage}"
-                                                                          reRender="searchResults"
-                                                                          status="KBSearchStatus"
-                                                                          rendered="{!IF(nextRequired =
-                                                                                  true, true,'false')}">
-                                                            <span class="glyphicon
-                                                            glyphicon-fast-forward"
-                                                                  style="color:#990033;"></span>
-                                                        </apex:commandLink>
-
-                                                        <apex:outputLink rendered="{!IF(nextRequired =
-                                                                true, false, true)}"
-                                                                         disabled="true"
-                                                                         value="#/">
-                                                            <span class="glyphicon
-                                                            glyphicon-fast-forward"
-                                                                  style="color:#ccc;"></span>
-                                                        </apex:outputLink>
-                                                    </li>
-                                                </ul>
-                                            </nav>
+                                                    <apex:outputLink id="nextBtnDisabled"
+                                                                     style="display:none"
+                                                                     disabled="true"
+                                                                     value="#/">
+                                                        <span class="glyphicon
+                                                        glyphicon-step-forward"
+                                                              style="color:#ccc;"></span>
+                                                    </apex:outputLink>
+                                                </li>
+                                            </ul>
 
                                             <div class="pull-right visible-sm visible-md
-                                        visible-lg">
+                                                                visible-lg">
                                                 <button class="btn kbbtn"
                                                         data-toggle="modal"
                                                         data-target="#suggestAnArticle">
@@ -281,32 +251,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </apex:pageBlock>
-
-                                <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
-                                    <br />
-                                    <h5><b>Popular Knowledge Articles</b></h5>
-                                    <hr style="margin-top:5px;"/>
-                                    <knowledge:articleList articleVar="article"
-                                                           sortBy="mostViewed"
-                                                           pageSize="20">
-                                        <table style="width:100%;
-                                        margin-bottom:0px;">
-                                            <tr>
-                                                <td style="vertical-align:top;width:10px;">
-                                                    &#8226;&nbsp;
-                                                </td>
-                                                <td>
-                                                    <apex:outputLink value="/akb?id={!article
-                                                    .id}&source=viewAllArticles">
-                                                        {!article.title}
-                                                    </apex:outputLink>
-                                                    <br />
-                                                    <div style="height:15px;"></div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </knowledge:articleList>
                                 </apex:pageBlock>
                             </apex:form>
                         </div>
@@ -337,6 +281,24 @@
                         $(this).attr("href", href);
                     }
                 });
+            }
+        }
+    </script>
+
+    <script>
+        function checkNumbers() {
+            var pageSize = "{!pageSize}";
+	        var aCount = document.getElementById("{!$Component.theSearchResults}")
+	        .getElementsByTagName("a").length;
+	        console.log("aCount: " + aCount);
+	        console.log("pageSize: " + pageSize);
+            if (aCount < pageSize) {
+                console.log("In if");
+                document.getElementById("{!$Component.theSearchResults.searchResults.nextBtn}").style.display = "none";
+                document.getElementById("{!$Component.theSearchResults.searchResults.nextBtnDisabled}").style.display = "block";
+            } else {
+                document.getElementById("{!$Component.theSearchResults.searchResults.nextBtn}").style.display = "initial";
+                document.getElementById("{!$Component.theSearchResults.searchResults.nextBtnDisabled}").style.display = "none";
             }
         }
     </script>

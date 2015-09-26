@@ -181,7 +181,8 @@
                                                     <apex:commandLink action="{!previous}"
                                                                       reRender="theSearchResults"
                                                                       rendered="{!IF(prevRequired = true,
-                                                                              true, false)}">
+                                                                              true, false)}"
+                                                                      status="searchStatus">
                                                         <span class="glyphicon glyphicon-step-backward"
                                                               style="color:#990033;"></span>
                                                     </apex:commandLink>
@@ -207,7 +208,8 @@
                                                                       rendered="{!IF(nextRequired = true,
                                                                               true, false)}"
                                                                       oncomplete="checkNumbers()"
-                                                                      reRender="theSearchResults">
+                                                                      reRender="theSearchResults"
+                                                                      status="searchStatus">
                                                         <span class="glyphicon glyphicon-step-forward"
                                                               style="color:#990033;"></span>
                                                     </apex:commandLink>

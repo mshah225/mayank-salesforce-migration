@@ -10,6 +10,39 @@ public with sharing class LeadService
 		return testLead;
 	}
 
+    public static List<Lead> createTestLeads(Integer numOfLeads)
+    {
+        List<Lead> leads = new List<Lead>();
+
+        Term__c testTerm = TermService.createTestTerm();
+
+        insert testTerm;
+
+        for (Integer i = 0; i<numOfLeads; i++)
+        {
+            Lead testLead = new Lead();
+            testLead.FirstName = 'Jonny' + i;
+            testLead.LastName = 'Test' + i;
+            testLead.Email = 'test' + i + '@test.test';
+            testLead.LeadSource = 'Email';
+            testLead.Company = 'TestCompany';
+            testLead.Career__c = 'Undergraduate';
+            testLead.Enrollment_Term__c = testTerm.Id;
+            testLead.Online__c = true;
+            testLead.International_Student__c = true;
+            testLead.First_Generation__c = true;
+            testLead.Potential_National_Scholar__c = true;
+            testLead.Potential_WUE__c = true;
+            testLead.Search_Segment__c = 'Scholar';
+            testLead.Self_Reported_SES__c = 'Moderate';
+            testLead.Veteran_Status__c = 'Veteran';
+
+            leads.add(testLead);
+        }
+
+        return leads;
+    }
+
     public static List<Opportunity> mapLeadDataToOpportunity(Set<Id> leadIds)
     {
         List<Lead> leadsFromConversion = new List<Lead>();
@@ -47,8 +80,12 @@ public with sharing class LeadService
             opp.Search_Segment__c = leadData.Search_Segment__c;
             opp.Self_Reported_SES__c = leadData.Self_Reported_SES__c;
             opp.Military_Status__c = leadData.Veteran_Status__c;
+
+            System.debug('Lead Data: ' + leadData);
+            System.debug('Opp data: ' + opp);
         }
 
         return opportunitiesToUpdate;
     }
+
 }

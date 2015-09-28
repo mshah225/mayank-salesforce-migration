@@ -14,7 +14,8 @@ public class Test_AKBController
                 IsVisibleInPKB = true,
                 IsVisibleInCsp = true,
                 IsVisibleInPrm = true,
-                URLName = 'vfListPaginationController-Test-Article-' + i);
+                URLName = 'akbController-Test-Article-' + i);
+
             insert faqArticle;
 
             // Publish the FAQ Articles
@@ -35,37 +36,46 @@ public class Test_AKBController
         termAC.Session_A_C_Start_Date__c = date.newinstance(dTac.year(), dTac.month(), dTac.day());
         String ACYear = String.valueOf(dTac.year());
         termAC.Year__c = ACYear;
+
         insert termAC;
 
         Term__c termB = new Term__c();
         termB.Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day());
         String BYear = String.valueOf(dTb.year());
         termB.Year__c = BYear;
+
         insert termB;
 
         Contact testContact = ContactService.createTestContact();
+
         insert testContact;
 
         User testUser = UserService.createTestUser();
         testUser.ProfileId = p.Id;
         testUser.ContactId = testContact.Id;
-        insert testUser;    
+
+        insert testUser;
     }
 
     @isTest static void testAKBControllerFAQ() 
     {
-        List<KnowledgeArticleVersion> articleTest = [SELECT KnowledgeArticleId 
-                                                     FROM KnowledgeArticleVersion 
-                                                     WHERE PublishStatus = 'Online' 
-                                                     AND Language = 'en_US' 
-                                                     AND ArticleType = 'FAQ__kav' 
-                                                     LIMIT 1];
+        List<KnowledgeArticleVersion> articleTest = [
+            SELECT KnowledgeArticleId
+            FROM KnowledgeArticleVersion
+            WHERE PublishStatus = 'Online'
+            AND Language = 'en_US'
+            AND ArticleType = 'FAQ__kav'
+            LIMIT 1
+        ];
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
+
         Test.startTest();
+
         System.runAs(testUser)
         {
             ServiceCenter sc = new ServiceCenter();
@@ -73,23 +83,29 @@ public class Test_AKBController
             akb.getTitleKeyword();
             System.AssertEquals(akb.article.KnowledgeArticleId, articleTest[0].KnowledgeArticleId);
         }
+
         Test.stopTest();
     }
 
     @isTest static void testHelpfulYes() 
     {
-        List<KnowledgeArticleVersion> articleTest = [SELECT KnowledgeArticleId 
-                                                     FROM KnowledgeArticleVersion 
-                                                     WHERE PublishStatus = 'Online' 
-                                                     AND Language = 'en_US' 
-                                                     AND ArticleType = 'FAQ__kav' 
-                                                     LIMIT 1];
+        List<KnowledgeArticleVersion> articleTest = [
+            SELECT KnowledgeArticleId
+            FROM KnowledgeArticleVersion
+            WHERE PublishStatus = 'Online'
+            AND Language = 'en_US'
+            AND ArticleType = 'FAQ__kav'
+            LIMIT 1
+        ];
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
+
         Test.startTest();
+
         System.runAs(testuser)
         {
             ServiceCenter sc = new ServiceCenter();
@@ -97,12 +113,15 @@ public class Test_AKBController
             PageReference expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulYes().getUrl());
 
-            articleTest = [SELECT KnowledgeArticleId 
-                           FROM KnowledgeArticleVersion 
-                           WHERE PublishStatus = 'Online' 
-                           AND Language = 'en_US' 
-                           AND ArticleType = 'FAQ__kav'
-                           LIMIT 1];
+            articleTest = [
+                SELECT KnowledgeArticleId
+                FROM KnowledgeArticleVersion
+                WHERE PublishStatus = 'Online'
+                AND Language = 'en_US'
+                AND ArticleType = 'FAQ__kav'
+                LIMIT 1
+            ];
+
             testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
             testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
             akbPage = Page.akb;
@@ -112,23 +131,29 @@ public class Test_AKBController
             expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulYes().getUrl());
         }
+
         Test.stopTest();
     }
 
     @isTest static void testHelpfulNo() 
     {
-        List<KnowledgeArticleVersion> articleTest = [SELECT KnowledgeArticleId 
-                                                     FROM KnowledgeArticleVersion 
-                                                     WHERE PublishStatus = 'Online' 
-                                                     AND Language = 'en_US' 
-                                                     AND ArticleType = 'FAQ__kav' 
-                                                     LIMIT 1];
+        List<KnowledgeArticleVersion> articleTest = [
+            SELECT KnowledgeArticleId
+            FROM KnowledgeArticleVersion
+            WHERE PublishStatus = 'Online'
+            AND Language = 'en_US'
+            AND ArticleType = 'FAQ__kav'
+            LIMIT 1
+        ];
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
+
         Test.startTest();
+
         System.runAs(testuser)
         {
             ServiceCenter sc = new ServiceCenter();
@@ -137,12 +162,15 @@ public class Test_AKBController
             PageReference expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulNo().getUrl());
 
-            articleTest = [SELECT KnowledgeArticleId 
-                           FROM KnowledgeArticleVersion 
-                           WHERE PublishStatus = 'Online' 
-                           AND Language = 'en_US' 
-                           AND ArticleType = 'FAQ__kav'
-                           LIMIT 1];
+            articleTest = [
+                SELECT KnowledgeArticleId
+                FROM KnowledgeArticleVersion
+                WHERE PublishStatus = 'Online'
+                AND Language = 'en_US'
+                AND ArticleType = 'FAQ__kav'
+                LIMIT 1
+            ];
+
             testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
             testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
             akbPage = Page.akb;
@@ -153,23 +181,29 @@ public class Test_AKBController
             expected = new PageReference('/akb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id'));
             System.AssertEquals(expected.getUrl(), akb.helpfulNo().getUrl());
         }
+
         Test.stopTest();
     }
 
     @isTest static void testFeedbackVisible() 
     {
-        List<KnowledgeArticleVersion> articleTest = [SELECT KnowledgeArticleId 
-                                                     FROM KnowledgeArticleVersion 
-                                                     WHERE PublishStatus = 'Online' 
-                                                     AND Language = 'en_US' 
-                                                     AND ArticleType = 'FAQ__kav' 
-                                                     LIMIT 1];
+        List<KnowledgeArticleVersion> articleTest = [
+            SELECT KnowledgeArticleId
+            FROM KnowledgeArticleVersion
+            WHERE PublishStatus = 'Online'
+            AND Language = 'en_US'
+            AND ArticleType = 'FAQ__kav'
+            LIMIT 1
+        ];
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
+
         Test.startTest();
+
         System.runAs(testUser)
         {
             ServiceCenter sc = new ServiceCenter();
@@ -178,23 +212,29 @@ public class Test_AKBController
             akb.userContact = testContact;
             System.assertEquals(true, akb.getfeedbackVisible());
         }
+
         Test.stopTest();    
     }
 
     @isTest static void testFeedbackNotVisible() 
     {
-        List<KnowledgeArticleVersion> articleTest = [SELECT KnowledgeArticleId 
-                                                     FROM KnowledgeArticleVersion 
-                                                     WHERE PublishStatus = 'Online' 
-                                                     AND Language = 'en_US' 
-                                                     AND ArticleType = 'FAQ__kav' 
-                                                     LIMIT 1];
+        List<KnowledgeArticleVersion> articleTest = [
+            SELECT KnowledgeArticleId
+            FROM KnowledgeArticleVersion
+            WHERE PublishStatus = 'Online'
+            AND Language = 'en_US'
+            AND ArticleType = 'FAQ__kav'
+            LIMIT 1
+        ];
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
+
         Test.startTest();
+
         System.runAs(testUser)
         {
             ServiceCenter sc = new ServiceCenter();
@@ -203,34 +243,40 @@ public class Test_AKBController
             akb.feedbackHelpful.Contact__c = testContact.Id;
             akb.helpfulYes();
             System.AssertEquals(false, akb.getfeedbackVisible());
-        }   
+        }
+
         Test.stopTest();
     }
 
     @isTest static void testChangeLinks() 
     {
-        List<KnowledgeArticleVersion> articleTest = [SELECT KnowledgeArticleId 
-                                                     FROM KnowledgeArticleVersion 
-                                                     WHERE PublishStatus = 'Online' 
-                                                     AND Language = 'en_US' 
-                                                     AND ArticleType = 'FAQ__kav' 
-                                                     AND Title = 'testFAQ'
-                                                     LIMIT 1];
+        List<KnowledgeArticleVersion> articleTest = [
+            SELECT KnowledgeArticleId
+            FROM KnowledgeArticleVersion
+            WHERE PublishStatus = 'Online'
+            AND Language = 'en_US'
+            AND ArticleType = 'FAQ__kav'
+            AND Title = 'Testing FAQ Article4'
+            LIMIT 1
+        ];
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
         ApexPages.currentPage().getParameters().put('id', articleTest[0].KnowledgeArticleId);
         Test.startTest();
+
         System.runAs(testUser)
         {
             ServiceCenter sc = new ServiceCenter();
             AKBController akb = new AKBController(sc);
-            akb.urlsJSON = '["test-FAQ-asdf"]';
+            akb.urlsJSON = '["akbController-Test-Article-4"]';
             String fixedIdLink = '["/akb?id=' + articleTest[0].KnowledgeArticleId + '"]';
             akb.changeLink();
             System.AssertEquals(fixedIdLink, akb.fixedLinksJSON);
-        }   
+        }
+
         Test.stopTest();
     }
 }

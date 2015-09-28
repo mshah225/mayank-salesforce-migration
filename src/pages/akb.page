@@ -231,44 +231,16 @@
                                         <apex:pageBlockSection columns="1">
                                             <apex:outputText value="Category"
                                                              rendered="{!IF(faq.Functional_Group__c != null,true,false)}"
-                                                             style="font-size:8pt;font-weight:bold;margin-left:-5px;                                                                   color:#4a4a5b"/>
+                                                             style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
 
                                             <apex:outputText rendered="{!IF(faq.Functional_Group__c != null,true,false)}"
                                                              value="{!faq.Functional_Group__c}"/>
 
-                                            <apex:outputText value="Category"
-                                                             rendered="{!IF(info.Functional_Group__c != null,true,false)}"
-                                                             style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-
-                                            <apex:outputText rendered="{!IF(info.Functional_Group__c != null,true,false)}"
-                                                             value="{!info.Functional_Group__c}"/>
-
-                                            <apex:outputText value="Category"
-                                                             rendered="{!IF(howTo.Functional_Group__c != null,true,false)}"
-                                                             style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-
-                                            <apex:outputText rendered="{!IF(howTo.Functional_Group__c != null,true,false)}"
-                                                             value="{!howTo.Functional_Group__c}"/>
-
-                                            <apex:outputText rendered="{!IF(faq.Functional_Group__c != null || info.Functional_Group__c != null || howTo.Functional_Group__c != null,true,false)}">
+                                            <apex:outputPanel rendered="{!IF(faq.Functional_Group__c != null,true,false)}">
                                                 <hr />
-                                            </apex:outputText>
+                                            </apex:outputPanel>
 
-                                            <apex:outputField value="{!info.Information__c}"
-                                                              rendered="{!IF(article.ArticleType = 'Informational__kav',true,false)}"
-                                                              label=""/>
-                                            <apex:outputText value="Question"
-                                                             rendered="{!IF(article.ArticleType =
-                                                              'FAQ__kav',true,false)}"
-                                                             style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-
-                                            <apex:outputField value="{!faq.Question__c}"
-                                                              rendered="{!IF(article.ArticleType
-                                                              = 'FAQ__kav',true,false)}"
-                                                              label=""
-                                                              styleClass="noLabel"/>
-
-                                            <apex:outputText value="Answer"
+                                            <apex:outputText value="Body"
                                                              rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}"
                                                              style="font-size:8pt;font-weight:bold;margin-left:-4px;color:#4a4a5b"/>
 
@@ -276,10 +248,6 @@
                                                               rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}"
                                                               label=""
                                                               styleClass="noLabel"/>
-
-                                            <apex:outputField value="{!howto.Content__c}"
-                                                              rendered="{!IF(article.ArticleType = 'How_To__kav',true,false)}"
-                                                              label=""/>
                                         </apex:pageblocksection>
                                     </apex:pageBlock>
                                 </div>
@@ -290,23 +258,6 @@
                                 <apex:outputText value="Date Updated: " />
                                 <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
                                     <apex:param value="{!faq.LastModifiedDate}" />
-                                </apex:outputText>
-                            </apex:outputPanel>
-
-                            <apex:outputPanel rendered="{!IF(howto.ArticleType = 'How_To__kav',true,
-                                    false)}">
-                                <apex:outputText value="Date Updated: " />
-                                <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
-                                    <apex:param value="{!howTo.LastModifiedDate}" />
-                                </apex:outputText>
-                            </apex:outputPanel>
-
-                            <apex:outputPanel rendered="{!IF(info.ArticleType =
-                                    'Informational__kav',true,
-                                    false)}">
-                                <apex:outputText value="Date Updated: " />
-                                <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
-                                    <apex:param value="{!info.LastModifiedDate}" />
                                 </apex:outputText>
                             </apex:outputPanel>
 
@@ -400,9 +351,9 @@
                         </div>
                         <div class="content">
                             <knowledge:articleList articleVar="relatedart"
-                                keyword="{!titleKeyword}"
-                                hasMoreVar="true"
-                                pageSize="6">
+                                                   keyword="{!titleKeyword}"
+                                                   hasMoreVar="true"
+                                                   pageSize="6">
                                 <table>
                                     <tr id="relatedArticleLink">
                                         <td style="vertical-align:top;">
@@ -424,31 +375,56 @@
                             </script>
 
                             <br />
-                            <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
+                            <button class="btn kbbtn"
+                                    data-toggle="modal"
+                                    data-target="#suggestAnArticle">
                                 Suggest An Article
                             </button>
                         </div>
                     </div>
                     <apex:form id="suggestAnArticle">
                         <!-- Modal -->
-                        <div class="modal fade" id="suggestAnArticle" tabindex="-1" role="dialog" aria-labelledby="suggestAnArticleLabel" aria-hidden="true">
+                        <div class="modal fade"
+                             id="suggestAnArticle"
+                             tabindex="-1"
+                             role="dialog"
+                             aria-labelledby="suggestAnArticleLabel"
+                             aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <button type="button"
+                                                class="close"
+                                                data-dismiss="modal">
+                                            <span aria-hidden="true">&times;</span>
+                                            <span class="sr-only">Close</span>
+                                        </button>
+
                                         <h6 class="modal-title" id="suggestAnArticleLabel">Suggest An Article</h6>
                                     </div>
                                     <div class="modal-body">
                                         <apex:pageBlock mode="maindetail">
                                             <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                                             <br />
-                                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;"/>
+                                            <apex:inputField id="articleDetails"
+                                                             required="true"
+                                                             value="{!suggestAnArticle.Description}"
+                                                             style="width:100%;max-width:400px;height:100px;"/>
                                         </apex:pageBlock>
                                     </div>
                                     <div class="modal-footer">
                                         <div class="pull-left">
-                                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
+                                            <apex:commandButton value="Submit"
+                                                                action="{!suggestAnArticleSubmit}"
+                                                                styleClass="btn btn-default"
+                                                                style="width:40px;height:15px;padding:3px;"/>
+
+                                            <button type="button"
+                                                    class="btn btn-default"
+                                                    data-dismiss="modal"
+                                                    style="width:35px;height:15px;padding:3px;margin-top:0px;">
+                                                Close
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -461,6 +437,7 @@
                                                 myPin="{!myPin}"
                                                 newPin="{!newPin}"
                                                 changePin="{!changePin}"/>
+
                     <c:SCMyCasesBox/>
                 </div><!-- end col-md-4 -->
             </div>

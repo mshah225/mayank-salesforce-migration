@@ -22,7 +22,6 @@ public with sharing class ServiceCenter
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
     public String userAsurite;
-    public String searchstring { get; set; }
     public Term__c termcAC;
     public Term__c termcB;
 
@@ -408,17 +407,16 @@ public with sharing class ServiceCenter
             return go;
         }
 
-        try
+        if (origPin == newPin)
         {
-            if (origPin == newPin)
-            {
-                PageReference pinError = ApexPages.currentPage();
-                pinError.getParameters().put('PIN', 'error');
-                pinError.setRedirect(true);
+            PageReference pinError = ApexPages.currentPage();
+            pinError.getParameters().put('PIN', 'error');
+            pinError.setRedirect(true);
+            return pinError;
+        }
 
-                return pinError;
-            }
-
+        if (ContactService.isPinValid(newPin, userContact.Birthdate))
+        {
             userContact.Self_Service_PIN__c = newPin;
             if (userContact.PIN_lockout__c == true)
             {
@@ -430,17 +428,16 @@ public with sharing class ServiceCenter
             PageReference pinSuccess = ApexPages.currentPage();
             pinSuccess.getParameters().put('PIN', 'success');
             pinSuccess.setRedirect(true);
-
             return pinSuccess;
         }
-        catch (DmlException e)
+        else
         {
             PageReference pinError = ApexPages.currentPage();
             pinError.getParameters().put('PIN', 'error');
             pinError.setRedirect(true);
-
             return pinError;
         }
+
     }
 
     public PageReference suggestAnArticleSubmit()
@@ -476,13 +473,5 @@ public with sharing class ServiceCenter
         confirmPage.setRedirect(true);
 
         return confirmPage;
-    }
-
-    public void checkSearchString()
-    {
-        if (searchstring.length() > 99)
-        {
-            searchstring = searchstring.substring(0,99);
-        }
     }
 }

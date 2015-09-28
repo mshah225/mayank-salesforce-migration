@@ -33,7 +33,7 @@ public without sharing class AKBController
         {
             faq = [
                 SELECT KnowledgeArticleId, Title, Functional_Group__c,
-                    Question__c, Answer__c, toLabel(ArticleType)
+                        Question__c, Answer__c, toLabel(ArticleType), LastModifiedDate
                 FROM FAQ__kav
                 WHERE PublishStatus='Online'
                 AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')
@@ -74,6 +74,7 @@ public without sharing class AKBController
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', sc.masqScopeIdCookie);
             go.setRedirect(true);
+
             return go;
         }
 
@@ -84,8 +85,8 @@ public without sharing class AKBController
         feedbackHelpful.Helpful__c = true;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
         feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
-
-        if (article.ArticleType.equals('FAQ__kav')) 
+        
+        if (article.ArticleType.equals('FAQ__kav'))
         {
             feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
             feedbackHelpful.Type__c = faq.ArticleType;

@@ -143,14 +143,6 @@ public without sharing class ContactHandler
 			Contact cOld = (Contact)oldSo;
 			Contact c = (Contact)so;
 			
-			if (cOld.Self_Service_PIN__c != c.Self_Service_PIN__c)
-			{
-				if (!ContactService.isPinValid(c.Self_Service_PIN__c, c.Birthdate))
-				{
-					throw new ContactService.ContactServiceException('!!!ERROR!!!: The Pin entered is not valid.');
-				}
-			}
-
 			checkAccountNew(c);
 		}
 	}

@@ -99,7 +99,7 @@ public with sharing class TriggerFactory
                 }
             }
         }
- 
+        
         // Perform any post processing
         handler.andFinally();
     }

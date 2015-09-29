@@ -209,9 +209,6 @@
                 <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree" taborderhint="205"/>
                 <apex:inputField value="{!opportunity.Term__c}" id="term" taborderhint="208"/>
                 <apex:inputField value="{!opportunity.International_Student__c}" id="international_student" taborderhint="206"/>
-                <div></div>
-                <apex:inputField label="Previous Institution" value="{!previousEducation.Account__c}" id="previous_education_account" taborderhint="207"/>
-                <div></div>
                 <apex:inputField value="{!opportunity.Military_Status__c}" id="military" taborderhint="209"/>
                 </apex:pageBlockSection>
             </apex:pageBlockSection>

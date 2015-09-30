@@ -264,8 +264,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 else
                 {
                     Opportunity opp = OpportunitiesByContactMap.get(contactId);
-                    opp.Primary_Interest__c = null;
-                    opportunitiesToUpdate.put(opp.Id, opp);
+                    if(opp != null)
+                    {
+                        opp.Primary_Interest__c = null;
+                        opportunitiesToUpdate.put(opp.Id, opp);
+                    }
                 }
             }
         }

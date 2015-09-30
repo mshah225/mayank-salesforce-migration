@@ -136,7 +136,6 @@ public with sharing class Test_TopFiveArticleControllerAKB
 	    RestContext.request = req;
 	    RestContext.response = res;
 	 
-	    List<TopFiveArticleControllerAKB.ArticleInfo> getResults = TopFiveArticleControllerAKB.getTopFiveArticles();
 	    List<TopFiveArticleControllerAKB.ArticleInfo> postResults1 = TopFiveArticleControllerAKB.getTopFiveArticles2('Classes');
 	    List<TopFiveArticleControllerAKB.ArticleInfo> postResults2 = TopFiveArticleControllerAKB.getTopFiveArticles2('Programs and eAdvisor');
 	    List<TopFiveArticleControllerAKB.ArticleInfo> postResults3 = TopFiveArticleControllerAKB.getTopFiveArticles2('Application Status');
@@ -152,7 +151,7 @@ public with sharing class Test_TopFiveArticleControllerAKB
 	    for(Integer x = 0; x < 5; x++)
 	    {
 	    	TopFiveArticleControllerAKB.ArticleInfo ai = postResults6.get(x);
-	    	System.assert(ai.url == 'https://myasu.force.com/akb?id=' + ai.id);
+	    	System.assert(ai.url == TopFiveArticleControllerAKB.getUrlPrefix() + 'SCLaunch?akb_article_id=' + ai.id);
 	    }
   }
 }

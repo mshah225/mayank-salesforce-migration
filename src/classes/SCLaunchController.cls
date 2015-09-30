@@ -5,7 +5,8 @@ public without sharing class SCLaunchController
     public String links { get; set; }
     public String headers { get; set; }
     public String masqScopeIdCookie { get; set; }
-    
+    public String redirectUrl {get; set;}
+
     public SCLaunchController()
     {
         masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
@@ -19,7 +20,8 @@ public without sharing class SCLaunchController
         String navbarParm = '';
         String timeParm = '';
         String signatureParm = '';
-
+        redirectUrl = '/studentSC';
+        
         system.debug('parms: ' + ApexPages.currentPage().getParameters());
         
         if (ApexPages.currentPage().getParameters().get('asuriteId') != null) 
@@ -84,6 +86,11 @@ public without sharing class SCLaunchController
             }
         }
 
+        
+        if(ApexPages.currentPage().getParameters().get('akb_article_id') != null)
+        {
+           redirectUrl = '/akb?id=' + ApexPages.currentPage().getParameters().get('akb_article_id'); 
+        }
         system.debug('asuriteId: ' + asuriteIdParm);
         system.debug('navbar: ' + navbarParm);
         system.debug('time: ' + timeParm);

@@ -30,12 +30,13 @@ global class EmailPublisherLoader implements QuickAction.QuickActionDefaultsHand
 
             // Set the email information correctly
             EmailMessage caseEmailToSend = (EmailMessage)sendEmailDefaults.getTargetSObject();
+
             Contact caseContact = ContactService.getContactInformation(currentCase.ContactId);
 
             // If we have an issue getting the OWEA from the service, catch the exception and use the customerservice@asu.edu one instead.
             try
             {
-                oweaToUse = OrgWideEmailAddressService.getOrgWideEmailAddress(currentCase.Most_Recent_Sent_To_Email__c);
+                oweaToUse = OrgWideEmailAddressService.getOrgWideEmailAddress(currentCase.Case_Feed_Email__c);
             }
             catch (OrgWideEmailAddressService.OrgWideEmailAddressServiceException e)
             {
@@ -46,19 +47,13 @@ global class EmailPublisherLoader implements QuickAction.QuickActionDefaultsHand
             caseEmailToSend.FromAddress = oweaToUse.Address;
             caseEmailToSend.FromName = oweaToUse.DisplayName;
 
-            // Load the default email template configs
-            List<Case_Default_Email_Templates__c> defaultEmailTempConf = [
-                    SELECT Template_Name__c, Functional_Group__c, Name
-                    FROM Case_Default_Email_Templates__c
-            ];
-
-            // Get a map of all the EmailTemplates in this org
-            Map<String, EmailTemplate> emailTemplates = EmailTemplateService.getEmailTemplatesByAPIName();
-
-            // Set the default template
-            EmailTemplate emailTemplateToUse = EmailTemplateService.getDefaultEmailTemplateForCaseFeed(emailTemplates, defaultEmailTempConf, currentCase.Functional_Group__c);
             sendEmailDefaults.setInsertTemplateBody(true);
-            sendEmailDefaults.setTemplateId(emailTemplateToUse.Id);
+
+            // Null check the Case Feed Email Template Id field on the case. It may not be set for some reason.
+            if (currentCase.Case_Feed_Email_Template_Id__c != null)
+            {
+                sendEmailDefaults.setTemplateId(currentCase.Case_Feed_Email_Template_Id__c);
+            }
         }
     }
 }

@@ -27,27 +27,27 @@ public with sharing class CaseTransferController
 
         // The general list of CARs. Their labels should have '(General)' in them.
         allGenCARs = [
-            SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
-                Functional_Group__c, Label__c, Name, Queue_ID__c
-            FROM Case_Assignment_Rule__c
-            WHERE CTPColumn__c != null
-            AND CTPGroup__c != null
-            AND Label__c != null
-            AND CTPVisible__c = true
-            AND Label__c LIKE '%(General)%'
+                SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
+                    Functional_Group__c, Label__c, Name, Queue_ID__c
+                FROM Case_Assignment_Rule__c
+                WHERE CTPColumn__c != null
+                AND CTPGroup__c != null
+                AND Label__c != null
+                AND CTPVisible__c = true
+                AND Label__c LIKE '%(General)%'
         ];
 
         // All the CARs for this org that do not have the '(General)' tag
         allCARs = [
-            SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
-                Functional_Group__c, Label__c, Name, Queue_ID__c
-            FROM Case_Assignment_Rule__c
-            WHERE CTPColumn__c != null
-            AND CTPGroup__c != null
-            AND Label__c != null
-            AND CTPVisible__c = true
-            AND (NOT Label__c LIKE '%(General)%')
-            ORDER BY Label__c ASC
+                SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
+                    Functional_Group__c, Label__c, Name, Queue_ID__c
+                FROM Case_Assignment_Rule__c
+                WHERE CTPColumn__c != null
+                AND CTPGroup__c != null
+                AND Label__c != null
+                AND CTPVisible__c = true
+                AND (NOT Label__c LIKE '%(General)%')
+                ORDER BY Label__c ASC
         ];
         allGenCARs.addAll(allCARS);
         searchUsers();
@@ -79,9 +79,9 @@ public with sharing class CaseTransferController
         }
 
         Case temp = [
-            SELECT Id, Subject, Description
-            FROM Case
-            WHERE Id = :c.Id
+                SELECT Id, Subject, Description
+                FROM Case
+                WHERE Id = :c.Id
         ];
 
         caseSub = temp.Subject;
@@ -137,83 +137,155 @@ public with sharing class CaseTransferController
     public void resetSearch()
     {
         searchString = null;
+        userList.clear();
         searchUsers();
     }
 
     public void searchUsers()
     {
-        Set<Id> uberRoleIdSet = new Set<Id>();
-        Set<Id> roleIdsToAdd = new Set<Id>();
+        Set<Id> ASroleIds = getASRoleIds();
+        List<User> usersToAdd = new List<User>();
 
-        List<UserRole> uberRoleIdList = [
-            SELECT Id, Name
-            FROM UserRole
-            WHERE (NOT Name LIKE 'Z Unassigned%')
-            AND ParentRoleId = null
-        ];
-
-        for (UserRole ub: uberRoleIdList)
+        if (asRoleIds.contains(UserInfo.getUserRoleId()))
         {
-            uberRoleIdSet.add(ub.Id);
-        }
+            List<User> ASusersToAdd = [
+                    SELECT Name, Department, Title, UserRole.Id
+                    FROM User
+                    WHERE UserRole.Id IN : ASroleIds
+            ];
 
-        String queryString = 'SELECT Id, Name, UserRole.ParentRoleId, Title, Department ' +
-            'FROM User ' +
-            'WHERE UserRoleId = \'' + UserInfo.getUserRoleId() + '\' ' +
-            'AND Id != \'' + UserInfo.getUserId() + '\' ' +
-            'AND IsActive = true ' +
-            'AND UserPermissionsSupportUser = true';
+            usersToAdd.addAll(ASusersToAdd);
+        }
+        else
+        {
+            // Create search query for users.
+            String queryString = 'SELECT Id, Name, UserRole.ParentRoleId, Title, Department ' +
+                    'FROM User ' +
+                    'WHERE UserRoleId = \'' + UserInfo.getUserRoleId() + '\' ' +
+                    'AND Id != \'' + UserInfo.getUserId() + '\' ' +
+                    'AND IsActive = true ' +
+                    'AND UserPermissionsSupportUser = true';
+
+            // If searchString is populated, we'll add another AND LIKE clause.
+            if (searchString != null)
+            {
+                System.debug('searching: ' + searchString);
+                String userSearchString = ' AND Name LIKE ' +
+                        '\'%' + String.escapeSingleQuotes(searchString) + '%\'';
+                queryString += userSearchString;
+            }
+
+            System.debug(queryString);
+            usersToAdd = Database.query(queryString);
+
+            // Find subordinants for the current user, if they exist.
+            List<User> subordinateList = [
+                    SELECT Name, Title, Department, UserRole.Id
+                    FROM User
+                    WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
+            ];
+
+            if (subordinateList.size() > 0)
+            {
+                usersToAdd.addAll(subordinateList);
+            }
+        }
 
         if (searchString != null)
         {
-            System.debug('searching: ' + searchString);
-            String userSearchString = ' AND Name LIKE ' +
-                '\'%' + String.escapeSingleQuotes(searchString) + '%\'';
-            queryString += userSearchString;
+            // Reset the userlist if it's populated.
+            userList.clear();
+
+            String searchFilterString = 'SELECT Name, Title, Department ' +
+                    'FROM User ' +
+                    'WHERE Id IN :usersToAdd ' +
+                    'AND IsActive = true ' +
+                    'AND UserPermissionsSupportUser = true ' +
+                    'AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+
+            List<User> filterdUsers = Database.query(searchFilterString);
+            userList.addAll(filterdUsers);
+
+        }
+        else
+        {
+            userList.addAll(usersToAdd);
         }
 
-        System.debug(queryString);
-        List<User> usersToAdd = Database.query(queryString);
+        // Get Uber Role Ids
+        List<UserRole> uberRoleIdList = [
+                SELECT Id, Name
+                FROM UserRole
+                WHERE (NOT Name LIKE 'Z Unassigned%')
+                AND ParentRoleId = null
+        ];
 
+        // Add Uber Role Ids to set for later.
+        Set<Id> uberRoleIdSet = new Set<Id>();
+        for (UserRole ur: uberRoleIdList)
+        {
+            uberRoleIdSet.add(ur.Id);
+        }
 
-//        List<User> subordinateList = [
-//            SELECT UserRole.Id
-//            FROM User
-//            WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
-//        ];
-//
-//        if (subordinateList.size() > 0)
-//        {
-//            for (User su : subordinateList)
-//            {
-//                roleIdsToAdd.add(su.UserRole.Id);
-//            }
-//        }
-//
-//        for (User ub: uberRoles)
-//        {
-//            uberRoleIds.add(ub.UserRole.Id);
-//        }
-//
-//        for (User u : usersToAdd)
-//        {
-//            if (u.UserRole.ParentRoleId != null && !uberRoleIds.contains(u.UserRole.ParentRoleId))
-//            {
-//                roleIdsToAdd.add(u.UserRole.ParentRoleId);
-//            }
-//        }
+        // Grab users parent role id
+        Id usersParentRoleId = [
+                SELECT UserRole.ParentRoleId
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+        ].Id;
 
-        String query2String = 'SELECT Id, Name, Title, Department ' +
-            'FROM User ' +
-            'WHERE UserRoleId ' +
-            'IN :roleIdsToAdd ' +
-            'AND Id != :userId ' +
-            'AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
-        List<User> extraUsers = Database.query(query2String);
+        // Check for null and that the parent role id is not an uber role
+        if (usersParentRoleId != null && !uberRoleIdSet.contains(usersParentRoleId))
+        {
+            List<User> managers = [
+                    SELECT Name, Title, Department
+                    FROM User
+                    WHERE UserRole.Id = :usersParentRoleId
+            ];
+            userList.addAll(managers);
+        }
 
-        userList.clear();
-        userList.addAll(usersToAdd);
         userList.sort();
+    }
+
+    public Set<Id> getASRoleIds()
+    {
+        Set<Id> ASroleIds = new Set<Id>();
+
+        // Get Admission Services Uber Role Id
+        Id ASuberRoleId = [
+                SELECT Id
+                FROM UserRole
+                WHERE Name = 'AS Admission Services'
+        ].Id;
+
+        ASroleIds.add(ASuberRoleId);
+
+        // Get Admission Services manager roles
+        List<UserRole> ASmanagerRoleIds = [
+                SELECT Id
+                FROM UserRole
+                WHERE ParentRoleId = :ASuberRoleId
+        ];
+
+        for (UserRole manRoles : ASmanagerRoleIds)
+        {
+            ASroleIds.add(manRoles.Id);
+        }
+
+        // Get Adminssion Services subordinate roles
+        List<UserRole> ASsubRoleIds = [
+                SELECT Id
+                FROM UserRole
+                WHERE ParentRoleId IN :ASmanagerRoleIds
+        ];
+
+        for (UserRole subRoles : ASsubRoleIds)
+        {
+            ASroleIds.add(subRoles.Id);
+        }
+
+        return ASroleIds;
     }
 
     public PageReference transferCase()
@@ -227,11 +299,11 @@ public with sharing class CaseTransferController
                 if (!toUser)
                 {
                     Case_Assignment_Rule__c selectedCAR = [
-                        SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
-                            Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name,
-                            Queue_ID__c, Case_Feed_Email_Template_Id__c
-                        FROM Case_Assignment_Rule__c
-                        WHERE Id = :selectedId
+                            SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
+                                Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name,
+                                Queue_ID__c, Case_Feed_Email_Template_Id__c
+                            FROM Case_Assignment_Rule__c
+                            WHERE Id = :selectedId
                     ];
 
                     c.OwnerId = selectedCAR.Queue_ID__c;

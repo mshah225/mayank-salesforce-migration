@@ -21,7 +21,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkBefore() 
     {
-        System.debug('BULK BEFORE');
         Set<Id> campaignIdsInTrigger = new Set<Id>();
 
         Set<Id> contactIdsInTrigger = new Set<Id>();
@@ -45,10 +44,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
             listOfAffectedCMs = Trigger.old;
         }
 
-
-        System.debug('LIST OF AFFECTED CMS: ' + listOfAffectedCMs);
-        System.debug('TRIGGER.NEW: ' + Trigger.new);
-        
         //For each Campaign Member in this trigger
         for (Integer x = 0; x < listOfAffectedCMs.size(); x++) 
         {
@@ -105,23 +100,9 @@ public without sharing class CampaignMemberHandler implements ITrigger
         {
             OpportunitiesByContactMap.put(o.Contact__c, o);
         }
-        System.debug('OPPORTUNITIES IN TRIGGER: ' + opportunitiesInTrigger);
         leadsInTrigger = new Map<Id, Lead>([SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :leadIDsInTrigger]);
 
         Set<CampaignMember> setOfAffectedCMs = new Set<CampaignMember>(listOfAffectedCMs);
-
-        System.debug('CM IDS: ' + cmIds);
-        System.debug('CAMPAIGN IDS: ' + campaignIdsInTrigger);
-        System.debug('CONTACT IDS: ' + contactIdsInTrigger);
-        System.debug('CMS WITH CONTACTS IN TRIGGER: ' + cmsInTriggerwithContacts);
-        System.debug('LEAD IDS: ' + leadIdsInTrigger);
-        System.debug('CMS WITH LEADS IN TRIGGER: ' + cmsInTriggerWithLeads);
-
-        System.debug('LIST OF AFFECTED CMS: ' + listOfAffectedCMs);
-        System.debug('SET OF AFFECTED CMS: ' + setOfAffectedCMs);
-        System.debug('TRIGGER.NEW: ' + Trigger.new);
-
-        
 
         //For all Campaigns on the CMs in this trigger, get their names and link id to name
         List<Campaign> campaignList = [SELECT Id, RecordType.DeveloperName FROM Campaign WHERE Id IN :campaignIdsInTrigger];
@@ -146,7 +127,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
         {              
             CampaignMembersByContactMap.get(cm.ContactId).add(cm);
         }
-        System.debug('CAMPAIGN MEMBERS BY CONTACT MAP 1: ' + CampaignMembersByContactMap);
 
         //When inserting or updating, need to add the new CMs to the Contact map
         if(Trigger.isInsert || Trigger.isUpdate)
@@ -169,8 +149,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 }
             }
         }
-
-        System.debug('CAMPAIGN MEMBERS BY CONTACT MAP 2: ' + CampaignMembersByContactMap);
 
         //Get the list of CMs on the leads. Ignore any that are in this trigger, they will be added in later
         List<CampaignMember> cmsForLeads = [SELECT Id, CampaignId, Status, CreatedDate, LeadId, Is_Primary_Interest__c, Campaign_Type__c, Last_Member_Status_Change__c, Campaign.RecordType.DeveloperName
@@ -244,8 +222,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     }
                 }
 
-                System.debug('PRIMARY 1: ' + primary);
-                
                 //By now we should have a Primary
                 //There are three possibilities
                 //1. None of the CMs have primary
@@ -256,12 +232,10 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     //If the primary is in the trigger
                     if(setOfAffectedCMs.contains(primary))
                     {
-                        System.debug('HERE 1');
                         triggerCMsToPrimary.add(primary);
                     }
                     else
                     {
-                        System.debug('HERE 2');
                         externalCMsToPrimary.add(primary);    
                     }
 
@@ -271,19 +245,16 @@ public without sharing class CampaignMemberHandler implements ITrigger
                         {
                             if(setOfAffectedCMs.contains(ccm))
                             {
-                                System.debug('HERE 3');
                                 triggerCMsToFalsify.add(ccm);
                             }
                             else
                             {
-                                System.debug('HERE 4');
                                 externalCMsToPrimary.add(ccm);    
                             }
                         }
                     }
 
                     Opportunity opp = OpportunitiesByContactMap.get(contactId);
-                    System.debug('OPPORTUNITY HERE: ' + opp);
                     if(opp != null)
                     {
                         opp.Primary_Interest__c = primary.CampaignId;
@@ -296,13 +267,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     opp.Primary_Interest__c = null;
                     opportunitiesToUpdate.put(opp.Id, opp);
                 }
-
-                System.debug('TRIGGER CMS TO PRIMARY:' + triggerCMsToPrimary);
-                System.debug('TRIGGER CMS TO FALSIFY:' + triggerCMsToFalsify);
-                System.debug('EXTERNAL CMS TO PRIMARY:' + externalCMsToPrimary);
-                System.debug('EXTERNAL CMS TO FALSIFY:' + externalCMsToFalsify);
             }
-            System.debug('BULK BEFORE END');
         }
 
         //Reset the primary for the Leads 
@@ -336,8 +301,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     }
                 }
 
-                System.debug('PRIMARY 1: ' + primary);
-                
                 //By now we should have a Primary
                 //There are three possibilities
                 //1. None of the CMs have primary
@@ -348,12 +311,10 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     //If the primary is in the trigger
                     if(setOfAffectedCMs.contains(primary))
                     {
-                        System.debug('HERE 1');
                         triggerCMsToPrimary.add(primary);
                     }
                     else
                     {
-                        System.debug('HERE 2');
                         externalCMsToPrimary.add(primary);    
                     }
 
@@ -363,12 +324,10 @@ public without sharing class CampaignMemberHandler implements ITrigger
                         {
                             if(setOfAffectedCMs.contains(lcm))
                             {
-                                System.debug('HERE 3');
                                 triggerCMsToFalsify.add(lcm);
                             }
                             else
                             {
-                                System.debug('HERE 4');
                                 externalCMsToPrimary.add(lcm);    
                             }
                         }
@@ -384,15 +343,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     leadToUpdate.Primary_Interest__c = null;
                     leadsToUpdate.add(leadToUpdate);
                 }
-
-                System.debug('LEADS TO UPDATE: ' + leadsToUpdate);
-
-                System.debug('TRIGGER CMS TO PRIMARY:' + triggerCMsToPrimary);
-                System.debug('TRIGGER CMS TO FALSIFY:' + triggerCMsToFalsify);
-                System.debug('EXTERNAL CMS TO PRIMARY:' + externalCMsToPrimary);
-                System.debug('EXTERNAL CMS TO FALSIFY:' + externalCMsToFalsify);
             }
-            System.debug('BULK BEFORE END');
         }
     }
  
@@ -404,11 +355,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void beforeInsert(SObject so) 
     {
-        System.debug('BEFORE INSERT FOR ' + so.Id);
         CampaignMember cm = (CampaignMember)so;
-        System.debug('CM: ' + cm);
-        System.debug('TRIGGER CMS TO PRIMARY: ' + triggerCMsToPrimary);
-        System.debug('TRIGGER CMS TO FALSIFY: ' + triggerCMsToFalsify);
 
         if(triggerCMsToFalsify.contains(cm))
         {
@@ -428,8 +375,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 cm.Opportunity__c = opp.Id;
             }
         }
-
-        System.debug('CM 2: ' + cm);
     }
     
     /**
@@ -440,14 +385,8 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void beforeUpdate(SObject oldSo, SObject so) 
     {
-        System.debug('BEFORE UPDATE FOR ' + so.Id);
         CampaignMember cm = (CampaignMember)so;
         CampaignMember oldCm = (CampaignMember)oldSo;
-
-        System.debug('OLD CM: ' + oldCm);
-        System.debug('CM: ' + cm);
-        System.debug('TRIGGER CMS TO PRIMARY: ' + triggerCMsToPrimary);
-        System.debug('TRIGGER CMS TO FALSIFY: ' + triggerCMsToFalsify);
 
         if(oldCm.Status != 'No Longer Interested' && cm.Status == 'No Longer Interested')
         {
@@ -463,8 +402,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
         {
             cm.Is_Primary_Interest__c = TRUE;
         }
-
-        System.debug('CM 2: ' + cm);
     }
     
     /**
@@ -491,10 +428,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkAfter() 
     {
-        System.debug('BULK AFTER');
-        System.debug('EXTERNAL CMS TO PRIMARY:' + externalCMsToPrimary);
-        System.debug('EXTERNAL CMS TO FALSIFY:' + externalCMsToFalsify);
-
         Set<Id> triggerIDs = new Set<Id>();
         List<Id> nationalMeritContactIds = new List<Id>();
         if(Trigger.isInsert || Trigger.isUpdate)
@@ -561,9 +494,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
         externalCMsToPrimary = new Set<CampaignMember>();
         externalCMsToFalsify = new Set<CampaignMember>();
 
-        System.debug('CMS TO UPDATE: ' + cmsToUpdate);
-        System.debug('LEADS TO UPDATE: ' + leadsToUpdate);
-
         if(opportunitiesToUpdate.size() > 0)
         {
             List<Opportunity> oppsToUpdateList = new List<Opportunity>();
@@ -582,7 +512,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
         {
             update cmsToUpdate;
         }
-        System.debug('BULK AFTER END');
     }
 
     /**

@@ -17,8 +17,7 @@ public without sharing class SCLaunchController
         String navbarParm = '';
         String timeParm = '';
         String signatureParm = '';
-        redirectUrl = '/studentSC';
-        
+
         System.debug('parms: ' + ApexPages.currentPage().getParameters());
         
         if (ApexPages.currentPage().getParameters().get('asuriteId') != null) 

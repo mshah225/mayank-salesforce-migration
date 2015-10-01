@@ -1,9 +1,7 @@
 public without sharing class SCLaunchController 
 {
     public List<Link> linkList { get; set; }
-    public Map<String, String> linkMap { get; set; }
     public String links { get; set; }
-    public String headers { get; set; }
     public String masqScopeIdCookie { get; set; }
     public String redirectUrl {get; set;}
 
@@ -22,7 +20,7 @@ public without sharing class SCLaunchController
         String signatureParm = '';
         redirectUrl = '/studentSC';
         
-        system.debug('parms: ' + ApexPages.currentPage().getParameters());
+        System.debug('parms: ' + ApexPages.currentPage().getParameters());
         
         if (ApexPages.currentPage().getParameters().get('asuriteId') != null) 
         {
@@ -42,14 +40,14 @@ public without sharing class SCLaunchController
         if (ApexPages.currentPage().getParameters().get('navbar') != null) 
         {
             links = ApexPages.currentPage().getParameters().get('navbar');
-            system.debug('links: ' + links);
+            System.debug('links: ' + links);
             links = links.replace('{"navbarLinks":','');
             links = links.substring(0, (links.length()-1));
             
             //Write the cookie
             if (links != null && links != '') 
             {
-                linksCookie = new Cookie('navbarlinks',links,null,-1,false);
+                linksCookie = new Cookie('navbarlinks', links, null, -1, false);
                 ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});
             }         
         }
@@ -61,11 +59,11 @@ public without sharing class SCLaunchController
         if (linksCookie != null) 
         {
             linksJSON = linksCookie.getValue();
-            system.debug('Cookie value: ' + linksJSON);
+            System.debug('Cookie value: ' + linksJSON);
             // Clean up any HTML encoding for quotes
             linksJSON = linksJSON.replaceAll('&quot;', '"');
             linksJSON = linksJSON.replaceAll('&#34;', '"');
-            system.debug(linksJSON);
+            System.debug(linksJSON);
             //linkList = (List<Link>) JSON.deserialize(linksJSON, List<Link>.class);
             
             linkList = new List<Link>();
@@ -78,6 +76,7 @@ public without sharing class SCLaunchController
                     Link thisLink = new Link();
                     String fieldName = parser.getText();
                     thisLink.name = fieldName;
+
                     // Move to token after the field name
                     parser.nextToken();
                     thisLink.url = parser.getText();
@@ -85,16 +84,16 @@ public without sharing class SCLaunchController
                 }
             }
         }
-
         
         if(ApexPages.currentPage().getParameters().get('akb_article_id') != null)
         {
            redirectUrl = '/akb?id=' + ApexPages.currentPage().getParameters().get('akb_article_id'); 
         }
-        system.debug('asuriteId: ' + asuriteIdParm);
-        system.debug('navbar: ' + navbarParm);
-        system.debug('time: ' + timeParm);
-        system.debug('signature: ' + signatureParm);
+        
+        System.debug('asuriteId: ' + asuriteIdParm);
+        System.debug('navbar: ' + navbarParm);
+        System.debug('time: ' + timeParm);
+        System.debug('signature: ' + signatureParm);
         
         return null; 
     }

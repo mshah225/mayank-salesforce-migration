@@ -3,7 +3,6 @@ public without sharing class SCLaunchController
     public List<Link> linkList { get; set; }
     public String links { get; set; }
     public String masqScopeIdCookie { get; set; }
-    public String redirectUrl {get; set;}
 
     public SCLaunchController()
     {
@@ -83,11 +82,6 @@ public without sharing class SCLaunchController
                     linkList.add(thisLink);
                 }
             }
-        }
-        
-        if(ApexPages.currentPage().getParameters().get('akb_article_id') != null)
-        {
-           redirectUrl = '/akb?id=' + ApexPages.currentPage().getParameters().get('akb_article_id'); 
         }
         
         System.debug('asuriteId: ' + asuriteIdParm);

@@ -162,9 +162,6 @@
             <apex:inputText value="{!searchString}"
                             html-placeholder="Filter results"
                             html-autofocus="true"
-                            html-pattern=".{2,}"
-                            required="true"
-                            title="Please enter at least two characters"
                             style="padding:5px;font-size:9pt;margin-right:3px;margin-bottom:10px;"/>
 
             <apex:commandButton value="Search"

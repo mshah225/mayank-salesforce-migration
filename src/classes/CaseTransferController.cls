@@ -149,7 +149,7 @@ public with sharing class CaseTransferController
         if (asRoleIds.contains(UserInfo.getUserRoleId()))
         {
             List<User> ASusersToAdd = [
-                    SELECT Name, Department, Title, UserRole.Id
+                    SELECT Id, Name, Department, Title, UserRole.Id
                     FROM User
                     WHERE UserRole.Id IN : ASroleIds
             ];
@@ -175,12 +175,12 @@ public with sharing class CaseTransferController
                 queryString += userSearchString;
             }
 
-            System.debug(queryString);
+            System.debug('!!!!Querystring: ' + queryString);
             usersToAdd = Database.query(queryString);
 
             // Find subordinants for the current user, if they exist.
             List<User> subordinateList = [
-                    SELECT Name, Title, Department, UserRole.Id
+                    SELECT Id, Name, Title, Department, UserRole.Id
                     FROM User
                     WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
             ];
@@ -196,7 +196,7 @@ public with sharing class CaseTransferController
             // Reset the userlist if it's populated.
             userList.clear();
 
-            String searchFilterString = 'SELECT Name, Title, Department ' +
+            String searchFilterString = 'SELECT Id, Name, Title, Department ' +
                     'FROM User ' +
                     'WHERE Id IN :usersToAdd ' +
                     'AND IsActive = true ' +
@@ -238,13 +238,14 @@ public with sharing class CaseTransferController
         if (usersParentRoleId != null && !uberRoleIdSet.contains(usersParentRoleId))
         {
             List<User> managers = [
-                    SELECT Name, Title, Department
+                    SELECT Id, Name, Title, Department
                     FROM User
                     WHERE UserRole.Id = :usersParentRoleId
             ];
             userList.addAll(managers);
         }
 
+        System.debug('User list populated');
         userList.sort();
     }
 
@@ -315,6 +316,7 @@ public with sharing class CaseTransferController
                 }
                 else
                 {
+                    System.debug('!!!!!!!!SelectedId: ' + selectedId);
                     c.OwnerId = selectedId;
                 }
 

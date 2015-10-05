@@ -84,6 +84,7 @@ global class JITStudentHandler implements Auth.SamlJitHandler
                     u.ProfileId = p.Id;
                 }
 
+                u.ContactId = contactLookup[0].Id;
                 u.Username = 'community_' + asurite + '@asu.edu';
                 u.Email = attributes.get('User.FederationIdentifier');
                 u.CommunityNickname = asurite + '_comm';

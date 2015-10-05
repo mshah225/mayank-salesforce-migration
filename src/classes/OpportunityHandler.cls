@@ -126,11 +126,13 @@ public without sharing class OpportunityHandler implements ITrigger
     */
     public void beforeInsert(SObject so)
     {
-        Opportunity o = (Opportunity)so;
-        if (oppToContactMap.containsKey(o.Id))
-        {
-            o.contact__c = oppToContactMap.get(o.Id);
-        }
+//        Opportunity o = (Opportunity)so;
+//        if (oppToContactMap.containsKey(o.Id))
+//        {
+//            System.debug('!!! Original contact reference is ' + o.Contact__c);
+//            o.contact__c = oppToContactMap.get(o.Id);
+//            System.debug('!!! Before insert set contact reference to ' + o.Contact__c);
+//        }
     }
 
     /**

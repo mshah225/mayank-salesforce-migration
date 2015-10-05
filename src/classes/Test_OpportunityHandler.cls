@@ -95,7 +95,7 @@ public with sharing class Test_OpportunityHandler {
     {
         Contact con1 = ContactService.createTestContact();
         Opportunity op1 = OpportunityService.createOpportunity();
-        Account acc1 = AccountService.createAccount();
+        Account acc1 = AccountService.createTestAccount();
 
         List<Opportunity> opps = OpportunityService.createMultipleOpportunities(4);
         Id program1 = insertProgram('Test Program 1', '12345');
@@ -145,9 +145,9 @@ public with sharing class Test_OpportunityHandler {
     {
         Contact con1 = ContactService.createTestContact();
         Opportunity op1 = OpportunityService.createOpportunity();
-        Account acc1 = AccountService.createAccount();
+        Account acc1 = AccountService.createTestSFMasteredAccount();
 
-        List<Opportunity> opps = OpportunityService.createMultipleOpportunities(3);
+        List<Opportunity> opps = OpportunityService.createTestOpportunities(3);
         insert opps;
         Opportunity o1 = opps[0];
         Opportunity o2 = opps[1];

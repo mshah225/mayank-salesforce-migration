@@ -235,7 +235,7 @@ public without sharing class Test_TerritoryAssignmentHelper
     {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com'];
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(1);
+        List<Contact> testContacts = ContactService.createTestContacts(1);
 
         Insert testContacts;
 
@@ -364,7 +364,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar2.User__c = chinaManagers[1].Id;
         insert ATar2;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(2);
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
         for (Contact con : testContacts)
         {
@@ -471,7 +471,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar2.User__c = usManagers[1].Id;
         insert ATar2;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(2);
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
         for (Contact con : testContacts)
         {
@@ -573,7 +573,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar2.User__c = transferManagers[1].Id;
         insert ATar2;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(2);
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
         testContacts[0].MailingCountry = 'Vietnam';
 
@@ -634,7 +634,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar1.User__c = conditAdmitManager.Id;
         insert ATar1;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(1);
+        List<Contact> testContacts = ContactService.createTestContacts(1);
 
         insert testContacts;
 
@@ -674,7 +674,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar1.User__c = conditAdmitManager.Id;
         insert ATar1;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(1);
+        List<Contact> testContacts = ContactService.createTestContacts(1);
 
         insert testContacts;
 

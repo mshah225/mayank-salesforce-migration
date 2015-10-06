@@ -7,13 +7,15 @@ public class OpportunityService
     */
     public static Opportunity createTestUndergraduateProspect(Contact contactToAssociate)
     {
+        Date closeDate = Date.today();
+
         Id undergradProspectId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
 
         Opportunity undergradProspect = new Opportunity();
         undergradProspect.Contact__c = contactToAssociate.Id;
         undergradProspect.RecordTypeId = undergradProspectId;
         undergradProspect.StageName = 'Prospect';
-        undergradProspect.CloseDate = Date.today();
+        undergradProspect.CloseDate = closeDate.addYears(1);
         undergradProspect.Name = 'Test Opportunity';
         undergradProspect.AccountId = contactToAssociate.AccountId;
 
@@ -86,7 +88,7 @@ public class OpportunityService
         System.debug('!!! Contacts in service ' + contactIds);
 
         // Get all the opportunities associated with these contacts
-        opportunitiesToUpdate = [SELECT Contact__c, Id FROM Opportunity WHERE Contact__c IN :contactIds];
+        opportunitiesToUpdate = [SELECT Contact__c FROM Opportunity WHERE Contact__c IN :contactIds];
 
         System.debug('!!! Opportunites in service ' + opportunitiesToUpdate);
 

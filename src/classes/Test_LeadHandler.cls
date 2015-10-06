@@ -52,31 +52,31 @@ public with sharing class Test_LeadHandler
         return liList;
     }
 
-    // @isTest static void testLeadHandler()
-    // {
-    //     Integer numberOfLeads = 200;
-    //     Lead[] leadList = createLeads(numberOfLeads);
-    //     insert leadList;
-    //
-    //     Lead_Interest__c[] liList = createLeadInterests(leadList);
-    //     insert liList;
-    //
-    //     Set<Id> leadIds = new Set<Id>();
-    //
-    //     // Perform Conversion
-    //     for (Lead l: leadList)
-    //     {
-    //        l.Convert_Perform_Conversion__c = true;
-    //        leadIds.add(l.Id);
-    //     }
-    //
-    //     update leadList;
-    //
-    //     //Check conversion results
-    //     List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
-    //
-    //     System.assertEquals(numberOfLeads, convertedLeads.size());
-    // }
+     @isTest static void testLeadHandler()
+     {
+         Integer numberOfLeads = 200;
+         Lead[] leadList = createLeads(numberOfLeads);
+         insert leadList;
+
+         Lead_Interest__c[] liList = createLeadInterests(leadList);
+         insert liList;
+
+         Set<Id> leadIds = new Set<Id>();
+
+         // Perform Conversion
+         for (Lead l: leadList)
+         {
+            l.Convert_Perform_Conversion__c = true;
+            leadIds.add(l.Id);
+         }
+
+         update leadList;
+
+         //Check conversion results
+         List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
+
+         System.assertEquals(numberOfLeads, convertedLeads.size());
+     }
 
     @isTest static void testLeadToOppFieldMapping()
     {

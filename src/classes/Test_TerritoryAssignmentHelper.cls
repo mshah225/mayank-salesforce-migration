@@ -634,21 +634,20 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar1.User__c = conditAdmitManager.Id;
         insert ATar1;
 
-        List<Contact> testContacts = ContactService.createTestContacts(1);
+        Contact testContact= ContactService.createTestContact();
 
-        insert testContacts;
+        insert testContact;
 
-        Contact admitCondCon = [SELECT Id, AccountId
-                                FROM Contact
-                                WHERE Id = :testContacts[0].Id];
+        testContact = [
+                SELECT Id, AccountId
+                FROM Contact
+                WHERE Id = :testContact.Id
+        ];
 
-        Opportunity admitCondOpp = new Opportunity();
-        admitCondOpp.Name = 'Conditional Admit Opportunity 1';
+        Opportunity admitCondOpp = OpportunityService.createTestUndergraduateProspect(testContact);
+        admitCondOpp.Name = 'International Admit Opportunity';
         admitCondOpp.StageName = 'Admitted - Conditional';
         admitCondOpp.Career__c = 'Undergraduate';
-        admitCondOpp.CloseDate = Date.today() + 365;
-        admitCondOpp.Contact__c = admitCondCon.Id;
-        admitCondOpp.AccountId = admitCondCon.AccountId;
         insert admitCondOpp;
 
         Test.startTest();
@@ -659,7 +658,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :admitCondCon.Id];
+        admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :testContact.Id];
 
         System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct transfer territory manager.');
     }
@@ -674,21 +673,18 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar1.User__c = conditAdmitManager.Id;
         insert ATar1;
 
-        List<Contact> testContacts = ContactService.createTestContacts(1);
+        Contact testContact= ContactService.createTestContact();
 
-        insert testContacts;
+        insert testContact;
 
         Contact admitCondCon = [SELECT Id, AccountId
                                 FROM Contact
-                                WHERE Id = :testContacts[0].Id];
+                                WHERE Id = :testContact.Id];
 
-        Opportunity admitCondOpp = new Opportunity();
+        Opportunity admitCondOpp = OpportunityService.createTestUndergraduateProspect(admitCondCon);
         admitCondOpp.Name = 'Conditional Admit Opportunity 1';
         admitCondOpp.StageName = 'Applied';
         admitCondOpp.Career__c = 'Undergraduate';
-        admitCondOpp.CloseDate = Date.today() + 365;
-        admitCondOpp.Contact__c = admitCondCon.Id;
-        admitCondOpp.AccountId = admitCondCon.AccountId;
         admitCondOpp.International_Student__c = true;
 
         insert admitCondOpp;

@@ -1,6 +1,4 @@
-public without sharing class LeadHandler
-	implements ITrigger
-
+public without sharing class LeadHandler implements ITrigger
 {
 	private LeadStatus convertedStatus = new LeadStatus();
 	private List<Lead> leadsToConvert = new List<Lead>();
@@ -198,11 +196,7 @@ public without sharing class LeadHandler
 
 		reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
 
-		System.debug('!!! Mapping data from these leads ' + convertedLeadIds);
-
         List<Opportunity> oppsToUpdate = OpportunityService.mapLeadDataToOpportunity(convertedLeadIds);
-
-		System.debug('About to update these opps: ' + oppsToUpdate);
 
         update oppsToUpdate;
 	}

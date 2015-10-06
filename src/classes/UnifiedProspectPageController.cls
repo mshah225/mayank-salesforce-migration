@@ -361,19 +361,6 @@ public class UnifiedProspectPageController
             opportunity.AccountId = accId;
             opportunity.StageName = 'Prospect';
             
-            if (contact.Country_of_Citizenship__r.Name == 'United States') 
-            {
-                opportunity.International_Student__c = false;
-            }
-            else if (contact.Country_of_Citizenship__c == null) 
-            {
-                opportunity.International_Student__c = false;
-            }
-            else 
-            {
-                opportunity.International_Student__c = true;
-            }
-
             if(collegeSelected != null && collegeSelected != '0')
             {
                opportunity.College__c = collegeSelected; 

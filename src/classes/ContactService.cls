@@ -55,7 +55,9 @@ public class ContactService
             {
                 con.ASURite_ID__c = con.ASURite_ID__c.substring(0, 10);
             }
-
+            
+            Integer tempEmplId = 1200000000 + i;
+            con.EMPLID__c = String.valueOf(tempEmplId);
             contactList.add(con);
         }
 

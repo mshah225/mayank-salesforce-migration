@@ -22,9 +22,10 @@ public without sharing class LeadHandler implements ITrigger
 	public void bulkAfter()
 	{
 		// Grab the status for converted Leads
-		List<LeadStatus> statusList = [SELECT Id, MasterLabel
-									   FROM LeadStatus
-									   WHERE IsConverted=true LIMIT 1];
+		List<LeadStatus> statusList = [
+                SELECT Id, MasterLabel
+                FROM LeadStatus
+                WHERE IsConverted=true LIMIT 1];
 
 		if (statusList.size() > 0)
 		{
@@ -133,6 +134,7 @@ public without sharing class LeadHandler implements ITrigger
 		List<List<Database.Leadconvert>> leadConvertBatches = new List<List<Database.Leadconvert>>();
 		List<Database.LeadConvertResult> leadConversionResults = new List<Database.LeadConvertResult>();
 		Set<Id> LeadsRequiringLIReparenting = new Set<Id>();
+		Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
 		Integer count = 0;
 
 		for (Lead l : leadsToConvert)
@@ -145,6 +147,13 @@ public without sharing class LeadHandler implements ITrigger
 			{
 				lc.setContactId(l.Convert_Contact__c);
 				lc.setAccountId(l.Convert_Contact_Account_ID__c);
+			}
+
+			// If Leads has Last Institution Attended populated, add to the List that
+			// needs a Previous Education entry added
+			if (l.Last_Institution_Attended__c != null)
+			{
+				leadsNeedingPreviousEducation.add(l.Id);
 			}
 
 			// Reparent related Lead Interests if we're not creating an Opportunity
@@ -193,45 +202,20 @@ public without sharing class LeadHandler implements ITrigger
                 convertedLeadIds.add(lcr.getLeadId());
             }
         }
-
-		reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
-
+        
         List<Opportunity> oppsToUpdate = OpportunityService.mapLeadDataToOpportunity(convertedLeadIds);
-
         update oppsToUpdate;
-	}
 
-	private void reparentRelatedLeadInterests(Set<Id> leadIds)
-	{
-		if (leadIds.size() == 0)
-		{
-			return;
-		}
+		if (LeadsRequiringLIReparenting.size() > 0)
+        {
+            List<Lead_Interest__c> leadInterestList = LeadService.reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
+            update leadInterestList;
+        }
 
-		List<Lead_Interest__c> leadInterestList = [
-                SELECT Id, OwnerId, IsDeleted, Name, RecordType.Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, Leads__c, Eligibility__c, Plan__c, Contact__c, Status__c, Term__c, Primary_Source__c, Secondary_Source__c, Type__c, College__c, Academic_Interest__c, Test_Record__c, Qualifying__c, Send_Email__c, External_Application_Number__c, Send_Email_ID__c
-                FROM Lead_Interest__c
-                WHERE Leads__c IN :leadIds
-        ];
-
-		if (leadInterestList.size() == 0)
-		{
-			return;
-		}
-
-		// Need to requery to get the Converted Contact Ids
-		Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>([
-                SELECT Id, ConvertedContactId
-                FROM Lead
-                WHERE Id IN :leadIds
-        ]);
-
-		for (Lead_Interest__c li: leadInterestList)
-		{
-			li.Contact__c = leadToContactIdMap.get(li.leads__c).ConvertedContactId;
-		}
-
-		update leadInterestList;
-	}
-
+        if (leadsNeedingPreviousEducation.size() > 0)
+        {
+            List<Previous_Education__c> previousEducationList = LeadService.createConvertedPreviousEducation(leadsNeedingPreviousEducation);
+            insert previousEducationList;
+        }
+    }
 }

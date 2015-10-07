@@ -2,8 +2,8 @@ public class OpportunityService
 {
     /**
     * Creates an undergraduate prospect opportunity
-    * @param Contact A contact that will be associated
-    * @return Opportunity An undergraduate prospect opportunity
+    * @param contactToAssociate A contact that will be associated
+    * @return undergradProspect An undergraduate prospect opportunity
     */
     public static Opportunity createTestUndergraduateProspect(Contact contactToAssociate)
     {
@@ -24,12 +24,12 @@ public class OpportunityService
 
     /**
     * Creates one opportunity for each contact provided.
-    * @param List<Contact> A list of contacts
-    * @return List<Opportunity> A list of undergraduate prospect opportunities
+    * @param contactsToAssociate A list of contacts
+    * @return oppList A list of undergraduate prospect opportunities
     */
     public static List<Opportunity> createTestUndergraduateProspects(List<Contact> contactsToAssociate)
     {
-        List<Opportunity> oppList = new List<Opportunity>();
+        List<Opportunity> undergradProspects = new List<Opportunity>();
 
         Date closeDate = Date.today();
 
@@ -44,16 +44,16 @@ public class OpportunityService
             o.CloseDate = closeDate.addYears(1);
             o.Name = 'Test Opportunity for ' + con.Name;
             o.AccountId = con.AccountId;
-            oppList.add(o);
+            undergradProspects.add(o);
         }
 
-        return oppList;
+        return undergradProspects;
     }
 
     /**
-    * Generates a random number between 1 and 100. For automated territory assignment.
-    * @return Integer A random integer
-    */
+    * Generates a random number for Territory Assignment
+	* @return randNumber A random Integer between 0 and 100
+	*/
     public static Integer generateOpportunityAssignmentNumber()
     {
         Double randNumber = Math.random()*100;

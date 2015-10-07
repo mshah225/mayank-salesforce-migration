@@ -1,12 +1,10 @@
-public without sharing class LeadHandler 
-	implements ITrigger 
-	
+public without sharing class LeadHandler implements ITrigger
 {
 	private LeadStatus convertedStatus = new LeadStatus();
 	private List<Lead> leadsToConvert = new List<Lead>();
 	private Set<Id> leadIdsCleanUpLeadInterests = new Set<Id>();
 	private boolean LeadInterestsConverted = false;
-	
+
 	/**
 	 * bulkBefore
 	 *
@@ -14,26 +12,27 @@ public without sharing class LeadHandler
 	 * any data required into maps prior execution of the trigger.
 	 */
 	public void bulkBefore(){}
-	
+
 	/**
 	 * bulkAfter
 	 *
 	 * This method is called prior to execution of an AFTER trigger. Use this to cache
 	 * any data required into maps prior execution of the trigger.
 	 */
-	public void bulkAfter() 
+	public void bulkAfter()
 	{
 		// Grab the status for converted Leads
-		List<LeadStatus> statusList = [SELECT Id, MasterLabel 
-									   FROM LeadStatus 
-									   WHERE IsConverted=true LIMIT 1];
-		
+		List<LeadStatus> statusList = [
+                SELECT Id, MasterLabel
+                FROM LeadStatus
+                WHERE IsConverted=true LIMIT 1];
+
 		if (statusList.size() > 0)
 		{
 			convertedStatus = statusList[0];
 		}
 	}
-	
+
 	/**
 	 * beforeInsert
 	 *
@@ -46,7 +45,7 @@ public without sharing class LeadHandler
 
 		newLead.Lead_Assignment_Number__c = OpportunityService.generateOpportunityAssignmentNumber();
 	}
-	
+
 	/**
 	 * beforeUpdate
 	 *
@@ -62,7 +61,7 @@ public without sharing class LeadHandler
 	 * trigger.
 	 */
 	public void beforeDelete(SObject so){}
-	
+
 	/**
 	 * beforeFinally
 	 *
@@ -78,11 +77,11 @@ public without sharing class LeadHandler
 	 * trigger. Always put field validation in the 'After' methods in case another trigger
 	 * has modified any values. The record is 'read only' by this point.
 	 */
-	public void afterInsert(SObject so) 
+	public void afterInsert(SObject so)
 	{
 		Lead l = (Lead)so;
-	
-		if (l.Convert_Perform_Conversion__c) 
+
+		if (l.Convert_Perform_Conversion__c)
 		{
 			leadsToConvert.add(l);
 		}
@@ -94,15 +93,15 @@ public without sharing class LeadHandler
 	 * This method is called iteratively for each record updated during an AFTER
 	 * trigger.
 	 */
-	public void afterUpdate(SObject oldSo, SObject so) 
+	public void afterUpdate(SObject oldSo, SObject so)
 	{
 		Lead l = (Lead)so;
 		Lead oldL = (Lead)oldSo;
-	
-		if (l.Convert_Perform_Conversion__c && oldL.Convert_Perform_Conversion__c == false) 
+
+		if (l.Convert_Perform_Conversion__c && oldL.Convert_Perform_Conversion__c == false)
 		{
 			leadsToConvert.add(l);
-		}	
+		}
 	}
 
 	/**
@@ -116,15 +115,15 @@ public without sharing class LeadHandler
 	/**
 	 * andFinally
 	 *
-	 * This method is called once all records have been processed by the trigger. Use this 
+	 * This method is called once all records have been processed by the trigger. Use this
 	 * method to accomplish any final operations such as creation or updates of other records.
 	 */
-	public void andFinally() 
+	public void andFinally()
 	{
 		convertLeads();
 	}
-	
-	private void convertLeads() 
+
+	private void convertLeads()
 	{
 		if (leadsToConvert.size() == 0)
 		{
@@ -138,7 +137,7 @@ public without sharing class LeadHandler
 		Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
 		Integer count = 0;
 
-		for (Lead l: leadsToConvert)
+		for (Lead l : leadsToConvert)
 		{
 			Database.LeadConvert lc = new Database.LeadConvert();
 			lc.SetLeadId(l.Id);
@@ -188,16 +187,35 @@ public without sharing class LeadHandler
 			leadConvertBatches.add(leadConvertList);
 		}
 
-		for (List<Database.Leadconvert> lcList: leadConvertBatches)
+		for (List<Database.Leadconvert> lcList : leadConvertBatches)
 		{
-	        List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcList, false);
-	        leadConversionResults.addAll(lcResultList);
+			List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcList, false);
+			leadConversionResults.addAll(lcResultList);
 		}
 
-		List<Lead_Interest__c> leadInterestList = LeadService.reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
-		update leadInterestList;
+        Set<Id> convertedLeadIds = new Set<Id>();
 
-        List<Previous_Education__c> previousEducationList = LeadService.createConvertedPreviousEducation(leadsNeedingPreviousEducation);
-	    insert previousEducationList;
+        for (Database.LeadConvertResult lcr : leadConversionResults)
+        {
+            if (lcr.isSuccess())
+            {
+                convertedLeadIds.add(lcr.getLeadId());
+            }
+        }
+        
+        List<Opportunity> oppsToUpdate = OpportunityService.mapLeadDataToOpportunity(convertedLeadIds);
+        update oppsToUpdate;
+
+		if (LeadsRequiringLIReparenting.size() > 0)
+        {
+            List<Lead_Interest__c> leadInterestList = LeadService.reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
+            update leadInterestList;
+        }
+
+        if (leadsNeedingPreviousEducation.size() > 0)
+        {
+            List<Previous_Education__c> previousEducationList = LeadService.createConvertedPreviousEducation(leadsNeedingPreviousEducation);
+            insert previousEducationList;
+        }
     }
 }

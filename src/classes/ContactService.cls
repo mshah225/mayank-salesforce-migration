@@ -29,7 +29,7 @@ public class ContactService
         testContact.Birthdate = Date.newInstance(1989, 8, 12);
         testContact.Self_Service_PIN__c = 57483638;
         testContact.PIN_lockout__c = true;
-        testContact.ASURite_ID__c = 'tecontac';
+        testContact.ASURite_ID__c = 'testuser';
 
 		return testContact;
 	}
@@ -39,7 +39,7 @@ public class ContactService
     * @param The number of contacts to create
     * @return A list of the contacts with all required fields;
     */
-    public static List<Contact> createMultipleTestContacts(Integer numOfContacts)
+    public static List<Contact> createTestContacts(Integer numOfContacts)
     {
         List<Contact> contactList = new List<Contact>();
 
@@ -49,11 +49,18 @@ public class ContactService
             con.FirstName = 'Test' + i;
             con.LastName = 'Contact' + i;
             con.Email = 'test.user' + i + '@test.example.com';
-            con.ASURite_ID__c = String.valueOf(i);
+            con.ASURite_ID__c = 'testuser' + i;
+
+            if(con.ASURite_ID__c.length() > 10)
+            {
+                con.ASURite_ID__c = con.ASURite_ID__c.substring(0, 10);
+            }
+            
             Integer tempEmplId = 1200000000 + i;
             con.EMPLID__c = String.valueOf(tempEmplId);
             contactList.add(con);
         }
+
         return contactList;
     }
     

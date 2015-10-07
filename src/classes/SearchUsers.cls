@@ -12,6 +12,12 @@ public with sharing class SearchUsers {
     //Get our lists started
     List <User> uList = [SELECT Id, Name, Profile.Name, Contact.Name, ContactId, Contact.ASURite_Id__c, Alias, FederationIdentifier, ASU_User_Type__c, IsActive FROM User ORDER BY Name ASC LIMIT 50];
     public string searchString { get;set; }
+    public Boolean hideCommunity {get;set;}
+
+    public SearchUsers()
+    {
+        hideCommunity = false;
+    }
     
     //Return the list to the page
     public List<User> getUList() {
@@ -20,7 +26,17 @@ public with sharing class SearchUsers {
     
     //Take the user input and do a search
     public void search() {
-        String searchQuery = 'SELECT Id, Name, Profile.Name, Contact.Name, ContactId, Contact.ASURite_Id__c, EmplId__c, Contact.EMPLID__c, Alias, FederationIdentifier, ASU_User_Type__c, IsActive FROM User WHERE Name LIKE \'%' + searchString + '%\' OR Profile.Name LIKE \'%' + searchString + '%\' OR Contact.Name LIKE \'%' + searchString + '%\' OR Contact.ASURite_Id__c LIKE \'%' + searchString + '%\' OR EmplId__c = :searchString OR Contact.EMPLID__c = :searchString OR Id = :searchString OR ContactId = :searchString OR Alias LIKE \'%' + searchString + '%\' OR FederationIdentifier LIKE \'%' + searchString + '%\' OR ASU_User_Type__c LIKE \'%' + searchString + '%\' ORDER BY Name ASC LIMIT 50';
+        String searchQuery = 'SELECT Id, Name, Profile.Name, Contact.Name, ContactId, Contact.ASURite_Id__c, EmplId__c, Contact.EMPLID__c, Alias, FederationIdentifier, ASU_User_Type__c, IsActive FROM User WHERE (Name LIKE \'%' + searchString + '%\' OR Profile.Name LIKE \'%' + searchString + '%\' OR Contact.Name LIKE \'%' + searchString + '%\' OR Contact.ASURite_Id__c LIKE \'%' + searchString + '%\' OR EmplId__c = :searchString OR Contact.EMPLID__c = :searchString OR Id = :searchString OR ContactId = :searchString OR Alias LIKE \'%' + searchString + '%\' OR FederationIdentifier LIKE \'%' + searchString + '%\' OR ASU_User_Type__c LIKE \'%' + searchString + '%\'';
+        if(hideCommunity)
+        {
+            searchQuery += ') AND Profile.Name != \'ASU Community\' AND Profile.Name != \'ASU Community CAP\' ';    
+        } 
+        else
+        {
+            searchQuery += ')';
+        }
+        searchQuery += ' ORDER BY Name ASC LIMIT 50';
+        System.debug(searchQuery);
         uList = Database.query(searchQuery);
     }
     

@@ -180,8 +180,8 @@ public without sharing class LeadHandler implements ITrigger
 
 		for (List<Database.Leadconvert> lcList : leadConvertBatches)
 		{
-	        List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcList, false);
-	        leadConversionResults.addAll(lcResultList);
+			List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcList, false);
+			leadConversionResults.addAll(lcResultList);
 		}
 
         Set<Id> convertedLeadIds = new Set<Id>();
@@ -208,9 +208,11 @@ public without sharing class LeadHandler implements ITrigger
 			return;
 		}
 
-		List<Lead_Interest__c> leadInterestList = [SELECT Id, OwnerId, IsDeleted, Name, RecordType.Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, Leads__c, Eligibility__c, Plan__c, Contact__c, Status__c, Term__c, Primary_Source__c, Secondary_Source__c, Type__c, College__c, Academic_Interest__c, Test_Record__c, Qualifying__c, Send_Email__c, External_Application_Number__c, Send_Email_ID__c
-												   FROM Lead_Interest__c
-												   WHERE Leads__c IN :leadIds];
+		List<Lead_Interest__c> leadInterestList = [
+                SELECT Id, OwnerId, IsDeleted, Name, RecordType.Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, Leads__c, Eligibility__c, Plan__c, Contact__c, Status__c, Term__c, Primary_Source__c, Secondary_Source__c, Type__c, College__c, Academic_Interest__c, Test_Record__c, Qualifying__c, Send_Email__c, External_Application_Number__c, Send_Email_ID__c
+                FROM Lead_Interest__c
+                WHERE Leads__c IN :leadIds
+        ];
 
 		if (leadInterestList.size() == 0)
 		{
@@ -218,9 +220,11 @@ public without sharing class LeadHandler implements ITrigger
 		}
 
 		// Need to requery to get the Converted Contact Ids
-		Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>([SELECT Id, ConvertedContactId
-															  FROM Lead
-															  WHERE Id IN :leadIds]);
+		Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>([
+                SELECT Id, ConvertedContactId
+                FROM Lead
+                WHERE Id IN :leadIds
+        ]);
 
 		for (Lead_Interest__c li: leadInterestList)
 		{

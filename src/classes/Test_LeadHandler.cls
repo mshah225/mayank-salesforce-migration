@@ -94,7 +94,6 @@ public with sharing class Test_LeadHandler
         List<Opportunity> testOpptys = OpportunityService.createTestUndergraduateProspects(testContacts);
         insert testOpptys;
 
-        System.debug('Opportunities: ' + testOpptys);
 
         List<Lead> testLeads = LeadService.createTestLeadsToConvert(testContacts);
 
@@ -116,8 +115,6 @@ public with sharing class Test_LeadHandler
             contactIds.add(l.Convert_Contact__c);
         }
 
-        System.debug('!!! Contact Ids ' + contactIds);
-
         Test.startTest();
         update testLeads;
         Test.stopTest();
@@ -127,8 +124,6 @@ public with sharing class Test_LeadHandler
                 FROM Opportunity
                 WHERE Contact__c IN :contactIds
         ];
-
-        System.debug('Opportunities: ' + oppsCreated);
 
         Lead expectedData = testLeads.get(0);
         Opportunity actualData = oppsCreated.get(0);
@@ -146,4 +141,46 @@ public with sharing class Test_LeadHandler
         System.assertEquals(expectedData.Veteran_Status__c, actualData.Military_Status__c, 'Military status was not converted correctly');
     }
 
+    @isTest static void testCreationOfPERecordsOnConversion()
+    {
+        Account institution = AccountService.createTestInstitution();
+        insert institution;
+
+        List<Contact> testContacts = ContactService.createTestContacts(5);
+        insert testContacts;
+
+        testContacts = [
+                SELECT Name, FirstName, LastName, Email, AccountId
+                FROM Contact
+        ];
+
+        List<Opportunity> testOpptys = OpportunityService.createTestUndergraduateProspects(testContacts);
+        insert testOpptys;
+
+        List<Lead> testLeads = LeadService.createTestLeadsToConvert(testContacts);
+        insert testLeads;
+
+        Set<Id> leadIds = new Set<Id>();
+        Set<Id> contactIds = new Set<Id>();
+
+        // Perform conversion
+        for (Lead l : testLeads)
+        {
+            l.Convert_Perform_Conversion__c = true;
+            l.Last_Institution_Attended__c = institution.Id;
+            leadIds.add(l.Id);
+            contactIds.add(l.Convert_Contact__c);
+        }
+
+        Test.startTest();
+        update testLeads;
+        Test.stopTest();
+
+        List<Previous_Education__c> peRecordsCreated = [SELECT Account__c FROM Previous_Education__c WHERE Contact__c IN :contactIds];
+
+        for (Previous_Education__c pe : peRecordsCreated)
+        {
+            System.assertEquals(institution.Id, pe.Account__c, 'Previous Education was not created correctly');
+        }
+    }
 }

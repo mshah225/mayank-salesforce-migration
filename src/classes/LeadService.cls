@@ -49,31 +49,6 @@ public class LeadService
 		return leads;
 	}
 
-	/**
-	 * Generates a list of test leads that are matched to contacts by the Contact.EMPLID__c
-	 * @param  contactData A list of contacts
-	 * @return testLeads A list of leads that are matched to contacts by EMPLID
-	 */
-	public static List<Lead> createTestLeadsToConvertByEMPLID(List<Contact> contactData)
-	{
-		List<Lead> testLeads = new List<Lead>();
-
-		Lead singleLead;
-		for (Contact singleContact : contactData)
-		{
-			singleLead = createTestLead();
-			singleLead.FirstName = singleContact.FirstName;
-			singleLead.LastName = singleContact.LastName;
-			singleLead.EMPLID__c = singleContact.EMPLID__c;
-			singleLead.IsConverted = false;
-			singleLead.Convert_Contact__c = singleContact.Id;
-
-			testLeads.add(singleLead);
-		}
-
-		return testLeads;
-	}
-
     /**
 	 * Generates a list of lead interests that should be updated as a result of conversion
 	 * @param  leadIds A set of Lead Ids

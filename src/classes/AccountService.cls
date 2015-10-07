@@ -33,4 +33,17 @@ public class AccountService
 
         return accountList;
     }
+
+    /**
+    * Creates a test Account that represents an Institution
+    * @return institution An Account object
+    */
+    public static Account createTestInstitution()
+    {
+        Account institution = new Account();
+        institution.Name = 'Univesity of Arizona';
+        institution.Type = 'HS';
+
+        return institution;
+    }
 }

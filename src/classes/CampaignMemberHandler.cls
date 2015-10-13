@@ -249,7 +249,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                             }
                             else
                             {
-                                externalCMsToPrimary.add(ccm);    
+                                externalCMsToFalsify.add(ccm);    
                             }
                         }
                     }
@@ -257,8 +257,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     Opportunity opp = OpportunitiesByContactMap.get(contactId);
                     if(opp != null)
                     {
-                        opp.Primary_Interest__c = primary.CampaignId;
-                        opportunitiesToUpdate.put(opp.Id, opp);
+                        if(opp.Primary_Interest__c != primary.CampaignId)
+                        {
+                            opp.Primary_Interest__c = primary.CampaignId;
+                            opportunitiesToUpdate.put(opp.Id, opp);
+                        }
                     }
                 }
                 else
@@ -266,8 +269,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     Opportunity opp = OpportunitiesByContactMap.get(contactId);
                     if(opp != null)
                     {
-                        opp.Primary_Interest__c = null;
-                        opportunitiesToUpdate.put(opp.Id, opp);
+                        if(opp.Primary_Interest__c != null)
+                        {
+                            opp.Primary_Interest__c = null;
+                            opportunitiesToUpdate.put(opp.Id, opp);
+                        }
                     }
                 }
             }
@@ -331,20 +337,26 @@ public without sharing class CampaignMemberHandler implements ITrigger
                             }
                             else
                             {
-                                externalCMsToPrimary.add(lcm);    
+                                externalCMsToFalsify.add(lcm);    
                             }
                         }
                     }
 
                     Lead leadToUpdate = leadsInTrigger.get(leadId);
-                    leadToUpdate.Primary_Interest__c = primary.CampaignId;
-                    leadsToUpdate.add(leadToUpdate);
+                    if(leadToUpdate.Primary_Interest__c != primary.CampaignId)
+                    {
+                        leadToUpdate.Primary_Interest__c = primary.CampaignId;
+                        leadsToUpdate.add(leadToUpdate);
+                    }
                 }
                 else
                 {
                     Lead leadToUpdate = leadsInTrigger.get(leadId);
-                    leadToUpdate.Primary_Interest__c = null;
-                    leadsToUpdate.add(leadToUpdate);
+                    if(leadToUpdate.Primary_Interest__c != null)
+                    {
+                        leadToUpdate.Primary_Interest__c = null;
+                        leadsToUpdate.add(leadToUpdate);
+                    }
                 }
             }
         }
@@ -474,8 +486,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     }
                     else
                     {
-                        nmsOpp.National_Merit_Semifinalist__c = true;
-                        opportunitiesToUpdate.put(nmsOpp.Id, nmsOpp);
+                        if(nmsOpp.National_Merit_Semifinalist__c != true)
+                        {
+                            nmsOpp.National_Merit_Semifinalist__c = true;
+                            opportunitiesToUpdate.put(nmsOpp.Id, nmsOpp);
+                        }
                     }
                 }
             }
@@ -484,14 +499,20 @@ public without sharing class CampaignMemberHandler implements ITrigger
         List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
         for(CampaignMember cm : externalCMsToFalsify)
         {
-            cm.Is_Primary_Interest__c = FALSE;
-            cmsToUpdate.add(cm);
+            if(cm.Is_Primary_Interest__c != FALSE)
+            {
+                cm.Is_Primary_Interest__c = FALSE;
+                cmsToUpdate.add(cm);
+            }
         }
 
         for(CampaignMember cm : externalCMsToPrimary)
         {
-            cm.Is_Primary_Interest__c = TRUE;
-            cmsToUpdate.add(cm);
+            if(cm.Is_Primary_Interest__c != TRUE)
+            {
+                cm.Is_Primary_Interest__c = TRUE;
+                cmsToUpdate.add(cm);
+            }
         }
 
         externalCMsToPrimary = new Set<CampaignMember>();

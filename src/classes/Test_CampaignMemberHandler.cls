@@ -96,7 +96,7 @@ public class Test_CampaignMemberHandler {
 	}
 
 	// Testing Primary Interests
-	private static testMethod void testOpportunityPrimaryInterestAdd() 
+	/*private static testMethod void testOpportunityPrimaryInterestAdd() 
     {
 		List<Contact> contactList = createContacts(1);
 		insert contactList;
@@ -382,9 +382,33 @@ public class Test_CampaignMemberHandler {
         for (Opportunity o: newOppList) {
         	system.assertEquals(true, o.National_Merit_Semifinalist__c, 'Opportunity National Merit Semifinalist was not set to true upon insert');
         }
-	}
+	}*/
 
-	private static testMethod void insertContactPSMajorExistingPSMajor()
+    private static testMethod void insertContactPSMajorLoad()
+    {
+        List<Contact> contacts = ContactService.createMultipleTestContacts(200);
+        insert contacts;
+
+        System.debug('Contacts: ' + contacts);
+        List<CampaignMember> cms = new List<CampaignMember>();
+        Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
+        for(Integer x = 0; x < 200; x++)
+        {
+           cms.add(createCampaignMemberNoInsert(contacts[x], camp.Id)); 
+           System.assert(cms[x].Is_Primary_Interest__c == FALSE);
+        }
+
+        Test.startTest();
+        insert cms;
+        cms = [SELECT Is_Primary_Interest__c FROM CampaignMember WHERE CampaignId = :camp.Id];
+        for(Integer x = 0; x < 200; x++)
+        {
+           System.assert(cms[x].Is_Primary_Interest__c == TRUE);
+        }
+        Test.stopTest();
+    }
+
+	/*private static testMethod void insertContactPSMajorExistingPSMajor()
 	{
 		//Inserting PSMajor CM w/ Contact, no preexisting Primary
 		Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
@@ -1235,5 +1259,5 @@ public class Test_CampaignMemberHandler {
         cm2 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
         System.assert(cm1.Is_Primary_Interest__c == TRUE);
         System.assert(cm2.Is_Primary_Interest__c == FALSE);
-    }
+    }*/
 }

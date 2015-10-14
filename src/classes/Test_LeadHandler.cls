@@ -52,8 +52,8 @@ public with sharing class Test_LeadHandler
         return liList;
     }
 
-     @isTest static void testLeadHandler()
-     {
+    @isTest static void testManualLeadConversion()
+    {
          Integer numberOfLeads = 200;
          Lead[] leadList = createLeads(numberOfLeads);
          insert leadList;
@@ -76,7 +76,40 @@ public with sharing class Test_LeadHandler
          List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
 
          System.assertEquals(numberOfLeads, convertedLeads.size());
-     }
+    }
+
+    @isTest static void testConvertMultipleLeadsToOneAccount()
+    {
+        List<Contact> testContacts = ContactService.createTestContacts(100);
+        insert testContacts;
+
+        List<Lead> testLeads = LeadService.createTestLeadsToConvert(testContacts);
+        insert testLeads;
+
+        List<Lead> duplicateTestLeads = LeadService.createTestLeadsToConvert(testContacts);
+        insert duplicateTestLeads;
+
+        testLeads.addAll(duplicateTestLeads);
+
+        Set<Id> leadIds = new Set<Id>();
+
+        // Peform conversion
+        for (Lead l : testLeads)
+        {
+            l.Convert_Perform_Conversion__c = true;
+            leadIds.add(l.Id);
+        }
+
+        Test.startTest();
+        update testLeads;
+        Test.stopTest();
+
+        //Check conversion results
+        List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
+
+        System.assertEquals(testLeads.size(), convertedLeads.size(), 'Leads were not converted correctly');
+    }
+
 
     @isTest static void testLeadToOppFieldMapping()
     {

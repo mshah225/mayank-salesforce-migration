@@ -1,5 +1,7 @@
 public class ObjectService 
 {
+    static Integer s_num = 1;
+
 	/**
 	* Returns all the fields for a specified object
 	* @param An object API name
@@ -90,6 +92,19 @@ public class ObjectService
 		fieldLabelsToList.sort();
 
 		return fieldLabelsToList;
+	}
+
+    /**
+    * Generates a fake Id for the given object type
+    * Comes from this SE post: http://salesforce.stackexchange.com/questions/21137/creating-unit-tests-without-interacting-with-the-database-creating-fake-ids
+    * DO NOT INSERT RECORDS WITH FAKE IDS INTO DB. It will error.
+    * @param sot A Schema.SObjectType
+    * @return String A fake Id for the given SObjectType
+    */
+	public static String getFakeId(Schema.SObjectType sot)
+	{
+		String result = String.valueOf(s_num++);
+		return sot.getDescribe().getKeyPrefix() + '0'.repeat(12-result.length()) + result;
 	}
 
 	public class ObjectServiceException extends Exception {}

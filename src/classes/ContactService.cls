@@ -49,7 +49,7 @@ public class ContactService
             con.FirstName = 'Test' + i;
             con.LastName = 'Contact' + i;
             con.Email = 'test.user' + i + '@test.example.com';
-            con.ASURite_ID__c = String.valueOf(1000000000 + i);
+            con.ASURite_ID__c = 'testuser' + i;
             contactList.add(con);
         }
 

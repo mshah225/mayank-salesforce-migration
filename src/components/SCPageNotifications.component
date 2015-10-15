@@ -3,10 +3,10 @@
 	<apex:attribute name="viewingAs"
 		description="Whether or not the user is currently viewing as"
 		type="Boolean"/>
-    <apex:attribute name="firstName"
+	<apex:attribute name="firstName"
 		description="The first name of the current user"
 		type="String"/>
-    <apex:attribute name="lastName"
+	<apex:attribute name="lastName"
 		description="The last name of the current user"
 		type="String"/>
 	<apex:attribute name="maintenanceMessage"

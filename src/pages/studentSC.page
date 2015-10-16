@@ -7,7 +7,7 @@
 <head>
     <title>My ASU | Service Center</title>
     <c:asu_responsive_header_section />
-    
+
     <style>
         .checkboxHidden {
             visibility:hidden;
@@ -42,17 +42,18 @@
 
     <div id="main-search" class="main-search closed"></div>
 
-    <c:SCHeader firstName="{!firstName}" 
-                lastName="{!lastName}" 
-                viewingAs="{!viewingAs}" 
-                emplId="{!emplId}" 
-                stopViewAsUrl="{!stopViewAsUrl}" 
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
                 viewAsUrl="{!viewAsUrl}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"
                                firstName="{!firstName}"
-                               lastName="{!lastName}"/>
+                               lastName="{!lastName}"
+                               maintenanceMessage="{!maintenanceMessage}"/>
 
         <apex:form id="suggestAnArticle">
             <!-- Modal -->

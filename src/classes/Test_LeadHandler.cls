@@ -52,8 +52,8 @@ public with sharing class Test_LeadHandler
         return liList;
     }
 
-     @isTest static void testLeadHandler()
-     {
+    @isTest static void testManualLeadConversion()
+    {
          Integer numberOfLeads = 200;
          Lead[] leadList = createLeads(numberOfLeads);
          insert leadList;
@@ -76,7 +76,55 @@ public with sharing class Test_LeadHandler
          List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
 
          System.assertEquals(numberOfLeads, convertedLeads.size());
-     }
+    }
+
+    @isTest static void testConvertMultipleLeadsToOneAccount()
+    {
+        Integer DUPETHRESHOLD = 1;
+        Integer LEADLOAD = 200;
+
+        Account institution = AccountService.createTestInstitution();
+        insert institution;
+
+        List<Contact> testContacts = ContactService.createTestContacts(LEADLOAD);
+        insert testContacts;
+
+        List<Lead> testLeads = LeadService.createTestLeadsToConvert(testContacts);
+        insert testLeads;
+
+        testContacts = [
+                SELECT Name, FirstName, LastName, Email, AccountId
+                FROM Contact
+        ];
+
+        List<Opportunity> testOpptys = OpportunityService.createTestUndergraduateProspects(testContacts);
+        insert testOpptys;
+
+        Set<Id> leadIds = new Set<Id>();
+
+        // Peform conversion
+        for (Lead l : testLeads)
+        {
+            l.Convert_Perform_Conversion__c = true;
+            l.Last_Institution_Attended__c = institution.Id;
+            leadIds.add(l.Id);
+        }
+
+        // Create duplicates
+        for (Integer i = 1; i < DUPETHRESHOLD; i++)
+        {
+            testLeads.get(i).Convert_Contact__c = testContacts.get(0).Id;
+        }
+
+        Test.startTest();
+        update testLeads;
+        Test.stopTest();
+
+        //Check conversion results
+        List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
+
+        System.assertEquals(LEADLOAD, convertedLeads.size(), 'Leads were not converted correctly');
+    }
 
     @isTest static void testLeadToOppFieldMapping()
     {

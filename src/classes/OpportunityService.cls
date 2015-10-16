@@ -23,7 +23,7 @@ public class OpportunityService
     }
 
     /**
-    * Creates one opportunity for each contact provided.
+    * Creates one Undergraduate Prospect opportunity for each contact provided.
     * @param contactsToAssociate A list of contacts
     * @return oppList A list of undergraduate prospect opportunities
     */
@@ -48,6 +48,40 @@ public class OpportunityService
         }
 
         return undergradProspects;
+    }
+
+    /**
+    * Creates one Graduate Prospect opportunity for each contact provided.
+    * @param contactsToAssociate A list of contacts
+    * @return oppList A list of undergraduate prospect opportunities
+    */
+    public static List<Opportunity> createTestGraduateProspects(List<Contact> contactsToAssociate)
+    {
+        List<Opportunity> gradProspects = new List<Opportunity>();
+
+        Date closeDate = Date.today();
+
+        Id gradProspectId = [
+                SELECT Id
+                FROM RecordType
+                WHERE Name = 'Graduate Prospect'
+                AND SobjectType = 'Opportunity'
+                LIMIT 1
+        ].Id;
+
+        for (Contact con : contactsToAssociate)
+        {
+            Opportunity o = new Opportunity();
+            o.Contact__c = con.Id;
+            o.RecordTypeId = gradProspectId;
+            o.StageName = 'Prospect';
+            o.CloseDate = closeDate.addYears(1);
+            o.Name = 'Test Opportunity for ' + con.Name;
+            o.AccountId = con.AccountId;
+            gradProspects.add(o);
+        }
+
+        return gradProspects;
     }
 
     /**
@@ -85,12 +119,8 @@ public class OpportunityService
 
         Set<Id> contactIds = contactIdToLeadMap.keySet();
 
-        System.debug('!!! Contacts in service ' + contactIds);
-
         // Get all the opportunities associated with these contacts
         opportunitiesToUpdate = [SELECT Contact__c FROM Opportunity WHERE Contact__c IN :contactIds];
-
-        System.debug('!!! Opportunites in service ' + opportunitiesToUpdate);
 
         // Update all the opportunity information
         for (Opportunity opp : opportunitiesToUpdate)
@@ -108,8 +138,6 @@ public class OpportunityService
             opp.Self_Reported_SES__c = leadData.Self_Reported_SES__c;
             opp.Military_Status__c = leadData.Veteran_Status__c;
         }
-
-        System.debug('!!! After mapping data ' + opportunitiesToUpdate);
 
         return opportunitiesToUpdate;
     }

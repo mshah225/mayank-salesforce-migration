@@ -14,7 +14,7 @@ public class LeadService
 
 		return testLead;
 	}
-	
+
 	/**
     * Generates a set of test leads to convert
     * @param contactsToConvertOn a set of Contacts to convert to
@@ -109,7 +109,7 @@ public class LeadService
                 WHERE Id in :leadIds
         ]);
 
-        for (Lead l: leadList)
+        for (Lead l : leadList)
         {
             Previous_Education__c pe = new Previous_Education__c(Contact__c = l.ConvertedContactId,
                     Account__c = l.Last_Institution_Attended__c);
@@ -125,6 +125,93 @@ public class LeadService
         }
 
         return peList;
+    }
+
+    /**
+     * Generates a map of integers to a List of LeadConvert objects
+     * @param leadList A list of leads that have not been converted yet
+     * @param conversionStatus The MasterLabel from a LeadStatus that these leads should be converted to
+     * @return leadConvertBatches A map of all the leadConvert objects in batches
+     */
+    public static Map<Integer, List<Database.LeadConvert>> generateLeadConvertBatches(List<Lead> leadList, String conversionStatus)
+    {
+        Map<Id, List<Lead>> accountToLeadMap = new Map<Id, List<Lead>>();
+        Map<Integer, List<Database.LeadConvert>> leadConvertBatches = new Map<Integer, List<Database.LeadConvert>>();
+        Id thisLeadsAccount;
+
+        Integer numberOfBatches = 1;
+        Integer additionalBatches = 0;
+
+        // Map leads to a single account and track the number of LeadConvert batches we need
+        for (Lead thisLead : leadList)
+        {
+            thisLeadsAccount = thisLead.Convert_Contact_Account_ID__c;
+
+            // This a lead insertion, so it has no account Id, but we need a unique Id so we can batch properly
+            if (thisLeadsAccount == null)
+            {
+                thisLeadsAccount = ObjectService.getFakeId(Account.SObjectType);
+            }
+
+            if (accountToLeadMap.containsKey(thisLeadsAccount))
+            {
+                List<Lead> thisList = accountToLeadMap.get(thisLeadsAccount);
+
+                thisList.add(thisLead);
+
+                if (thisList.size() > numberOfBatches)
+                {
+                    numberOfBatches = thisList.size();
+                }
+            }
+            else
+            {
+                List<Lead> newListOfLeads = new List<Lead> { thisLead };
+                accountToLeadMap.put(thisLeadsAccount, newListOfLeads);
+            }
+        }
+
+        // Create LeadConvert objects from the leads and batch them up
+        for (Integer batchNumber = 0; batchNumber < numberOfBatches; batchNumber++)
+        {
+            List<Database.LeadConvert> leadConvertList = new List<Database.LeadConvert>();
+
+            for (List<Lead> leads : accountToLeadMap.values())
+            {
+                if (batchNumber < leads.size())
+                {
+                    Lead thisLead = leads.get(batchNumber);
+
+                    // Create a lead convert object for this lead
+                    Database.LeadConvert lc = new Database.LeadConvert();
+                    lc.setLeadId(thisLead.Id);
+                    lc.setDoNotCreateOpportunity(!thisLead.Convert_Create_Opportunity__c);
+                    lc.setConvertedStatus(conversionStatus);
+
+                    if (thisLead.Convert_Contact__c != null)
+                    {
+                        lc.setContactId(thisLead.Convert_Contact__c);
+                        lc.setAccountId(thisLead.Convert_Contact_Account_ID__c);
+                    }
+
+                    leadConvertList.add(lc);
+                }
+
+                // Check to make sure our lead convert list hasn't grown beyond the limit of Database.convertLeads()
+                // Handle it by putting the current contents into the map as a new batch and clearing the list
+                if (leadConvertList.size() == 99)
+                {
+                    additionalBatches++;
+                    List<Database.LeadConvert> batchCut = leadConvertList.clone();
+                    leadConvertBatches.put(numberOfBatches + additionalBatches, batchCut);
+                    leadConvertList.clear();
+                }
+            }
+
+            leadConvertBatches.put(batchNumber, leadConvertList);
+        }
+
+        return leadConvertBatches;
     }
 
 }

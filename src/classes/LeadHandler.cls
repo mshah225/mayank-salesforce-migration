@@ -130,68 +130,21 @@ public without sharing class LeadHandler implements ITrigger
 			return;
 		}
 
-		List<Database.Leadconvert> leadConvertList = new List<Database.Leadconvert>();
-		List<List<Database.Leadconvert>> leadConvertBatches = new List<List<Database.Leadconvert>>();
+        /*
+         * Primary lead conversion logic
+         */
 		List<Database.LeadConvertResult> leadConversionResults = new List<Database.LeadConvertResult>();
 		Set<Id> LeadsRequiringLIReparenting = new Set<Id>();
 		Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
 		Integer count = 0;
 
-		for (Lead l : leadsToConvert)
-		{
-			Database.LeadConvert lc = new Database.LeadConvert();
-			lc.SetLeadId(l.Id);
-			lc.setConvertedStatus(convertedStatus.MasterLabel);
+		Map<Integer, List<Database.LeadConvert>> leadConvertBatchMap = LeadService.generateLeadConvertBatches(leadsToConvert, convertedStatus.MasterLabel);
 
-			if (l.Convert_Contact__c != null)
-			{
-				lc.setContactId(l.Convert_Contact__c);
-				lc.setAccountId(l.Convert_Contact_Account_ID__c);
-			}
-
-			// If Leads has Last Institution Attended populated, add to the List that
-			// needs a Previous Education entry added
-			if (l.Last_Institution_Attended__c != null)
-			{
-				leadsNeedingPreviousEducation.add(l.Id);
-			}
-
-			// Reparent related Lead Interests if we're not creating an Opportunity
-			// Deactivate related Lead Interests if we are creating an Opportunity
-			if (!l.Convert_Create_Opportunity__c)
-			{
-				LeadsRequiringLIReparenting.add(l.Id);
-			}
-			else
-			{
-				leadIdsCleanUpLeadInterests.add(l.Id);
-			}
-
-			lc.setDoNotCreateOpportunity(!l.Convert_Create_Opportunity__c);
-
-			leadConvertList.add(lc);
-			count++;
-
-			// ConvertLead allows up to 100 leads per call according to docs, but 99 seems to be the actual limit
-			if (count == 100)
-			{
-				leadConvertBatches.add(leadConvertList.clone());
-				leadConvertList.clear();
-				count = 0;
-			}
-		}
-
-		// If we have any Leadconverts left over, add the final batch
-		if (count > 0)
-		{
-			leadConvertBatches.add(leadConvertList);
-		}
-
-		for (List<Database.Leadconvert> lcList : leadConvertBatches)
-		{
-			List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcList, false);
-			leadConversionResults.addAll(lcResultList);
-		}
+		for (List<Database.LeadConvert> lcBatch : leadConvertBatchMap.values())
+        {
+            List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcBatch, false);
+            leadConversionResults.addAll(lcResultList);
+        }
 
         Set<Id> convertedLeadIds = new Set<Id>();
 
@@ -202,11 +155,36 @@ public without sharing class LeadHandler implements ITrigger
                 convertedLeadIds.add(lcr.getLeadId());
             }
         }
-        
+
+        // Map convert lead data to associated opportunities, if any
         List<Opportunity> oppsToUpdate = OpportunityService.mapLeadDataToOpportunity(convertedLeadIds);
         update oppsToUpdate;
 
-		if (LeadsRequiringLIReparenting.size() > 0)
+        /*
+         * Create necessary records and perform data processing as a result of lead conversion
+         */
+        for (Lead l : leadsToConvert)
+        {
+            // If Leads has Last Institution Attended populated, add to the List that
+            // needs a Previous Education entry added
+            if (l.Last_Institution_Attended__c != null)
+            {
+                leadsNeedingPreviousEducation.add(l.Id);
+            }
+
+            // Reparent related Lead Interests if we're not creating an Opportunity
+            // Deactivate related Lead Interests if we are creating an Opportunity
+            if (!l.Convert_Create_Opportunity__c)
+            {
+                LeadsRequiringLIReparenting.add(l.Id);
+            }
+            else
+            {
+                leadIdsCleanUpLeadInterests.add(l.Id);
+            }
+        }
+
+        if (LeadsRequiringLIReparenting.size() > 0)
         {
             List<Lead_Interest__c> leadInterestList = LeadService.reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
             update leadInterestList;

@@ -39,7 +39,7 @@ public class ContactService
     * @param The number of contacts to create
     * @return A list of the contacts with all required fields;
     */
-    public static List<Contact> createMultipleTestContacts(Integer numOfContacts)
+    public static List<Contact> createTestContacts(Integer numOfContacts)
     {
         List<Contact> contactList = new List<Contact>();
 
@@ -49,7 +49,9 @@ public class ContactService
             con.FirstName = 'Test' + i;
             con.LastName = 'Contact' + i;
             con.Email = 'test.user' + i + '@test.example.com';
-            con.ASURite_ID__c = 'testuser' + i;
+            con.ASURite_ID__c = ObjectService.getGuid().substring(0,10);
+            Integer tempEmplId = 1200000000 + i;
+            con.EMPLID__c = String.valueOf(tempEmplId);
             contactList.add(con);
         }
 

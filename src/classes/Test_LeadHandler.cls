@@ -52,6 +52,7 @@ public with sharing class Test_LeadHandler
         return liList;
     }
 
+    /*
     @isTest static void testManualLeadConversion()
     {
          Integer numberOfLeads = 200;
@@ -76,20 +77,29 @@ public with sharing class Test_LeadHandler
          List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
 
          System.assertEquals(numberOfLeads, convertedLeads.size());
-    }
+    }*/
 
     @isTest static void testConvertMultipleLeadsToOneAccount()
     {
-        List<Contact> testContacts = ContactService.createTestContacts(100);
+        Integer DUPETHRESHOLD = 1;
+        Integer LEADLOAD = 200;
+
+        Account institution = AccountService.createTestInstitution();
+        insert institution;
+
+        List<Contact> testContacts = ContactService.createTestContacts(LEADLOAD);
         insert testContacts;
 
         List<Lead> testLeads = LeadService.createTestLeadsToConvert(testContacts);
         insert testLeads;
 
-        List<Lead> duplicateTestLeads = LeadService.createTestLeadsToConvert(testContacts);
-        insert duplicateTestLeads;
+        testContacts = [
+                SELECT Name, FirstName, LastName, Email, AccountId
+                FROM Contact
+        ];
 
-        testLeads.addAll(duplicateTestLeads);
+        List<Opportunity> testOpptys = OpportunityService.createTestUndergraduateProspects(testContacts);
+        insert testOpptys;
 
         Set<Id> leadIds = new Set<Id>();
 
@@ -97,7 +107,14 @@ public with sharing class Test_LeadHandler
         for (Lead l : testLeads)
         {
             l.Convert_Perform_Conversion__c = true;
+            l.Last_Institution_Attended__c = institution.Id;
             leadIds.add(l.Id);
+        }
+
+        // Create duplicates
+        for (Integer i = 1; i < DUPETHRESHOLD; i++)
+        {
+            testLeads.get(i).Convert_Contact__c = testContacts.get(0).Id;
         }
 
         Test.startTest();
@@ -107,10 +124,10 @@ public with sharing class Test_LeadHandler
         //Check conversion results
         List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
 
-        System.assertEquals(testLeads.size(), convertedLeads.size(), 'Leads were not converted correctly');
+        System.assertEquals(LEADLOAD, convertedLeads.size(), 'Leads were not converted correctly');
     }
 
-
+    /*
     @isTest static void testLeadToOppFieldMapping()
     {
         Term__c testTerm = TermService.createTestTerm();
@@ -215,5 +232,5 @@ public with sharing class Test_LeadHandler
         {
             System.assertEquals(institution.Id, pe.Account__c, 'Previous Education was not created correctly');
         }
-    }
+    }*/
 }

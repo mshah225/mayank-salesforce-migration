@@ -142,7 +142,6 @@ public without sharing class LeadHandler implements ITrigger
 
 		for (List<Database.LeadConvert> lcBatch : leadConvertBatchMap.values())
         {
-            System.debug('!!! Running batch of ' + lcBatch.size());
             List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcBatch, false);
             leadConversionResults.addAll(lcResultList);
         }

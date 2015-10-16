@@ -107,5 +107,15 @@ public class ObjectService
 		return sot.getDescribe().getKeyPrefix() + '0'.repeat(12-result.length()) + result;
 	}
 
+	/**
+	* Generates a uuid
+	* @return guid A string guid
+	*/
+    public static String getGuid()
+    {
+        Blob blobby = Crypto.generateAesKey(128);
+        return EncodingUtil.convertToHex(blobby);
+    }
+
 	public class ObjectServiceException extends Exception {}
 }

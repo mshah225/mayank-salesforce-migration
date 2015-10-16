@@ -52,7 +52,6 @@ public with sharing class Test_LeadHandler
         return liList;
     }
 
-    /*
     @isTest static void testManualLeadConversion()
     {
          Integer numberOfLeads = 200;
@@ -77,7 +76,7 @@ public with sharing class Test_LeadHandler
          List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
 
          System.assertEquals(numberOfLeads, convertedLeads.size());
-    }*/
+    }
 
     @isTest static void testConvertMultipleLeadsToOneAccount()
     {
@@ -127,7 +126,6 @@ public with sharing class Test_LeadHandler
         System.assertEquals(LEADLOAD, convertedLeads.size(), 'Leads were not converted correctly');
     }
 
-    /*
     @isTest static void testLeadToOppFieldMapping()
     {
         Term__c testTerm = TermService.createTestTerm();
@@ -232,5 +230,5 @@ public with sharing class Test_LeadHandler
         {
             System.assertEquals(institution.Id, pe.Account__c, 'Previous Education was not created correctly');
         }
-    }*/
+    }
 }

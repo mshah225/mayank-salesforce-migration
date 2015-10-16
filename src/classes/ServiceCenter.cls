@@ -22,7 +22,7 @@ public with sharing class ServiceCenter
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
     public String userAsurite;
-    public String searchstring { get; set; }
+    public String maintenanceMessage { get; set; }
     public Term__c termcAC;
     public Term__c termcB;
 
@@ -65,19 +65,29 @@ public with sharing class ServiceCenter
             WHERE session_A_C_Start_Date__c > :System.today()
             LIMIT 1
         ];
+
         termcB = [
             SELECT Session_B_Start_Date__c
             FROM Term__c
             WHERE session_B_Start_Date__c > :System.today()
             LIMIT 1
         ];
+
         oppList = [
             SELECT Career__c, Term__c, StageName, Admitted_Session__c
             FROM Opportunity
             WHERE Contact__c = :userContact.Id
         ];
+
         suggestAnArticle = new Case();
         origPin = userContact.Self_Service_PIN__c;
+
+        maintenanceMessage = [
+            SELECT Message__c
+            FROM Service_Center_Maintenance__c
+            WHERE Displayed__c = true
+        ].Message__c;
+        System.debug('meruff ' + maintenanceMessage);
     }
 
     public List<Case> getMyCases()
@@ -474,13 +484,5 @@ public with sharing class ServiceCenter
         confirmPage.setRedirect(true);
 
         return confirmPage;
-    }
-
-    public void checkSearchString()
-    {
-        if (searchstring.length() > 99)
-        {
-            searchstring = searchstring.substring(0,99);
-        }
     }
 }

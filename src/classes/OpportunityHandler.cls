@@ -2,6 +2,7 @@ public without sharing class OpportunityHandler implements ITrigger
 {
     private Map<Id, Id> oppToContactMap = new Map<Id, Id>();
     private Map<Id, Id> leadToContactMap = new Map<Id, Id>();    
+    private Map<Id, Account> accountToContactMap;
 
     /**
     * bulkBefore
@@ -22,18 +23,8 @@ public without sharing class OpportunityHandler implements ITrigger
                     accountIds.add(o.AccountId);
                 }
             }
-            if (accountIds.size() > 0)
-            {
-                Map<Id, Account> accountMap = new Map<Id, Account>([SELECT Id, Contact__c FROM Account WHERE Id IN :accountIds]);
-                for (SObject so: Trigger.new)
-                {
-                    Opportunity o = (Opportunity)so;
-                    if (o.AccountId != null && accountMap.containsKey(o.AccountId) && accountMap.get(o.AccountId).contact__c != null)
-                    {
-                        oppToContactMap.put(o.Id, accountMap.get(o.AccountId).contact__c);
-                    }
-                }        
-            }
+
+            accountToContactMap = new Map<Id, Account>([SELECT Id, Contact__c FROM Account WHERE Id IN :accountIds]);
 
             List<Opportunity> newOpps = Trigger.new;
             List<Id> admittedPlanIds = new List<Id>();
@@ -106,6 +97,7 @@ public without sharing class OpportunityHandler implements ITrigger
                     accountIds.add(o.AccountId);
                 }
             }
+
             Map<Id, Account> accountMap = new Map<Id, Account>([SELECT Id, Contact__c FROM Account WHERE Id IN :accountIds]);
             for (SObject so: Trigger.new)
             {
@@ -127,9 +119,15 @@ public without sharing class OpportunityHandler implements ITrigger
     public void beforeInsert(SObject so)
     {
         Opportunity o = (Opportunity)so;
-        if (oppToContactMap.containsKey(o.Id))
+
+        o.Opportunity_Assignment_Number_Rand__c = OpportunityService.generateOpportunityAssignmentNumber();
+
+        // Populate the contact reference on the Opportunity if there is none set
+        if (o.Contact__c == null)
         {
-            o.contact__c = oppToContactMap.get(o.Id);
+            // We should always have an account for an Opportunity
+            Account oppsAccount = accountToContactMap.get(o.AccountId);
+            o.Contact__c = oppsAccount.Contact__c;
         }
     }
 
@@ -139,7 +137,15 @@ public without sharing class OpportunityHandler implements ITrigger
     * This method is called iteratively for each record to be updated during a BEFORE
     * trigger.
     */
-    public void beforeUpdate(SObject oldSo, SObject so) {}
+    public void beforeUpdate(SObject oldSo, SObject so)
+    {
+        Opportunity o = (Opportunity) so;
+
+        if (oppToContactMap.containsKey(o.Id))
+        {
+            o.contact__c = oppToContactMap.get(o.Id);
+        }
+    }
 
     /**
     * beforeDelete

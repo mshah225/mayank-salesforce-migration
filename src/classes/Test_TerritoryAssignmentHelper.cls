@@ -235,7 +235,7 @@ public without sharing class Test_TerritoryAssignmentHelper
     {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com'];
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(1);
+        List<Contact> testContacts = ContactService.createTestContacts(1);
 
         Insert testContacts;
 
@@ -364,7 +364,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar2.User__c = chinaManagers[1].Id;
         insert ATar2;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(2);
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
         for (Contact con : testContacts)
         {
@@ -471,7 +471,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar2.User__c = usManagers[1].Id;
         insert ATar2;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(2);
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
         for (Contact con : testContacts)
         {
@@ -573,7 +573,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar2.User__c = transferManagers[1].Id;
         insert ATar2;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(2);
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
         testContacts[0].MailingCountry = 'Vietnam';
 
@@ -634,21 +634,20 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar1.User__c = conditAdmitManager.Id;
         insert ATar1;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(1);
+        Contact testContact= ContactService.createTestContact();
 
-        insert testContacts;
+        insert testContact;
 
-        Contact admitCondCon = [SELECT Id, AccountId
-                                FROM Contact
-                                WHERE Id = :testContacts[0].Id];
+        testContact = [
+                SELECT Id, AccountId
+                FROM Contact
+                WHERE Id = :testContact.Id
+        ];
 
-        Opportunity admitCondOpp = new Opportunity();
-        admitCondOpp.Name = 'Conditional Admit Opportunity 1';
+        Opportunity admitCondOpp = OpportunityService.createTestUndergraduateProspect(testContact);
+        admitCondOpp.Name = 'International Admit Opportunity';
         admitCondOpp.StageName = 'Admitted - Conditional';
         admitCondOpp.Career__c = 'Undergraduate';
-        admitCondOpp.CloseDate = Date.today() + 365;
-        admitCondOpp.Contact__c = admitCondCon.Id;
-        admitCondOpp.AccountId = admitCondCon.AccountId;
         insert admitCondOpp;
 
         Test.startTest();
@@ -659,7 +658,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :admitCondCon.Id];
+        admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :testContact.Id];
 
         System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct transfer territory manager.');
     }
@@ -674,21 +673,18 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar1.User__c = conditAdmitManager.Id;
         insert ATar1;
 
-        List<Contact> testContacts = ContactService.createMultipleTestContacts(1);
+        Contact testContact= ContactService.createTestContact();
 
-        insert testContacts;
+        insert testContact;
 
         Contact admitCondCon = [SELECT Id, AccountId
                                 FROM Contact
-                                WHERE Id = :testContacts[0].Id];
+                                WHERE Id = :testContact.Id];
 
-        Opportunity admitCondOpp = new Opportunity();
+        Opportunity admitCondOpp = OpportunityService.createTestUndergraduateProspect(admitCondCon);
         admitCondOpp.Name = 'Conditional Admit Opportunity 1';
         admitCondOpp.StageName = 'Applied';
         admitCondOpp.Career__c = 'Undergraduate';
-        admitCondOpp.CloseDate = Date.today() + 365;
-        admitCondOpp.Contact__c = admitCondCon.Id;
-        admitCondOpp.AccountId = admitCondCon.AccountId;
         admitCondOpp.International_Student__c = true;
 
         insert admitCondOpp;

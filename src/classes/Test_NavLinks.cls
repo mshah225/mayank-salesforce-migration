@@ -1,13 +1,13 @@
 @isTest
-private class Test_NavLinks 
+private class Test_NavLinks
 {
 	private static Contact testContact;
 	private static User testUser;
 	private static Profile p;
 	private static ServiceCenter sc;
 	private static NavLinks nav;
-    
-    private static void setUp() 
+
+    private static void setUp()
     {
     	p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
 
@@ -16,16 +16,23 @@ private class Test_NavLinks
     	termAC.Session_A_C_Start_Date__c = date.newinstance(dT.year(), dT.month(), dT.day());
     	termAC.Year__c = '2015';
     	insert termAC;
-    	
+
         Term__c termB = new Term__c();
         dT = Date.today().adddays(40);
     	termB.Session_B_Start_Date__c = date.newinstance(dT.year(), dT.month(), dT.day());
     	termB.Year__c = '2015';
     	insert termB;
-    	
+
+		Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
+            Name = 'The Test Message',
+            Displayed__c = true,
+            Message__c = 'There is maintenance'
+        );
+        insert scm;
+
      	testContact = ContactService.createTestContact();
      	insert testContact;
-     	
+
      	testUser = new User();
     	testUser.FirstName = 'Jonny';
     	testUser.LastName = 'Test';
@@ -40,12 +47,12 @@ private class Test_NavLinks
     	testUser.ProfileId = p.Id;
     	testuser.ContactId = testContact.Id;
     	insert testUser;
-    	
+
     	PageReference serviceCenter = Page.studentSC;
   		Test.setCurrentPage(serviceCenter);
     }
-	
-	@isTest static void testInitNoParm() 
+
+	@isTest static void testInitNoParm()
 	{
 		setUp();
 		Test.startTest();
@@ -89,7 +96,7 @@ private class Test_NavLinks
 		}
 		Test.stopTest();
 	}
-	
+
 	@isTest static void testDoSomething()
 	{
 		setUp();

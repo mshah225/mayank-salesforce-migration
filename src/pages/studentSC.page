@@ -6,7 +6,7 @@
            extensions="NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | Service Center</title>
-    <c:asu_responsive_header_section />
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
 
     <style>
         .checkboxHidden {

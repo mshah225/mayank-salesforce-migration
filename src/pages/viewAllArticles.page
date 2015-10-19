@@ -27,7 +27,8 @@
                 viewingAs="{!viewingAs}"
                 emplId="{!emplId}"
                 stopViewAsUrl="{!stopViewAsUrl}"
-                viewAsUrl="{!viewAsUrl}"/>
+                viewAsUrl="{!viewAsUrl}"
+                linkList="{!linkList}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"

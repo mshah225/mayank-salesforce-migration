@@ -12,7 +12,7 @@ public with sharing class ServiceCenter
     private Decimal origPin;
     public Decimal newPin { get; set; }
     public Id caseId;
-    public List<Opportunity> oppList;
+    public List<Opportunity> oppList; 
     private Map<String, String> viewAsMap;
     public String firstName { get; set; }
     public String lastName { get; set; }

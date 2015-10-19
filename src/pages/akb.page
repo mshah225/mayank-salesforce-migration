@@ -7,7 +7,7 @@
 <head>
     <title>My ASU | {!article.title}</title>
     <c:asu_responsive_header_section />
-    
+
     <style>
         .detailList a {
             color: #990033 !important;
@@ -114,18 +114,20 @@
 </head>
 <body>
     <div id="main-search" class="main-search closed"></div>
+
     <c:SCHeader firstName="{!firstName}"
                 lastName="{!lastName}"
                 viewingAs="{!viewingAs}"
                 emplId="{!emplId}"
                 stopViewAsUrl="{!stopViewAsUrl}"
-                viewAsUrl="{!viewAsUrl}"/>
+                viewAsUrl="{!viewAsUrl}"
+                linkList="{!linkList}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"
                                firstName="{!firstName}"
                                lastName="{!lastName}"/>
-        
+
         <div class="container">
             <ol class="breadcrumb">
                 <li><a href="/{!source}">Back</a></li>

@@ -1,4 +1,4 @@
-public class NavLinks 
+public class NavLinks
 {
     public NavLinks() {}
     public NavLinks(ServiceCenter controller) { }
@@ -6,20 +6,17 @@ public class NavLinks
     public NavLinks(ViewAllCasesController controller) { }
     public NavLinks(ApexPages.StandardController controller) { }
 
-    public String links {get; set;}
-    public String headers {get; set;}
-    public List<Link> linkList {get; set;}
-    public Map<String, String> linkMap {get; set;}
+    public String links { get; set; }
+    public String headers { get; set; }
+    public List<Weblink> linkList { get; set; }
+    public Map<String, String> linkMap { get; set; }
 
-    private String asurite = 'efudala';
-
-    public PageReference init() 
+    public PageReference init()
     {
         Cookie linksCookie;
         String linksJSON = '';
-
         String asuriteIdParm = '';
-        String navbarParm = '';
+        //String navbarParm = '';
         String timeParm = '';
         String signatureParm = '';
 
@@ -28,18 +25,19 @@ public class NavLinks
         if (ApexPages.currentPage().getParameters().get('asuriteId') != null)
         {
             asuriteIdParm = ApexPages.currentPage().getParameters().get('asuriteId');
-        } 
-        if (ApexPages.currentPage().getParameters().get('time') != null) 
+        }
+
+        if (ApexPages.currentPage().getParameters().get('time') != null)
         {
             timeParm = ApexPages.currentPage().getParameters().get('time');
         }
+
         if (ApexPages.currentPage().getParameters().get('signature') != null)
         {
             signatureParm = ApexPages.currentPage().getParameters().get('signature');
-        } 
+        }
 
-
-        if (ApexPages.currentPage().getParameters().get('navbar') != null) 
+        if (ApexPages.currentPage().getParameters().get('navbar') != null)
         {
             links = ApexPages.currentPage().getParameters().get('navbar');
             System.debug('links: ' + links);
@@ -51,16 +49,14 @@ public class NavLinks
             {
                 linksCookie = new Cookie('navbarlinks',links,null,-1,false);
                 ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});
-            }         
+            }
         }
-        else 
+        else
         {
             linksCookie = ApexPages.currentPage().getCookies().get('navbarlinks');
         }
 
-
-
-        if (linksCookie != null) 
+        if (linksCookie != null)
         {
             linksJSON = linksCookie.getValue();
             System.debug('Cookie value: ' + linksJSON);
@@ -69,16 +65,17 @@ public class NavLinks
             linksJSON = linksJSON.replaceAll('&#34;', '"');
             System.debug(linksJSON);
 
-            linkList = new List<Link>();
+            linkList = new List<Weblink>();
             JSONParser parser = JSON.createParser(linksJSON);
-            while (parser.nextToken() != null) 
+            while (parser.nextToken() != null)
             {
                 //if current token is a field name
                 if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
                 {
-                    Link thisLink = new Link();
+                    Weblink thisLink = new Weblink();
                     String fieldName = parser.getText();
                     thisLink.name = fieldName;
+                    System.debug('merf thisLinks name: ' + thisLink.name);
                     // Move to token after the field name
                     parser.nextToken();
                     thisLink.url = parser.getText();
@@ -87,29 +84,29 @@ public class NavLinks
             }
         }
 
-
         System.debug('asuriteId: ' + asuriteIdParm);
-        System.debug('navbar: ' + navbarParm);
+        //System.debug('navbar: ' + navbarParm);
         System.debug('time: ' + timeParm);
         System.debug('signature: ' + signatureParm);
+        System.debug('linkList: ' + linkList);
 
+        // headers='';
+        // MAP<string, string> hdrs = ApexPages.currentPage().getheaders();
+        // for (String key : hdrs.keySet())
+        // {
+        //     headers += key + ' : ' + hdrs.get(key) + '\n';
+        // }
 
-        headers='';
-        MAP<string, string> hdrs = ApexPages.currentPage().getheaders();
-        for (String key : hdrs.keySet())
-        {
-            headers += key + ' : ' + hdrs.get(key) + '\n';
-        }
         return null;
 
     }
 
-    public PageReference doSomething() 
-    {
-        return ApexPages.currentPage();
-    }
+    // public PageReference doSomething()
+    // {
+    //     return ApexPages.currentPage();
+    // }
 
-    public class Link 
+    public class Link
     {
         public String name { set; get { return name; } }
         public String url { set; get { return url; }  }

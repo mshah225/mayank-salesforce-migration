@@ -3,18 +3,11 @@
 		var masqCookie = "{!masqScopeIdCookie}";
 		if (masqCookie != "")
 		{
-			if("{!redirectUrl}".contains('?'))
-			{
-				window.location.href = "{!redirectUrl}&masqScopeIdCookie=" + masqCookie;
-			}
-			else
-			{
-				window.location.href = "{!redirectUrl}?masqScopeIdCookie=" + masqCookie;
-			}
+			window.location.href = "/studentSC?masqScopeIdCookie=" + masqCookie;
 		}
 		else
 		{
-			window.location.href = "{!redirectUrl}";
+			window.location.href = "/studentSC";
 		}
 	</script>
 </apex:page>

@@ -1,11 +1,26 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
-	<apex:attribute name="viewingAs" description="Whether or not the user is currently viewing as" type="Boolean"/>
-    <apex:attribute name="firstName" description="The first name of the current user"
-                    type="String"/>
-    <apex:attribute name="lastName" description="The last name of the current user"
-                    type="String"/>
+	<apex:attribute name="viewingAs"
+		description="Whether or not the user is currently viewing as"
+		type="Boolean"/>
+	<apex:attribute name="firstName"
+		description="The first name of the current user"
+		type="String"/>
+	<apex:attribute name="lastName"
+		description="The last name of the current user"
+		type="String"/>
+	<apex:attribute name="maintenanceMessage"
+		description="the message to be displayed on the service center during maintenance"
+		type="String"/>
+
 	<center>
+		<apex:outputPanel rendered="{!IF(maintenanceMessage != null, true, false)}">
+	        <div class="alert alert-warning">
+	            <button type='button' class='close' data-dismiss='alert'>×</button>
+	            <apex:outputText value="{!maintenanceMessage}"/>
+	        </div>
+	    </apex:outputPanel>
+
 	    <apex:outputPanel rendered="{!viewingAs}">
 	        <div class="alert alert-warning">
 	            <button type='button' class='close' data-dismiss='alert'>×</button>

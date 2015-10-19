@@ -1,7 +1,8 @@
 <apex:page standardController="Case"
            extensions="CaseTransferController"
            showHeader="true"
-           sidebar="true">
+           sidebar="true"
+           docType="html-5.0">
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
     <apex:includeScript value="/support/console/26.0/integration.js"/>
@@ -148,6 +149,8 @@
                 <i class="fa fa-chevron-circle-left"></i>
                 &nbsp;&nbsp;&nbsp;Go Back
             </a>
+            <br />
+            <br />
         </apex:form>
     </apex:outputPanel>
 
@@ -159,23 +162,26 @@
             <apex:inputText value="{!searchString}"
                             html-placeholder="Filter results"
                             html-autofocus="true"
-                            style="padding:5px;font-size:9pt;margin-right:10px;margin-bottom:10px;">
-                <apex:actionSupport event="onkeyup"
-                                    action="{!searchUsers}"
-                                    reRender="userList"
-                                    status="searchStatus"/>
-            </apex:inputText>
+                            style="padding:5px;font-size:9pt;margin-right:3px;margin-bottom:10px;"/>
 
-            <apex:actionStatus id="searchStatus">
-                <apex:facet name="start" >
-                    <img src="/img/loading.gif" style="position:absolute;margin-left:-35px;margin-top:15px;"/>
-                </apex:facet>
-            </apex:actionStatus>
+            <apex:commandButton value="Search"
+                                action="{!searchUsers}"
+                                styleClass="caseBtn"
+                                style="padding:5px!important;"
+                                status="searchStatus"/>
 
             <apex:commandButton value="Clear"
                                 action="{!resetSearch}"
                                 styleClass="caseBtn"
-                                style="padding:5px!important;"/>
+                                style="padding:5px!important;"
+                                status="searchStatus"/>
+
+            <apex:actionStatus id="searchStatus">
+                <apex:facet name="start" >
+                    <img src="/img/loading.gif"
+                         style="position:absolute;margin-left:5px;margin-top:15px;"/>
+                </apex:facet>
+            </apex:actionStatus>
 
             <apex:pageBlock mode="maindetail">
                 <apex:pageBlockTable id="userList"

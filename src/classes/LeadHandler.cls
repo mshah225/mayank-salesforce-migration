@@ -1,5 +1,4 @@
-public without sharing class LeadHandler
-	implements ITrigger
+public without sharing class LeadHandler implements ITrigger
 {
 	private LeadStatus convertedStatus = new LeadStatus();
 	private List<Lead> leadsToConvert = new List<Lead>();
@@ -12,8 +11,7 @@ public without sharing class LeadHandler
 	 * This method is called prior to execution of a BEFORE trigger. Use this to cache
 	 * any data required into maps prior execution of the trigger.
 	 */
-	
-	public void bulkBefore() {}
+	public void bulkBefore(){}
 
 	/**
 	 * bulkAfter
@@ -24,12 +22,15 @@ public without sharing class LeadHandler
 	public void bulkAfter()
 	{
 		// Grab the status for converted Leads
-		List<LeadStatus> statusList = [SELECT Id, MasterLabel
-									   FROM LeadStatus
-									   WHERE IsConverted = true LIMIT 1];
+		List<LeadStatus> statusList = [
+                SELECT Id, MasterLabel
+                FROM LeadStatus
+                WHERE IsConverted=true LIMIT 1];
 
 		if (statusList.size() > 0)
+		{
 			convertedStatus = statusList[0];
+		}
 	}
 
 	/**
@@ -38,7 +39,7 @@ public without sharing class LeadHandler
 	 * This method is called iteratively for each record to be inserted during a BEFORE
 	 * trigger. Never execute any SOQL/SOSL etc in this and other iterative methods.
 	 */
-	public void beforeInsert(SObject so) 
+	public void beforeInsert(SObject so)
 	{
 		Lead newLead = (Lead) so;
 
@@ -51,7 +52,7 @@ public without sharing class LeadHandler
 	 * This method is called iteratively for each record to be updated during a BEFORE
 	 * trigger.
 	 */
-	public void beforeUpdate(SObject oldSo, SObject so) {}
+	public void beforeUpdate(SObject oldSo, SObject so){}
 
 	/**
 	 * beforeDelete
@@ -59,7 +60,7 @@ public without sharing class LeadHandler
 	 * This method is called iteratively for each record to be deleted during a BEFORE
 	 * trigger.
 	 */
-	public void beforeDelete(SObject so) {}
+	public void beforeDelete(SObject so){}
 
 	/**
 	 * beforeFinally
@@ -67,7 +68,7 @@ public without sharing class LeadHandler
 	 * This method is called at the end of the execution of a BEFORE trigger. Use this to finalize
 	 * any bulk operations for a BEFORE trigger.
 	 */
-	public void beforeFinally() {}
+	public void beforeFinally(){}
 
 	/**
 	 * afterInsert
@@ -78,7 +79,7 @@ public without sharing class LeadHandler
 	 */
 	public void afterInsert(SObject so)
 	{
-		Lead l = (Lead) so;
+		Lead l = (Lead)so;
 
 		if (l.Convert_Perform_Conversion__c)
 		{
@@ -94,8 +95,8 @@ public without sharing class LeadHandler
 	 */
 	public void afterUpdate(SObject oldSo, SObject so)
 	{
-		Lead l = (Lead) so;
-		Lead oldL = (Lead) oldSo;
+		Lead l = (Lead)so;
+		Lead oldL = (Lead)oldSo;
 
 		if (l.Convert_Perform_Conversion__c && oldL.Convert_Perform_Conversion__c == false)
 		{
@@ -109,7 +110,7 @@ public without sharing class LeadHandler
 	 * This method is called iteratively for each record deleted during an AFTER
 	 * trigger.
 	 */
-	public void afterDelete(SObject so) {}
+	public void afterDelete(SObject so){}
 
 	/**
 	 * andFinally
@@ -129,138 +130,70 @@ public without sharing class LeadHandler
 			return;
 		}
 
-		List<Database.Leadconvert> leadConvertList = new List<Database.Leadconvert>();
-		List<List<Database.Leadconvert>> leadConvertBatches = new List<List<Database.Leadconvert>>();
+        /*
+         * Primary lead conversion logic
+         */
 		List<Database.LeadConvertResult> leadConversionResults = new List<Database.LeadConvertResult>();
 		Set<Id> LeadsRequiringLIReparenting = new Set<Id>();
 		Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
 		Integer count = 0;
 
-		for (Lead l: leadsToConvert)
-		{
-			Database.LeadConvert lc = new Database.LeadConvert();
-			lc.SetLeadId(l.Id);
-			lc.setConvertedStatus(convertedStatus.MasterLabel);
+		Map<Integer, List<Database.LeadConvert>> leadConvertBatchMap = LeadService.generateLeadConvertBatches(leadsToConvert, convertedStatus.MasterLabel);
 
-			if (l.Convert_Contact__c != null)
-			{
-				lc.setContactId(l.Convert_Contact__c);
-				lc.setAccountId(l.Convert_Contact_Account_ID__c);
-			}
+		for (List<Database.LeadConvert> lcBatch : leadConvertBatchMap.values())
+        {
+            List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcBatch, false);
+            leadConversionResults.addAll(lcResultList);
+        }
 
-			// If Leads has Last Institution Attended populated, add to the List that
-			// needs a Previous Education entry added
-			if (l.Last_Institution_Attended__c != null)
-			{
-				leadsNeedingPreviousEducation.add(l.Id);
-			}
+        Set<Id> convertedLeadIds = new Set<Id>();
 
-			// Reparent related Lead Interests if we're not creating an Opportunity
-			// Deactivate related Lead Interests if we are creating an Opportunity
-			//
-			if (!l.Convert_Create_Opportunity__c)
-			{
-				LeadsRequiringLIReparenting.add(l.Id);
-			}
-			else
-			{
-				leadIdsCleanUpLeadInterests.add(l.Id);
-			}
+        for (Database.LeadConvertResult lcr : leadConversionResults)
+        {
+            if (lcr.isSuccess())
+            {
+                convertedLeadIds.add(lcr.getLeadId());
+            }
+        }
 
-			lc.setDoNotCreateOpportunity(!l.Convert_Create_Opportunity__c);
+        // Map convert lead data to associated opportunities, if any
+        List<Opportunity> oppsToUpdate = OpportunityService.mapLeadDataToOpportunity(convertedLeadIds);
+        update oppsToUpdate;
 
-			leadConvertList.add(lc);
-			count++;
+        /*
+         * Create necessary records and perform data processing as a result of lead conversion
+         */
+        for (Lead l : leadsToConvert)
+        {
+            // If Leads has Last Institution Attended populated, add to the List that
+            // needs a Previous Education entry added
+            if (l.Last_Institution_Attended__c != null)
+            {
+                leadsNeedingPreviousEducation.add(l.Id);
+            }
 
-			// ConvertLead allows up to 100 leads per call according to docs, but 99 seems to be the actual limit
+            // Reparent related Lead Interests if we're not creating an Opportunity
+            // Deactivate related Lead Interests if we are creating an Opportunity
+            if (!l.Convert_Create_Opportunity__c)
+            {
+                LeadsRequiringLIReparenting.add(l.Id);
+            }
+            else
+            {
+                leadIdsCleanUpLeadInterests.add(l.Id);
+            }
+        }
 
-			if (count == 100)
-			{
-				leadConvertBatches.add(leadConvertList.clone());
-				leadConvertList.clear();
-				count = 0;
-			}
-		}
+        if (LeadsRequiringLIReparenting.size() > 0)
+        {
+            List<Lead_Interest__c> leadInterestList = LeadService.reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
+            update leadInterestList;
+        }
 
-		// If we have any Leadconverts left over, add the final batch
-		if (count > 0)
-		{
-			leadConvertBatches.add(leadConvertList);
-		}
-
-		for (List<Database.Leadconvert> lcList: leadConvertBatches)
-		{
-	        List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcList, false);
-	        leadConversionResults.addAll(lcResultList);
-		}
-
-		reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
-
-		createConvertedPreviousEducation(leadsNeedingPreviousEducation);
-
-	}
-
-	private void createConvertedPreviousEducation(Set<Id> leadIds)
-	{
-		if (leadIds.size() == 0)
-		{
-			return;
-		}
-
-		List<Lead> leadList = new List<Lead>([SELECT Id, ConvertedContactId, Last_Institution_Attended__c, Last_Institution_Attended__r.Institution_Type__c, Last_Institution_GPA__c, Last_Institution_GPA_Scale__c, College_Transfer_Hours__c, High_School_Class_Percent__c, High_School_Class_Rank__c, High_School_Class_Size__c FROM Lead WHERE Id in :leadIds]);
-		List<Previous_Education__c> peList = new List<Previous_Education__c>();
-
-		for (Lead l: leadList)
-		{
-			Previous_Education__c pe = new Previous_Education__c(Contact__c = l.ConvertedContactId,
-																 Account__c = l.Last_Institution_Attended__c);
-
-			if (l.Last_Institution_Attended__r.Institution_Type__c == 'HS')
-			{
-				pe.Class_Rank__c = l.High_School_Class_Rank__c;
-				pe.Class_Size__c = l.High_School_Class_Size__c;
-			}
-
-			pe.GPA__c = l.Last_Institution_GPA__c;
-			peList.add(pe);
-		}
-
-		try
-		{
-			insert peList;
-		}
-		catch (Exception e)
-		{
-			throw e;
-		}
-	}
-
-	private void reparentRelatedLeadInterests(Set<Id> leadIds)
-	{
-		if (leadIds.size() == 0)
-		{
-			return;
-		}
-
-		List<Lead_Interest__c> leadInterestList = [SELECT Id, OwnerId, IsDeleted, Name, RecordType.Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, Leads__c, Eligibility__c, Plan__c, Contact__c, Status__c, Term__c, Primary_Source__c, Secondary_Source__c, Type__c, College__c, Academic_Interest__c, Test_Record__c, Qualifying__c, Send_Email__c, External_Application_Number__c, Send_Email_ID__c
-												   FROM Lead_Interest__c
-												   WHERE Leads__c IN :leadIds];
-
-		if (leadInterestList.size() == 0)
-		{
-			return;
-		}
-
-		// Need to requery to get the Converted Contact Ids
-		Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>([SELECT Id, ConvertedContactId
-															  FROM Lead
-															  WHERE Id IN :leadIds]);
-
-		for (Lead_Interest__c li: leadInterestList)
-		{
-			li.Contact__c = leadToContactIdMap.get(li.leads__c).ConvertedContactId;
-		}
-
-		update leadInterestList;
-	}
+        if (leadsNeedingPreviousEducation.size() > 0)
+        {
+            List<Previous_Education__c> previousEducationList = LeadService.createConvertedPreviousEducation(leadsNeedingPreviousEducation);
+            insert previousEducationList;
+        }
+    }
 }

@@ -1,13 +1,11 @@
-<apex:page showHeader="false"
-    sidebar="false"
-    cache="true"
-    docType="html-5.0"
-    controller="AKBController"
-    action="{!init}"
-    extensions="ServiceCenter,vfKeywordSearchController,AutoCompleteController,NavLinks,newCase"
-    tabStyle="Case">
+<apex:page docType="html-5.0"
+           showHeader="false"
+           sidebar="false"
+           controller="ServiceCenter"
+           action="{!init}"
+           extensions="AKBController,NavLinks,vfListPaginationController">
 <head>
-    <title>My ASU - {!article.title}</title>
+    <title>My ASU | {!article.title}</title>
     <c:asu_responsive_header_section />
     
     <style>
@@ -87,6 +85,11 @@
                 padding-top: 5px !important;
             }
         }
+
+        #articleContentDiv img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
     </style>
 
     <script>
@@ -103,121 +106,175 @@
         ga('send', 'pageview');
     </script>
 
-    <c:SCBomgarScripts asurite="{!userContact.ASURite_Id__c}"/>
+    <c:SCBomgarScripts asurite="{!asurite}"
+                       firstName="{!firstName}"
+                       lastName="{!lastName}"
+                       emplId="{!emplId}"
+                       viewingAs="{!viewingAs}"/>
 </head>
-<body onload="getLinks()">
+<body>
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader/>
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
+                viewAsUrl="{!viewAsUrl}"/>
 
     <div id="asu_content_well">
-        <c:SCPageNotifications pinError="{!pinError}" 
-                               pinMessage="{!pinMessage}" 
-                               pinSuccess="{!pinSuccess}" 
-                               feedback="{!$CurrentPage.parameters.Feedback}" 
-                               confirm="{!$CurrentPage.parameters.Confirm}" 
-                               suggest="{!$CurrentPage.parameters.Suggest}"/>
+        <c:SCPageNotifications viewingAs="{!viewingAs}"
+                               firstName="{!firstName}"
+                               lastName="{!lastName}"/>
         
         <div class="container">
             <ol class="breadcrumb">
-                <li><a href="/studentSC">Back</a></li>
+                <li><a href="/{!source}">Back</a></li>
                 <li class="active" style="font-size:10pt;">View Article</li>
             </ol>
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-7">
                     <div class="box">
                         <div class="header">
                             <h6><b>Knowledge Article &#35;{!article.ArticleNumber}</b></h6>
                         </div>
                         <div class="content">
-                            <apex:form id="autoCompleteForm" styleClass="searchKB">
+                            <apex:form id="searchForm" styleClass="searchKB">
                                 <apex:pageBlock mode="maindetail">
-                                    <p>Search the Knowledge Base for more articles.</p><br />
+                                    <p>Search for any issue or question to learn how ASU can help!</p>
+                                    <br />
                                     <div class="searchKB2">
                                         <div class="form-horizontal">
-                                            <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"
-                                            html-placeholder="Enter search terms"/>
-                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults"/>
-                                            <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
+                                            <apex:inputText id="articleTextBoxId"
+                                                            value="{!searchstring}"
+                                                            styleClass="searchBox"
+                                                            html-placeholder="Search the Knowledge Base"
+                                                            html-pattern=".{2,}"
+                                                            required="true"
+                                                            title="Please enter a minimum of 2
+                                                            characters"
+                                                            maxlength="99"/>
+
+                                            <apex:commandButton value="Search"
+                                                                id="submitButton"
+                                                                styleClass="kbbtn searchBtn"
+                                                                reRender="theSearchResults"
+                                                                oncomplete="viewAsLinks()"
+                                                                status="searchStatus"/>
+
+                                            <apex:commandButton value="Clear"
+                                                                styleClass="kbbtn searchBtn"
+                                                                style="width:37px;"
+                                                                onclick="this.form.reset();return false;"/>
                                         </div>
-                                        <apex:inputHidden id="searchArticleId" value="{!selectedArticle}" />
                                     </div>
                                 </apex:pageBlock>
                             </apex:form>
+                            <br />
                             <apex:form id="theSearchResults">
-                                <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
+                                <apex:pageBlock id="searchResults"
+                                                mode="maindetail"
+                                                rendered="{!searchstring != ''}">
                                     <br />
-                                    <hr />
-                                    <h5><b>Search Results for:</b> '{!searchstring}'</h5>
-                                    <div style="height:5px;"></div>
-                                    <knowledge:articleList articleVar="articleSearch"
-                                        pageNumber="{!currentPageNumber}"
-                                        Keyword="{!searchstring}"
-                                        hasMoreVar="true"
-                                        pageSize="10"
-                                        rendered="{!searchstring != ''}">
+                                    <h5><b>Showing top results for '{!searchstring}'</b></h5>
+
+                                    <apex:actionStatus id="searchStatus" >
+                                        <apex:facet name="start" >
+                                            <img src="/img/loading.gif"
+                                                 style="position:absolute;margin:1px 0px 0px 5px;"/>
+                                        </apex:facet>
+                                    </apex:actionStatus>
+
+                                    <hr style="margin-top:5px;"/>
+
+                                    <knowledge:articleList articleVar="articleList"
+                                                           keyword="{!searchstring}"
+                                                           pageSize="10">
                                         <table>
                                             <tr>
                                                 <td style="vertical-align:top;">
                                                     &#8226;&nbsp;
                                                 </td>
+
                                                 <td>
-                                                    <apex:outputLink value="/akb?id={!articleSearch.id}">{!articleSearch.title}</apex:outputLink>
-                                                    <br />
-                                                    <div style="height:6px;"></div>
+                                                    <apex:outputLink value="/akb?id={!articleList.id}">
+                                                        {!articleList.title}
+                                                    </apex:outputLink>
                                                 </td>
                                             </tr>
                                         </table>
-                                    </knowledge:articleList>
-                                    <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
-                                    Suggest An Article
-                                    </button>
-                                </apex:pageBlock>
 
-                                <apex:outputPanel rendered="{!searchString == null}">
-                                    <br />
-                                </apex:outputPanel>
+                                        <div style="height:15px;"></div>
+                                    </knowledge:articleList>
+
+                                    <apex:commandLink styleClass="btn"
+                                                      style="padding:4px"
+                                                      value="View All Results"
+                                                      action="{!viewAllResults}"
+                                                      rendered="{!searchstring != ''}"/>
+                                </apex:pageBlock>
                             </apex:form>
                             <hr />
-                            <h3>{!article.title}</h3>
-                            <br />
-                            <br />
                             <apex:form id="articleContentForm">
-                                <apex:actionFunction name="setLink" action="{!changeLink}" oncomplete="changeLinkOnPage('{!fixedLinksJSON}')" reRender="url1">
-                                    <apex:param name="urlNameToChange" value="" assignTo="{!urlsJSON}" />
+                                <apex:actionFunction name="setLink"
+                                                     action="{!changeLink}"
+                                                     oncomplete="changeLinkOnPage('{!fixedLinksJSON}')"
+                                                     reRender="url1">
+                                    <apex:param name="urlNameToChange"
+                                                value=""
+                                                assignTo="{!urlsJSON}" />
                                 </apex:actionFunction>
                                 <div id="articleContentDiv" class="articleContent">
                                     <apex:pageBlock tabStyle="Case">
                                         <apex:pageBlockSection columns="1">
-                                            <apex:outputText value="Category" rendered="{!IF(faq.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                                            <apex:outputText rendered="{!IF(faq.Functional_Group__c != null,true,false)}" value="{!faq.Functional_Group__c}"/>
-                                            <apex:outputText value="Category" rendered="{!IF(info.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                                            <apex:outputText rendered="{!IF(info.Functional_Group__c != null,true,false)}" value="{!info.Functional_Group__c}"/>
-                                            <apex:outputText value="Category" rendered="{!IF(howTo.Functional_Group__c != null,true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                                            <apex:outputText rendered="{!IF(howTo.Functional_Group__c != null,true,false)}" value="{!howTo.Functional_Group__c}"/>
-                                            <apex:outputText rendered="{!IF(faq.Functional_Group__c != null || info.Functional_Group__c != null || howTo.Functional_Group__c != null,true,false)}">
-                                            <hr />
-                                            </apex:outputText>
-                                            <apex:outputField value="{!info.Information__c}" rendered="{!IF(article.ArticleType = 'Informational__kav',true,false)}" label=""/>
-                                            <apex:outputText value="Question" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-5px;color:#4a4a5b"/>
-                                            <apex:outputField value="{!faq.Question__c}" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" label="" styleClass="noLabel"/>
-                                            <apex:outputText value="Answer" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" style="font-size:8pt;font-weight:bold;margin-left:-4px;color:#4a4a5b"/>
-                                            <apex:outputField value="{!faq.Answer__c}" rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}" label="" styleClass="noLabel"/>
-                                            <apex:outputField value="{!howto.Content__c}" rendered="{!IF(article.ArticleType = 'How_To__kav',true,false)}" label=""/>
+                                            <h3 style="font-weight:400;">{!article.title}</h3>
+                                            <br />
+                                            <br />
+                                            <apex:outputField value="{!faq.Answer__c}"
+                                                              rendered="{!IF(article.ArticleType = 'FAQ__kav',true,false)}"
+                                                              label=""
+                                                              styleClass="noLabel"/>
                                         </apex:pageblocksection>
                                     </apex:pageBlock>
                                 </div>
                             </apex:form>
-                            <div class="page-header">
-                                <h5>Article Feedback</h5>
-                            </div>
+
+                            <apex:outputPanel rendered="{!IF(article.ArticleType = 'FAQ__kav',true,
+                                    false)}"
+                                              style="line-height:2em;">
+                                <br />
+                                <apex:outputPanel rendered="{!IF(faq.Functional_Group__c !=
+                                        null,true,false)}">
+                                    <apex:outputText value="Category: " style="font-weight:bold;"/>
+
+                                    <apex:outputText value="{!faq.Functional_Group__c}"/>
+                                    <br />
+                                </apex:outputPanel>
+
+                                <apex:outputText value="Date Updated: " style="font-weight:bold;"/>
+
+                                <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                    <apex:param value="{!faq.LastModifiedDate}" />
+                                </apex:outputText>
+                            </apex:outputPanel>
+
+                            <hr style="margin-top:10px;margin-bottom:10px;" />
+
+                            <h5><b>Article Feedback</b></h5>
+                            <br />
+                            <br />
                             <apex:form id="feedbackButtons">
                                 <apex:outputPanel rendered="{!feedbackVisible}">
-                                    <p>&nbsp;Was this article helpful?</p>
+                                    <p>Is this article helpful?</p>
+
+                                    <apex:commandButton value="Yes"
+                                                        action="{!helpfulYes}"
+                                                        styleClass="btn btn-default"
+                                                        style="width:25px;height:15px;padding:3px;"/>
                                     &nbsp;
-                                    <apex:commandButton value="Yes" action="{!helpfulYes}" styleClass="btn btn-default" style="width:25px;height:15px;padding:3px;"/>
-                                    &nbsp;
-                                    <!-- Button trigger modal -->
-                                    <button class="btn btn-default" data-toggle="modal" data-target="#feedbackNoComments" style="width:25px;height:15px;padding:3px;">
+                                    <button class="btn btn-default"
+                                            data-toggle="modal"
+                                            data-target="#feedbackNoComments"
+                                            style="width:25px;height:15px;padding:3px;">
                                         No
                                     </button>
                                 </apex:outputPanel>
@@ -229,23 +286,50 @@
 
                              <apex:form id="feedbackNoComments">
                                  <!-- Modal -->
-                                 <div class="modal fade" id="feedbackNoComments" tabindex="-1" role="dialog" aria-labelledby="feedbackCommentsLabel" aria-hidden="true">
+                                 <div class="modal fade"
+                                      id="feedbackNoComments"
+                                      tabindex="-1" role="dialog"
+                                      aria-labelledby="feedbackCommentsLabel"
+                                      aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                <h6 class="modal-title" id="feedbackCommentsLabel">Feedback - {!article.title}</h6>
+                                                <button type="button"
+                                                        class="close"
+                                                        data-dismiss="modal">
+                                                    <span aria-hidden="true">&times;</span>
+                                                    <span class="sr-only">Close</span>
+                                                </button>
+
+                                                <h6 class="modal-title"
+                                                    id="feedbackCommentsLabel">
+                                                    Feedback - {!article.title}
+                                                </h6>
                                             </div>
+
                                             <div class="modal-body">
                                                 <p>Please tell us how we can make this article more useful.</p>
                                                 <apex:pageBlock mode="maindetail">
-                                                    <apex:inputField id="articleFeedback" required="true" value="{!feedbackHelpful.Comments__c}" style="width:100%;max-width:400px;height:100px;"/>
+                                                    <apex:inputField id="articleFeedback"
+                                                                     required="true"
+                                                                     value="{!feedbackHelpful.Comments__c}"
+                                                                     style="width:100%;max-width:400px;height:100px;"/>
                                                 </apex:pageBlock>
                                             </div>
                                             <div class="modal-footer">
                                                 <div class="pull-left">
-                                                    <apex:commandButton value="Submit" action="{!helpfulNo}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
+                                                    <apex:commandButton
+                                                            value="Submit"
+                                                            action="{!helpfulNo}"
+                                                            styleClass="btn btn-default"
+                                                            style="width:40px;height:15px;padding:3px;"/>
+
+                                                    <button type="button"
+                                                            class="btn btn-default"
+                                                            data-dismiss="modal"
+                                                            style="width:35px;height:15px;padding:3px;margin-top:0px;">
+                                                        Close
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -256,25 +340,27 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <div class="box">
                         <div class="header">
                             <h6><b>Articles You May Find Helpful</b></h6>
                         </div>
                         <div class="content">
                             <knowledge:articleList articleVar="relatedart"
-                                keyword="{!titleKeyword}"
-                                hasMoreVar="true"
-                                pageSize="6">
+                                                   keyword="{!titleKeyword}"
+                                                   hasMoreVar="true"
+                                                   pageSize="6">
                                 <table>
                                     <tr id="relatedArticleLink">
                                         <td style="vertical-align:top;">
                                             &#8226;&nbsp;
                                         </td>
                                         <td>
-                                            <apex:outputLink value="/akb?id={!relatedart.id}">{!relatedart.title}</apex:outputLink>
-                                            <br />
-                                            <div style="height:6px;"></div>
+                                            <apex:outputLink value="/akb?id={!relatedart.id}">
+                                                {!relatedart.title}
+                                            </apex:outputLink>
+
+                                            <div style="height:10px;"></div>
                                         </td>
                                     </tr>
                                 </table>
@@ -284,31 +370,57 @@
                                 $( '[id$=relatedArticleLink]' ).first().hide();
                             </script>
 
-                            <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
+                            <br />
+                            <button class="btn kbbtn"
+                                    data-toggle="modal"
+                                    data-target="#suggestAnArticle">
                                 Suggest An Article
                             </button>
                         </div>
                     </div>
                     <apex:form id="suggestAnArticle">
                         <!-- Modal -->
-                        <div class="modal fade" id="suggestAnArticle" tabindex="-1" role="dialog" aria-labelledby="suggestAnArticleLabel" aria-hidden="true">
+                        <div class="modal fade"
+                             id="suggestAnArticle"
+                             tabindex="-1"
+                             role="dialog"
+                             aria-labelledby="suggestAnArticleLabel"
+                             aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <button type="button"
+                                                class="close"
+                                                data-dismiss="modal">
+                                            <span aria-hidden="true">&times;</span>
+                                            <span class="sr-only">Close</span>
+                                        </button>
+
                                         <h6 class="modal-title" id="suggestAnArticleLabel">Suggest An Article</h6>
                                     </div>
                                     <div class="modal-body">
                                         <apex:pageBlock mode="maindetail">
                                             <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                                             <br />
-                                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;"/>
+                                            <apex:inputField id="articleDetails"
+                                                             required="true"
+                                                             value="{!suggestAnArticle.Description}"
+                                                             style="width:100%;max-width:400px;height:100px;"/>
                                         </apex:pageBlock>
                                     </div>
                                     <div class="modal-footer">
                                         <div class="pull-left">
-                                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
+                                            <apex:commandButton value="Submit"
+                                                                action="{!suggestAnArticleSubmit}"
+                                                                styleClass="btn btn-default"
+                                                                style="width:40px;height:15px;padding:3px;"/>
+
+                                            <button type="button"
+                                                    class="btn btn-default"
+                                                    data-dismiss="modal"
+                                                    style="width:35px;height:15px;padding:3px;margin-top:0px;">
+                                                Close
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -321,128 +433,13 @@
                                                 myPin="{!myPin}"
                                                 newPin="{!newPin}"
                                                 changePin="{!changePin}"/>
+
                     <c:SCMyCasesBox/>
                 </div><!-- end col-md-4 -->
             </div>
         </div><!-- end row -->
         <c:SCFooter/>
     </div><!-- end ASU Content -->
-
-    <!-- Autocomplete Code -->
-    <script type="text/javascript">
-        var PLACEHOLDER = '';
-        var articleObjects;
-        var queryTerm;
-
-        $('[id$=articleTextBoxId]').autocomplete({
-            minLength: 2,
-            source: function(request, response) {
-                        queryTerm = request.term;
-                        AutoCompleteController.searchArticle(request.term, function(result, event){
-                            if(event.type == 'exception') {
-                                  alert(event.message);
-                            } else {
-                                 articleObjects = result;
-                                 response(articleObjects);
-                            }
-                        });
-                   },
-            focus: function( event, ui ) {
-                    $('[id$=articleTextBoxId]').val( ui.item.Title );
-                    return false;
-                    },
-            select: function( event, ui ) {
-                        $('[id$=articleTextBoxId]').val( ui.item.Title );
-                        $('[id$=searchArticleId]').val( ui.item.Id );
-                        return false;
-                    },
-         })
-         .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-            var entry = "<a href=/akb?id=" + item.KnowledgeArticleId + ">" + item.Title + "</a><hr>";
-
-            entry = entry.replace(queryTerm, "<b>" + queryTerm + "</b>");
-            return $( "<li></li>" )
-                .data( "item.autocomplete", item )
-                .append( entry )
-                .appendTo( ul );
-        };
-
-        $('[id$=articleTextBoxId]').val(PLACEHOLDER);
-        $('[id$=articleTextBoxId]').on("focus",  function(event){
-            $tgt = $(event.target);
-            if($tgt.val() === PLACEHOLDER ){
-                $tgt.val('');
-                $tgt.removeClass('placeHolder');
-            }
-        });
-        $('[id$=articleTextBoxId]').on( "blur",  function(event){
-            $tgt = $(event.target);
-            if($tgt.val() === '' ){
-                $tgt.val(PLACEHOLDER);
-                $tgt.addClass('placeHolder');
-            }
-        });
-    </script>
-
-    <script>
-        $( document ).ready(function() {
-            $( "#articleContentDiv img" ).addClass("img-responsive");
-        });
-    </script>
-
-    <script>
-        function getLinks()
-        {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var addLink;
-            var linkArray = [];
-            var articleLinks = []
-
-            for (i = 0; i < links.length; i++)
-            {
-                if (links[i].href.indexOf('/articles') > -1)
-                {
-                    articleLinks.push(links[i]);
-                }
-            }
-
-            for (i = 0; i < articleLinks.length; i++)
-            {
-                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
-                linkArray.push(addlink);
-            }
-            linkArray = JSON.stringify(linkArray);
-            setLink(linkArray);
-        }
-
-        function changeLinkOnPage(newLinks)
-        {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var articleLinks = []
-            var parsed = JSON.parse(newLinks);
-            var arr = [];
-
-            for (i = 0; i < links.length; i++)
-            {
-                if (links[i].href.indexOf('/articles') > -1)
-                {
-                    articleLinks.push(links[i]);
-                }
-            }
-
-            for (var x in parsed)
-            {
-                arr.push(parsed[x]);
-            }
-
-            for (i = 0; i < articleLinks.length; i++)
-            {
-                articleLinks[i].href = arr[i];
-                articleLinks[i].target = "_self";
-            }
-            return false;
-        }
-    </script>
 
     <script>
         if (!(navigator.userAgent.match(/Android/i)
@@ -468,6 +465,78 @@
             document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
                 event.preventDefault();
             });
+        }
+    </script>
+
+    <script>
+        getLinks();
+
+        function getLinks() {
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var addLink;
+            var linkArray = [];
+            var articleLinks = []
+
+            for (i = 0; i < links.length; i++) {
+                if (links[i].href.indexOf('/articles') > -1) {
+                    articleLinks.push(links[i]);
+                }
+            }
+
+            for (i = 0; i < articleLinks.length; i++) {
+                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
+                linkArray.push(addlink);
+            }
+
+            linkArray = JSON.stringify(linkArray);
+            setLink(linkArray);
+        }
+
+        function changeLinkOnPage(newLinks) {
+            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var articleLinks = []
+            var parsed = JSON.parse(newLinks);
+            var arr = [];
+
+            for (i = 0; i < links.length; i++) {
+                if (links[i].href.indexOf('/articles') > -1) {
+                    articleLinks.push(links[i]);
+                }
+            }
+
+            for (var x in parsed) {
+                arr.push(parsed[x]);
+            }
+
+            for (i = 0; i < articleLinks.length; i++) {
+                articleLinks[i].href = arr[i];
+                articleLinks[i].target = "_self";
+            }
+
+            viewAsLinks();
+            return false;
+        }
+    </script>
+
+    <script>
+        function viewAsLinks() {
+            var masqCookie = "{!masqScopeIdCookie}";
+            var viewingAs = "{!viewingAs}";
+            if (masqCookie != "" && viewingAs == "true") {
+                $("a").each(function() {
+                    var href = this.href;
+                    if (href.indexOf("force") > -1)
+                    {
+                        if (href.indexOf("?") != -1) {
+                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        else {
+                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        $(this).attr("href", href);
+                    }
+                });
+            }
         }
     </script>
 </body>

@@ -1,86 +1,36 @@
 @isTest(seeAllData = true)
-private class ChatterAutoAddUserTest {
-    
+private class ChatterAutoAddUserTest
+{
     private static Set<Id> userIdRec;
     private static Set<Id> userIdService;
     private static Set<Id> userIdKnow;
     
-    static testMethod void setUpRec() {
-        
+    private static void setUp()
+    {
         Id recProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Recruiting User' LIMIT 1].Id;
-        
-        User testUserRec = new User();
-        testUserRec.FirstName = 'Chatter';
-        testUserRec.LastName = 'TestuserRec'; 
-        testUserRec.ProfileId = recProfileId;
-        testUserRec.Username = 'chattestuserRec@test.com.dev';
-        testUserRec.Email = 'chattestuser@test.com';
-        testUserRec.Alias = 'chattes3';
-        testUserRec.CommunityNickname = 'chattest';
-        testUserRec.TimeZoneSidKey = 'America/Phoenix';
-        testUserRec.LocaleSidKey = 'en_US';
-        testUserRec.EmailEncodingKey = 'ISO-8859-1';
-        testUserRec.LanguageLocaleKey = 'en_US';
-        insert testUserRec;
-        
-        system.debug('Rec User Created');
+        Id servProfileId = [SELECT Id FROM Profile WHERE Name LIKE 'ASU Service%' LIMIT 1].Id;
+        Id knowProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User' LIMIT 1].Id;
+
+        List<User> testUsers = UserService.createMultipleTestUsers(3);
+        testUsers[0].ProfileId = recProfileId;
+        testUsers[1].ProfileId = servProfileId;
+        testUsers[2].ProfileId = knowProfileId;
 
         userIdRec = new Set<Id>();
-        userIdRec.add(testUserRec.Id);
-    }
-    
-    static testMethod void setUpServ() {
-    
-        Id servProfileId = [SELECT Id FROM Profile WHERE Name LIKE 'ASU Service%' LIMIT 1].Id;
-        
-        User testUserServ = new User();
-        testUserServ.FirstName = 'Chatter';
-        testUserServ.LastName = 'TestuserService'; 
-        testUserServ.ProfileId = servProfileId;
-        testUserServ.Username = 'chattestuserservice@test.com.dev';
-        testUserServ.Email = 'chattestuser@test.com';
-        testUserServ.Alias = 'chattes4';
-        testUserServ.CommunityNickname = 'chattestservice';
-        testUserServ.TimeZoneSidKey = 'America/Phoenix';
-        testUserServ.LocaleSidKey = 'en_US';
-        testUserServ.EmailEncodingKey = 'ISO-8859-1';
-        testUserServ.LanguageLocaleKey = 'en_US';
-        insert testUserServ;
-        
-        system.debug('Service User Created');
-        
+        userIdRec.add(testUsers[0].Id);
+
         userIdService = new Set<Id>();
-        userIdService.add(testUserServ.Id);
-    }
-    
-    static testMethod void setUpKnow() {
-    
-        Id knowProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User' LIMIT 1].Id;
-        
-        User testUserKnow = new User();
-        testUserKnow.FirstName = 'Chatter';
-        testUserKnow.LastName = 'TestuserKnow'; 
-        testUserKnow.ProfileId = knowProfileId;
-        testUserKnow.Username = 'chattestuserKnow@test.com.dev';
-        testUserKnow.Email = 'chattestuser@test.com';
-        testUserKnow.Alias = 'chattes5';
-        testUserKnow.CommunityNickname = 'chattestKnow';
-        testUserKnow.TimeZoneSidKey = 'America/Phoenix';
-        testUserKnow.LocaleSidKey = 'en_US';
-        testUserKnow.EmailEncodingKey = 'ISO-8859-1';
-        testUserKnow.LanguageLocaleKey = 'en_US';
-        insert testUserKnow;
-        
-        system.debug('Knowledge User Created');
+        userIdService.add(testUsers[1].Id);
 
         userIdKnow = new Set<Id>();
-        userIdKnow.add(testUserKnow.Id);
+        userIdKnow.add(testUsers[2].Id);
+
+        insert testUsers;
     }
-    
-    static testMethod void testAutoAdd() {
-        setUpRec();  
-        setUpServ(); 
-        setUpKnow(); 
+
+    @isTest static void testAutoAdd()
+    {
+        setUp();
         Test.startTest();
         ChatterAutoAddUsers.AddToServiceGroup(userIdRec);
         ChatterAutoAddUsers.AddToServiceGroup(userIdService);

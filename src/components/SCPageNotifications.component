@@ -1,27 +1,56 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
-	<apex:attribute name="pinError" description="Boolean to display the pin error banner" type="Boolean"/>
-	<apex:attribute name="pinMessage" description="This is the message that is displayed" type="String"/>
-	<apex:attribute name="pinSuccess" description="Boolean to display the pin success banner" type="Boolean"/>
-	<apex:attribute name="feedback" description="String to determine if feedback is given" type="String"/>
-	<apex:attribute name="confirm" description="String to determine if AKB feedback or site feedback is given" type="String"/>
-	<apex:attribute name="suggest" description="String to determine if suggest an article feedback is given" type="String"/>
+	<apex:attribute name="viewingAs"
+		description="Whether or not the user is currently viewing as"
+		type="Boolean"/>
+	<apex:attribute name="firstName"
+		description="The first name of the current user"
+		type="String"/>
+	<apex:attribute name="lastName"
+		description="The last name of the current user"
+		type="String"/>
+	<apex:attribute name="maintenanceMessage"
+		description="the message to be displayed on the service center during maintenance"
+		type="String"/>
+
 	<center>
-	    <apex:outputPanel rendered="{!pinError}">
+		<apex:outputPanel rendered="{!IF(maintenanceMessage != null, true, false)}">
+	        <div class="alert alert-warning">
+	            <button type='button' class='close' data-dismiss='alert'>×</button>
+	            <apex:outputText value="{!maintenanceMessage}"/>
+	        </div>
+	    </apex:outputPanel>
+
+	    <apex:outputPanel rendered="{!viewingAs}">
+	        <div class="alert alert-warning">
+	            <button type='button' class='close' data-dismiss='alert'>×</button>
+	            <apex:outputText>
+	            	You are currently viewing as {!firstName} {!lastName} in read only mode. You will not be able to take any actions on this page.
+	            </apex:outputText>
+	        </div>
+	    </apex:outputPanel>
+
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.PIN == 'error'}">
 	        <div class="alert alert-danger">
 	            <button type='button' class='close' data-dismiss='alert'>×</button>
-	            <apex:outputText escape="false" value="{!pinMessage}"/>
+	            <apex:outputText>
+	            	Your PIN cannot contain your year of birth.<br />
+	            	Your PIN must not use more than 4 duplicate numbers.<br />
+	            	Your PIN must be different than your previous PIN.<br />
+	            	Your PIN cannot use more than 4 sequential numbers in your PIN. Forwards or backwards.<br />
+	            	Your PIN must be between 6 and 10 numbers.
+	            </apex:outputText>
 	        </div>
 	    </apex:outputPanel>
 
-	    <apex:outputPanel rendered="{!pinSuccess}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.PIN == 'success'}">
 	        <div class="alert alert-success">
 	            <button type='button' class='close' data-dismiss='alert'>×</button>
-	            <apex:outputText escape="false" value="{!pinMessage}"/>
+	            <apex:outputText value="Your PIN has been updated."/>
 	        </div>
 	    </apex:outputPanel>
 
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback != null}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback == 'yes'}">
 	        <div class="alert alert-success feedbackConfirm">
 	            <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
 	            <p><strong>Thank you for your feedback.</strong> Your feedback helps ASU make the Knowledge Base better.</p>
@@ -44,7 +73,7 @@
 	        </div>
 	    </apex:outputPanel>
 
-	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest != null}">
+	    <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest == 'yes'}">
             <div class="alert alert-success feedbackConfirm">
                 <button type='button' class='close' id="closeFeedbackConfirm" data-dismiss='alert'>×</button>
                 <p><strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.</p>

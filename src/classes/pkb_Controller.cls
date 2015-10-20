@@ -15,7 +15,7 @@ public without sharing class pkb_Controller
     public static String DEFAULT_SITE_NAME = Site.getName();
 
     public String searchPrompt { get { return (displayContactUs ? CONTACT_US_PROMPT : SEARCH_PROMPT); } } 
-    public String buttonPrompt { get { return (displayContactUs ? CONTACT_US_BUTTON_PROMPT : SEARCH_BUTTON_PROMPT); } } 
+    public String buttonPrompt { get { return (displayContactUs ? CONTACT_US_BUTTON_PROMPT : SEARCH_BUTTON_PROMPT); } }
 
     /* ***** URL PARAM CONSTANTS AND GETTERS ***** */
     public final static String QUERY_PARAM = 'q';
@@ -83,7 +83,7 @@ public without sharing class pkb_Controller
         // about the article (such as title) when an article is being viewed, the KnowledgeArticleVersion object must be queried
         // using the Id of the article. To assist with this, there is a wrapper class in this controller called KnowledgeArticleData
         // that pulls together KAV data and combines it with the article type data from describe calls.
-        
+
         theArticle = (KnowledgeArticle)sc.getRecord();
 
         // populate the props with ural param values as needed
@@ -515,15 +515,8 @@ public without sharing class pkb_Controller
         if (theKad.articleTypeName.equals('FAQ__kav')) 
         {
             afd.Functional_Group__c = theKad.faq.Functional_Group__c;
-        } 
-        else if (theKad.articleTypeName.equals('Informational__kav')) 
-        {
-            afd.Functional_Group__c = theKad.info.Functional_Group__c;
-        } 
-        else if (theKad.articleTypeName.equals('How_To__kav')) 
-        {
-            afd.Functional_Group__c = theKad.howto.Functional_Group__c;
         }
+
         insert afd;
     }
 
@@ -534,17 +527,8 @@ public without sharing class pkb_Controller
         {
             funcGroup = theKad.faq.Functional_Group__c;
             return funcGroup;
-        } 
-        else if (theKad.articleTypeName.equals('Informational__kav')) 
-        {
-            funcGroup = theKad.info.Functional_Group__c;
-            return funcGroup;
-        } 
-        else if (theKad.articleTypeName.equals('How_To__kav')) 
-        {
-            funcGroup = theKad.howto.Functional_Group__c;
-            return funcGroup;
         }
+
         return funcGroup;
     }
 
@@ -988,350 +972,391 @@ public without sharing class pkb_Controller
         }
     }
 
-  public static Map<String,Schema.DescribeSObjectResult> kavObjPrefixMap {
-    get {
-        if (kavObjPrefixMap == null) {
-            kavObjPrefixMap = new Map<String,Schema.DescribeSObjectResult>();
-        Map<String,Schema.SOBjectType> gd = Schema.getGlobalDescribe();
-        Schema.DescribeSObjectResult sor;
-        for (String s : kavNames) {
-            sor = gd.get(s).getDescribe();
-            kavObjPrefixMap.put(sor.getKeyPrefix().toLowerCase(), sor);
+    public static Map<String,Schema.DescribeSObjectResult> kavObjPrefixMap
+    {
+        get
+        {
+            if (kavObjPrefixMap == null)
+            {
+                kavObjPrefixMap = new Map<String,Schema.DescribeSObjectResult>();
+                Map<String,Schema.SOBjectType> gd = Schema.getGlobalDescribe();
+                Schema.DescribeSObjectResult sor;
+
+                for (String s : kavNames)
+                {
+                    sor = gd.get(s).getDescribe();
+                    kavObjPrefixMap.put(sor.getKeyPrefix().toLowerCase(), sor);
+                }
+            }
+
+            return kavObjPrefixMap;
         }
-        }
-      return kavObjPrefixMap;
     }
-  }
 
-  public static Schema.DescribeSObjectResult getKAVDescribeById(String i) {
-    if (isBlank(i) || i.length() < 15) return null;
-    return kavObjPrefixMap.get(i.substring(0,3).toLowerCase());
-  }
+    public static Schema.DescribeSObjectResult getKAVDescribeById(String i)
+    {
+        if (isBlank(i) || i.length() < 15) return null;
 
-
-  /* ***** CONTACT US FORM WRAPPER CLASS ***** */
-  public class ContactUsData {
-    public String firstName { get; set; }
-    public String lastName  { get; set; }
-    public String email     { get; set; }
-    public String reqType   { get; set; }
-    public String query     { get; set; }
-    /** fields added to covert new fields on Mobile app**/
-    public Decimal  location_Latitude { get; set; }
-    public Decimal  location_Longitude { get; set; }
-    public String User_Experience { get; set; }
-    
-    
-    public ContactUsData() { }
-  }
+        return kavObjPrefixMap.get(i.substring(0,3).toLowerCase());
+    }
 
 
-  /* ***** KNOWLEDGE ARTICLE DATA (KAD) WRAPPER CLASS ***** */
+    /* ***** CONTACT US FORM WRAPPER CLASS ***** */
+    public class ContactUsData
+    {
+        public String firstName { get; set; }
+        public String lastName  { get; set; }
+        public String email     { get; set; }
+        public String reqType   { get; set; }
+        public String query     { get; set; }
+        /** fields added to covert new fields on Mobile app**/
+        public Decimal  location_Latitude { get; set; }
+        public Decimal  location_Longitude { get; set; }
+        public String User_Experience { get; set; }
 
-  /* 
-    This wrapper class mimics the quasi article/article version object that is given to the loop executed by the 
+        public ContactUsData() { }
+    }
+
+
+    /* ***** KNOWLEDGE ARTICLE DATA (KAD) WRAPPER CLASS ***** */
+
+    /*
+    This wrapper class mimics the quasi article/article version object that is given to the loop executed by the
     VF tag knowledge:articleList. It implements all of the fields of that object plus articleNumber, and also exposes a handle to the
     underlying KAV object that was used to populate most of the fields
-    
-    A single instance can be instantiated by passing the constructor a single ID of a KnowledgeArticle record (this constructor uses a soql query to retrieve the article) 
-    or an already-queried KAV record. 
-    
-    Multiple instances can be instantiated from a list of KnowledgeArticle or KAV IDs by using the KAD static initializers (initFromListOfArticleNumbers, etc).    
-  */
-  public class KnowledgeArticleData { 
-    public String id                     { get; set; } // note this is the ID of the KnowledgeArticle record, not the ID of the KAV record
-    public String title                  { get; set; }
-    public String summary                { get; set; }
-    public String urlName                { get; set; }
-    public String articleTypeName        { get; set; }
-    public String articleTypeLabel       { get; set; }      
-    public DateTime lastModifiedDate     { get; set; }
-    public DateTime firstPublishedDate   { get; set; }
-    public DateTime lastPublishedDate    { get; set; }
-    public String articleNumber          { get; set; }
-    public String articleAuthor          { get; set; }
-    public KnowledgeArticleVersion theAV { get; set; }
-    public FAQ__kav faq                  { get; set; }
-    public How_To__kav howTo             { get; set; }
-    public Informational__kav info       { get; set; }  
 
-    // ctor for empty KAD
-    public KnowledgeArticleData() { }
+    A single instance can be instantiated by passing the constructor a single ID of a KnowledgeArticle record (this constructor uses a soql query to retrieve the article)
+    or an already-queried KAV record.
+
+    Multiple instances can be instantiated from a list of KnowledgeArticle or KAV IDs by using the KAD static initializers (initFromListOfArticleNumbers, etc).
+    */
+    public class KnowledgeArticleData
+    {
+        public String id                     { get; set; } // note this is the ID of the KnowledgeArticle record, not the ID of the KAV record
+        public String title                  { get; set; }
+        public String summary                { get; set; }
+        public String urlName                { get; set; }
+        public String articleTypeName        { get; set; }
+        public String articleTypeLabel       { get; set; }
+        public DateTime lastModifiedDate     { get; set; }
+        public DateTime firstPublishedDate   { get; set; }
+        public DateTime lastPublishedDate    { get; set; }
+        public String articleNumber          { get; set; }
+        public String articleAuthor          { get; set; }
+        public KnowledgeArticleVersion theAV { get; set; }
+        public FAQ__kav faq                  { get; set; }
+
+        // ctor for empty KAD
+        public KnowledgeArticleData() { }
         
-    // ctor that takes an already constructed-KAV record
-    public KnowledgeArticleData(KnowledgeArticleVersion kav) {
-      init(kav);
-    }
+        // ctor that takes an already constructed-KAV record
+        public KnowledgeArticleData(KnowledgeArticleVersion kav)
+        {
+            init(kav);
+        }
 
-    // ctore that takes the ID of a KnowledgeArticle record and queries the KAV record from it
-    public KnowledgeArticleData(Id i, String lang) {
-      String q = '';
-      String pub = pkb_Controller.DEFAULT_PUBLISH_STATUS;
-      q += 'select ' +join(kavFields, ',')+ ' from KnowledgeArticleVersion';
-      q += ' where PublishStatus = :pub and Language = :lang and KnowledgeArticleId = :i limit 1';
-      KnowledgeArticleVersion kav = (KnowledgeArticleVersion)Database.query(q);
-      init(kav);
-    }
+        // ctore that takes the ID of a KnowledgeArticle record and queries the KAV record from it
+        public KnowledgeArticleData(Id i, String lang)
+        {
+            String q = '';
+            String pub = pkb_Controller.DEFAULT_PUBLISH_STATUS;
+            q += 'select ' +join(kavFields, ',')+ ' from KnowledgeArticleVersion';
+            q += ' where PublishStatus = :pub and Language = :lang and KnowledgeArticleId = :i limit 1';
+            KnowledgeArticleVersion kav = (KnowledgeArticleVersion)Database.query(q);
+            init(kav);
+        }
 
-    public void init(KnowledgeArticleVersion kav) {
-        this.theAV = kav;
-    
-      id = this.theAV.KnowledgeArticleId;
-      title = this.theAV.Title;
-      summary = this.theAV.Summary;
-      urlName = this.theAV.UrlName;
-      articleTypeName = getKAVDescribeById(id).getLocalName();
-      articleTypeLabel = getKAVDescribeById(id).getLabel();
-      lastModifiedDate = this.theAV.LastModifiedDate;
-      firstPublishedDate = this.theAV.FirstPublishedDate;
-      lastPublishedDate = this.theAV.LastPublishedDate;     
-      articleNumber = this.theAV.ArticleNumber;
+        public void init(KnowledgeArticleVersion kav)
+        {
+            this.theAV = kav;
+            id = this.theAV.KnowledgeArticleId;
+            title = this.theAV.Title;
+            summary = this.theAV.Summary;
+            urlName = this.theAV.UrlName;
+            articleTypeName = getKAVDescribeById(id).getLocalName();
+            articleTypeLabel = getKAVDescribeById(id).getLabel();
+            lastModifiedDate = this.theAV.LastModifiedDate;
+            firstPublishedDate = this.theAV.FirstPublishedDate;
+            lastPublishedDate = this.theAV.LastPublishedDate;
+            articleNumber = this.theAV.ArticleNumber;
       
-      if (articleTypeName.equals('FAQ__kav')) 
-      {
-          faq = [SELECT Functional_Group__c 
-                 FROM FAQ__kav 
-                 WHERE PublishStatus = 'Online' 
-                 AND KnowledgeArticleId = :id];
-      } 
-      else if (articleTypeName.equals('Informational__kav')) 
-      {
-          info = [SELECT Functional_Group__c 
-                  FROM Informational__kav 
-                  WHERE PublishStatus = 'Online' 
-                  AND KnowledgeArticleId = :id];
-      } 
-      else if (articleTypeName.equals('How_To__kav')) 
-      {
-          howTo = [SELECT Functional_Group__c
-                   FROM How_To__kav 
-                   WHERE PublishStatus = 'Online' 
-                   AND KnowledgeArticleId = :id];
-      }
-    }
-  }
-
-  public static Set<String> excludedSoslWords {
-    get { 
-        if (excludedSoslWords == null) {
-            excludedSoslWords = new Set<String>();
-            /*{'and','or','the','a'};*/
+            if (articleTypeName.equals('FAQ__kav'))
+            {
+                faq = [
+                    SELECT Functional_Group__c
+                    FROM FAQ__kav
+                    WHERE PublishStatus = 'Online'
+                    AND KnowledgeArticleId = :id
+                ];
+            }
         }
-        return excludedSoslWords;
     }
-    private set;
-  }
 
-  // these fields must be queried when instantiating a KAD wrapper object, so this set is
-  // used in the sosl and soql queries to ensure that all queries get the right fields
-  public static Set<String> kavFields { 
-    get {
-        if (kavFields == null) {
-            kavFields = new Set<String>{
-          'Id'
-          ,'Title'
-          ,'Summary'
-          ,'UrlName'
-          ,'ArticleNumber'
-          ,'LastModifiedDate'
-          ,'FirstPublishedDate'     
-          ,'LastPublishedDate'
-          ,'Language'
-          ,'PublishStatus'
-          ,'KnowledgeArticleId'
-            };
+    public static Set<String> excludedSoslWords
+    {
+        get
+        {
+            if (excludedSoslWords == null)
+            {
+                excludedSoslWords = new Set<String>();
+                /*{'and','or','the','a'};*/
+            }
+
+            return excludedSoslWords;
         }
-      return kavFields;
-    }
-    private set;
-  }
 
-
-  /* ***** KNOWLEDGE ARTICLE DATA CLASS STATIC INITIALIZERS/FACTORIES ***** */
-  
-  public static List<KnowledgeArticleData> initFromListOfArticleNumbers(List<String> anums, String lang) {
-    List<KnowledgeArticleData> kads = new List<KnowledgeArticleData>();
-    
-    if (anums == null || anums.isEmpty()) return kads;
-
-    String q = '';
-    q += 'select ' +join(kavFields, ',')+ ' from KnowledgeArticleVersion';
-    q += ' where PublishStatus = \'' +pkb_Controller.DEFAULT_PUBLISH_STATUS+ '\' and Language = \'' +lang+ '\' and ArticleNumber in :anums order by LastPublishedDate desc';
-
-    system.debug('\n\n[DEBUG-PKB CONTROLLER] initFromListOfArticleNumbers query\n===='+q+'=====\n');
-    List<KnowledgeArticleVersion> kavs = (List<KnowledgeArticleVersion>)Database.query(q);
-
-    for (KnowledgeArticleVersion kav : kavs) {
-      kads.add(new KnowledgeArticleData(kav));
+        private set;
     }
 
+    // these fields must be queried when instantiating a KAD wrapper object, so this set is
+    // used in the sosl and soql queries to ensure that all queries get the right fields
+    public static Set<String> kavFields
+    {
+        get {
+            if (kavFields == null)
+            {
+                kavFields = new Set<String>{
+                    'Id'
+                    ,'Title'
+                    ,'Summary'
+                    ,'UrlName'
+                    ,'ArticleNumber'
+                    ,'LastModifiedDate'
+                    ,'FirstPublishedDate'
+                    ,'LastPublishedDate'
+                    ,'Language'
+                    ,'PublishStatus'
+                    ,'KnowledgeArticleId'
+                };
+            }
 
-    system.debug('\n\n[DEBUG-PKB CONTROLLER] initFromListOfArticleNumbers \n===='+kads+'=====\n');    
-    return kads;
-  }  
-  
-  // instantiates and returns a list of the KAD wrapper class objects from a list of KnowledgeArticle IDs and the specified language.
-  public static List<KnowledgeArticleData> initFromListOfArticleIds(List<String> aids, String lang) {
-    List<KnowledgeArticleData> kads = new List<KnowledgeArticleData>();
-    
-    if (aids == null || aids.isEmpty()) return kads;
+            return kavFields;
+        }
 
-    String q = '';
-    q += 'select ' +join(kavFields, ',')+ ' from KnowledgeArticleVersion';
-    q += ' where PublishStatus = \'' +pkb_Controller.DEFAULT_PUBLISH_STATUS+ '\' and Language = \'' +lang+ '\' and KnowledgeArticleId in :aids order by LastPublishedDate desc';
-
-    List<KnowledgeArticleVersion> kavs = (List<KnowledgeArticleVersion>)Database.query(q);
-    return initFromListOfKAVs(kavs);
-  }
-
-  // instantiates and returns a list of the KAD wrapper class objects from a list of KAV IDs and the specified language.
-  public static List<KnowledgeArticleData> initFromListOfKAVIds(List<String> kids, String lang) {
-    List<KnowledgeArticleData> kads = new List<KnowledgeArticleData>();
-
-    if (kids == null || kids.isEmpty()) return kads;
-  
-    String q = '';
-    q += 'select ' +join(kavFields, ',')+ ' from KnowledgeArticleVersion';
-    q += ' where PublishStatus = \'' +pkb_Controller.DEFAULT_PUBLISH_STATUS+ '\' and Language = \'' +lang+ '\' and Id in :kids order by LastPublishedDate desc';
-
-    List<KnowledgeArticleVersion> kavs = (List<KnowledgeArticleVersion>)Database.query(q);
-    return initFromListOfKAVs(kavs);
-  }
-  
-  // instantiates a list of KADs from already-queried KAVs
-  public static List<KnowledgeArticleData> initFromListOfKAVs(List<KnowledgeArticleVersion> kavs) {
-    List<KnowledgeArticleData> kads = new List<KnowledgeArticleData>();
-
-    if (kavs == null || kavs.isEmpty()) return kads;
-    
-    for (KnowledgeArticleVersion kav : kavs) {
-      kads.add(new KnowledgeArticleData(kav));
+        private set;
     }
-    return kads;
-  }
 
-  /* ***** GENERAL UTIL METHODS ***** */
 
-  // returns true if string is null or empty
-  public static Boolean isBlank(String s) {
-    return ( s == null || s == '');
-  }
-
-  // joins elements in the passed list of strings by the passed string c
-  // c can be a single character or a longer string -- useful for joinging segments of a dynamic sosl or soql query
-  public static String join(List<String> strings, String c) {
-    if (strings == null || strings.isEmpty()) return null;
+    /* ***** KNOWLEDGE ARTICLE DATA CLASS STATIC INITIALIZERS/FACTORIES ***** */
+  
+    public static List<KnowledgeArticleData> initFromListOfArticleNumbers(List<String> anums, String lang)
+    {
+        List<KnowledgeArticleData> kads = new List<KnowledgeArticleData>();
     
-    String sep = (isBlank(c) ? ',' : c);
-    Integer i, size;
-    String s = strings[0];
+        if (anums == null || anums.isEmpty()) return kads;
+
+        String q = '';
+        q += 'select ' +join(kavFields, ',')+ ' from KnowledgeArticleVersion';
+        q += ' where PublishStatus = \'' +pkb_Controller.DEFAULT_PUBLISH_STATUS+ '\' and Language = \'' +lang+ '\' and ArticleNumber in :anums order by LastPublishedDate desc';
+
+        system.debug('\n\n[DEBUG-PKB CONTROLLER] initFromListOfArticleNumbers query\n===='+q+'=====\n');
+        List<KnowledgeArticleVersion> kavs = (List<KnowledgeArticleVersion>)Database.query(q);
+
+        for (KnowledgeArticleVersion kav : kavs)
+        {
+            kads.add(new KnowledgeArticleData(kav));
+        }
+
+        system.debug('\n\n[DEBUG-PKB CONTROLLER] initFromListOfArticleNumbers \n===='+kads+'=====\n');
+
+        return kads;
+    }
+  
+    // instantiates and returns a list of the KAD wrapper class objects from a list of KnowledgeArticle IDs and the specified language.
+    public static List<KnowledgeArticleData> initFromListOfArticleIds(List<String> aids, String lang)
+    {
+        List<KnowledgeArticleData> kads = new List<KnowledgeArticleData>();
+    
+        if (aids == null || aids.isEmpty()) return kads;
+
+        String q = '';
+        q += 'select ' +join(kavFields, ',')+ ' from KnowledgeArticleVersion';
+        q += ' where PublishStatus = \'' +pkb_Controller.DEFAULT_PUBLISH_STATUS+ '\' and Language = \'' +lang+ '\' and KnowledgeArticleId in :aids order by LastPublishedDate desc';
+
+        List<KnowledgeArticleVersion> kavs = (List<KnowledgeArticleVersion>)Database.query(q);
+
+        return initFromListOfKAVs(kavs);
+    }
+
+    // instantiates and returns a list of the KAD wrapper class objects from a list of KAV IDs and the specified language.
+    public static List<KnowledgeArticleData> initFromListOfKAVIds(List<String> kids, String lang)
+    {
+        List<KnowledgeArticleData> kads = new List<KnowledgeArticleData>();
+
+        if (kids == null || kids.isEmpty()) return kads;
+  
+        String q = '';
+        q += 'select ' +join(kavFields, ',')+ ' from KnowledgeArticleVersion';
+        q += ' where PublishStatus = \'' +pkb_Controller.DEFAULT_PUBLISH_STATUS+ '\' and Language = \'' +lang+ '\' and Id in :kids order by LastPublishedDate desc';
+
+        List<KnowledgeArticleVersion> kavs = (List<KnowledgeArticleVersion>)Database.query(q);
+
+        return initFromListOfKAVs(kavs);
+    }
+  
+    // instantiates a list of KADs from already-queried KAVs
+    public static List<KnowledgeArticleData> initFromListOfKAVs(List<KnowledgeArticleVersion> kavs)
+    {
+        List<KnowledgeArticleData> kads = new List<KnowledgeArticleData>();
+
+        if (kavs == null || kavs.isEmpty()) return kads;
+    
+        for (KnowledgeArticleVersion kav : kavs)
+        {
+            kads.add(new KnowledgeArticleData(kav));
+        }
+
+        return kads;
+    }
+
+    /* ***** GENERAL UTIL METHODS ***** */
+
+    // returns true if string is null or empty
+    public static Boolean isBlank(String s)
+    {
+        return ( s == null || s == '');
+    }
+
+    // joins elements in the passed list of strings by the passed string c
+    // c can be a single character or a longer string -- useful for joinging segments of a dynamic sosl or soql query
+    public static String join(List<String> strings, String c)
+    {
+        if (strings == null || strings.isEmpty()) return null;
+    
+        String sep = (isBlank(c) ? ',' : c);
+        Integer i, size;
+        String s = strings[0];
  
-    size = strings.size();
-    for (i = 1; i < size; i++) {
-      s += (sep + strings[i]);      
-    }
-    return s;    
-  }
+        size = strings.size();
 
-  // version of join method that takes a set of strings
-  public static String join(Set<String> strings, String c) {
-    return join(new List<String>(strings), c);
-  }
+        for (i = 1; i < size; i++)
+        {
+            s += (sep + strings[i]);
+        }
+
+        return s;
+    }
+
+    // version of join method that takes a set of strings
+    public static String join(Set<String> strings, String c)
+    {
+        return join(new List<String>(strings), c);
+    }
   
   
-  public static String getPicklistDefault(String so, String field) {
-    String defVal = null;
-    for (Schema.PicklistEntry ple : getActivePicklistEntries(so, field)) {
-        if (ple.isDefaultValue()) { 
-            defVal = ple.getValue();
-            break;
+    public static String getPicklistDefault(String so, String field)
+    {
+        String defVal = null;
+
+        for (Schema.PicklistEntry ple : getActivePicklistEntries(so, field))
+        {
+            if (ple.isDefaultValue())
+            {
+                defVal = ple.getValue();
+                break;
+            }
+        }
+
+        return defVal;
+    }
+  
+    public static Map<String,String> getActivePicklistOptions(String so, String field)
+    {
+        Map<String,String> options = new Map<String,String>();
+
+        for (Schema.PicklistEntry ple : getActivePicklistEntries(so, field))
+        {
+            options.put(ple.getValue(), ple.getLabel());
+        }
+
+        return options;
+    }
+
+    public static List<Schema.PicklistEntry> getActivePicklistEntries(String so, String field)
+    {
+        Map<String,Schema.SOBjectType> gd = Schema.getGlobalDescribe();
+        List<Schema.PicklistEntry> ples = new List<Schema.PicklistEntry>();
+    
+        // return empty list if object name was not found in the schema
+        if (!gd.containsKey(so)) return ples;
+
+        Schema.DescribeSObjectResult sor = gd.get(so).getDescribe();
+        Map<String,Schema.SObjectField> sofs = sor.fields.getMap();
+    
+        // return empty list if field name was not found in the object's field list
+        if (!sofs.containsKey(field)) return ples;
+
+        Schema.DescribeFieldResult dfr = sofs.get(field).getDescribe();
+
+        // return empty list if the field type is not picklist
+        if (dfr.getType() != Schema.DisplayType.Picklist) return ples;
+
+        for (Schema.PicklistEntry ple : dfr.getPicklistValues())
+        {
+            if (ple.isActive())
+            {
+                ples.add(ple);
+            }
+        }
+
+        return ples;
+    }
+  
+    public static Boolean isEmail(String s)
+    {
+        if (isBlank(s)) return false;
+
+        String p = '\\w+([-+.\']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*';
+        Pattern pat = Pattern.compile(p);
+        Matcher mat = pat.matcher(s);
+
+        return mat.matches();
+    }
+
+    public User siteAdmin
+    {
+        set;
+        get
+        {
+            if (siteAdmin == null) siteAdmin = getSiteAdmin();
+
+            return siteAdmin;
         }
     }
-    return defVal;
-  }
-  
-  public static Map<String,String> getActivePicklistOptions(String so, String field) {
-    Map<String,String> options = new Map<String,String>();
 
-    for (Schema.PicklistEntry ple : getActivePicklistEntries(so, field)) {
-      options.put(ple.getValue(), ple.getLabel());          
-    }
-    return options;    
-  }
-
-  public static List<Schema.PicklistEntry> getActivePicklistEntries(String so, String field) {
-    Map<String,Schema.SOBjectType> gd = Schema.getGlobalDescribe();   
-    List<Schema.PicklistEntry> ples = new List<Schema.PicklistEntry>();    
-    
-    // return empty list if object name was not found in the schema
-    if (!gd.containsKey(so)) return ples;
-
-    Schema.DescribeSObjectResult sor = gd.get(so).getDescribe();
-    Map<String,Schema.SObjectField> sofs = sor.fields.getMap();
-    
-    // return empty list if field name was not found in the object's field list
-    if (!sofs.containsKey(field)) return ples;
-
-    Schema.DescribeFieldResult dfr = sofs.get(field).getDescribe();
-
-    // return empty list if the field type is not picklist
-    if (dfr.getType() != Schema.DisplayType.Picklist) return ples;
-
-    for (Schema.PicklistEntry ple : dfr.getPicklistValues()) {
-      if (ple.isActive()) {
-        ples.add(ple);        
-      }
-    }
-    return ples;        
-  }
-  
-  public static Boolean isEmail(String s) {
-    if (isBlank(s)) return false;
-
-    String p = '\\w+([-+.\']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*';
-    Pattern pat = Pattern.compile(p);
-    Matcher mat = pat.matcher(s);
-    return mat.matches();
-  }
-
-  public User siteAdmin { 
-    set;
-    get {
-        if (siteAdmin == null) siteAdmin = getSiteAdmin();
-        return siteAdmin;
-    }
-  }
-
-  public static User getSiteAdmin() {
-    List<Site> sites = [
-      select
-        Id
-        ,Name
-        ,Admin.Id
-        ,Admin.FirstName
-        ,Admin.LastName
-        ,Admin.Name
-        ,Admin.Email
-      from Site
-      where 
-        Name = :DEFAULT_SITE_NAME
-    ];
+    public static User getSiteAdmin()
+    {
+        List<Site> sites = [
+            SELECT Id
+            ,Name
+            ,Admin.Id
+            ,Admin.FirstName
+            ,Admin.LastName
+            ,Admin.Name
+            ,Admin.Email
+            FROM Site
+            WHERE Name = :DEFAULT_SITE_NAME
+        ];
         
-    // send the admin back if it's a site, send null back if not a site
-    User u = (!sites.isEmpty() && sites[0].Admin != null ? sites[0].Admin : null);
-    return u;
-  }
+        // send the admin back if it's a site, send null back if not a site
+        User u = (!sites.isEmpty() && sites[0].Admin != null ? sites[0].Admin : null);
 
-  /* 
+        return u;
+    }
+
+    /*
     Retrieved from http://improveit360.blogspot.com/2010/09/implementing-quicksort-to-sort-list-of.html on 22 July 2011
     Author: Jason Hartfield
   
     This is a simple quicksort algorithm to sort a SelectOption list (dropdown) 
     by label alphabetically.
-  */
-    public static List<SelectOption> sortOptionList(List<SelectOption> listToSort) {
+    */
+    public static List<SelectOption> sortOptionList(List<SelectOption> listToSort)
+    {
         if (listToSort == null || listToSort.size() <= 1)
+        {
             return listToSort;
+        }
             
         List<SelectOption> less = new List<SelectOption>();
         List<SelectOption> greater = new List<SelectOption>();
@@ -1341,17 +1366,23 @@ public without sharing class pkb_Controller
         SelectOption pivotValue = listToSort[pivot];
         listToSort.remove(pivot);
         
-        for (SelectOption x : listToSort) {
-        if (x.getLabel() <= pivotValue.getLabel()) {
-          less.add(x);
-        } else if (x.getLabel() > pivotValue.getLabel()) {
-            greater.add(x);
+        for (SelectOption x : listToSort)
+        {
+            if (x.getLabel() <= pivotValue.getLabel())
+            {
+                less.add(x);
+            }
+            else if (x.getLabel() > pivotValue.getLabel())
+            {
+                greater.add(x);
+            }
         }
-        }
+
         List<SelectOption> returnList = new List<SelectOption> ();
         returnList.addAll(sortOptionList(less));
         returnList.add(pivotValue);
         returnList.addAll(sortOptionList(greater));
-        return returnList; 
+
+        return returnList;
     } 
 }

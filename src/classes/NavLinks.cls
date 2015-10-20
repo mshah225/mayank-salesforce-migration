@@ -16,7 +16,6 @@ public class NavLinks
         Cookie linksCookie;
         String linksJSON = '';
         String asuriteIdParm = '';
-        //String navbarParm = '';
         String timeParm = '';
         String signatureParm = '';
 
@@ -44,7 +43,7 @@ public class NavLinks
             links = links.replace('{"navbarLinks":','');
             links = links.substring(0, (links.length()-1));
 
-            //Write the cookie
+            // Write the cookie
             if (links != null && links != '')
             {
                 linksCookie = new Cookie('navbarlinks',links,null,-1,false);
@@ -69,7 +68,7 @@ public class NavLinks
             JSONParser parser = JSON.createParser(linksJSON);
             while (parser.nextToken() != null)
             {
-                //if current token is a field name
+                // If current token is a field name
                 if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
                 {
                     Weblink thisLink = new Weblink();
@@ -85,31 +84,10 @@ public class NavLinks
         }
 
         System.debug('asuriteId: ' + asuriteIdParm);
-        //System.debug('navbar: ' + navbarParm);
         System.debug('time: ' + timeParm);
         System.debug('signature: ' + signatureParm);
         System.debug('linkList: ' + linkList);
 
-        // headers='';
-        // MAP<string, string> hdrs = ApexPages.currentPage().getheaders();
-        // for (String key : hdrs.keySet())
-        // {
-        //     headers += key + ' : ' + hdrs.get(key) + '\n';
-        // }
-
         return null;
-
     }
-
-    // public PageReference doSomething()
-    // {
-    //     return ApexPages.currentPage();
-    // }
-
-    public class Link
-    {
-        public String name { set; get { return name; } }
-        public String url { set; get { return url; }  }
-    }
-
 }

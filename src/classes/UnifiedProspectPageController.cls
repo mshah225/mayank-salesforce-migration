@@ -26,6 +26,7 @@ public class UnifiedProspectPageController
     public String collegeSelected { get; set; }
     public String planSelected { get; set; }
     public Boolean error { get; set; }
+    public Id newOppId { get; set; }
     
     public void setContact(Contact contact)
     {
@@ -289,6 +290,11 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select either ONE case OR ONE event.'));
                 error = true;
             }
+            if (originSelection != '--Select--' && (String.isBlank(caseC.Subject) || String.isBlank(caseC.Description)))
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'A case must have a Subject and a Description!'));
+                error = true;
+            }
             if (originSelection != '--Select--' && elId == null && caseC.Functional_Group__c == null) 
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'When selecting an Origin, you must also select a Functional Group.'));
@@ -371,6 +377,7 @@ public class UnifiedProspectPageController
             }
 
             insert opportunity;
+            newOppId = opportunity.Id;
 
             //Create Previous Education
             getPreviousEducation();
@@ -504,6 +511,20 @@ public class UnifiedProspectPageController
     }
 
     public PageReference savePage() 
+    {
+        if (save()) 
+        {
+            PageReference save = new PageReference('/' + newOppId);
+            save.setRedirect(true);
+            return save;
+        }
+        else 
+        {
+            return null;
+        }
+    }
+
+    public PageReference saveAndNew() 
     {
         if (save()) 
         {

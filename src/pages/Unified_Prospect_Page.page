@@ -84,23 +84,6 @@
             padding-top: 5px;
         }
     </style>
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
-
-    <!--<apex:includeScript value="/support/console/31.0/integration.js"/>
-    <script type="text/javascript">
-        function openPrimaryTab(oppid, oppname) {
-            console.log("function was called with" + oppid + oppname);
-            if(!sforce.console.isInConsole()) {
-                console.log("trying to redirect to opp page");
-                window.parent.location.replace('/' + recid);
-            }
-            else {
-                console.log("trying to open primary tab");
-                sforce.console.openPrimaryTab(null, '/' + oppid, true, oppname, 'UGTab');
-                sforce.console.refreshNavigationTab();
-            }
-        }
-    </script>-->
 </head>
 
 <body id="contentBody" class="content">
@@ -351,6 +334,7 @@
         </apex:pageBlock>
         <apex:pageBlock>
             <apex:commandButton styleClass="button" action="{!savePage}" value="Save" status="saveStatus"/>
+            <apex:commandButton styleClass="button" action="{!saveAndNew}" value="Save and New" status="saveStatus"/>
                 <apex:actionStatus id="saveStatus">
                     <apex:facet name="start">
                         <img src="/img/loading.gif" style="margin-bottom:-4px;"/>

@@ -7,9 +7,7 @@ public class NavLinks
     public NavLinks(ApexPages.StandardController controller) { }
 
     public String links { get; set; }
-    public String headers { get; set; }
     public List<Weblink> linkList { get; set; }
-    public Map<String, String> linkMap { get; set; }
 
     public PageReference init()
     {

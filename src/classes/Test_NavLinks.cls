@@ -33,19 +33,9 @@ private class Test_NavLinks
      	testContact = ContactService.createTestContact();
      	insert testContact;
 
-     	testUser = new User();
-    	testUser.FirstName = 'Jonny';
-    	testUser.LastName = 'Test';
-    	testUser.Username = 'username@test.com';
-    	testUser.Email = 'test@nomail.com';
-    	testUser.Alias = testContact.ASURite_ID__c;
-    	testUser.CommunityNickname = 'jontestComm';
-    	testUser.TimeZoneSidKey = 'America/Phoenix';
-    	testUser.LocaleSidKey = 'en_US';
-    	testUser.EmailEncodingKey = 'ISO-8859-1';
-    	testUser.LanguageLocaleKey = 'en_US';
-    	testUser.ProfileId = p.Id;
-    	testuser.ContactId = testContact.Id;
+     	testUser = UserService.createTestUser();
+		testUser.ProfileId = p.Id;
+		testUser.ContactId = testContact.Id;
     	insert testUser;
 
     	PageReference serviceCenter = Page.studentSC;
@@ -93,19 +83,6 @@ private class Test_NavLinks
 			Contact testContact2 = ContactService.createTestContact();
 			ApexPages.StandardController stanContoller = new ApexPages.StandardController(testContact);
 			NavLinks standardNav = new Navlinks(stanContoller);
-		}
-		Test.stopTest();
-	}
-
-	@isTest static void testDoSomething()
-	{
-		setUp();
-		System.runAs(testUser)
-		{
-			sc = new ServiceCenter();
-			nav = new Navlinks(sc);
-			Test.startTest();
-			nav.doSomething();
 		}
 		Test.stopTest();
 	}

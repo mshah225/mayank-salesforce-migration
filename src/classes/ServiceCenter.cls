@@ -22,7 +22,6 @@ public with sharing class ServiceCenter
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
     public String userAsurite;
-    public String maintenanceMessage { get; set; }
     public Term__c termcAC;
     public Term__c termcB;
 
@@ -33,9 +32,9 @@ public with sharing class ServiceCenter
         if (masqScopeIdCookie != null)
         {
             userAsurite = [
-                SELECT ASURite_Id__c
-                FROM User
-                WHERE Id = :UserInfo.getUserId()
+                    SELECT ASURite_Id__c
+                    FROM User
+                    WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
             viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
@@ -60,34 +59,24 @@ public with sharing class ServiceCenter
         newCase = new Case();
         today = date.today();
         termcAC = [
-            SELECT Session_A_C_Start_Date__c
-            FROM Term__c
-            WHERE session_A_C_Start_Date__c > :System.today()
-            LIMIT 1
+                SELECT Session_A_C_Start_Date__c
+                FROM Term__c
+                WHERE session_A_C_Start_Date__c > :System.today()
+                LIMIT 1
         ];
-
         termcB = [
-            SELECT Session_B_Start_Date__c
-            FROM Term__c
-            WHERE session_B_Start_Date__c > :System.today()
-            LIMIT 1
+                SELECT Session_B_Start_Date__c
+                FROM Term__c
+                WHERE session_B_Start_Date__c > :System.today()
+                LIMIT 1
         ];
-
         oppList = [
-            SELECT Career__c, Term__c, StageName, Admitted_Session__c
-            FROM Opportunity
-            WHERE Contact__c = :userContact.Id
+                SELECT Career__c, Term__c, StageName, Admitted_Session__c
+                FROM Opportunity
+                WHERE Contact__c = :userContact.Id
         ];
-
         suggestAnArticle = new Case();
         origPin = userContact.Self_Service_PIN__c;
-
-        maintenanceMessage = [
-            SELECT Message__c
-            FROM Service_Center_Maintenance__c
-            WHERE Displayed__c = true
-        ].Message__c;
-        System.debug('meruff ' + maintenanceMessage);
     }
 
     public List<Case> getMyCases()
@@ -149,16 +138,16 @@ public with sharing class ServiceCenter
         if (viewingAs)
         {
             return MyASUViewAs.getViewAsCaseDetails(
-                ApexPages.currentPage().getParameters().get('Id')
+                    ApexPages.currentPage().getParameters().get('Id')
             );
         }
         else
         {
             return [
-                SELECT Id, CaseNumber, Functional_Group__c, Subject, Description,
-                Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
-                FROM Case
-                WHERE Id = :ApexPages.currentPage().getParameters().get('Id')
+                    SELECT Id, CaseNumber, Functional_Group__c, Subject, Description,
+                            Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
+                    FROM Case
+                    WHERE Id = :ApexPages.currentPage().getParameters().get('Id')
             ];
         }
     }
@@ -168,22 +157,22 @@ public with sharing class ServiceCenter
         if (viewingAs)
         {
             return CaseService.getCaseEmailMessages(
-                EMAILVISIBILITYDATE,
-                ApexPages.currentPage().getParameters().get('id'),
-                userContact.Email
+                    EMAILVISIBILITYDATE,
+                    ApexPages.currentPage().getParameters().get('id'),
+                    userContact.Email
             );
         }
         else
         {
             return [
-                SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject,
-                TextBody, FromAddress, ToAddress, CCAddress
-                FROM EmailMessage
-                WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
-                AND Incoming = false
-                AND CreatedDate > :launchDate
-                AND ToAddress = :userContact.Email
-                ORDER BY CreatedDate DESC
+                    SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject,
+                            TextBody, FromAddress, ToAddress, CCAddress
+                    FROM EmailMessage
+                    WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
+                    AND Incoming = false
+                    AND CreatedDate > :launchDate
+                    AND ToAddress = :userContact.Email
+                    ORDER BY CreatedDate DESC
             ];
         }
     }
@@ -250,26 +239,26 @@ public with sharing class ServiceCenter
             return true;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'A/C')
-                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'A/C')
+                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'B')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'B')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
         else if (oppList[0].StageName != 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && (userContact.Affiliation_Student__c == 'Current'
-                        || userContact.Affiliation_Alumni__c == 'Current'
-                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                        || userContact.Affiliation_Employee__c == 'Current')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && (userContact.Affiliation_Student__c == 'Current'
+                || userContact.Affiliation_Alumni__c == 'Current'
+                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                || userContact.Affiliation_Employee__c == 'Current')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -286,31 +275,31 @@ public with sharing class ServiceCenter
             return false;
         }
         else if ((oppList == Null && userContact != null)
-                    || (oppList.size() == 0 && userContact != null))
+                || (oppList.size() == 0 && userContact != null))
         {
             return false;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'A/C')
-                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'A/C')
+                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return true;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'B')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'B')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
         else if (oppList[0].StageName != 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && (userContact.Affiliation_Student__c == 'Current'
-                        || userContact.Affiliation_Alumni__c == 'Current'
-                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                        || userContact.Affiliation_Employee__c == 'Current')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && (userContact.Affiliation_Student__c == 'Current'
+                || userContact.Affiliation_Alumni__c == 'Current'
+                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                || userContact.Affiliation_Employee__c == 'Current')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
@@ -327,31 +316,31 @@ public with sharing class ServiceCenter
             return true;
         }
         else if ((oppList == Null && userContact != null)
-                    || (oppList.size() == 0 && userContact != null))
+                || (oppList.size() == 0 && userContact != null))
         {
             return true;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'A/C')
-                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'A/C')
+                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'B')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'B')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
         else if (oppList[0].StageName != 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && (userContact.Affiliation_Student__c == 'Current'
-                        || userContact.Affiliation_Alumni__c == 'Current'
-                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                        || userContact.Affiliation_Employee__c == 'Current')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && (userContact.Affiliation_Student__c == 'Current'
+                || userContact.Affiliation_Alumni__c == 'Current'
+                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                || userContact.Affiliation_Employee__c == 'Current')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -392,7 +381,7 @@ public with sharing class ServiceCenter
             System.Debug ('Stack Trace: ' + e.getStackTraceString());
 
             return null;
-       }
+        }
     }
 
     public Decimal getMyPin()
@@ -466,10 +455,10 @@ public with sharing class ServiceCenter
         suggestAnArticle.Description = suggestAnArticle.Description;
         suggestAnArticle.ContactId = userContact.Id;
         suggestAnArticle.OwnerId = [
-            SELECT Id
-            FROM Group
-            WHERE Name = 'Student-Centric Initiatives (Case)'
-            AND Type = 'Queue'
+                SELECT Id
+                FROM Group
+                WHERE Name = 'Student-Centric Initiatives (Case)'
+                AND Type = 'Queue'
         ].Id;
 
         suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';

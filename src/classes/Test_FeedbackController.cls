@@ -23,13 +23,6 @@ private class Test_FeedbackController
 		termB.Year__c = BYear;
 		insert termB;
 
-		Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
-            Name = 'The Test Message',
-            Displayed__c = true,
-            Message__c = 'There is maintenance'
-        );
-        insert scm;
-
 		Profile p = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
 
 		testContact = ContactService.createTestContact();

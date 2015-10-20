@@ -1,9 +1,9 @@
 <apex:page docType="html-5.0"
-           showHeader="false"
-           sidebar="false"
-           controller="ServiceCenter"
-           action="{!init}"
-           extensions="NavLinks,vfListPaginationController">
+    showHeader="false"
+    sidebar="false"
+    controller="ServiceCenter"
+    action="{!init}"
+    extensions="NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | Service Center</title>
     <c:asu_responsive_header_section linkList="{!linkList}"/>

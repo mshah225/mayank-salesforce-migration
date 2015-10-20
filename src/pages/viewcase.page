@@ -1,13 +1,12 @@
-<apex:page showHeader="false"
+<apex:page docType="html-5.0"
+    showHeader="false"
     sidebar="false"
-    cache="true"
-    docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
     extensions="NavLinks">
 <head>
     <title>My ASU | {!caseDetails.Subject}</title>
-    <c:asu_responsive_header_section />
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
 
     <style>
         .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {

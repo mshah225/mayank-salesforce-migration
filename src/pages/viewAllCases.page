@@ -2,10 +2,11 @@
     showHeader="false"
     sidebar="false"
     controller="ServiceCenter"
+    action="{!init}"
     extensions="ViewAllCasesController,NavLinks">
 <head>
     <title>My ASU | View All Cases</title>
-    <c:asu_responsive_header_section />
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
 
     <style>
         .panel {

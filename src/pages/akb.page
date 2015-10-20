@@ -1,12 +1,12 @@
 <apex:page docType="html-5.0"
-           showHeader="false"
-           sidebar="false"
-           controller="ServiceCenter"
-           action="{!init}"
-           extensions="AKBController,NavLinks,vfListPaginationController">
+    showHeader="false"
+    sidebar="false"
+    controller="ServiceCenter"
+    action="{!init}"
+    extensions="AKBController,NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | {!article.title}</title>
-    <c:asu_responsive_header_section />
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
 
     <style>
         .detailList a {

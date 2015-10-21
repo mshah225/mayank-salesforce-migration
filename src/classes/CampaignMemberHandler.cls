@@ -21,6 +21,19 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkBefore() 
     {
+        if(Trigger.isInsert)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK BEFORE FOR INSERT');
+        }
+        else if(Trigger.isUpdate)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK BEFORE FOR UPDATE');
+        }
+        else if(Trigger.isDelete)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK BEFORE FOR DELETE');
+        }
+
         Set<Id> campaignIdsInTrigger = new Set<Id>();
 
         Set<Id> contactIdsInTrigger = new Set<Id>();
@@ -360,6 +373,19 @@ public without sharing class CampaignMemberHandler implements ITrigger
                 }
             }
         }
+
+        if(Trigger.isInsert)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK BEFORE FOR INSERT');
+        }
+        else if(Trigger.isUpdate)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK BEFORE FOR UPDATE');
+        }
+        else if(Trigger.isDelete)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK BEFORE FOR DELETE');
+        }  
     }
  
     /**
@@ -443,6 +469,19 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkAfter() 
     {
+        if(Trigger.isInsert)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK AFTER FOR INSERT');
+        }
+        else if(Trigger.isUpdate)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK AFTER FOR UPDATE');
+        }
+        else if(Trigger.isDelete)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK AFTER FOR DELETE');
+        }
+
         Set<Id> triggerIDs = new Set<Id>();
         List<Id> nationalMeritContactIds = new List<Id>();
         if(Trigger.isInsert || Trigger.isUpdate)
@@ -520,21 +559,52 @@ public without sharing class CampaignMemberHandler implements ITrigger
 
         if(opportunitiesToUpdate.size() > 0)
         {
+            System.debug('IN CAMPAIGN MEMBER HANDLER, ABOUT TO UPDATE OPPORTUNITIES');
             List<Opportunity> oppsToUpdateList = new List<Opportunity>();
             oppsToUpdateList.addAll(opportunitiesToUpdate.values());
             update oppsToUpdateList;
+            System.debug('IN CAMPAIGN MEMBER HANDLER, FINISHED UPDATING OPPORTUNITIES');
+        }
+        else
+        {
+           System.debug('IN CAMPAIGN MEMBER HANDLER, NO OPPORTUNITIES TO UPDATE'); 
         }
         opportunitiesToUpdate = new Map<Id, Opportunity>();
 
         if(leadsToUpdate.size() > 0)
         {
+            System.debug('IN CAMPAIGN MEMBER HANDLER, ABOUT TO UPDATE LEADS');
             update leadsToUpdate;
+            System.debug('IN CAMPAIGN MEMBER HANDLER, FINISHED UPDATING LEADS');
+        }
+        else
+        {
+           System.debug('IN CAMPAIGN MEMBER HANDLER, NO LEADS TO UPDATE'); 
         }
         leadsToUpdate = new List<Lead>();
 
         if(cmsToUpdate.size() > 0)
         {
+            System.debug('IN CAMPAIGN MEMBER HANDLER, ABOUT TO UPDATE CAMPAIGN MEMBERS');
             update cmsToUpdate;
+            System.debug('IN CAMPAIGN MEMBER HANDLER, FINISHED UPDATING CAMPAIGN MEMBERS');
+        }
+        else
+        {
+           System.debug('IN CAMPAIGN MEMBER HANDLER, NO CAMPAIGN MEMBERS TO UPDATE') ;
+        }
+
+        if(Trigger.isInsert)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK AFTER FOR INSERT');
+        }
+        else if(Trigger.isUpdate)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK AFTER FOR UPDATE');
+        }
+        else if(Trigger.isDelete)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK AFTER FOR DELETE');
         }
     }
 

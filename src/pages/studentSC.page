@@ -52,7 +52,8 @@
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"
                                firstName="{!firstName}"
-                               lastName="{!lastName}"/>
+                               lastName="{!lastName}"
+                               maintenanceMessage="{!maintenanceMessage}"/>
 
         <apex:form id="suggestAnArticle">
             <!-- Modal -->

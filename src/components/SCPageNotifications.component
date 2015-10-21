@@ -1,6 +1,6 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
-	<apex:attribute name="viewingAs"
+    <apex:attribute name="viewingAs"
         description="Whether or not the user is currently viewing as"
         type="Boolean"/>
     <apex:attribute name="firstName"

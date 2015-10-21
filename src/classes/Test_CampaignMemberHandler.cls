@@ -386,7 +386,7 @@ public class Test_CampaignMemberHandler {
 
     private static testMethod void insertContactPSMajorLoad()
     {
-        List<Contact> contacts = ContactService.createMultipleTestContacts(200);
+        List<Contact> contacts = ContactService.createTestContacts(200);
         insert contacts;
 
         System.debug('Contacts: ' + contacts);

@@ -1186,10 +1186,15 @@ public without sharing class TerritoryAssignmentHelper
     {
         List<PS_Country_Map__c> possibleCountries = psCountryMap.get(country);
 
-        PS_Country_Map__c psCountry = possibleCountries.get(0);
-
-        String sfCountry = psCountry.Country_Name__c;
-
-        return sfCountry;
+        if(possibleCountries != null && possibleCountries.size() > 0)
+        {
+            PS_Country_Map__c psCountry = possibleCountries.get(0);
+            String sfCountry = psCountry.Country_Name__c;
+            return sfCountry;
+        }
+        else
+        {
+            return '';
+        }
     }
 }

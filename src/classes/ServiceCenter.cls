@@ -156,8 +156,8 @@ public with sharing class ServiceCenter
         Date launchDate = EMAILVISIBILITYDATE;
         if (viewingAs)
         {
-            return MyASUViewAs.getViewAsCaseEmails(
-                EMAILVISIBILITYDATE,
+            return CaseService.getCaseEmailMessages(
+            	EMAILVISIBILITYDATE,
                 ApexPages.currentPage().getParameters().get('id'),
                 userContact.Email
             );
@@ -239,26 +239,26 @@ public with sharing class ServiceCenter
             return true;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'A/C')
-                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'A/C')
+                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'B')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'B')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
         else if (oppList[0].StageName != 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && (userContact.Affiliation_Student__c == 'Current'
-                        || userContact.Affiliation_Alumni__c == 'Current'
-                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                        || userContact.Affiliation_Employee__c == 'Current')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && (userContact.Affiliation_Student__c == 'Current'
+                || userContact.Affiliation_Alumni__c == 'Current'
+                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                || userContact.Affiliation_Employee__c == 'Current')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -275,31 +275,31 @@ public with sharing class ServiceCenter
             return false;
         }
         else if ((oppList == Null && userContact != null)
-                    || (oppList.size() == 0 && userContact != null))
+                || (oppList.size() == 0 && userContact != null))
         {
             return false;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'A/C')
-                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'A/C')
+                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return true;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'B')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'B')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
         else if (oppList[0].StageName != 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && (userContact.Affiliation_Student__c == 'Current'
-                        || userContact.Affiliation_Alumni__c == 'Current'
-                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                        || userContact.Affiliation_Employee__c == 'Current')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && (userContact.Affiliation_Student__c == 'Current'
+                || userContact.Affiliation_Alumni__c == 'Current'
+                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                || userContact.Affiliation_Employee__c == 'Current')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return true;
         }
@@ -316,31 +316,31 @@ public with sharing class ServiceCenter
             return true;
         }
         else if ((oppList == Null && userContact != null)
-                    || (oppList.size() == 0 && userContact != null))
+                || (oppList.size() == 0 && userContact != null))
         {
             return true;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'A/C')
-                    && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'A/C')
+                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
             return false;
         }
         else if ((oppList[0].StageName == 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && oppList[0].Admitted_Session__c == 'B')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'B')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
         else if (oppList[0].StageName != 'Enrolled'
-                    && oppList[0].Career__c == 'Undergraduate'
-                    && (userContact.Affiliation_Student__c == 'Current'
-                        || userContact.Affiliation_Alumni__c == 'Current'
-                        || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                        || userContact.Affiliation_Employee__c == 'Current')
-                    && today < date.valueOf(termcB.Session_B_Start_Date__c))
+                && oppList[0].Career__c == 'Undergraduate'
+                && (userContact.Affiliation_Student__c == 'Current'
+                || userContact.Affiliation_Alumni__c == 'Current'
+                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                || userContact.Affiliation_Employee__c == 'Current')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
         }
@@ -381,7 +381,7 @@ public with sharing class ServiceCenter
             System.Debug ('Stack Trace: ' + e.getStackTraceString());
 
             return null;
-       }
+        }
     }
 
     public Decimal getMyPin()

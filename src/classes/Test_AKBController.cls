@@ -1,7 +1,7 @@
 @isTest
-public class Test_AKBController 
+public class Test_AKBController
 {
-    @testSetup static void setupData() 
+    @testSetup static void setupData()
     {
         for (Integer i = 0; i < 30; i++)
         {
@@ -46,6 +46,13 @@ public class Test_AKBController
 
         insert termB;
 
+        Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
+            Name = 'The Test Message',
+            Displayed__c = true,
+            Message__c = 'There is maintenance'
+        );
+        insert scm;
+
         Contact testContact = ContactService.createTestContact();
 
         insert testContact;
@@ -57,7 +64,7 @@ public class Test_AKBController
         insert testUser;
     }
 
-    @isTest static void testAKBControllerFAQ() 
+    @isTest static void testAKBControllerFAQ()
     {
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
@@ -87,7 +94,7 @@ public class Test_AKBController
         Test.stopTest();
     }
 
-    @isTest static void testHelpfulYes() 
+    @isTest static void testHelpfulYes()
     {
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
@@ -135,7 +142,7 @@ public class Test_AKBController
         Test.stopTest();
     }
 
-    @isTest static void testHelpfulNo() 
+    @isTest static void testHelpfulNo()
     {
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
@@ -185,7 +192,7 @@ public class Test_AKBController
         Test.stopTest();
     }
 
-    @isTest static void testFeedbackVisible() 
+    @isTest static void testFeedbackVisible()
     {
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
@@ -216,7 +223,7 @@ public class Test_AKBController
         Test.stopTest();    
     }
 
-    @isTest static void testFeedbackNotVisible() 
+    @isTest static void testFeedbackNotVisible()
     {
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
@@ -248,7 +255,7 @@ public class Test_AKBController
         Test.stopTest();
     }
 
-    @isTest static void testChangeLinks() 
+    @isTest static void testChangeLinks()
     {
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId

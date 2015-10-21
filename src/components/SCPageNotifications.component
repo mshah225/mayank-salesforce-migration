@@ -9,7 +9,7 @@
     <apex:attribute name="lastName"
         description="The last name of the current user"
         type="String"/>
-	<apex:attribute name="maintenanceMessage"
+    <apex:attribute name="maintenanceMessage"
         description="the message to be displayed on the service center during maintenance"
         type="String"/>
 

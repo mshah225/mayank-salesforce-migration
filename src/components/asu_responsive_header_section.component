@@ -1,6 +1,5 @@
 <apex:component >
-    <apex:attribute name="linkList" description="The list of links from My ASU" type="Weblink[]"/>
-
+    <apex:attribute name="linkList" description="The list of links from My ASU" type="WebLink[]"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>

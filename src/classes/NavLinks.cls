@@ -7,7 +7,7 @@ public class NavLinks
     public NavLinks(ApexPages.StandardController controller) { }
 
     public String links { get; set; }
-    public List<Weblink> linkList { get; set; }
+    public List<WebLink> linkList { get; set; }
 
     public PageReference init()
     {
@@ -62,14 +62,14 @@ public class NavLinks
             linksJSON = linksJSON.replaceAll('&#34;', '"');
             System.debug(linksJSON);
 
-            linkList = new List<Weblink>();
+            linkList = new List<WebLink>();
             JSONParser parser = JSON.createParser(linksJSON);
             while (parser.nextToken() != null)
             {
                 // If current token is a field name
                 if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
                 {
-                    Weblink thisLink = new Weblink();
+                    WebLink thisLink = new WebLink();
                     String fieldName = parser.getText();
                     thisLink.name = fieldName;
                     System.debug('merf thisLinks name: ' + thisLink.name);

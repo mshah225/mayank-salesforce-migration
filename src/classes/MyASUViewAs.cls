@@ -140,4 +140,21 @@ public without sharing class MyASUViewAs
 
         return viewAsClosedCases;
     }
+
+
+    /**
+    * Calls the CaseService to get all email messages attached ot the case.
+    * @param the launchDate of the email messages on the service center
+    * @param the case id the email messages are attached to
+    * @param the contact email address to display.
+    * @return A list with the email messages.
+    */
+    public static List<EmailMessage> getViewAsCaseEmails(Date launchDate, Id caseId,
+            String contactEmail)
+    {
+        List<EmailMessage> viewAsCaseEmails = CaseService.getCaseEmailMessages(launchDate,
+                caseId, contactEmail);
+
+        return viewAsCaseEmails;
+    }
 }

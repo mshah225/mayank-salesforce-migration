@@ -176,8 +176,8 @@ public with sharing class ServiceCenter
         Date launchDate = EMAILVISIBILITYDATE;
         if (viewingAs)
         {
-            return CaseService.getCaseEmailMessages(
-                EMAILVISIBILITYDATE,
+            return MyASUViewAs.getViewAsCaseEmails(
+            	EMAILVISIBILITYDATE,
                 ApexPages.currentPage().getParameters().get('id'),
                 userContact.Email
             );

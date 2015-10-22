@@ -11,7 +11,7 @@ public class CaseService
 		Map<String, SObjectField> caseFieldMap = ObjectService.getObjectFieldMap('Case');
 
 		caseFields = ObjectService.objectFieldsToString(caseFieldMap);
-		
+
 		return caseFields;
 	}
 
@@ -24,11 +24,11 @@ public class CaseService
     {
         Case requestedCase = [
             SELECT Id, CaseNumber, Functional_Group__c, Subject, Description,
-            Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
+            Feedback_Link__c, CreatedDate, Status, ClosedDate
             FROM Case
             WHERE Id = :caseId
         ];
-        
+
         return requestedCase;
     }
 
@@ -37,7 +37,7 @@ public class CaseService
     * @param The Case Id to look up
     * @return The Case Objects Email Messages
     */
-    public static EmailMessage[] getCaseEmailMessages(Date launchDate, Id caseId, String contactEmail)
+    public static EmailMessage[] getCaseEmailMessages(Date launchDate, Id caseId, List<String> contactEmails)
     {
         return [
             SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate,
@@ -46,7 +46,7 @@ public class CaseService
             WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
             AND Incoming = false
             AND CreatedDate > :launchDate
-            AND ToAddress = :contactEmail
+            AND ToAddress IN :contactEmails
             ORDER BY CreatedDate DESC
         ];
     }
@@ -56,7 +56,7 @@ public class CaseService
     * @param A list of contacts
     * @return A map containing the set of contactIds and their associated cases
     */
-    public static Map<Id, List<Case>> getVisibleOpenCases(List<Contact> listOfContacts) 
+    public static Map<Id, List<Case>> getVisibleOpenCases(List<Contact> listOfContacts)
     {
         List<Case> openCases = null;
         String caseFields = caseFieldsToString();

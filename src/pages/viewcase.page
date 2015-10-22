@@ -8,7 +8,7 @@
 <head>
     <title>My ASU | {!caseDetails.Subject}</title>
     <c:asu_responsive_header_section />
-    
+
     <style>
         .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
             border-top-color: #990033 !important;
@@ -109,25 +109,19 @@
                        viewingAs="{!viewingAs}"/>
 
     <script>
-        $(document).ready(function()
-        {
+        $(document).ready(function() {
             var showChar = 250;
             var ellipsestext = "...";
             var moretext = 'Show More <span class="caret" style="margin-bottom:2px;"></span>';
             var lesstext = 'Show Less <span class="dropup"><span class="caret"' +
                            'style="margin-bottom:2px;"></span></span>';
 
-            $("[id$=emailMore]").each(function()
-            {
+            $("[id$=emailMore]").each(function() {
                 var content = $(this).clone().html();
-                if (content.indexOf("Inline image") > 0)
-                {
-                    content = content.replace(/\[[^\]]+\]/,'');
-                    content = content.replace(/(<br\s*\/?>){2}/, '');
-                }
+                content = content.replace(/(&nbsp;|\t)|\[[^\]]+\]|(<br>\t){2,}/g, "");
+                content = content.replace(/(<br>){3,}/g, "<br>");
 
-                if (content.length > showChar)
-                {
+                if (content.length > showChar) {
                     var c = content.substr(0, showChar);
                     var h = content.substr(showChar, content.length - showChar);
                     var html = c + '<span class="moreellipses">' + ellipsestext +
@@ -136,23 +130,19 @@
                                    moretext + '</a>';
                     $(this).html(html);
                 }
-
             });
 
-            $(".emailToggle").click(function()
-            {
-                if ($(this).hasClass("less"))
-                {
+            $(".emailToggle").click(function() {
+                if ($(this).hasClass("less")) {
                     $(this).removeClass("less");
                     $(this).html(moretext);
                     $(this).prevAll(".moreellipses:first").toggle();
-                }
-                else
-                {
+                } else {
                     $(this).addClass("less");
                     $(this).html(lesstext);
                     $(this).prevAll(".moreellipses:first").toggle();
                 }
+
                 $(this).prev().toggle();
                 return false;
             });
@@ -162,11 +152,11 @@
 
 <body>
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader firstName="{!firstName}" 
-                lastName="{!lastName}" 
-                viewingAs="{!viewingAs}" 
-                emplId="{!emplId}" 
-                stopViewAsUrl="{!stopViewAsUrl}" 
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
                 viewAsUrl="{!viewAsUrl}"/>
 
     <div id="asu_content_well">

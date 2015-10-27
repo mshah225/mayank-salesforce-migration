@@ -46,32 +46,6 @@ public class GroupService
     }
 
 	/**
-	* Get all of the group information that is tied to the specified Group Id
-	* @param Id A group's Id
-	* @return Group A Group object
-	*/
-    public static Group getGroupDetails(Id groupId)
-    {
-        Group groupInfo = null;
-        String groupFields = groupFieldsToString();
-
-        try
-        {
-            String groupDataQuery = 'SELECT ' + groupFields + ' ' +
-                    'FROM Group ' +
-                    'WHERE Id = :groupId';
-
-            groupInfo = Database.query(groupDataQuery);
-        }
-        catch (Exception e)
-        {
-            throw new GroupServiceException('!!!ERROR!!!: An error occurred trying to get the Group\'s information\n' + e.getMessage());
-        }
-
-        return groupInfo;
-    }
-
-	/**
 	* Get all of the group information that is tied to the specified Group Name
 	* @param String The name of a group
 	* @return Group A group object

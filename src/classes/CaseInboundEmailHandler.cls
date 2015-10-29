@@ -100,9 +100,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     System.debug(Logginglevel.ERROR,'CaseEmailInBoundUtilities.  extracted case id: "' + caseId + '"');
                 }
 
-                Case caseSearch = CaseService.getCaseInformation(caseId);
+                Case[] caseSearch = [SELECT Id, ContactId, Subject, Description, Status, ClosedDate
+                FROM Case
+                WHERE Id = :caseId];
 
-                if (caseSearch != null)
+                if (caseSearch.size() > 0)
                 {
                     Integer iReopenClosedCaseThreshold;
                     String reopenClosedCaseThreshold = getConfigurationSetting('Reopen Closed Case Threshold');
@@ -116,46 +118,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         iReopenClosedCaseThreshold = 0;
                     }
 
-                    Boolean caseCanBeReopened = iReopenClosedCaseThreshold != 0 && caseSearch.Status.startsWith('Closed') && caseSearch.ClosedDate != null && caseSearch.ClosedDate > DateTime.Now().addDays(iReopenClosedCaseThreshold);
-                    Boolean caseStatusIsNotNull = caseSearch.Status != null;
-                    Boolean caseStatusIsNotClosed = !caseSearch.Status.startsWith('Closed');
+                    Boolean caseCanBeReopened = iReopenClosedCaseThreshold != 0 && caseSearch[0].Status.startsWith('Closed') && caseSearch[0].ClosedDate != null && caseSearch[0].ClosedDate > DateTime.Now().addDays(iReopenClosedCaseThreshold);
+                    Boolean caseStatusIsNotNull = caseSearch[0].Status != null;
+                    Boolean caseStatusIsNotClosed = !caseSearch[0].Status.startsWith('Closed');
 
                     // If the case was closed within the last n days set in custom settings, re-open it.  Otherwise, create a new case below
                     if (caseStatusIsNotNull && (caseStatusIsNotClosed || caseCanBeReopened))
                     {
-                        this.theCase = caseSearch;
-
-                        Id serviceRecordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service'].Id;
-
-                        // Assign service cases back to the most recently associated Queue
-                        if (this.theCase.RecordTypeId == serviceRecordType)
-                        {
-                            String groupName = this.theCase.Most_Recent_Queue__c;
-                            Group groupToReopen;
-
-                            // Case will reopen to the currently associated user if no group can be found
-                            try
-                            {
-                                groupToReopen = GroupService.getGroupDetails(groupName);
-
-                                this.theCase.OwnerId = groupToReopen.Id;
-                            }
-                            catch (Exception e)
-                            {
-                                // Option to do something else
-                            }
-
-
-                            if (String.isEmpty(this.theCase.Most_Recent_Functional_Group__c))
-                            {
-                                // Handle NPE on Most_Recent_Functional_Group__c
-                                this.theCase.Most_Recent_Functional_Group__c = this.theCase.Functional_Group__c;
-                            }
-                            else if (this.theCase.Functional_Group__c.equals('External Unit'))
-                            {
-                                this.theCase.Functional_Group__c = this.theCase.Most_Recent_Functional_Group__c;
-                            }
-                        }
+                        this.theCase = caseSearch[0];
 
                         if (this.theCase.Status.startsWith('Closed'))
                         {
@@ -443,7 +413,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         {
             // Catch any exceptions and create a lost email.
             String error = e.getMessage() + '\n' + e.getStackTraceString();
-            System.debug('!!! Error is ' + e);
             generateLostEmail(email, error);
         }
 
@@ -748,21 +717,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         String itemRef = null;
         String patternString;
-        String caseId;
 
         if (searchText.indexOf(':ref') > searchText.indexOf('ref:')) 
         {
             String caseReference = searchText.substring(searchText.indexOf('ref:') + 4, searchText.indexOf(':ref'));
-
-            if (Test.isRunningTest())
-            {
-                caseId = caseReference;
-            }
-            else
-            {
-                caseId = Cases.getCaseIdFromEmailThreadId(caseReference);
-            }
-
+            String caseId = Cases.getCaseIdFromEmailThreadId(caseReference);
             System.debug('GRF caseId extracted: ' + caseId);
 
             return caseId;

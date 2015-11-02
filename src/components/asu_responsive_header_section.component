@@ -1,4 +1,6 @@
 <apex:component >
+    <apex:attribute name="linkList" description="The list of links from My ASU" type="Weblink[]"/>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
@@ -14,11 +16,31 @@
     </style>
     <![endif]-->
     <script>
+        var jsonHeaderString = '[';
+    </script>
+
+    <apex:repeat value="{!linkList}" var="link">
+        <script>
+            jsonHeaderString += '{"title":"{!link.name}","path":"{!link.url}"},';
+        </script>
+    </apex:repeat>
+
+    <script>
         var ASUHeader = ASUHeader || {};
         ASUHeader.browser = false;
         window.ASUHeader = window.ASUHeader || {};
         ASUHeader.site_menu = ASUHeader.site_menu || {};
-        ASUHeader.site_menu.json = '[{"title":"Home","path":"https://webapp4.asu.edu/myasu"},{"title":"Finances","path":"https://webapp4.asu.edu/myasu/student/finances"},{"title":"Service Center","path":"\/"},{"title":"Campus Services","path":"https://webapp4.asu.edu/myasu/student/campusservices"},{"title":"Profile","path":"https://webapp4.asu.edu/myasu/student/profile"}]';
+
+        if ("{!linkList.size}" > 0) {
+            var pos = jsonHeaderString.lastIndexOf(',');
+            jsonHeaderString = jsonHeaderString.substring(0,pos);
+            jsonHeaderString += ']';
+            ASUHeader.site_menu.json = jsonHeaderString;
+        }
+        else {
+            ASUHeader.site_menu.json = '[{"title":"Home","path":"https://webapp4.asu.edu/myasu"},{"title":"Finances","path":"https://webapp4.asu.edu/myasu/student/finances"},{"title":"Service Center","path":"\/"},{"title":"Campus Services","path":"https://webapp4.asu.edu/myasu/student/campusservices"},{"title":"Profile","path":"https://webapp4.asu.edu/myasu/student/profile"}]';
+        }
+
         ASUHeader.site_menu.site_name = "Student Service Center";
         ASUHeader.user_signedin = true;
         ASUHeader.user_displayname = '{!$User.FirstName}';

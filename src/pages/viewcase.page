@@ -1,14 +1,13 @@
-<apex:page showHeader="false"
-           sidebar="false"
-           cache="true"
-           docType="html-5.0"
-           controller="ServiceCenter"
-           action="{!init}"
-           extensions="NavLinks">
+<apex:page docType="html-5.0"
+    showHeader="false"
+    sidebar="false"
+    controller="ServiceCenter"
+    action="{!init}"
+    extensions="NavLinks">
 <head>
     <title>My ASU | {!caseDetails.Subject}</title>
-    <c:asu_responsive_header_section />
-    
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
+
     <style>
         .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
             border-top-color: #990033 !important;
@@ -162,12 +161,14 @@
 
 <body>
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader firstName="{!firstName}" 
-                lastName="{!lastName}" 
-                viewingAs="{!viewingAs}" 
-                emplId="{!emplId}" 
-                stopViewAsUrl="{!stopViewAsUrl}" 
-                viewAsUrl="{!viewAsUrl}"/>
+
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
+                viewAsUrl="{!viewAsUrl}"
+                linkList="{!linkList}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"

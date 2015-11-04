@@ -9,38 +9,33 @@ private class Test_NavLinks
 
     private static void setUp()
     {
-    	p = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
+    	p = [SELECT Id FROM Profile WHERE Name='ASU Community'];
 
     	Term__c termAC = new Term__c();
     	Date dT = Date.today().adddays(30);
     	termAC.Session_A_C_Start_Date__c = date.newinstance(dT.year(), dT.month(), dT.day());
     	termAC.Year__c = '2015';
-
-        insert termAC;
+    	insert termAC;
 
         Term__c termB = new Term__c();
         dT = Date.today().adddays(40);
     	termB.Session_B_Start_Date__c = date.newinstance(dT.year(), dT.month(), dT.day());
     	termB.Year__c = '2015';
-
-        insert termB;
+    	insert termB;
 
 		Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
             Name = 'The Test Message',
             Displayed__c = true,
             Message__c = 'There is maintenance'
         );
-
         insert scm;
 
      	testContact = ContactService.createTestContact();
-
      	insert testContact;
 
      	testUser = UserService.createTestUser();
 		testUser.ProfileId = p.Id;
 		testUser.ContactId = testContact.Id;
-
     	insert testUser;
 
     	PageReference serviceCenter = Page.studentSC;

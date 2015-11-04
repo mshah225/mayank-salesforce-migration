@@ -62,14 +62,14 @@ public class NavLinks
             linksJSON = linksJSON.replaceAll('&#34;', '"');
             System.debug(linksJSON);
 
-            linkList = new List<WebLink>();
+            linkList = new List<Weblink>();
             JSONParser parser = JSON.createParser(linksJSON);
             while (parser.nextToken() != null)
             {
                 // If current token is a field name
                 if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
                 {
-                    WebLink thisLink = new WebLink();
+                    Weblink thisLink = new Weblink();
                     String fieldName = parser.getText();
                     thisLink.name = fieldName;
                     System.debug('merf thisLinks name: ' + thisLink.name);

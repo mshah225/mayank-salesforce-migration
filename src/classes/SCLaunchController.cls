@@ -3,6 +3,7 @@ public without sharing class SCLaunchController
     public List<Link> linkList { get; set; }
     public String links { get; set; }
     public String masqScopeIdCookie { get; set; }
+    public String redirectUrl { get; set; }
 
     public SCLaunchController()
     {
@@ -17,6 +18,7 @@ public without sharing class SCLaunchController
         String navbarParm = '';
         String timeParm = '';
         String signatureParm = '';
+        redirectUrl = '/studentSC';
 
         System.debug('parms: ' + ApexPages.currentPage().getParameters());
 

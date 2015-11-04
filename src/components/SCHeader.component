@@ -6,7 +6,7 @@
     <apex:attribute name="stopViewAsUrl" description="The Url to stop viewing as" type="String"/>
     <apex:attribute name="viewAsUrl" description="The Url to start or change view as" type="String"/>
     <apex:attribute name="emplId" description="The contacts Employee/Affiliate Id" type="String"/>
-    <apex:attribute name="linkList" description="The list of links from My ASU" type="Weblink[]"/>
+    <apex:attribute name="links" description="The list of links from My ASU" type="WebLink[]"/>
 
 	<!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
     <div id="asu_hdr" class="asu_hdr_white myasu-cont">
@@ -139,7 +139,7 @@
 
     <!-- MyASU Tab Bar -->
     <header class="navbar navbar-default" role="banner">
-        <apex:outputPanel rendered="{!IF(ISNULL(linkList),true,false) || IF(ISBLANK(linkList),true,false)}">
+        <apex:outputPanel rendered="{!IF(ISNULL(links),true,false) || IF(ISBLANK(links),true,false)}">
             <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">
                     <span class='tab'><a href="https://webapp4.asu.edu/myasu" class="tracking"><span class="fa fa-home" title="Home"></span></a></span>
@@ -164,10 +164,10 @@
             </div>
         </apex:outputPanel>
 
-        <apex:outputPanel rendered="{!IF(ISNULL(linkList),false,true) || IF(ISBLANK(linkList),false,true)}">
+        <apex:outputPanel rendered="{!IF(ISNULL(links),false,true) || IF(ISBLANK(links),false,true)}">
             <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">
-                    <apex:repeat value="{!linkList}" var="link" id="linkRepeater">
+                    <apex:repeat value="{!links}" var="link" id="linkRepeater">
                         <span class='tab'>
                             <apex:outputLink value="{!link.url}" title="{!link.name}" rendered="{!IF(link.name == 'Home',true,false)}">
                                 <span class="fa fa-home" title="Home"></span>

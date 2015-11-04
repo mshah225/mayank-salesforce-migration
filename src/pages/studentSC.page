@@ -6,7 +6,7 @@
     extensions="NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | Service Center</title>
-    <c:asu_responsive_header_section linkList="{!linkList}"/>
+    <c:asu_responsive_header_section links="{!linkList}"/>
 
     <style>
         .checkboxHidden {
@@ -48,7 +48,7 @@
                 emplId="{!emplId}"
                 stopViewAsUrl="{!stopViewAsUrl}"
                 viewAsUrl="{!viewAsUrl}"
-                linkList="{!linkList}"/>
+                links="{!linkList}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"

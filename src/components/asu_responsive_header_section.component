@@ -1,5 +1,5 @@
 <apex:component >
-    <apex:attribute name="linkList" description="The list of links from My ASU" type="WebLink[]"/>
+    <apex:attribute name="links" description="The list of links from My ASU" type="WebLink[]"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
@@ -18,7 +18,7 @@
         var jsonHeaderString = '[';
     </script>
 
-    <apex:repeat value="{!linkList}" var="link">
+    <apex:repeat value="{!links}" var="link">
         <script>
             jsonHeaderString += '{"title":"{!link.name}","path":"{!link.url}"},';
         </script>
@@ -30,7 +30,7 @@
         window.ASUHeader = window.ASUHeader || {};
         ASUHeader.site_menu = ASUHeader.site_menu || {};
 
-        if ("{!linkList.size}" > 0) {
+        if ("{!links.size}" > 0) {
             var pos = jsonHeaderString.lastIndexOf(',');
             jsonHeaderString = jsonHeaderString.substring(0,pos);
             jsonHeaderString += ']';

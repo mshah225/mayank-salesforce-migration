@@ -3,7 +3,7 @@
 		var masqCookie = "{!masqScopeIdCookie}";
 		if (masqCookie != "")
 		{
-			if("{!redirectUrl}".contains('?'))
+			if("{!redirectUrl}".indexOf('?') > -1)
 			{
 				window.location.href = "{!redirectUrl}&masqScopeIdCookie=" + masqCookie;
 			}

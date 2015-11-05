@@ -54,12 +54,14 @@ public class GroupService
     {
         Group groupInfo = null;
         String groupFields = groupFieldsToString();
+        String queue = 'Queue';
 
         try
         {
             String groupDataQuery = 'SELECT ' + groupFields + ' ' +
                     'FROM Group ' +
-                    'WHERE Name = :groupName';
+                    'WHERE Type = :queue ' +
+                    'AND Name = :groupName';
 
             groupInfo = Database.query(groupDataQuery);
         }

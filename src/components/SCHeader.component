@@ -2,27 +2,38 @@
 	<!-- This component renders the ASU responsive header for the Service Center -->
     <apex:attribute name="firstName" description="The contacts first name" type="String"/>
     <apex:attribute name="lastName" description="The contacts last name" type="String"/>
-    <apex:attribute name="viewingAs" description="Whether or not the user is currently viewing as" type="Boolean"/>
+    <apex:attribute name="viewingAs" description="Is the user viewing as?" type="Boolean"/>
     <apex:attribute name="stopViewAsUrl" description="The Url to stop viewing as" type="String"/>
     <apex:attribute name="viewAsUrl" description="The Url to start or change view as" type="String"/>
     <apex:attribute name="emplId" description="The contacts Employee/Affiliate Id" type="String"/>
-    <apex:attribute name="links" description="The list of links from My ASU" type="WebLink[]"/>
+    <apex:attribute name="linkList" description="The links from My ASU" type="Link[]"/>
 
 	<!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
     <div id="asu_hdr" class="asu_hdr_white myasu-cont">
         <div id="asu_mobile_hdr">
             <div id="asu_logo">
-                <a href="https://www.asu.edu/" target="_top" title="Arizona State University">
-                <img alt="Arizona State University" title="Arizona State University" src="https://www.asu.edu/asuthemes/4.0/images/logos/asu_logo_white.png"/></a>
+                <a href="https://www.asu.edu/"
+                   target="_top"
+                   title="Arizona State University">
+                <img alt="Arizona State University"
+                     title="Arizona State University"
+                     src="https://www.asu.edu/asuthemes/4.0/images/logos/asu_logo_white.png"/></a>
             </div>
 
-            <img alt="Arizona State University" title="Arizona State University" id="asu_print_logo" src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_mobile_white.png" />
+            <img alt="Arizona State University"
+                 title="Arizona State University"
+                 id="asu_print_logo"
+                 src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_mobile_white.png" />
 
-            <div class="f-navicon" id="asu_mobile_button" onclick="javascript:ASUHeader.toggleASU();">
+            <div class="f-navicon"
+                 id="asu_mobile_button"
+                 onclick="javascript:ASUHeader.toggleASU();">
                 <a href="javascript:ASUHeader.toggleASU();">Menu</a>
             </div>
 
-            <div class="f-search" id="search_new" onclick="javascript:ASUHeader.toggleASU('main-search');"></div>
+            <div class="f-search"
+                 id="search_new"
+                 onclick="javascript:ASUHeader.toggleASU('main-search');"></div>
         </div>
 
         <div class="closed" id="asu_mobile_menu">
@@ -45,10 +56,10 @@
                     <div id="asu_universal_nav">
                         <ul>
                             <li><a href="https://www.asu.edu/" target="_top">ASU Home</a></li>
-
                             <li><a href="https://my.asu.edu/" target="_top">My ASU</a></li>
-
-                            <li class="parent"><a href="https://www.asu.edu/colleges/" target="_top">Colleges &amp; Schools</a>
+                            <li class="parent">
+                                <a href="https://www.asu.edu/colleges/"
+                                   target="_top">Colleges &amp; Schools</a>
                                 <ul>
                                     <li><a class="first" href="https://artsandsciences.asu.edu/" target="_top" title="Arts and Sciences website">Arts and Sciences</a></li>
                                     <li><a href="https://wpcarey.asu.edu/" target="_top" title="W. P. Carey School of Business Web and Morrison School of Agribusiness website">Business</a></li>
@@ -67,7 +78,6 @@
                                     <li><a target="_top" href="http://www.thunderbird.edu/" title="Thunderbird School of Global Management website">New: Thunderbird School of Global Management</a></li>
                                 </ul>
                             </li>
-
                             <li class="parent"><a href="https://www.asu.edu/map/" target="_top">Map &amp; Locations</a>
                                 <ul>
                                     <li><a class="border first" href="https://www.asu.edu/map/" target="_top">Map</a></li>
@@ -139,23 +149,42 @@
 
     <!-- MyASU Tab Bar -->
     <header class="navbar navbar-default" role="banner">
-        <apex:outputPanel rendered="{!IF(ISNULL(links),true,false) || IF(ISBLANK(links),true,false)}">
+        <apex:outputPanel rendered="{!IF(ISNULL(linkList),true,false) || IF(ISBLANK(linkList),true,
+                false)}">
             <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">
-                    <span class='tab'><a href="https://webapp4.asu.edu/myasu" class="tracking"><span class="fa fa-home" title="Home"></span></a></span>
+                    <span class='tab'>
+                        <a href="https://webapp4.asu.edu/myasu" class="tracking">
+                            <span class="fa fa-home" title="Home"></span>
+                        </a>
+                    </span>
 
-                    <span class='tab'><a href="https://webapp4.asu.edu/myasu/student/finances" class="tracking">Finances</a></span>
+                    <span class='tab'>
+                        <a href="https://webapp4.asu.edu/myasu/student/finances" class="tracking">
+                            Finances
+                        </a>
+                    </span>
 
                     <span class='selected tab'><a href="/" class="tracking">Service Center</a></span>
 
-                    <span class='tab'><a href="https://webapp4.asu.edu/myasu/student/campusservices" class="tracking">Campus Services</a></span>
+                    <span class='tab'>
+                        <a href="https://webapp4.asu.edu/myasu/student/campusservices" class="tracking">
+                            Campus Services
+                        </a>
+                    </span>
 
-                    <span class='tab'><a href="https://webapp4.asu.edu/myasu/student/profile" class="tracking">Profile</a></span>
+                    <span class='tab'>
+                        <a href="https://webapp4.asu.edu/myasu/student/profile" class="tracking">
+                            Profile
+                        </a>
+                    </span>
 
                     <p class="username pull-right">
                         {!firstName} {!lastName}
+
                         <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
-                            &nbsp;&nbsp;({!emplId})<br />
+                            &nbsp;&nbsp;({!emplId})
+                            <br />
                             <a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
                             <a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
                         </apex:outputPanel>
@@ -164,27 +193,36 @@
             </div>
         </apex:outputPanel>
 
-        <apex:outputPanel rendered="{!IF(ISNULL(links),false,true) || IF(ISBLANK(links),false,true)}">
+        <apex:outputPanel rendered="{!IF(ISNULL(linkList),false,true)
+                            || IF(ISBLANK(linkList),false,true)}">
             <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">
-                    <apex:repeat value="{!links}" var="link" id="linkRepeater">
+                    <apex:repeat value="{!linkList}" var="link" id="linkRepeater">
                         <span class='tab'>
-                            <apex:outputLink value="{!link.url}" title="{!link.name}" rendered="{!IF(link.name == 'Home',true,false)}">
+                            <apex:outputLink value="{!link.url}"
+                                             title="{!link.name}"
+                                             rendered="{!IF(link.name == 'Home',true,false)}">
                                 <span class="fa fa-home" title="Home"></span>
                             </apex:outputLink>
 
-                            <apex:outputLink rendered="{!IF(link.name != 'Home' && link.name != 'Service Center',true,false)}" value="{!link.url}">
+                            <apex:outputLink rendered="{!IF(link.name != 'Home'
+                                                && link.name != 'Service Center',true,false)}"
+                                             value="{!link.url}">
                                 {!link.name}
                             </apex:outputLink>
 
-                            <apex:outputPanel rendered="{!IF(link.name == 'Service Center',true,false)}">
-                                <span class='selected tab'><a href="/" class="tracking">Service Center</a></span>
+                            <apex:outputPanel rendered="{!IF(link.name == 'Service Center',true,
+                                    false)}">
+                                <span class='selected tab'>
+                                    <a href="/" class="tracking">Service Center</a>
+                                </span>
                             </apex:outputPanel>
                         </span>
                     </apex:repeat>
 
                     <p class="username pull-right">
                         {!firstName} {!lastName}
+
                         <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
                             &nbsp;&nbsp;({!emplId})
                             <br />

@@ -6,7 +6,7 @@
     extensions="AKBController,NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | {!article.title}</title>
-    <c:asu_responsive_header_section links="{!linkList}"/>
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
 
     <style>
         .detailList a {
@@ -121,7 +121,7 @@
                 emplId="{!emplId}"
                 stopViewAsUrl="{!stopViewAsUrl}"
                 viewAsUrl="{!viewAsUrl}"
-                links="{!linkList}"/>
+                linkList="{!linkList}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"

@@ -6,7 +6,7 @@
     extensions="ViewAllCasesController,NavLinks">
 <head>
     <title>My ASU | View All Cases</title>
-    <c:asu_responsive_header_section links="{!linkList}"/>
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
 
     <style>
         .panel {
@@ -30,7 +30,7 @@
                 emplId="{!emplId}"
                 stopViewAsUrl="{!stopViewAsUrl}"
                 viewAsUrl="{!viewAsUrl}"
-                links="{!linkList}"/>
+                linkList="{!linkList}"/> 
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"

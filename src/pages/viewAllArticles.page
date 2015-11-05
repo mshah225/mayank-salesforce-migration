@@ -290,10 +290,10 @@
     <script>
         function checkNumbers() {
             var pageSize = "{!pageSize}";
-	        var aCount = document.getElementById("{!$Component.theSearchResults}")
-	        .getElementsByTagName("a").length;
-	        console.log("aCount: " + aCount);
-	        console.log("pageSize: " + pageSize);
+            var aCount = document.getElementById("{!$Component.theSearchResults}")
+            .getElementsByTagName("a").length;
+            console.log("aCount: " + aCount);
+            console.log("pageSize: " + pageSize);
             if (aCount < pageSize) {
                 console.log("In if");
                 document.getElementById("{!$Component.theSearchResults.searchResults.nextBtn}").style.display = "none";

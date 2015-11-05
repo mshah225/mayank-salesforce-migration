@@ -1,5 +1,5 @@
 <apex:component>
-	<!-- This component renders the ASU responsive header for the Service Center -->
+    <!-- This component renders the ASU responsive header for the Service Center -->
     <apex:attribute name="firstName" description="The contacts first name" type="String"/>
     <apex:attribute name="lastName" description="The contacts last name" type="String"/>
     <apex:attribute name="viewingAs" description="Is the user viewing as?" type="Boolean"/>
@@ -8,7 +8,7 @@
     <apex:attribute name="emplId" description="The contacts Employee/Affiliate Id" type="String"/>
     <apex:attribute name="linkList" description="The links from My ASU" type="Link[]"/>
 
-	<!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
+    <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
     <div id="asu_hdr" class="asu_hdr_white myasu-cont">
         <div id="asu_mobile_hdr">
             <div id="asu_logo">

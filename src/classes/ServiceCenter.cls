@@ -21,7 +21,7 @@ public with sharing class ServiceCenter
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
     public String userAsurite;
-    public String maintenanceMessage { get; set; }
+    public String mMessage { get; set; }
     public Term__c termcAC;
     public Term__c termcB;
 
@@ -95,10 +95,10 @@ public with sharing class ServiceCenter
                 || (scmList[0].Start_Time__c == null
                     && scmList[0].End_Time__c == null))
             {
-                maintenanceMessage = scmList[0].Message__c;
+                mMessage = scmList[0].Message__c;
             }
         }
-        System.debug('merf ' + maintenanceMessage);
+        System.debug('merf ' + mMessage);
     }
 
     public List<Case> getMyCases()

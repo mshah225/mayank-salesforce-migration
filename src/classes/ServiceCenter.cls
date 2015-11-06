@@ -8,7 +8,6 @@ public with sharing class ServiceCenter
     public Case suggestAnArticle { get; set; }
     public Contact userContact { get; set; }
     public Date today;
-    public Decimal myPin;
     private Decimal origPin;
     public Decimal newPin { get; set; }
     public Id caseId;
@@ -22,6 +21,7 @@ public with sharing class ServiceCenter
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
     public String userAsurite;
+    public String mMessage { get; set; }
     public Term__c termcAC;
     public Term__c termcB;
 
@@ -58,31 +58,52 @@ public with sharing class ServiceCenter
         asurite = userContact.ASURite_ID__c;
         newCase = new Case();
         today = date.today();
+
         termcAC = [
             SELECT Session_A_C_Start_Date__c
             FROM Term__c
             WHERE session_A_C_Start_Date__c > :System.today()
             LIMIT 1
         ];
+
         termcB = [
             SELECT Session_B_Start_Date__c
             FROM Term__c
             WHERE session_B_Start_Date__c > :System.today()
             LIMIT 1
         ];
+
         oppList = [
             SELECT Career__c, Term__c, StageName, Admitted_Session__c
             FROM Opportunity
             WHERE Contact__c = :userContact.Id
         ];
+
         suggestAnArticle = new Case();
         origPin = userContact.Self_Service_PIN__c;
+
+        List<Service_Center_Maintenance__c> scmList = [
+            SELECT Message__c, Start_Time__c, End_Time__c
+            FROM Service_Center_Maintenance__c
+            WHERE Displayed__c = true
+        ];
+
+        if (scmList.size() > 0)
+        {
+            if ((scmList[0].Start_Time__c <= System.now()
+                && scmList[0].End_Time__c >= System.now())
+                || (scmList[0].Start_Time__c == null
+                    && scmList[0].End_Time__c == null))
+            {
+                mMessage = scmList[0].Message__c;
+            }
+        }
+        System.debug('merf ' + mMessage);
     }
 
     public List<Case> getMyCases()
     {
         List<Contact> contacts = new List<Contact> { userContact };
-
         Map<Id, List<Case>> openCaseMap;
 
         if (viewingAs)
@@ -100,9 +121,7 @@ public with sharing class ServiceCenter
     public List<Case> getClosedCases()
     {
         List<Case> closedCases = new List<Case>();
-
         List<Contact> contacts = new List<Contact> { userContact };
-
         Map<Id, List<Case>> closedCaseMap;
 
         if (viewingAs)
@@ -152,7 +171,8 @@ public with sharing class ServiceCenter
         }
     }
 
-    public EmailMessage[] getEmailMessages() {
+    public EmailMessage[] getEmailMessages()
+    {
         Date launchDate = EMAILVISIBILITYDATE;
         List<String> emailAddresses = new List<String>();
         emailAddresses.add(userContact.Email);
@@ -236,78 +256,38 @@ public with sharing class ServiceCenter
         {
             return true;
         }
-        else if ((oppList == Null && userContact != null) || (oppList.size() == 0 && userContact != null))
-        {
-            return true;
-        }
-        else if ((oppList[0].StageName == 'Enrolled'
-                && oppList[0].Career__c == 'Undergraduate'
-                && oppList[0].Admitted_Session__c == 'A/C')
-                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
-        {
-            return false;
-        }
-        else if ((oppList[0].StageName == 'Enrolled'
-                && oppList[0].Career__c == 'Undergraduate'
-                && oppList[0].Admitted_Session__c == 'B')
-                && today < date.valueOf(termcB.Session_B_Start_Date__c))
-        {
-            return false;
-        }
-        else if (oppList[0].StageName != 'Enrolled'
-                && oppList[0].Career__c == 'Undergraduate'
-                && (userContact.Affiliation_Student__c == 'Current'
-                || userContact.Affiliation_Alumni__c == 'Current'
-                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                || userContact.Affiliation_Employee__c == 'Current')
-                && today < date.valueOf(termcB.Session_B_Start_Date__c))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    public Boolean getQuestionsBox()
-    {
-        if (userContact == Null)
-        {
-            return false;
-        }
         else if ((oppList == Null && userContact != null)
                 || (oppList.size() == 0 && userContact != null))
         {
-            return false;
+            return true;
         }
         else if ((oppList[0].StageName == 'Enrolled'
                 && oppList[0].Career__c == 'Undergraduate'
                 && oppList[0].Admitted_Session__c == 'A/C')
                 && today < date.valueOf(termcAC.Session_A_C_Start_Date__c))
         {
-            return true;
+            return false;
         }
         else if ((oppList[0].StageName == 'Enrolled'
                 && oppList[0].Career__c == 'Undergraduate'
                 && oppList[0].Admitted_Session__c == 'B')
                 && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
-            return true;
+            return false;
         }
         else if (oppList[0].StageName != 'Enrolled'
                 && oppList[0].Career__c == 'Undergraduate'
                 && (userContact.Affiliation_Student__c == 'Current'
-                || userContact.Affiliation_Alumni__c == 'Current'
-                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                || userContact.Affiliation_Employee__c == 'Current')
+                    || userContact.Affiliation_Alumni__c == 'Current'
+                    || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                    || userContact.Affiliation_Employee__c == 'Current')
                 && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
-            return true;
+            return false;
         }
         else
         {
-            return false;
+            return true;
         }
     }
 
@@ -339,9 +319,9 @@ public with sharing class ServiceCenter
         else if (oppList[0].StageName != 'Enrolled'
                 && oppList[0].Career__c == 'Undergraduate'
                 && (userContact.Affiliation_Student__c == 'Current'
-                || userContact.Affiliation_Alumni__c == 'Current'
-                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                || userContact.Affiliation_Employee__c == 'Current')
+                    || userContact.Affiliation_Alumni__c == 'Current'
+                    || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                    || userContact.Affiliation_Employee__c == 'Current')
                 && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
@@ -383,19 +363,12 @@ public with sharing class ServiceCenter
             System.Debug ('Stack Trace: ' + e.getStackTraceString());
 
             return null;
-        }
+       }
     }
 
     public Decimal getMyPin()
     {
-        if (viewingAs)
-        {
-            return 111111;
-        }
-        else
-        {
-            return userContact.Self_Service_PIN__c;
-        }
+        return (viewingAs) ? 111111 : userContact.Self_Service_PIN__c;
     }
 
     public PageReference changePin()
@@ -456,17 +429,16 @@ public with sharing class ServiceCenter
         suggestAnArticle.Subject = 'Suggest An Article';
         suggestAnArticle.Description = suggestAnArticle.Description;
         suggestAnArticle.ContactId = userContact.Id;
+        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
+        suggestAnArticle.Category__c = 'Knowledge';
+        suggestAnArticle.Origin__c = 'My ASU';
+        suggestAnArticle.Visible_by_Contact__c = false;
         suggestAnArticle.OwnerId = [
             SELECT Id
             FROM Group
             WHERE Name = 'Student-Centric Initiatives (Case)'
             AND Type = 'Queue'
         ].Id;
-
-        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
-        suggestAnArticle.Category__c = 'Knowledge';
-        suggestAnArticle.Origin__c = 'My ASU';
-        suggestAnArticle.Visible_by_Contact__c = false;
 
         insert suggestAnArticle;
 

@@ -58,7 +58,7 @@ public without sharing class MyASUViewAs
         String xml = res.getBody();
         Dom.Document doc = new Dom.Document();
         doc.load(xml);
-        
+
         // Retrieve the root element for this document.
         Dom.XMLNode address = doc.getRootElement();
 
@@ -150,10 +150,10 @@ public without sharing class MyASUViewAs
     * @return A list with the email messages.
     */
     public static List<EmailMessage> getViewAsCaseEmails(Date launchDate, Id caseId,
-            String contactEmail)
+            List<String> contactEmails)
     {
         List<EmailMessage> viewAsCaseEmails = CaseService.getCaseEmailMessages(launchDate,
-                caseId, contactEmail);
+                caseId, contactEmails);
 
         return viewAsCaseEmails;
     }

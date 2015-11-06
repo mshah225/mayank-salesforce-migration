@@ -7,7 +7,7 @@
 <head>
     <title>My ASU | {!caseDetails.Subject}</title>
     <c:asu_responsive_header_section linkList="{!linkList}"/>
-
+    
     <style>
         .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
             border-top-color: #990033 !important;
@@ -135,7 +135,6 @@
                                    moretext + '</a>';
                     $(this).html(html);
                 }
-
             });
 
             $(".emailToggle").click(function()

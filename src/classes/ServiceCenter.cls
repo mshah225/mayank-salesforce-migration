@@ -174,26 +174,28 @@ public with sharing class ServiceCenter
     public EmailMessage[] getEmailMessages()
     {
         Date launchDate = EMAILVISIBILITYDATE;
+        List<String> emailAddresses = new List<String>();
+        emailAddresses.add(userContact.Email);
+        emailAddresses.add(userContact.ASU_Email__c);
+        emailAddresses.add(userContact.ASU_Gmail__c);
+        emailAddresses.add(userContact.Personal_Email__c);
+        emailAddresses.add(userContact.EPO_Email__c);
+
         if (viewingAs)
         {
             return MyASUViewAs.getViewAsCaseEmails(
-            	EMAILVISIBILITYDATE,
+                EMAILVISIBILITYDATE,
                 ApexPages.currentPage().getParameters().get('id'),
-                userContact.Email
+                emailAddresses
             );
         }
         else
         {
-            return [
-                SELECT FromName, CreatedDate, HtmlBody, LastModifiedDate, Subject,
-                TextBody, FromAddress, ToAddress, CCAddress
-                FROM EmailMessage
-                WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
-                AND Incoming = false
-                AND CreatedDate > :launchDate
-                AND ToAddress = :userContact.Email
-                ORDER BY CreatedDate DESC
-            ];
+            return CaseService.getCaseEmailMessages(
+                EMAILVISIBILITYDATE,
+                ApexPages.currentPage().getParameters().get('id'),
+                emailAddresses
+            );
         }
     }
 

@@ -184,7 +184,7 @@ public with sharing class ServiceCenter
         if (viewingAs)
         {
             return MyASUViewAs.getViewAsCaseEmails(
-            	EMAILVISIBILITYDATE,
+                EMAILVISIBILITYDATE,
                 ApexPages.currentPage().getParameters().get('id'),
                 emailAddresses
             );

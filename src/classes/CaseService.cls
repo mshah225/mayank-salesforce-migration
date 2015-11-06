@@ -1,19 +1,19 @@
 public class CaseService
 {
-	/**
-	* Returns all the fields on Case in a String
-	* @return A string containing all the Case fields
-	*/
-	public static String caseFieldsToString()
-	{
-		String caseFields = null;
+    /**
+    * Returns all the fields on Case in a String
+    * @return A string containing all the Case fields
+    */
+    public static String caseFieldsToString()
+    {
+        String caseFields = null;
 
-		Map<String, SObjectField> caseFieldMap = ObjectService.getObjectFieldMap('Case');
+        Map<String, SObjectField> caseFieldMap = ObjectService.getObjectFieldMap('Case');
 
-		caseFields = ObjectService.objectFieldsToString(caseFieldMap);
+        caseFields = ObjectService.objectFieldsToString(caseFieldMap);
 
-		return caseFields;
-	}
+        return caseFields;
+    }
 
     /**
     * Returns the fields needed on the Service Center for a given case
@@ -51,7 +51,7 @@ public class CaseService
         ];
     }
 
-	/**
+    /**
     * Get these contact's open visible cases
     * @param A list of contacts
     * @return A map containing the set of contactIds and their associated cases
@@ -66,18 +66,18 @@ public class CaseService
 
         for (Contact con : listOfContacts)
         {
-        	contactIds.add(con.Id);
+            contactIds.add(con.Id);
         }
 
         // Get the list of cases associated with our set of contacts
         try
         {
-        	String selectOpenVisibleCases = 'SELECT ' + caseFields + ' ' +
-        									'FROM Case ' +
-        									'WHERE IsClosed = false ' +
-        									'AND Visible_by_Contact__c = true ' +
-        									'AND ContactId IN :contactIds ' +
-        									'ORDER BY CreatedDate DESC';
+            String selectOpenVisibleCases = 'SELECT ' + caseFields + ' ' +
+                                            'FROM Case ' +
+                                            'WHERE IsClosed = false ' +
+                                            'AND Visible_by_Contact__c = true ' +
+                                            'AND ContactId IN :contactIds ' +
+                                            'ORDER BY CreatedDate DESC';
 
             openCases = Database.query(selectOpenVisibleCases);
         }
@@ -94,14 +94,14 @@ public class CaseService
 
         for (Case caze : openCases)
         {
-        	if (conCaseMap.containsKey(caze.ContactId))
-        	{
-        		conCaseMap.get(caze.ContactId).add(caze);
-        	}
-        	else
-        	{
-        		conCaseMap.put(caze.ContactId, new List<Case> { caze });
-        	}
+            if (conCaseMap.containsKey(caze.ContactId))
+            {
+                conCaseMap.get(caze.ContactId).add(caze);
+            }
+            else
+            {
+                conCaseMap.put(caze.ContactId, new List<Case> { caze });
+            }
         }
 
         return conCaseMap;
@@ -123,18 +123,18 @@ public class CaseService
 
         for (Contact con : listOfContacts)
         {
-        	contactIds.add(con.Id);
+            contactIds.add(con.Id);
         }
 
         // Get the list of cases associated with our set of contacts
         try
         {
-           	String selectClosedVisibleCases = 'SELECT ' + caseFields + ' ' +
-        									  'FROM Case ' +
-        									  'WHERE IsClosed = true ' +
-        									  'AND Visible_by_Contact__c = true ' +
-        									  'AND ContactId IN :contactIds ' +
-        									  'ORDER BY ClosedDate DESC';
+            String selectClosedVisibleCases = 'SELECT ' + caseFields + ' ' +
+                                              'FROM Case ' +
+                                              'WHERE IsClosed = true ' +
+                                              'AND Visible_by_Contact__c = true ' +
+                                              'AND ContactId IN :contactIds ' +
+                                              'ORDER BY ClosedDate DESC';
 
             closedCases = Database.query(selectClosedVisibleCases);
         }
@@ -151,14 +151,14 @@ public class CaseService
 
         for (Case caze : closedCases)
         {
-        	if (conCaseMap.containsKey(caze.ContactId))
-        	{
-        		conCaseMap.get(caze.ContactId).add(caze);
-        	}
-        	else
-        	{
-        		conCaseMap.put(caze.ContactId, new List<Case> { caze });
-        	}
+            if (conCaseMap.containsKey(caze.ContactId))
+            {
+                conCaseMap.get(caze.ContactId).add(caze);
+            }
+            else
+            {
+                conCaseMap.put(caze.ContactId, new List<Case> { caze });
+            }
         }
 
         return conCaseMap;
@@ -204,18 +204,18 @@ public class CaseService
     */
     public static List<Case> createTestCases(Integer numberOfCases, Contact con)
     {
-    	List<Case> testCases = new List<Case>();
+        List<Case> testCases = new List<Case>();
 
-    	for (Integer i = 0; i < numberOfCases; i++)
-    	{
-    		Case c = new Case();
-    		c.Subject = 'Test Case ' + i;
-    		c.Description = 'Auto generated test case';
-    		c.ContactId = con.Id;
-    		testCases.add(c);
-    	}
+        for (Integer i = 0; i < numberOfCases; i++)
+        {
+            Case c = new Case();
+            c.Subject = 'Test Case ' + i;
+            c.Description = 'Auto generated test case';
+            c.ContactId = con.Id;
+            testCases.add(c);
+        }
 
-    	return testCases;
+        return testCases;
     }
 
     public class CaseServiceException extends Exception {}

@@ -54,7 +54,7 @@
         <c:SCPageNotifications viewingAs="{!viewingAs}"
                                firstName="{!firstName}"
                                lastName="{!lastName}"
-                               mMessage="{!mMessage}"/>
+                               maintenanceString="{!mMessage}"/>
 
         <apex:form id="suggestAnArticle">
             <!-- Modal -->

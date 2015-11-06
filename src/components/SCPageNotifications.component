@@ -1,6 +1,6 @@
 <apex:component >
 	<!-- This component renders the page notifications on the page -->
-    <apex:attribute name="mMessage"
+    <apex:attribute name="maintenanceString"
                     description="The message to be displayed on the SC during maintenance"
                     type="String"/>
     <apex:attribute name="viewingAs"
@@ -14,12 +14,12 @@
                     type="String"/>
 
 	<center>
-		<apex:outputPanel rendered="{!IF(mMessage != null, true, false)}">
+		<apex:outputPanel rendered="{!IF(maintenanceString != null, true, false)}">
 	        <div class="alert alert-warning">
 	            <button type="button"
                         class="close"
                         data-dismiss="alert">×</button>
-	            <apex:outputText value="{!mMessage}"/>
+	            <apex:outputText value="{!maintenanceString}"/>
 	        </div>
 	    </apex:outputPanel>
 
@@ -40,10 +40,14 @@
                         class="close"
                         data-dismiss="alert">×</button>
 	            <apex:outputText>
-	            	Your PIN cannot contain your year of birth.<br />
-	            	Your PIN must not use more than 4 duplicate numbers.<br />
-	            	Your PIN must be different than your previous PIN.<br />
-	            	Your PIN cannot use more than 4 sequential numbers in your PIN. Forwards or backwards.<br />
+	            	Your PIN cannot contain your year of birth.
+                    <br />
+	            	Your PIN must not use more than 4 duplicate numbers.
+                    <br />
+	            	Your PIN must be different than your previous PIN.
+                    <br />
+	            	Your PIN cannot use more than 4 sequential numbers in your PIN. Forwards or backwards.
+                    <br />
 	            	Your PIN must be between 6 and 10 numbers.
 	            </apex:outputText>
 	        </div>

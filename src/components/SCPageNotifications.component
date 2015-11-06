@@ -70,9 +70,9 @@
                         data-dismiss="alert">×</button>
                 <p><strong>Thank you for your feedback.</strong> Your feedback helps ASU make the Knowledge Base better.</p>
             </div>
-         </apex:outputPanel>
+        </apex:outputPanel>
 
-         <apex:outputPanel rendered="{!$CurrentPage.parameters.Confirm == 'newcase'}">
+        <apex:outputPanel rendered="{!$CurrentPage.parameters.Confirm == 'newcase'}">
             <div class="alert alert-success caseConfirm">
                 <button type="button"
                         class="close"
@@ -99,6 +99,6 @@
                         data-dismiss="alert">×</button>
                 <p><strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.</p>
             </div>
-         </apex:outputPanel>
+        </apex:outputPanel>
     </center>
 </apex:component>

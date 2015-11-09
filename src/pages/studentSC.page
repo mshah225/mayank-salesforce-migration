@@ -1,14 +1,13 @@
-<apex:page showHeader="false"
+<apex:page docType="html-5.0"
+    showHeader="false"
     sidebar="false"
-    cache="true"
-    docType="html-5.0"
     controller="ServiceCenter"
     action="{!init}"
-    extensions="NavLinks">
+    extensions="NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | Service Center</title>
-    <c:asu_responsive_header_section />
-    
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
+
     <style>
         .checkboxHidden {
             visibility:hidden;
@@ -36,44 +35,75 @@
                        emplId="{!emplId}"
                        viewingAs="{!viewingAs}"/>
 </head>
-<body onload="viewAsLinks()">
+<body>
     <script>
         if (window.top !== window.self) top.location.replace(self.location.href);
     </script>
 
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader firstName="{!firstName}" 
-                lastName="{!lastName}" 
-                viewingAs="{!viewingAs}" 
-                emplId="{!emplId}" 
-                stopViewAsUrl="{!stopViewAsUrl}" 
-                viewAsUrl="{!viewAsUrl}"/>
+
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
+                viewAsUrl="{!viewAsUrl}"
+                linkList="{!linkList}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"
                                firstName="{!firstName}"
-                               lastName="{!lastName}"/>
+                               lastName="{!lastName}"
+                               maintenanceString="{!mMessage}"/>
 
         <apex:form id="suggestAnArticle">
             <!-- Modal -->
-            <div class="modal fade" id="suggestAnArticle" tabindex="-1" role="dialog" aria-labelledby="suggestAnArticleLabel" aria-hidden="true">
+            <div class="modal fade"
+                 id="suggestAnArticle"
+                 tabindex="-1" role="dialog"
+                 aria-labelledby="suggestAnArticleLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                            <h6 class="modal-title" id="suggestAnArticleLabel">Suggest An Article</h6>
+                            <button type="button"
+                                    class="close"
+                                    data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+
+                                <span class="sr-only">Close</span>
+                            </button>
+
+                            <h6 class="modal-title" id="suggestAnArticleLabel">
+                                Suggest An Article
+                            </h6>
                         </div>
+
                         <div class="modal-body">
                             <apex:pageBlock mode="maindetail">
                                 <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                                 <br />
-                                <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" style="width:100%;max-width:400px;height:100px;"/>
+                                <apex:inputField id="articleDetails"
+                                                 required="true"
+                                                 value="{!suggestAnArticle.Description}"
+                                                 style="width:100%;max-width:400px;height:100px;"/>
                             </apex:pageBlock>
                         </div>
+
                         <div class="modal-footer">
                             <div class="pull-left">
-                                <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-default" style="width:40px;height:15px;padding:3px;"/>
-                                <button type="button" class="btn btn-default" data-dismiss="modal" style="width:35px;height:15px;padding:3px;margin-top:0px;">Close</button>
+                                <apex:commandButton
+                                        value="Submit"
+                                        action="{!suggestAnArticleSubmit}"
+                                        styleClass="btn btn-default"
+                                        style="width:40px;height:15px;padding:3px;"/>
+
+                                <button type="button"
+                                        class="btn btn-default"
+                                        data-dismiss="modal"
+                                        style="width:35px;height:15px;padding:3px;margin-top:0px;">
+                                    Close
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -90,76 +120,97 @@
                         </div>
 
                         <div class="content box-padding" id="search_content" >
-                            <apex:form id="autoCompleteForm" styleClass="searchKB">
+                            <apex:form id="searchForm" styleClass="searchKB">
                                 <apex:pageBlock mode="maindetail">
-                                    <p>Search for any issue or question to learn how ASU can help!</p><br />
+                                    <p>Search for any issue or question to learn how ASU can help!</p>
+                                    <br />
                                     <div class="searchKB2">
                                         <div class="form-horizontal">
-                                            <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox"
-                                            html-placeholder="Enter search terms"/>
-                                            <apex:commandButton value="Search" action="{!checkSearchString}" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults" oncomplete="viewAsLinks()" status="KBSearchStatus"/>
-                                            <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"/>
-                                            <apex:actionStatus id="KBSearchStatus">
-                                                <apex:facet name="start">
-                                                    <img src="/img/loading.gif" style="position: absolute;margin-left:-125px;margin-top:6px;"/>
-                                                </apex:facet>
-                                            </apex:actionStatus>
+                                            <apex:inputText id="articleTextBoxId"
+                                                            value="{!searchstring}"
+                                                            styleClass="searchBox"
+                                                            html-placeholder="Search the Knowledge Base"
+                                                            html-pattern=".{2,}"
+                                                            required="true"
+                                                            title="Please enter a minimum of 2
+                                                            characters"
+                                                            maxlength="99"/>
+
+                                            <apex:commandButton value="Search"
+                                                                id="submitButton"
+                                                                styleClass="kbbtn searchBtn"
+                                                                reRender="theSearchResults"
+                                                                oncomplete="viewAsLinks()"
+                                                                status="searchStatus"/>
+
+                                            <apex:commandButton value="Clear"
+                                                                styleClass="kbbtn searchBtn"
+                                                                style="width:37px;"
+                                                                onclick="this.form.reset();return false;"/>
                                         </div>
                                     </div>
                                 </apex:pageBlock>
                             </apex:form>
                             <br />
-                            <hr />
-                            <apex:form id="theSearchResults">
-                                <apex:pageBlock mode="maindetail" rendered="{!searchstring != ''}">
-                                    <h5><b>Results for:</b> '{!searchstring}'</h5>
-                                    <div style="height:5px;"/>
-                                    <knowledge:articleList articleVar="article"
-                                        Keyword="{!searchstring}"
-                                        pageSize="10">
-                                        <table>
-                                            <tr>
-                                                <td style="vertical-align:top;">
-                                                    &#8226;&nbsp;
-                                                </td>
-                                                <td>
-                                                    <apex:outputLink value="/akb?id={!article.Id}">
-                                                        {!article.Title}
-                                                    </apex:outputLink><br />
-                                                    <div style="height:6px;"/>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </knowledge:articleList>
+                            <apex:form id="theSearchResults" style="min-height:200px;">
+                                <apex:pageBlock id="searchResults" mode="maindetail">
                                     <br />
-                                    <button class="btn kbbtn" data-toggle="modal" data-target="#suggestAnArticle">
-                                        Suggest An Article
-                                    </button>
-                                </apex:pageBlock>
+                                    <apex:outputPanel rendered="{!searchstring != ''}">
+                                        <h5><b>Showing top results for '{!searchstring}'</b></h5>
+                                    </apex:outputPanel>
 
-                                <apex:pageBlock mode="maindetail" rendered="{!searchString == null}">
-                                    <h5><b>Top 5 Help Articles</b></h5>
-                                    <div style="height:5px;"/>
+                                    <apex:outputPanel rendered="{!searchstring == ''}">
+                                        <h5><b>Top 5 Knowledge Articles</b></h5>
+                                    </apex:outputPanel>
+
+                                    <apex:actionStatus id="searchStatus" >
+                                        <apex:facet name="start" >
+                                            <img src="/img/loading.gif"
+                                                 style="position:absolute;margin:1px 0px 0px 5px;"/>
+                                        </apex:facet>
+                                    </apex:actionStatus>
+
+                                    <hr style="margin-top:5px;"/>
+
                                     <knowledge:articleList articleVar="article"
-                                        sortBy="mostViewed">
+                                                           sortBy="mostViewed"
+                                                           keyword="{!searchstring}"
+                                                           pageSize="{!IF(searchstring != '',10,5)}">
                                         <table>
                                             <tr>
                                                 <td style="vertical-align:top;">
                                                     &#8226;&nbsp;
                                                 </td>
+
                                                 <td>
-                                                    <apex:outputLink value="/akb?id={!article.id}">{!article.title}</apex:outputLink><br />
-                                                    <div style="height:6px;"/>
+                                                    <apex:outputLink value="/akb?id={!article.id}">
+                                                        {!article.title}
+                                                    </apex:outputLink>
                                                 </td>
                                             </tr>
                                         </table>
+
+                                        <div style="height:15px;"></div>
                                     </knowledge:articleList>
+
+                                    <apex:commandLink styleClass="btn"
+                                                      style="padding:4px"
+                                                      value="View All Results"
+                                                      action="{!viewAllResults}"
+                                                      rendered="{!searchstring != ''}"/>
                                 </apex:pageBlock>
                             </apex:form>
                         </div>
                     </div>
+
                     <div class="box firstbox">
-                        <iframe src="https://webapp4.asu.edu/narrowcasting/ad/SMALL/myasu-servicecenter-1/true?rotate=true&interval=6000" scrolling="no" frameborder="0" width="100%" height="57" style="margin-bottom: -5px;"></iframe>
+                        <iframe src="https://webapp4.asu.edu/narrowcasting/ad/SMALL/myasu-servicecenter-1/true?rotate=true&interval=6000"
+                                scrolling="no"
+                                frameborder="0"
+                                width="100%"
+                                height="57"
+                                style="margin-bottom: -5px;">
+                        </iframe>
                     </div>
                 </div><!-- end col-md-7 -->
 
@@ -170,6 +221,7 @@
                                                 myPin="{!myPin}"
                                                 newPin="{!newPin}"
                                                 changePin="{!changePin}"/>
+
                     <c:SCMyCasesBox />
                 </div><!-- end col-md-5 -->
             </div><!-- end first row -->
@@ -205,6 +257,8 @@
     </script>
 
     <script>
+        viewAsLinks();
+
         function viewAsLinks() {
             var masqCookie = "{!masqScopeIdCookie}";
             var viewingAs = "{!viewingAs}";

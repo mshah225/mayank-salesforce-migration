@@ -1,6 +1,6 @@
 @isTest
 private class Test_FeedbackController
-{	
+{
 	private static Contact testContact;
 	private static Case testCase;
 	private static User testUser;
@@ -34,12 +34,12 @@ private class Test_FeedbackController
 		insert testUser;
 	}
 
-	@isTest static void testFeedbackCase() 
+	@isTest static void testFeedbackCase()
 	{
 		testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
 		PageReference setPage = Page.feedback;
 		Test.setCurrentPage(setPage);
-		System.runAs(testUser) 
+		System.runAs(testUser)
 		{
 			sc = new ServiceCenter();
 			fc = new FeedbackController(sc);

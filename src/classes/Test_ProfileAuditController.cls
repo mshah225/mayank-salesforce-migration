@@ -1,12 +1,14 @@
 @isTest
 private class Test_ProfileAuditController 
 {
-	@isTest static void testHasAccessSearch() 
+	@isTest static void testHasAccessSearch()
 	{
+        Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
 		ProfileAuditController pac = new ProfileAuditController();
 		pac.getProfileOptions();
 		pac.getAccessOptions();
-		pac.selectedProfileId = pac.profileList[0].Id;
+		pac.selectedProfileId = sysAdminProfile;
 		pac.selectedAccess = 'Has Access';
 		System.debug('!!!!!!!!!!!!!!!!!!!!!! Selected Profile: ' + pac.selectedProfileId);
 		System.debug('!!!!!!!!!!!!!!!!!!!!!! Selected Access: ' + pac.selectedAccess);
@@ -22,10 +24,12 @@ private class Test_ProfileAuditController
 	
 	@isTest static void testFieldSearch() 
 	{
-		ProfileAuditController pac = new ProfileAuditController();
+        Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
+        ProfileAuditController pac = new ProfileAuditController();
 		pac.getProfileOptions();
 		pac.getAccessOptions();
-		pac.selectedProfileId = pac.profileList[0].Id;
+		pac.selectedProfileId = sysAdminProfile;
 		pac.selectedAccess = 'No Access';
 		System.debug('!!!!!!!!!!!!!!!!!!!!!! Selected Profile: ' + pac.selectedProfileId);
 		System.debug('!!!!!!!!!!!!!!!!!!!!!! Selected Access: ' + pac.selectedAccess);
@@ -39,10 +43,12 @@ private class Test_ProfileAuditController
 
 	@isTest static void testResetForm() 
 	{
-		ProfileAuditController pac = new ProfileAuditController();
+        Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
+        ProfileAuditController pac = new ProfileAuditController();
 		pac.getProfileOptions();
 		pac.getAccessOptions();
-		pac.selectedProfileId = pac.profileList[0].Id;
+		pac.selectedProfileId = sysAdminProfile;
 		pac.selectedAccess = 'No Access';
 		System.debug('!!!!!!!!!!!!!!!!!!!!!! Selected Profile: ' + pac.selectedProfileId);
 		pac.profilePermissionSearch();

@@ -1028,13 +1028,14 @@ public with sharing class Test_CaseHandler {
         update c;
         Test.stopTest();
         Case stat = [
-            SELECT Status, Visible_by_Contact__c
+            SELECT Status, Visible_by_Contact__c, IsClosedOnCreate
             FROM Case
             WHERE Id = :c.Id LIMIT 1
         ];
 
         System.assert(stat.Status == 'Closed: Resolved');
         System.assert(stat.Visible_by_Contact__c == FALSE);
+        System.assert(stat.IsClosedOnCreate == TRUE);
     }
 
     static testmethod void TestRegChangeStateWithSufficientLinks()

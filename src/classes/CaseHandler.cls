@@ -88,8 +88,9 @@ public without sharing class CaseHandler implements ITrigger
 
                         if(c.OwnerId == faCaseQueue)
                         {
-                        c.Visible_By_Contact__c = FALSE;
-                        c.Status = 'Closed: Resolved';
+                            c.Visible_By_Contact__c = FALSE;
+                            c.Status = 'Closed: Resolved';
+                            c.IsClosedOnCreate = TRUE;
                         }
                     }
                 }

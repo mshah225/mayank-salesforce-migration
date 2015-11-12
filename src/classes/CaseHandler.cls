@@ -119,12 +119,12 @@ public without sharing class CaseHandler implements ITrigger
         // Set system info field for Most Recent Queue
         if (groupNameMap.containsKey(c.OwnerId))
         {
-        c.Most_Recent_Queue__c = groupNameMap.get(c.OwnerId);
+            c.Most_Recent_Queue__c = groupNameMap.get(c.OwnerId);
         }
         // Set system info field for Most Recent Functional Group
         if (c.Functional_Group__c != 'External Unit' && c.Functional_Group__c != null)
         {
-        c.Most_Recent_Functional_Group__c = c.Functional_Group__c;
+            c.Most_Recent_Functional_Group__c = c.Functional_Group__c;
         }
 
         if (recruitmentCaseRT.size() > 0 && c.RecordTypeId == recruitmentCaseRT[0].Id)

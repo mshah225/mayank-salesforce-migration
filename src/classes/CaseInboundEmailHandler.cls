@@ -443,7 +443,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         {
             // Catch any exceptions and create a lost email.
             String error = e.getMessage() + '\n' + e.getStackTraceString();
-            System.debug('!!! Error is ' + e);
             generateLostEmail(email, error);
         }
 

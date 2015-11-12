@@ -1,13 +1,12 @@
-<apex:page showHeader="false"
-           sidebar="false"
-           cache="true"
-           docType="html-5.0"
-           controller="ServiceCenter"
-           action="{!init}"
-           extensions="NavLinks">
+<apex:page docType="html-5.0"
+    showHeader="false"
+    sidebar="false"
+    controller="ServiceCenter"
+    action="{!init}"
+    extensions="NavLinks">
 <head>
     <title>My ASU | {!caseDetails.Subject}</title>
-    <c:asu_responsive_header_section />
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
     
     <style>
         .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
@@ -136,7 +135,6 @@
                                    moretext + '</a>';
                     $(this).html(html);
                 }
-
             });
 
             $(".emailToggle").click(function()
@@ -162,12 +160,14 @@
 
 <body>
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader firstName="{!firstName}" 
-                lastName="{!lastName}" 
-                viewingAs="{!viewingAs}" 
-                emplId="{!emplId}" 
-                stopViewAsUrl="{!stopViewAsUrl}" 
-                viewAsUrl="{!viewAsUrl}"/>
+
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
+                viewAsUrl="{!viewAsUrl}"
+                linkList="{!linkList}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"
@@ -190,7 +190,9 @@
 
                         <div class="content">
                             <apex:form styleClass="detailsForm">
-                              <h3 style="word-wrap: break-word;">{!caseDetails.subject}</h3><br /><br />
+                                <h3 style="word-wrap: break-word;">{!caseDetails.subject}</h3>
+                                <br />
+                                <br />
                                 <apex:pageBlock tabStyle="Case" mode="maindetail">
                                     <apex:pageBlockSection collapsible="false" columns="1">
                                         <apex:outputText value="{!caseDetails.Status}" />
@@ -220,7 +222,7 @@
                                                          escape="false"
                                                          styleClass="feedbackLink"
                                                          label="Feedback"/>
-                                  </apex:pageBlockSection>
+                                    </apex:pageBlockSection>
                                 </apex:pageBlock>
                             </apex:form>
                         </div>

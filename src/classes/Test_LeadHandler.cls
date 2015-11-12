@@ -177,16 +177,6 @@ public with sharing class Test_LeadHandler
         Opportunity actualData = oppsCreated.get(0);
 
         System.assertEquals(expectedData.Convert_Contact__c, actualData.Contact__c, 'Contact was not associated correctly');
-        System.assertEquals(expectedData.Career__c, actualData.Career__c, 'Career was not converted correctly');
-        System.assertEquals(expectedData.Enrollment_Term__c, actualData.Term__c, 'Term was not converted correctly');
-        System.assertEquals(expectedData.First_Generation__c, actualData.First_Generation__c, 'First Generation was not converted correctly');
-        System.assertEquals(expectedData.Online__c, actualData.Online_Degree__c, 'Online degree was not converted correctly');
-        System.assertEquals(expectedData.International_Student__c, actualData.International_Student__c, 'International Student status was not converted correctly');
-        System.assertEquals(expectedData.Potential_National_Scholar__c, actualData.Potential_National_Scholar__c, 'Potential National Scholar status was not converted correctly');
-        System.assertEquals(expectedData.Potential_WUE__c, actualData.Potential_WUE__c, 'Potential WUE status was not converted correctly');
-        System.assertEquals(expectedData.Search_Segment__c, actualData.Search_Segment__c, 'Search segment was not converted correctly');
-        System.assertEquals(expectedData.Self_Reported_SES__c, actualData.Self_Reported_SES__c, 'Self Reported SES was not converted correctly');
-        System.assertEquals(expectedData.Veteran_Status__c, actualData.Military_Status__c, 'Military status was not converted correctly');
     }
 
     @isTest static void testCreationOfPERecordsOnConversion()

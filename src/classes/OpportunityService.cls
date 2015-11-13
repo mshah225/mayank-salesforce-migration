@@ -106,12 +106,36 @@ public class OpportunityService
         Map<Id, Lead> contactIdToLeadMap= new Map<Id, Lead>();
         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
 
-        leadsFromConversion = [
-                SELECT ConvertedContactId, Career__c, Enrollment_Term__c, First_Generation__c, Online__c, International_Student__c, Potential_National_Scholar__c, Potential_WUE__c, Search_Segment__c, Self_Reported_SES__c, Veteran_Status__c
-                FROM Lead
-                WHERE Id IN :leadIds
-        ];
+        Map<String, String> opportunityToLeadFields = new Map<String, String>{
+                'Career__c' => 'Career__c',
+                'Term__c' => 'Enrollment_Term__c',
+                'First_Generation__c' => 'First_Generation__c',
+                'Online_Degree__c' => 'Online__c',
+                'International_Student__c' => 'International_Student__c',
+                'Potential_National_Scholar__c' => 'Potential_National_Scholar__c',
+                'Potential_WUE__c' => 'Potential_WUE__c',
+                'Search_Segment__c' => 'Search_Segment__c',
+                'Self_Reported_SES__c' => 'Self_Reported_SES__c',
+                'Military_Status__c' => 'Veteran_Status__c'
+        };
 
+        String leadQueryFields = '';
+        String oppQueryFields = '';
+
+        // Build a string for querying all the lead fields
+        for(String s : opportunityToLeadFields.values())
+        {
+            leadQueryFields += s + ', ';
+        }
+
+        leadQueryFields = leadQueryFields.subString(0, leadQueryFields.length() - 2);
+        System.debug('!!! leadQueryFields ' + leadQueryFields);
+
+        String leadQuery = 'SELECT ConvertedContactId, ' + leadQueryFields + ' FROM Lead WHERE Id IN :leadIds';
+
+        leadsFromConversion = Database.query(leadQuery);
+
+        // Map the Contact Ids to the Lead Data
         for (Lead newLead : leadsFromConversion)
         {
             contactIdToLeadMap.put(newLead.ConvertedContactId, newLead);
@@ -119,24 +143,34 @@ public class OpportunityService
 
         Set<Id> contactIds = contactIdToLeadMap.keySet();
 
+        // Bulid a string for querying all the opportunity fields
+        for(String s : opportunityToLeadFields.keySet())
+        {
+            oppQueryFields += s + ', ';
+        }
+
+        oppQueryFields = oppQueryFields.subString(0, oppQueryFields.length() - 2);
+        System.debug('!!! oppQueryFields ' + oppQueryFields);
+
         // Get all the opportunities associated with these contacts
-        opportunitiesToUpdate = [SELECT Contact__c FROM Opportunity WHERE Contact__c IN :contactIds];
+        String oppQuery = 'SELECT Contact__c, ' + oppQueryFields + ' FROM Opportunity WHERE Contact__c IN :contactIds';
+        opportunitiesToUpdate = Database.query(oppQuery);
 
         // Update all the opportunity information
         for (Opportunity opp : opportunitiesToUpdate)
         {
             Lead leadData = contactIdToLeadMap.get(opp.Contact__c);
 
-            opp.Career__c = leadData.Career__c;
-            opp.Term__c = leadData.Enrollment_Term__c;
-            opp.First_Generation__c = leadData.First_Generation__c;
-            opp.Online_Degree__c = leadData.Online__c;
-            opp.International_Student__c = leadData.International_Student__c;
-            opp.Potential_National_Scholar__c = leadData.Potential_National_Scholar__c;
-            opp.Potential_WUE__c = leadData.Potential_WUE__c;
-            opp.Search_Segment__c = leadData.Search_Segment__c;
-            opp.Self_Reported_SES__c = leadData.Self_Reported_SES__c;
-            opp.Military_Status__c = leadData.Veteran_Status__c;
+            for (String oppField : opportunityToLeadFields.keySet())
+            {
+                if (opp.get(oppField) == null)
+                {
+                    String leadField = opportunityToLeadFields.get(oppField);
+                    opp.put(oppField, leadData.get(leadField));
+                }
+            }
+            System.debug('!!! lead ' + leadData);
+            System.debug('!!! opp ' + opp);
         }
 
         return opportunitiesToUpdate;

@@ -14,11 +14,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testAccountGeomarketCodeAssignment()
     {
-        User testUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Account HS = new Account();
         HS.Name = 'Test High School';
@@ -32,8 +28,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         Insert con;
 
         con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :con.Id];
+        FROM Contact
+        WHERE Id = :con.Id];
 
         Key_Value__c KV = new Key_Value__c();
         KV.Geomarket_ZIP__c = '85287';
@@ -59,9 +55,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         update HS;
 
         String accountGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-                                            FROM Account
-                                            WHERE Id =: HS.Id
-                                            LIMIT 1].Geomarket_Code__c;
+        FROM Account
+        WHERE Id =: HS.Id
+        LIMIT 1].Geomarket_Code__c;
 
         Test.stopTest();
 
@@ -71,11 +67,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testContactGeomarketCodeAssignment()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Contact con = new Contact();
         con.FirstName = 'TestFirstName';
@@ -85,8 +77,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         Insert con;
 
         con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :con.Id];
+        FROM Contact
+        WHERE Id = :con.Id];
 
         Key_Value__c KVContact = new Key_Value__c();
         KVContact.Geomarket_ZIP__c = '90210';
@@ -130,9 +122,9 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         insert opp;
         String contactGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-                                            FROM Contact
-                                            WHERE Id = :con.Id
-                                            LIMIT 1].Geomarket_Code__c;
+        FROM Contact
+        WHERE Id = :con.Id
+        LIMIT 1].Geomarket_Code__c;
 
         // Fire Account Trigger to set Account.Geomarketcode__c
         HS.ShippingPostalCode = '84108';
@@ -147,9 +139,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         update opp;
 
         String contactHSGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-                                              FROM Contact
-                                              WHERE Id = :Con.Id
-                                              LIMIT 1].Geomarket_Code__c;
+        FROM Contact
+        WHERE Id = :Con.Id
+        LIMIT 1].Geomarket_Code__c;
 
         opp.Type = 'Transfer';
         update opp;
@@ -163,9 +155,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         update opp;
 
         String contactCollegeGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-                                                   FROM Contact
-                                                   WHERE Id = :Con.Id
-                                                   LIMIT 1].Geomarket_Code__c;
+        FROM Contact
+        WHERE Id = :Con.Id
+        LIMIT 1].Geomarket_Code__c;
 
         Test.stopTest();
 
@@ -181,11 +173,8 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testFreshmanScholar()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
@@ -193,8 +182,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert Con;
 
         Con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :Con.Id];
+        FROM Contact
+        WHERE Id = :Con.Id];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'Freshman Scholar';
@@ -221,9 +210,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         Test.stopTest();
 
         String lastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                               FROM Opportunity
-                               WHERE Id = :opp.Id
-                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        FROM Opportunity
+        WHERE Id = :opp.Id
+        LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
 
         System.Debug('Opportunity Details: ' + Opp);
         System.Debug('Last Rule Type: ' + lastRuleType);
@@ -233,15 +222,15 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testGraduateOpportunity()
     {
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com'];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         List<Contact> testContacts = ContactService.createTestContacts(1);
 
         Insert testContacts;
 
         Contact con = [SELECT Id, AccountId
-                        FROM Contact
-                        WHERE Id = :testContacts[0].Id];
+        FROM Contact
+        WHERE Id = :testContacts[0].Id];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International';
@@ -275,11 +264,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testInternational()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
@@ -287,8 +272,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         Insert Con;
 
         Con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :Con.Id];
+        FROM Contact
+        WHERE Id = :Con.Id];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International';
@@ -315,9 +300,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         Test.stopTest();
 
         String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                               FROM Opportunity
-                               WHERE Id = :Opp.Id
-                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        FROM Opportunity
+        WHERE Id = :Opp.Id
+        LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
 
         System.Debug('Opportunity Details: ' + Opp);
         System.Debug('Last Rule Type: ' + LastRuleType);
@@ -374,11 +359,11 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert testContacts;
 
         Contact chinaContact1 = [SELECT Id, AccountId
-                         FROM Contact
-                         WHERE Id = :testContacts[0].Id];
+        FROM Contact
+        WHERE Id = :testContacts[0].Id];
         Contact chinaContact2 = [SELECT Id, AccountId
-                         FROM Contact
-                         WHERE Id = :testContacts[1].Id];
+        FROM Contact
+        WHERE Id = :testContacts[1].Id];
 
         Opportunity chinaOpp1 = new Opportunity();
         chinaOpp1.Name = 'China Opportunity 1';
@@ -418,8 +403,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         System.assertEquals(chinaManagers[0].Id, chinaOpp1.OwnerId, 'Rule did not assign correct China territory manager.');
 
         chinaOpp2 = [SELECT OwnerId, Opportunity_Assignment_Number__c
-                     FROM Opportunity
-                     WHERE Name = 'China Opportunity 2'];
+        FROM Opportunity
+        WHERE Name = 'China Opportunity 2'];
 
         if (chinaOpp2.Opportunity_Assignment_Number__c <= ATar1.Range_End__c)
         {
@@ -481,11 +466,11 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert testContacts;
 
         Contact usContact1 = [SELECT Id, AccountId
-                         FROM Contact
-                         WHERE Id = :testContacts[0].Id];
+        FROM Contact
+        WHERE Id = :testContacts[0].Id];
         Contact usContact2 = [SELECT Id, AccountId
-                         FROM Contact
-                         WHERE Id = :testContacts[1].Id];
+        FROM Contact
+        WHERE Id = :testContacts[1].Id];
 
         Opportunity usOpp1 = new Opportunity();
         usOpp1.Name = 'US Opportunity 1';
@@ -525,8 +510,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         System.assertEquals(usManagers[0].Id, usOpp1.OwnerId, 'Rule did not assign correct US territory manager.');
 
         usOpp2 = [SELECT OwnerId, Opportunity_Assignment_Number__c
-                  FROM Opportunity
-                  WHERE Name = 'US Opportunity 2'];
+        FROM Opportunity
+        WHERE Name = 'US Opportunity 2'];
 
         if (usOpp2.Opportunity_Assignment_Number__c <= ATar1.Range_End__c)
         {
@@ -580,12 +565,12 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert testContacts;
 
         Contact transferContact1 = [SELECT Id, AccountId
-                                    FROM Contact
-                                    WHERE Id = :testContacts[0].Id];
+        FROM Contact
+        WHERE Id = :testContacts[0].Id];
 
         Contact transferContact2 = [SELECT Id, AccountId
-                                    FROM Contact
-                                    WHERE Id = :testContacts[1].Id];
+        FROM Contact
+        WHERE Id = :testContacts[1].Id];
 
         Opportunity transferOpp = new Opportunity();
         transferOpp.Name = 'Transfer Opportunity 1';
@@ -678,8 +663,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert testContact;
 
         Contact admitCondCon = [SELECT Id, AccountId
-                                FROM Contact
-                                WHERE Id = :testContact.Id];
+        FROM Contact
+        WHERE Id = :testContact.Id];
 
         Opportunity admitCondOpp = OpportunityService.createTestUndergraduateProspect(admitCondCon);
         admitCondOpp.Name = 'Conditional Admit Opportunity 1';
@@ -703,16 +688,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :admitCondCon.Id];
 
-        System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct conditioal admit territory manager.');        
+        System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct conditioal admit territory manager.');
     }
 
     @isTest public static void testLocation()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
@@ -720,8 +701,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         Insert Con;
 
         Con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :Con.Id];
+        FROM Contact
+        WHERE Id = :Con.Id];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'Location';
@@ -754,9 +735,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         Test.stopTest();
 
         String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                               FROM Opportunity
-                               WHERE Id = :Opp.Id
-                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        FROM Opportunity
+        WHERE Id = :Opp.Id
+        LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
 
         System.Debug('Opportunity Details: ' + Opp);
         System.Debug('Last Rule Type: ' + LastRuleType);
@@ -765,9 +746,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testAdmittedLocation()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
@@ -800,9 +779,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.Admitted_Location__c = LakeHavasu.Id;
 
         Test.startTest();
-            insert Opp;
-            //Opp.Location__c = LakeHavasu.Id;
-            //update Opp;
+        insert Opp;
+        //Opp.Location__c = LakeHavasu.Id;
+        //update Opp;
         Test.stopTest();
 
         String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
@@ -813,11 +792,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLastHighSchoolAttended()
     {
-        User TestUser = [SELECt Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Account HS = new Account();
         HS.Name = 'Test High School';
@@ -837,8 +812,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert pe;
 
         Con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :Con.Id];
+        FROM Contact
+        WHERE Id = :Con.Id];
 
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
@@ -858,9 +833,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         Test.stopTest();
 
         String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                               FROM Opportunity
-                               WHERE Id = :Opp.Id
-                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        FROM Opportunity
+        WHERE Id = :Opp.Id
+        LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
 
         System.Debug('Opportunity Details: ' + Opp);
         System.Debug('Last Rule Type: ' + LastRuleType);
@@ -870,11 +845,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLastCollegeAttended()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.User__c = TestUser.Id;
@@ -936,9 +907,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert pe;
 
 
-        Con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :Con.Id];
+        Con = [SELECT AccountId FROM Contact WHERE Id = :Con.Id];
 
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
@@ -959,10 +928,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                               FROM Opportunity
-                               WHERE Id = :Opp.Id
-                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        String LastRuleType = [
+                SELECT Id,Territory_Assignment_Last_Rule_Type__c
+                FROM Opportunity
+                WHERE Id = :Opp.Id
+                LIMIT 1
+        ].Territory_Assignment_Last_Rule_Type__c;
 
         System.Debug('Opportunity Details: ' + Opp);
         System.Debug('Last Rule Type: ' + LastRuleType);
@@ -971,11 +942,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testGeomarketCode()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'Geomarket';
@@ -997,9 +964,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Con.Geomarket_Code__c = 'AZ-01';
         insert Con;
 
-        Con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :Con.Id];
+        Con = [SELECT AccountId FROM Contact WHERE Id = :Con.Id];
 
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
@@ -1016,10 +981,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                               FROM Opportunity
-                               WHERE Id = :Opp.Id
-                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        String LastRuleType = [
+                SELECT Id,Territory_Assignment_Last_Rule_Type__c
+                FROM Opportunity
+                WHERE Id = :Opp.Id
+                LIMIT 1
+        ].Territory_Assignment_Last_Rule_Type__c;
 
         System.Debug('Opportunity Details: ' + Opp);
         System.Debug('Last Rule Type: ' + LastRuleType);
@@ -1028,11 +995,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testState()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'State';
@@ -1048,9 +1011,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Con.MailingCountry = 'United States';
         insert Con;
 
-        Con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :Con.Id];
+        Con = [SELECT AccountId FROM Contact WHERE Id = :Con.Id];
 
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
@@ -1069,10 +1030,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                               FROM Opportunity
-                               WHERE Id = :Opp.Id
-                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        String LastRuleType = [
+                SELECT Id,Territory_Assignment_Last_Rule_Type__c
+                FROM Opportunity
+                WHERE Id = :Opp.Id
+                LIMIT 1
+        ].Territory_Assignment_Last_Rule_Type__c;
 
         System.Debug('Opportunity Details: ' + Opp);
         System.Debug('Last Rule Type: ' + LastRuleType);
@@ -1081,20 +1044,14 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testDefaultUser()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
         Con.LastName = 'TestLastName';
         Insert Con;
 
-        Con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :Con.Id];
+        Con = [SELECT AccountId FROM Contact WHERE Id = :Con.Id];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'Default User';
@@ -1117,10 +1074,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                               FROM Opportunity
-                               WHERE Id = :Opp.Id
-                               LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        String LastRuleType = [
+                SELECT Territory_Assignment_Last_Rule_Type__c
+                FROM Opportunity
+                WHERE Id = :Opp.Id
+                LIMIT 1
+        ].Territory_Assignment_Last_Rule_Type__c;
 
         System.Debug('Opportunity Details: ' + Opp);
         System.Debug('Last Rule Type: ' + LastRuleType);
@@ -1129,11 +1088,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testInactiveUser()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Profile saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
 
@@ -1178,9 +1133,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         pe.Account__c = HS.Id;
         insert pe;
 
-        Con = [SELECT Id, AccountId
-               FROM Contact
-               WHERE Id = :Con.Id];
+        Con = [SELECT AccountId FROM Contact WHERE Id = :Con.Id];
 
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
@@ -1198,10 +1151,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        Opportunity OppAfterInsert = [SELECT Id,Territory_Assignment_Last_Rule_Type__c,OwnerId
-                                      FROM Opportunity
-                                      WHERE Id = :Opp.Id
-                                      LIMIT 1];
+        Opportunity OppAfterInsert = [
+                SELECT Territory_Assignment_Last_Rule_Type__c,OwnerId
+                FROM Opportunity
+                WHERE Id = :Opp.Id
+                LIMIT 1
+        ];
 
         System.Debug('Opportunity Details: ' + OppAfterInsert);
         System.Debug('Last Rule Type: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c);
@@ -1209,24 +1164,21 @@ public without sharing class Test_TerritoryAssignmentHelper
         System.Assert(OppAfterInsert.Territory_Assignment_Last_Rule_Type__c == 'Inactive Territory Manager','Did not correctly identify inactive User: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c);
     }
 
-    @isTest public static void testLeadFreshmanScholar(){
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+    @isTest public static void testLeadFreshmanScholar()
+    {
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         List<Lead> leadList = new List<Lead>();
 
         for (Integer i=0;i<1;i++)
         {
             Lead l = new Lead(LastName='LName'+i,
-                              FirstName='FName'+i,
-                              Company='Company',
-                              Email='test'+i+'@test.test',
-                              LeadSource='Email',
-                              Potential_National_Scholar__c=true,
-                              Type__c='First Time Freshman');
+                    FirstName='FName'+i,
+                    Company='Company',
+                    Email='test'+i+'@test.test',
+                    LeadSource='Email',
+                    Potential_National_Scholar__c=true,
+                    Type__c='First Time Freshman');
             leadList.add(l);
         }
 
@@ -1244,10 +1196,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-                                                 FROM Lead
-                                                 WHERE Id = :leadList[0].Id
-                                                 LIMIT 1]);
+        List<Lead> newLeadList = new List<Lead>([
+                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
+                FROM Lead
+                WHERE Id = :leadList[0].Id
+                LIMIT 1
+        ]);
 
         System.Debug('Lead Details: ' + leadList[0]);
         System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
@@ -1256,23 +1210,21 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadInternational()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         List<Lead> leadList = new List<Lead>();
 
         for (Integer i=0;i<1;i++)
         {
-            Lead l = new Lead(LastName='LName'+i,
-                              FirstName='FName'+i,
-                              Company='Company',
-                              Email='test'+i+'@test.test',
-                              LeadSource='Email',
-                              Type__c='First Time Freshman',
-                              International_Student__c = true);
+            Lead l = new Lead(
+                    LastName='LName'+i,
+                    FirstName='FName'+i,
+                    Company='Company',
+                    Email='test'+i+'@test.test',
+                    LeadSource='Email',
+                    Type__c='First Time Freshman',
+                    International_Student__c = true
+            );
             leadList.add(l);
         }
 
@@ -1287,10 +1239,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-                                                 FROM Lead
-                                                 WHERE Id = :leadList[0].Id
-                                                 LIMIT 1]);
+        List<Lead> newLeadList = new List<Lead>([
+                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
+                FROM Lead
+                WHERE Id = :leadList[0].Id
+                LIMIT 1
+        ]);
 
         System.Debug('Lead Details: ' + leadList[0]);
         System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
@@ -1299,11 +1253,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadLastInstitution()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Key_Value__c KVHS = new Key_Value__c();
         KVHS.Geomarket_ZIP__c = '84108';
@@ -1322,13 +1272,15 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         for (Integer i=0;i<1;i++)
         {
-            Lead l = new Lead(LastName='LName'+i,
-                              FirstName='FName'+i,
-                              Company='Company',
-                              Email='test'+i+'@test.test',
-                              LeadSource='Email',
-                              Type__c='First Time Freshman',
-                              Last_Institution_Attended__c = HS.id);
+            Lead l = new Lead(
+                    LastName='LName'+i,
+                    FirstName='FName'+i,
+                    Company='Company',
+                    Email='test'+i+'@test.test',
+                    LeadSource='Email',
+                    Type__c='First Time Freshman',
+                    Last_Institution_Attended__c = HS.id
+            );
             leadList.add(l);
         }
 
@@ -1338,10 +1290,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c, OwnerId
-                                                 FROM Lead
-                                                 WHERE Id = :leadList[0].Id
-                                                 LIMIT 1]);
+        List<Lead> newLeadList = new List<Lead>([
+                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c, OwnerId
+                FROM Lead
+                WHERE Id = :leadList[0].Id
+                LIMIT 1
+        ]);
 
         System.Debug('Lead Details: ' + leadList[0]);
         System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
@@ -1351,11 +1305,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadGeoMarket()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Key_Value__c KVLead = new Key_Value__c();
         KVLead.Geomarket_ZIP__c = '84108';
@@ -1373,13 +1323,15 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         for (Integer i=0;i<1;i++)
         {
-            Lead l = new Lead(LastName='LName'+i,
-                              FirstName='FName'+i,
-                              Company='Company',
-                              PostalCode='84108',
-                              Email='test'+i+'@test.test',
-                              LeadSource='Email',
-                              Type__c='First Time Freshman');
+            Lead l = new Lead(
+                    LastName='LName'+i,
+                    FirstName='FName'+i,
+                    Company='Company',
+                    PostalCode='84108',
+                    Email='test'+i+'@test.test',
+                    LeadSource='Email',
+                    Type__c='First Time Freshman'
+            );
             leadList.add(l);
         }
 
@@ -1390,10 +1342,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-                                                 FROM Lead
-                                                 WHERE Id = :leadList[0].Id
-                                                 LIMIT 1]);
+        List<Lead> newLeadList = new List<Lead>([
+                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
+                FROM Lead
+                WHERE Id = :leadList[0].Id
+                LIMIT 1
+        ]);
 
         System.Debug('Lead Details: ' + leadList[0]);
         System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
@@ -1401,12 +1355,9 @@ public without sharing class Test_TerritoryAssignmentHelper
     }
 
 
-    @isTest public static void testLeadState(){
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+    @isTest public static void testLeadState()
+    {
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'State';
@@ -1419,14 +1370,16 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         for (Integer i=0;i<1;i++)
         {
-            Lead l = new Lead(LastName='LName'+i,
-                              FirstName='FName'+i,
-                              Company='Company',
-                              State='Texas',
-                              Country='United States',
-                              Email='test'+i+'@test.test',
-                              LeadSource='Email',
-                              Type__c='First Time Freshman');
+            Lead l = new Lead(
+                    LastName='LName'+i,
+                    FirstName='FName'+i,
+                    Company='Company',
+                    State='Texas',
+                    Country='United States',
+                    Email='test'+i+'@test.test',
+                    LeadSource='Email',
+                    Type__c='First Time Freshman'
+            );
             leadList.add(l);
         }
 
@@ -1437,10 +1390,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, OwnerId, Territory_Assignment_Last_Rule_Type__c
-                                                 FROM Lead
-                                                 WHERE Id = :leadList[0].Id
-                                                 LIMIT 1]);
+        List<Lead> newLeadList = new List<Lead>([
+                SELECT Id, Type__c, OwnerId, Territory_Assignment_Last_Rule_Type__c
+                FROM Lead
+                WHERE Id = :leadList[0].Id
+                LIMIT 1
+        ]);
 
         System.Debug('Lead Details: ' + leadList[0]);
         System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
@@ -1450,22 +1405,20 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadDefaultUser()
     {
-        User TestUser = [SELECT Id
-                         FROM User
-                         WHERE Profile.Name = 'System Administrator'
-                         AND isActive = true
-                         LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
         List<Lead> leadList = new List<Lead>();
 
         for (Integer i=0;i<1;i++)
         {
-            Lead l = new Lead(LastName='LName'+i,
-                              FirstName='FName'+i,
-                              Company='Company',
-                              Email='test'+i+'@test.test',
-                              LeadSource='Email',
-                              Type__c='First Time Freshman');
+            Lead l = new Lead(
+                    LastName='LName'+i,
+                    FirstName='FName'+i,
+                    Company='Company',
+                    Email='test'+i+'@test.test',
+                    LeadSource='Email',
+                    Type__c='First Time Freshman'
+            );
             leadList.add(l);
         }
 
@@ -1483,10 +1436,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-                                                 FROM Lead
-                                                 WHERE Id = :leadList[0].Id
-                                                 LIMIT 1]);
+        List<Lead> newLeadList = new List<Lead>([
+                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
+                FROM Lead
+                WHERE Id = :leadList[0].Id
+                LIMIT 1
+        ]);
 
         System.Debug('Lead Details: ' + leadList[0]);
         System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
@@ -1516,12 +1471,14 @@ public without sharing class Test_TerritoryAssignmentHelper
         aTar2.User__c = testUsers[1].Id;
         insert aTar2;
 
-        Lead l = new Lead(LastName='LName',
-                              FirstName='FName',
-                              Company='Company',
-                              Email='test@test.test',
-                              LeadSource='Email',
-                              Type__c='First Time Freshman');
+        Lead l = new Lead(
+                LastName='LName',
+                FirstName='FName',
+                Company='Company',
+                Email='test@test.test',
+                LeadSource='Email',
+                Type__c='First Time Freshman'
+        );
         insert l;
 
         Test.startTest();

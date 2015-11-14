@@ -1,9 +1,10 @@
 <apex:page docType="html-5.0"
-    showHeader="false"
-    sidebar="false"
-    controller="ServiceCenter"
-    action="{!init}"
-    extensions="NavLinks,vfListPaginationController">
+           showHeader="false"
+           sidebar="false"
+           controller="ServiceCenter"
+           action="{!init}"
+           cache="true"
+           extensions="NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | Service Center</title>
     <c:asu_responsive_header_section linkList="{!linkList}"/>
@@ -226,8 +227,9 @@
                 </div><!-- end col-md-5 -->
             </div><!-- end first row -->
         </div><!-- End main container -->
-        <c:SCFooter />
     </div><!-- End ASU Content -->
+
+    <c:SCFooter />
 
     <script>
         if (!(navigator.userAgent.match(/Android/i)

@@ -3,7 +3,7 @@
     <apex:attribute name="linkList" description="The list of links from My ASU" type="Link[]"/>
 
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303,
             '/dist/css/bootstrap.min.css')}"/>
@@ -67,7 +67,4 @@
     <!--[if IE 6]><script>ASUHeader.browser = true;</script><![endif]-->
     <!--[if IE 7]><script>ASUHeader.browser = true;</script><![endif]-->
     <!--[if IE 8]><script>ASUHeader.browser = true;</script><![endif]-->
-    <apex:includeScript value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/js/asu_header.js')}"/>
-    <apex:includeScript value="https://code.jquery.com/jquery-2.1.4.min.js"/>
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
 </apex:component>

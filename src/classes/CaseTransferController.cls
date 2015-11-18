@@ -62,10 +62,7 @@ public with sharing class CaseTransferController
                 }
                 else
                 {
-                    serviceCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c>
-                    {
-                        car
-                    });
+                    serviceCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c>{ car });
                 }
             }
             else if (car.CTPColumn__c.equals('Colleges'))
@@ -76,10 +73,7 @@ public with sharing class CaseTransferController
                 }
                 else
                 {
-                    collegeCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c>
-                    {
-                        car
-                    });
+                    collegeCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c>{ car });
                 }
             }
         }

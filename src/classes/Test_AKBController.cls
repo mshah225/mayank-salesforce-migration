@@ -9,7 +9,6 @@ public class Test_AKBController
                 Title = 'Testing FAQ Article' + i,
                 Summary = 'Test FAQ From Apex' + i,
                 Answer__c = 'TEST' + i,
-                Question__c = 'TEST' + i,
                 Language = 'en_US',
                 IsVisibleInPKB = true,
                 IsVisibleInCsp = true,

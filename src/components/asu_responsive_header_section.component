@@ -13,7 +13,7 @@
             'MyASUHeader4_3/css/myASUHeader.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
             'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
-    <c:myasustyles />
+    <c:myASUStylesMin />
 
     <!--[if IE 9]>
     <style type="text/css">

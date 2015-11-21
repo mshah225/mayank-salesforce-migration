@@ -17,7 +17,6 @@
         .contactPhone td {
             padding: 0px !important;
         }
-
     </style>
 
     <script>
@@ -37,10 +36,6 @@
                        viewingAs="{!viewingAs}"/>
 </head>
 <body>
-    <script>
-        if (window.top !== window.self) top.location.replace(self.location.href);
-    </script>
-
     <div id="main-search" class="main-search closed"></div>
 
     <c:SCHeader firstName="{!firstName}"
@@ -82,7 +77,10 @@
 
                         <div class="modal-body">
                             <apex:pageBlock mode="maindetail">
-                                <p>Have an idea for an article you'd like to see? Please tell us below!</p>
+                                <p>
+                                    Have an idea for an article you'd like to see?
+                                    Please tell us below!
+                                </p>
                                 <br />
                                 <apex:inputField id="articleDetails"
                                                  required="true"
@@ -230,33 +228,6 @@
     </div><!-- End ASU Content -->
 
     <c:SCFooter />
-
-    <script>
-        if (!(navigator.userAgent.match(/Android/i)
-             || navigator.userAgent.match(/webOS/i)
-             || navigator.userAgent.match(/iPhone/i)
-             || navigator.userAgent.match(/iPad/i)
-             || navigator.userAgent.match(/iPod/i)
-             || navigator.userAgent.match(/BlackBerry/i)
-             || navigator.userAgent.match(/Windows Phone/i)))
-        {
-            document.getElementById("normalPhone").addEventListener("click", function(event){
-                event.preventDefault();
-            });
-
-            document.getElementById("normalPhone").addEventListener("contextmenu", function(event){
-                event.preventDefault();
-            });
-
-            document.getElementById("roverPhone").addEventListener("click", function(event){
-                event.preventDefault();
-            });
-
-            document.getElementById("roverPhone").addEventListener("contextmenu", function(event){
-                event.preventDefault();
-            });
-        }
-    </script>
 
     <script>
         viewAsLinks();

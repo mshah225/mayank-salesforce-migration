@@ -1,10 +1,23 @@
 @isTest
 private class Test_BatchDeferredTAClasses {
-	
-    static testMethod void testBatchAccountDeferredLeadTA() {
-	    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-	    User TestUser2 = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true AND Id != :TestUser.Id LIMIT 1];
-    
+
+    @testSetup static void setup()
+    {
+        List<User> testUsers = UserService.createMultipleTestUsers(2);
+
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
+        for (User u : testUsers)
+        {
+            u.ProfileId = saProfile;
+        }
+
+        insert testUsers;
+    }
+
+    @isTest static void testBatchAccountDeferredLeadTA() {
+	    User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
+	    User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
 
 	    Key_Value__c KVHS = new Key_Value__c();
 	    KVHS.Geomarket_ZIP__c = '84108';
@@ -54,11 +67,11 @@ private class Test_BatchDeferredTAClasses {
         acctDeferredLeadTA.finish(BC);    
     }
 
-    static testMethod void testBatchAccountDeferredOppTA() {
-	    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-	    User TestUser2 = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true AND Id != :TestUser.Id LIMIT 1];
-    
-	    Account HS = new Account();
+    @isTest static void testBatchAccountDeferredOppTA() {
+        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
+        User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+
+        Account HS = new Account();
 	    HS.Name = 'Test High School';
 	    HS.Institution_Type__c = 'HS';
 	    HS.Territory_Manager__c = TestUser.Id;
@@ -108,11 +121,11 @@ private class Test_BatchDeferredTAClasses {
         acctDeferredOppTA.finish(BC);    
     }
 
-    static testMethod void testBatchTARDeferredLeadTA() {
-	    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-	    User TestUser2 = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true AND Id != :TestUser.Id LIMIT 1];
-    
-	    Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
+    @isTest static void testBatchTARDeferredLeadTA() {
+        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
+        User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+
+        Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
 	    Atar1.Rule_Type__c = 'Default User';
 	    Atar1.User__c = TestUser.Id;
 	    Atar1.Opportunity_Type__c = 'First Time Freshman';
@@ -152,11 +165,11 @@ private class Test_BatchDeferredTAClasses {
         tarDeferredLeadTA.finish(BC);     
     }
 
-    static testMethod void testBatchTARDeferredOppTA() {
-	    User TestUser = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1];
-	    User TestUser2 = [Select Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true AND Id != :TestUser.Id LIMIT 1];
-    
-	    Contact Con = new Contact();
+    @isTest static void testBatchTARDeferredOppTA() {
+        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
+        User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+
+        Contact Con = new Contact();
 	    Con.FirstName = 'TestFirstName';
 	    Con.LastName = 'TestLastName';
 	    Insert Con;    

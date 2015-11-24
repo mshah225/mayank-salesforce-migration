@@ -6,7 +6,7 @@ public with sharing class ServiceCenter
     private Decimal origPin;
     private Id caseId;
     private Map<String, String> viewAsMap;
-    private List<Opportunity> oppList;
+    public List<Opportunity> oppList;
     private Term__c termcAC;
     private Term__c termcB;
 
@@ -64,6 +64,8 @@ public with sharing class ServiceCenter
         {
             userContact = ContactService.getLoggedInContact();
         }
+
+        System.debug('merf userContact: ' + userContact);
 
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
@@ -427,10 +429,10 @@ public with sharing class ServiceCenter
         return redirectWithParams(ApexPages.currentPage(), 'Suggest', 'yes');
     }
 
-    public PageReference stopSubmit(String masqScopeIdCooke)
+    public PageReference stopSubmit(String theCookie)
     {
         PageReference go = new PageReference(ApexPages.currentPage().getUrl());
-        go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+        go.getParameters().put('masqScopeIdCookie', theCookie);
         go.setRedirect(true);
 
         return go;

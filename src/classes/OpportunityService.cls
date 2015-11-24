@@ -9,7 +9,12 @@ public class OpportunityService
     {
         Date closeDate = Date.today();
 
-        Id undergradProspectId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
+        Id undergradProspectId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Undergraduate Prospect'
+            LIMIT 1
+        ].Id;
 
         Opportunity undergradProspect = new Opportunity();
         undergradProspect.Contact__c = contactToAssociate.Id;
@@ -33,7 +38,12 @@ public class OpportunityService
 
         Date closeDate = Date.today();
 
-        Id undergradProspectId = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
+        Id undergradProspectId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Undergraduate Prospect'
+            LIMIT 1
+        ].Id;
 
         for (Contact con : contactsToAssociate)
         {
@@ -62,11 +72,11 @@ public class OpportunityService
         Date closeDate = Date.today();
 
         Id gradProspectId = [
-                SELECT Id
-                FROM RecordType
-                WHERE Name = 'Graduate Prospect'
-                AND SobjectType = 'Opportunity'
-                LIMIT 1
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Graduate Prospect'
+            AND SobjectType = 'Opportunity'
+            LIMIT 1
         ].Id;
 
         for (Contact con : contactsToAssociate)
@@ -86,8 +96,8 @@ public class OpportunityService
 
     /**
     * Generates a random number for Territory Assignment
-	* @return randNumber A random Integer between 0 and 100
-	*/
+    * @return randNumber A random Integer between 0 and 100
+    */
     public static Integer generateOpportunityAssignmentNumber()
     {
         Double randNumber = Math.random()*100;
@@ -96,7 +106,8 @@ public class OpportunityService
     }
 
     /**
-    * Finds all Opportunities that are tied to a Leads Convert_Contact__c and updates information from a Lead on the Opportunites.
+    * Finds all Opportunities that are tied to a Leads Convert_Contact__c and
+    * updates information from a Lead on the Opportunites.
     * @param Set<Id> A set of lead ids to map to opportunities
     * @return List<Opportunity> A list of opportunities with the mapped lead data
     */
@@ -107,9 +118,12 @@ public class OpportunityService
         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
 
         leadsFromConversion = [
-                SELECT ConvertedContactId, Career__c, Enrollment_Term__c, First_Generation__c, Online__c, International_Student__c, Potential_National_Scholar__c, Potential_WUE__c, Search_Segment__c, Self_Reported_SES__c, Veteran_Status__c
-                FROM Lead
-                WHERE Id IN :leadIds
+            SELECT ConvertedContactId, Career__c, Enrollment_Term__c,
+                First_Generation__c, Online__c, International_Student__c,
+                Potential_National_Scholar__c, Potential_WUE__c, Search_Segment__c,
+                Self_Reported_SES__c, Veteran_Status__c
+            FROM Lead
+            WHERE Id IN :leadIds
         ];
 
         for (Lead newLead : leadsFromConversion)
@@ -141,5 +155,4 @@ public class OpportunityService
 
         return opportunitiesToUpdate;
     }
-
 }

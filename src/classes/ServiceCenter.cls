@@ -417,6 +417,7 @@ public with sharing class ServiceCenter
         suggestAnArticle.Category__c = 'Knowledge';
         suggestAnArticle.Origin__c = 'My ASU';
         suggestAnArticle.Visible_by_Contact__c = false;
+
         suggestAnArticle.OwnerId = [
             SELECT Id
             FROM Group

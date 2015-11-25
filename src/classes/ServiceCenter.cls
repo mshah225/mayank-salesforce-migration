@@ -350,27 +350,15 @@ public with sharing class ServiceCenter
     {
         if (viewingAs) stopSubmit(masqScopeIdCookie);
 
-        try
-        {
-            newCase.ContactId = userContact.Id;
-            newCase.Web_Submission__c = 'My ASU Standard';
+        newCase.ContactId = userContact.Id;
+        newCase.Web_Submission__c = 'My ASU Standard';
 
-            insert newCase;
+        insert newCase;
 
-            PageReference confirmPage = new PageReference('/studentSC?Confirm=newcase');
-            confirmPage.setRedirect(true);
+        PageReference confirmPage = new PageReference('/studentSC?Confirm=newcase');
+        confirmPage.setRedirect(true);
 
-            return confirmPage;
-        }
-        catch (Exception e)
-        {
-            ApexPages.addMessages(e);
-            System.Debug ('Message: ' + e.getMessage());
-            System.Debug ('Cause: ' + e.getCause());
-            System.Debug ('Stack Trace: ' + e.getStackTraceString());
-
-            return null;
-        }
+        return confirmPage;
     }
 
     public Decimal getMyPin()

@@ -65,8 +65,6 @@ public with sharing class ServiceCenter
             userContact = ContactService.getLoggedInContact();
         }
 
-        System.debug('merf userContact: ' + userContact);
-
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
@@ -115,7 +113,6 @@ public with sharing class ServiceCenter
                 && scmList[0].End_Time__c == null))
             {
                 mMessage = scmList[0].Message__c;
-                System.debug('merf ' + mMessage);
             }
         }
 

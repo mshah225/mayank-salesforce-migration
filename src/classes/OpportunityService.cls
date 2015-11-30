@@ -140,7 +140,6 @@ public class OpportunityService
         }
 
         leadQueryFields = leadQueryFields.subString(0, leadQueryFields.length() - 2);
-        System.debug('!!! leadQueryFields ' + leadQueryFields);
 
         String leadQuery = 'SELECT ConvertedContactId, ' + leadQueryFields + ' FROM Lead WHERE Id IN :leadIds';
 
@@ -161,7 +160,6 @@ public class OpportunityService
         }
 
         oppQueryFields = oppQueryFields.subString(0, oppQueryFields.length() - 2);
-        System.debug('!!! oppQueryFields ' + oppQueryFields);
 
         // Get all the opportunities associated with these contacts
         String oppQuery = 'SELECT Contact__c, ' + oppQueryFields + ' FROM Opportunity WHERE Contact__c IN :contactIds';
@@ -180,8 +178,6 @@ public class OpportunityService
                     opp.put(oppField, leadData.get(leadField));
                 }
             }
-            System.debug('!!! lead ' + leadData);
-            System.debug('!!! opp ' + opp);
         }
 
         return opportunitiesToUpdate;

@@ -4,6 +4,7 @@ global class BomgarCreateCaseUtil
     {
         Map<String, String> dynamicFieldMap = new Map<String, String>();
         JSONParser parser = JSON.createParser(bgEvent.bomgar__ExternalKey__c.substring(5));
+
         while (parser.nextToken() != null)
         {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
@@ -34,27 +35,21 @@ global class BomgarCreateCaseUtil
         }
 
         String subject = dynamicFieldMap.get('description');
+
         if (subject != null && subject.length() > 255)
         {
             subject = subject.substring(0, 254);
         }
 
-        try
-        {
-            List<RecordType> recordTypes = [
-                SELECT Id
-                FROM RecordType
-                WHERE Name = 'ASU Service'
-            ];
+        List<RecordType> recordTypes = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'ASU Service'
+        ];
 
-            for (RecordType rt : recordTypes)
-            {
-                c.RecordTypeId = rt.Id;
-            }
-        }
-        catch (Exception e)
+        for (RecordType rt : recordTypes)
         {
-            System.debug(e.getMessage());
+            c.RecordTypeId = rt.Id;
         }
 
         c.Status = 'New';
@@ -123,39 +118,34 @@ global class BomgarCreateCaseUtil
             WHERE bomgar__Bomgar_Username__c = :bomgarUsername
         ];
 
-        if (users.size() > 1)
+        if (users == null)
         {
-            throw new BomgarCreateCaseException('Multiple Users Found for Bomgar Username[' + bomgarUsername + ']');
+            throw new BomgarCreateCaseException(
+                'No Users Found for Bomgar Username[' + bomgarUsername + ']'
+            );
         }
 
-        for (User user : users)
-        {
-            return user;
-        }
-
-        return null;
+        return users[0];
     }
 
     global static User lookupUserByFederationId(String bomgarUsername)
     {
         String federationId = bomgarUserName + '@admin.asu.edu';
+
         List<User> users = [
             SELECT Id
             FROM User
             WHERE ContactId = Null AND FederationIdentifier = :federationId
         ];
 
-        if (users.size() > 1)
+        if (users == null)
         {
-            throw new BomgarCreateCaseException('Multiple Users Found for Bomgar Username[' + bomgarUsername + ']');
+            throw new BomgarCreateCaseException(
+                'No Users Found for Bomgar Username[' + bomgarUsername + ']'
+            );
         }
 
-        for (User user : users)
-        {
-            return user;
-        }
-
-        return null;
+        return users[0];
     }
 
     global static Id getOwnerIdBySessionId(String sessionId)
@@ -193,7 +183,10 @@ global class BomgarCreateCaseUtil
 
         try
         {
-            Bomgar.BomgarAPIAccess.CallCommandAPI(Bomgar.BomgarAPIAccess.CommandType.SetSessionAttributes, parameters);
+            Bomgar.BomgarAPIAccess.CallCommandAPI(
+                Bomgar.BomgarAPIAccess.CommandType.SetSessionAttributes,
+                parameters
+            );
         }
         catch (Exception e)
         {

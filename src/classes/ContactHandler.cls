@@ -1,5 +1,4 @@
-public without sharing class ContactHandler
-        implements ITrigger
+public without sharing class ContactHandler implements ITrigger
 {
     private boolean okToProcess1to1 = true;
     private boolean alreadyRanForInsert = false;
@@ -9,13 +8,11 @@ public without sharing class ContactHandler
     private Id ExtMasteredContactRTId;
     private Id SFMasteredContactRTId;
     private Id ExtMasteredContactAccountRTId;
-//	private Id ExtMasteredOrgAccountRTId;
     private Id SFMasteredContactAccountRTId;
-//	private Id SFMasteredOrgAccountRTId;
     private Map<Id, Id> contactToAccountRTIdMap = new Map<Id, Id>();
     private Id bucketAccountId;
+
     // Vars related to Scanbiz process
-    private Map<Id, Id> contactAccountToScanbizAccountMap = new Map<Id, Id>();
     private List<Relationship__c> scanbizRelationships = new List<Relationship__c>();
     private Id scanbizRelationshipRTId;
 
@@ -34,6 +31,7 @@ public without sharing class ContactHandler
                     FROM RecordType
                     WHERE sObjectType IN ('Account', 'Contact')
             ]);
+
             for (RecordType rt: recordTypeList)
             {
                 if (rt.SobjectType == 'Contact')
@@ -53,22 +51,15 @@ public without sharing class ContactHandler
                     {
                         ExtMasteredContactAccountRTId = rt.Id;
                     }
-                    //else if (rt.DeveloperName == 'External_Mastered_Org')
-                    //	ExtMasteredOrgAccountRTId = rt.Id;
                     else if (rt.DeveloperName == 'SF_Mastered_Contact')
                     {
                         SFMasteredContactAccountRTId = rt.Id;
                     }
-                    //else if (rt.DeveloperName == 'SF_Mastered_Org')
-                    //	SFMasteredOrgAccountRTId = rt.Id;
                 }
             }
 
             // If any RecordTypes that we need could not be found, set a boolean so we don't bother with this 1:1 account logic
-            if (ExtMasteredContactRTId == null ||
-                    SFMasteredContactRTId == null ||
-                    ExtMasteredContactAccountRTId == null ||
-                    SFMasteredContactAccountRTId == null)
+            if (ExtMasteredContactRTId == null || SFMasteredContactRTId == null || ExtMasteredContactAccountRTId == null || SFMasteredContactAccountRTId == null)
             {
                 okToProcess1to1 = false;
             }
@@ -98,7 +89,7 @@ public without sharing class ContactHandler
                     // Exclude Scanbiz created contacts
                     if (c.Scanbiz_Contact__c && Trigger.IsInsert)
                     {
-                        accountIds.add(null);
+                        continue;
                     }
                     else
                     {
@@ -116,48 +107,16 @@ public without sharing class ContactHandler
         }
     }
 
-    public void bulkAfter()
-    {
-        scanbizRelationshipRTId = [
-                SELECT Id
-                FROM RecordType
-                WHERE SObjectType = 'Relationship__c'
-                AND Name = 'Contact to Account'
-        ].Id;
-
-        Set<Id> accountIds = new Set<Id>();
-        Map<Id, Id> accountIdToContactIdMap = new Map<Id, Id>();
-        if ((Trigger.isInsert || Trigger.isUpdate) && okToProcess1to1)
-        {
-            system.debug('GRF4: ' + Trigger.new);
-            for (SObject so: Trigger.new)
-            {
-                Contact c = (Contact) so;
-                accountIds.add(c.AccountId);
-                accountIdToContactIdMap.put(c.AccountId, c.Id);
-            }
-
-            List<Account> relatedAccounts = new List<Account>([
-                    SELECT Id, RecordTypeId, Contact__c
-                    FROM Account
-                    Where Id IN :accountIds
-            ]);
-            // Loop through the accounts and set the Contact reference on each Account
-            system.debug('GRF1: ' + relatedAccounts);
-            if (relatedAccounts.size() > 0)
-            {
-                for (Account a: relatedAccounts)
-                {
-                    a.Contact__c = accountIdToContactIdMap.get(a.Id);
-                }
-                update relatedAccounts;
-            }
-        }
-    }
-
     public void beforeInsert(SObject so)
     {
         Contact c = (Contact) so;
+
+        // Cache the Account Id that was on this scanbiz contact
+        if (c.Scanbiz_Contact__c)
+        {
+            c.Scanbiz_Account__c = c.AccountId;
+            c.Scanbiz_Contact__c = false;
+        }
 
         if (okToProcess1to1)
         {
@@ -183,15 +142,12 @@ public without sharing class ContactHandler
         }
     }
 
-    public void beforeDelete(SObject so)
-    {
-    }
+    public void beforeDelete(SObject so){}
 
     public void beforeFinally()
     {
         if ((Trigger.isInsert || Trigger.isUpdate) && okToProcess1to1)
         {
-            system.debug('GRF5: ' + accountList);
             if (accountList.size() > 0)
             {
                 upsert accountList;
@@ -206,12 +162,6 @@ public without sharing class ContactHandler
                     }
                     Contact c = (Contact) Trigger.new[i];
 
-                    // Cache the Account Id that was on this scanbiz contact
-                    if (c.Scanbiz_Contact__c)
-                    {
-                        contactAccountToScanbizAccountMap.put(a.Id, c.AccountId);
-                    }
-
                     c.AccountId = a.Id;
                     i++;
                 }
@@ -219,29 +169,64 @@ public without sharing class ContactHandler
         }
     }
 
+    public void bulkAfter()
+    {
+        scanbizRelationshipRTId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Relationship__c'
+                AND Name = 'Contact to Account'
+        ].Id;
+
+        Set<Id> accountIds = new Set<Id>();
+        Map<Id, Id> accountIdToContactIdMap = new Map<Id, Id>();
+
+        if ((Trigger.isInsert || Trigger.isUpdate) && okToProcess1to1)
+        {
+            for (SObject so: Trigger.new)
+            {
+                Contact c = (Contact) so;
+                accountIds.add(c.AccountId);
+                accountIdToContactIdMap.put(c.AccountId, c.Id);
+            }
+
+            List<Account> relatedAccounts = new List<Account>([
+                    SELECT Id, RecordTypeId, Contact__c
+                    FROM Account
+                    Where Id IN :accountIds
+            ]);
+
+            // Loop through the accounts and set the Contact reference on each Account
+            if (relatedAccounts.size() > 0)
+            {
+                for (Account a: relatedAccounts)
+                {
+                    a.Contact__c = accountIdToContactIdMap.get(a.Id);
+                }
+                update relatedAccounts;
+            }
+        }
+    }
+
+
     public void afterInsert(SObject so)
     {
         Contact c = (Contact)so;
 
         // We need to create a relationship for this Contact that was provided by Scanbiz
-        if (c.Scanbiz_Contact__c)
+        if (c.Scanbiz_Account__c != null)
         {
-            Id scanbizAccount = contactAccountToScanbizAccountMap.get(c.AccountId);
             scanbizRelationships.add(
                     RelationshipService.createScanbizRelationship(
-                            c.Id, scanbizAccount, scanbizRelationshipRTId
+                            c.Id, c.Scanbiz_Account__c, scanbizRelationshipRTId
                     )
             );
         }
     }
 
-    public void afterUpdate(SObject oldSo, SObject so)
-    {
-    }
+    public void afterUpdate(SObject oldSo, SObject so){}
 
-    public void afterDelete(SObject so)
-    {
-    }
+    public void afterDelete(SObject so){}
 
     public void andFinally()
     {
@@ -251,34 +236,11 @@ public without sharing class ContactHandler
         }
     }
 
-    private void checkAccount(Contact c)
-    {
-        // See if we found an associated Account; if so, add it to our list and if not, create it
-        // Also, if the old ASU bucket account is related, create/relate a new 1:1 account
-        // '001d000000vZbZM'
-        Account a = existingAccountMap.get(c.AccountId);
-        if (a == null || a.Id == bucketAccountId)
-        {
-            createAccount(c);
-        }
-        else
-        {
-            a.RecordTypeId = contactToAccountRTIdMap.get(c.RecordTypeID);
-            accountList.add(a);
-        }
-		/*
-		else {
-			createAccount(c);
-		}
-		*/
-    }
-
     private void checkAccountNew(Contact c)
     {
         // See if we found an associated Account; if so, add it to our list and if not, create it
         // Also, if the old ASU bucket account is related, create/relate a new 1:1 account
         // '001d000000vZbZM'
-
         if (c.EMPLID__c == null)
         {
             if (c.RecordTypeId == null || c.RecordTypeId != SFMasteredContactRTId)
@@ -296,14 +258,23 @@ public without sharing class ContactHandler
 
         if (c.AccountId == null || c.AccountId == bucketAccountId)
         {
-            createAccount(c);
+            accountList.add(
+                    AccountService.createAccountForOneToOne(
+                            c, contactToAccountRTIdMap.get(c.RecordTypeId)
+                    )
+            );
+
             return;
         }
 
         Account a = existingAccountMap.get(c.AccountId);
         if (a == null || a.Id == bucketAccountId)
         {
-            createAccount(c);
+            accountList.add(
+                    AccountService.createAccountForOneToOne(
+                            c, contactToAccountRTIdMap.get(c.RecordTypeId)
+                    )
+            );
         }
         else
         {
@@ -322,14 +293,5 @@ public without sharing class ContactHandler
             }
         }
 
-    }
-    private void createAccount(Contact c)
-    {
-        // Create the new 1:1 Account record for this Contact
-        Account a = new Account(Name = c.FirstName + ' ' + c.LastName,
-                RecordTypeId = contactToAccountRTIdMap.get(c.RecordTypeID),
-                OwnerId = c.OwnerId);
-        system.debug('GRF3: ' + a);
-        accountList.add(a);
     }
 }

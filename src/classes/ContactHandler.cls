@@ -13,6 +13,8 @@ public without sharing class ContactHandler implements ITrigger
     private Id bucketAccountId;
 
     // Vars related to Scanbiz process
+    private Id EngineeringGOEECampaignId;
+    private List<CampaignMember> scanbizCampaignMembers = new List<CampaignMember>();
     private List<Relationship__c> scanbizRelationships = new List<Relationship__c>();
     private Id scanbizRelationshipRTId;
 
@@ -87,7 +89,7 @@ public without sharing class ContactHandler implements ITrigger
                     Contact c = (Contact) so;
 
                     // Exclude Scanbiz created contacts
-                    if (c.Scanbiz_Contact__c && Trigger.IsInsert)
+                    if (c.scanbizcards__ScanBizCards__c && Trigger.IsInsert)
                     {
                         continue;
                     }
@@ -112,10 +114,11 @@ public without sharing class ContactHandler implements ITrigger
         Contact c = (Contact) so;
 
         // Cache the Account Id that was on this scanbiz contact
-        if (c.Scanbiz_Contact__c)
+        if (c.scanbizcards__ScanBizCards__c)
         {
             c.Scanbiz_Account__c = c.AccountId;
-            c.Scanbiz_Contact__c = false;
+            c.Corporate_Relations_Contact_Owner__c = UserInfo.getUserId();
+            c.AccountId = null;
         }
 
         if (okToProcess1to1)
@@ -178,6 +181,24 @@ public without sharing class ContactHandler implements ITrigger
                 AND Name = 'Contact to Account'
         ].Id;
 
+        try
+        {
+            // Hardcode the Campaign for Scanbiz Contacts for now.
+            // TODO: Make this more dynamic
+            EngineeringGOEECampaignId = [
+                    SELECT Id
+                    FROM Campaign
+                    WHERE Name LIKE 'Engineering%GOEE'
+            ].Id;
+        }
+        catch (System.QueryException e)
+        {
+            EngineeringGOEECampaignId = null;
+            System.debug(LoggingLevel.WARN, 'No Engineering - GOEE campaign was found. Scanbiz Contacts ' +
+                    'will not be associated to any campaigns');
+        }
+
+
         Set<Id> accountIds = new Set<Id>();
         Map<Id, Id> accountIdToContactIdMap = new Map<Id, Id>();
 
@@ -213,7 +234,7 @@ public without sharing class ContactHandler implements ITrigger
     {
         Contact c = (Contact)so;
 
-        // We need to create a relationship for this Contact that was provided by Scanbiz
+        // We need to create a relationship and a campaign member for this Contact that was provided by Scanbiz
         if (c.Scanbiz_Account__c != null)
         {
             scanbizRelationships.add(
@@ -221,6 +242,15 @@ public without sharing class ContactHandler implements ITrigger
                             c.Id, c.Scanbiz_Account__c, scanbizRelationshipRTId
                     )
             );
+
+            if (EngineeringGOEECampaignId != null)
+            {
+                scanbizCampaignMembers.add(
+                        CampaignMemberService.createScanbizCampaignMember(
+                                c.Id, EngineeringGOEECampaignId
+                        )
+                );
+            }
         }
     }
 
@@ -233,6 +263,11 @@ public without sharing class ContactHandler implements ITrigger
         if (!scanbizRelationships.isEmpty())
         {
             insert scanbizRelationships;
+        }
+
+        if (!scanbizCampaignMembers.isEmpty())
+        {
+            insert scanbizCampaignMembers;
         }
     }
 

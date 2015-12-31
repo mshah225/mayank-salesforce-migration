@@ -214,11 +214,21 @@ public with sharing class Test_ContactHandler
 
     @isTest static void testScanbizContacts()
     {
+        Id scanbizCampaignMemberRTId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'CampaignMember'
+                AND Name = 'Corporate Relations Member'
+        ].Id;
+
+        Campaign scanbizCampaign = CampaignService.createTestCampaign('Engineering – GOEE', scanbizCampaignMemberRTId);
+        insert scanbizCampaign;
+
         Account scanbizAccount = AccountService.createTestSFMasteredAccount();
         insert scanbizAccount;
 
         Contact scanbizContact = ContactService.createTestContact();
-        scanbizContact.Scanbiz_Contact__c = true;
+        scanbizContact.scanbizcards__ScanBizCards__c = true;
         scanbizContact.AccountId = scanbizAccount.Id;
 
         Test.startTest();
@@ -231,8 +241,23 @@ public with sharing class Test_ContactHandler
                 LIMIT 1
         ];
 
+        scanbizContact = [
+                SELECT Scanbiz_Account__c, Corporate_Relations_Contact_Owner__c
+                FROM Contact
+                WHERE Id = :scanbizContact.Id
+        ];
+
+        CampaignMember scanbizCampaignMember = [
+                SELECT Id, CampaignId
+                FROM CampaignMember
+                WHERE ContactId = :scanbizContact.Id
+        ];
+
         System.assertEquals(scanbizAccount.Id, scanbizRelationship.Account__c);
         System.assertEquals(scanbizContact.Id, scanbizRelationship.Contact__c);
         System.assertEquals('Employee', scanbizRelationship.Relationship_Type__c);
+        System.assertEquals(scanbizAccount.Id, scanbizContact.Scanbiz_Account__c);
+        System.assertEquals(UserInfo.getUserId(), scanbizContact.Corporate_Relations_Contact_Owner__c);
+        System.assertEquals(scanbizCampaign.Id, scanbizCampaignMember.CampaignId);
     }
 }

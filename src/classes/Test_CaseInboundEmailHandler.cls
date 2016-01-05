@@ -13,7 +13,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 			e1 = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
 			insert e1;
 
-			testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
+			testGroup = new Group(Name = 'TestGroup', Type = 'Queue');
 			insert testGroup;
 
             caseGroup = new Group(Name = 'CaseGroup', Type = 'Queue');
@@ -26,8 +26,8 @@ public with sharing class Test_CaseInboundEmailHandler {
             insert caseQueue;
 		}
 
-	    String queueId = String.valueOf(testQueue.Id).substring(0,15);
-	    String fallbackQueueId = String.valueOf(testQueue.Id).substring(0,15);
+	    String queueId = String.valueOf(caseGroup.Id).substring(0,15);
+	    String fallbackQueueId = String.valueOf(caseGroup.Id).substring(0,15);
 	    String templateId = String.valueOf(e1.Id).substring(0,15);
 	    
 	    Case_Assignment_Rule__c car = new Case_Assignment_Rule__c();

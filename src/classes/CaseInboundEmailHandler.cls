@@ -231,7 +231,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 theCase.Priority = 'Normal';
                 theCase.Case_Feed_Email__c = replyToAddress;
                 theCase.Case_Feed_Email_Template_Id__c = caseFeedTemplateId;
-                System.debug('!!! The Queue Id : ' + queueId);
 
                 // The Queue ID should be set as long as a Cse Assignment Rule was found; just in case, adding
                 // and else clause to be sure the Owner is not set to null, which would prevent the insert
@@ -484,26 +483,26 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         if (validFileExtensionList.size() > 0)
         {
-            for (String e: validFileExtensionList) 
+            for (String e: validFileExtensionList)
             {
                 validFileExtensionSet.add(e);
             }
         }
 
-        if (email.textAttachments!=null && email.textAttachments.size() >0) 
+        if (email.textAttachments!=null && email.textAttachments.size() >0)
         {
-            for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) 
+            for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments)
             {
                 attachmentSize += tAttachment.body.length();
 
                 System.debug(validFileExtensionSet);
-                if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.')+1).toLowerCase())) 
+                if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
                 {
-                    if (tAttachment.body.length() > 5000000) 
+                    if (tAttachment.body.length() > 5000000)
                     {
                         successfulAttachment = false;
                     }
-                    else 
+                    else
                     {
                         Attachment attachment = new Attachment();
                         attachment.Name = tAttachment.fileName;
@@ -512,31 +511,31 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         insert attachment;
                     }
                 }
-                else if (!validFileExtensionSet.isEmpty()) 
+                else if (!validFileExtensionSet.isEmpty())
                 {
                     successfulAttachment = false;
                 }
             }
         }
 
-        if (email.binaryAttachments!=null && email.binaryAttachments.size() >0) 
+        if (email.binaryAttachments!=null && email.binaryAttachments.size() >0)
         {
-            
-            for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) 
+
+            for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments)
             {
-                
+
                 attachmentSize += bAttachment.body.size();
-                
-                if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.')+1).toLowerCase())) 
+
+                if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
                 {
                     System.debug('GRF attachment size: ' + bAttachment.body.size());
-                    
-                    if (bAttachment.body.size() > 5000000) 
+
+                    if (bAttachment.body.size() > 5000000)
                     {
                         successfulAttachment = false;
                         System.debug('GRF Attachment too big: ' + battachment.body.size());
                     }
-                    else 
+                    else
                     {
                         Attachment attachment = new Attachment();
                         attachment.Name = bAttachment.fileName;
@@ -561,7 +560,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         return successfulAttachment;
     }
 
-    private String limitLength(String input, Integer maxLength) 
+    private String limitLength(String input, Integer maxLength)
     {
         String results;
 
@@ -577,7 +576,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         return results;
     }
 
-    private void createEmailMessage(Case theCase, Messaging.InboundEmail email) 
+    private void createEmailMessage(Case theCase, Messaging.InboundEmail email)
     {
         String value;
         Integer maxlength;
@@ -592,14 +591,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         theEmail.TextBody = limitLength(email.plainTextBody,EmailMessage.TextBody.getDescribe().getLength());
 
         /* **** To */
-        if (email.toAddresses != null) 
-        { 
+        if (email.toAddresses != null)
+        {
             value = '';
             Boolean seenOne= false;
-            
-            for (String to : email.toAddresses) 
+
+            for (String to : email.toAddresses)
             {
-                if (seenOne) 
+                if (seenOne)
                 {
                     value += ';\n';
                 }
@@ -618,14 +617,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         theEmail.FromAddress = email.fromAddress;
 
         /* **** CC */
-        if (email.ccAddresses != null) 
+        if (email.ccAddresses != null)
         {
             value = '';
             Boolean seenOne= false;
-            
+
             for (String cc : email.ccAddresses)
             {
-                if (seenOne) 
+                if (seenOne)
                 {
                     value += ';\n';
                 }
@@ -653,7 +652,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         String patternString;
         String caseId;
 
-        if (searchText.indexOf(':ref') > searchText.indexOf('ref:')) 
+        if (searchText.indexOf(':ref') > searchText.indexOf('ref:'))
         {
             String caseReference = searchText.substring(searchText.indexOf('ref:') + 4, searchText.indexOf(':ref'));
 
@@ -678,7 +677,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             return caseId;
         }
-        else 
+        else
         {
             System.debug('GRF no caseId extracted from ' + searchText);
 
@@ -696,7 +695,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         thePattern = Pattern.compile(patternString);
         matcher = thePattern.matcher(inAddress);
 
-        if (matcher.matches()) 
+        if (matcher.matches())
         {
             address = matcher.group(1);
             System.debug('Extracted address ' + address);
@@ -710,14 +709,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         return address;
     }
 
-    private Boolean filteredTermFound() 
+    private Boolean filteredTermFound()
     {
         Email_To_Case_Filter__c[] filteredTerms = [
                 SELECT Name, Rejection_Count__c
                 FROM Email_To_Case_Filter__c
         ];
 
-        for (Email_To_Case_Filter__c filter: filteredTerms) 
+        for (Email_To_Case_Filter__c filter: filteredTerms)
         {
             String lcFilter = filter.Name.toLowerCase();
 
@@ -735,7 +734,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                 System.debug('grf: email regex matched');
 
-                if (lcFilter.contains(inboundEmail.fromAddress.toLowerCase()))
+                if (inboundEmail.fromAddress.toLowerCase().contains(lcFilter))
                 {
                     System.debug('grf3 email address filter: ' + lcFilter);
                     System.debug('grf4: fromAddress: ' + inboundEmail.fromAddress);
@@ -745,20 +744,23 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     return true;
                 }
             }
-            else if (lcFilter.contains(inboundEmail.subject.toLowerCase()))
+            else if (inboundEmail.subject != null)
             {
-                System.debug('grf5 non-email filter: ' + lcFilter);
-                System.debug('grf4: subject: ' + inboundEmail.subject);
-                filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
-                update filter;
+                if (inboundEmail.subject.toLowerCase().contains(lcFilter))
+                {
+                    System.debug('grf5 non-email filter: ' + lcFilter);
+                    System.debug('grf4: subject: ' + inboundEmail.subject);
+                    filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
+                    update filter;
 
-                return true;
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    private void loadConfigurationSettings() 
+    private void loadConfigurationSettings()
     {
         Email_To_Case_Configuration__c[] configList = [SELECT Name, Value__c
                                                         FROM Email_To_Case_Configuration__c];

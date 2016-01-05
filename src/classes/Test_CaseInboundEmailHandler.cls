@@ -353,7 +353,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 		List<string> toAddresses = new List<string>();
 		toAddresses.add('service@test.test');
 		email.toAddresses = toAddresses;
-		email.subject = 'test';
+		email.subject = 'test email';
 		email.fromName = 'Last, First';
 		email.plainTextBody = 'ref:' + createdCase.Id + ':ref';
 		email.fromAddress = 'user@acme.com.test';
@@ -373,5 +373,37 @@ public with sharing class Test_CaseInboundEmailHandler {
 
 		System.assertEquals('CaseFuncGroup', createdCase.Functional_Group__c, 'External Unit case was not re-opened to most recent functional group');
 		System.assertEquals('Re-Opened', createdCase.Status, 'Case was not reopened correctly');
+	}
+
+	@isTest static void createACaseWithEmptySubject()
+	{
+		Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test');
+		insert c;
+
+		// Reopen the case via email
+		Messaging.InboundEmail email = new Messaging.InboundEmail();
+		Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+
+		List<string> toAddresses = new List<string>();
+		toAddresses.add('service@test.test');
+		email.toAddresses = toAddresses;
+		email.fromName = 'Last, First';
+		email.fromAddress = 'user@acme.com.test';
+
+		Test.startTest();
+		// call the class and test it with the data in the testMethod
+		CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+		emailServiceObj.handleInboundEmail(email, env);
+		Test.stopTest();
+
+		// Verify that the case status was updated
+		Case createdCase = [
+				SELECT Status, Functional_Group__c
+				FROM Case
+                WHERE ContactId = :c.Id
+                LIMIT 1
+		];
+
+		System.assertEquals('New', createdCase.Status);
 	}
 }

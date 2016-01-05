@@ -386,9 +386,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     Contact c = new Contact(FirstName = fname, LastName = lname, Email = email.fromAddress, RecordTypeId=rtId);
                     insert c;
 
-                    Contact insertedContact = [SELECT Id, AccountId
-                    FROM Contact
-                    WHERE Id = :c.Id];
+                    Contact insertedContact = [
+                            SELECT Id, AccountId
+                            FROM Contact
+                            WHERE Id = :c.Id
+                    ];
                     theCase.ContactId = insertedContact.Id;
                     theCase.AccountId = insertedContact.AccountId;
                     emailContact = insertedContact;
@@ -661,7 +663,15 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
             else
             {
-                caseId = Cases.getCaseIdFromEmailThreadId(caseReference);
+                try
+                {
+                    caseId = Cases.getCaseIdFromEmailThreadId(caseReference);
+                }
+                catch (Exception e)
+                {
+                    System.debug('GRF An error occurred when trying to get the case Id from the thread Id ' + e.getMessage());
+                    return null;
+                }
             }
 
             System.debug('GRF caseId extracted: ' + caseId);
@@ -702,8 +712,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
     private Boolean filteredTermFound() 
     {
-        Email_To_Case_Filter__c[] filteredTerms = [SELECT Name, Rejection_Count__c 
-                                                    FROM Email_To_Case_Filter__c];
+        Email_To_Case_Filter__c[] filteredTerms = [
+                SELECT Name, Rejection_Count__c
+                FROM Email_To_Case_Filter__c
+        ];
 
         for (Email_To_Case_Filter__c filter: filteredTerms) 
         {
@@ -723,7 +735,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                 System.debug('grf: email regex matched');
 
-                if (inboundEmail.fromAddress.toLowerCase().contains(lcFilter)) 
+                if (lcFilter.contains(inboundEmail.fromAddress.toLowerCase()))
                 {
                     System.debug('grf3 email address filter: ' + lcFilter);
                     System.debug('grf4: fromAddress: ' + inboundEmail.fromAddress);
@@ -733,7 +745,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     return true;
                 }
             }
-            else if (inboundEmail.subject.toLowerCase().contains(lcFilter))
+            else if (lcFilter.contains(inboundEmail.subject.toLowerCase()))
             {
                 System.debug('grf5 non-email filter: ' + lcFilter);
                 System.debug('grf4: subject: ' + inboundEmail.subject);

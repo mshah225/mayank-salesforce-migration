@@ -160,7 +160,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         if (this.theCase.Status.startsWith('Closed'))
                         {
                             this.theCase.Status = 'Re-Opened';
-                            updateSObject(this.theCase);
+                            update this.theCase;
                         }
                     }
                 }
@@ -231,6 +231,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 theCase.Priority = 'Normal';
                 theCase.Case_Feed_Email__c = replyToAddress;
                 theCase.Case_Feed_Email_Template_Id__c = caseFeedTemplateId;
+                System.debug('!!! The Queue Id : ' + queueId);
 
                 // The Queue ID should be set as long as a Cse Assignment Rule was found; just in case, adding
                 // and else clause to be sure the Owner is not set to null, which would prevent the insert
@@ -300,17 +301,19 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 System.debug('GRF replyTo: ' + email.replyTo);
 
-                Contact[] contacts = [SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c
-                FROM Contact
-                WHERE Email = :email.fromAddress
-                OR ASU_Gmail__c = :email.fromAddress
-                OR EPO_Email__c = :email.fromAddress
-                OR ASU_Email__c = :email.fromAddress
-                OR Lead_Email__c = :email.fromAddress
-                OR Lead_Secondary_Email__c = :email.fromAddress
-                OR Personal_Email__c = :email.fromAddress
-                OR Preferred_Email__c = :email.fromAddress
-                OR Corporate_Relations_Email__c = :email.fromAddress];
+                Contact[] contacts = [
+                        SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c
+                        FROM Contact
+                        WHERE Email = :email.fromAddress
+                        OR ASU_Gmail__c = :email.fromAddress
+                        OR EPO_Email__c = :email.fromAddress
+                        OR ASU_Email__c = :email.fromAddress
+                        OR Lead_Email__c = :email.fromAddress
+                        OR Lead_Secondary_Email__c = :email.fromAddress
+                        OR Personal_Email__c = :email.fromAddress
+                        OR Preferred_Email__c = :email.fromAddress
+                        OR Corporate_Relations_Email__c = :email.fromAddress
+                ];
 
                 if (contacts.size() > 1)
                 {
@@ -354,24 +357,26 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         theContact.Email_Change_Reason__c = 'Service request received';
                         theContact.Last_Case_Email_Used__c = email.fromAddress;
                         theContact.Email_Change_Date__c = Datetime.now();
-                        updateSObject(theContact);
+                        update theContact;
                     }
 
                     if (theContact.Last_Case_Email_Used__c == null || theContact.Last_Case_Email_Used__c != email.fromAddress)
                     {
                         System.debug('GRF Last Case Email: ' + theContact.Last_Case_Email_Used__c + ':' + email.fromAddress);
                         theContact.Last_Case_Email_Used__c = email.fromAddress;
-                        updateSObject(theContact);
+                        update theContact;
                     }
                 }
                 else
                 {
                     Id rtId;
-                    List<RecordType> rtypes = [SELECT Name, Id
-                    FROM RecordType
-                    WHERE sObjectType='Contact'
-                    AND DeveloperName = 'SF_Mastered'
-                    AND isActive=true];
+                    List<RecordType> rtypes = [
+                            SELECT Name, Id
+                            FROM RecordType
+                            WHERE sObjectType='Contact'
+                            AND DeveloperName = 'SF_Mastered'
+                            AND isActive=true
+                    ];
 
                     if (rtypes.size() > 0)
                     {
@@ -379,7 +384,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     }
 
                     Contact c = new Contact(FirstName = fname, LastName = lname, Email = email.fromAddress, RecordTypeId=rtId);
-                    insertSObject(c);
+                    insert c;
 
                     Contact insertedContact = [SELECT Id, AccountId
                     FROM Contact
@@ -392,11 +397,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 // Check to make sure we are not about to spawn an auto reply loop
                 try
                 {
-                    recentCase = [SELECT Id, Description, OwnerId
-                    FROM Case
-                    WHERE ContactId = :emailContact.Id
-                    ORDER BY CreatedDate desc
-                    LIMIT 1];
+                    recentCase = [
+                            SELECT Id, Description, OwnerId
+                            FROM Case
+                            WHERE ContactId = :emailContact.Id
+                            ORDER BY CreatedDate desc
+                            LIMIT 1
+                    ];
 
                     String currentCaseDescription = theCase.Description;
                     currentCaseDescription = currentCaseDescription.trim();
@@ -412,12 +419,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 {
                     System.debug('This is the contact\'s initial case.');
                 }
-                catch (Exception e)
-                {
-                    System.debug('An error has occurred while trying to prevent an auto-reply loop from forming:\n ' + e.getStackTraceString());
-                }
 
-                insertSObject(this.theCase);
+                System.debug('!!! The case : ' + this.theCase);
+
+                insert this.theCase;
             }
             else
             {
@@ -502,7 +507,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         attachment.Name = tAttachment.fileName;
                         attachment.Body = Blob.valueOf(tAttachment.body);
                         attachment.ParentId = parentObject.Id;
-                        insertSObject(attachment);
+                        insert attachment;
                     }
                 }
                 else if (!validFileExtensionSet.isEmpty()) 
@@ -535,7 +540,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         attachment.Name = bAttachment.fileName;
                         attachment.Body = bAttachment.body;
                         attachment.ParentId = parentObject.Id;
-                        insertSObject(attachment);
+                        Database.insert(attachment);
                     }
                 }
                 else if (!validFileExtensionSet.isEmpty())
@@ -552,30 +557,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         }
 
         return successfulAttachment;
-    }
-
-    private void insertSObject(sObject obj) 
-    {
-        try 
-        {
-            insert obj;
-        } 
-        catch (System.DmlException e) 
-        {
-            handleError(e, 'Could not insert record '+ obj);
-        }
-    }
-
-    private void updateSObject(sObject obj) 
-    {
-        try 
-        {
-            update obj;
-        }
-        catch (System.DmlException e) 
-        {
-            handleError(e, 'Could not update record '+ obj);
-        }
     }
 
     private String limitLength(String input, Integer maxLength) 
@@ -656,86 +637,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         theEmail.CcAddress = limitLength(value,EmailMessage.CcAddress.getDescribe().getLength());
 
-        insertSObject(theEmail);
-    }
-
-    private void handleError(System.DmlException e,  String message)
-    {
-        String baseURL = URL.getSalesforceBaseUrl().toExternalForm() + '/';
-        String caseURL;
-        String msg = message + '\n';
-
-        if (TRACE)
-        {
-            System.debug(baseURL);
-        }
-
-        if (this.theCase != null) 
-        {
-            caseURL = baseURL + theCase.Id;
-            msg += '\n';
-            msg += 'Originating Case Number: ' + theCase.CaseNumber + '  '+ caseURL+'\n';
-        }
-
-        if (this.inboundEmail != null) 
-        {
-            String toAddressConcat = '';
-            String ccAddressConcat = '';
-            
-            if (this.inboundEmail.ToAddresses != null && this.inboundEmail.ToAddresses.size() > 0) 
-            {
-                for (string a: this.inboundEmail.ToAddresses) 
-                {
-                    toAddressConcat += (a + ',');
-                }
-
-                toAddressConcat = toAddressConcat.subString(0,toAddressConcat.length()-1);
-            }
-
-            if (this.inboundEmail.CCAddresses != null && this.inboundEmail.CCAddresses.size() > 0) 
-            {
-                for (string a: this.inboundEmail.CCAddresses) 
-                {
-                    ccAddressConcat += (a + ',');
-                }
-
-                ccAddressConcat = ccAddressConcat.subString(0,ccAddressConcat.length()-1);
-            }
-
-            msg += '\nEmail:';
-            msg += '  Subject: ' + inboundEmail.Subject + '\n';
-            msg += '  To: ' + toAddressConcat + '\n';
-            msg += '  Cc: ' + ccAddressConcat + '\n';
-            msg += '  From: ' + inboundEmail.FromName + '\n';
-            msg += '  Address: ' + inboundEmail.FromAddress + '\n';
-        }
-
-        // compose the DmlException message on one line to minimize the number of untested lines.  AFAIK easy to instantiate a DmlException in a unit test.
-        if (e != null) 
-        { 
-            msg += '\n';
-            msg += 'EXCEPTION:\n  Error: ' + e.getMessage() + '\n  Type: ' +
-            e.getTypeName() + '\n  Line Number: ' + e.getLineNumber() + '\n  Trace:\n' +
-            e.getStackTraceString() + '\n(end stack trace)\n';
-        }
-
-        Case errCase = new Case();
-        errCase.OwnerId = UserInfo.getUserId();
-        errCase.Status = 'New';
-        errCase.Priority = 'Normal';
-        errCase.Origin = 'Email';
-        errCase.Subject = 'Error processing incoming email';
-        errCase.Description = limitLength(msg,Case.Description.getDescribe().getLength());
-        insert errCase;
-        
-        errCase = [SELECT Id, CaseNumber
-                    FROM Case
-                    WHERE Id = :errCase.Id
-                    LIMIT 1];
-
-        caseURL = baseURL + errCase.Id;
-        msg += '\n\n';
-        msg += 'Created new Case number ' + errCase.CaseNumber + ' for this error.  See: ' + caseURL +'\n';
+        insert theEmail;
     }
 
     private String extractIdRefNew(String searchText)

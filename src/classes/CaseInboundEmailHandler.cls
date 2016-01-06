@@ -421,8 +421,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     System.debug('This is the contact\'s initial case.');
                 }
 
-                System.debug('!!! The case : ' + this.theCase);
-
                 insert this.theCase;
             }
             else
@@ -541,12 +539,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         attachment.Name = bAttachment.fileName;
                         attachment.Body = bAttachment.body;
                         attachment.ParentId = parentObject.Id;
-                        Database.insert(attachment);
+                        insert(attachment);
                     }
                 }
                 else if (!validFileExtensionSet.isEmpty())
                 {
-                    System.debug('!!!! Attachment not successful, 556');
                     successfulAttachment = false;
                 }
             }

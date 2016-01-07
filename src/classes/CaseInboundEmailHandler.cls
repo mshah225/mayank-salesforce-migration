@@ -478,6 +478,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         Long attachmentSize = 0;
         Set<String> validFileExtensionSet = new Set<String>();
         String[] validFileExtensionList = getConfigurationSetting('Valid Attachment Types').split(',');
+        List<String> fileNames = new List<String>();
+        List<Long> fileSizes = new List<Long>();
+        List<String> erroredFiles = new List<String>();
+        List<String> erroredReasons = new List<String>();
 
         if (validFileExtensionList.size() > 0)
         {
@@ -494,10 +498,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 attachmentSize += tAttachment.body.length();
 
                 System.debug(validFileExtensionSet);
+                fileNames.add(tAttachment.fileName);
+                fileSizes.add(tAttachment.body.length());
                 if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
                 {
                     if (tAttachment.body.length() > 5000000)
                     {
+                        erroredFiles.add(tAttachment.fileName);
+                        erroredReasons.add('File size greater than 5000000');
                         successfulAttachment = false;
                     }
                     else
@@ -511,6 +519,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
                 else if (!validFileExtensionSet.isEmpty())
                 {
+                    erroredFiles.add(tAttachment.fileName);
+                    erroredReasons.add('Invalid file type ' + tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.')+1).toLowerCase());
                     successfulAttachment = false;
                 }
             }
@@ -521,8 +531,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments)
             {
-
                 attachmentSize += bAttachment.body.size();
+
+                fileNames.add(bAttachment.fileName);
+                fileSizes.add(bAttachment.body.size());
 
                 if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
                 {
@@ -530,6 +542,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                     if (bAttachment.body.size() > 5000000)
                     {
+                        erroredFiles.add(bAttachment.fileName);
+                        erroredReasons.add('File size greater than 5000000'); 
                         successfulAttachment = false;
                         System.debug('GRF Attachment too big: ' + battachment.body.size());
                     }
@@ -544,6 +558,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
                 else if (!validFileExtensionSet.isEmpty())
                 {
+                    erroredFiles.add(bAttachment.fileName);
+                    erroredReasons.add('Invalid file type ' + bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.')+1).toLowerCase()); 
                     successfulAttachment = false;
                 }
             }
@@ -551,7 +567,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         if (attachmentSize > 25000000)
         {
+            erroredFiles.add('All');
+            erroredReasons.add('Total file size greater than 25000000');
             successfulAttachment = false;
+        }
+
+        if(!successfulAttachment)
+        {
+            logDebugLostEmail(parentObject.Id, validFileExtensionList, attachmentSize, fileNames, fileSizes, erroredFiles, erroredReasons);
         }
 
         return successfulAttachment;
@@ -958,7 +981,24 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 System.debug('GRF CAR__c: ' + assignmentRuleListDefault[0]);
             }
         }
+    }
 
+    public LostEmail__c logDebugLostEmail(Id contactId, List<String> validFileExtensionList, Long attachmentSize, List<String> fileNames, List<Long> fileSizes, List<String> erroredFiles, List<String> erroredReasons)
+    {
+        LostEmail__c le = new LostEmail__c();
+        le.Subject__c = 'Debug Log for Case Inbound Email Handler: ' + contactId + ' ' + DateTime.now();
+
+        String body = 'Case ID: ' + contactId + '\n';
+        body += 'Valid File Extensions: ' + validFileExtensionList + '\n';
+        body += 'Attachment Size: ' + attachmentSize + '\n';
+        body += 'File Names: ' + fileNames + '\n';
+        body += 'File Sizes: ' + fileSizes + '\n';
+        body += 'Errored Files: ' + erroredFiles + '\n';
+        body += 'Errored Reasons: ' + erroredReasons + '\n';
+        le.PlainTextBody__c = body;
+
+        insert le;
+        return le;
     }
 
     private void sendAutoReply(Case emailCase, Contact emailContact, String emailTemplateId) 

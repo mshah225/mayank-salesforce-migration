@@ -406,4 +406,19 @@ public with sharing class Test_CaseInboundEmailHandler {
 
 		System.assertEquals('New', createdCase.Status);
 	}
+
+    @isTest static void testDebugLog()
+    {
+        Id id = null;
+        List<String> strings = new List<String>();
+        List<Long> longs = new List<Long>();
+        Long num = 0;
+
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        Test.startTest();
+        LostEmail__c result = emailServiceObj.logDebugLostEmail(id, strings, num, strings, longs, strings, strings);
+        Test.stopTest();
+
+        System.assertNotEquals(result.Id, null, 'An error occurred when logging the failure');
+    }
 }

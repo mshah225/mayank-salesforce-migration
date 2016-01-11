@@ -3,8 +3,17 @@ private class BomgarCreateCaseUtilTest
 {
     @testSetup static void setup()
     {
-        Profile p = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
-        Profile h = [SELECT Id FROM Profile WHERE Name = 'ASU Service - Help Desk'];
+        Profile p = [
+            SELECT Id
+            FROM Profile
+            WHERE Name = 'ASU Community'
+        ];
+
+        Profile h = [
+            SELECT Id
+            FROM Profile
+            WHERE Name = 'ASU Service - Help Desk'
+        ];
 
         Contact testContact = ContactService.createTestContact();
         testContact.EMPLID__c = '1231231231';
@@ -19,161 +28,188 @@ private class BomgarCreateCaseUtilTest
 
         User testBomgarUser = userList[1];
         testBomgarUser.ProfileId = h.Id;
+        testBomgarUser.FederationIdentifier = 'testuser@admin.asu.edu';
+        testBomgarUser.bomgar__Bomgar_Username__c = 'testuser';
         insert testBomgarUser;
+
     }
 
     @isTest static void testCreateCaseFA()
     {
         Test.startTest();
+
         String value = null;
         bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
         webEvent.bomgar__Username__c = 'joetest123123';
-        webEvent.bomgar__ExternalKey__c = 'SFDC:{"employeeNumber":"1231231231", "description":"Bacon ipsum dolor amet bresaola drumstick leberkas, meatloaf picanha turducken tenderloin alcatra biltong cow pastrami tongue swine. Ham meatloaf fatback biltong bresaola. Kevin pork shank, meatball t-bone ball tip hamburger short loin tenderloin prosciutto salami turducken fatback tongue porchetta. Brisket fatback corned beef bacon shankle filet mignon doner kevin short loin meatloaf salami. Pork turducken tenderloin brisket corned beef turkey. Pork chop boudin corned beef", "asuriteId":"testc", "externalKey":"Finances"}';
+        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
+            '"employeeNumber":"1231231231", ' +
+            '"description":"Bacon ipsum dolor amet bresaola drumstick leberkas, meatloaf ' +
+            'picanha turducken tenderloin alcatra biltong cow pastrami tongue swine. Ham ' +
+            'meatloaf fatback biltong bresaola. Kevin pork shank, meatball t-bone ball ' +
+            'tip hamburger short loin tenderloin prosciutto salami turducken fatback tongue ' +
+            'porchetta. Brisket fatback corned beef bacon shankle filet mignon doner kevin ' +
+            'short loin meatloaf salami. Pork turducken tenderloin brisket corned beef ' +
+            'turkey. Pork chop boudin corned beef", ' +
+            '"asuriteId":"testc", ' +
+            '"externalKey":"Finances"}';
         value = BomgarCreateCaseUtil.createCase(webEvent);
-        System.assertNotEquals(null, value);
+
+        Case testCase = [
+            SELECT Id, Category__c
+            FROM Case
+            WHERE Id = :value
+        ];
+
+        System.assertEquals('Finances (Help Desk)', testCase.Category__c);
+
         Test.stopTest();
     }
 
     @isTest static void testCreateCaseOther()
     {
         Test.startTest();
+
         String value = null;
         bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
         webEvent.bomgar__Username__c = 'joetest123123';
-        webEvent.bomgar__ExternalKey__c = 'SFDC:{"employeeNumber":"1231231231", "description":"Bacon ipsum dolor amet bresaola drumstick leberkas", "asuriteId":"testc", "externalKey":"Other"}';
+        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
+            '"employeeNumber":"1231231231", ' +
+            '"description":"Bacon ipsum dolor amet bresaola drumstick leberkas", ' +
+            '"asuriteId":"testc", ' +
+            '"externalKey":"Other"}';
         value = BomgarCreateCaseUtil.createCase(webEvent);
-        System.assertNotEquals(null, value);
+
+        Case testCase = [
+            SELECT Id, Category__c
+            FROM Case
+            WHERE Id = :value
+        ];
+
+        System.assertEquals('General Help Desk', testCase.Category__c);
+
         Test.stopTest();
     }
 
-    @isTest static void testCreateCaseNoEmplId()
+    @isTest static void testCreateCaseNoExternalKey()
     {
         Test.startTest();
+
         String value = null;
         bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
         webEvent.bomgar__Username__c = 'joetest123123';
-        webEvent.bomgar__ExternalKey__c = 'SFDC:{"employeeNumber":"", "description":"Bacon ipsum dolor amet bresaola drumstick leberkas", "asuriteId":"testc", "externalKey":"Other"}';
+        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
+            '"employeeNumber":"1231231231", ' +
+            '"description":"Bacon ipsum dolor amet bresaola drumstick leberkas", ' +
+            '"asuriteId":"testc", ' +
+            '"externalKey":""}';
         value = BomgarCreateCaseUtil.createCase(webEvent);
-        System.assertNotEquals(null, value);
+
+        Case testCase = [
+            SELECT Id, Category__c
+            FROM Case
+            WHERE Id = :value
+        ];
+
+        System.assertEquals('General Help Desk', testCase.Category__c);
+
+        Test.stopTest();
+    }
+
+    @isTest static void testContactLookupNoEmplId()
+    {
+        Test.startTest();
+
+        String value = null;
+        bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
+        webEvent.bomgar__Username__c = 'joetest123123';
+        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
+            '"employeeNumber":"", ' +
+            '"description":"Bacon ipsum dolor amet bresaola drumstick leberkas", ' +
+            '"asuriteId":"testuser", ' +
+            '"externalKey":"Other"}';
+        value = BomgarCreateCaseUtil.createCase(webEvent);
+
+        Case testCase = [
+            SELECT Id, ContactId
+            FROM Case
+            WHERE Id = :value
+        ];
+
+        Contact testContact = [
+            SELECT Id
+            FROM Contact
+            WHERE ASURite_ID__c = 'testuser'
+        ];
+
+        System.assertEquals(testContact.Id, testCase.ContactId);
+
         Test.stopTest();
     }
 
     @isTest static void testAssignCase()
     {
         Test.startTest();
+
         String value = null;
-        try
-        {
-            BomgarCreateCaseUtil.assignCase('lsid', 'caseId');
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
+        BomgarCreateCaseUtil.assignCase('lsid', 'caseId');
+
         Test.stopTest();
     }
 
     @isTest static void testLookupUserByFederationId()
     {
         Test.startTest();
-        String value = null;
-        try
-        {
-            BomgarCreateCaseUtil.lookupUserByFederationId('testc');
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
-        Test.stopTest();
-    }
 
-    @isTest static void testLookupUserByAliasBomgar()
-    {
-        Test.startTest();
-        String value = null;
-        try
-        {
-            BomgarCreateCaseUtil.lookupUserByFederationId('abcd');
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
+        User testUser = BomgarCreateCaseUtil.lookupUserByFederationId('testuser');
+        System.assertNotEquals(null, testUser);
+
         Test.stopTest();
     }
 
     @isTest static void testlookupUserByBomgarUsername()
     {
         Test.startTest();
-        String value = null;
-        try
-        {
-            BomgarCreateCaseUtil.lookupUserByBomgarUsername('abcd');
-            BomgarCreateCaseUtil.lookupUserByBomgarUsername('nobody');
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
+
+        User testUser = BomgarCreateCaseUtil.lookupUserByBomgarUsername('testuser');
+        System.assertNotEquals(null, testUser);
+
         Test.stopTest();
     }
 
     @isTest static void testGetOwnerIdBySessionId()
     {
         Bomgar__BomgarSession__c bs = new Bomgar__BomgarSession__c(
-            bomgar__Duration__c = '00:00:30');
+            bomgar__Duration__c = '00:00:30'
+        );
+
         insert bs;
 
         Bomgar__Participant__c bp = new Bomgar__Participant__c(
-            bomgar__Username__c = 'BomgarParticipant',
+            bomgar__Username__c = 'testuser',
             bomgar__IsPrimary__c = true,
             bomgar__ParticipantType__c = 'Representative',
-            bomgar__BomgarSession__c = bs.Id);
+            bomgar__BomgarSession__c = bs.Id
+        );
+
         insert bp;
 
         Test.startTest();
-        String value = null;
-        try
-        {
-            BomgarCreateCaseUtil.getOwnerIdBySessionId(bs.Id);
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
-        Test.stopTest();
-    }
 
-    @isTest static void testlookupContactByEmployeeId()
-    {
-        Test.startTest();
         String value = null;
-        try
-        {
-            BomgarCreateCaseUtil.lookupContactByEmployeeId('1231231231');
-            BomgarCreateCaseUtil.lookupContactByEmployeeId('3432423432');
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
-        Test.stopTest();
-    }
 
-    @isTest static void testlookupUserByASURITE()
-    {
-        Test.startTest();
-        String value = null;
-        try
-        {
-            BomgarCreateCaseUtil.lookupContactByASURITE('testc');
-            BomgarCreateCaseUtil.lookupContactByASURITE('nobody');
-        }
-        catch (Exception e)
-        {
-            value = e.getMessage();
-        }
+        bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
+        webEvent.bomgar__Username__c = 'joetest123123';
+        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
+            '"employeeNumber":"1231231231", ' +
+            '"description":"Bacon ipsum dolor amet bresaola drumstick leberkas", ' +
+            '"asuriteId":"testc", ' +
+            '"externalKey":"Other"}';
+        value = BomgarCreateCaseUtil.createCase(webEvent);
+
+        Id testId = BomgarCreateCaseUtil.getOwnerIdBySessionId(bs.Id);
+
+        System.assertNotEquals(null, testId);
+
         Test.stopTest();
     }
 }

@@ -6,199 +6,324 @@
     <apex:attribute name="myPin" description="The user's contact's PIN" type="Decimal"/>
     <apex:attribute name="newPin" description="The new PIN" type="Decimal"/>
     <apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action"/>
+
     <apex:outputPanel rendered="{!HelpBox}">
         <div class="box">
             <div class="header">
                 <h6><b>Immediate Assistance</b></h6>
             </div>
+
             <div class="content">
-            <p>Please contact us if you need immediate assistance. We're available 24/7 to answer your questions.</p>
-            <div id="normalPhone">
-                <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!NormalPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-855-278-5080"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-855-ASU-5080</apex:outputLink>
-            </div>
-            <div id="roverPhone">
-                <apex:outputLink styleClass="btn kbbtn btnLink" rendered="{!RoverPhone}" style="width:160px;color:#fff;background:#990033;padding:5px;" value="tel:1-844-278-6693"><span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>&nbsp;&nbsp;&nbsp;1-844-ASU-6693</apex:outputLink>
-            </div>
+                <p>
+                    Please contact us if you need immediate assistance.
+                    We're available 24/7 to answer your questions.
+                </p>
 
-            <hr />
+                <div id="normalPhone">
+                    <apex:outputLink styleClass="btn kbbtn btnLink"
+                                     rendered="{!NormalPhone}"
+                                     style="width:160px;color:#fff;background:#990033;padding:5px;"
+                                     value="tel:1-855-278-5080">
+                        <span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>
+                        &nbsp;&nbsp;&nbsp;1-855-ASU-5080
+                    </apex:outputLink>
+                </div>
 
-            <apex:outputPanel id="pinPanel" rendered="{!IF(myPin != null,true,false)}">
-                <apex:form id="pinForm" styleClass="pinForm">
-                    <div id="pinFormDiv" style="margin-left:30px;">
-                        <h5>ASU Finances PIN</h5>&nbsp;
+                <div id="roverPhone">
+                    <apex:outputLink styleClass="btn kbbtn btnLink"
+                                     rendered="{!RoverPhone}"
+                                     style="width:160px;color:#fff;background:#990033;padding:5px;"
+                                     value="tel:1-844-278-6693">
+                        <span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>
+                        &nbsp;&nbsp;&nbsp;1-844-ASU-6693
+                    </apex:outputLink>
+                </div>
+                <hr />
+                <apex:outputPanel id="pinPanel" rendered="{!IF(myPin != null,true,false)}">
+                    <apex:form id="pinForm" styleClass="pinForm">
+                        <div id="pinFormDiv" style="margin-left:30px;">
+                            <h5>ASU Finances PIN</h5>&nbsp;
 
-                        <button type="button" class="qMarkMobile" data-toggle="modal" data-target="#finPinMobile" style="display:none">
-                            <img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png" width="14" height="14" alt="qmark" style="margin-bottom:3px;cursor:pointer;"/>
-                        </button>
+                            <button type="button"
+                                    class="qMarkMobile"
+                                    data-toggle="modal"
+                                    data-target="#finPinMobile"
+                                    style="display:none">
+                                <img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png"
+                                     width="14"
+                                     height="14"
+                                     alt="qmark"
+                                     style="margin-bottom:3px;cursor:pointer;"/>
+                            </button>
 
-                        <div class="modal fade" id="finPinMobile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                    <span class="glyphicon glyphicon-info-sign"></span>&nbsp;&nbsp;<h6 class="modal-title" id="myModalLabel">ASU Finances PIN Help</h6>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Use this PIN to access information about your financial aid and account balance when you call the number above. The PIN should be used to access your confidential account information and should not be shared with anyone. To choose another PIN select Reset and enter your own six digit PIN selection.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <div class="pull-left">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <div class="modal fade"
+                                 id="finPinMobile"
+                                 tabindex="-1"
+                                 role="dialog"
+                                 aria-labelledby="myModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button"
+                                                    class="close"
+                                                    data-dismiss="modal">
+                                                <span aria-hidden="true">&times;</span>
+                                                <span class="sr-only">Close</span>
+                                            </button>
+
+                                            <span class="glyphicon glyphicon-info-sign"></span>
+                                            &nbsp;&nbsp;
+                                            <h6 class="modal-title" id="myModalLabel">
+                                                ASU Finances PIN Help
+                                            </h6>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <p>
+                                                Use this PIN to access information about your
+                                                financial aid and account balance when you call
+                                                the number above. The PIN should be used to access
+                                                your confidential account information and should
+                                                not be shared with anyone. To choose another
+                                                PIN select Reset and enter your own six digit PIN
+                                                selection.
+                                            </p>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <div class="pull-left">
+                                                <button type="button"
+                                                        class="btn btn-default"
+                                                        data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                              </div>
                             </div>
+
+                            <div id="tooltipPin" class="tooltipBox" style="margin-left:-190px;margin-top:-22px;display:none;position:absolute;width:100%;max-width:300px;height:auto;background:#eee;color:#000;z-index:200;box-shadow: 5px 4px 5px 0px rgba(0,0,0,0.5);">
+                                <div id="tooltipArrow"></div>
+                                <div style="width:100%;background:#ddd;padding:3px;padding-left:5px;border-bottom:solid 2px #cdcdcd;">
+                                    <h6>ASU Finances PIN Help</h6>
+
+                                    <span id="closeTooltip" class="pull-right" style="padding-right:5px;cursor:pointer;">
+                                        <a href="">x</a>
+                                    </span>
+                                </div>
+
+                                <div style="padding:5px;font-size:8pt;">
+                                    <p>
+                                        Use this PIN to access information about your financial
+                                        aid and account balance when you call the number above.
+                                        The PIN should be used to access your confidential account
+                                        information and should not be shared with anyone. To
+                                        choose another PIN select Reset and enter your own six
+                                        digit PIN selection.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <a id="qmarkPin" href="">
+                                <img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png"
+                                     width="14"
+                                     height="14"
+                                     alt="qmark"
+                                     style="margin-bottom:3px;cursor:pointer;"/>
+                            </a>
+                            <br />
+                            <input id="yourPinHidden"
+                                   class="hiddenPinBox"
+                                   style="padding-right:30px;width:60px;border:none;padding:6px;"
+                                   disabled="true"/>
+
+                            <button id="viewPinBtn"
+                                    class="viewPin"
+                                    type="button">
+                                View
+                            </button>
+
+                            <apex:outputText id="yourPin"
+                                             styleClass="pinBox"
+                                             style="display:none"
+                                             value="{!myPin}"/>
+
+                            <button id="hidePinBtn"
+                                    class="viewPin"
+                                    type="button"
+                                    style="display:none;">
+                                Hide PIN
+                            </button>
+
+                            <button id="resetPin"
+                                    class="resetPin kbbtn"
+                                    type="button">
+                                Reset
+                            </button>
+
+                            <apex:input id="newPinInput"
+                                        value="{!newPin}"
+                                        html-placeholder="New Pin"
+                                        onkeypress="return inputLimiter(event,'Numbers');"
+                                        styleClass="pinBoxInput"
+                                        style="display:none;"
+                                        type="number"/>
+
+                            <apex:commandButton id="savePinBtn"
+                                                value="Save"
+                                                action="{!changePin}"
+                                                styleClass="savePin"
+                                                style="display:none;"/>
+
+                            <button id="cancelPinInput"
+                                    class="resetPin kbbtn"
+                                    onclick="this.form.reset();"
+                                    style="display:none;"
+                                    type="button">
+                                Cancel
+                            </button>
+
+                            <p style="margin-top:5px;">
+                                Select <b>View</b> when calling to access confidential
+                                information about your financial aid and account balance.
+                            </p>
                         </div>
 
-                        <div id="tooltipPin" class="tooltipBox" style="margin-left:-190px;margin-top:-22px;display:none;position:absolute;width:100%;max-width:300px;height:auto;background:#eee;color:#000;z-index:200;box-shadow: 5px 4px 5px 0px rgba(0,0,0,0.5);">
-                            <div id="tooltipArrow"></div>
-                            <div style="width:100%;background:#ddd;padding:3px;padding-left:5px;border-bottom:solid 2px #cdcdcd;"><h6>ASU Finances PIN Help</h6><span id="closeTooltip" class="pull-right" style="padding-right:5px;cursor:pointer;"><a href="">x</a></span></div>
-                            <div style="padding:5px;font-size:8pt;"><p>Use this PIN to access information about your financial aid and account balance when you call the number above. The PIN should be used to access your confidential account information and should not be shared with anyone. To choose another PIN select Reset and enter your own six digit PIN selection.</p></div>
-                        </div>
+                        <script>
+                            $( "[id$=qmarkPin]" ).click(function() {
+                                $( "[id$=tooltipPin]" ).show();
+                            });
 
-                        <a id="qmarkPin" href=""><img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png" width="14" height="14" alt="qmark" style="margin-bottom:3px;cursor:pointer;"/></a><br />
-                        <input id="yourPinHidden" class="hiddenPinBox" style="padding-right:30px;width:60px;border:none;padding:6px;" disabled="true"/>
-                        <button id="viewPinBtn" class="viewPin" type="button">View</button>
+                            $( "[id$=closeTooltip]" ).click(function() {
+                                $( "[id$=tooltipPin]" ).hide();
+                            });
 
-                        <apex:outputText id="yourPin" styleClass="pinBox" style="display:none" value="{!myPin}"/>
-                        <button id="hidePinBtn" class="viewPin" type="button" style="display:none;">Hide PIN</button>
-
-                        <button id="resetPin" class="resetPin kbbtn" type="button">Reset</button>
-
-                        <apex:inputText id="newPinInput" value="{!newPin}" html-placeholder="New Pin" onkeypress="return inputLimiter(event,'Numbers');" maxlength="10" styleClass="pinBoxInput" style="display:none;"/>
-                        <apex:commandButton id="savePinBtn" value="Save" action="{!changePin}" styleClass="savePin" style="display:none;"/>
-                        <button id="cancelPinInput" class="resetPin kbbtn" onclick="this.form.reset();" style="display:none;" type="button">Cancel</button>
-                        <p style="margin-top:5px;">Select <b>View</b> when calling to access confidential information about your financial aid and account balance.</p>
-                    </div>
-
-                    <script>
-                        $( "[id$=qmarkPin]" ).click(function() {
-                            $( "[id$=tooltipPin]" ).show();
-                        });
-
-                        $( "[id$=closeTooltip]" ).click(function() {
-                            $( "[id$=tooltipPin]" ).hide();
-                        });
-
-                        $(document).mouseup(function (e) {
-                            var container = $( "[id$=tooltipPin]" );
-                            if (!container.is(e.target) && container.has(e.target).length === 0) {
-                                container.hide();
-                            }
-                        });
-                    </script>
-
-                    <script>
-                        $( "[id$=viewPinBtn]" ).click(function() {
-                            $( "[id$=yourPinHidden]" ).hide();
-                            $( "[id$=viewPinBtn]" ).hide();
-                            $( "[id$=hidePinBtn]" ).show();
-                            $( "[id$=yourPin]" ).show();
-                        });
-
-                        $( "[id$=hidePinBtn]" ).click(function() {
-                            $( "[id$=hidePinBtn]" ).hide();
-                            $( "[id$=yourPin]" ).hide();
-                            $( "[id$=yourPinHidden]" ).show();
-                            $( "[id$=yourPinHidden]" ).val( "••••••••••" );
-                            $( "[id$=viewPinBtn]" ).show();
-                        });
-
-                        $( "[id$=resetPin]" ).click(function() {
-                            $( "[id$=hidePinBtn]" ).hide();
-                            $( "[id$=yourPin]" ).hide();
-                            $( "[id$=yourPinHidden]" ).hide();
-                            $( "[id$=viewPinBtn]" ).hide();
-                            $( "[id$=resetPin]" ).hide();
-                            $( "[id$=newPinInput]" ).show().focus();
-                            $( "[id$=savePinBtn]" ).show();
-                            $( "[id$=cancelPinInput]" ).show();
-                        });
-
-                        $( "[id$=cancelPinInput]" ).click(function() {
-                            $( "[id$=yourPinHidden]" ).show();
-                            $( "[id$=yourPinHidden]" ).val( "••••••••••" );
-                            $( "[id$=yourPin]" ).hide();
-                            $( "[id$=viewPinBtn]" ).show();
-                            $( "[id$=resetPin]" ).show();
-                            $( "[id$=newPinInput]" ).hide();
-                            $( "[id$=savePinBtn]" ).hide();
-                            $( "[id$=cancelPinInput]" ).hide();
-                        });
-
-                        $( document ).ready(function() {
-                            $( "[id$=yourPinHidden]" ).val( "••••••••••" );
-                            $( "[id$=newPinInput]" ).val( "" );
-                        });
-
-                        function inputLimiter(e,allow) {
-                            var AllowableCharacters = '';
-
-                            if (allow == 'Letters'){AllowableCharacters=' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';}
-                            if (allow == 'Numbers'){AllowableCharacters='1234567890';}
-                            if (allow == 'NameCharacters'){AllowableCharacters=' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';}
-                            if (allow == 'NameCharactersAndNumbers'){AllowableCharacters='1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-\'';}
-                            if (allow == 'Currency'){AllowableCharacters='1234567890.';}
-
-                            var k = document.getElementById('newPinInput')?parseInt(e.keyCode): parseInt(e.which);
-                            if (k!=13 && k!=8 && k!=0){
-                                if ((e.ctrlKey==false) && (e.altKey==false)) {
-                                return (AllowableCharacters.indexOf(String.fromCharCode(k))!=-1);
-                                } else {
-                                return true;
+                            $(document).mouseup(function (e) {
+                                var container = $( "[id$=tooltipPin]" );
+                                if (!container.is(e.target) && container.has(e.target).length === 0) {
+                                    container.hide();
                                 }
-                            } else {
-                                return true;
-                            }
-                        }
-                    </script>
-                </apex:form>
-            </apex:outputPanel>
+                            });
+                        </script>
 
-            <hr />
+                        <script>
+                            $( "[id$=viewPinBtn]" ).click(function() {
+                                $( "[id$=yourPinHidden]" ).hide();
+                                $( "[id$=viewPinBtn]" ).hide();
+                                $( "[id$=hidePinBtn]" ).show();
+                                $( "[id$=yourPin]" ).show();
+                            });
 
-            <div class="dropdown" style="display:inline-block">
-                <button type="button" class="btn kbbtn dropdown-toggle" style="width:160px;color:#fff;background:#990033;padding:5px;" data-toggle="dropdown" href="//asu.edu/helpchat">
-                    <span class="glyphicon glyphicon-comment pull-left" style="padding-left:10px;"></span>
-                    Live Chat &nbsp;
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a id="faChat" class="chat-link">Finances</a></li>
+                            $( "[id$=hidePinBtn]" ).click(function() {
+                                $( "[id$=hidePinBtn]" ).hide();
+                                $( "[id$=yourPin]" ).hide();
+                                $( "[id$=yourPinHidden]" ).show();
+                                $( "[id$=yourPinHidden]" ).val( "••••••••••" );
+                                $( "[id$=viewPinBtn]" ).show();
+                            });
 
-                    <li><a id="bomgarChat" class="chat-link">Other</a></li>
-               </ul>
-            </div>
+                            $( "[id$=resetPin]" ).click(function() {
+                                $( "[id$=hidePinBtn]" ).hide();
+                                $( "[id$=yourPin]" ).hide();
+                                $( "[id$=yourPinHidden]" ).hide();
+                                $( "[id$=viewPinBtn]" ).hide();
+                                $( "[id$=resetPin]" ).hide();
+                                $( "[id$=newPinInput]" ).show().focus();
+                                $( "[id$=savePinBtn]" ).show();
+                                $( "[id$=cancelPinInput]" ).show();
+                            });
+
+                            $( "[id$=cancelPinInput]" ).click(function() {
+                                $( "[id$=yourPinHidden]" ).show();
+                                $( "[id$=yourPinHidden]" ).val( "••••••••••" );
+                                $( "[id$=yourPin]" ).hide();
+                                $( "[id$=viewPinBtn]" ).show();
+                                $( "[id$=resetPin]" ).show();
+                                $( "[id$=newPinInput]" ).hide();
+                                $( "[id$=savePinBtn]" ).hide();
+                                $( "[id$=cancelPinInput]" ).hide();
+                            });
+
+                            $( document ).ready(function() {
+                                $( "[id$=yourPinHidden]" ).val( "••••••••••" );
+                                $( "[id$=newPinInput]" ).val( "" );
+                            });
+                        </script>
+                    </apex:form>
+                </apex:outputPanel>
+                <hr />
+                <div class="dropdown" style="display:inline-block">
+                    <button type="button"
+                            class="btn kbbtn dropdown-toggle"
+                            style="width:160px;color:#fff;background:#990033;padding:5px;"
+                            data-toggle="dropdown"
+                            href="//asu.edu/helpchat">
+                        <span class="glyphicon glyphicon-comment pull-left" style="padding-left:10px;"></span>
+                        Live Chat &nbsp;
+                        <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li><a id="faChat" class="chat-link">Finances</a></li>
+
+                        <li><a id="bomgarChat" class="chat-link">Other</a></li>
+                   </ul>
+                </div>
 
                 <script>
                     $( "#bomgarChat" ).click(function() {
-                        $( "#bomgarChatForm" ).slideToggle( "700");
-                        $( "#faChatForm" ).slideUp( "700" );
+                        $( "#bomgarChatForm" ).slideToggle( "500");
+                        $( "#faChatForm" ).slideUp( "500" );
                     });
 
                     $( "#faChat" ).click(function() {
-                        $( "#bomgarChatForm" ).slideUp( "700");
-                        $( "#faChatForm" ).slideToggle( "700" );
+                        $( "#bomgarChatForm" ).slideUp( "500");
+                        $( "#faChatForm" ).slideToggle( "500" );
                     });
                 </script>
 
                 <div id="faChatForm" style="margin-top:20px;display:none;">
                     <apex:pageBlock >
-                        <h5>Get Help with Finances</h5><br /><br />
-                        <textarea id="FADesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea><br />
+                        <h5>Get Help with Finances</h5>
+                        <br />
+                        <br />
+                        <textarea id="FADesc"
+                                  placeholder="Enter a brief description of your issue"
+                                  rows="6"
+                                  style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea>
+                        <br />
                         <apex:pageBlockButtons location="bottom">
-                            <button id="faChatBtn" name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;"
-                                     onClick="startFAChat();">Start Chat</button>
+                            <button id="faChatBtn"
+                                    name="chat"
+                                    class="btn kbbtn"
+                                    style="color:#fff;background:#990033;padding:5px;width:60px;"
+                                    onClick="startFAChat();">
+                                Start Chat
+                            </button>
                         </apex:pageBlockButtons>
                     </apex:pageBlock>
                 </div>
 
                 <div id="bomgarChatForm" style="margin-top:20px;display:none;">
                     <apex:pageBlock >
-                        <h5>Get Help</h5><br /><br />
-                        <textarea id="SFDCDesc" placeholder="Enter a brief description of your issue" rows="6" style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea><br />
+                        <h5>Get Help</h5>
+                        <br />
+                        <br />
+                        <textarea id="SFDCDesc"
+                                  placeholder="Enter a brief description of your issue"
+                                  rows="6"
+                                  style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea>
+                        <br />
                         <apex:pageBlockButtons location="bottom">
-                            <button id="otherChatBtn" name="chat" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:60px;" onClick="startSFDCChat();">Start Chat</button>
+                            <button id="otherChatBtn"
+                                    name="chat"
+                                    class="btn kbbtn"
+                                    style="color:#fff;background:#990033;padding:5px;width:60px;"
+                                    onClick="startSFDCChat();">
+                                Start Chat
+                            </button>
                         </apex:pageBlockButtons>
                     </apex:pageBlock>
                 </div>

@@ -1,9 +1,10 @@
 <apex:page docType="html-5.0"
-    showHeader="false"
-    sidebar="false"
-    controller="ServiceCenter"
-    action="{!init}"
-    extensions="NavLinks,vfListPaginationController">
+           showHeader="false"
+           sidebar="false"
+           controller="ServiceCenter"
+           action="{!init}"
+           cache="true"
+           extensions="NavLinks,vfListPaginationController">
 <head>
     <title>My ASU | Service Center</title>
     <c:asu_responsive_header_section linkList="{!linkList}"/>
@@ -16,7 +17,6 @@
         .contactPhone td {
             padding: 0px !important;
         }
-
     </style>
 
     <script>
@@ -36,10 +36,6 @@
                        viewingAs="{!viewingAs}"/>
 </head>
 <body>
-    <script>
-        if (window.top !== window.self) top.location.replace(self.location.href);
-    </script>
-
     <div id="main-search" class="main-search closed"></div>
 
     <c:SCHeader firstName="{!firstName}"
@@ -81,7 +77,10 @@
 
                         <div class="modal-body">
                             <apex:pageBlock mode="maindetail">
-                                <p>Have an idea for an article you'd like to see? Please tell us below!</p>
+                                <p>
+                                    Have an idea for an article you'd like to see?
+                                    Please tell us below!
+                                </p>
                                 <br />
                                 <apex:inputField id="articleDetails"
                                                  required="true"
@@ -226,8 +225,9 @@
                 </div><!-- end col-md-5 -->
             </div><!-- end first row -->
         </div><!-- End main container -->
-        <c:SCFooter />
     </div><!-- End ASU Content -->
+
+    <c:SCFooter />
 
     <script>
         if (!(navigator.userAgent.match(/Android/i)

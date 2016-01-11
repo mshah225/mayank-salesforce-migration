@@ -33,7 +33,7 @@ public without sharing class AKBController
         {
             faq = [
                 SELECT KnowledgeArticleId, Title, Functional_Group__c,
-                        Question__c, Answer__c, toLabel(ArticleType), LastModifiedDate
+                        Answer__c, toLabel(ArticleType), LastModifiedDate
                 FROM FAQ__kav
                 WHERE PublishStatus='Online'
                 AND KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')

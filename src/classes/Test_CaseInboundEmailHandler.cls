@@ -13,7 +13,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 			e1 = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
 			insert e1;
 
-			testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
+			testGroup = new Group(Name = 'TestGroup', Type = 'Queue');
 			insert testGroup;
 
             caseGroup = new Group(Name = 'CaseGroup', Type = 'Queue');
@@ -26,8 +26,8 @@ public with sharing class Test_CaseInboundEmailHandler {
             insert caseQueue;
 		}
 
-	    String queueId = String.valueOf(testQueue.Id).substring(0,15);
-	    String fallbackQueueId = String.valueOf(testQueue.Id).substring(0,15);
+	    String queueId = String.valueOf(caseGroup.Id).substring(0,15);
+	    String fallbackQueueId = String.valueOf(caseGroup.Id).substring(0,15);
 	    String templateId = String.valueOf(e1.Id).substring(0,15);
 	    
 	    Case_Assignment_Rule__c car = new Case_Assignment_Rule__c();
@@ -353,7 +353,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 		List<string> toAddresses = new List<string>();
 		toAddresses.add('service@test.test');
 		email.toAddresses = toAddresses;
-		email.subject = 'test';
+		email.subject = 'test email';
 		email.fromName = 'Last, First';
 		email.plainTextBody = 'ref:' + createdCase.Id + ':ref';
 		email.fromAddress = 'user@acme.com.test';
@@ -374,4 +374,51 @@ public with sharing class Test_CaseInboundEmailHandler {
 		System.assertEquals('CaseFuncGroup', createdCase.Functional_Group__c, 'External Unit case was not re-opened to most recent functional group');
 		System.assertEquals('Re-Opened', createdCase.Status, 'Case was not reopened correctly');
 	}
+
+	@isTest static void createACaseWithEmptySubject()
+	{
+		Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test');
+		insert c;
+
+		// Reopen the case via email
+		Messaging.InboundEmail email = new Messaging.InboundEmail();
+		Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+
+		List<string> toAddresses = new List<string>();
+		toAddresses.add('service@test.test');
+		email.toAddresses = toAddresses;
+		email.fromName = 'Last, First';
+		email.fromAddress = 'user@acme.com.test';
+
+		Test.startTest();
+		// call the class and test it with the data in the testMethod
+		CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+		emailServiceObj.handleInboundEmail(email, env);
+		Test.stopTest();
+
+		// Verify that the case status was updated
+		Case createdCase = [
+				SELECT Status, Functional_Group__c
+				FROM Case
+                WHERE ContactId = :c.Id
+                LIMIT 1
+		];
+
+		System.assertEquals('New', createdCase.Status);
+	}
+
+    @isTest static void testDebugLog()
+    {
+        Id id = null;
+        List<String> strings = new List<String>();
+        List<Long> longs = new List<Long>();
+        Long num = 0;
+
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        Test.startTest();
+        LostEmail__c result = emailServiceObj.logDebugLostEmail(id, strings, num, strings, longs, strings, strings);
+        Test.stopTest();
+
+        System.assertNotEquals(result.Id, null, 'An error occurred when logging the failure');
+    }
 }

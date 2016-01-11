@@ -25,6 +25,7 @@ global class EmailPublisherLoader implements QuickAction.QuickActionDefaultsHand
         if (sendEmailDefaults != null)
         {
             OrgWideEmailAddress oweaToUse;
+            Id currentUser = UserInfo.getUserId();
 
             Case currentCase = CaseService.getCaseInformation(sendEmailDefaults.getContextId());
 
@@ -37,6 +38,12 @@ global class EmailPublisherLoader implements QuickAction.QuickActionDefaultsHand
             try
             {
                 oweaToUse = OrgWideEmailAddressService.getOrgWideEmailAddress(currentCase.Case_Feed_Email__c);
+
+                // Make sure the user has access to use this OWEA
+                if(!UserService.userHasReadAccess(currentUser, oweaToUse.Id))
+                {
+                    throw new OrgWideEmailAddressService.OrgWideEmailAddressServiceException('!!! User does not have access to this OWEA, use the default only');
+                }
             }
             catch (OrgWideEmailAddressService.OrgWideEmailAddressServiceException e)
             {
@@ -50,7 +57,8 @@ global class EmailPublisherLoader implements QuickAction.QuickActionDefaultsHand
             sendEmailDefaults.setInsertTemplateBody(true);
 
             // Null check the Case Feed Email Template Id field on the case. It may not be set for some reason.
-            if (currentCase.Case_Feed_Email_Template_Id__c != null)
+            // Also check to see if the current user has access to the template
+            if (currentCase.Case_Feed_Email_Template_Id__c != null && UserService.userHasReadAccess(currentUser, currentCase.Case_Feed_Email_Template_Id__c))
             {
                 sendEmailDefaults.setTemplateId(currentCase.Case_Feed_Email_Template_Id__c);
             }

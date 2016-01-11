@@ -5,18 +5,20 @@ public class ChatterAutoAddUsers
         CollaborationGroupMember newCollabMember;
         Id collabGroupId;
         List<CollaborationGroupMember> collabMembersToInsert;
-        Map<String, String> chatterSettingsMap;
-        Map<String, String> chatterGroupsMap;
-        Set<Id> recGroupMemberIds;
-        Set<Id> servGroupMemberIds;
-        Set<Id> allGroupMemberIds;
+        Map<String, String> chatterSettingsMap = new Map<String, String>();
+        Map<String, String> chatterGroupsMap= new Map<String, String>();
+        Set<Id> recGroupMemberIds= new Set<Id>();
+        Set<Id> servGroupMemberIds = new Set<Id>();
+        Set<Id> allGroupMemberIds= new Set<Id>();
 
         List<User> userList = [
             SELECT Id, ProfileId, Profile.Name, isActive
             FROM User
             WHERE Id IN :userIds
-            AND isActive = true
+            //AND isActive = true
         ];
+
+        System.debug('merf users found: ' + userList);
 
         // Get all the current Recruitment members
         List<CollaborationGroup> recGroup = [
@@ -33,8 +35,6 @@ public class ChatterAutoAddUsers
                 FROM CollaborationGroupMember
                 WHERE CollaborationGroupId = :recGroup[0].Id
             ];
-
-            recGroupMemberIds = new Set<Id>();
 
             for (CollaborationGroupMember cgm : recGroupMembers)
             {
@@ -58,12 +58,14 @@ public class ChatterAutoAddUsers
                 WHERE CollaborationGroupId = :servGroup[0].Id
             ];
 
-            servGroupMemberIds = new Set<Id>();
+            System.debug('merf group member: ' + servGroupMembers);
 
             for (CollaborationGroupMember cgm : servGroupMembers)
             {
                 servGroupMemberIds.add(cgm.MemberId);
             }
+
+            System.debug('merf group member ids: ' + servGroupMemberIds);
         }
 
         // Get all the current ASU Everyone members
@@ -82,8 +84,6 @@ public class ChatterAutoAddUsers
                 WHERE CollaborationGroupId = :allGroup[0].Id
             ];
 
-            allGroupMemberIds = new Set<Id>();
-
             for (CollaborationGroupMember cgm : allGroupMembers)
             {
                 allGroupMemberIds.add(cgm.MemberId);
@@ -96,8 +96,6 @@ public class ChatterAutoAddUsers
             FROM Chatter_Auto_Add_Users__c
         ];
 
-        chatterSettingsMap = new Map<String, String>();
-
         for (Chatter_Auto_Add_Users__c caau : chatterSettingsList)
         {
             chatterSettingsMap.put(caau.Profile__c, caau.Chatter_Group_Name__c);
@@ -108,8 +106,6 @@ public class ChatterAutoAddUsers
             SELECT Id, Name
             FROM CollaborationGroup
         ];
-
-        chatterGroupsMap = new Map<String, String>();
 
         for (CollaborationGroup cg : chatterGroups)
         {

@@ -18,8 +18,6 @@ public class ChatterAutoAddUsers
             //AND isActive = true
         ];
 
-        System.debug('merf users found: ' + userList);
-
         // Get all the current Recruitment members
         List<CollaborationGroup> recGroup = [
             SELECT Id
@@ -58,14 +56,10 @@ public class ChatterAutoAddUsers
                 WHERE CollaborationGroupId = :servGroup[0].Id
             ];
 
-            System.debug('merf group member: ' + servGroupMembers);
-
             for (CollaborationGroupMember cgm : servGroupMembers)
             {
                 servGroupMemberIds.add(cgm.MemberId);
             }
-
-            System.debug('merf group member ids: ' + servGroupMemberIds);
         }
 
         // Get all the current ASU Everyone members

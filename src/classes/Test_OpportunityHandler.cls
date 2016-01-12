@@ -69,7 +69,7 @@ public with sharing class Test_OpportunityHandler
     //Convert Leads and create Opportunities
     static testMethod void testOpportunityHandler()
     {
-        List<Contact> contacts = ContactService.createTestContacts(5);
+        List<Contact> contacts = ContactService.createTestContacts(5, false);
         insert contacts;
 
         List<Lead> leadList = LeadService.createTestLeadsToConvert(contacts);
@@ -112,7 +112,7 @@ public with sharing class Test_OpportunityHandler
 
     static testMethod void testCollegeFieldInsert()
     {
-        List<Contact> contacts = ContactService.createTestContacts(5);
+        List<Contact> contacts = ContactService.createTestContacts(5, false);
         insert contacts;
 
         contacts = [SELECT AccountId, Name FROM Contact];
@@ -169,7 +169,7 @@ public with sharing class Test_OpportunityHandler
 
     static testMethod void testCollegeFieldUpdate()
     {
-        List<Contact> contacts = ContactService.createTestContacts(5);
+        List<Contact> contacts = ContactService.createTestContacts(5, false);
         insert contacts;
 
         contacts = [SELECT AccountId, Name FROM Contact];

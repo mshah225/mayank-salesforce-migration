@@ -406,6 +406,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                             LIMIT 1
                     ];
 
+                    if(recentCase.Description == null)
+                    {
+                        recentCase.Description = '';
+                    }
+
                     String currentCaseDescription = theCase.Description;
                     currentCaseDescription = currentCaseDescription.trim();
 

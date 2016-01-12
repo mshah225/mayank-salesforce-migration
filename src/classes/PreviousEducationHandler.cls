@@ -1,23 +1,22 @@
-public without sharing class PreviousEducationHandler
-        implements ITrigger
+public without sharing class PreviousEducationHandler implements ITrigger
 {
     
-  /**
-   * bulkBefore
-   *
-   * This method is called prior to execution of a BEFORE trigger. Use this to cache
-   * any data required into maps prior execution of the trigger.
-   */
+    /**
+     * bulkBefore
+     *
+     * This method is called prior to execution of a BEFORE trigger. Use this to cache
+     * any data required into maps prior execution of the trigger.
+     */
     public void bulkBefore()
     {
     }
   
-  /** 
-   * bulkAfter
-   *
-   * This method is called prior to execution of an AFTER trigger. Use this to cache
-   * any data required into maps prior execution of the trigger.
-   */
+    /** 
+     * bulkAfter
+     *
+     * This method is called prior to execution of an AFTER trigger. Use this to cache
+     * any data required into maps prior execution of the trigger.
+     */
     public void bulkAfter()
     {
         List<Contact> hsContactsToUpdate = new List<Contact>();
@@ -110,91 +109,97 @@ public without sharing class PreviousEducationHandler
                 }
             }
         }
-        if (hsContactsToUpdate.size() > 0) update hsContactsToUpdate;
-        if (collegeContactsToUpdate.size() > 0) update collegeContactsToUpdate;
 
+        if (hsContactsToUpdate.size() > 0)
+        {
+            update hsContactsToUpdate;
+        }
+
+        if (collegeContactsToUpdate.size() > 0) 
+        {
+            update collegeContactsToUpdate;
+        }
     }
 
-  /**
-   * beforeInsert
-   *
-   * This method is called iteratively for each record to be inserted during a BEFORE
-   * trigger. Never execute any SOQL/SOSL etc in this and other iterative methods.
-   */
+    /**
+     * beforeInsert
+     *
+     * This method is called iteratively for each record to be inserted during a BEFORE
+     * trigger. Never execute any SOQL/SOSL etc in this and other iterative methods.
+     */
     public void beforeInsert(SObject so)
     {
     }
   
-  /**
-   * beforeUpdate
-   *
-   * This method is called iteratively for each record to be updated during a BEFORE
-   * trigger.
-   */
+    /**
+     * beforeUpdate
+     *
+     * This method is called iteratively for each record to be updated during a BEFORE
+     * trigger.
+     */
     public void beforeUpdate(SObject oldSo, SObject so)
     {
     }
 
-  /**
-   * beforeDelete
-   *
-   * This method is called iteratively for each record to be deleted during a BEFORE
-   * trigger.
-   */
+    /**
+     * beforeDelete
+     *
+     * This method is called iteratively for each record to be deleted during a BEFORE
+     * trigger.
+     */
     public void beforeDelete(SObject so)
     {
     }
   
-  /**
-   * beforeFinally
-   *
-   * This method is called at the end of the execution of a BEFORE trigger. Use this to finalize
-   * any bulk operations for a BEFORE trigger.
-   */
+    /**
+     * beforeFinally
+     *
+     * This method is called at the end of the execution of a BEFORE trigger. Use this to finalize
+     * any bulk operations for a BEFORE trigger.
+     */
     public void beforeFinally()
     {
     }
 
-  /**
-   * afterInsert
-   *
-   * This method is called iteratively for each record inserted during an AFTER
-   * trigger. Always put field validation in the 'After' methods in case another trigger
-   * has modified any values. The record is 'read only' by this point.
-   */
+    /**
+     * afterInsert
+     *
+     * This method is called iteratively for each record inserted during an AFTER
+     * trigger. Always put field validation in the 'After' methods in case another trigger
+     * has modified any values. The record is 'read only' by this point.
+     */
     public void afterInsert(SObject so)
     {
     }
 
-  /**
-   * afterUpdate
-   *
-   * This method is called iteratively for each record updated during an AFTER
-   * trigger.
-   */
+    /**
+     * afterUpdate
+     *
+     * This method is called iteratively for each record updated during an AFTER
+     * trigger.
+     */
     public void afterUpdate(SObject oldSo, SObject so)
     {
     }
 
-  /**
-   * afterDelete
-   *
-   * This method is called iteratively for each record deleted during an AFTER
-   * trigger.
-   */
+    /**
+     * afterDelete
+     *
+     * This method is called iteratively for each record deleted during an AFTER
+     * trigger.
+     */
     public void afterDelete(SObject so)
     {
     }
 
-  /**
-   * andFinally
-   *
-   * This method is called once all records have been processed by the trigger. Use this 
-   * method to accomplish any final operations such as creation or updates of other records.
-   */
+    /**
+     * andFinally
+     *
+     * This method is called once all records have been processed by the trigger. Use this 
+     * method to accomplish any final operations such as creation or updates of other records.
+     */
     public void andFinally()
     {
 
     }
-
 }

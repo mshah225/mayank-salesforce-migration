@@ -1,144 +1,263 @@
 @isTest
 public with sharing class Test_ContactHandler 
 {
-	static Id ExtMasteredContactRTId;
-	static Id SFMasteredContactRTId;
-	static Id ExtMasteredContactAccountRTId;
-	static Id SFMasteredContactAccountRTId;
-	
-	static testMethod void testSFMasteredContacts() 
-	{
-		Integer recordCount = 200;
+    private static final Integer TRIGGERLOAD = 200;
 
-		getRecordTypeIDs();
-			
+	@isTest static void testSFMasteredContactCreation()
+	{
+        Id SFMasteredContactRTId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Contact'
+                AND Name = 'SF Mastered'
+        ].Id;
+
+        Id SFMasteredContactAccountRTId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Account'
+                AND Name = 'SF Mastered Contact'
+        ].Id;
+
 		// Set up the Contacts
-		Set<Id> testContactIDs = new Set<Id>();
-		List<Contact> testContacts = createContacts(recordCount, false);
-		
-		test.startTest();
-		insert testContacts;
-		
-		for (Integer i=0;i>recordCount;i++) 
+        Set<Id> sfMasteredIds = new Set<Id>();
+        List<Contact> sfMasteredContacts = ContactService.createTestContacts(TRIGGERLOAD, false);
+
+        Test.startTest();
+        insert sfMasteredContacts;
+        Test.stopTest();
+
+        sfMasteredContacts = [
+                SELECT Id, RecordTypeId
+                FROM Contact
+                LIMIT :TRIGGERLOAD
+        ];
+
+		for (Contact testContact : sfMasteredContacts)
 		{
-			system.assertEquals(testContacts[i].RecordTypeId, SFMasteredContactRTId);
-			testContacts[i].EMPLID__c = i.format();
-			testContactIDs.add(testContacts[i].Id);
+			System.assertEquals(SFMasteredContactRTId, testContact.RecordTypeId);
+            sfMasteredIds.add(testContact.Id);
 		}
 
-		List<Account> testAccounts1 = new List<Account>([SELECT Id, RecordTypeId FROM Account WHERE Contact__c IN :testContactIDs]);
-		for (Account a: testAccounts1) 
+		List<Account> sfMasteredAccounts = new List<Account>([
+                SELECT Id, RecordTypeId
+                FROM Account
+                WHERE Contact__c IN :sfMasteredIds
+        ]);
+
+		for (Account testAccount : sfMasteredAccounts)
 		{
-			system.assertEquals(a.RecordTypeId, SFMasteredContactAccountRTId);
+			System.assertEquals(SFMasteredContactAccountRTId, testAccount.RecordTypeId);
 		}
-		
-		update testContacts;
-		test.stopTest();
-		
-		List<Account> testAccounts2 = new List<Account>([SELECT Id, RecordTypeId FROM Account WHERE Contact__c IN :testContactIDs]);
-		
-		for (Integer i=0;i>recordCount;i++) 
-		{
-			system.assertEquals(testContacts[i].RecordTypeId, ExtMasteredContactRTId);
-		}	
-		
-		for (Account a: testAccounts2) 
-		{
-			system.assertEquals(a.RecordTypeId, ExtMasteredContactAccountRTId);
-		}
-		
-		// This is not really necessary, but bumps up test coverage for the TriggerFactory class
-		delete testContacts;
-		
-		
+
+        // This is not really necessary, but bumps up test coverage for the TriggerFactory class
+        delete sfMasteredContacts;
 	}
-	
-	static testMethod void testExtMasteredContacts() 
+
+    @isTest static void testSFMasteredContactUpdate()
+    {
+        Id SFMasteredContactRTId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Contact'
+                AND Name = 'SF Mastered'
+        ].Id;
+
+        Id SFMasteredContactAccountRTId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Account'
+                AND Name = 'SF Mastered Contact'
+        ].Id;
+
+        // Set up the Contacts
+        Set<Id> sfMasteredIds = new Set<Id>();
+        List<Contact> sfMasteredContacts = ContactService.createTestContacts(TRIGGERLOAD, false);
+
+        insert sfMasteredContacts;
+
+        for (Contact testContact : sfMasteredContacts)
+        {
+            testContact.FirstName = 'Updated';
+        }
+
+        Test.startTest();
+        update sfMasteredContacts;
+        Test.stopTest();
+
+        sfMasteredContacts = [
+                SELECT Id, RecordTypeId
+                FROM Contact
+                LIMIT :TRIGGERLOAD
+        ];
+
+        for (Contact testContact : sfMasteredContacts)
+        {
+            System.assertEquals(SFMasteredContactRTId, testContact.RecordTypeId);
+            sfMasteredIds.add(testContact.Id);
+        }
+
+        List<Account> sfMasteredAccounts = new List<Account>([
+                SELECT Id, RecordTypeId
+                FROM Account
+                WHERE Contact__c IN :sfMasteredIds
+        ]);
+
+        for (Account testAccount : sfMasteredAccounts)
+        {
+            System.assertEquals(SFMasteredContactAccountRTId, testAccount.RecordTypeId);
+        }
+    }
+
+	@isTest static void testExtMasteredContactCreation()
 	{
-		Integer recordCount = 200;
+        Id ExtMasteredContactId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Contact'
+                AND Name = 'External Mastered'
+        ].Id;
 
-		getRecordTypeIDs();
-			
-		// Set up the Contacts
-		Set<Id> testContactIDs = new Set<Id>();
-		List<Contact> testContacts = createContacts(recordCount, true);
-		
-		test.startTest();
-		insert testContacts;
-		
-		for (Integer i=0;i>recordCount;i++) 
-		{
-			system.assertEquals(testContacts[i].RecordTypeId, SFMasteredContactRTId);
-			testContacts[i].EMPLID__c = '';
-			testContactIDs.add(testContacts[i].Id);
-		}
+        Id ExtMasteredContactAccountId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Account'
+                AND Name = 'External Mastered Contact'
+        ].Id;
 
-		List<Account> testAccounts1 = new List<Account>([SELECT Id, RecordTypeId FROM Account WHERE Contact__c IN :testContactIDs]);
-		for (Account a: testAccounts1) 
-		{
-			system.assertEquals(a.RecordTypeId, ExtMasteredContactAccountRTId);
-		}
-		
-		update testContacts;
-		test.stopTest();
-		
-		List<Account> testAccounts2 = new List<Account>([SELECT Id, RecordTypeId FROM Account WHERE Contact__c IN :testContactIDs]);
-		
-		for (Integer i=0;i>recordCount;i++) 
-		{
-			system.assertEquals(testContacts[i].RecordTypeId, SFMasteredContactRTId);
-		}	
-		
-		for (Account a: testAccounts2) 
-		{
-			system.assertEquals(a.RecordTypeId, SFMasteredContactAccountRTId);
-		}
-				
+        // Set up the Contacts
+        Set<Id> extMasteredIds= new Set<Id>();
+        List<Contact> extMasteredContacts = ContactService.createTestContacts(TRIGGERLOAD, true);
+
+        Test.startTest();
+        insert extMasteredContacts;
+        Test.stopTest();
+
+        extMasteredContacts = [
+                SELECT Id, RecordTypeId
+                FROM Contact
+                LIMIT :TRIGGERLOAD
+        ];
+
+        for (Contact testContact : extMasteredContacts)
+        {
+            System.assertEquals(ExtMasteredContactId, testContact.RecordTypeId);
+            extMasteredIds.add(testContact.Id);
+        }
+
+        List<Account> extMasteredAccounts = new List<Account>([
+                SELECT Id, RecordTypeId
+                FROM Account
+                WHERE Contact__c IN :extMasteredIds
+        ]);
+
+        for (Account testAccount : extMasteredAccounts)
+        {
+            System.assertEquals(ExtMasteredContactAccountId, testAccount.RecordTypeId);
+        }
 	}
 
-	static List<Contact> createContacts(Integer qty, boolean createEmplId) 
-	{
-		List<Contact> testContacts = new List<Contact>();
-		for (integer i=0; i < qty; i++) 
-		{
-			Contact c = new Contact(LastName = 'LName'+i, FirstName = 'FName'+i);
-			if (createEmplId)
-			{
-				c.EMPLID__c = i.format();
-			}
-			testContacts.add(c);
-		}
-		
-		return testContacts;
-	}
-	
-	static void getRecordTypeIDs() 
-	{
-		List<RecordType> recordTypeList = new List<RecordType>([SELECT Id, sObjectType, DeveloperName FROM RecordType WHERE sObjectType IN ('Account', 'Contact')]);
-		for (RecordType rt: recordTypeList) 
-		{
-			if (rt.SobjectType == 'Contact') 
-			{
-				if (rt.DeveloperName == 'External_Mastered')
-				{
-					ExtMasteredContactRTId = rt.Id;
-				}
-				else if (rt.DeveloperName == 'SF_Mastered')
-				{
-					SFMasteredContactRTId = rt.Id;
-				}
-			}
-			else if (rt.SobjectType == 'Account') 
-			{
-				if (rt.DeveloperName == 'External_Mastered_Contact')
-				{
-					ExtMasteredContactAccountRTId = rt.Id;
-				}
-				else if (rt.DeveloperName == 'SF_Mastered_Contact')
-				{
-					SFMasteredContactAccountRTId = rt.Id;
-				}
-			}
-		}
-	}
+    @isTest static void testExtMasteredContactUpdate()
+    {
+        Id ExtMasteredContactId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Contact'
+                AND Name = 'External Mastered'
+        ].Id;
+
+        Id ExtMasteredContactAccountId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Account'
+                AND Name = 'External Mastered Contact'
+        ].Id;
+
+        // Set up the Contacts
+        Set<Id> extMasteredIds = new Set<Id>();
+        List<Contact> extMasteredContacts = ContactService.createTestContacts(TRIGGERLOAD, true);
+
+        insert extMasteredContacts;
+
+        for (Contact testContact : extMasteredContacts)
+        {
+            testContact.FirstName = 'Updated';
+        }
+
+        Test.startTest();
+        update extMasteredContacts;
+        Test.stopTest();
+
+        extMasteredContacts = [
+                SELECT Id, RecordTypeId
+                FROM Contact
+                LIMIT :TRIGGERLOAD
+        ];
+
+        for (Contact testContact : extMasteredContacts)
+        {
+            System.assertEquals(ExtMasteredContactId, testContact.RecordTypeId);
+            extMasteredIds.add(testContact.Id);
+        }
+
+        List<Account> extMasteredAccounts = new List<Account>([
+                SELECT Id, RecordTypeId
+                FROM Account
+                WHERE Contact__c IN :extMasteredIds
+        ]);
+
+        for (Account testAccount : extMasteredAccounts)
+        {
+            System.assertEquals(ExtMasteredContactAccountId, testAccount.RecordTypeId);
+        }
+    }
+
+    @isTest static void testScanbizContacts()
+    {
+        Id scanbizCampaignMemberRTId = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'CampaignMember'
+                AND Name = 'Corporate Relations Member'
+        ].Id;
+
+        Campaign scanbizCampaign = CampaignService.createTestCampaign('Engineering – GOEE', scanbizCampaignMemberRTId);
+        insert scanbizCampaign;
+
+        Account scanbizAccount = AccountService.createTestSFMasteredAccount();
+        insert scanbizAccount;
+
+        Contact scanbizContact = ContactService.createTestContact();
+        scanbizContact.scanbizcards__ScanBizCards__c = true;
+        scanbizContact.AccountId = scanbizAccount.Id;
+
+        Test.startTest();
+        insert scanbizContact;
+        Test.stopTest();
+
+        Relationship__c scanbizRelationship = [
+                SELECT Account__c, Contact__c, Relationship_Type__c
+                FROM Relationship__c
+                LIMIT 1
+        ];
+
+        scanbizContact = [
+                SELECT Scanbiz_Account__c, Corporate_Relations_Contact_Owner__c
+                FROM Contact
+                WHERE Id = :scanbizContact.Id
+        ];
+
+        CampaignMember scanbizCampaignMember = [
+                SELECT Id, CampaignId
+                FROM CampaignMember
+                WHERE ContactId = :scanbizContact.Id
+        ];
+
+        System.assertEquals(scanbizAccount.Id, scanbizRelationship.Account__c);
+        System.assertEquals(scanbizContact.Id, scanbizRelationship.Contact__c);
+        System.assertEquals('Employee', scanbizRelationship.Relationship_Type__c);
+        System.assertEquals(scanbizAccount.Id, scanbizContact.Scanbiz_Account__c);
+        System.assertEquals(UserInfo.getUserId(), scanbizContact.Corporate_Relations_Contact_Owner__c);
+        System.assertEquals(scanbizCampaign.Id, scanbizCampaignMember.CampaignId);
+    }
 }

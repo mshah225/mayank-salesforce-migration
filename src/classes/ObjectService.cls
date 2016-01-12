@@ -117,5 +117,28 @@ public class ObjectService
         return EncodingUtil.convertToHex(blobby);
     }
 
+    /**
+    * Use this method to prevent the ListException: Duplicate id in list
+    * @param objs List<SObject>
+    * @param objToAdd SObject
+    */
+	public static void addToListSafely(List<SObject> objs, SObject objToAdd)
+    {
+        boolean safeToAdd = true;
+
+        for (SObject obj : objs)
+        {
+            if (obj.Id == objToAdd.Id)
+            {
+                safeToAdd = false;
+            }
+        }
+
+        if (safeToAdd)
+        {
+            objs.add(objToAdd);
+        }
+    }
+
 	public class ObjectServiceException extends Exception {}
 }

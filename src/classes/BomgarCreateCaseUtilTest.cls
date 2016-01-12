@@ -17,6 +17,7 @@ private class BomgarCreateCaseUtilTest
 
         Contact testContact = ContactService.createTestContact();
         testContact.EMPLID__c = '1231231231';
+        testContact.ASURite_Id__c = 'testuser';
         insert testContact;
 
         List<User> userList = UserService.createMultipleTestUsers(2);

@@ -40,8 +40,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             // Retrieves the sender's first and last names
             String fName = '';
             String lName = '';
-            System.debug('GRF fromname: ' + email.fromname);
-            System.debug('GRF fromaddress: ' + email.fromaddress);
 
             if (email.fromname != null && email.fromname != '')
             {
@@ -76,10 +74,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 // If we want to send a reply with a failure message, the result props can be changed
                 return result;
             }
-
-            System.debug('GRF plainTextBody: ' + email.plaintextBody);
-            System.debug('GRF htmlBody: ' + email.htmlBody);
-            System.debug('GRF subject: ' + email.subject);
 
             String caseId = extractIdRefNew(email.plainTextBody);
 
@@ -243,8 +237,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     theCase.OwnerId = UserInfo.getUserId();
                 }
 
-                System.debug('GRF theCase.OwnerId: ' + theCase.OwnerId);
-
                 if (origin != null)
                 {
                     theCase.Origin__c = origin;
@@ -268,8 +260,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 {
                     for (String a: email.ToAddresses)
                     {
-                        System.debug('GRF toaddresses size: ' + email.ToAddresses.size());
-                        System.debug('GRF address: ' + a);
                         toAddressConcat += (a + ',');
                     }
 
@@ -302,8 +292,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 {
                     theCase.Associate_Case_to_Active_Opportunity__c = associateCaseToActiveOpportunity;
                 }
-
-                System.debug('GRF replyTo: ' + email.replyTo);
 
                 Contact[] contacts = [
                         SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c
@@ -366,7 +354,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                     if (theContact.Last_Case_Email_Used__c == null || theContact.Last_Case_Email_Used__c != email.fromAddress)
                     {
-                        System.debug('GRF Last Case Email: ' + theContact.Last_Case_Email_Used__c + ':' + email.fromAddress);
                         theContact.Last_Case_Email_Used__c = email.fromAddress;
                         update theContact;
                     }
@@ -424,11 +411,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     {
                         return result;
                     }
-
                 }
                 catch (QueryException e)
                 {
-                    System.debug('This is the contact\'s initial case.');
                 }
 
                 insert this.theCase;
@@ -446,7 +431,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             createEmailMessage(theCase,email);
             handleAttachments(theCase, emailContact, email);
-            System.debug('GRF template: ' + templateId);
 
             if (sendAutoReply && templateId != null)
             {
@@ -507,7 +491,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                 attachmentSize += tAttachment.body.length();
 
-                System.debug(validFileExtensionSet);
                 fileNames.add(tAttachment.fileName);
                 fileSizes.add(tAttachment.body.length());
                 if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
@@ -548,14 +531,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
                 {
-                    System.debug('GRF attachment size: ' + bAttachment.body.size());
-
                     if (bAttachment.body.size() > 5000000)
                     {
                         erroredFiles.add(bAttachment.fileName);
                         erroredReasons.add('File size greater than 5000000'); 
                         successfulAttachment = false;
-                        System.debug('GRF Attachment too big: ' + battachment.body.size());
                     }
                     else
                     {
@@ -634,7 +614,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
 
                 to  = extractAddress(to);
-                System.debug('ToAddress: ' + to);
                 value += to;
                 seenOne = true;
             }
@@ -660,7 +639,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
 
                 cc  = extractAddress(cc);
-                System.debug('CcAddress: ' + cc);
                 value += cc;
                 seenOne = true;
             }
@@ -698,19 +676,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
                 catch (Exception e)
                 {
-                    System.debug('GRF An error occurred when trying to get the case Id from the thread Id ' + e.getMessage());
                     return null;
                 }
             }
-
-            System.debug('GRF caseId extracted: ' + caseId);
 
             return caseId;
         }
         else
         {
-            System.debug('GRF no caseId extracted from ' + searchText);
-
             return null;
         }
     }
@@ -728,12 +701,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         if (matcher.matches())
         {
             address = matcher.group(1);
-            System.debug('Extracted address ' + address);
         }
         else
         {
             address = inAddress;
-            System.debug('Did not match angle-address ' + address);
         }
 
         return address;
@@ -755,19 +726,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 filter.Rejection_Count__c = 0;
             }
 
-            System.debug('grf1 email address filter: ' + lcFilter);
-            System.debug('grf2: fromAddress: ' + inboundEmail.fromAddress);
-            System.debug('grf2.5: subject: ' + inboundEmail.subject);
-
             // If this filter is an email address, check the fromAddress only
             if (Pattern.matches('.+\\@.+\\..+', filter.Name))
             {
-                System.debug('grf: email regex matched');
-
                 if (inboundEmail.fromAddress.toLowerCase().contains(lcFilter))
                 {
-                    System.debug('grf3 email address filter: ' + lcFilter);
-                    System.debug('grf4: fromAddress: ' + inboundEmail.fromAddress);
                     filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
                     update filter;
 
@@ -778,8 +741,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                 if (inboundEmail.subject.toLowerCase().contains(lcFilter))
                 {
-                    System.debug('grf5 non-email filter: ' + lcFilter);
-                    System.debug('grf4: subject: ' + inboundEmail.subject);
                     filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
                     update filter;
 
@@ -872,9 +833,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             typeOfAdditionalAssignmentNeeded = assignmentRuleList[0].Type_of_Additional_Assignment_Needed__c;
             associateCaseToActiveOpportunity = assignmentRuleList[0].Associate_Case_to_Active_Opportunity__c;
-
-            System.debug('GRF queueID: ' + queueId);
-            System.debug('GRF CAR__c: ' + assignmentRuleList[0]);
         }
         else 
         {
@@ -914,19 +872,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 emailFromName = assignmentRuleList[0].Customer_Notice_Email_From_Name__c;
 
-        if (assignmentRuleList[0].Case_Record_Type_ID__c != null){
-          caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
-        }
+                if (assignmentRuleList[0].Case_Record_Type_ID__c != null){
+                  caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
+                }
 
-        if (assignmentRuleList[0].Fallback_Queue_ID__c != null){
-          fallbackQueueId = ID.valueOf(assignmentRuleList[0].Fallback_Queue_ID__c);
-        }
+                if (assignmentRuleList[0].Fallback_Queue_ID__c != null){
+                  fallbackQueueId = ID.valueOf(assignmentRuleList[0].Fallback_Queue_ID__c);
+                }
 
                 typeOfAdditionalAssignmentNeeded = assignmentRuleList[0].Type_of_Additional_Assignment_Needed__c;
                 associateCaseToActiveOpportunity = assignmentRuleList[0].Associate_Case_to_Active_Opportunity__c;
-
-                System.debug('GRF queueID: ' + queueId);
-                System.debug('GRF CAR__c: ' + assignmentRuleList[0]);
             }
         }
 
@@ -986,9 +941,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 typeOfAdditionalAssignmentNeeded = assignmentRuleListDefault[0].Type_of_Additional_Assignment_Needed__c;
                 associateCaseToActiveOpportunity = assignmentRuleListDefault[0].Associate_Case_to_Active_Opportunity__c;
-
-                System.debug('GRF queueID: ' + queueId);
-                System.debug('GRF CAR__c: ' + assignmentRuleListDefault[0]);
             }
         }
     }
@@ -1066,7 +1018,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     {
         OrgWideEmailAddress oweaLookup;
         String orgWideEmailAddress = getConfigurationSetting('Default Org Wide Email Address');
-        System.debug('GRF owea:' + orgWideEmailAddress);
 
         if (orgWideEmailAddress != null && orgWideEmailAddress != '') 
         {
@@ -1074,8 +1025,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             List<OrgWideEmailAddress> oweaList = [SELECT Id, DisplayName, Address 
                                                     FROM OrgWideEmailAddress 
                                                     WHERE Address = :orgWideEmailAddress];
-            System.debug('GRF owea list:' + oweaList);
-
             if (oweaList.size() > 0)
             {
                 oweaLookup = oweaList[0];

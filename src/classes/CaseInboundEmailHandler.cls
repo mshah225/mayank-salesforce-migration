@@ -256,6 +256,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 theCase.Subject = email.Subject;
                 theCase.Description = email.plainTextBody;
+                if(theCase.Description == null)
+                {
+                    theCase.Description = '';
+                }
+
                 String toAddressConcat = '';
                 String ccAddressConcat = '';
 

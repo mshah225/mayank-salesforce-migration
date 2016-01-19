@@ -94,12 +94,19 @@
                                                      action="{!runSearch}"
                                                      rerender="results,debug,errors">
                                     <apex:param name="firstName" value=""/>
+
                                     <apex:param name="lastName" value=""/>
+
                                     <apex:param name="phone" value=""/>
+
                                     <apex:param name="birthdate" value=""/>
+
                                     <apex:param name="asuriteid" value=""/>
+
                                     <apex:param name="emplid" value=""/>
+
                                     <apex:param name="directoryemail" value=""/>
+
                                     <apex:param name="personalemail" value=""/>
                                 </apex:actionFunction>
 
@@ -203,17 +210,27 @@
                                                    showHeader="false"
                                                    columns="2">
                                 <apex:inputField value="{!mycontact.Firstname}"/>
+
                                 <apex:inputField value="{!mycontact.Lastname}"
                                                  required="false"
                                                  id="newcontactlastname"/>
+
                                 <apex:inputField value="{!mycontact.Email}"/>
+
                                 <apex:inputField value="{!mycontact.Help_Desk_Provided_Phone__c}"/>
+
                                 <apex:inputField value="{!mycontact.Phone}"/>
+
                                 <apex:inputField value="{!mycontact.MobilePhone}"/>
+
                                 <apex:inputField value="{!mycontact.MailingStreet}"/>
+
                                 <apex:inputField value="{!mycontact.MailingCity}"/>
+
                                 <apex:inputField value="{!mycontact.MailingStateCode}"/>
+
                                 <apex:inputField value="{!mycontact.MailingPostalCode}"/>
+
                                 <apex:inputField value="{!mycontact.MailingCountryCode}"
                                                  label="" style="display:none;visibility:hidden"/>
                             </apex:pageBlockSection>
@@ -251,13 +268,19 @@
                                                     assignTo="{!selectedCaseId}"/>
                                     </apex:commandLink>
                                 </apex:column>
+
                                 <apex:column value="{!case.Ca.Status}"/>
+
                                 <apex:column value="{!case.Ca.Functional_Group__c}"/>
+
                                 <apex:column value="{!case.Ca.Category__c}"/>
+
                                 <apex:column value="{!case.Ca.Subject}"/>
+
                                 <apex:column headerValue="Description"
                                              value="{!case.shortDescr}"
                                              title="{!case.fullDescr}"/>
+
                                 <apex:column value="{!case.Ca.ClosedDate}"/>
                             </apex:pageBlockTable>
 
@@ -275,15 +298,25 @@
                         <apex:pageBlock title="Case" id="case">
                             <fieldset id="caseFieldset">
                                 <apex:pageBlockSection title="Description" columns="2">
+
                                     <apex:inputField value="{!mycase.Subject}"/>
+
                                     <apex:inputField value="{!mycase.Reason}"/>
+
                                     <apex:inputField value="{!mycase.Campus__c}"/>
+
                                     <apex:inputField value="{!mycase.Affiliation__c}"/>
+
                                     <apex:inputField value="{!mycase.Functional_Group__c}"/>
+
                                     <apex:inputField value="{!mycase.Category__c}"/>
+
                                     <apex:inputField value="{!mycase.Sub_Category__c}"/>
+
                                     <apex:inputField value="{!mycase.Status}"/>
+
                                     <apex:inputField value="{!mycase.Private_Note_Help_Desk__c}"/>
+
                                     <apex:inputField value="{!mycase.Description}"
                                                      style="width:100%"/>
                                 </apex:pageBlockSection>
@@ -337,8 +370,11 @@
                                 <apex:inputField value="{!mycase.Status}"
                                                  label=""
                                                  style="display:none;visibility:hidden"/>
+
                                 <apex:inputField value="{!mycase.Functional_Group__c}"/>
+
                                 <apex:inputField value="{!mycase.Category__c}"/>
+
                                 <apex:inputField value="{!mycase.Sub_Category__c}"/>
                             </apex:pageBlockSection>
 

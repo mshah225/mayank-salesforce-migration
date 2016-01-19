@@ -1,9 +1,18 @@
 // Custom controller for the HelpDesk page
 public with sharing class HelpDeskController
 {
+    // the following are booleans that are used for rendering/hiding various sections of the page based on context
+    public Boolean isNewCaseSelected { get; set; }
+    public Boolean isExistingCaseSelected { get; set; }
+    public Boolean isNewContactSelected { get; set; }
+    public Boolean isCloseCase { get; set; }
+    public Boolean isContactSet { get; set; }
 
-    // the soql without the order and limit
-    private String soql { get; set; }
+    // the new case being created
+    public Case mycase { get; set; }
+
+    // the new contact being created
+    public Contact mycontact { get; set; }
 
     // the collection of contacts to display - these are the results of the SOQL query
     public List<Contact> contacts { get; set; }
@@ -11,11 +20,8 @@ public with sharing class HelpDeskController
     // the open cases for the selected contact
     public List<CaseWrapper> cases { get; set; }
 
-    // the new case being created  
-    public Case mycase { get; set; }
-
-    // the new contact being created  
-    public Contact mycontact { get; set; }
+    // the soql without the order and limit
+    private String soql { get; set; }
 
     // the selected contact -- this is populated when the "Set as Contact" link is hit on a Contact
     public String selectedContactId { get; set; }
@@ -23,26 +29,17 @@ public with sharing class HelpDeskController
     // the selected case -- this is populated when the "Set as Case" link is hit on a Case
     public String selectedCaseId { get; set; }
 
-    // the following are booleans that are used for rendering/hiding various sections of the page based on context
-    public Boolean isNewCaseSelected { get; set; }
-
-    public Boolean isExistingCaseSelected { get; set; }
-
-    public Boolean isNewContactSelected { get; set; }
-
-    public Boolean isCloseCase { get; set; }
-
-    public Boolean isContactSet { get; set; }
-
     // This method returns a list of Close statuses for Cases
     public List<SelectOption> getcloseCaseStatusOptions()
     {
         List<SelectOption> closeCaseStatusOptions = new List<SelectOption>();
         closeCaseStatusOptions.add(new SelectOption('', '--None--'));
+        
         for (CaseStatus cs: [Select Id, MasterLabel From CaseStatus Where IsClosed = true])
         {
             closeCaseStatusOptions.add(new SelectOption(cs.Id, cs.MasterLabel));
         }
+        
         return closeCaseStatusOptions;
     }
 
@@ -107,14 +104,31 @@ public with sharing class HelpDeskController
         isContactSet = false;
         String callerIdWildcarded;
         String callerIdUnformatted;
-        soql = 'select Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c,  Personal_Email__c from Contact where Firstname != null';
+
+        soql = 'SELECT Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
+            'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c,  Personal_Email__c ' +
+            'FROM Contact ' +
+            'WHERE Firstname != null';
+
         if (ApexPages.currentPage().getParameters().containsKey('ANI'))
         {
             callerIdUnformatted = ApexPages.currentPage().getParameters().get('ANI');
             callerId = formatPhone(callerIdUnformatted);
-            callerIdWildcarded = '%' + callerIdUnformatted.substring(0, 3) + '%' + callerIdUnformatted.substring(3, 6) + '%' + callerIdUnformatted.substring(6, 10) + '%';
-            soql += ' and (HomePhone like \'' + callerIdWildcarded + '\' or MobilePhone like \'' + callerIdWildcarded + '\' or OtherPhone like \'' + callerIdWildcarded + '\' or Phone like \'' + callerIdWildcarded + '\' or SF_Mobile__c like \'' + callerIdWildcarded + '\' or SMS_Phone__c like \'' + callerIdWildcarded + '\' or Work_Phone__c like \'' + callerIdWildcarded + '\' or Help_Desk_Provided_Phone__c like \'' + callerIdWildcarded + '\')';
+
+            callerIdWildcarded = '%' + callerIdUnformatted.substring(0, 3) + '%' +
+                callerIdUnformatted.substring(3, 6) + '%' +
+                callerIdUnformatted.substring(6, 10) + '%';
+
+            System.debug(callerIdWildcarded);
+
+            soql += ' AND (HomePhone LIKE \'' + callerIdWildcarded + '\' ' +
+                'OR MobilePhone LIKE \'' + callerIdWildcarded + '\' ' +
+                'OR OtherPhone LIKE \'' + callerIdWildcarded + '\' ' +
+                'OR Phone LIKE \'' + callerIdWildcarded + '\' ' +
+                'OR Work_Phone__c LIKE \'' + callerIdWildcarded + '\' ' +
+                'OR Help_Desk_Provided_Phone__c LIKE \'' + callerIdWildcarded + '\')';
         }
+
         runQuery();
     }
 
@@ -153,7 +167,11 @@ public with sharing class HelpDeskController
 
         try
         {
-            contacts = Database.query(soql + ' order by ' + sortField + ' ' + sortDir + ' limit 20');
+            contacts = Database.query(
+                soql +
+                ' ORDER BY ' + sortField + ' ' + sortDir +
+                ' LIMIT 20'
+            );
         }
         catch (Exception e)
         {
@@ -189,31 +207,69 @@ public with sharing class HelpDeskController
         }
         else if (phoneLength > 3 && phoneLength <= 6)
         {
-            phoneWildcarded = '%' + phone.substring(0, 3) + '%' + phone.substring(3, math.min(phoneLength, 6)) + '%';
+            phoneWildcarded = '%' + phone.substring(0, 3) + '%' +
+                phone.substring(3, math.min(phoneLength, 6)) + '%';
         }
         else if (phoneLength > 6)
         {
-            phoneWildcarded = '%' + phone.substring(0, 3) + '%' + phone.substring(3, 6) + '%' + phone.substring(6, math.min(phoneLength, 10)) + '%';
+            phoneWildcarded = '%' + phone.substring(0, 3) + '%' +
+                phone.substring(3, 6) + '%' + phone.substring(6, math.min(phoneLength, 10)) + '%';
         }
 
 
-        soql = 'select Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c,  Personal_Email__c from Contact where Firstname != null';
+        soql = 'SELECT Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, Birthdate, ' +
+                'ASURite_ID__c, EMPLID__c, ASU_Email__c,  Personal_Email__c ' +
+            'FROM Contact ' +
+            'WHERE Firstname != null';
+
         if (!firstName.equals(''))
-            soql += ' and Firstname LIKE \'' + String.escapeSingleQuotes(firstName) + '%\'';
+        {
+            soql += ' AND Firstname LIKE \'' + String.escapeSingleQuotes(firstName) + '%\'';
+        }
+
         if (!lastName.equals(''))
-            soql += ' and Lastname LIKE \'' + String.escapeSingleQuotes(lastName) + '%\'';
+        {
+            soql += ' AND Lastname LIKE \'' + String.escapeSingleQuotes(lastName) + '%\'';
+        }
+
         if (!phone.equals(''))
-            soql += ' and (HomePhone like \'' + phoneWildcarded + '\' or MobilePhone like \'' + phoneWildcarded + '\' or OtherPhone like \'' + phoneWildcarded + '\' or Phone like \'' + phoneWildcarded + '\' or SF_Mobile__c like \'' + phoneWildcarded + '\' or SMS_Phone__c like \'' + phoneWildcarded + '\' or Work_Phone__c like \'' + phoneWildcarded + '\' or Help_Desk_Provided_Phone__c like \'' + phoneWildcarded + '\')';
+        {
+            soql += ' AND (HomePhone LIKE \'' + phoneWildcarded + '\' ' +
+                'OR MobilePhone LIKE \'' + phoneWildcarded + '\' ' +
+                'OR OtherPhone LIKE \'' + phoneWildcarded + '\' ' +
+                'OR Phone LIKE \'' + phoneWildcarded + '\' ' +
+                'OR SF_Mobile__c LIKE \'' + phoneWildcarded + '\' ' +
+                'OR SMS_Phone__c LIKE \'' + phoneWildcarded + '\' ' +
+                'OR Work_Phone__c LIKE \'' + phoneWildcarded + '\' ' +
+                'OR Help_Desk_Provided_Phone__c LIKE \'' + phoneWildcarded + '\')';
+        }
+
         if (!birthdate.equals(''))
-            soql += ' and Birthdate = ' + birthdateFormatted;
+        {
+            soql += ' AND Birthdate = ' + birthdateFormatted;
+        }
+
         if (!asuriteid.equals(''))
-            soql += ' and ASURite_ID__c LIKE \'' + String.escapeSingleQuotes(asuriteid) + '%\'';
+        {
+            soql += ' AND ASURite_ID__c LIKE \'' + String.escapeSingleQuotes(asuriteid) + '%\'';
+        }
+
         if (!emplid.equals(''))
-            soql += ' and EMPLID__c LIKE \'' + String.escapeSingleQuotes(emplid) + '%\'';
+        {
+            soql += ' AND EMPLID__c LIKE \'' + String.escapeSingleQuotes(emplid) + '%\'';
+        }
+
         if (!directoryEmail.equals(''))
-            soql += ' and ASU_Email__c LIKE \'' + String.escapeSingleQuotes(directoryEmail) + '%\'';
+        {
+            soql += ' AND ASU_Email__c LIKE \'' +
+                String.escapeSingleQuotes(directoryEmail) + '%\'';
+        }
+
         if (!personalEmail.equals(''))
-            soql += ' and Personal_Email__c LIKE \'' + String.escapeSingleQuotes(personalEmail) + '%\'';
+        {
+            soql += ' AND Personal_Email__c LIKE \'' +
+                String.escapeSingleQuotes(personalEmail) + '%\'';
+        }
 
         // run the query again
         runQuery();
@@ -224,6 +280,7 @@ public with sharing class HelpDeskController
     public void newCase()
     {
         isNewCaseSelected = true;
+
         if (mycase == null)
         {
             mycase = new Case();
@@ -232,6 +289,7 @@ public with sharing class HelpDeskController
         {
             mycase.clear();
         }
+
         mycase.ContactId = selectedContactId;
         mycase.Status = 'New';
         mycase.Origin = 'Phone';
@@ -242,18 +300,25 @@ public with sharing class HelpDeskController
     public void newContact()
     {
         isNewContactSelected = true;
+
         if (mycontact == null)
         {
             mycontact = new Contact();
         }
-        mycontact.RecordTypeId = [select Id from RecordType where name = 'SF Mastered' and SobjectType = 'Contact' limit 1].Id;
+
+        mycontact.RecordTypeId = [
+            SELECT Id
+            FROM RecordType
+            WHERE name = 'SF Mastered'
+            AND SobjectType = 'Contact' limit 1
+        ].Id;
+
         mycontact.MailingCountryCode = 'US';
         mycontact.Firstname = contactsrch.Firstname;
         mycontact.Lastname = contactsrch.Lastname;
         mycontact.Email = contactsrch.Personal_Email__c;
         mycontact.Phone = contactsrch.Phone;
         mycontact.Help_Desk_Provided_Phone__c = callerId;
-
         isContactSet = false;
         isNewCaseSelected = false;
         isExistingCaseSelected = false;
@@ -263,17 +328,21 @@ public with sharing class HelpDeskController
     {
         isNewContactSelected = false;
         isContactSet = false;
+
         if (cases != null)
         {
             cases.clear();
         }
+
         isNewCaseSelected = false;
         isExistingCaseSelected = false;
         selectedContactId = null;
+
         if (contactsrch != null)
         {
             contactsrch.clear();
         }
+
         if (contacts != null)
         {
             contacts.clear();
@@ -283,6 +352,7 @@ public with sharing class HelpDeskController
     public void setAsContact()
     {
         List<Case> casesbase;
+
         // populate the contact search fields based on the selected contact
         for (Contact co : contacts)
         {
@@ -299,7 +369,13 @@ public with sharing class HelpDeskController
         // query to get open cases for the contact
         try
         {
-            casesbase = Database.query('select Id, Subject, Reason, Description, Status, Origin, Campus__c, Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, Private_Note_Help_Desk__c, ClosedDate from Case where ContactId = :selectedContactId');
+            casesbase = Database.query(
+                'SELECT Id, Subject, Reason, Description, Status, Origin, Campus__c, ' +
+                    'Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, ' +
+                    'Private_Note_Help_Desk__c, ClosedDate ' +
+                'FROM Case ' +
+                'WHERE ContactId = :selectedContactId'
+            );
         }
         catch (Exception e)
         {
@@ -327,10 +403,12 @@ public with sharing class HelpDeskController
     {
         isExistingCaseSelected = true;
         Map<Id, CaseWrapper> m = new Map<Id, CaseWrapper>();
+
         for (CaseWrapper cas : cases)
         {
             m.put(cas.Ca.Id, cas);
         }
+
         mycase = (Case) m.get(selectedCaseId).Ca;
     }
 
@@ -342,10 +420,12 @@ public with sharing class HelpDeskController
             {
                 mycase.Subject = '-';
             }
+
             if (String.isEmpty(mycase.Description))
             {
                 mycase.Description = '-';
             }
+
             upsert mycase;
         }
         catch (Exception ex)
@@ -369,6 +449,7 @@ public with sharing class HelpDeskController
     public PageReference saveAndTransferCase()
     {
         boolean success = false;
+
         try
         {
             upsert mycase;
@@ -398,9 +479,14 @@ public with sharing class HelpDeskController
 
     public void saveCloseCase()
     {
-        if (!(null == selectedCloseCaseStatusOption || selectedCloseCaseStatusOption.length() == 0))
+        if (!(null == selectedCloseCaseStatusOption
+            || selectedCloseCaseStatusOption.length() == 0))
         {
-            mycase.Status = [Select MasterLabel From CaseStatus Where Id = :selectedCloseCaseStatusOption].MasterLabel;
+            mycase.Status = [
+                SELECT MasterLabel
+                FROM CaseStatus
+                WHERE Id = :selectedCloseCaseStatusOption
+            ].MasterLabel;
         }
         try
         {
@@ -452,6 +538,7 @@ public with sharing class HelpDeskController
         isNewContactSelected = false;
         isContactSet = false;
         selectedContactId = null;
+
         if (mycontact != null)
         {
             mycontact = null;
@@ -462,9 +549,15 @@ public with sharing class HelpDeskController
     {
         try
         {
-            Contact contactToUpdate = [SELECT Id, Help_Desk_Provided_Phone__c FROM Contact WHERE Id = :selectedContactId];
+            Contact contactToUpdate = [
+                SELECT Id, Help_Desk_Provided_Phone__c
+                FROM Contact
+                WHERE Id = :selectedContactId
+            ];
+
             contactsrch.Help_Desk_Provided_Phone__c = callerId;
             contactToUpdate.Help_Desk_Provided_Phone__c = contactsrch.Help_Desk_Provided_Phone__c;
+
             update contactToUpdate;
         }
         catch (Exception ex)
@@ -483,6 +576,7 @@ public with sharing class HelpDeskController
         public CaseWrapper(Case c)
         {
             Ca = c;
+
             if (String.isNotEmpty(c.Description))
             {
                 shortDescr = c.Description.abbreviate(140);
@@ -491,6 +585,7 @@ public with sharing class HelpDeskController
             {
                 shortDescr = ' ';
             }
+
             fullDescr = c.Description;
         }
     }

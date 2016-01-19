@@ -114,10 +114,21 @@ private class Test_HelpDeskController
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
-        Contact testContact = new Contact(Firstname = 'John', Lastname = 'Doe', Phone = '(480) 555-1213', Email = 'noone@asu.edu');
+        Contact testContact = new Contact(
+            Firstname = 'John',
+            Lastname = 'Doe',
+            Phone = '(480) 555-1213',
+            Email = 'noone@asu.edu'
+        );
+
         insert testContact;
 
-        Case testCase = new Case(Subject = 'test subject', Description = 'test description', ContactId = testContact.Id);
+        Case testCase = new Case(
+            Subject = 'test subject',
+            Description = 'test description',
+            ContactId = testContact.Id
+        );
+
         insert testCase;
 
         // Populate some initial Contact search parameters
@@ -140,7 +151,11 @@ private class Test_HelpDeskController
         controller.setAsHelpDeskProvidedPhone();
         controller.mycase = testCase;
         controller.selectedCaseId = testCase.Id;
-        HelpDeskController.CaseWrapper mycasewrapper = new HelpDeskController.CaseWrapper(controller.mycase);
+
+        HelpDeskController.CaseWrapper mycasewrapper = new HelpDeskController.CaseWrapper(
+            controller.mycase
+        );
+
         controller.cases.add(mycasewrapper);
         controller.setAsCase();
         PageReference transferCasePage = controller.saveAndTransferCase();

@@ -3,6 +3,8 @@ public with sharing class Test_ChatterAutoAddUsers
 {
     @isTest static void testRecruitmentAutoAdd()
     {
+        Test.startTest();
+
         Id testId;
         Id recProfileId = [
             SELECT Id
@@ -25,8 +27,6 @@ public with sharing class Test_ChatterAutoAddUsers
         ];
 
         Set<Id> recSet = new Set<Id>{assertUser.Id};
-
-        Test.startTest();
 
         ChatterAutoAddUsers.addToChatterGroupFuture(recSet);
 
@@ -57,6 +57,8 @@ public with sharing class Test_ChatterAutoAddUsers
 
     @isTest static void testServiceAutoAdd()
     {
+        Test.startTest();
+
         Id testId;
         Id servProfileId = [
             SELECT Id
@@ -79,8 +81,6 @@ public with sharing class Test_ChatterAutoAddUsers
         ];
 
         Set<Id> servSet = new Set<Id>{assertUser.Id};
-
-        Test.startTest();
 
         ChatterAutoAddUsers.addToChatterGroupFuture(servSet);
 
@@ -111,6 +111,8 @@ public with sharing class Test_ChatterAutoAddUsers
 
     @isTest static void testKnowledgeAutoAdd()
     {
+        Test.startTest();
+
         Id testId;
         Id knowProfileId = [
             SELECT Id
@@ -133,8 +135,6 @@ public with sharing class Test_ChatterAutoAddUsers
         ];
 
         Set<Id> knowSet = new Set<Id>{assertUser.Id};
-
-        Test.startTest();
 
         ChatterAutoAddUsers.addToChatterGroupFuture(knowSet);
 

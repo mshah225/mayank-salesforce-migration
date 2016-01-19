@@ -4,14 +4,18 @@ global class UserRequestAccess
     public static void callMuleSoft()
     {
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('https://esb-dev.asu.edu/bbcourses');
-        req.setMethod('GET');
+        req.setEndpoint('https://mulesoftdev01.asu.edu/bbcourses');
+        req.setMethod('POST');
 
         String username = 'sfdc_bb_check';
         String password = 'ze#|emFKGnMA@7';
 
         Blob headerValue = Blob.valueOf(username + ':' + password);
-        String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
+
+        String authorizationHeader =
+            EncodingUtil.urlEncode('Basic', 'UTF-8') + ' ' +
+            EncodingUtil.base64Encode(headerValue);
+
         req.setHeader('Authorization', authorizationHeader);
 
         Http http = new Http();

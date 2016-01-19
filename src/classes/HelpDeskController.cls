@@ -88,12 +88,6 @@ public with sharing class HelpDeskController
         set;
     }
 
-    // format the soql for display on the visualforce page
-    //public String debugSoql {
-    //    get { return soql + ' order by ' + sortField + ' ' + sortDir + ' limit 20'; }
-    //    set;
-    //}
-
     // Init the controller and display some sample data when the page loads
     public HelpDeskController()
     {

@@ -139,8 +139,6 @@
                                     }
                                 </script>
 
-                                <!--onkeyup="isDirty=true;doSearch();"-->
-
                                 <apex:inputField value="{!contactsrch.firstname}"
                                                  id="firstnamesrch"/>
 
@@ -535,8 +533,5 @@
                 </apex:pageBlock>
             </div>
         </apex:outputPanel>
-        <!--        <apex:pageBlock title="Debug - SOQL" id="debug"> -->
-        <!--            <apex:outputText value="{!debugSoql}" /> -->
-        <!--        </apex:pageBlock> -->
     </apex:form>
 </apex:page>

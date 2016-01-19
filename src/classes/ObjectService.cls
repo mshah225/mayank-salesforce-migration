@@ -1,5 +1,7 @@
 public class ObjectService 
 {
+    static Integer s_num = 1;
+
 	/**
 	* Returns all the fields for a specified object
 	* @param An object API name
@@ -91,6 +93,52 @@ public class ObjectService
 
 		return fieldLabelsToList;
 	}
+
+    /**
+    * Generates a fake Id for the given object type
+    * Comes from this SE post: http://salesforce.stackexchange.com/questions/21137/creating-unit-tests-without-interacting-with-the-database-creating-fake-ids
+    * DO NOT INSERT RECORDS WITH FAKE IDS INTO DB. It will error.
+    * @param sot A Schema.SObjectType
+    * @return String A fake Id for the given SObjectType
+    */
+	public static String getFakeId(Schema.SObjectType sot)
+	{
+		String result = String.valueOf(s_num++);
+		return sot.getDescribe().getKeyPrefix() + '0'.repeat(12-result.length()) + result;
+	}
+
+	/**
+	* Generates a uuid
+	* @return guid A string guid
+	*/
+    public static String getGuid()
+    {
+        Blob blobby = Crypto.generateAesKey(128);
+        return EncodingUtil.convertToHex(blobby);
+    }
+
+    /**
+    * Use this method to prevent the ListException: Duplicate id in list
+    * @param objs List<SObject>
+    * @param objToAdd SObject
+    */
+	public static void addToListSafely(List<SObject> objs, SObject objToAdd)
+    {
+        boolean safeToAdd = true;
+
+        for (SObject obj : objs)
+        {
+            if (obj.Id == objToAdd.Id)
+            {
+                safeToAdd = false;
+            }
+        }
+
+        if (safeToAdd)
+        {
+            objs.add(objToAdd);
+        }
+    }
 
 	public class ObjectServiceException extends Exception {}
 }

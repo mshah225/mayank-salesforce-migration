@@ -21,6 +21,19 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkBefore() 
     {
+        if(Trigger.isInsert)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK BEFORE FOR INSERT');
+        }
+        else if(Trigger.isUpdate)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK BEFORE FOR UPDATE');
+        }
+        else if(Trigger.isDelete)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK BEFORE FOR DELETE');
+        }
+
         Set<Id> campaignIdsInTrigger = new Set<Id>();
 
         Set<Id> contactIdsInTrigger = new Set<Id>();
@@ -249,7 +262,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                             }
                             else
                             {
-                                externalCMsToPrimary.add(ccm);    
+                                externalCMsToFalsify.add(ccm);    
                             }
                         }
                     }
@@ -257,8 +270,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     Opportunity opp = OpportunitiesByContactMap.get(contactId);
                     if(opp != null)
                     {
-                        opp.Primary_Interest__c = primary.CampaignId;
-                        opportunitiesToUpdate.put(opp.Id, opp);
+                        if(opp.Primary_Interest__c != primary.CampaignId)
+                        {
+                            opp.Primary_Interest__c = primary.CampaignId;
+                            opportunitiesToUpdate.put(opp.Id, opp);
+                        }
                     }
                 }
                 else
@@ -266,8 +282,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     Opportunity opp = OpportunitiesByContactMap.get(contactId);
                     if(opp != null)
                     {
-                        opp.Primary_Interest__c = null;
-                        opportunitiesToUpdate.put(opp.Id, opp);
+                        if(opp.Primary_Interest__c != null)
+                        {
+                            opp.Primary_Interest__c = null;
+                            opportunitiesToUpdate.put(opp.Id, opp);
+                        }
                     }
                 }
             }
@@ -331,23 +350,42 @@ public without sharing class CampaignMemberHandler implements ITrigger
                             }
                             else
                             {
-                                externalCMsToPrimary.add(lcm);    
+                                externalCMsToFalsify.add(lcm);    
                             }
                         }
                     }
 
                     Lead leadToUpdate = leadsInTrigger.get(leadId);
-                    leadToUpdate.Primary_Interest__c = primary.CampaignId;
-                    leadsToUpdate.add(leadToUpdate);
+                    if(leadToUpdate.Primary_Interest__c != primary.CampaignId)
+                    {
+                        leadToUpdate.Primary_Interest__c = primary.CampaignId;
+                        leadsToUpdate.add(leadToUpdate);
+                    }
                 }
                 else
                 {
                     Lead leadToUpdate = leadsInTrigger.get(leadId);
-                    leadToUpdate.Primary_Interest__c = null;
-                    leadsToUpdate.add(leadToUpdate);
+                    if(leadToUpdate.Primary_Interest__c != null)
+                    {
+                        leadToUpdate.Primary_Interest__c = null;
+                        leadsToUpdate.add(leadToUpdate);
+                    }
                 }
             }
         }
+
+        if(Trigger.isInsert)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK BEFORE FOR INSERT');
+        }
+        else if(Trigger.isUpdate)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK BEFORE FOR UPDATE');
+        }
+        else if(Trigger.isDelete)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK BEFORE FOR DELETE');
+        }  
     }
  
     /**
@@ -431,6 +469,19 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkAfter() 
     {
+        if(Trigger.isInsert)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK AFTER FOR INSERT');
+        }
+        else if(Trigger.isUpdate)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK AFTER FOR UPDATE');
+        }
+        else if(Trigger.isDelete)
+        {
+            System.debug('STARTING CAMPAIGN MEMBER BULK AFTER FOR DELETE');
+        }
+
         Set<Id> triggerIDs = new Set<Id>();
         List<Id> nationalMeritContactIds = new List<Id>();
         if(Trigger.isInsert || Trigger.isUpdate)
@@ -474,8 +525,11 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     }
                     else
                     {
-                        nmsOpp.National_Merit_Semifinalist__c = true;
-                        opportunitiesToUpdate.put(nmsOpp.Id, nmsOpp);
+                        if(nmsOpp.National_Merit_Semifinalist__c != true)
+                        {
+                            nmsOpp.National_Merit_Semifinalist__c = true;
+                            opportunitiesToUpdate.put(nmsOpp.Id, nmsOpp);
+                        }
                     }
                 }
             }
@@ -484,14 +538,20 @@ public without sharing class CampaignMemberHandler implements ITrigger
         List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
         for(CampaignMember cm : externalCMsToFalsify)
         {
-            cm.Is_Primary_Interest__c = FALSE;
-            cmsToUpdate.add(cm);
+            if(cm.Is_Primary_Interest__c != FALSE)
+            {
+                cm.Is_Primary_Interest__c = FALSE;
+                cmsToUpdate.add(cm);
+            }
         }
 
         for(CampaignMember cm : externalCMsToPrimary)
         {
-            cm.Is_Primary_Interest__c = TRUE;
-            cmsToUpdate.add(cm);
+            if(cm.Is_Primary_Interest__c != TRUE)
+            {
+                cm.Is_Primary_Interest__c = TRUE;
+                cmsToUpdate.add(cm);
+            }
         }
 
         externalCMsToPrimary = new Set<CampaignMember>();
@@ -499,21 +559,52 @@ public without sharing class CampaignMemberHandler implements ITrigger
 
         if(opportunitiesToUpdate.size() > 0)
         {
+            System.debug('IN CAMPAIGN MEMBER HANDLER, ABOUT TO UPDATE OPPORTUNITIES');
             List<Opportunity> oppsToUpdateList = new List<Opportunity>();
             oppsToUpdateList.addAll(opportunitiesToUpdate.values());
             update oppsToUpdateList;
+            System.debug('IN CAMPAIGN MEMBER HANDLER, FINISHED UPDATING OPPORTUNITIES');
+        }
+        else
+        {
+           System.debug('IN CAMPAIGN MEMBER HANDLER, NO OPPORTUNITIES TO UPDATE'); 
         }
         opportunitiesToUpdate = new Map<Id, Opportunity>();
 
         if(leadsToUpdate.size() > 0)
         {
+            System.debug('IN CAMPAIGN MEMBER HANDLER, ABOUT TO UPDATE LEADS');
             update leadsToUpdate;
+            System.debug('IN CAMPAIGN MEMBER HANDLER, FINISHED UPDATING LEADS');
+        }
+        else
+        {
+           System.debug('IN CAMPAIGN MEMBER HANDLER, NO LEADS TO UPDATE'); 
         }
         leadsToUpdate = new List<Lead>();
 
         if(cmsToUpdate.size() > 0)
         {
+            System.debug('IN CAMPAIGN MEMBER HANDLER, ABOUT TO UPDATE CAMPAIGN MEMBERS');
             update cmsToUpdate;
+            System.debug('IN CAMPAIGN MEMBER HANDLER, FINISHED UPDATING CAMPAIGN MEMBERS');
+        }
+        else
+        {
+           System.debug('IN CAMPAIGN MEMBER HANDLER, NO CAMPAIGN MEMBERS TO UPDATE') ;
+        }
+
+        if(Trigger.isInsert)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK AFTER FOR INSERT');
+        }
+        else if(Trigger.isUpdate)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK AFTER FOR UPDATE');
+        }
+        else if(Trigger.isDelete)
+        {
+            System.debug('FINISHING CAMPAIGN MEMBER BULK AFTER FOR DELETE');
         }
     }
 

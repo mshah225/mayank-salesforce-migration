@@ -1,5 +1,5 @@
 @isTest
-private class Test_ViewAllCasesController 
+private class Test_ViewAllCasesController
 {
 	@testSetup static void setup()
 	{

@@ -58,7 +58,7 @@ public without sharing class MyASUViewAs
         String xml = res.getBody();
         Dom.Document doc = new Dom.Document();
         doc.load(xml);
-        
+
         // Retrieve the root element for this document.
         Dom.XMLNode address = doc.getRootElement();
 
@@ -139,5 +139,22 @@ public without sharing class MyASUViewAs
         Map<Id, List<Case>> viewAsClosedCases = CaseService.getVisibleClosedCases(contacts);
 
         return viewAsClosedCases;
+    }
+
+
+    /**
+    * Calls the CaseService to get all email messages attached ot the case.
+    * @param the launchDate of the email messages on the service center
+    * @param the case id the email messages are attached to
+    * @param the contact email address to display.
+    * @return A list with the email messages.
+    */
+    public static List<EmailMessage> getViewAsCaseEmails(Date launchDate, Id caseId,
+            List<String> contactEmails)
+    {
+        List<EmailMessage> viewAsCaseEmails = CaseService.getCaseEmailMessages(launchDate,
+                caseId, contactEmails);
+
+        return viewAsCaseEmails;
     }
 }

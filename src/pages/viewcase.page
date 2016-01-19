@@ -1,13 +1,13 @@
-<apex:page showHeader="false"
-    sidebar="false"
-    cache="true"
-    docType="html-5.0"
-    controller="ServiceCenter"
-    action="{!init}"
-    extensions="NavLinks">
+<apex:page docType="html-5.0"
+           showHeader="false"
+           sidebar="false"
+           controller="ServiceCenter"
+           action="{!init}"
+           cache="true"
+           extensions="NavLinks">
 <head>
     <title>My ASU | {!caseDetails.Subject}</title>
-    <c:asu_responsive_header_section />
+    <c:asu_responsive_header_section linkList="{!linkList}"/>
     
     <style>
         .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
@@ -114,7 +114,9 @@
             var showChar = 250;
             var ellipsestext = "...";
             var moretext = 'Show More <span class="caret" style="margin-bottom:2px;"></span>';
-            var lesstext = 'Show Less <span class="dropup"><span class="caret"  style="margin-bottom:2px;"></span></span>';
+            var lesstext = 'Show Less <span class="dropup"><span class="caret"' +
+                           'style="margin-bottom:2px;"></span></span>';
+
             $("[id$=emailMore]").each(function()
             {
                 var content = $(this).clone().html();
@@ -128,10 +130,12 @@
                 {
                     var c = content.substr(0, showChar);
                     var h = content.substr(showChar, content.length - showChar);
-                    var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;</span><a href="" class="emailToggle">' + moretext + '</a>';
+                    var html = c + '<span class="moreellipses">' + ellipsestext +
+                                   '&nbsp;</span><span class="morecontent"><span>' + h +
+                                   '</span>&nbsp;&nbsp;</span><a href="" class="emailToggle">' +
+                                   moretext + '</a>';
                     $(this).html(html);
                 }
-
             });
 
             $(".emailToggle").click(function()
@@ -157,12 +161,14 @@
 
 <body>
     <div id="main-search" class="main-search closed"></div>
-    <c:SCHeader firstName="{!firstName}" 
-                lastName="{!lastName}" 
-                viewingAs="{!viewingAs}" 
-                emplId="{!emplId}" 
-                stopViewAsUrl="{!stopViewAsUrl}" 
-                viewAsUrl="{!viewAsUrl}"/>
+
+    <c:SCHeader firstName="{!firstName}"
+                lastName="{!lastName}"
+                viewingAs="{!viewingAs}"
+                emplId="{!emplId}"
+                stopViewAsUrl="{!stopViewAsUrl}"
+                viewAsUrl="{!viewAsUrl}"
+                linkList="{!linkList}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"
@@ -185,56 +191,96 @@
 
                         <div class="content">
                             <apex:form styleClass="detailsForm">
-                              <h3 style="word-wrap: break-word;">{!caseDetails.subject}</h3><br /><br />
+                                <h3 style="word-wrap: break-word;">{!caseDetails.subject}</h3>
+                                <br />
+                                <br />
                                 <apex:pageBlock tabStyle="Case" mode="maindetail">
                                     <apex:pageBlockSection collapsible="false" columns="1">
                                         <apex:outputText value="{!caseDetails.Status}" />
+
                                         <apex:outputField value="{!caseDetails.Subject}"/>
+
                                         <apex:outputField value="{!caseDetails.description}"/>
-                                        <apex:outputText value="{!caseDetails.Functional_Group__c}" label="Department" rendered="{!IF(caseDetails.Functional_Group__c != null,true,false)}"/>
-                                        <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Opened">
+
+                                        <apex:outputText value="{!caseDetails.Functional_Group__c}"
+                                                         label="Department"
+                                                         rendered="{!IF(caseDetails.Functional_Group__c != null,true,false)}"/>
+
+                                        <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}"
+                                                         label="Date Opened">
                                             <apex:param value="{!caseDetails.CreatedDate}"/>
                                         </apex:outputText>
-                                        <apex:outputText rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}" value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Closed">
+
+                                        <apex:outputText rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}"
+                                                         value="{0, date, MMMM d','  yyyy, hh:MM a z}"
+                                                         label="Date Closed">
                                             <apex:param value="{!caseDetails.ClosedDate}"/>
                                         </apex:outputText>
-                                        <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved') && (caseDetails.Feedback_Link__c != ''),true,false)}" value="{!caseDetails.Feedback_Link__c}" escape="false" styleClass="feedbackLink" label="Feedback"/>
-                                  </apex:pageBlockSection>
+
+                                        <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved')
+                                                && (caseDetails.Feedback_Link__c != ''),true,false)}"
+                                                         value="{!caseDetails.Feedback_Link__c}"
+                                                         escape="false"
+                                                         styleClass="feedbackLink"
+                                                         label="Feedback"/>
+                                    </apex:pageBlockSection>
                                 </apex:pageBlock>
                             </apex:form>
                         </div>
                     </div>
 
-                    <apex:outputPanel id="emailMessagesBox" rendered="{!IF(EmailMessages.empty,false,true)}">
+                    <apex:outputPanel id="emailMessagesBox"
+                                      rendered="{!IF(EmailMessages.empty,false,true)}">
                         <div class="box commentBox">
-                        <div class="header">
-                            <h6><b>Responses To This Case</b></h6>
-                        </div>
+                            <div class="header">
+                                <h6><b>Responses To This Case</b></h6>
+                            </div>
+
                             <div class="content">
                                 <apex:repeat value="{!EmailMessages}" var="EM">
                                     <div class="panel panel-default">
                                         <div class="panel-body">
                                             <apex:outputLabel for="emailSentDate" value="Sent Date:"/>
-                                            <apex:outputText id="emailSentDate" value="{0, date, MMMM d','  yyyy, hh:MM a z}">
+
+                                            <apex:outputText id="emailSentDate"
+                                                             value="{0, date, MMMM d',' yyyy, hh:MM a z}">
                                                 <apex:param value="{!EM.CreatedDate}"/>
-                                            </apex:outputText><br />
-
-                                            <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
-                                                <apex:outputLabel for="fromAddress" value="From Address:"/>&nbsp;
-                                                <apex:outputText id="fromAddress">{!EM.FromName} &#60;{!EM.FromAddress}&#62;</apex:outputText><br />
+                                            </apex:outputText>
+                                            <br />
+                                            <apex:outputPanel
+                                                    rendered="{!IF(EM.FromAddress != null,true,false)}">
+                                                <apex:outputLabel for="fromAddress"
+                                                                  value="From Address:"/>
+                                                &nbsp;
+                                                <apex:outputText id="fromAddress">
+                                                    {!EM.FromName} &#60;{!EM.FromAddress}&#62;
+                                                </apex:outputText>
+                                                <br />
                                             </apex:outputPanel>
 
-                                            <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
-                                                <apex:outputLabel for="toAddress" value="To Address:"/>&nbsp;
-                                                <apex:outputText id="toAddress" value="{!EM.ToAddress}"/><br />
+                                            <apex:outputPanel
+                                                    rendered="{!IF(EM.ToAddress != null,true,false)}">
+                                                <apex:outputLabel for="toAddress"
+                                                                  value="To Address:"/>
+                                                &nbsp;
+                                                <apex:outputText id="toAddress"
+                                                                 value="{!EM.ToAddress}"/>
+                                                <br />
                                             </apex:outputPanel>
 
-                                            <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
-                                                <apex:outputLabel for="ccAddress" value="CC:"/>&nbsp;
-                                                <apex:outputText id="ccAddress" value="{!EM.CCAddress}"/><br />
+                                            <apex:outputPanel
+                                                    rendered="{!IF(EM.CCAddress != null,true,false)}">
+                                                <apex:outputLabel for="ccAddress" value="CC:"/>
+                                                &nbsp;
+                                                <apex:outputText id="ccAddress"
+                                                                 value="{!EM.CCAddress}"/>
+                                                <br />
                                             </apex:outputPanel>
                                             <br />
-                                            <apex:outputField id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important;"/>
+                                            <apex:outputField id="emailMore"
+                                                              styleClass="emailMessage"
+                                                              value="{!EM.TextBody}"
+                                                              style="word-wrap: break-word !important;"/>
                                         </div>
                                     </div>
                                 </apex:repeat>
@@ -254,8 +300,9 @@
                 </div><!-- end col-md-4-->
             </div><!-- end row -->
         </div><!-- end container -->
-        <c:SCFooter />
     </div><!-- End ASU Content -->
+
+    <c:SCFooter />
 
     <script>
         if (!(navigator.userAgent.match(/Android/i)

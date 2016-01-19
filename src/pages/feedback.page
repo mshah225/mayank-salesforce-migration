@@ -1,7 +1,8 @@
 <apex:page sidebar="false"
-    showHeader="false"
-    controller="ServiceCenter"
-    extensions="FeedbackController">
+           showHeader="false"
+           controller="ServiceCenter"
+           cache="true"
+           extensions="FeedbackController">
 <html>
 <head>
     <title>My ASU | Service Center Feedback</title>
@@ -9,11 +10,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.jquery_ui, '/themes/base/minified/jquery-ui.min.css')}"/>
-    <c:myasustyles />
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/asu_header.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/myASUHeader.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
+    <c:myASUStylesMin />
     <style>
         #asu_login_module:nth-child(2) {
             padding-right: 7px !important;
@@ -39,8 +39,6 @@
     <!--[if IE 6]><script>ASUHeader.browser = true;</script><![endif]-->
     <!--[if IE 7]><script>ASUHeader.browser = true;</script><![endif]-->
     <!--[if IE 8]><script>ASUHeader.browser = true;</script><![endif]-->
-    <apex:includeScript value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/js/asu_header.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
 
     <style>
         .panel {
@@ -222,6 +220,9 @@
             <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
         </ul>
     </div>
+
+    <apex:includeScript value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/js/asu_header.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
 
     <script>
         viewAsLinks();

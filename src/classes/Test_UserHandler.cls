@@ -65,4 +65,19 @@ public class Test_UserHandler
 
         System.assert(testUser.ProfileId != communityCapProfile.Id);
     }
+
+    @isTest static void checkUserReadAccess()
+    {
+        User testUser = UserService.createTestUser();
+        Id chatterProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'].Id;
+        testUser.ProfileId = chatterProfile;
+        insert testUser;
+
+        Contact testContact = ContactService.createTestContact();
+        insert testContact;
+
+        Boolean hasAccess = UserService.userHasReadAccess(testUser.Id, testContact.Id);
+
+        System.assert(hasAccess == false, 'Test user was given access to Contact when it should not have been');
+    }
 }

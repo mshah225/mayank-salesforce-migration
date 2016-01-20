@@ -1,0 +1,75 @@
+<apex:page standardController="User"
+           docType="html-5.0">
+    <html>
+        <head>
+            <style>
+                .btn.FlowNextBtn, .btn.FlowPreviousBtn {
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+                text-align: center !important;
+                vertical-align: middle !important;
+                border: 1px solid #d8dde6 !important;
+                background: #fff !important;
+                color: #0070d2 !important;
+                line-height: 20px !important;
+                font-size: 10pt !important
+                }
+
+                .btn.FlowNextBtn:hover, .btn.FlowPreviousBtn:hover {
+                background: #f4f6f9 !important;
+                }
+
+                .bPageBlock {
+                background: #f4f6f9 !important;
+                border-radius: none !important;
+                }
+
+                .detailList input {
+                background-color: white !important;
+                color: #16325c !important;
+                border: 1px solid #d8dde6 !important;
+                border-radius: 4px !important;
+                width: 100% !important;
+                display: inline-block !important;
+                padding: 0 16px 0 12px !important;
+                line-height: 34px !important;
+                font-size: 10pt !important;
+                }
+
+                .interviewFormChoicesWithHelp input {
+                width: auto !important;
+                }
+
+                .FlowText, .FlowDropdown, .FlowRadio {
+                line-height: 34px !important;
+                font-size: 10pt !important;
+                }
+
+                .bPageBlock .detailList .labelCol {
+                width: 25% !important;
+                }
+
+                .bPageBlock .requiredInput .requiredBlock {
+                top: 9px !important;
+                }
+
+                select {
+                margin-top: 8px !important;
+                }
+            </style>
+        </head>
+
+        <body>
+            <flow:interview name="User_Provisioning_Automation_PoC" buttonLocation="bottom">
+                <apex:param name="varRunningUserId" value="{!$User.Id}"/>
+            </flow:interview>
+        </body>
+
+        <script>
+            document.getElementById("j_id0:j_id2:i:f:pb:d:Your_Full_Name.input").placeholder = "Name";
+            document.getElementById("j_id0:j_id2:i:f:pb:d:Please_enter_your_supervisor_s_full_name.input").placeholder = "Supervisor Name";
+            document.getElementById("j_id0:j_id2:i:f:pb:d:Please_enter_your_supervisor_s_ASURITE.input").placeholder = "Supervisor ASURITE";
+            document.getElementById("j_id0:j_id2:i:f:pb:d:What_college_or_department_do_you_work_in.input").placeholder = "College or Department";
+        </script>
+    </html>
+</apex:page>

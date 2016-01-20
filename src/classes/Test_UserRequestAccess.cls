@@ -1,19 +1,50 @@
 @isTest
 public with sharing class Test_UserRequestAccess
 {
-    @testSetup static void setUp()
+    @isTest static void testMuleCallout()
     {
-        MuleSoft_BB_Courses__c mule = new MuleSoft_BB_Courses__c();
-        mule.Name = 'MuleSoft Dev';
-        mule.URL__c = 'https://test.nowhere.com';
-        mule.Username__c = 'Test';
-        mule.Password__c = 'test';
+        MuleSoft_BB_Courses__c mule = new MuleSoft_BB_Courses__c(
+            Name = 'MuleSoft Dev',
+            URL__c = 'nowhere.none.com',
+            Username__c = 'Test',
+            Password__c = 'test'
+        );
 
         insert mule;
+
+        SingleRequestMock fakeResponse = new SingleRequestMock(
+            200,
+            'Complete',
+            '[{"Name": "sForceTest1"}]',
+            null
+        );
+
+        Test.startTest();
+
+        Test.setMock(HttpCalloutMock.class, fakeResponse);
+        List<String> strList = UserRequestAccess.callMuleSoft();
+
+        Test.stopTest();
+
+        System.assertNotEquals(null, strList);
     }
 
-    @isTest static void testCallout()
+    @isTest static void testMuleFail()
     {
-        System.assertEquals(null, UserRequestAccess.callMuleSoft());
+        SingleRequestMock fakeResponse = new SingleRequestMock(
+            200,
+            'Complete',
+            '[{"Name": "sForceTest1"}]',
+            null
+        );
+
+        Test.startTest();
+
+        Test.setMock(HttpCalloutMock.class, fakeResponse);
+        List<String> strList = UserRequestAccess.callMuleSoft();
+
+        Test.stopTest();
+
+        System.assertEquals(null, strList);
     }
 }

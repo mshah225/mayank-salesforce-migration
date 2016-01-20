@@ -1,7 +1,7 @@
 global class UserRequestAccess
 {
     @InvocableMethod
-    public static void callMuleSoft()
+    global static List<String> callMuleSoft()
     {
         MuleSoft_BB_Courses__c mule = MuleSoft_BB_Courses__c.getValues('MuleSoft Dev');
 
@@ -21,7 +21,14 @@ global class UserRequestAccess
 
             Http http = new Http();
             HttpResponse res = http.send(req);
-            System.debug(res.getBody());
+
+            List<String> strList = new List<String>();
+
+            strList.add(res.getBody());
+
+            return strList;
         }
+
+        return null;
     }
 }

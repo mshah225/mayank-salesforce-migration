@@ -223,18 +223,28 @@ public without sharing class OpportunityHandler implements ITrigger
             }
         }
 
-        List<Lead_Interest__c> leadInterestList = new List<Lead_Interest__c>([SELECT Id, Status__c, leads__c FROM Lead_Interest__c WHERE leads__c IN :leadIds]);
-        for (Lead_Interest__c li: leadInterestList)
+        if (leadIds.size() > 0)
         {
-            if (leadToContactMap.containsKey(li.leads__c))
+            List<Lead_Interest__c> leadInterestList = new List<Lead_Interest__c>([
+                SELECT Id, Status__c, leads__c
+                FROM Lead_Interest__c
+                WHERE leads__c IN :leadIds
+            ]);
+
+            for (Lead_Interest__c li: leadInterestList)
             {
-                li.Contact__c = leadToContactMap.get(li.leads__c);
+                if (leadToContactMap.containsKey(li.leads__c))
+                {
+                    li.Contact__c = leadToContactMap.get(li.leads__c);
+                }
+            }
+
+            if (leadInterestList.size() > 0)
+            {
+                update leadInterestList;
             }
         }
 
-        if (leadInterestList.size() > 0)
-        {
-            update leadInterestList;
-        }
+        return;
     }
 }

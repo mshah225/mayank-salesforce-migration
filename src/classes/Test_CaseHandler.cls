@@ -30,10 +30,10 @@ public with sharing class Test_CaseHandler {
 		return oppList;
 	}
 
-	private static Case createCase(Id queue_id)
+	private static Case createCase(Id queue_id, Contact con)
     {
         Case newCase = new Case(
-            Subject = 'Test Subject%ASURITE:9999999999%Queue:' + queue_id,
+            Subject = 'Test Subject%ASURITE:' + con.EMPLID__c + '%Queue:' + queue_id,
             Description = 'Test Description',
             Status = 'Processing'
         );
@@ -1021,7 +1021,7 @@ public with sharing class Test_CaseHandler {
         ].Id;
 
         Contact con = createContact();
-        Case c = createCase(fa_id);
+        Case c = createCase(fa_id, con);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '3';
         Test.startTest();
@@ -1038,6 +1038,28 @@ public with sharing class Test_CaseHandler {
         System.assert(stat.IsClosedOnCreate == TRUE);
     }
 
+    static testmethod void testCreateWebformsCase()
+    {
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        Contact con = createContact();
+        Test.startTest();
+        Case c = createCase(reg_id, con);
+        Test.stopTest();
+        Case stat = [
+            SELECT ContactId, Status, Visible_by_Contact__c
+            FROM Case
+            WHERE Id = :c.Id LIMIT 1
+        ];
+
+        System.assert(stat.ContactId == con.Id);
+    }
+
     static testmethod void TestRegChangeStateWithSufficientLinks()
     {
         Id reg_id = [
@@ -1048,7 +1070,7 @@ public with sharing class Test_CaseHandler {
         ].Id;
 
         Contact con = createContact();
-        Case c = createCase(reg_id);
+        Case c = createCase(reg_id, con);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '3';
         Test.startTest();
@@ -1074,7 +1096,7 @@ public with sharing class Test_CaseHandler {
         ].Id;
 
         Contact con = createContact();
-        Case c = createCase(reg_id);
+        Case c = createCase(reg_id, con);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '5';
         Test.startTest();

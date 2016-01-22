@@ -136,6 +136,7 @@ public without sharing class CaseHandler implements ITrigger
                 String emplid = '';
                 String first = '';
                 String last = '';
+                
                 for(Integer x = 0; x < subjectSplit.size(); x++)
                 {
                     List<String> tokenSplit = subjectSplit[x].split(':');

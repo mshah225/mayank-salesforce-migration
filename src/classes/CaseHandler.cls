@@ -162,7 +162,7 @@ public without sharing class CaseHandler implements ITrigger
                 {
                     c.ContactId = contactUsers[0].Id;
                 }
-                else
+                else if(emplid != null && emplid != '' && first != null && first != '' && last != null && last != '')
                 {
                     Contact con = new Contact();
                     con.FirstName = first;

@@ -157,19 +157,27 @@ public without sharing class CaseHandler implements ITrigger
                     }
                 }
 
-                List<Contact> contactUsers = [SELECT Id FROM Contact WHERE EMPLID__c = :emplid LIMIT 1];
-                if(contactUsers != null && contactUsers.size() > 0)
+                Contact conToCreate = new Contact();
+
+                if(emplid != null && emplid != '')
                 {
-                    c.ContactId = contactUsers[0].Id;
+                    List<Contact> contactUsers = [SELECT Id FROM Contact WHERE EMPLID__c = :emplid LIMIT 1];
+                    if(contactUsers != null && contactUsers.size() > 0)
+                    {
+                        c.ContactId = contactUsers[0].Id;
+                    }
+                    else
+                    {
+                        conToCreate.EMPLID__c = emplid;
+                    }
                 }
-                else if(emplid != null && emplid != '' && first != null && first != '' && last != null && last != '')
+
+                if(c.ContactId == null && first != null && first != '' && last != null && last != '')
                 {
-                    Contact con = new Contact();
-                    con.FirstName = first;
-                    con.LastName = last;
-                    con.EMPLID__c = emplid;
-                    insert con;
-                    c.ContactId = con.Id;
+                    conToCreate.FirstName = first;
+                    conToCreate.LastName = last;
+                    insert conToCreate;
+                    c.ContactId = conToCreate.Id;
                 }
             }
         }

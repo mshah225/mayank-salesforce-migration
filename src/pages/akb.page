@@ -1,118 +1,119 @@
 <apex:page docType="html-5.0"
-    showHeader="false"
-    sidebar="false"
-    controller="ServiceCenter"
-    action="{!init}"
-    extensions="AKBController,NavLinks,vfListPaginationController">
-<head>
-    <title>My ASU | {!article.title}</title>
-    <c:asu_responsive_header_section linkList="{!linkList}"/>
+           showHeader="false"
+           sidebar="false"
+           controller="ServiceCenter"
+           action="{!init}"
+           cache="true"
+           extensions="AKBController,NavLinks,vfListPaginationController">
+    <head>
+        <title>My ASU | {!article.title}</title>
+        <c:asu_responsive_header_section linkList="{!linkList}"/>
 
-    <style>
-        .detailList a {
-            color: #990033 !important;
-        }
+        <style>
+            .detailList a {
+                color: #990033 !important;
+            }
 
-        body {
-            overflow-x: scroll !important;
-        }
+            body {
+                overflow-x: scroll !important;
+            }
 
-        .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
-            border-top-color: #990033 !important;
-        }
+            .caseTab .secondaryPalette, .individualPalette .caseBlock .secondaryPalette {
+                border-top-color: #990033 !important;
+            }
 
-        .x-toolbar-ct tr td{
-            vertical-align: middle !important;
-            padding: 0px !important;
-        }
+            .x-toolbar-ct tr td{
+                vertical-align: middle !important;
+                padding: 0px !important;
+            }
 
-        .bPageBlock .detailList .labelCol {
-            width: 1% !important;
-            font-size: 8pt;
-        }
+            .bPageBlock .detailList .labelCol {
+                width: 1% !important;
+                font-size: 8pt;
+            }
 
-        .searchKB2 {
-            margin-bottom: -10px !important;
-        }
+            .searchKB2 {
+                margin-bottom: -10px !important;
+            }
 
-        .header {
-            margin-left: 0px !important;
-        }
+            .header {
+                margin-left: 0px !important;
+            }
 
-        iframe, embed {
-            width: 100% !important;
-            max-width: 500px !important;
-        }
+            iframe, embed {
+                width: 100% !important;
+                max-width: 500px !important;
+            }
 
-        .img-responsive {
-            width: 100% !important;
-            max-width: 450px !important;
-        }
+            .img-responsive {
+                width: 100% !important;
+                max-width: 450px !important;
+            }
 
-        th.labelCol.vfLabelColTextWrap {
-            display: none !important;
-        }
-
-        .articleContent {
-            word-break: break-word !important;
-            padding: 0px;
-        }
-
-        .modal-content {
-            border-radius: 0px !important;
-            box-shadow: none !important;
-        }
-
-        .submitButton, .clearButton {
-            padding 2px !important;
-        }
-
-        @media screen and (max-width: 931px) {
-            .sparky {
+            th.labelCol.vfLabelColTextWrap {
                 display: none !important;
             }
-        }
 
-        @-moz-document url-prefix() {
-            .clearButton, .submitButton {
-                height: 17px !important;
+            .articleContent {
+                word-break: break-word !important;
+                padding: 0px;
             }
-        }
 
-        @media screen and (-webkit-min-device-pixel-ratio:0) {
-            .clearButton, .submitButton {
-                height: 16px !important;
-                padding-top: 5px !important;
+            .modal-content {
+                border-radius: 0px !important;
+                box-shadow: none !important;
             }
-        }
 
-        #articleContentDiv img {
-            max-width: 100% !important;
-            height: auto !important;
-        }
-    </style>
+            .submitButton, .clearButton {
+                padding 2px !important;
+            }
 
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            @media screen and (max-width: 931px) {
+                .sparky {
+                    display: none !important;
+                }
+            }
 
-        ga('create', 'UA-47141114-2', 'auto');
-        ga('set', 'dimension1', '{!funcGroup}');
-        ga('set', 'dimension2', '{!artType}');
-        ga('set', 'dimension3', '{!article.CreatedBy.Name}');
-        ga('set', 'dimension4', '{!userContact.Name}');
-        ga('send', 'pageview');
-    </script>
+            @-moz-document url-prefix() {
+                .clearButton, .submitButton {
+                    height: 17px !important;
+                }
+            }
 
-    <c:SCBomgarScripts asurite="{!asurite}"
-                       firstName="{!firstName}"
-                       lastName="{!lastName}"
-                       emplId="{!emplId}"
-                       viewingAs="{!viewingAs}"/>
-</head>
-<body>
+            @media screen and (-webkit-min-device-pixel-ratio:0) {
+                .clearButton, .submitButton {
+                    height: 16px !important;
+                    padding-top: 5px !important;
+                }
+            }
+
+            #articleContentDiv img {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+        </style>
+
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-47141114-2', 'auto');
+            ga('set', 'dimension1', '{!funcGroup}');
+            ga('set', 'dimension2', '{!artType}');
+            ga('set', 'dimension3', '{!article.CreatedBy.Name}');
+            ga('set', 'dimension4', '{!userContact.Name}');
+            ga('send', 'pageview');
+        </script>
+
+        <c:SCBomgarScripts asurite="{!asurite}"
+                           firstName="{!firstName}"
+                           lastName="{!lastName}"
+                           emplId="{!emplId}"
+                           viewingAs="{!viewingAs}"/>
+    </head>
+    <body>
     <div id="main-search" class="main-search closed"></div>
 
     <c:SCHeader firstName="{!firstName}"
@@ -199,7 +200,7 @@
 
                                                 <td>
                                                     <apex:outputLink value="/akb?id={!articleList.id}">
-                                                        {!articleList.title}
+                                                            {!articleList.title}
                                                     </apex:outputLink>
                                                 </td>
                                             </tr>
@@ -281,18 +282,18 @@
                                     </button>
                                 </apex:outputPanel>
 
-                                 <apex:outputPanel rendered="{!NOT(feedbackVisible)}">
-                                     <p>Thanks for the feedback!</p>
-                                 </apex:outputPanel>
-                             </apex:form>
+                                <apex:outputPanel rendered="{!NOT(feedbackVisible)}">
+                                    <p>Thanks for the feedback!</p>
+                                </apex:outputPanel>
+                            </apex:form>
 
-                             <apex:form id="feedbackNoComments">
-                                 <!-- Modal -->
-                                 <div class="modal fade"
-                                      id="feedbackNoComments"
-                                      tabindex="-1" role="dialog"
-                                      aria-labelledby="feedbackCommentsLabel"
-                                      aria-hidden="true">
+                            <apex:form id="feedbackNoComments">
+                                <!-- Modal -->
+                                <div class="modal fade"
+                                     id="feedbackNoComments"
+                                     tabindex="-1" role="dialog"
+                                     aria-labelledby="feedbackCommentsLabel"
+                                     aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -321,10 +322,10 @@
                                             <div class="modal-footer">
                                                 <div class="pull-left">
                                                     <apex:commandButton
-                                                            value="Submit"
-                                                            action="{!helpfulNo}"
-                                                            styleClass="btn btn-default"
-                                                            style="width:40px;height:15px;padding:3px;"/>
+                                                        value="Submit"
+                                                        action="{!helpfulNo}"
+                                                        styleClass="btn btn-default"
+                                                        style="width:40px;height:15px;padding:3px;"/>
 
                                                     <button type="button"
                                                             class="btn btn-default"
@@ -359,7 +360,7 @@
                                         </td>
                                         <td>
                                             <apex:outputLink value="/akb?id={!relatedart.id}">
-                                                {!relatedart.title}
+                                                    {!relatedart.title}
                                             </apex:outputLink>
 
                                             <div style="height:10px;"></div>
@@ -440,17 +441,18 @@
                 </div><!-- end col-md-4 -->
             </div>
         </div><!-- end row -->
-        <c:SCFooter/>
     </div><!-- end ASU Content -->
+
+    <c:SCFooter/>
 
     <script>
         if (!(navigator.userAgent.match(/Android/i)
-             || navigator.userAgent.match(/webOS/i)
-             || navigator.userAgent.match(/iPhone/i)
-             || navigator.userAgent.match(/iPad/i)
-             || navigator.userAgent.match(/iPod/i)
-             || navigator.userAgent.match(/BlackBerry/i)
-             || navigator.userAgent.match(/Windows Phone/i)))
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i)))
         {
             document.getElementById("normalPhone").addEventListener("click", function(event){
                 event.preventDefault();
@@ -541,5 +543,5 @@
             }
         }
     </script>
-</body>
+    </body>
 </apex:page>

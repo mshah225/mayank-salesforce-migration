@@ -345,7 +345,14 @@ public with sharing class ServiceCenter
 
     public PageReference submitCase()
     {
-        if (viewingAs) stopSubmit(masqScopeIdCookie);
+        if (viewingAs)
+        {
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+
+            return go;
+        }
 
         newCase.ContactId = userContact.Id;
         newCase.Web_Submission__c = 'My ASU Standard';
@@ -365,7 +372,14 @@ public with sharing class ServiceCenter
 
     public PageReference changePin()
     {
-        if (viewingAs) stopSubmit(masqScopeIdCookie);
+        if (viewingAs)
+        {
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+
+            return go;
+        }
 
         if (origPin == newPin)
         {
@@ -393,7 +407,14 @@ public with sharing class ServiceCenter
 
     public PageReference suggestAnArticleSubmit()
     {
-        if (viewingAs) stopSubmit(masqScopeIdCookie);
+        if (viewingAs)
+        {
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+
+            return go;
+        }
 
         suggestAnArticle.Subject = 'Suggest An Article';
         suggestAnArticle.Description = suggestAnArticle.Description;
@@ -413,15 +434,6 @@ public with sharing class ServiceCenter
         insert suggestAnArticle;
 
         return redirectWithParams(ApexPages.currentPage(), 'Suggest', 'yes');
-    }
-
-    public PageReference stopSubmit(String theCookie)
-    {
-        PageReference go = new PageReference(ApexPages.currentPage().getUrl());
-        go.getParameters().put('masqScopeIdCookie', theCookie);
-        go.setRedirect(true);
-
-        return go;
     }
 
     public PageReference redirectWithParams(PageReference page, String param, String value)

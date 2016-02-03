@@ -3,18 +3,20 @@ public with sharing class Test_ChatterAutoAddUsers
 {
     @isTest static void testRecruitmentAutoAdd()
     {
+        Test.startTest();
+
         Id testId;
-        Id recProfileId = [
+
+        List<Profile> recProfileList = [
             SELECT Id
             FROM Profile
-            WHERE Name = 'ASU Recruiting User'
-            LIMIT 1
-        ].Id;
+            WHERE Name LIKE 'ASU Recruit%'
+        ];
 
         User testRecUser = UserService.createTestUser();
         testRecUser.FirstName = 'Test';
         testRecUser.LastName = 'Rec';
-        testRecUser.ProfileId = recProfileId;
+        testRecUser.ProfileId = recProfileList[0].Id;
 
         insert testRecUser;
 
@@ -25,9 +27,6 @@ public with sharing class Test_ChatterAutoAddUsers
         ];
 
         Set<Id> recSet = new Set<Id>{assertUser.Id};
-
-        Test.startTest();
-
         ChatterAutoAddUsers.addToChatterGroupFuture(recSet);
 
         Test.stopTest();
@@ -57,18 +56,20 @@ public with sharing class Test_ChatterAutoAddUsers
 
     @isTest static void testServiceAutoAdd()
     {
+        Test.startTest();
+
         Id testId;
-        Id servProfileId = [
+
+        List<Profile> servProfileList = [
             SELECT Id
             FROM Profile
             WHERE Name LIKE 'ASU Service%'
-            LIMIT 1
-        ].Id;
+        ];
 
         User testServUser = UserService.createTestUser();
         testServUser.FirstName = 'Test';
         testServUser.LastName = 'Serv';
-        testServUser.ProfileId = servProfileId;
+        testServUser.ProfileId = servProfileList[0].Id;
 
         insert testServUser;
 
@@ -79,9 +80,6 @@ public with sharing class Test_ChatterAutoAddUsers
         ];
 
         Set<Id> servSet = new Set<Id>{assertUser.Id};
-
-        Test.startTest();
-
         ChatterAutoAddUsers.addToChatterGroupFuture(servSet);
 
         Test.stopTest();
@@ -111,18 +109,20 @@ public with sharing class Test_ChatterAutoAddUsers
 
     @isTest static void testKnowledgeAutoAdd()
     {
+        Test.startTest();
+
         Id testId;
-        Id knowProfileId = [
+
+        List<Profile> knowProfileList = [
             SELECT Id
             FROM Profile
-            WHERE Name = 'ASU Knowledge User'
-            LIMIT 1
-        ].Id;
+            WHERE Name LIKE 'ASU Knowledge%'
+        ];
 
         User testKnowUser = UserService.createTestUser();
         testKnowUser.FirstName = 'Test';
         testKnowUser.LastName = 'Know';
-        testKnowUser.ProfileId = knowProfileId;
+        testKnowUser.ProfileId = knowProfileList[0].Id;
 
         insert testKnowUser;
 
@@ -133,9 +133,6 @@ public with sharing class Test_ChatterAutoAddUsers
         ];
 
         Set<Id> knowSet = new Set<Id>{assertUser.Id};
-
-        Test.startTest();
-
         ChatterAutoAddUsers.addToChatterGroupFuture(knowSet);
 
         Test.stopTest();

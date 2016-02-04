@@ -7,9 +7,30 @@ private class ChatterAutoAddUserTest
     
     private static void setUp()
     {
-        Id recProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Recruiting User' LIMIT 1].Id;
-        Id servProfileId = [SELECT Id FROM Profile WHERE Name LIKE 'ASU Service%' LIMIT 1].Id;
-        Id knowProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User' LIMIT 1].Id;
+        List<Profile> recProfileList = [
+            SELECT Id
+            FROM Profile
+            WHERE Name LIKE 'ASU Recruit%'
+        ];
+
+        Id recProfileId = recProfileList[0].Id;
+
+        List<Profile> servProfileList = [
+            SELECT Id
+            FROM Profile
+            WHERE Name LIKE 'ASU Serv%'
+        ];
+
+        Id servProfileId = servProfileList[0].Id;
+
+
+        List<Profile> knowProfileList = [
+            SELECT Id
+            FROM Profile
+            WHERE Name LIKE 'ASU Know%'
+        ];
+
+        Id knowProfileId = knowProfileList[0].Id;
 
         List<User> testUsers = UserService.createMultipleTestUsers(3);
         testUsers[0].ProfileId = recProfileId;

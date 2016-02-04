@@ -201,7 +201,6 @@ public with sharing class HelpDeskController
         if (birthdate.length() > 0)
         {
             birthdateFormatted = String.valueOf(date.parse(birthdate));
-            System.debug('merf birthdateFormatted: ' + birthdateFormatted);
         }
 
         // Create the main search string.
@@ -253,12 +252,6 @@ public with sharing class HelpDeskController
         {
             dateSearch = true;
         }
-
-        System.debug('merf nameSearch: ' + nameSearch);
-        System.debug('merf phoneSearch: ' + phoneSearch);
-        System.debug('merf emailSearch: ' + emailSearch);
-        System.debug('merf dateSearch: ' + dateSearch);
-        System.debug('merf: ' + birthdate);
 
         if (!firstName.equals('') && !dateSearch)
         {

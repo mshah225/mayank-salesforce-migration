@@ -44,17 +44,35 @@ private class Test_HelpDeskController
         // Populate some initial Contact search parameters
         ApexPages.currentPage().getParameters().put('ANI', '4805551213');
         ApexPages.currentPage().getParameters().put('phone', '4805551213');
-        ApexPages.currentPage().getParameters().put('birthdate', '12/12/1970');
-        ApexPages.currentPage().getParameters().put('firstname', 'John');
-        ApexPages.currentPage().getParameters().put('lastname', 'Doe');
-        ApexPages.currentPage().getParameters().put('asuriteid', 'jdoe');
-        ApexPages.currentPage().getParameters().put('emplid', '1111111');
-        ApexPages.currentPage().getParameters().put('directoryemail', 'noone@asu.edu');
-        ApexPages.currentPage().getParameters().put('personalemail', 'noone@asu.edu');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', '');
+        ApexPages.currentPage().getParameters().put('lastname', '');
+        ApexPages.currentPage().getParameters().put('asuriteid', '');
+        ApexPages.currentPage().getParameters().put('emplid', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', '');
+        ApexPages.currentPage().getParameters().put('personalemail', '');
 
 
         HelpDeskController controller = new HelpDeskController();
+
+        // Search phone fields.
         controller.runSearch();
+
+        // Search birthdate (SOQL).
+        ApexPages.currentPage().getParameters().put('phone', '');
+        ApexPages.currentPage().getParameters().put('birthdate', '12/12/1970');
+        controller.runSearch();
+
+        // Search name fields.
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', 'John');
+        controller.runSearch();
+
+        // Search email fields.
+        ApexPages.currentPage().getParameters().put('firstname', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', 'noone@asu.edu');
+        controller.runSearch();
+
         controller.toggleSort();
         controller.clearContactSearch();
         controller.newContact();

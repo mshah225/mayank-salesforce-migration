@@ -176,6 +176,10 @@
                                                   id="helpDeskPhone"/>
                             </apex:pageBlockSection>
 
+                            <br />
+                            <i>Note: Due to platform limitations on date searches, searching
+                               Birthdate may take longer than usual.</i>
+
                             <div style="text-align:center;border-top:1px solid #dbdbdb;padding-top:10px;margin-top:10px;">
                                 <apex:commandButton id="searchBtn"
                                                     value="Search"

@@ -124,6 +124,26 @@ public with sharing class HelpDeskController
         }
     }
 
+    // Reformats a 10 digit phone number to the following format: (xxx) xxx-xxxx
+    private static String formatPhone(String phone)
+    {
+        string nondigits = '[^0-9]';
+        string phoneDigits;
+
+        // remove all non numeric
+        phoneDigits = phone.replaceAll(nondigits, '');
+
+        // 10 digit: reformat with dashes
+        if (phoneDigits.length() == 10)
+            return '(' + phoneDigits.substring(0, 3) + ') ' +
+                phoneDigits.substring(3, 6) + '-' +
+                phoneDigits.substring(6, 10);
+
+        // if it isn't a 10 digit number, return the original because
+        // it may contain an extension or special information
+        return(phone);
+    }
+
     // toggles the sorting of query from asc<-->desc
     public void toggleSort()
     {
@@ -175,6 +195,8 @@ public with sharing class HelpDeskController
         String directoryEmail = Apexpages.currentPage().getParameters().get('directoryemail');
         String personalEmail = Apexpages.currentPage().getParameters().get('personalemail');
         String birthdateFormatted;
+        String phoneWildcarded;
+        Integer phoneLength = phone.length();
 
         if (birthdate.length() > 0)
         {
@@ -184,6 +206,7 @@ public with sharing class HelpDeskController
 
         // Create the main search string.
         String searchString = '';
+        String soqlOptions = '';
 
         // Create checks for different queries
         Boolean nameSearch = false;
@@ -193,7 +216,7 @@ public with sharing class HelpDeskController
 
         if ((!firstName.equals('') || !lastName.equals(''))
             && phone.equals('')
-            && birthdateFormatted.equals('')
+            && birthdate.equals('')
             && asuriteid.equals('')
             && emplid.equals('')
             && directoryEmail.equals('')
@@ -217,93 +240,154 @@ public with sharing class HelpDeskController
         if (firstName.equals('')
             && lastName.equals('')
             && !phone.equals('')
-            && birthdateFormatted.equals('')
-            && asuriteid.equals('')
-            && emplid.equals('')
-            && directoryEmail.equals('')
-            && !personalEmail.equals(''))
-        {
-            phoneSearch = true;
-        }
-
-        if (firstName.equals('')
-            && lastName.equals('')
-            && phone.equals('')
-            && (!birthdateFormatted.equals('') || birthdateFormatted != null)
+            && birthdate.equals('')
             && asuriteid.equals('')
             && emplid.equals('')
             && directoryEmail.equals('')
             && personalEmail.equals(''))
         {
-            dateSearch = true;
-        }
-
-        if (!birthdateFormatted.equals('') || birthdateFormatted != null)
-        {
-            System.debug('merf not blank');
-        }
-        else
-        {
-            System.debug('merf blank');
-        }
-
-        if (!firstName.equals(''))
-        {
-            searchString += ' ' + firstName + '*';
-        }
-
-        if (!lastName.equals(''))
-        {
-            searchString += ' ' + lastName + '*';
-        }
-
-        if (!phone.equals(''))
-        {
-            searchString += ' ' + phone;
+            phoneSearch = true;
         }
 
         if (!birthdate.equals(''))
         {
-            searchString += ' ' + birthdateFormatted;
+            dateSearch = true;
         }
 
-        if (!asuriteid.equals(''))
+        System.debug('merf nameSearch: ' + nameSearch);
+        System.debug('merf phoneSearch: ' + phoneSearch);
+        System.debug('merf emailSearch: ' + emailSearch);
+        System.debug('merf dateSearch: ' + dateSearch);
+        System.debug('merf: ' + birthdate);
+
+        if (!firstName.equals('') && !dateSearch)
+        {
+            searchString += ' ' + firstName + '*';
+        }
+        else if (!firstName.equals('') && dateSearch)
+        {
+            soqlOptions += ' AND Firstname LIKE \'' + String.escapeSingleQuotes(firstName) + '%\'';
+        }
+
+        if (!lastName.equals('') && !dateSearch)
+        {
+            searchString += ' ' + lastName + '*';
+        }
+        else if (!lastName.equals('') && dateSearch)
+        {
+            soqlOptions += ' AND Lastname LIKE \'' + String.escapeSingleQuotes(lastName) + '%\'';
+        }
+
+        if (!phone.equals('') && !dateSearch)
+        {
+            searchString += ' ' + phone;
+        }
+        else if (!phone.equals('') && dateSearch)
+        {
+            phone = formatPhone(phone);
+
+            if (phoneLength > 0 && phoneLength <= 3)
+            {
+                phoneWildcarded = '%' + phone.substring(0, math.min(phoneLength, 3)) + '%';
+            }
+            else if (phoneLength > 3 && phoneLength <= 6)
+            {
+                phoneWildcarded = '%' + phone.substring(0, 3) + '%' +
+                    phone.substring(3, math.min(phoneLength, 6)) + '%';
+            }
+            else if (phoneLength > 6)
+            {
+                phoneWildcarded = '%' + phone.substring(0, 3) + '%' +
+                    phone.substring(3, 6) + '%' +
+                    phone.substring(6, math.min(phoneLength, 10)) + '%';
+            }
+
+            soqlOptions += ' AND (HomePhone like \'' + phoneWildcarded + '\' ' +
+                'OR MobilePhone like \'' + phoneWildcarded + '\' ' +
+                'OR OtherPhone like \'' + phoneWildcarded + '\' ' +
+                'OR Phone like \'' + phoneWildcarded + '\' ' +
+                'OR Work_Phone__c like \'' + phoneWildcarded + '\' ' +
+                'OR Help_Desk_Provided_Phone__c like \'' + phoneWildcarded + '\'' +
+            ')';
+        }
+
+        // This only sets the soqlOptions if date is being searched. Doesn't set date for SOSL.
+        if (!birthdate.equals('') && dateSearch)
+        {
+            soqlOptions += ' AND Birthdate = ' + birthdateFormatted;
+        }
+
+        if (!asuriteid.equals('') && !dateSearch)
         {
             searchString += ' ' + asuriteid + '*';
         }
+        else if (!asuriteid.equals('') && dateSearch)
+        {
+            soqlOptions += ' AND ASURite_ID__c LIKE \'' +
+                String.escapeSingleQuotes(asuriteid) + '%\'';
+        }
 
-        if (!emplid.equals(''))
+        if (!emplid.equals('') && !dateSearch)
         {
             searchString += ' ' + emplid + '*';
         }
+        else if (!emplid.equals('') && dateSearch)
+        {
+            soqlOptions += ' AND EMPLID__c LIKE \'' + String.escapeSingleQuotes(emplid) + '%\'';
+        }
 
-        if (!directoryEmail.equals(''))
+        if (!directoryEmail.equals('') && !dateSearch)
         {
             searchString += ' ' + directoryEmail + '*';
         }
+        else if (!directoryEmail.equals('') && dateSearch)
+        {
+            soqlOptions += ' AND ASU_Email__c LIKE \'' +
+                String.escapeSingleQuotes(directoryEmail) + '%\'';
+        }
 
-        if (!personalEmail.equals(''))
+        if (!personalEmail.equals('') && !dateSearch)
         {
             searchString += ' ' + personalEmail + '*';
         }
-
-        if (searchString != '')
+        else if (!personalEmail.equals('') && dateSearch)
         {
-            if (dateSearch)
+            soqlOptions += ' AND Personal_Email__c LIKE \'' +
+                String.escapeSingleQuotes(personalEmail) + '%\'';
+        }
+
+        if (dateSearch)
+        {
+            if (soqlOptions != '')
             {
                 soql = '' +
                     'SELECT Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
                     'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
                     'Personal_Email__c ' +
-                    'FROM Contact' +
-                    'WHERE FirstName != null ' +
-                    'ORDER BY ' + sortField + ' ' + sortDir + ' ' +
+                    'FROM Contact ' +
+                    'WHERE FirstName != null';
+
+                soql += soqlOptions;
+
+                soql += ' ORDER BY ' + sortField + ' ' + sortDir + ' ' +
                     'LIMIT 20';
 
                 // run the query again
                 runQuery(true);
             }
             else
+            {
+                ApexPages.addMessage(
+                    new ApexPages.Message(
+                        ApexPages.Severity.INFO,
+                        'You must enter search terms.'
+                    )
+                );
+            }
+        }
+        else
+        {
+            if (searchString != '')
             {
                 String returnString = '';
 
@@ -338,15 +422,15 @@ public with sharing class HelpDeskController
                 // run the query again
                 runQuery(false);
             }
-        }
-        else
-        {
-            ApexPages.addMessage(
-                new ApexPages.Message(
-                    ApexPages.Severity.INFO,
-                    'You must enter search terms.'
-                )
-            );
+            else
+            {
+                ApexPages.addMessage(
+                    new ApexPages.Message(
+                        ApexPages.Severity.INFO,
+                        'You must enter search terms.'
+                    )
+                );
+            }
         }
     }
 

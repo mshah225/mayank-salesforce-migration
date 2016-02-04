@@ -19,26 +19,55 @@ global class BomgarCreateCaseUtil
         Contact contact = null;
         Case c = new Case();
 
-        // Lookup contact by employeeNumber
-        if (dynamicFieldMap.get('employeeNumber') != null
-            && '' != dynamicFieldMap.get('employeeNumber'))
+        String emplId = dynamicFieldMap.get('employeeNumber');
+        String externalKey = dynamicFieldMap.get('externalKey');
+        String asurite = dynamicFieldMap.get('asuriteId');
+        String description = dynamicFieldMap.get('description');
+        String firstname = '';
+        String lastname = '';
+        Boolean error = false;
+        String errorStr = '';
+
+        // Handle ASURITE for BB chat if asurite is null.
+        // (bb_asurite__ca or asurite_@ce.asu.edu)
+        if (externalKey == 'BB' && asurite == '')
         {
-            contact = lookupContactByEmployeeId(dynamicFieldMap.get('employeeNumber'));
+            if (description.contains('ASURITE ID:'))
+            {
+                asurite = description.substring(
+                    description.indexOf('ASURITE ID:') + 12,
+                    description.indexOf('Full Name:')
+                );
+
+                if (asurite.contains('_'))
+                {
+                    String[] strs = asurite.split('_');
+
+                    for (String s : strs)
+                    {
+                        if (s.length() > 5 && !s.contains('@') && !s.contains('.'))
+                        {
+                            asurite = s;
+                        }
+                    }
+                }
+            }
         }
 
-        // If contact is still null, try and find contact by asuriteId
-        if (contact == null
-            && dynamicFieldMap.get('asuriteId') != null
-            && '' != dynamicFieldMap.get('asuriteId'))
+        if (externalKey == 'BB' && asurite != '')
         {
-            contact = lookupContactByASURITE(dynamicFieldMap.get('asuriteId'));
-        }
+            if (asurite.contains('_'))
+            {
+                String[] strs = asurite.split('_');
 
-        String subject = dynamicFieldMap.get('description');
-
-        if (subject != null && subject.length() > 255)
-        {
-            subject = subject.substring(0, 254);
+                for (String s : strs)
+                {
+                    if (s.length() > 5 && !s.contains('@') && !s.contains('.'))
+                    {
+                        asurite = s;
+                    }
+                }
+            }
         }
 
         List<RecordType> recordTypes = [
@@ -52,15 +81,24 @@ global class BomgarCreateCaseUtil
             c.RecordTypeId = rt.Id;
         }
 
+        // Set case values
+        if (description.length() > 255)
+        {
+            c.Subject = description.substring(0, 254);
+        }
+        else
+        {
+            c.Subject = description;
+        }
+
         c.Status = 'New';
-        c.Subject = subject;
-        c.Description = dynamicFieldMap.get('description');
+        c.Description = description;
         c.Priority = 'Normal';
         c.Origin__c = 'Chat';
         c.Functional_Group__c = 'Help Desk';
 
         // Check if finance chat and route, if not default to gen
-        if (dynamicFieldMap.get('externalKey') == 'Finances')
+        if (externalKey == 'Finances')
         {
             c.Category__c = 'Finances (Help Desk)';
         }
@@ -69,19 +107,117 @@ global class BomgarCreateCaseUtil
             c.Category__c = 'General Help Desk';
         }
 
+        // If contact is still null, try and find contact by asuriteId
+        if (contact == null && asurite != '')
+        {
+            contact = lookupContactByASURITE(asurite);
+        }
+
+        // Lookup contact by employeeNumber
+        if (contact == null && emplId != '')
+        {
+            contact = lookupContactByEmployeeId(emplId);
+        }
+
+        // Final check to see if Contact was found. If not, create one.
         if (contact != null)
         {
             c.ContactId = contact.Id;
         }
+        else
+        {
+            // Handle parsing out name from description if creating a new Contact
+            if (externalKey == 'BB' && description != '')
+            {
+                if (description.contains('Full Name:') && description.contains('Course Role:'))
+                {
+                    String name = description.substring(
+                        description.indexOf('Full Name:') + 10,
+                        description.indexOf('Course Role:')
+                    );
+
+                    name = name.trim();
+                    String[] strs;
+
+                    if (name.contains(' '))
+                    {
+                        strs = name.split(' ');
+
+                        if (strs.size() == 2)
+                        {
+                            firstname = strs[0];
+                            lastname = strs[1];
+                        }
+                    }
+                    else
+                    {
+                        firstname = name;
+                    }
+                }
+            }
+
+            if (asurite != '')
+            {
+                // Try to create a new Contact
+                Contact newContact = new Contact();
+
+                newContact.Email = asurite + '@asu.edu';
+                newContact.ASURite_ID__c = asurite;
+                newContact.EMPLID__c = emplId;
+                newContact.MailingPostalCode = '11111';
+
+                if (lastname != '')
+                {
+                    newContact.LastName = lastname;
+                }
+                else
+                {
+                    lastname = asurite;
+                    newContact.LastName = lastname;
+                }
+
+                if (firstname != '')
+                {
+                    newContact.FirstName = firstname;
+                }
+                else
+                {
+                    firstname = 'BomgarError';
+                    newContact.FirstName = firstname;
+                }
+
+                insert newContact;
+
+                // Attach new contact to case.
+                c.ContactId = newContact.Id;
+            }
+            else
+            {
+                c.Reason = 'Bomgar Error';
+                error = true;
+            }
+        }
+
+        // On error, log all the contact info we have.
+        if (error)
+        {
+            c.Description = c.Description + 'UNABLE TO FIND/CREATE A ' +
+                'CONTACT WITH THESE VALUES: ' +
+                ' - Name: ' + firstname + ' ' + lastname +
+                ' - ASURITE: ' + asurite +
+                ' - EmplId: ' + emplId +
+                ' - ' + errorStr;
+        }
 
         insert c;
+
         return c.Id;
     }
 
     global static Contact lookupContactByEmployeeId(String employeeId)
     {
         List<Contact> contacts = [
-            SELECT Id
+            SELECT Id, ASURite_ID__c, EMPLID__c
             FROM Contact
             WHERE EMPLID__c = :employeeId
         ];
@@ -97,7 +233,7 @@ global class BomgarCreateCaseUtil
     global static Contact lookupContactByASURITE(String asurite)
     {
         List<Contact> contacts = [
-            SELECT Id
+            SELECT Id, ASURite_ID__c, EMPLID__c
             FROM Contact
             WHERE ASURITE_Id__c = :asurite
         ];

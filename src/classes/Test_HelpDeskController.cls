@@ -31,6 +31,9 @@ private class Test_HelpDeskController
         controller.cancelCase();
         controller.newCase();
         controller.saveCase();
+        controller.mycase.Subject = 'test';
+        controller.mycase.Description = 'test';
+        controller.saveCase();
     }
 
     @isTest static void testCreateContactCreateCaseSaveAndCloseCase()
@@ -105,10 +108,11 @@ private class Test_HelpDeskController
         controller.newCase();
         controller.cancelCase();
         controller.newCase();
-        controller.mycase.Subject = 'test';
-        controller.mycase.Description = 'test';
         controller.saveAndCloseCase();
         controller.cancelCloseCase();
+        PageReference failPage = controller.saveAndTransferCase();
+        controller.mycase.Subject = 'test';
+        controller.mycase.Description = 'test';
         PageReference pr = controller.saveAndTransferCase();
 
         System.assertNotEquals(pr, null);

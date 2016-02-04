@@ -68,6 +68,7 @@
         .btn.customBtn {
             min-width: 60px;
             padding: 5px;
+            text-decoration: none;
         }
 
         .bPageBlock {
@@ -88,6 +89,10 @@
 
         fieldset {
             border: none !important;
+        }
+
+        .message {
+            margin: 0px 0px 10px 0px !important;
         }
     </style>
 
@@ -171,7 +176,7 @@
                                                   id="helpDeskPhone"/>
                             </apex:pageBlockSection>
 
-                            <apex:pageBlockButtons location="bottom" id="searchButtonBlock">
+                            <div style="text-align:center;border-top:1px solid #dbdbdb;padding-top:10px;margin-top:10px;">
                                 <apex:commandButton id="searchBtn"
                                                     value="Search"
                                                     onClick="doSearch(); return false;"
@@ -192,6 +197,13 @@
                                                     status="loadingStatus"
                                                     styleClass="customBtn"/>
 
+                                <apex:outputLink id="snLink"
+                                                 target="_blank"
+                                                 styleClass="btn customBtn"
+                                                 value="https://asu.service-now.com/navpage.do">
+                                    Open Service Now
+                                </apex:outputLink>
+
                                 <apex:commandButton action="{!setAsHelpDeskProvidedPhone}"
                                                     immediate="true"
                                                     value="Set as Help Desk Provided Phone"
@@ -207,7 +219,7 @@
                                              margin-left:5px;"/>
                                     </apex:facet>
                                 </apex:actionStatus>
-                            </apex:pageBlockButtons>
+                            </div>
                         </apex:pageBlock>
                     </apex:outputPanel>
 

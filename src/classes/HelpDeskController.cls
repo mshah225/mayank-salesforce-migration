@@ -101,54 +101,27 @@ public with sharing class HelpDeskController
         isCloseCase = false;
         isNewContactSelected = false;
         isContactSet = false;
-        String callerIdWildcarded;
-        String callerIdUnformatted;
-
-        soql = 'SELECT Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
-            'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c,  Personal_Email__c ' +
-            'FROM Contact ' +
-            'WHERE Firstname != null';
+        String searchNumber;
 
         if (ApexPages.currentPage().getParameters().containsKey('ANI'))
         {
-            callerIdUnformatted = ApexPages.currentPage().getParameters().get('ANI');
-            callerId = formatPhone(callerIdUnformatted);
+            searchNumber = ApexPages.currentPage().getParameters().get('ANI');
 
-            callerIdWildcarded = '%' + callerIdUnformatted.substring(0, 3) + '%' +
-                callerIdUnformatted.substring(3, 6) + '%' +
-                callerIdUnformatted.substring(6, 10) + '%';
+            soql = 'FIND \'' + searchNumber + '\' ' +
+                'IN PHONE FIELDS ' +
+                'RETURNING Contact(' +
+                'Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
+                'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
+                'Personal_Email__c WHERE FirstName != null ' +
+                'ORDER BY ' + sortField + ' ' + sortDir + ' LIMIT 20' +
+                ')';
 
-            System.debug(callerIdWildcarded);
-
-            soql += ' AND (HomePhone LIKE \'' + callerIdWildcarded + '\' ' +
-                'OR MobilePhone LIKE \'' + callerIdWildcarded + '\' ' +
-                'OR OtherPhone LIKE \'' + callerIdWildcarded + '\' ' +
-                'OR Phone LIKE \'' + callerIdWildcarded + '\' ' +
-                'OR Work_Phone__c LIKE \'' + callerIdWildcarded + '\' ' +
-                'OR Help_Desk_Provided_Phone__c LIKE \'' + callerIdWildcarded + '\')';
+            runQuery(false);
         }
-
-        runQuery();
-    }
-
-    // Reformats a 10 digit phone number to the following format: (xxx) xxx-xxxx
-    private static String formatPhone(String phone)
-    {
-        string nondigits = '[^0-9]';
-        string phoneDigits;
-
-        // remove all non numeric
-        phoneDigits = phone.replaceAll(nondigits, '');
-
-        // 10 digit: reformat with dashes
-        if (phoneDigits.length() == 10)
-            return '(' + phoneDigits.substring(0, 3) + ') ' +
-                phoneDigits.substring(3, 6) + '-' +
-                phoneDigits.substring(6, 10);
-
-        // if it isn't a 10 digit number, return the original because
-        // it may contain an extension or special information
-        return(phone);
+        else
+        {
+            contacts = new List<Contact>();
+        }
     }
 
     // toggles the sorting of query from asc<-->desc
@@ -157,25 +130,35 @@ public with sharing class HelpDeskController
         // simply toggle the direction
         sortDir = sortDir.equals('asc') ? 'desc' : 'asc';
         // run the query again
-        runQuery();
+        runQuery(false);
     }
 
-    // runs the actual query
-    public void runQuery()
+    // Runs the actual query, set boolean to run SOQL search. Default SOSL search.
+    public void runQuery(Boolean runSOQL)
     {
         contacts = new List<Contact>();
 
         try
         {
-            contacts = Database.query(
-                soql +
-                    ' ORDER BY ' + sortField + ' ' + sortDir +
-                    ' LIMIT 15'
-            );
+            if (runSOQL)
+            {
+                contacts = Database.query(soql);
+            }
+            else
+            {
+                List<List<SObject>> queryList = Search.query(soql);
+
+                contacts = ((List<Contact>) queryList[0]);
+            }
         }
         catch (Exception e)
         {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Ooops!'));
+            ApexPages.addMessage(
+                new ApexPages.Message(
+                    ApexPages.Severity.ERROR,
+                    'There was a problem running the query. Please try again. ' + e.getMessage()
+                )
+            );
         }
 
     }
@@ -192,86 +175,179 @@ public with sharing class HelpDeskController
         String directoryEmail = Apexpages.currentPage().getParameters().get('directoryemail');
         String personalEmail = Apexpages.currentPage().getParameters().get('personalemail');
         String birthdateFormatted;
-        String phoneWildcarded;
-        Integer phoneLength = phone.length();
 
         if (birthdate.length() > 0)
         {
             birthdateFormatted = String.valueOf(date.parse(birthdate));
+            System.debug('merf birthdateFormatted: ' + birthdateFormatted);
         }
 
-        if (phoneLength > 0 && phoneLength <= 3)
+        // Create the main search string.
+        String searchString = '';
+
+        // Create checks for different queries
+        Boolean nameSearch = false;
+        Boolean emailSearch = false;
+        Boolean phoneSearch = false;
+        Boolean dateSearch = false;
+
+        if ((!firstName.equals('') || !lastName.equals(''))
+            && phone.equals('')
+            && birthdateFormatted.equals('')
+            && asuriteid.equals('')
+            && emplid.equals('')
+            && directoryEmail.equals('')
+            && personalEmail.equals(''))
         {
-            phoneWildcarded = '%' + phone.substring(0, math.min(phoneLength, 3)) + '%';
-        }
-        else if (phoneLength > 3 && phoneLength <= 6)
-        {
-            phoneWildcarded = '%' + phone.substring(0, 3) + '%' +
-                phone.substring(3, math.min(phoneLength, 6)) + '%';
-        }
-        else if (phoneLength > 6)
-        {
-            phoneWildcarded = '%' + phone.substring(0, 3) + '%' +
-                phone.substring(3, 6) + '%' + phone.substring(6, math.min(phoneLength, 10)) + '%';
+            nameSearch = true;
         }
 
+        if (firstName.equals('')
+            && lastName.equals('')
+            && phone.equals('')
+            && birthdate.equals('')
+            && asuriteid.equals('')
+            && emplid.equals('')
+            && (!directoryEmail.equals('')
+            || !personalEmail.equals('')))
+        {
+            emailSearch = true;
+        }
 
-        soql = 'SELECT Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, Birthdate, ' +
-            'ASURite_ID__c, EMPLID__c, ASU_Email__c,  Personal_Email__c ' +
-            'FROM Contact ' +
-            'WHERE Firstname != null';
+        if (firstName.equals('')
+            && lastName.equals('')
+            && !phone.equals('')
+            && birthdateFormatted.equals('')
+            && asuriteid.equals('')
+            && emplid.equals('')
+            && directoryEmail.equals('')
+            && !personalEmail.equals(''))
+        {
+            phoneSearch = true;
+        }
+
+        if (firstName.equals('')
+            && lastName.equals('')
+            && phone.equals('')
+            && (!birthdateFormatted.equals('') || birthdateFormatted != null)
+            && asuriteid.equals('')
+            && emplid.equals('')
+            && directoryEmail.equals('')
+            && personalEmail.equals(''))
+        {
+            dateSearch = true;
+        }
+
+        if (!birthdateFormatted.equals('') || birthdateFormatted != null)
+        {
+            System.debug('merf not blank');
+        }
+        else
+        {
+            System.debug('merf blank');
+        }
 
         if (!firstName.equals(''))
         {
-            soql += ' AND Firstname LIKE \'' + String.escapeSingleQuotes(firstName) + '%\'';
+            searchString += ' ' + firstName + '*';
         }
 
         if (!lastName.equals(''))
         {
-            soql += ' AND Lastname LIKE \'' + String.escapeSingleQuotes(lastName) + '%\'';
+            searchString += ' ' + lastName + '*';
         }
 
         if (!phone.equals(''))
         {
-            soql += ' AND (HomePhone LIKE \'' + phoneWildcarded + '\' ' +
-                'OR MobilePhone LIKE \'' + phoneWildcarded + '\' ' +
-                'OR OtherPhone LIKE \'' + phoneWildcarded + '\' ' +
-                'OR Phone LIKE \'' + phoneWildcarded + '\' ' +
-                'OR SF_Mobile__c LIKE \'' + phoneWildcarded + '\' ' +
-                'OR SMS_Phone__c LIKE \'' + phoneWildcarded + '\' ' +
-                'OR Work_Phone__c LIKE \'' + phoneWildcarded + '\' ' +
-                'OR Help_Desk_Provided_Phone__c LIKE \'' + phoneWildcarded + '\')';
+            searchString += ' ' + phone;
         }
 
         if (!birthdate.equals(''))
         {
-            soql += ' AND Birthdate = ' + birthdateFormatted;
+            searchString += ' ' + birthdateFormatted;
         }
 
         if (!asuriteid.equals(''))
         {
-            soql += ' AND ASURite_ID__c LIKE \'' + String.escapeSingleQuotes(asuriteid) + '%\'';
+            searchString += ' ' + asuriteid + '*';
         }
 
         if (!emplid.equals(''))
         {
-            soql += ' AND EMPLID__c LIKE \'' + String.escapeSingleQuotes(emplid) + '%\'';
+            searchString += ' ' + emplid + '*';
         }
 
         if (!directoryEmail.equals(''))
         {
-            soql += ' AND ASU_Email__c LIKE \'' +
-                String.escapeSingleQuotes(directoryEmail) + '%\'';
+            searchString += ' ' + directoryEmail + '*';
         }
 
         if (!personalEmail.equals(''))
         {
-            soql += ' AND Personal_Email__c LIKE \'' +
-                String.escapeSingleQuotes(personalEmail) + '%\'';
+            searchString += ' ' + personalEmail + '*';
         }
 
-        // run the query again
-        runQuery();
+        if (searchString != '')
+        {
+            if (dateSearch)
+            {
+                soql = '' +
+                    'SELECT Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
+                    'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
+                    'Personal_Email__c ' +
+                    'FROM Contact' +
+                    'WHERE FirstName != null ' +
+                    'ORDER BY ' + sortField + ' ' + sortDir + ' ' +
+                    'LIMIT 20';
+
+                // run the query again
+                runQuery(true);
+            }
+            else
+            {
+                String returnString = '';
+
+                if (nameSearch)
+                {
+                    returnString = 'IN NAME FIELDS';
+                }
+                else if (emailSearch)
+                {
+                    returnString = 'IN EMAIL FIELDS';
+                }
+                else if (phoneSearch)
+                {
+                    returnString = 'IN PHONE FIELDS';
+                }
+                else
+                {
+                    returnString = 'IN ALL FIELDS';
+                }
+
+                soql = '' +
+                    'FIND \'' + String.escapeSingleQuotes(searchString.trim()) + '\' ' +
+                    returnString + ' ' +
+                    'RETURNING Contact(' +
+                    'Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
+                    'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
+                    'Personal_Email__c WHERE FirstName != null ' +
+                    'ORDER BY ' + sortField + ' ' + sortDir + ' ' +
+                    'LIMIT 20' +
+                    ')';
+
+                // run the query again
+                runQuery(false);
+            }
+        }
+        else
+        {
+            ApexPages.addMessage(
+                new ApexPages.Message(
+                    ApexPages.Severity.INFO,
+                    'You must enter search terms.'
+                )
+            );
+        }
     }
 
     public void newCase()
@@ -303,13 +379,14 @@ public with sharing class HelpDeskController
             mycontact = new Contact();
         }
 
-        mycontact.RecordTypeId = [
+        List<RecordType> sfMastList= [
             SELECT Id
             FROM RecordType
             WHERE name = 'SF Mastered'
-            AND SobjectType = 'Contact' limit 1
-        ].Id;
+            AND SobjectType = 'Contact'
+        ];
 
+        mycontact.RecordTypeId = sfMastList[0].Id;
         mycontact.MailingCountryCode = 'US';
         mycontact.Firstname = contactsrch.Firstname;
         mycontact.Lastname = contactsrch.Lastname;
@@ -409,7 +486,7 @@ public with sharing class HelpDeskController
         mycase = (Case) m.get(selectedCaseId).Ca;
     }
 
-    public void saveCase()
+    public PageReference saveCase()
     {
         try
         {
@@ -422,21 +499,21 @@ public with sharing class HelpDeskController
                     )
                 );
 
-                return;
+                return null;
             }
 
             upsert mycase;
 
-            ApexPages.addMessage(
-                new ApexPages.message(
-                    ApexPages.severity.CONFIRM,
-                    'Case saved successfully.'
-                )
-            );
+            PageReference page = new PageReference('/' + mycase.Id);
+            page.setRedirect(true);
+
+            return page;
         }
         catch (Exception ex)
         {
             ApexPages.addMessages(ex);
+
+            return ApexPages.currentPage();
         }
     }
 
@@ -485,6 +562,7 @@ public with sharing class HelpDeskController
         }
     }
 
+    // Upsert Case and set bool value to render the close status panel.
     public void saveAndCloseCase()
     {
         try
@@ -522,11 +600,12 @@ public with sharing class HelpDeskController
                 WHERE Id = :selectedCloseCaseStatusOption
             ].MasterLabel;
         }
+
         try
         {
             upsert mycase;
 
-            PageReference page = new PageReference('/' + mycase.Id);
+            PageReference page = new PageReference('/500?fcf=00Bd0000005TDlX');
             page.setRedirect(true);
 
             return page;

@@ -2,7 +2,6 @@
            sidebar="false"
            id="mypage"
            docType="html-5.0">
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
     <apex:includeScript value="/support/console/35.0/integration.js"/>
     <script type="text/javascript">
         // Set the tab title in the Console
@@ -25,6 +24,16 @@
             var tabId = result.id;
             sforce.console.closeTab(tabId);
         };
+
+        function openDetail(contactId, contactName) {
+            if (sforce.console.isInConsole()) {
+                sforce.console.openPrimaryTab(null, '/' + contactId,
+                    true, contactName);
+            }
+            else {
+                window.open('/' + contactId);
+            }
+        }
 
         // These are used to enable or disable the entire set of Case
         // input fields based on whether we are in Edit mode
@@ -131,42 +140,35 @@
                             <apex:pageBlockSection id="criteriasection" showHeader="false">
                                 <apex:inputField value="{!contactsrch.firstname}"
                                                  id="firstnamesrch"
-                                                 onkeypress="return noenter(event);"/>
+                                                 html-autofocus="true"/>
 
                                 <apex:inputField value="{!contactsrch.lastname}"
                                                  required="false"
-                                                 id="lastnamesrch"
-                                                 onkeypress="return noenter(event);"/>
+                                                 id="lastnamesrch"/>
 
                                 <apex:inputField value="{!contactsrch.phone}"
                                                  required="false"
-                                                 id="phonesrch"
-                                                 onkeypress="return noenter(event);"/>
+                                                 id="phonesrch"/>
 
                                 <apex:inputField value="{!contactsrch.birthdate}"
                                                  required="false"
-                                                 id="birthdatesrch"
-                                                 onkeypress="return noenter(event);"/>
+                                                 id="birthdatesrch"/>
 
                                 <apex:inputField value="{!contactsrch.ASURite_ID__c}"
                                                  required="false"
-                                                 id="asuriteidsrch"
-                                                 onkeypress="return noenter(event);"/>
+                                                 id="asuriteidsrch"/>
 
                                 <apex:inputField value="{!contactsrch.EMPLID__c}"
                                                  required="false"
-                                                 id="emplidsrch"
-                                                 onkeypress="return noenter(event);"/>
+                                                 id="emplidsrch"/>
 
                                 <apex:inputField value="{!contactsrch.ASU_Email__c}"
                                                  required="false"
-                                                 id="directoryemailsrch"
-                                                 onkeypress="return noenter(event);"/>
+                                                 id="directoryemailsrch"/>
 
                                 <apex:inputField value="{!contactsrch.Personal_Email__c}"
                                                  required="false"
-                                                 id="personalemailsrch"
-                                                 onkeypress="return noenter(event);"/>
+                                                 id="personalemailsrch"/>
 
                                 <apex:outputText value="{!callerId}"
                                                  id="callerId"
@@ -174,6 +176,12 @@
 
                                 <apex:outputField value="{!contactsrch.Help_Desk_Provided_Phone__c}"
                                                   id="helpDeskPhone"/>
+
+                                <apex:commandLink
+                                    rendered="{!IF(selectedContactId != null, true,false)}"
+                                    value="Contact Detail Page"
+                                    onclick="openDetail('{!selectedContactId}', '{!contactName}');
+                                        return false;"/>
                             </apex:pageBlockSection>
 
                             <br />
@@ -354,7 +362,8 @@
                                                        columns="2"
                                                        collapsible="false">
 
-                                    <apex:inputField value="{!mycase.Subject}"/>
+                                    <apex:inputField value="{!mycase.Subject}"
+                                                     html-autofocus="true"/>
 
                                     <apex:inputField value="{!mycase.Reason}"/>
 

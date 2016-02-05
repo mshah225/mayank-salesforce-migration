@@ -29,6 +29,8 @@ public with sharing class HelpDeskController
     // the selected case -- this is populated when the "Set as Case" link is hit on a Case
     public String selectedCaseId { get; set; }
 
+    public String contactName { get; set; }
+
     // This method returns a list of Close statuses for Cases
     public List<SelectOption> getcloseCaseStatusOptions()
     {
@@ -106,14 +108,15 @@ public with sharing class HelpDeskController
         if (ApexPages.currentPage().getParameters().containsKey('ANI'))
         {
             searchNumber = ApexPages.currentPage().getParameters().get('ANI');
+            callerId = formatPhone(searchNumber);
 
             soql = 'FIND \'' + searchNumber + '\' ' +
                 'IN PHONE FIELDS ' +
                 'RETURNING Contact(' +
-                'Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
+                'Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
                 'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
                 'Personal_Email__c WHERE FirstName != null ' +
-                'ORDER BY ' + sortField + ' ' + sortDir + ' LIMIT 20' +
+                'ORDER BY ' + sortField + ' ' + sortDir + ' LIMIT 25' +
                 ')';
 
             runQuery(false);
@@ -121,6 +124,12 @@ public with sharing class HelpDeskController
         else
         {
             contacts = new List<Contact>();
+        }
+
+        if (contacts.size() == 1)
+        {
+            selectedContactId = contacts[0].Id;
+            setAsContact();
         }
     }
 
@@ -255,20 +264,22 @@ public with sharing class HelpDeskController
 
         if (!firstName.equals('') && !dateSearch)
         {
-            searchString += ' ' + firstName + '*';
+            searchString += ' ' + firstName.trim() + '*';
         }
         else if (!firstName.equals('') && dateSearch)
         {
-            soqlOptions += ' AND Firstname LIKE \'' + String.escapeSingleQuotes(firstName) + '%\'';
+            soqlOptions += ' AND Firstname LIKE \'' +
+                String.escapeSingleQuotes(firstName.trim()) + '%\'';
         }
 
         if (!lastName.equals('') && !dateSearch)
         {
-            searchString += ' ' + lastName + '*';
+            searchString += ' ' + lastName.trim() + '*';
         }
         else if (!lastName.equals('') && dateSearch)
         {
-            soqlOptions += ' AND Lastname LIKE \'' + String.escapeSingleQuotes(lastName) + '%\'';
+            soqlOptions += ' AND Lastname LIKE \'' +
+                String.escapeSingleQuotes(lastName.trim()) + '%\'';
         }
 
         if (!phone.equals('') && !dateSearch)
@@ -307,46 +318,47 @@ public with sharing class HelpDeskController
         // This only sets the soqlOptions if date is being searched. Doesn't set date for SOSL.
         if (!birthdate.equals('') && dateSearch)
         {
-            soqlOptions += ' AND Birthdate = ' + birthdateFormatted;
+            soqlOptions += ' AND Birthdate = ' + birthdateFormatted.trim();
         }
 
         if (!asuriteid.equals('') && !dateSearch)
         {
-            searchString += ' ' + asuriteid + '*';
+            searchString += ' ' + asuriteid.trim() + '*';
         }
         else if (!asuriteid.equals('') && dateSearch)
         {
             soqlOptions += ' AND ASURite_ID__c LIKE \'' +
-                String.escapeSingleQuotes(asuriteid) + '%\'';
+                String.escapeSingleQuotes(asuriteid.trim()) + '%\'';
         }
 
         if (!emplid.equals('') && !dateSearch)
         {
-            searchString += ' ' + emplid + '*';
+            searchString += ' ' + emplid.trim() + '*';
         }
         else if (!emplid.equals('') && dateSearch)
         {
-            soqlOptions += ' AND EMPLID__c LIKE \'' + String.escapeSingleQuotes(emplid) + '%\'';
+            soqlOptions += ' AND EMPLID__c LIKE \'' +
+                String.escapeSingleQuotes(emplid.trim()) + '%\'';
         }
 
         if (!directoryEmail.equals('') && !dateSearch)
         {
-            searchString += ' ' + directoryEmail + '*';
+            searchString += ' ' + directoryEmail.trim() + '*';
         }
         else if (!directoryEmail.equals('') && dateSearch)
         {
             soqlOptions += ' AND ASU_Email__c LIKE \'' +
-                String.escapeSingleQuotes(directoryEmail) + '%\'';
+                String.escapeSingleQuotes(directoryEmail.trim()) + '%\'';
         }
 
         if (!personalEmail.equals('') && !dateSearch)
         {
-            searchString += ' ' + personalEmail + '*';
+            searchString += ' ' + personalEmail.trim() + '*';
         }
         else if (!personalEmail.equals('') && dateSearch)
         {
             soqlOptions += ' AND Personal_Email__c LIKE \'' +
-                String.escapeSingleQuotes(personalEmail) + '%\'';
+                String.escapeSingleQuotes(personalEmail.trim()) + '%\'';
         }
 
         if (dateSearch)
@@ -354,7 +366,7 @@ public with sharing class HelpDeskController
             if (soqlOptions != '')
             {
                 soql = '' +
-                    'SELECT Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
+                    'SELECT Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
                     'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
                     'Personal_Email__c ' +
                     'FROM Contact ' +
@@ -363,7 +375,7 @@ public with sharing class HelpDeskController
                 soql += soqlOptions;
 
                 soql += ' ORDER BY ' + sortField + ' ' + sortDir + ' ' +
-                    'LIMIT 20';
+                    'LIMIT 25';
 
                 // run the query again
                 runQuery(true);
@@ -405,11 +417,11 @@ public with sharing class HelpDeskController
                     'FIND \'' + String.escapeSingleQuotes(searchString.trim()) + '\' ' +
                     returnString + ' ' +
                     'RETURNING Contact(' +
-                    'Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
+                    'Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
                     'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
                     'Personal_Email__c WHERE FirstName != null ' +
                     'ORDER BY ' + sortField + ' ' + sortDir + ' ' +
-                    'LIMIT 20' +
+                    'LIMIT 25' +
                     ')';
 
                 // run the query again
@@ -509,6 +521,7 @@ public with sharing class HelpDeskController
         {
             if (co.id == selectedContactId)
             {
+                contactName = co.Name;
                 contactsrch = co;
                 isContactSet = true;
                 isNewCaseSelected = false;

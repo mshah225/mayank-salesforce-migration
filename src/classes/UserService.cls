@@ -34,22 +34,4 @@ public class UserService
         }
         return userList;
     }
-
-    /*
-     * Checks to see if a given user has read access to a given record
-     * @param userId The Id of the current user
-     * @param recordId The Id of the record to check access against
-     * @return boolean Whether the user has access or not
-     */
-    public static boolean userHasReadAccess(Id userId, Id recordId)
-    {
-        UserRecordAccess uar = [
-                SELECT RecordId, HasReadAccess
-                FROM UserRecordAccess
-                WHERE UserId = :userId
-                AND RecordId = :recordId
-        ];
-
-        return uar.HasReadAccess;
-    }
 }

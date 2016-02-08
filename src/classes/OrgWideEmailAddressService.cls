@@ -1,4 +1,4 @@
-public class OrgWideEmailAddressService
+public class OrgWideEmailAddressService 
 {
 	/**
 	 * Returns all the fields on OrgWideEmailAddress in a String

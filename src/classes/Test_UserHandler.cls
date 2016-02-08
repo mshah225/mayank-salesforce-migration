@@ -21,7 +21,7 @@ public class Test_UserHandler
     {
         Account acc = new Account(Name='Test Account Name');
         insert acc;
-        
+
         Contact testContact = ContactService.createTestContact();
         testContact.FirstName = 'Test';
         testContact.LastName = 'User';
@@ -29,7 +29,7 @@ public class Test_UserHandler
         testContact.CAP_Possible__c = TRUE;
         testContact.ACcountId = acc.Id;
         insert testContact;
-        
+
         Test.startTest();
         Student_Group__c testGroup = new Student_Group__c();
         testGroup.SG_Status__c = TRUE;
@@ -40,7 +40,7 @@ public class Test_UserHandler
         User testUser = UserService.createTestUser();
         Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
         testUser.ProfileId = communityProfile;
-        
+
         testUser.isActive = true;
         testUser.FederationIdentifier = 'testuser@asu.edu';
         insert testUser;
@@ -64,20 +64,5 @@ public class Test_UserHandler
         testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
 
         System.assert(testUser.ProfileId != communityCapProfile.Id);
-    }
-
-    @isTest static void checkUserReadAccess()
-    {
-        User testUser = UserService.createTestUser();
-        Id chatterProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'].Id;
-        testUser.ProfileId = chatterProfile;
-        insert testUser;
-
-        Contact testContact = ContactService.createTestContact();
-        insert testContact;
-
-        Boolean hasAccess = UserService.userHasReadAccess(testUser.Id, testContact.Id);
-
-        System.assert(hasAccess == false, 'Test user was given access to Contact when it should not have been');
     }
 }

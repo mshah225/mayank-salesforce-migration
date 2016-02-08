@@ -86,7 +86,7 @@ public with sharing class Test_LeadHandler
         Account institution = AccountService.createTestInstitution();
         insert institution;
 
-        List<Contact> testContacts = ContactService.createTestContacts(LEADLOAD, false);
+        List<Contact> testContacts = ContactService.createTestContacts(LEADLOAD);
         insert testContacts;
 
         List<Lead> testLeads = LeadService.createTestLeadsToConvert(testContacts);
@@ -131,7 +131,7 @@ public with sharing class Test_LeadHandler
         Term__c testTerm = TermService.createTestTerm();
         insert testTerm;
 
-        List<Contact> testContacts = ContactService.createTestContacts(10, false);
+        List<Contact> testContacts = ContactService.createTestContacts(10);
         insert testContacts;
 
         testContacts = [
@@ -184,7 +184,7 @@ public with sharing class Test_LeadHandler
         Account institution = AccountService.createTestInstitution();
         insert institution;
 
-        List<Contact> testContacts = ContactService.createTestContacts(5, false);
+        List<Contact> testContacts = ContactService.createTestContacts(5);
         insert testContacts;
 
         testContacts = [

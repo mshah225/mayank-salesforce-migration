@@ -224,7 +224,7 @@ public without sharing class Test_TerritoryAssignmentHelper
     {
         User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
-        List<Contact> testContacts = ContactService.createTestContacts(1, false);
+        List<Contact> testContacts = ContactService.createTestContacts(1);
 
         Insert testContacts;
 
@@ -349,7 +349,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar2.User__c = chinaManagers[1].Id;
         insert ATar2;
 
-        List<Contact> testContacts = ContactService.createTestContacts(2, false);
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
         for (Contact con : testContacts)
         {
@@ -456,7 +456,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar2.User__c = usManagers[1].Id;
         insert ATar2;
 
-        List<Contact> testContacts = ContactService.createTestContacts(2, false);
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
         for (Contact con : testContacts)
         {
@@ -558,7 +558,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar2.User__c = transferManagers[1].Id;
         insert ATar2;
 
-        List<Contact> testContacts = ContactService.createTestContacts(2, false);
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
         testContacts[0].MailingCountry = 'Vietnam';
 

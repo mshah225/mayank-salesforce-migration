@@ -146,6 +146,7 @@
         #asu_logo {
             padding-bottom: 0!important
         }
+
         #myasu-header-seo {
             margin-bottom: 2px!important;
             margin-top: -2px!important
@@ -192,6 +193,7 @@
             background: none!important;
             font-weight: 700
         }
+
         .page-title {
             padding: 5px;
             background-color: #505558;
@@ -219,6 +221,7 @@
             color: #333!important;
             margin-left: 2px!important
         }
+
         .alert {
             margin-bottom: 10px!important
         }
@@ -311,6 +314,7 @@
         .box a:hover {
             color: #903!important
         }
+
         div#asu_content_well {
             margin-top: 10px!important
         }

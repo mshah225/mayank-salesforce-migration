@@ -1,15 +1,5 @@
 public class AccountService 
 {
-    public static Account createAccountForOneToOne(Contact con, Id recordTypeId)
-    {
-        Account acct = new Account();
-        acct.Name = con.FirstName + ' ' + con.LastName;
-        acct.RecordTypeId = recordTypeId;
-        acct.OwnerId = con.OwnerId;
-
-        return acct;
-    }
-
     /**
     * Creates a test account with the SF Mastered Org RecordType. Usually for unit testing.
     * @return A test account with required fields.

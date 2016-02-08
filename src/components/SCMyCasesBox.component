@@ -1,6 +1,6 @@
 <apex:component controller="ServiceCenter" allowDML="true">
-	<!-- This component renders the My Cases Box on the Service Center -->
-	<apex:outputPanel rendered="{!MyCasesBox}">
+    <!-- This component renders the My Cases Box on the Service Center -->
+    <apex:outputPanel rendered="{!MyCasesBox}">
         <div class="box">
             <div class="header">
                 <h6><b>My Cases</b></h6>
@@ -41,99 +41,99 @@
                 </script>
 
                 <div id="myCases">
-                <apex:form >
-                    <h5>My Open Cases</h5>
-
-                    <apex:pageBlock mode="maindetail">
-                        <apex:pageBlockTable rendered="{!(myCases.size >= 1)}"
-                                             value="{!myCases}"
-                                             var="case"
-                                             styleClass="myCasesTable">
-                            <apex:column headerValue="Subject"
-                                         styleClass="truncate"
-                                         width="66%"
-                                         value="{!case.Subject}"
-                                         style="background-color:white;"
-                                         onmousemove="this.style.backgroundColor='white'"
-                                         onmouseout="this.style.backgroundColor ='white'"/>
-
-                            <apex:column headerValue="Status"
-                                         width="33%"
-                                         value="{!case.Status}"
-                                         style="background-color:white;"
-                                         onmousemove="this.style.backgroundColor='white'"
-                                         onmouseout="this.style.backgroundColor ='white'"/>
-
-                            <apex:column width="33%"
-                                         onmousemove="this.style.backgroundColor='white'"
-                                         style="background-color:white;"
-                                         onmouseout="this.style.backgroundColor ='white'">
-                                <apex:commandLink value="View"
-                                                  styleClass="btn"
-                                                  style="padding:4px;"
-                                                  action="{!viewCase}">
-                                    <apex:param name="caseId" value="{!case.Id}"/>
-                                </apex:commandLink>
-                            </apex:column>
-                        </apex:pageBlockTable>
-
-                        <apex:outputText rendered="{!(myCases.size = 0)}">
-                            <div class="padClass">You do not have any open cases.</div>
-                        </apex:outputText>
-                    </apex:pageBlock>
-                </apex:form>
-                <br />
-                <apex:form >
-                    <h5>My Closed Cases</h5>
-                    <apex:pageBlock mode="maindetail">
-                        <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}"
-                                             value="{!closedCases}"
-                                             var="case"
-                                             styleClass="myCasesTable">
-                            <apex:column headerValue="Subject"
-                                         styleClass="truncate"
-                                         width="66%"
-                                         value="{!case.Subject}"
-                                         style="background-color:white;"
-                                         onmousemove="this.style.backgroundColor='white'"
-                                         onmouseout="this.style.backgroundColor ='white'"/>
-
-                            <apex:column headerValue="Status"
-                                         width="33%"
-                                         value="{!case.Status}"
-                                         style="background-color:white;"
-                                         onmousemove="this.style.backgroundColor='white'"
-                                         onmouseout="this.style.backgroundColor ='white'"/>
-
-                            <apex:column width="33%"
-                                         style="background-color:white;"
-                                         onmousemove="this.style.backgroundColor='white'"
-                                         onmouseout="this.style.backgroundColor ='white'">
-                                <apex:commandLink value="View"
-                                                  styleClass="btn"
-                                                  style="padding:4px;"
-                                                  action="{!viewCase}">
-                                    <apex:param name="caseId" value="{!case.Id}"/>
-                                </apex:commandLink>
-                            </apex:column>
-                        </apex:pageBlockTable>
-
-                        <apex:outputText rendered="{!(closedCases.size = 0)}">
-                            <div class="padClass">You do not have any closed cases.</div>
-                        </apex:outputText>
-                    </apex:pageBlock>
-                </apex:form>
-
-                <div style="text-align:right">
-                    <br />
                     <apex:form >
+                        <h5>My Open Cases</h5>
+
                         <apex:pageBlock mode="maindetail">
-                            <a href="/viewAllCases?source=studentSC" style="padding:4px" class="btn">
-                                View All Cases
-                            </a>
+                            <apex:pageBlockTable rendered="{!(myCases.size >= 1)}"
+                                                 value="{!myCases}"
+                                                 var="case"
+                                                 styleClass="myCasesTable">
+                                <apex:column headerValue="Subject"
+                                             styleClass="truncate"
+                                             width="66%"
+                                             value="{!case.Subject}"
+                                             style="background-color:white;"
+                                             onmousemove="this.style.backgroundColor='white'"
+                                             onmouseout="this.style.backgroundColor ='white'"/>
+
+                                <apex:column headerValue="Status"
+                                             width="33%"
+                                             value="{!case.Status}"
+                                             style="background-color:white;"
+                                             onmousemove="this.style.backgroundColor='white'"
+                                             onmouseout="this.style.backgroundColor ='white'"/>
+
+                                <apex:column width="33%"
+                                             onmousemove="this.style.backgroundColor='white'"
+                                             style="background-color:white;"
+                                             onmouseout="this.style.backgroundColor ='white'">
+                                    <apex:commandLink value="View"
+                                                      styleClass="btn"
+                                                      style="padding:4px;"
+                                                      action="{!viewCase}">
+                                        <apex:param name="caseId" value="{!case.Id}"/>
+                                    </apex:commandLink>
+                                </apex:column>
+                            </apex:pageBlockTable>
+
+                            <apex:outputText rendered="{!(myCases.size = 0)}">
+                                <div class="padClass">You do not have any open cases.</div>
+                            </apex:outputText>
                         </apex:pageBlock>
                     </apex:form>
-                </div>
+                    <br />
+                    <apex:form >
+                        <h5>My Closed Cases</h5>
+                        <apex:pageBlock mode="maindetail">
+                            <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}"
+                                                 value="{!closedCases}"
+                                                 var="case"
+                                                 styleClass="myCasesTable">
+                                <apex:column headerValue="Subject"
+                                             styleClass="truncate"
+                                             width="66%"
+                                             value="{!case.Subject}"
+                                             style="background-color:white;"
+                                             onmousemove="this.style.backgroundColor='white'"
+                                             onmouseout="this.style.backgroundColor ='white'"/>
+
+                                <apex:column headerValue="Status"
+                                             width="33%"
+                                             value="{!case.Status}"
+                                             style="background-color:white;"
+                                             onmousemove="this.style.backgroundColor='white'"
+                                             onmouseout="this.style.backgroundColor ='white'"/>
+
+                                <apex:column width="33%"
+                                             style="background-color:white;"
+                                             onmousemove="this.style.backgroundColor='white'"
+                                             onmouseout="this.style.backgroundColor ='white'">
+                                    <apex:commandLink value="View"
+                                                      styleClass="btn"
+                                                      style="padding:4px;"
+                                                      action="{!viewCase}">
+                                        <apex:param name="caseId" value="{!case.Id}"/>
+                                    </apex:commandLink>
+                                </apex:column>
+                            </apex:pageBlockTable>
+
+                            <apex:outputText rendered="{!(closedCases.size = 0)}">
+                                <div class="padClass">You do not have any closed cases.</div>
+                            </apex:outputText>
+                        </apex:pageBlock>
+                    </apex:form>
+
+                    <div style="text-align:right">
+                        <br />
+                        <apex:form >
+                            <apex:pageBlock mode="maindetail">
+                                <a href="/viewAllCases?source=studentSC" style="padding:4px" class="btn">
+                                    View All Cases
+                                </a>
+                            </apex:pageBlock>
+                        </apex:form>
+                    </div>
 
                 </div>
 

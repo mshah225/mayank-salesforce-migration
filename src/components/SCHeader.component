@@ -15,9 +15,9 @@
                 <a href="https://www.asu.edu/"
                    target="_top"
                    title="Arizona State University">
-                <img alt="Arizona State University"
-                     title="Arizona State University"
-                     src="https://www.asu.edu/asuthemes/4.0/images/logos/asu_logo_white.png"/></a>
+                    <img alt="Arizona State University"
+                         title="Arizona State University"
+                         src="https://www.asu.edu/asuthemes/4.0/images/logos/asu_logo_white.png"/></a>
             </div>
 
             <img alt="Arizona State University"
@@ -150,7 +150,7 @@
                     </span>
 
                     <p class="username pull-right">
-                        {!firstName} {!lastName}
+                    {!firstName} {!lastName}
 
                         <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
                             &nbsp;&nbsp;({!emplId})
@@ -164,7 +164,7 @@
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!IF(ISNULL(linkList),false,true)
-                            || IF(ISBLANK(linkList),false,true)}">
+                || IF(ISBLANK(linkList),false,true)}">
             <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">
                     <apex:repeat value="{!linkList}" var="link" id="linkRepeater">
@@ -176,9 +176,9 @@
                             </apex:outputLink>
 
                             <apex:outputLink rendered="{!IF(link.name != 'Home'
-                                                && link.name != 'Service Center',true,false)}"
+                                    && link.name != 'Service Center',true,false)}"
                                              value="{!link.url}">
-                                {!link.name}
+                                    {!link.name}
                             </apex:outputLink>
 
                             <apex:outputPanel rendered="{!IF(link.name == 'Service Center',true,
@@ -191,7 +191,7 @@
                     </apex:repeat>
 
                     <p class="username pull-right">
-                        {!firstName} {!lastName}
+                    {!firstName} {!lastName}
 
                         <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
                             &nbsp;&nbsp;({!emplId})

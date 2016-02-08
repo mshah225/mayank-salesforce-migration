@@ -293,9 +293,9 @@ public with sharing class ServiceCenter
         else if (oppList[0].StageName != 'Enrolled'
             && oppList[0].Career__c == 'Undergraduate'
             && (userContact.Affiliation_Student__c == 'Current'
-                || userContact.Affiliation_Alumni__c == 'Current'
-                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                || userContact.Affiliation_Employee__c == 'Current')
+            || userContact.Affiliation_Alumni__c == 'Current'
+            || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+            || userContact.Affiliation_Employee__c == 'Current')
             && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;
@@ -330,9 +330,9 @@ public with sharing class ServiceCenter
         else if (oppList[0].StageName != 'Enrolled'
             && oppList[0].Career__c == 'Undergraduate'
             && (userContact.Affiliation_Student__c == 'Current'
-                || userContact.Affiliation_Alumni__c == 'Current'
-                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                || userContact.Affiliation_Employee__c == 'Current')
+            || userContact.Affiliation_Alumni__c == 'Current'
+            || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+            || userContact.Affiliation_Employee__c == 'Current')
             && today < date.valueOf(termcB.Session_B_Start_Date__c))
         {
             return false;

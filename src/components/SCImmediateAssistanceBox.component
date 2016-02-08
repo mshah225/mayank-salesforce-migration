@@ -269,7 +269,7 @@
                         <li><a id="faChat" class="chat-link">Finances</a></li>
 
                         <li><a id="bomgarChat" class="chat-link">Other</a></li>
-                   </ul>
+                    </ul>
                 </div>
 
                 <script>

@@ -3,58 +3,58 @@
            controller="ServiceCenter"
            cache="true"
            extensions="FeedbackController">
-<html>
-<head>
-    <title>My ASU | Service Center Feedback</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/asu_header.min.css')}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/myASUHeader.min.css')}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
-    <c:myASUStylesMin />
-    <style>
-        #asu_login_module:nth-child(2) {
-            padding-right: 7px !important;
-        }
-    </style>
-    <!--[if IE 9]>
-    <style type="text/css">
-    #asu_universal_nav ul ul{filter:none;box-shadow:0 6px 6px 0 #999}#asu_universal_nav>ul>li.parent:hover>a{filter:none;box-shadow:6px 0 6px -6px #999,-6px 0 6px -6px #999}
-    </style>
-    <![endif]-->
-    <script>
-        var ASUHeader = ASUHeader || {};
-        ASUHeader.browser = false;
-        window.ASUHeader = window.ASUHeader || {};
-        ASUHeader.site_menu = ASUHeader.site_menu || {};
-        ASUHeader.site_menu.json = '[{"title":"Home","path":"https://webapp4.asu.edu/myasu"}]';
+    <html>
+    <head>
+        <title>My ASU | Service Center Feedback</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/asu_header.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/myASUHeader.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
+        <c:myASUStylesMin />
+        <style>
+            #asu_login_module:nth-child(2) {
+                padding-right: 7px !important;
+            }
+        </style>
+        <!--[if IE 9]>
+        <style type="text/css">
+            #asu_universal_nav ul ul{filter:none;box-shadow:0 6px 6px 0 #999}#asu_universal_nav>ul>li.parent:hover>a{filter:none;box-shadow:6px 0 6px -6px #999,-6px 0 6px -6px #999}
+        </style>
+        <![endif]-->
+        <script>
+            var ASUHeader = ASUHeader || {};
+            ASUHeader.browser = false;
+            window.ASUHeader = window.ASUHeader || {};
+            ASUHeader.site_menu = ASUHeader.site_menu || {};
+            ASUHeader.site_menu.json = '[{"title":"Home","path":"https://webapp4.asu.edu/myasu"}]';
 
-        ASUHeader.site_menu.site_name = "Student Service Center";
-        ASUHeader.user_signedin = true;
-        ASUHeader.user_displayname = '{!$User.FirstName}';
-    </script>
-    <!--[if IE 5]><script>ASUHeader.browser = true;</script><![endif]-->
-    <!--[if IE 6]><script>ASUHeader.browser = true;</script><![endif]-->
-    <!--[if IE 7]><script>ASUHeader.browser = true;</script><![endif]-->
-    <!--[if IE 8]><script>ASUHeader.browser = true;</script><![endif]-->
+            ASUHeader.site_menu.site_name = "Student Service Center";
+            ASUHeader.user_signedin = true;
+            ASUHeader.user_displayname = '{!$User.FirstName}';
+        </script>
+        <!--[if IE 5]><script>ASUHeader.browser = true;</script><![endif]-->
+        <!--[if IE 6]><script>ASUHeader.browser = true;</script><![endif]-->
+        <!--[if IE 7]><script>ASUHeader.browser = true;</script><![endif]-->
+        <!--[if IE 8]><script>ASUHeader.browser = true;</script><![endif]-->
 
-    <style>
-        .panel {
-            border-radius: 0px !important;
-        }
-    </style>
-</head>
+        <style>
+            .panel {
+                border-radius: 0px !important;
+            }
+        </style>
+    </head>
 
-<body>
+    <body>
     <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
     <div id="main-search" class="main-search closed"></div>
     <div id="asu_hdr" class="asu_hdr_white myasu-cont">
         <div id="asu_mobile_hdr">
             <div id="asu_logo">
                 <a href="https://www.asu.edu/" target="_top" title="Arizona State University">
-                <img alt="Arizona State University" title="Arizona State University" src="https://www.asu.edu/asuthemes/4.0/images/logos/asu_logo_white.png"/></a>
+                    <img alt="Arizona State University" title="Arizona State University" src="https://www.asu.edu/asuthemes/4.0/images/logos/asu_logo_white.png"/></a>
             </div>
             <img alt="Arizona State University" title="Arizona State University" id="asu_print_logo" src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_mobile_white.png" />
             <div class="f-navicon" id="asu_mobile_button" onclick="javascript:ASUHeader.toggleASU();">
@@ -131,28 +131,28 @@
     </div>
 
     <script type="text/javascript">
-    <!--//--><![CDATA[//><!--
-    ASUHeader.default_search_text = "Search ASU";
-    ASUHeader.default_search_alttext = "Search ASU";
-    if (typeof ASUHeader.signin_callback_url == "undefined") {
-    ASUHeader.signin_callback_url = '';
-    }
-    if (typeof ASUHeader.signin_url == "undefined") {
-    ASUHeader.signin_url = '';
-    }
-    if (typeof ASUHeader.signout_url == "undefined") {
-    ASUHeader.signout_url = 'https://webapp4.asu.edu/myasu/Signout';
-    }
-    if (typeof ASUHeader.user_signedin == "undefined" || (ASUHeader.user_signedin != false && typeof ASUHeader.user_displayname == "undefined")) {
-    ASUHeader.checkSSOCookie();
-    }
-    if (ASUHeader.user_signedin == true) {
-    ASUHeader.setSSOLink();
-    }
-    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-    document.getElementById('asu_hdr').className = document.getElementById('asu_hdr').className+" chrome";
-    }
-    //--><!]]>
+        <!--//--><![CDATA[//><!--
+        ASUHeader.default_search_text = "Search ASU";
+        ASUHeader.default_search_alttext = "Search ASU";
+        if (typeof ASUHeader.signin_callback_url == "undefined") {
+            ASUHeader.signin_callback_url = '';
+        }
+        if (typeof ASUHeader.signin_url == "undefined") {
+            ASUHeader.signin_url = '';
+        }
+        if (typeof ASUHeader.signout_url == "undefined") {
+            ASUHeader.signout_url = 'https://webapp4.asu.edu/myasu/Signout';
+        }
+        if (typeof ASUHeader.user_signedin == "undefined" || (ASUHeader.user_signedin != false && typeof ASUHeader.user_displayname == "undefined")) {
+            ASUHeader.checkSSOCookie();
+        }
+        if (ASUHeader.user_signedin == true) {
+            ASUHeader.setSSOLink();
+        }
+        if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+            document.getElementById('asu_hdr').className = document.getElementById('asu_hdr').className+" chrome";
+        }
+        //--><!]]>
     </script>
     <div style="clear:both;"></div>
     <!-- END /asuthemes/4.3/headers/default_myasu.shtml -->
@@ -247,6 +247,6 @@
             }
         }
     </script>
-</body>
-</html>
+    </body>
+    </html>
 </apex:page>

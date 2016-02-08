@@ -35,7 +35,7 @@ public with sharing class CaseTransferController
             AND Label__c != null
             AND CTPVisible__c = true
             AND Label__c LIKE '%(General)%'
-        ];
+    ];
 
         // All the CARs for this org that do not have the '(General)' tag
         allCARs = [
@@ -48,7 +48,7 @@ public with sharing class CaseTransferController
             AND CTPVisible__c = true
             AND (NOT Label__c LIKE '%(General)%')
             ORDER BY Label__c ASC
-        ];
+    ];
         allGenCARs.addAll(allCARS);
         searchUsers();
 
@@ -79,9 +79,9 @@ public with sharing class CaseTransferController
         }
 
         Case cValidate = [
-            SELECT Id, Subject, Description
-            FROM Case
-            WHERE Id = :c.Id
+                SELECT Id, Subject, Description
+                FROM Case
+                WHERE Id = :c.Id
         ];
 
         caseSub = cValidate.Subject;
@@ -90,8 +90,8 @@ public with sharing class CaseTransferController
         {
             ApexPages.addmessage(
                 new ApexPages.message(ApexPages.severity.ERROR, 'The Subject and Description ' +
-                    'are required fields for case transfer. Please fill out the missing fields ' +
-                    'before transferring the case.')
+                'are required fields for case transfer. Please fill out the missing fields ' +
+                'before transferring the case.')
             );
         }
     }
@@ -147,13 +147,13 @@ public with sharing class CaseTransferController
         Set<Id> ASroleIds = getASRoleIds();
         List<User> usersToAdd = new List<User>();
 
-        // Check if user is AS, else query for specific user role
+        //Check if user is AS, else query for specific user roles
         if (asRoleIds.contains(UserInfo.getUserRoleId()))
         {
             List<User> ASusersToAdd = [
                 SELECT Id, Name, Department, Title, UserRole.Id
                 FROM User
-                WHERE UserRole.Id IN :ASroleIds
+                WHERE UserRole.Id IN : ASroleIds
             ];
 
             System.debug('merf: ' + ASusersToAdd);
@@ -163,13 +163,12 @@ public with sharing class CaseTransferController
         {
             // Create search query for users.
             String queryString = 'SELECT Id, Name, UserRole.ParentRoleId, Title, Department ' +
-                'FROM User ' +
-                'WHERE UserRoleId = \'' + UserInfo.getUserRoleId() + '\' ' +
-                'AND Id != \'' + UserInfo.getUserId() + '\' ' +
-                'AND IsActive = true ' +
-                'AND UserPermissionsSupportUser = true';
+                    'FROM User ' +
+                    'WHERE UserRoleId = \'' + UserInfo.getUserRoleId() + '\' ' +
+                    'AND Id != \'' + UserInfo.getUserId() + '\' ' +
+                    'AND IsActive = true ' +
+                    'AND UserPermissionsSupportUser = true';
 
-            System.debug('!!!!Querystring: ' + queryString);
             usersToAdd = Database.query(queryString);
 
             // Find subordinants for the current user, if they exist.
@@ -185,15 +184,15 @@ public with sharing class CaseTransferController
             }
         }
 
-        // If the user isn't an AS user, grab their managers
-        if (!asRoleIds.contains(UserInfo.getUserRoleId()))
+        //If the user isn't an AS user, grab their managers
+        if(!asRoleIds.contains(UserInfo.getUserRoleId()))
         {
             // Get Uber Role Ids
             List<UserRole> uberRoleIdList = [
-                SELECT Id, Name
-                FROM UserRole
-                WHERE (NOT Name LIKE 'Z Unassigned%')
-                AND ParentRoleId = null
+                    SELECT Id, Name
+                    FROM UserRole
+                    WHERE (NOT Name LIKE 'Z Unassigned%')
+                    AND ParentRoleId = null
             ];
 
             // Add Uber Role Ids to set for later.
@@ -205,35 +204,37 @@ public with sharing class CaseTransferController
 
             // Grab users parent role id
             Id usersParentRoleId = [
-                SELECT UserRole.ParentRoleId
-                FROM User
-                WHERE Id = :UserInfo.getUserId()
+                    SELECT UserRole.ParentRoleId
+                    FROM User
+                    WHERE Id = :UserInfo.getUserId()
             ].UserRole.ParentRoleId;
 
             // Check for null and that the parent role id is not an uber role
             if (usersParentRoleId != null && !uberRoleIdSet.contains(usersParentRoleId))
             {
                 List<User> managers = [
-                    SELECT Id, Name, Title, Department
-                    FROM User
-                    WHERE UserRole.Id = :usersParentRoleId
+                        SELECT Id, Name, Title, Department
+                        FROM User
+                        WHERE UserRole.Id = :usersParentRoleId
                 ];
-                usersToAdd.addAll(managers);
+                userList.addAll(managers);
             }
         }
 
-        // If we're performing a search, filter on search term, else add all to userList
-        if (searchString != null)
+        //If we're performing a search, filter on search term, else add all to userList
+        if(searchString != null)
         {
-            String searchFilterString = 'SELECT Id, Name, Title, Department ' +
+            String searchFilterString = 'Select Id, Name, Title, Department ' +
                 'FROM User ' +
                 'WHERE Id IN :usersToAdd ' +
                 'AND IsActive = true ' +
                 'AND UserPermissionsSupportUser = true ' +
-                'AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\'';
+                'AND Name LIKE \'%' +
+                String.escapeSingleQuotes(searchString) + '%\'';
 
-            List<User> filterdUsers = Database.query(searchFilterString);
-            userList.addAll(filterdUsers);
+
+            List<User> filteredUsers = DAtabase.query(searchFilterString);
+            userList.addAll(filteredUsers);
         }
         else
         {
@@ -244,7 +245,7 @@ public with sharing class CaseTransferController
         userList.sort();
     }
 
-    // Helper method to get all AS role ids
+    //Helper method to get all AS role ids
     public Set<Id> getASRoleIds()
     {
         Set<Id> ASroleIds = new Set<Id>();
@@ -285,7 +286,7 @@ public with sharing class CaseTransferController
         return ASroleIds;
     }
 
-    // Transfer the case and redirect
+    //Transfer the case and redirect
     public PageReference transferCase()
     {
         try
@@ -293,9 +294,9 @@ public with sharing class CaseTransferController
             if (caseSub != null && caseDesc != null)
             {
                 /*
-                * Transfer to a department by setting the case information
-                * according to the selected CAR
-                */
+                 *  Transfer to a department by setting the case information
+                 * according to the selected CAR
+                 */
                 if (!toUser)
                 {
                     Case_Assignment_Rule__c selectedCAR = [
@@ -326,8 +327,8 @@ public with sharing class CaseTransferController
                 ApexPages.getMessages().clear();
                 ApexPages.addmessage(
                     new ApexPages.message(ApexPages.severity.ERROR, 'The Subject and ' +
-                        'Description are required fields for case transfer. Please fill ' +
-                        'out the missing fields before transferring the case.')
+                    'Description are required fields for case transfer. Please fill ' +
+                    'out the missing fields before transferring the case.')
                 );
 
                 return null;

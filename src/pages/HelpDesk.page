@@ -35,6 +35,10 @@
             }
         }
 
+        function openPage(url) {
+            window.open(url);
+        }
+
         // These are used to enable or disable the entire set of Case
         // input fields based on whether we are in Edit mode
         function enableCaseFields() {
@@ -139,8 +143,7 @@
 
                             <apex:pageBlockSection id="criteriasection" showHeader="false">
                                 <apex:inputField value="{!contactsrch.firstname}"
-                                                 id="firstnamesrch"
-                                                 html-autofocus="true"/>
+                                                 id="firstnamesrch"/>
 
                                 <apex:inputField value="{!contactsrch.lastname}"
                                                  required="false"
@@ -212,7 +215,7 @@
                                 <apex:outputLink id="snLink"
                                                  target="_blank"
                                                  styleClass="btn customBtn"
-                                                 value="https://asu.service-now.com/navpage.do">
+                                                 onclick="openPage('https://asu.service-now.com/navpage.do')">
                                     Open Service Now
                                 </apex:outputLink>
 
@@ -358,8 +361,7 @@
                                       rendered="{!(isNewCaseSelected || isExistingCaseSelected) && NOT(isCloseCase)}">
                         <apex:pageBlock title="Case" id="case">
                             <fieldset id="caseFieldset">
-                                <apex:pageBlockSection title="Description"
-                                                       columns="2"
+                                <apex:pageBlockSection columns="2"
                                                        collapsible="false">
 
                                     <apex:inputField value="{!mycase.Subject}"
@@ -385,8 +387,7 @@
                                                      style="width:100%"/>
                                 </apex:pageBlockSection>
 
-                                <apex:pageBlockSection title="System Information"
-                                                       columns="2"
+                                <apex:pageBlockSection columns="2"
                                                        collapsible="false">
                                     <apex:inputField value="{!mycase.Origin}"/>
                                 </apex:pageBlockSection>
@@ -649,5 +650,11 @@
                 document.getElementById('{!$Component.mypage.myform.criteria.criteriasection.personalemailsrch}').value
             );
         }
+    </script>
+
+    <script>
+        window.onload = function() {
+            document.getElementById('{!$Component.mypage.myform.criteria.criteriasection.firstnamesrch}').focus();
+        };
     </script>
 </apex:page>

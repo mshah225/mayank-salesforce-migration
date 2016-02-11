@@ -4,7 +4,7 @@ public class ChatterAutoAddUsers
     {
         CollaborationGroupMember newCollabMember;
         Id collabGroupId;
-        List<CollaborationGroupMember> collabMembersToInsert;
+        List<CollaborationGroupMember> collabMembersToInsert = new List<CollaborationGroupMember>();
         Map<String, String> chatterSettingsMap = new Map<String, String>();
         Map<String, String> chatterGroupsMap= new Map<String, String>();
         Set<Id> recGroupMemberIds= new Set<Id>();
@@ -15,7 +15,6 @@ public class ChatterAutoAddUsers
             SELECT Id, ProfileId, Profile.Name, isActive
             FROM User
             WHERE Id IN :userIds
-            //AND isActive = true
         ];
 
         // Get all the current Recruitment members
@@ -23,7 +22,6 @@ public class ChatterAutoAddUsers
             SELECT Id
             FROM CollaborationGroup
             WHERE Name = 'ASU Recruitment'
-            LIMIT 1
         ];
 
         if (recGroup.size() > 0)
@@ -45,7 +43,6 @@ public class ChatterAutoAddUsers
             SELECT Id
             FROM CollaborationGroup
             WHERE Name = 'ASU Service'
-            LIMIT 1
         ];
 
         if (servGroup.size() > 0)
@@ -67,7 +64,6 @@ public class ChatterAutoAddUsers
             SELECT Id
             FROM CollaborationGroup
             WHERE Name = 'ASU - Everyone'
-            LIMIT 1
         ];
 
         if (allGroup.size() > 0)
@@ -84,7 +80,7 @@ public class ChatterAutoAddUsers
             }
         }
 
-        // Populate the custom settings and map.
+        // Populate the custom setting and map.
         List<Chatter_Auto_Add_Users__c> chatterSettingsList = [
             SELECT Profile__c, Chatter_Group_Name__c
             FROM Chatter_Auto_Add_Users__c
@@ -106,46 +102,53 @@ public class ChatterAutoAddUsers
             chatterGroupsMap.put(cg.Name, cg.Id);
         }
 
+        // Create a map of all the groups and their members for later.
+        Map<String, List<CollaborationGroupMember>> dupeMemberCheckMap =
+            new Map<String, List<CollaborationGroupMember>>();
+
+        for (CollaborationGroup cg : chatterGroups)
+        {
+            List<CollaborationGroupMember> groupMembers = [
+                SELECT MemberId
+                FROM CollaborationGroupMember
+                WHERE CollaborationGroupId = :cg.Id
+            ];
+
+            dupeMemberCheckMap.put(cg.Name, groupMembers);
+        }
+
         /*
         * Loop through the userList to decide which users need to be added to what groups
         * then add them to the main list for insertion.
         */
         for (User u : userList)
         {
-            collabMembersToInsert = new List<CollaborationGroupMember>();
-            newCollabMember = new CollaborationGroupMember();
-            newCollabMember.MemberId = u.Id;
-
             // Check for Chatter Settings first
             if (chatterSettingsMap.containsKey(u.Profile.Name))
             {
                 // Get the group that belongs to the users Profile
                 String groupName = chatterSettingsMap.get(u.Profile.Name);
 
-                Id groupIdToCheck = [
-                    SELECT Id
-                    FROM CollaborationGroup
-                    WHERE Name = :groupName
-                ].Id;
+                // Create a list to store the collab members of the current group.
+                List<CollaborationGroupMember> tempDupeMembers = new List<CollaborationGroupMember>();
+                tempDupeMembers.addAll(dupeMemberCheckMap.get(groupName));
 
-                // Get all members in that group to dupe check against
-                List<CollaborationGroupMember> checkDupeGroupMembers = [
-                    SELECT MemberId
-                    FROM CollaborationGroupMember
-                    WHERE CollaborationGroupId = :groupIdToCheck
-                ];
+                // Loop through and add the collab member Ids to a set to check against.
+                Set<Id> dupeMemberIdSet = new Set<Id>();
 
-                Set<Id> checkDupeGroupMemberIds = new Set<Id>();
-
-                for (CollaborationGroupMember cgm : checkDupeGroupMembers)
+                for (CollaborationGroupMember cgm : tempDupeMembers)
                 {
-                    checkDupeGroupMemberIds.add(cgm.MemberId);
+                    dupeMemberIdSet.add(cgm.MemberId);
                 }
 
+                // Check if the current user is already in the group, if not add them.
                 if (chatterGroupsMap.containsKey(groupName)
-                    && (!checkDupeGroupMemberIds.contains(u.Id)))
+                    && (!dupeMemberIdSet.contains(u.Id)))
                 {
                     collabGroupId = chatterGroupsMap.get(groupName);
+
+                    newCollabMember = new CollaborationGroupMember();
+                    newCollabMember.MemberId = u.Id;
                     newCollabMember.CollaborationGroupId = collabGroupId;
                     collabMembersToInsert.add(newCollabMember);
                 }
@@ -156,6 +159,8 @@ public class ChatterAutoAddUsers
             {
                 if (chatterGroupsMap.containsKey('ASU Service'))
                 {
+                    newCollabMember = new CollaborationGroupMember();
+                    newCollabMember.MemberId = u.Id;
                     newCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU Service');
                     collabMembersToInsert.add(newCollabMember);
                 }
@@ -166,6 +171,8 @@ public class ChatterAutoAddUsers
             {
                 if (chatterGroupsMap.containsKey('ASU Recruitment'))
                 {
+                    newCollabMember = new CollaborationGroupMember();
+                    newCollabMember.MemberId = u.Id;
                     newCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU Recruitment');
                     collabMembersToInsert.add(newCollabMember);
                 }
@@ -180,15 +187,18 @@ public class ChatterAutoAddUsers
                 otherCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU - Everyone');
                 collabMembersToInsert.add(otherCollabMember);
             }
+        }
 
-            // If we find Chatter members to insert, do that here
-            if (collabMembersToInsert.size() > 0)
+        // If we find Chatter members to insert, do that here
+        if (collabMembersToInsert.size() > 0)
+        {
+            try
             {
-                /*
-                * Set a saveresult in case theres an error. Can loop through and
-                * use SR[i].getErrors() to debug
-                */
-                Database.SaveResult[] SR = Database.insert(collabMembersToInsert, false);
+                insert collabMembersToInsert;
+            }
+            catch (Exception e)
+            {
+                System.debug('!!!ERROR!!! ' + e.getMessage());
             }
         }
     }

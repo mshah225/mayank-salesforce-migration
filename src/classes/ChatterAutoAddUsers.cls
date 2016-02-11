@@ -1,5 +1,7 @@
 public class ChatterAutoAddUsers
 {
+    public static Map<String, List<CollaborationGroupMember>> dupeMemberCheckMap;
+
     public static void addToChatterGroup(Set<Id> userIds)
     {
         CollaborationGroupMember newCollabMember;
@@ -7,78 +9,12 @@ public class ChatterAutoAddUsers
         List<CollaborationGroupMember> collabMembersToInsert = new List<CollaborationGroupMember>();
         Map<String, String> chatterSettingsMap = new Map<String, String>();
         Map<String, String> chatterGroupsMap= new Map<String, String>();
-        Set<Id> recGroupMemberIds= new Set<Id>();
-        Set<Id> servGroupMemberIds = new Set<Id>();
-        Set<Id> allGroupMemberIds= new Set<Id>();
 
         List<User> userList = [
             SELECT Id, ProfileId, Profile.Name, isActive
             FROM User
             WHERE Id IN :userIds
         ];
-
-        // Get all the current Recruitment members
-        List<CollaborationGroup> recGroup = [
-            SELECT Id
-            FROM CollaborationGroup
-            WHERE Name = 'ASU Recruitment'
-        ];
-
-        if (recGroup.size() > 0)
-        {
-            List<CollaborationGroupMember> recGroupMembers = [
-                SELECT MemberId
-                FROM CollaborationGroupMember
-                WHERE CollaborationGroupId = :recGroup[0].Id
-            ];
-
-            for (CollaborationGroupMember cgm : recGroupMembers)
-            {
-                recGroupMemberIds.add(cgm.MemberId);
-            }
-        }
-
-        // Get all the current Service members
-        List<CollaborationGroup> servGroup = [
-            SELECT Id
-            FROM CollaborationGroup
-            WHERE Name = 'ASU Service'
-        ];
-
-        if (servGroup.size() > 0)
-        {
-            List<CollaborationGroupMember> servGroupMembers = [
-                SELECT MemberId
-                FROM CollaborationGroupMember
-                WHERE CollaborationGroupId = :servGroup[0].Id
-            ];
-
-            for (CollaborationGroupMember cgm : servGroupMembers)
-            {
-                servGroupMemberIds.add(cgm.MemberId);
-            }
-        }
-
-        // Get all the current ASU Everyone members
-        List<CollaborationGroup> allGroup = [
-            SELECT Id
-            FROM CollaborationGroup
-            WHERE Name = 'ASU - Everyone'
-        ];
-
-        if (allGroup.size() > 0)
-        {
-            List<CollaborationGroupMember> allGroupMembers = [
-                SELECT MemberId
-                FROM CollaborationGroupMember
-                WHERE CollaborationGroupId = :allGroup[0].Id
-            ];
-
-            for (CollaborationGroupMember cgm : allGroupMembers)
-            {
-                allGroupMemberIds.add(cgm.MemberId);
-            }
-        }
 
         // Populate the custom setting and map.
         List<Chatter_Auto_Add_Users__c> chatterSettingsList = [
@@ -102,9 +38,8 @@ public class ChatterAutoAddUsers
             chatterGroupsMap.put(cg.Name, cg.Id);
         }
 
-        // Create a map of all the groups and their members for later.
-        Map<String, List<CollaborationGroupMember>> dupeMemberCheckMap =
-            new Map<String, List<CollaborationGroupMember>>();
+        // Populate a map of all the groups and their members for later.
+        dupeMemberCheckMap = new Map<String, List<CollaborationGroupMember>>();
 
         for (CollaborationGroup cg : chatterGroups)
         {
@@ -126,20 +61,14 @@ public class ChatterAutoAddUsers
             // Check for Chatter Settings first
             if (chatterSettingsMap.containsKey(u.Profile.Name))
             {
-                // Get the group that belongs to the users Profile
+                // Get the group name that belongs to the users Profile
                 String groupName = chatterSettingsMap.get(u.Profile.Name);
 
-                // Create a list to store the collab members of the current group.
-                List<CollaborationGroupMember> tempDupeMembers = new List<CollaborationGroupMember>();
-                tempDupeMembers.addAll(dupeMemberCheckMap.get(groupName));
-
-                // Loop through and add the collab member Ids to a set to check against.
-                Set<Id> dupeMemberIdSet = new Set<Id>();
-
-                for (CollaborationGroupMember cgm : tempDupeMembers)
-                {
-                    dupeMemberIdSet.add(cgm.MemberId);
-                }
+                /*
+                * Pass the groupname to the helper method and return the Ids of
+                * the collaboration members for dupe checking.
+                */
+                Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck(groupName);
 
                 // Check if the current user is already in the group, if not add them.
                 if (chatterGroupsMap.containsKey(groupName)
@@ -154,38 +83,62 @@ public class ChatterAutoAddUsers
                 }
             }
             // Check if Service Profile
-            else if (u.Profile.Name.contains('ASU Service')
-                && (!servGroupMemberIds.contains(u.Id)))
+            else if (u.Profile.Name.contains('ASU Service'))
             {
                 if (chatterGroupsMap.containsKey('ASU Service'))
                 {
-                    newCollabMember = new CollaborationGroupMember();
-                    newCollabMember.MemberId = u.Id;
-                    newCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU Service');
-                    collabMembersToInsert.add(newCollabMember);
+                    /*
+                    * Pass the groupname to the helper method and return the Ids of
+                    * the collaboration members for dupe checking.
+                    */
+                    Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck('ASU Service');
+
+                    if (!dupeMemberIdSet.contains(u.Id))
+                    {
+                        newCollabMember = new CollaborationGroupMember();
+                        newCollabMember.MemberId = u.Id;
+                        newCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU Service');
+                        collabMembersToInsert.add(newCollabMember);
+                    }
                 }
             }
             // Check if Recruitment Profile
-            else if (u.Profile.Name.contains('ASU Recruit')
-                && !recGroupMemberIds.contains(u.Id))
+            else if (u.Profile.Name.contains('ASU Recruit'))
             {
                 if (chatterGroupsMap.containsKey('ASU Recruitment'))
                 {
-                    newCollabMember = new CollaborationGroupMember();
-                    newCollabMember.MemberId = u.Id;
-                    newCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU Recruitment');
-                    collabMembersToInsert.add(newCollabMember);
+                    /*
+                    * Pass the groupname to the helper method and return the Ids of
+                    * the collaboration members for dupe checking.
+                    */
+                    Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck('ASU Recruitment');
+
+                    if (!dupeMemberIdSet.contains(u.Id))
+                    {
+                        newCollabMember = new CollaborationGroupMember();
+                        newCollabMember.MemberId = u.Id;
+                        newCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU Recruitment');
+                        collabMembersToInsert.add(newCollabMember);
+                    }
                 }
             }
 
             // Check if in ASU Everyone Group
-            if ((!u.Profile.Name.contains('ASU Community'))
-                && (!allGroupMemberIds.contains(u.Id)))
+            if (!u.Profile.Name.contains('ASU Community'))
             {
-                CollaborationGroupMember otherCollabMember = new CollaborationGroupMember();
-                otherCollabMember.MemberId = u.Id;
-                otherCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU - Everyone');
-                collabMembersToInsert.add(otherCollabMember);
+                if (chatterGroupsMap.containsKey('ASU - Everyone'))
+                {
+                    // Loop through and add the collab member Ids to a set to check against.
+                    Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck('ASU - Everyone');
+
+                    if (!dupeMemberIdSet.contains(u.Id))
+                    {
+                        CollaborationGroupMember otherCollabMember = new CollaborationGroupMember();
+                        otherCollabMember.MemberId = u.Id;
+                        otherCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU - Everyone');
+                        collabMembersToInsert.add(otherCollabMember);
+                    }
+                }
             }
         }
 
@@ -201,6 +154,23 @@ public class ChatterAutoAddUsers
                 System.debug('!!!ERROR!!! ' + e.getMessage());
             }
         }
+    }
+
+    public static Set<Id> collabUserIdsToDupeCheck(String groupName)
+    {
+        // Create a list to store the collab members of the current group.
+        List<CollaborationGroupMember> tempDupeMembers = new List<CollaborationGroupMember>();
+        tempDupeMembers.addAll(dupeMemberCheckMap.get(groupName));
+
+        // Loop through and add the collab member Ids to a set to check against.
+        Set<Id> dupeMemberIdSet = new Set<Id>();
+
+        for (CollaborationGroupMember cgm : tempDupeMembers)
+        {
+            dupeMemberIdSet.add(cgm.MemberId);
+        }
+
+        return dupeMemberIdSet;
     }
 
     @future

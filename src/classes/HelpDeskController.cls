@@ -1,35 +1,24 @@
 // Custom controller for the HelpDesk page
 public with sharing class HelpDeskController
 {
-    // the following are booleans that are used for rendering/hiding various sections of the page based on context
+    private String soql { get; set; }
+
     public Boolean isNewCaseSelected { get; set; }
     public Boolean isExistingCaseSelected { get; set; }
     public Boolean isNewContactSelected { get; set; }
     public Boolean isCloseCase { get; set; }
     public Boolean isContactSet { get; set; }
-
-    // the new case being created
+    public Boolean isKnowledgeSearch { get; set;}
     public Case mycase { get; set; }
-
-    // the new contact being created
     public Contact mycontact { get; set; }
-
-    // the collection of contacts to display - these are the results of the SOQL query
     public List<Contact> contacts { get; set; }
-
-    // the open cases for the selected contact
     public List<CaseWrapper> cases { get; set; }
-
-    // the soql without the order and limit
-    private String soql { get; set; }
-
-    // the selected contact -- this is populated when the "Set as Contact" link is hit on a Contact
+    public List<FAQ__kav> faqList { get; set; }
+    public List<List<SObject>> knowledgeResults { get; set; }
     public String selectedContactId { get; set; }
-
-    // the selected case -- this is populated when the "Set as Case" link is hit on a Case
     public String selectedCaseId { get; set; }
-
     public String contactName { get; set; }
+    public String knowString { get; set; }
 
     // This method returns a list of Close statuses for Cases
     public List<SelectOption> getcloseCaseStatusOptions()
@@ -103,6 +92,9 @@ public with sharing class HelpDeskController
         isCloseCase = false;
         isNewContactSelected = false;
         isContactSet = false;
+        isKnowledgeSearch = false;
+        knowString = '';
+        faqList = new List<FAQ__kav>();
         String searchNumber;
 
         if (ApexPages.currentPage().getParameters().containsKey('ANI'))
@@ -119,7 +111,7 @@ public with sharing class HelpDeskController
                 'ORDER BY ' + sortField + ' ' + sortDir + ' LIMIT 25' +
                 ')';
 
-            runQuery(false);
+            runSearch(false);
         }
         else
         {
@@ -159,11 +151,12 @@ public with sharing class HelpDeskController
         // simply toggle the direction
         sortDir = sortDir.equals('asc') ? 'desc' : 'asc';
         // run the query again
-        runQuery(false);
+        //runSearch(false);
+        buildSearchString();
     }
 
     // Runs the actual query, set boolean to run SOQL search. Default SOSL search.
-    public void runQuery(Boolean runSOQL)
+    public void runSearch(Boolean runSOQL)
     {
         contacts = new List<Contact>();
 
@@ -193,8 +186,9 @@ public with sharing class HelpDeskController
     }
 
     // runs the search with parameters passed via Javascript
-    public void runSearch()
+    public void buildSearchString()
     {
+        isKnowledgeSearch = false;
         String firstName = Apexpages.currentPage().getParameters().get('firstname');
         String lastName = Apexpages.currentPage().getParameters().get('lastname');
         String phone = Apexpages.currentPage().getParameters().get('phone');
@@ -378,7 +372,7 @@ public with sharing class HelpDeskController
                     'LIMIT 25';
 
                 // run the query again
-                runQuery(true);
+                runSearch(true);
             }
             else
             {
@@ -425,7 +419,7 @@ public with sharing class HelpDeskController
                     ')';
 
                 // run the query again
-                runQuery(false);
+                runSearch(false);
             }
             else
             {
@@ -436,6 +430,43 @@ public with sharing class HelpDeskController
                     )
                 );
             }
+        }
+    }
+
+    public void knowledgeSearch()
+    {
+        if (knowString != '')
+        {
+            knowledgeResults = new List<List<SObject>>();
+
+            String sosl = '' +
+                'FIND \'' + String.escapeSingleQuotes(knowString.trim()) + '*\' ' +
+                'IN ALL FIELDS RETURNING ' +
+                'FAQ__kav(' +
+                'KnowledgeArticleId, Title, Answer__c ' +
+                'WHERE Language = \'en_US\' ' +
+                'AND PublishStatus = \'Online\'' +
+                ')';
+
+            knowledgeResults = Search.query(sosl);
+
+            if (knowledgeResults.size() > 0)
+            {
+                faqList = knowledgeResults[0];
+            }
+            else
+            {
+                faqList = new List<FAQ__kav>();
+            }
+        }
+        else
+        {
+            ApexPages.addMessage(
+                new ApexPages.Message(
+                    ApexPages.Severity.INFO,
+                    'You must enter search terms.'
+                )
+            );
         }
     }
 
@@ -538,7 +569,8 @@ public with sharing class HelpDeskController
                     'Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, ' +
                     'Private_Note_Help_Desk__c, ClosedDate ' +
                     'FROM Case ' +
-                    'WHERE ContactId = :selectedContactId'
+                    'WHERE ContactId = :selectedContactId ' +
+                    'ORDER BY CreatedDate DESC'
             );
         }
         catch (Exception e)
@@ -566,6 +598,7 @@ public with sharing class HelpDeskController
     public void setAsCase()
     {
         isExistingCaseSelected = true;
+        isKnowledgeSearch = true;
         Map<Id, CaseWrapper> m = new Map<Id, CaseWrapper>();
 
         for (CaseWrapper cas : cases)
@@ -755,7 +788,7 @@ public with sharing class HelpDeskController
     public void cancelNewContact()
     {
         isNewContactSelected = false;
-        isContactSet = false;
+//        isContactSet = false;
         selectedContactId = null;
 
         if (mycontact != null)

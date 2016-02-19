@@ -56,13 +56,6 @@
             color: #334b70;
         }
 
-        #wrapper {
-            width: 1000px;
-            padding: 15px;
-            margin-top: 10px;
-            overflow: hidden; /* will contain if #first is longer than #second */
-        }
-
         #first {
             width: 600px;
             float: left; /* add this */
@@ -145,7 +138,7 @@
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
             'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
 
-    <apex:outputPanel id="wrapper" layout="block">
+    <apex:outputPanel id="wrapper" layout="block" style="margin-top:10px;">
         <apex:form id="myform" html-novalidate="novalidate">
             <apex:pageMessages id="messages"/>
 
@@ -492,11 +485,10 @@
                                 <apex:commandButton id="saveCaseButton"
                                                     action="{!saveCase}"
                                                     value="Save"
-                                                    onComplete="closeTab();"
                                                     reRender="messages"
                                                     styleClass="customBtn"
                                                     status="loadingStatus4"
-                                                    oncomplete="disableCaseFields();"/>
+                                                    oncomplete="closeTab();"/>
 
                                 <apex:commandButton id="saveAndTransferCaseButton"
                                                     action="{!saveAndTransferCase}"
@@ -582,155 +574,157 @@
                                     rendered="{!IF(!isKnowledgeSearch && !isContactSet, true,
                                             false)}"
                                     title="Search Results">
-                        <apex:outputPanel rendered="{!IF((contacts.size == 0 &&
-                                !isKnowledgeSearch), true, false)}">
-                            <div style="font-weight:bold;height:100px;padding:1å5px;">
-                                No Results found.
-                            </div>
-                        </apex:outputPanel>
+                        <div style="max-height:300px;overflow-y:auto;">
+                            <apex:outputPanel rendered="{!IF((contacts.size == 0 &&
+                                    !isKnowledgeSearch), true, false)}">
+                                <div style="font-weight:bold;height:100px;padding:1å5px;">
+                                    No Results found.
+                                </div>
+                            </apex:outputPanel>
 
-                        <apex:pageBlockTable rendered="{!IF(contacts.size > 0, true, false)}"
-                                             value="{!contacts}"
-                                             var="contact"
-                                             cellPadding="5">
-                            <apex:column headerValue="">
-                                <apex:commandLink action="{!setAsContact}"
-                                                  title="Set as Contact"
-                                                  rerender="innersecond,criteria,results"
-                                                  status="loadingStatus3">
-                                    <apex:param name="selectedContactId"
-                                                value="{!contact.id}"
-                                                assignTo="{!selectedContactId}"/>
-                                    <i class="fa fa-plus-circle"
-                                       style="font-size:14pt;color:#334b70;"></i>
-                                </apex:commandLink>
-                            </apex:column>
-
-                            <apex:column>
-                                <apex:facet name="header">
-                                    <apex:commandLink value="First Name"
-                                                      onClick="doSearch(true); return false;"
-                                                      rerender="results">
-                                        <apex:param name="sortField"
-                                                    value="firstName"
-                                                    assignTo="{!sortField}"/>
+                            <apex:pageBlockTable rendered="{!IF(contacts.size > 0, true, false)}"
+                                                 value="{!contacts}"
+                                                 var="contact"
+                                                 cellPadding="5">
+                                <apex:column headerValue="">
+                                    <apex:commandLink action="{!setAsContact}"
+                                                      title="Set as Contact"
+                                                      rerender="innersecond,criteria,results"
+                                                      status="loadingStatus3">
+                                        <apex:param name="selectedContactId"
+                                                    value="{!contact.id}"
+                                                    assignTo="{!selectedContactId}"/>
+                                        <i class="fa fa-plus-circle"
+                                           style="font-size:14pt;color:#334b70;"></i>
                                     </apex:commandLink>
-                                </apex:facet>
+                                </apex:column>
 
-                                <apex:outputField value="{!contact.firstName}"/>
-                            </apex:column>
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="First Name"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="firstName"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
 
-                            <apex:column>
-                                <apex:facet name="header">
-                                    <apex:commandLink value="Last Name"
-                                                      onClick="doSearch(true); return false;"
-                                                      rerender="results">
-                                        <apex:param name="sortField"
-                                                    value="lastName"
-                                                    assignTo="{!sortField}"/>
-                                    </apex:commandLink>
-                                </apex:facet>
+                                    <apex:outputField value="{!contact.firstName}"/>
+                                </apex:column>
 
-                                <apex:outputField value="{!contact.lastName}"/>
-                            </apex:column>
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="Last Name"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="lastName"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
 
-                            <apex:column>
-                                <apex:facet name="header">
-                                    <apex:commandLink value="Phone"
-                                                      onClick="doSearch(true); return false;"
-                                                      rerender="results">
-                                        <apex:param name="sortField"
-                                                    value="Phone"
-                                                    assignTo="{!sortField}"/>
-                                    </apex:commandLink>
-                                </apex:facet>
+                                    <apex:outputField value="{!contact.lastName}"/>
+                                </apex:column>
 
-                                <apex:outputField value="{!contact.Phone}"/>
-                            </apex:column>
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="Phone"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="Phone"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
 
-                            <apex:column>
-                                <apex:facet name="header">
-                                    <apex:commandLink value="Help Desk Provided Phone"
-                                                      onClick="doSearch(true); return false;"
-                                                      rerender="results">
-                                        <apex:param name="sortField"
-                                                    value="Help_Desk_Provided_Phone__c"
-                                                    assignTo="{!sortField}"/>
-                                    </apex:commandLink>
-                                </apex:facet>
+                                    <apex:outputField value="{!contact.Phone}"/>
+                                </apex:column>
 
-                                <apex:outputField value="{!contact.Help_Desk_Provided_Phone__c}"/>
-                            </apex:column>
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="Help Desk Provided Phone"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="Help_Desk_Provided_Phone__c"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
 
-                            <apex:column>
-                                <apex:facet name="header">
-                                    <apex:commandLink value="Birthdate"
-                                                      onClick="doSearch(true); return false;"
-                                                      rerender="results">
-                                        <apex:param name="sortField"
-                                                    value="birthdate"
-                                                    assignTo="{!sortField}"/>
-                                    </apex:commandLink>
-                                </apex:facet>
+                                    <apex:outputField value="{!contact.Help_Desk_Provided_Phone__c}"/>
+                                </apex:column>
 
-                                <apex:outputField value="{!contact.Birthdate}"/>
-                            </apex:column>
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="Birthdate"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="birthdate"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
 
-                            <apex:column>
-                                <apex:facet name="header">
-                                    <apex:commandLink value="ASURITE"
-                                                      onClick="doSearch(true); return false;"
-                                                      rerender="results">
-                                        <apex:param name="sortField"
-                                                    value="ASURite_ID__c"
-                                                    assignTo="{!sortField}"/>
-                                    </apex:commandLink>
-                                </apex:facet>
+                                    <apex:outputField value="{!contact.Birthdate}"/>
+                                </apex:column>
 
-                                <apex:outputField value="{!contact.ASURite_ID__c}"/>
-                            </apex:column>
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="ASURITE"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="ASURite_ID__c"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
 
-                            <apex:column>
-                                <apex:facet name="header">
-                                    <apex:commandLink value="EMPLID"
-                                                      onClick="doSearch(true); return false;"
-                                                      rerender="results">
-                                        <apex:param name="sortField"
-                                                    value="EMPLID__c"
-                                                    assignTo="{!sortField}"/>
-                                    </apex:commandLink>
-                                </apex:facet>
+                                    <apex:outputField value="{!contact.ASURite_ID__c}"/>
+                                </apex:column>
 
-                                <apex:outputField value="{!contact.EMPLID__c}"/>
-                            </apex:column>
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="EMPLID"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="EMPLID__c"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
 
-                            <apex:column>
-                                <apex:facet name="header">
-                                    <apex:commandLink value="Directory Email"
-                                                      onClick="doSearch(true); return false;"
-                                                      rerender="results">
-                                        <apex:param name="sortField"
-                                                    value="ASU_Email__c"
-                                                    assignTo="{!sortField}"/>
-                                    </apex:commandLink>
-                                </apex:facet>
-                                <apex:outputField value="{!contact.ASU_Email__c}"/>
-                            </apex:column>
+                                    <apex:outputField value="{!contact.EMPLID__c}"/>
+                                </apex:column>
 
-                            <apex:column>
-                                <apex:facet name="header">
-                                    <apex:commandLink value="Personal Email"
-                                                      onClick="doSearch(true); return false;"
-                                                      rerender="results">
-                                        <apex:param name="sortField"
-                                                    value="Personal_Email__c"
-                                                    assignTo="{!sortField}"/>
-                                    </apex:commandLink>
-                                </apex:facet>
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="Directory Email"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="ASU_Email__c"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
+                                    <apex:outputField value="{!contact.ASU_Email__c}"/>
+                                </apex:column>
 
-                                <apex:outputField value="{!contact.Personal_Email__c}"/>
-                            </apex:column>
-                        </apex:pageBlockTable>
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="Personal Email"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="Personal_Email__c"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
+
+                                    <apex:outputField value="{!contact.Personal_Email__c}"/>
+                                </apex:column>
+                            </apex:pageBlockTable>
+                        </div>
                     </apex:pageBlock>
 
                     <apex:pageBlock id="knowledgeResults"

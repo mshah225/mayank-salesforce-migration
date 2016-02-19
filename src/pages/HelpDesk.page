@@ -58,7 +58,8 @@
 
         #wrapper {
             width: 1000px;
-            padding: 10px;
+            padding: 15px;
+            margin-top: 10px;
             overflow: hidden; /* will contain if #first is longer than #second */
         }
 
@@ -153,7 +154,8 @@
                     <apex:outputPanel id="innerfirstSearchContact"
                                       layout="block"
                                       rendered="{!isNewContactSelected = false}">
-                        <apex:pageBlock title="Contact Search"
+                        <apex:pageBlock title="{!IF(isContactSet,
+                                            'Contact Details', 'Contact Search')}"
                                         id="criteria">
                             <apex:actionFunction name="searchServer"
                                                  action="{!buildSearchString}"
@@ -399,8 +401,7 @@
                                                         value="{!case.Ca.id}"
                                                         assignTo="{!selectedCaseId}"/>
                                             <i class="fa fa-plus-circle"
-                                               style="font-size:16pt;color:#334b70;
-                                               margin-top:-2px;"></i>
+                                               style="font-size:14pt;color:#334b70;"></i>
                                         </apex:commandLink>
                                     </apex:column>
 
@@ -514,7 +515,7 @@
                                                     action="{!cancelCase}"
                                                     value="Cancel"
                                                     immediate="true"
-                                                    reRender="innersecond"
+                                                    reRender="innersecond,results"
                                                     styleClass="customBtn"
                                                     status="loadingStatus4"/>
 
@@ -601,7 +602,7 @@
                                                 value="{!contact.id}"
                                                 assignTo="{!selectedContactId}"/>
                                     <i class="fa fa-plus-circle"
-                                       style="font-size:16pt;color:#334b70;margin-top:-2px;"></i>
+                                       style="font-size:14pt;color:#334b70;"></i>
                                 </apex:commandLink>
                             </apex:column>
 
@@ -734,45 +735,122 @@
 
                     <apex:pageBlock id="knowledgeResults"
                                     rendered="{!isKnowledgeSearch}"
-                                    title="Attach a Knowledge Article to the Case">
-                        <div style="max-height:250px;overflow-y:auto;">
-                            <apex:inputText value="{!knowString}"
-                                            style="padding:5px;width:170px;"
-                                            html-placeholder="Search for Knowledge Articles"
-                                            onkeypress="return noenter(event);"
-                                            html-pattern=".{2,}"
-                                            required="true"
-                                            title="Please enter at least 2 characters"/>
+                                    title="Articles">
+                        <div style="max-height:300px;overflow-y:auto;">
+                            <apex:outputPanel rendered="{!IF(!isKnowSearchbox, true, false)}">
+                                <h5>Attached to this Case</h5>
+                                &nbsp;&nbsp;&nbsp;
+                                <apex:commandLink rerender="results,messages"
+                                                  status="knowStatus1"
+                                                  action="{!knowledgeSearch}">
+                                    <apex:param name="isKnowSearchBox"
+                                                value="true"
+                                                assignTo="{!isKnowSearchBox}"/>
+                                    <apex:param name="knowString"
+                                                value="{!mycase.Subject}"
+                                                assignTo="{!knowString}"/>
+                                    Find More
+                                </apex:commandLink>
 
-                            <apex:commandLink id="knowledgeSearchBtn"
-                                              value="Search"
-                                              action="{!knowledgeSearch}"
-                                              styleClass="btn customActionBtn"
-                                              rerender="results"
-                                              status="knowStatus"/>
+                                <apex:actionStatus id="knowStatus1" >
+                                    <apex:facet name="start" >
+                                        <img src="/img/loading.gif"
+                                             style="position:absolute;margin-top:-1px;
+                                             margin-left:5px;"/>
+                                    </apex:facet>
+                                </apex:actionStatus>
 
-                            <apex:actionStatus id="knowStatus" >
-                                <apex:facet name="start" >
-                                    <img src="/img/loading.gif"
-                                         style="position:absolute;margin-top:6px;margin-left:5px;"/>
-                                </apex:facet>
-                            </apex:actionStatus>
+                                <br />
+                                <br />
 
-                            <br />
-                            <br />
+                                <apex:pageBlockTable value="{!attachedFAQs}"
+                                                     var="af"
+                                                     rendered="{!IF(attachedFAQs.size > 0, true,
+                                                             false)}">
+                                    <apex:column style="width:10px;">
+                                        <apex:commandLink id="removeArtLink"
+                                                          action="{!removeArticleFromCase}"
+                                                          title="Remove Article from Case"
+                                                          rerender="knowledgeResults"
+                                                          status="knowStatus1">
+                                            <apex:param name="selectedKnowledgeArticleId"
+                                                        value="{!af.KnowledgeArticleId}"
+                                                        assignTo="{!selectedKnowledgeArticleId}"/>
+                                            <i class="fa fa-minus-circle"
+                                               style="font-size:12pt;color:#990033;"></i>
+                                        </apex:commandLink>
+                                    </apex:column>
 
-                            <apex:pageBlockTable value="{!faqList}"
-                                                 var="f"
-                                                 rendered="{!IF(faqList.size > 0, true, false)}">
-                                <apex:column style="width:10px;">
-                                    <i class="fa fa-caret-square-o-down"
-                                       style="font-size:12pt;color:#334b70;margin-top:-2px;"></i>
-                                </apex:column>
+                                    <apex:column>
+                                        {!af.Title}
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                            </apex:outputPanel>
 
-                                <apex:column headerValue="Title">
-                                    {!f.Title}
-                                </apex:column>
-                            </apex:pageBlockTable>
+                            <apex:outputPanel rendered="{!IF(isKnowSearchBox, true, false)}">
+                                <apex:pageBlockSection id="searchSection"
+                                                       collapsible="true"
+                                                       title="Testing">
+                                    <script>
+                                        twistSection(document.getElementById("{!$Component.searchSection}").childNodes[0].childNodes[0]);
+                                    </script>
+
+                                    <apex:commandLink rerender="results,messages"
+                                                      status="knowStatus"
+                                                      styleClass="btn customBtn"
+                                                      rendered="{!IF(attachedFAQs.size > 0, true,
+                                                              false)}">
+                                        <apex:param name="isKnowSearchBox"
+                                                    value="false"
+                                                    assignTo="{!isKnowSearchBox}"/>
+                                        <i class="fa fa-chevron-left"></i>
+                                    </apex:commandLink>
+
+                                    <apex:inputText value="{!knowString}"
+                                                    style="padding:5px;width:170px;"
+                                                    html-placeholder="Search for Knowledge Articles"
+                                                    onkeypress="return noenter(event);"/>
+
+                                    <apex:commandLink id="knowledgeSearchBtn"
+                                                      value="Search"
+                                                      action="{!knowledgeSearch}"
+                                                      styleClass="btn customActionBtn"
+                                                      rerender="results,messages"
+                                                      status="knowStatus"/>
+
+                                    <apex:actionStatus id="knowStatus" >
+                                        <apex:facet name="start" >
+                                            <img src="/img/loading.gif"
+                                                 style="position:absolute;margin-top:6px;margin-left:5px;"/>
+                                        </apex:facet>
+                                    </apex:actionStatus>
+
+                                    <br />
+                                    <br />
+
+                                    <apex:pageBlockTable value="{!faqList}"
+                                                         var="f"
+                                                         rendered="{!IF(faqList.size > 0, true, false)}">
+                                        <apex:column style="width:10px;">
+                                            <apex:commandLink id="addArtLink"
+                                                              action="{!attachArticleToCase}"
+                                                              title="Attach Article to Case"
+                                                              rerender="knowledgeResults"
+                                                              status="knowStatus">
+                                                <apex:param name="selectedKnowledgeArticleId"
+                                                            value="{!f.KnowledgeArticleId}"
+                                                            assignTo="{!selectedKnowledgeArticleId}"/>
+                                                <i class="fa fa-plus-circle"
+                                                   style="font-size:12pt;color:#334b70;"></i>
+                                            </apex:commandLink>
+                                        </apex:column>
+
+                                        <apex:column headerValue="Results">
+                                            {!f.Title}
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:pageBlockSection>
+                            </apex:outputPanel>
                         </div>
                     </apex:pageBlock>
                 </apex:form>

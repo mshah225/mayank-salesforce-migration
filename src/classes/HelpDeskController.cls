@@ -8,15 +8,18 @@ public with sharing class HelpDeskController
     public Boolean isNewContactSelected { get; set; }
     public Boolean isCloseCase { get; set; }
     public Boolean isContactSet { get; set; }
-    public Boolean isKnowledgeSearch { get; set;}
+    public Boolean isKnowledgeSearch { get; set; }
+    public Boolean isKnowSearchBox { get; set; }
     public Case mycase { get; set; }
     public Contact mycontact { get; set; }
     public List<Contact> contacts { get; set; }
     public List<CaseWrapper> cases { get; set; }
+    public List<FAQ__kav> attachedFAQs { get; set; }
     public List<FAQ__kav> faqList { get; set; }
     public List<List<SObject>> knowledgeResults { get; set; }
     public String selectedContactId { get; set; }
     public String selectedCaseId { get; set; }
+    public String selectedKnowledgeArticleId { get; set; }
     public String contactName { get; set; }
     public String knowString { get; set; }
 
@@ -93,8 +96,10 @@ public with sharing class HelpDeskController
         isNewContactSelected = false;
         isContactSet = false;
         isKnowledgeSearch = false;
+        isKnowSearchBox = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
+        attachedFAQs = new List<FAQ__kav>();
         String searchNumber;
 
         if (ApexPages.currentPage().getParameters().containsKey('ANI'))
@@ -150,8 +155,8 @@ public with sharing class HelpDeskController
     {
         // simply toggle the direction
         sortDir = sortDir.equals('asc') ? 'desc' : 'asc';
+
         // run the query again
-        //runSearch(false);
         buildSearchString();
     }
 
@@ -433,6 +438,7 @@ public with sharing class HelpDeskController
         }
     }
 
+    // Perform the search for knowledge articles
     public void knowledgeSearch()
     {
         if (knowString != '')
@@ -443,10 +449,21 @@ public with sharing class HelpDeskController
                 'FIND \'' + String.escapeSingleQuotes(knowString.trim()) + '*\' ' +
                 'IN ALL FIELDS RETURNING ' +
                 'FAQ__kav(' +
-                'KnowledgeArticleId, Title, Answer__c ' +
-                'WHERE Language = \'en_US\' ' +
-                'AND PublishStatus = \'Online\'' +
-                ')';
+                    'KnowledgeArticleId, Title, Answer__c ' +
+                    'WHERE Language = \'en_US\' ' +
+                    'AND PublishStatus = \'Online\'';
+
+            Set<Id> caseArticleIds = getCaseArticleIds();
+
+            // if we found some, query for their info to display on the page.
+            if (caseArticleIds.size() > 0)
+            {
+                sosl += ' AND KnowledgeArticleId NOT IN :caseArticleIds)';
+            }
+            else
+            {
+                sosl += ')';
+            }
 
             knowledgeResults = Search.query(sosl);
 
@@ -468,6 +485,68 @@ public with sharing class HelpDeskController
                 )
             );
         }
+    }
+
+    public Set<Id> getCaseArticleIds()
+    {
+        // Query for CaseArticle(s) attached to the Case.
+        Set<Id> caseArticleIds = new Set<Id>();
+        List<CaseArticle> caseArticles = [
+            SELECT KnowledgeArticleId
+            FROM CaseArticle
+            WHERE CaseId = :selectedCaseId
+        ];
+
+        // if we found some, query for their info to display on the page.
+        if (caseArticles.size() > 0)
+        {
+            for (CaseArticle ca : caseArticles)
+            {
+                caseArticleIds.add(ca.KnowledgeArticleId);
+            }
+        }
+
+        return caseArticleIds;
+    }
+
+    // Attach an article to the case.
+    public void attachArticleToCase()
+    {
+        if (selectedKnowledgeArticleId != null && selectedCaseId != null)
+        {
+            CaseArticle art = new CaseArticle(
+                CaseId = selectedCaseId,
+                KnowledgeArticleId = selectedKnowledgeArticleId
+            );
+
+            insert art;
+        }
+
+        // re-run the setAsCase method to requery for CaseArticles
+        setAsCase();
+        faqList = new List<FAQ__kav>();
+        isKnowSearchBox = false;
+    }
+
+    // Remove an article from a case.
+    public void removeArticleFromCase()
+    {
+        if (selectedKnowledgeArticleId != null && selectedCaseId != null)
+        {
+            CaseArticle artToDelete = [
+                SELECT Id
+                FROM CaseArticle
+                WHERE CaseId = :selectedCaseId
+                AND KnowledgeArticleId = :selectedKnowledgeArticleId
+            ];
+
+            delete artToDelete;
+        }
+
+        // re-run the setAsCase method to requery for CaseArticles
+        setAsCase();
+        faqList = new List<FAQ__kav>();
+        isKnowledgeSearch = true;
     }
 
     public void newCase()
@@ -595,6 +674,7 @@ public with sharing class HelpDeskController
 
     }
 
+    // Set user selected case for view on page.
     public void setAsCase()
     {
         isExistingCaseSelected = true;
@@ -607,6 +687,26 @@ public with sharing class HelpDeskController
         }
 
         mycase = (Case) m.get(selectedCaseId).Ca;
+
+        // Query for CaseArticle(s) attached to the Case.
+        Set<Id> caseArticleIds = getCaseArticleIds();
+
+        // if we found some, query for their info to display on the page.
+        if (caseArticleIds.size() > 0)
+        {
+            attachedFAQs = [
+                SELECT KnowledgeArticleId, Title, Answer__c
+                FROM FAQ__kav
+                WHERE KnowledgeArticleId IN :caseArticleIds
+                AND PublishStatus = 'Online'
+                AND Language = 'en_US'
+            ];
+        }
+        else
+        {
+            isKnowSearchBox = true;
+            attachedFAQs = new List<FAQ__kav>();
+        }
     }
 
     public PageReference saveCase()
@@ -650,6 +750,8 @@ public with sharing class HelpDeskController
         {
             isExistingCaseSelected = false;
         }
+
+        isKnowledgeSearch = false;
     }
 
     public PageReference saveAndTransferCase()

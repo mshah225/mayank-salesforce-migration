@@ -133,6 +133,15 @@
         td.dataCol {
             padding: 7px !important;
         }
+
+        .headerRow a, .headerRow {
+            color: #607395 !important;
+            text-transform: uppercase;
+        }
+
+        .labelCol {
+            color: #546990 !important;
+        }
     </style>
 
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
@@ -276,7 +285,7 @@
                                 <apex:commandButton id="searchBtn"
                                                     value="Search"
                                                     onClick="doSearch(false); return false;"
-                                                    rerender="results,messages"
+                                                    rerender="results,innersecond,messages"
                                                     styleClass="customActionBtn"/>
 
                                 <apex:commandButton id="contactSearchBtn"
@@ -289,7 +298,7 @@
 
                                 <apex:commandButton action="{!newContact}"
                                                     value="New Contact"
-                                                    reRender="innerfirst,innersecond"
+                                                    reRender="innerfirst,innersecond,results"
                                                     status="loadingStatus"
                                                     styleClass="customBtn"/>
 
@@ -356,9 +365,10 @@
                                 <apex:commandButton action="{!cancelNewContact}"
                                                     immediate="true"
                                                     value="Cancel"
-                                                    reRender="innerfirst"
+                                                    reRender="innerfirst,innersecond,results"
                                                     status="loadingStatus2"
-                                                    styleClass="customBtn"/>
+                                                    styleClass="customBtn"
+                                                    onComplete="disableCaseFields();"/>
 
                                 <apex:actionStatus id="loadingStatus2" >
                                     <apex:facet name="start" >
@@ -386,7 +396,8 @@
                                     <apex:column headerValue="">
                                         <apex:commandLink action="{!setAsCase}"
                                                           title="Set as Case"
-                                                          rerender="innersecond,results"
+                                                          rendered="{!isContactSet}"
+                                                          rerender="innerfirst,innersecond,results"
                                                           id="setAsCaseId"
                                                           status="loadingStatus3"
                                                           onComplete="disableCaseFields();">
@@ -399,6 +410,11 @@
                                             <i class="fa fa-plus-circle"
                                                style="font-size:14pt;color:#334b70;"></i>
                                         </apex:commandLink>
+
+                                        <apex:outputText rendered="{!NOT(isContactSet)}">
+                                            <i class="fa fa-plus-circle"
+                                               style="font-size:14pt;color:#ccc;"></i>
+                                        </apex:outputText>
                                     </apex:column>
 
                                     <apex:column value="{!case.Ca.Status}"/>
@@ -731,8 +747,8 @@
                     </apex:pageBlock>
 
                     <apex:pageBlock id="knowledgeResults"
-                                    rendered="{!isKnowledgeSearch}"
-                                    title="{!IF(!isArticleDetails, 'Article', 'Article Details')}">
+                                    rendered="{!isKnowledgeSearch && isContactSet}"
+                                    title="{!IF(!isArticleDetails, 'Articles', 'Article Details')}">
                         <div style="max-height:300px;overflow-y:auto;">
                             <apex:outputPanel rendered="{!IF(!isKnowSearchbox && !isArticleDetails, true, false)}">
                                 <h5>Attached to this Case</h5>
@@ -781,12 +797,23 @@
                                     <apex:column>
                                         <apex:commandLink action="{!articleDetails}"
                                                           rerender="results"
-                                                          status="knowStatus1">
+                                                          status="knowStatus1"
+                                                          style="font-weight:bold;">
                                             <apex:param name="selectedKnowledgeArticleId"
                                                         value="{!af.KnowledgeArticleId}"
                                                         assignTo="{!selectedKnowledgeArticleId}"/>
-                                                {!af.Title}
+                                            <apex:param name="isAttached"
+                                                        value="true"
+                                                        assignTo="{!isAttached}"/>
+                                            {!af.Title}
                                         </apex:commandLink>
+
+                                        <br />
+
+                                        <apex:outputText rendered="{!IF(af.Summary != null,
+                                                true, false)}">
+                                            {!af.Summary}
+                                        </apex:outputText>
                                     </apex:column>
                                 </apex:pageBlockTable>
                             </apex:outputPanel>
@@ -844,12 +871,23 @@
                                     <apex:column headerValue="Results">
                                         <apex:commandLink action="{!articleDetails}"
                                                           rerender="results"
-                                                          status="knowStatus">
+                                                          status="knowStatus"
+                                                          style="font-weight:bold;">
                                             <apex:param name="selectedKnowledgeArticleId"
                                                         value="{!f.KnowledgeArticleId}"
                                                         assignTo="{!selectedKnowledgeArticleId}"/>
+                                            <apex:param name="isAttached"
+                                                        value="false"
+                                                        assignTo="{!isAttached}"/>
                                             {!f.Title}
                                         </apex:commandLink>
+
+                                        <br />
+
+                                        <apex:outputText rendered="{!IF(f.Summary != null,
+                                                true, false)}">
+                                            {!f.Summary}
+                                        </apex:outputText>
                                     </apex:column>
                                 </apex:pageBlockTable>
 
@@ -862,31 +900,65 @@
                                     false)}">
                                 <apex:outputPanel rendered="{!IF(selectedFAQ != null, true, false)}">
                                     <div style="padding:15px;">
-                                        <!--TODO: fix these links, specifically attach only when not -->
-                                        <!--attached-->
                                         <apex:commandLink rerender="results,messages"
-                                                          status="knowStatus">
+                                                          status="artDetailStatus"
+                                                          styleClass="btn customBtn"
+                                                          style="margin-left:0px;">
                                             <apex:param name="isKnowSearchBox"
                                                         value="false"
                                                         assignTo="{!isKnowSearchBox}"/>
-                                            Back
+                                            <apex:param name="isArticleDetails"
+                                                        value="false"
+                                                        assignTo="{!isArticleDetails}"/>
+                                            <i class="fa fa-chevron-left"></i>
+                                            &nbsp;&nbsp;Back
                                         </apex:commandLink>
 
-                                        <apex:commandLink id="addArtLink"
+                                        <apex:commandLink id="addArtLinkDetails"
                                                           action="{!attachArticleToCase}"
                                                           title="Attach Article to Case"
+                                                          styleClass="btn customActionBtn"
+                                                          rendered="{!NOT(isAttached)}"
                                                           rerender="knowledgeResults"
-                                                          status="knowStatus">
+                                                          status="artDetailStatus">
                                             <apex:param name="selectedKnowledgeArticleId"
                                                         value="{!selectedFAQ.KnowledgeArticleId}"
                                                         assignTo="{!selectedKnowledgeArticleId}"/>
-                                            Attach to Case
+                                            <i class="fa fa-plus-circle"></i>
+                                            &nbsp;&nbsp;Attach to Case
                                         </apex:commandLink>
 
+                                        <apex:commandLink id="removeArtLinkDetails"
+                                                          action="{!removeArticleFromCase}"
+                                                          title="Remove Article from Case"
+                                                          rendered="{!isAttached}"
+                                                          rerender="knowledgeResults"
+                                                          styleClass="btn customActionBtn"
+                                                          style="background-color:#990033;border:
+                                                           solid 1px #990033;"
+                                                          status="artDetailStatus">
+                                            <apex:param name="selectedKnowledgeArticleId"
+                                                        value="{!selectedFAQ.KnowledgeArticleId}"
+                                                        assignTo="{!selectedKnowledgeArticleId}"/>
+                                            <i class="fa fa-minus-circle"></i>
+                                            &nbsp;&nbsp;Remove from Case
+                                        </apex:commandLink>
+
+                                        <apex:actionStatus id="artDetailStatus">
+                                            <apex:facet name="start" >
+                                                <i class="fa fa-spinner fa-spin"
+                                                   style="padding:0px 5px;font-size:14pt;color:#334b70;
+                                             "></i>
+                                            </apex:facet>
+                                        </apex:actionStatus>
+
+                                        <br />
                                         <br />
                                         <br />
 
-                                        <h3 style="font-size:12pt;">{!selectedFAQ.Title}</h3>
+                                        <h3 style="font-size:12pt;text-decoration:underline">
+                                            {!selectedFAQ.Title}
+                                        </h3>
 
                                         <p><apex:outputText escape="false"
                                                             value="{!selectedFAQ.Answer__c}"/></p>

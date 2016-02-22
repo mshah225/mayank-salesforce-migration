@@ -11,6 +11,7 @@ public with sharing class HelpDeskController
     public Boolean isContactSet { get; set; }
     public Boolean isKnowledgeSearch { get; set; }
     public Boolean isKnowSearchBox { get; set; }
+    public Boolean isAttached { get; set; }
     public Case mycase { get; set; }
     public Contact mycontact { get; set; }
     public FAQ__kav selectedFAQ { get; set; }
@@ -100,6 +101,7 @@ public with sharing class HelpDeskController
         isKnowledgeSearch = false;
         isKnowSearchBox = false;
         isArticleDetails = false;
+        isAttached = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
@@ -452,7 +454,7 @@ public with sharing class HelpDeskController
                 'FIND \'' + String.escapeSingleQuotes(knowString.trim()) + '*\' ' +
                 'IN ALL FIELDS RETURNING ' +
                 'FAQ__kav(' +
-                    'KnowledgeArticleId, Title, Answer__c ' +
+                    'KnowledgeArticleId, Title, Answer__c, Summary ' +
                     'WHERE Language = \'en_US\' ' +
                     'AND PublishStatus = \'Online\'';
 
@@ -559,7 +561,7 @@ public with sharing class HelpDeskController
         isKnowSearchBox = false;
 
         selectedFAQ = [
-            SELECT Id, KnowledgeArticleId, Title, Answer__c
+            SELECT Id, KnowledgeArticleId, Title, Answer__c, Summary
             FROM FAQ__kav
             WHERE KnowledgeArticleId = :selectedKnowledgeArticleId
             AND PublishStatus = 'Online'
@@ -590,6 +592,7 @@ public with sharing class HelpDeskController
     public void newContact()
     {
         isNewContactSelected = true;
+        isContactSet = false;
 
         if (mycontact == null)
         {
@@ -613,6 +616,27 @@ public with sharing class HelpDeskController
         isContactSet = false;
         isNewCaseSelected = false;
         isExistingCaseSelected = false;
+    }
+
+    public void cancelNewContact()
+    {
+        isNewContactSelected = false;
+
+        if (selectedContactId != null)
+        {
+            isContactSet = true;
+            isNewCaseSelected = false;
+
+            if (selectedCaseId != null)
+            {
+                isExistingCaseSelected = true;
+                isKnowledgeSearch = true;
+            }
+            else
+            {
+                isExistingCaseSelected = false;
+            }
+        }
     }
 
     public void clearContactSearch()
@@ -696,6 +720,7 @@ public with sharing class HelpDeskController
     public void setAsCase()
     {
         isExistingCaseSelected = true;
+        isNewContactSelected = false;
         isKnowledgeSearch = true;
         isKnowSearchBox = false;
         isArticleDetails = false;
@@ -715,7 +740,7 @@ public with sharing class HelpDeskController
         if (caseArticleIds.size() > 0)
         {
             attachedFAQs = [
-                SELECT KnowledgeArticleId, Title, Answer__c
+                SELECT KnowledgeArticleId, Title, Answer__c, Summary
                 FROM FAQ__kav
                 WHERE KnowledgeArticleId IN :caseArticleIds
                 AND PublishStatus = 'Online'
@@ -899,22 +924,11 @@ public with sharing class HelpDeskController
             mycontact = new Contact();
             isNewCaseSelected = false;
             isExistingCaseSelected = false;
+            cases.clear();
         }
         catch (Exception ex)
         {
             ApexPages.addMessages(ex);
-        }
-    }
-
-    public void cancelNewContact()
-    {
-        isNewContactSelected = false;
-//        isContactSet = false;
-        selectedContactId = null;
-
-        if (mycontact != null)
-        {
-            mycontact = null;
         }
     }
 

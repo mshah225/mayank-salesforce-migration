@@ -4,6 +4,7 @@ public with sharing class HelpDeskController
     private String soql { get; set; }
 
     public Boolean isNewCaseSelected { get; set; }
+    public Boolean isArticleDetails { get; set; }
     public Boolean isExistingCaseSelected { get; set; }
     public Boolean isNewContactSelected { get; set; }
     public Boolean isCloseCase { get; set; }
@@ -12,6 +13,7 @@ public with sharing class HelpDeskController
     public Boolean isKnowSearchBox { get; set; }
     public Case mycase { get; set; }
     public Contact mycontact { get; set; }
+    public FAQ__kav selectedFAQ { get; set; }
     public List<Contact> contacts { get; set; }
     public List<CaseWrapper> cases { get; set; }
     public List<FAQ__kav> attachedFAQs { get; set; }
@@ -97,6 +99,7 @@ public with sharing class HelpDeskController
         isContactSet = false;
         isKnowledgeSearch = false;
         isKnowSearchBox = false;
+        isArticleDetails = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
@@ -549,6 +552,21 @@ public with sharing class HelpDeskController
         isKnowledgeSearch = true;
     }
 
+    // Get the details for the selected article
+    public void articleDetails()
+    {
+        isArticleDetails = true;
+        isKnowSearchBox = false;
+
+        selectedFAQ = [
+            SELECT Id, KnowledgeArticleId, Title, Answer__c
+            FROM FAQ__kav
+            WHERE KnowledgeArticleId = :selectedKnowledgeArticleId
+            AND PublishStatus = 'Online'
+            AND Language = 'en_US'
+        ];
+    }
+
     public void newCase()
     {
         isNewCaseSelected = true;
@@ -646,10 +664,10 @@ public with sharing class HelpDeskController
             casesbase = Database.query(
                 'SELECT Id, Subject, Reason, Description, Status, Origin, Campus__c, ' +
                     'Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, ' +
-                    'Private_Note_Help_Desk__c, ClosedDate ' +
-                    'FROM Case ' +
-                    'WHERE ContactId = :selectedContactId ' +
-                    'ORDER BY CreatedDate DESC'
+                    'Private_Note_Help_Desk__c, ClosedDate, CaseNumber ' +
+                'FROM Case ' +
+                'WHERE ContactId = :selectedContactId ' +
+                'ORDER BY CreatedDate DESC'
             );
         }
         catch (Exception e)
@@ -679,6 +697,8 @@ public with sharing class HelpDeskController
     {
         isExistingCaseSelected = true;
         isKnowledgeSearch = true;
+        isKnowSearchBox = false;
+        isArticleDetails = false;
         Map<Id, CaseWrapper> m = new Map<Id, CaseWrapper>();
 
         for (CaseWrapper cas : cases)
@@ -704,7 +724,6 @@ public with sharing class HelpDeskController
         }
         else
         {
-            isKnowSearchBox = true;
             attachedFAQs = new List<FAQ__kav>();
         }
     }

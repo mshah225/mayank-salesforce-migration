@@ -472,10 +472,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         Long attachmentSize = 0;
         Set<String> validFileExtensionSet = new Set<String>();
         String[] validFileExtensionList = getConfigurationSetting('Valid Attachment Types').split(',');
-        List<String> fileNames = new List<String>();
-        List<Long> fileSizes = new List<Long>();
-        List<String> erroredFiles = new List<String>();
-        List<String> erroredReasons = new List<String>();
 
         if (validFileExtensionList.size() > 0)
         {
@@ -491,14 +487,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                 attachmentSize += tAttachment.body.length();
 
-                fileNames.add(tAttachment.fileName);
-                fileSizes.add(tAttachment.body.length());
                 if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
                 {
                     if (tAttachment.body.length() > 5000000)
                     {
-                        erroredFiles.add(tAttachment.fileName);
-                        erroredReasons.add('File size greater than 5000000');
                         successfulAttachment = false;
                     }
                     else
@@ -512,8 +504,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
                 else if (!validFileExtensionSet.isEmpty())
                 {
-                    erroredFiles.add(tAttachment.fileName);
-                    erroredReasons.add('Invalid file type ' + tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.')+1).toLowerCase());
                     successfulAttachment = false;
                 }
             }
@@ -521,20 +511,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         if (email.binaryAttachments!=null && email.binaryAttachments.size() >0)
         {
-
             for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments)
             {
                 attachmentSize += bAttachment.body.size();
-
-                fileNames.add(bAttachment.fileName);
-                fileSizes.add(bAttachment.body.size());
 
                 if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
                 {
                     if (bAttachment.body.size() > 5000000)
                     {
-                        erroredFiles.add(bAttachment.fileName);
-                        erroredReasons.add('File size greater than 5000000');
                         successfulAttachment = false;
                     }
                     else
@@ -548,8 +532,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
                 else if (!validFileExtensionSet.isEmpty())
                 {
-                    erroredFiles.add(bAttachment.fileName);
-                    erroredReasons.add('Invalid file type ' + bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.')+1).toLowerCase());
                     successfulAttachment = false;
                 }
             }
@@ -557,14 +539,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         if (attachmentSize > 25000000)
         {
-            erroredFiles.add('All');
-            erroredReasons.add('Total file size greater than 25000000');
             successfulAttachment = false;
-        }
-
-        if(!successfulAttachment)
-        {
-            logDebugLostEmail(parentObject.Id, validFileExtensionList, attachmentSize, fileNames, fileSizes, erroredFiles, erroredReasons);
         }
 
         return successfulAttachment;

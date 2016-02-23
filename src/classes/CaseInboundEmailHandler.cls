@@ -374,6 +374,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         rtId = rtypes[0].Id;
                     }
 
+                    if(fname.length() > 40)
+                    {
+                        fname = fname.subString(0, 40);
+                    }
+
+                    if(lname.length() > 80)
+                    {
+                        lname = lname.subString(0, 80);
+                    }
+
                     Contact c = new Contact(FirstName = fname, LastName = lname, Email = email.fromAddress, RecordTypeId=rtId);
                     insert c;
 

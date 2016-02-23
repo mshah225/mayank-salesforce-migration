@@ -120,6 +120,44 @@ public with sharing class Test_CaseInboundEmailHandler {
                             
     }    
 
+    @isTest static void newContactLongName() 
+    {
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service@test.test');   
+        toAddresses.add('default@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user@acme.com.test';
+        email.fromName = 'Last, First';
+        env.fromAddress = 'user@acme.com.test';
+
+        // set the body of the attachment
+        inAtt.body = blob.valueOf('test');
+        inAtt.fileName = 'attach.pdf';
+        inAtt.mimeTypeSubType = 'plain/txt';
+
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { inAtt }; 
+       
+        Messaging.InboundEmail.TextAttachment tattachment = new Messaging.InboundEmail.TextAttachment();
+        String csv = 'this is just a test';
+        tattachment.body = csv;
+        tattachment.fileName = 'data.txt';
+        tattachment.mimeTypeSubType = 'text/plain';
+          
+        email.textAttachments = new Messaging.inboundEmail.TextAttachment[] { tattachment };   
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env );  
+        
+        email.subject = 'Test 2';
+        emailServiceObj.handleInboundEmail(email, env );  
+                            
+    } 
 
     @isTest static void existingContact() 
     {

@@ -31,7 +31,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         String templateId = String.valueOf(e1.Id).substring(0,15);
         
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c();
-        car.Email_Address__c = 'service@test.test'; 
+        car.Email_Address__c = 'service12345123451234512345@test.test'; 
         car.Customer_notice_email_from_name__c = 'Test Service';
         car.Email_template_id__c = templateId;
         car.Queue_id__c = queueId;
@@ -50,10 +50,10 @@ public with sharing class Test_CaseInboundEmailHandler {
         carDefault.Email_template_id__c = templateId;
         carDefault.Queue_Id__c = queueId;
         carDefault.Fallback_Queue_Id__c = fallbackQueueId;
-        carDefault.Origin__c = 'Test Origin';
-        carDefault.Functional_Group__c = 'Test Group';
-        carDefault.Category__c = 'Test Category';
-        carDefault.Sub_Category__c = 'Test Subcategory';
+        carDefault.Origin__c = 'Test Origin 2';
+        carDefault.Functional_Group__c = 'Test Group 2';
+        carDefault.Category__c = 'Test Category 2';
+        carDefault.Sub_Category__c = 'Test Subcategory 2';
         carDefault.Priority__c = 999;
 
         insert carDefault;
@@ -88,7 +88,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');   
+        toAddresses.add('service12345123451234512345@test.test');   
         toAddresses.add('default@test.test');
         email.toAddresses = toAddresses;
         email.subject = 'test';
@@ -147,7 +147,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');   
+        toAddresses.add('service12345123451234512345@test.test');   
         email.toAddresses = toAddresses;
         email.subject = 'test';
         email.fromAddress = 'user2@acme.com.test';
@@ -168,6 +168,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
+        System.assertEquals('Test Group', createdCase.Functional_Group__c);
    }  
 
     @isTest static void existingContactCcOnly() 
@@ -179,7 +180,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
         List<string> ccAddresses = new List<string>();
-        ccAddresses.add('service@test.test');   
+        ccAddresses.add('service12345123451234512345@test.test');   
         email.ccAddresses = ccAddresses;
         email.subject = 'test';
         email.fromAddress = 'user2@acme.com.test';
@@ -204,7 +205,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');   
+        toAddresses.add('service12345123451234512345@test.test');   
         email.toAddresses = toAddresses;
         email.subject = 'test';
         email.fromAddress = 'user@acme.com.test';
@@ -381,7 +382,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');
+        toAddresses.add('service12345123451234512345@test.test');
         email.toAddresses = toAddresses;
         email.subject = 'test email';
         email.fromName = 'Last, First';
@@ -415,7 +416,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');
+        toAddresses.add('service12345123451234512345@test.test');
         email.toAddresses = toAddresses;
         email.fromName = 'Last, First';
         email.fromAddress = 'user@acme.com.test';
@@ -462,7 +463,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');   
+        toAddresses.add('service12345123451234512346@test.test');   
         email.toAddresses = toAddresses;
         email.subject = 'test';
         email.fromAddress = 'user2@acme.com.test';
@@ -483,5 +484,6 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
+        System.assertEquals('Test Group', createdCase.Functional_Group__c);
    }  
 }

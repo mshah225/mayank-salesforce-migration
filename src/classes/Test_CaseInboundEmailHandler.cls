@@ -127,12 +127,12 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');   
+        toAddresses.add('service12345123451234512345@test.test');   
         toAddresses.add('default@test.test');
         email.toAddresses = toAddresses;
         email.subject = 'test';
         email.fromAddress = 'user@acme.com.test';
-        email.fromName = 'Last, First';
+        email.fromName = '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789, 01234567890123456789012345678901234567890123456789';
         env.fromAddress = 'user@acme.com.test';
 
         // set the body of the attachment
@@ -153,10 +153,25 @@ public with sharing class Test_CaseInboundEmailHandler {
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env );  
-        
-        email.subject = 'Test 2';
-        emailServiceObj.handleInboundEmail(email, env );  
-                            
+
+        Contact createdContact = [
+            SELECT Id, FirstName, LastName, Email FROM Contact LIMIT 1
+        ];
+
+        System.assert(createdContact != null);
+        System.assert(createdContact.FirstName == '012345678901234567890123456789012345678'); 
+        System.assert(createdContact.LastName == '01234567890123456789012345678901234567890123456789012345678901234567890123456789'); 
+        System.assert(createdContact.Email == 'user@acme.com.test');
+
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :createdContact.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status); 
     } 
 
     @isTest static void existingContact() 

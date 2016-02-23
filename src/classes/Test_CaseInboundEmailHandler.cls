@@ -114,11 +114,27 @@ public with sharing class Test_CaseInboundEmailHandler {
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env );  
-        
-        email.subject = 'Test 2';
-        emailServiceObj.handleInboundEmail(email, env );  
-                            
-    }    
+
+        Contact createdContact = [
+            SELECT Id, FirstName, LastName, Email FROM Contact LIMIT 1
+        ];
+
+        System.debug('CREATED CONTACT: ' + createdContact);
+        System.assert(createdContact != null);
+        System.assert(createdContact.FirstName == 'First'); 
+        System.assert(createdContact.LastName == 'Last'); 
+        System.assert(createdContact.Email == 'user@acme.com.test');
+
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :createdContact.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+    }
 
 
     @isTest static void existingContact() 
@@ -141,10 +157,18 @@ public with sharing class Test_CaseInboundEmailHandler {
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env );  
-        email.subject = 'Test 2';
-        emailServiceObj.handleInboundEmail(email, env );  
-                            
-    }  
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+   }  
 
     @isTest static void existingContactCcOnly() 
     {
@@ -164,10 +188,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.handleInboundEmail(email, env );  
-        email.subject = 'Test CC Only';
-        emailServiceObj.handleInboundEmail(email, env );  
-                            
+        emailServiceObj.handleInboundEmail(email, env);  
     }  
 
 
@@ -193,9 +214,18 @@ public with sharing class Test_CaseInboundEmailHandler {
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env );  
-        email.subject = 'Test 2';
-        emailServiceObj.handleInboundEmail(email, env );  
-                            
+
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c1.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
     }  
 
     @isTest static void existingContactDefaultRule() 
@@ -421,4 +451,37 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assertNotEquals(result.Id, null, 'An error occurred when logging the failure');
     }
+
+    @isTest static void testPartialMatch() 
+    {
+        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+        insert c;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service@test.test');   
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user2@acme.com.test';
+        email.fromName = 'Last, First';
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env );  
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+   }  
 }

@@ -34,7 +34,10 @@ public with sharing class HelpDeskController
 
         for (CaseStatus cs: [Select Id, MasterLabel From CaseStatus Where IsClosed = true])
         {
-            closeCaseStatusOptions.add(new SelectOption(cs.Id, cs.MasterLabel));
+            if (!(cs.MasterLabel == 'Closed: Forwarded'))
+            {
+                closeCaseStatusOptions.add(new SelectOption(cs.Id, cs.MasterLabel));
+            }
         }
 
         return closeCaseStatusOptions;
@@ -209,7 +212,6 @@ public with sharing class HelpDeskController
         String personalEmail = Apexpages.currentPage().getParameters().get('personalemail');
         String birthdateFormatted;
         String phoneWildcarded;
-        Integer phoneLength = phone.length();
 
         if (birthdate.length() > 0)
         {
@@ -292,6 +294,7 @@ public with sharing class HelpDeskController
         }
         else if (!phone.equals('') && dateSearch)
         {
+            Integer phoneLength = phone.length();
             phone = formatPhone(phone);
 
             if (phoneLength > 0 && phoneLength <= 3)
@@ -367,32 +370,20 @@ public with sharing class HelpDeskController
 
         if (dateSearch)
         {
-            if (soqlOptions != '')
-            {
-                soql = '' +
-                    'SELECT Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
-                    'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
-                    'Personal_Email__c ' +
-                    'FROM Contact ' +
-                    'WHERE FirstName != null';
+            soql = '' +
+                'SELECT Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
+                'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
+                'Personal_Email__c ' +
+                'FROM Contact ' +
+                'WHERE FirstName != null';
 
-                soql += soqlOptions;
+            soql += soqlOptions;
 
-                soql += ' ORDER BY ' + sortField + ' ' + sortDir + ' ' +
-                    'LIMIT 25';
+            soql += ' ORDER BY ' + sortField + ' ' + sortDir + ' ' +
+                'LIMIT 25';
 
-                // run the query again
-                runSearch(true);
-            }
-            else
-            {
-                ApexPages.addMessage(
-                    new ApexPages.Message(
-                        ApexPages.Severity.INFO,
-                        'You must enter search terms.'
-                    )
-                );
-            }
+            // run the query again
+            runSearch(true);
         }
         else
         {
@@ -572,6 +563,7 @@ public with sharing class HelpDeskController
     public void newCase()
     {
         isNewCaseSelected = true;
+        isExistingCaseSelected = false;
 
         if (mycase == null)
         {
@@ -584,16 +576,13 @@ public with sharing class HelpDeskController
 
         mycase.ContactId = selectedContactId;
         mycase.Status = 'New';
-        mycase.Origin = 'Phone';
+        mycase.Origin__c = 'Phone';
         mycase.Campus__c = 'Tempe';
         mycase.Functional_Group__c = 'Help Desk';
     }
 
     public void newContact()
     {
-        isNewContactSelected = true;
-        isContactSet = false;
-
         if (mycontact == null)
         {
             mycontact = new Contact();
@@ -613,9 +602,11 @@ public with sharing class HelpDeskController
         mycontact.Email = contactsrch.Personal_Email__c;
         mycontact.Phone = contactsrch.Phone;
         mycontact.Help_Desk_Provided_Phone__c = callerId;
+
         isContactSet = false;
         isNewCaseSelected = false;
         isExistingCaseSelected = false;
+        isNewContactSelected = true;
     }
 
     public void cancelNewContact()
@@ -643,15 +634,15 @@ public with sharing class HelpDeskController
     {
         isNewContactSelected = false;
         isContactSet = false;
+        isKnowledgeSearch = false;
+        isNewCaseSelected = false;
+        isExistingCaseSelected = false;
+        selectedContactId = null;
 
         if (cases != null)
         {
             cases.clear();
         }
-
-        isNewCaseSelected = false;
-        isExistingCaseSelected = false;
-        selectedContactId = null;
 
         if (contactsrch != null)
         {
@@ -683,21 +674,14 @@ public with sharing class HelpDeskController
         }
 
         // query to get open cases for the contact
-        try
-        {
-            casesbase = Database.query(
-                'SELECT Id, Subject, Reason, Description, Status, Origin, Campus__c, ' +
-                    'Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, ' +
-                    'Private_Note_Help_Desk__c, ClosedDate, CaseNumber ' +
-                'FROM Case ' +
-                'WHERE ContactId = :selectedContactId ' +
-                'ORDER BY CreatedDate DESC'
-            );
-        }
-        catch (Exception e)
-        {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Ooops!'));
-        }
+        casesbase = Database.query(
+            'SELECT Id, Subject, Reason, Description, Status, Origin__c, Campus__c, ' +
+                'Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, ' +
+                'Private_Note_Help_Desk__c, ClosedDate, CaseNumber ' +
+            'FROM Case ' +
+            'WHERE ContactId = :selectedContactId ' +
+            'ORDER BY CreatedDate DESC'
+        );
 
         if (cases == null)
         {
@@ -755,46 +739,30 @@ public with sharing class HelpDeskController
 
     public PageReference saveCase()
     {
-        try
+        if (String.isEmpty(mycase.Subject) || String.isEmpty(mycase.Description))
         {
-            if (String.isEmpty(mycase.Subject) || String.isEmpty(mycase.Description))
-            {
-                ApexPages.addMessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'You must enter both a Subject and Description to save the Case.'
-                    )
-                );
+            ApexPages.addMessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must enter both a Subject and Description to save the Case.'
+                )
+            );
 
-                return null;
-            }
-
-            upsert mycase;
-
-            PageReference page = new PageReference('/' + mycase.Id);
-            page.setRedirect(true);
-
-            return page;
+            return null;
         }
-        catch (Exception ex)
-        {
-            ApexPages.addMessages(ex);
 
-            return ApexPages.currentPage();
-        }
+        upsert mycase;
+
+        PageReference page = new PageReference('/' + mycase.Id);
+        page.setRedirect(true);
+
+        return page;
     }
 
     public void cancelCase()
     {
-        if (isNewCaseSelected)
-        {
-            isNewCaseSelected = false;
-        }
-        else if (isExistingCaseSelected)
-        {
-            isExistingCaseSelected = false;
-        }
-
+        isNewCaseSelected = false;
+        isExistingCaseSelected = false;
         isKnowledgeSearch = false;
     }
 
@@ -802,66 +770,50 @@ public with sharing class HelpDeskController
     {
         boolean success = false;
 
-        try
+        if (String.isEmpty(mycase.Subject) || String.isEmpty(mycase.Description))
         {
-            if (String.isEmpty(mycase.Subject) || String.isEmpty(mycase.Description))
-            {
-                ApexPages.addMessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'You must enter both a Subject and Description to save the Case.'
-                    )
-                );
+            ApexPages.addMessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must enter both a Subject and Description to save the Case.'
+                )
+            );
 
-                return null;
-            }
-
-            upsert mycase;
-
-            PageReference page = new PageReference('/apex/CaseTransfer?id=' + mycase.Id);
-            page.setRedirect(true);
-
-            return page;
+            return null;
         }
-        catch (Exception ex)
-        {
-            ApexPages.addMessages(ex);
 
-            return ApexPages.currentPage();
-        }
+        upsert mycase;
+
+        PageReference page = new PageReference('/apex/CaseTransfer?id=' + mycase.Id);
+        page.setRedirect(true);
+
+        return page;
     }
 
     // Upsert Case and set bool value to render the close status panel.
     public void saveAndCloseCase()
     {
-        try
+        if (String.isEmpty(mycase.Subject) || String.isEmpty(mycase.Description))
         {
-            if (String.isEmpty(mycase.Subject) || String.isEmpty(mycase.Description))
-            {
-                ApexPages.addMessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'You must enter both a Subject and Description to save the Case.'
-                    )
-                );
+            ApexPages.addMessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must enter both a Subject and Description to save the Case.'
+                )
+            );
 
-                return;
-            }
-
-            upsert mycase;
-
-            isCloseCase = true;
+            return;
         }
-        catch (Exception ex)
-        {
-            ApexPages.addMessages(ex);
-        }
+
+        upsert mycase;
+
+        isCloseCase = true;
     }
 
     public PageReference saveCloseCase()
     {
-        if (!(null == selectedCloseCaseStatusOption
-            || selectedCloseCaseStatusOption.length() == 0))
+        if (!(selectedCloseCaseStatusOption == null
+             || selectedCloseCaseStatusOption.length() == 0))
         {
             mycase.Status = [
                 SELECT MasterLabel
@@ -879,24 +831,19 @@ public with sharing class HelpDeskController
 
             return page;
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            ApexPages.addMessages(ex);
-
-            return ApexPages.currentPage();
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, e.getMessage()));
         }
+
+        return null;
     }
 
     public void cancelCloseCase()
     {
-        if (isNewCaseSelected)
-        {
-            isNewCaseSelected = false;
-        }
-        else if (isExistingCaseSelected)
-        {
-            isExistingCaseSelected = false;
-        }
+        isNewCaseSelected = false;
+        isExistingCaseSelected = true;
+        isKnowledgeSearch = false;
 
         if (isCloseCase)
         {

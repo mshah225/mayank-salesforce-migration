@@ -387,12 +387,15 @@
                 <apex:outputPanel id="innersecond" layout="block">
                     <apex:outputPanel id="innersecondOpenCases"
                                       layout="block"
-                                      rendered="{!NOT(isNewCaseSelected) && NOT(isExistingCaseSelected) && NOT(isCloseCase)}">
+                                      rendered="{!NOT(isNewCaseSelected)
+                                                 && NOT(isExistingCaseSelected)
+                                                 && NOT(isCloseCase)}">
                         <apex:pageBlock title="Cases" id="opencasespb">
                             <div style="height:258px;overflow-y:auto;border-bottom: solid 1px #ccc;">
                                 <apex:pageBlockTable value="{!cases}"
                                                      var="case"
-                                                     id="opencasespbt">
+                                                     id="opencasespbt"
+                                                     rendered="{!NOT(isNewContactSelected)}">
                                     <apex:column headerValue="">
                                         <apex:commandLink action="{!setAsCase}"
                                                           title="Set as Case"
@@ -544,9 +547,9 @@
                     <apex:outputPanel id="innersecondCloseCase"
                                       layout="block"
                                       rendered="{!isCloseCase}">
-                        <apex:pageBlock title="Close Case" id="caseclose">
+                        <apex:pageBlock title="Close Case - {!mycase.CaseNumber}" id="caseclose">
                             <div style="height:260px;overflow-y:auto;">
-                                <apex:pageBlockSection title="Case Information" columns="1">
+                                <apex:pageBlockSection >
                                     <apex:selectList value="{!selectedCloseCaseStatusOption}"
                                                      multiselect="false"
                                                      size="1"
@@ -555,15 +558,23 @@
                                         <apex:selectOptions value="{!closeCaseStatusOptions}"/>
                                     </apex:selectList>
 
-                                    <apex:inputField value="{!mycase.Status}"
-                                                     label=""
-                                                     style="display:none;visibility:hidden"/>
+                                    <br />
 
                                     <apex:inputField value="{!mycase.Functional_Group__c}"/>
 
+                                     <br />
+
                                     <apex:inputField value="{!mycase.Category__c}"/>
 
+                                    <br />
+
                                     <apex:inputField value="{!mycase.Sub_Category__c}"/>
+
+                                    <br />
+
+                                    <apex:inputField value="{!mycase.Status}"
+                                                     label=""
+                                                     style="display:none;visibility:hidden"/>
                                 </apex:pageBlockSection>
                             </div>
 
@@ -571,14 +582,27 @@
                                 <apex:commandButton id="saveCloseCaseButton"
                                                     action="{!saveCloseCase}"
                                                     value="Save"
+                                                    rerender="messages"
+                                                    status="loadingStatus5"
+                                                    styleClass="customActionBtn"
                                                     onComplete="closeTab();"/>
 
                                 <apex:commandButton id="cancelCloseCaseButton"
                                                     action="{!cancelCloseCase}"
                                                     value="Cancel"
                                                     immediate="true"
+                                                    status="loadingStatus5"
+                                                    styleClass="customBtn"
                                                     reRender="innersecond"
                                                     onComplete="closeTab();"/>
+
+                                <apex:actionStatus id="loadingStatus5" >
+                                    <apex:facet name="start" >
+                                        <i class="fa fa-spinner fa-spin"
+                                           style="margin-top:8px;margin-left:5px;
+                                             font-size:14pt;color:#334b70;position:absolute;"></i>
+                                    </apex:facet>
+                                </apex:actionStatus>
                             </apex:pageBlockButtons>
                         </apex:pageBlock>
                     </apex:outputPanel>
@@ -590,8 +614,9 @@
             <apex:outputPanel id="results">
                 <apex:form id="knowledgeForm">
                     <apex:pageBlock id="resultsBlock"
-                                    rendered="{!IF(!isKnowledgeSearch && !isContactSet, true,
-                                            false)}"
+                                    rendered="{!IF(!isKnowledgeSearch
+                                                   && !isContactSet
+                                                   && !isNewContactSelected, true, false)}"
                                     title="Search Results">
                         <div style="max-height:300px;overflow-y:auto;">
                             <apex:outputPanel rendered="{!IF((contacts.size == 0 &&

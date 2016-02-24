@@ -1,49 +1,30 @@
 @isTest
 private class Test_HelpDeskController
 {
-    @isTest static void testCreateContactCreateCaseSaveCase()
+    private static Contact testContact;
+
+    private static void setUpTest()
     {
-        PageReference pageRef = Page.HelpDesk;
-        Test.setCurrentPage(pageRef);
+        testContact = ContactService.createTestContact();
+        testContact.Phone = '1111111111';
+        testContact.EMPLID__c = '1111111111';
 
-        // Populate some initial Contact search parameters
-        ApexPages.currentPage().getParameters().put('ANI', '4805551213');
-        ApexPages.currentPage().getParameters().put('phone', '4805551213');
-        ApexPages.currentPage().getParameters().put('birthdate', '12/12/1970');
-        ApexPages.currentPage().getParameters().put('firstname', 'John');
-        ApexPages.currentPage().getParameters().put('lastname', 'Doe');
-        ApexPages.currentPage().getParameters().put('asuriteid', 'jdoe');
-        ApexPages.currentPage().getParameters().put('emplid', '1111111');
-        ApexPages.currentPage().getParameters().put('directoryemail', 'noone@asu.edu');
-        ApexPages.currentPage().getParameters().put('personalemail', 'noone@asu.edu');
-
-
-        HelpDeskController controller = new HelpDeskController();
-        controller.runSearch();
-        controller.toggleSort();
-        controller.clearContactSearch();
-        controller.newContact();
-        controller.cancelNewContact();
-        controller.newContact();
-        controller.mycontact.lastname = 'Doe';
-        controller.saveContact();
-        controller.newCase();
-        controller.cancelCase();
-        controller.newCase();
-        controller.saveCase();
-        controller.mycase.Subject = 'test';
-        controller.mycase.Description = 'test';
-        controller.saveCase();
+        insert testContact;
     }
 
-    @isTest static void testCreateContactCreateCaseSaveAndCloseCase()
+    @isTest static void testCreateContactCreateCaseSaveCase()
     {
+        setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
-        // Populate some initial Contact search parameters
-        ApexPages.currentPage().getParameters().put('ANI', '4805551213');
-        ApexPages.currentPage().getParameters().put('phone', '4805551213');
+        List<Case> caseList = CaseService.createTestCases(2, testContact);
+
+        insert caseList;
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+        ApexPages.currentPage().getParameters().put('phone', '');
         ApexPages.currentPage().getParameters().put('birthdate', '');
         ApexPages.currentPage().getParameters().put('firstname', '');
         ApexPages.currentPage().getParameters().put('lastname', '');
@@ -52,139 +33,351 @@ private class Test_HelpDeskController
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
 
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
 
-        HelpDeskController controller = new HelpDeskController();
+        Test.startTest();
 
-        // Search phone fields.
-        controller.runSearch();
+        HelpDeskController hdc = new HelpDeskController();
 
-        // Search birthdate (SOQL).
+        // Test cancel new contact after case selection
+        hdc.selectedContactId = testContact.Id;
+        hdc.selectedCaseId = caseList[0].Id;
+        hdc.setAsCase();
+        hdc.newContact();
+        hdc.cancelNewContact();
+
+        // Clear out search
+        hdc.clearContactSearch();
+
+        // Create the new contact.
+        hdc.newContact();
+        hdc.mycontact.lastname = 'Doe';
+        hdc.saveContact();
+
+        // Create the new Case and back out for coverage.
+        hdc.newCase();
+        hdc.cancelCase();
+
+        // This flags an error on sub and desc.
+        hdc.newCase();
+        hdc.saveCase();
+
+        // Fill out the sub and desc to properly save the case.
+        hdc.mycase.Subject = 'test';
+        hdc.mycase.Description = 'test';
+        hdc.saveCase();
+
+        Test.stopTest();
+
+        PageReference control = new PageReference('/' + hdc.mycase.Id);
+
+        System.assertEquals(control.getUrl(), hdc.saveCase().getUrl());
+    }
+
+    @isTest static void testCreateCaseSaveAndClose()
+    {
+        setUpTest();
+        PageReference pageRef = Page.HelpDesk;
+        Test.setCurrentPage(pageRef);
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
         ApexPages.currentPage().getParameters().put('phone', '');
-        ApexPages.currentPage().getParameters().put('birthdate', '12/12/1970');
-        controller.runSearch();
-
-        // Search name fields.
         ApexPages.currentPage().getParameters().put('birthdate', '');
-        ApexPages.currentPage().getParameters().put('firstname', 'John');
-        controller.runSearch();
-
-        // Search email fields.
         ApexPages.currentPage().getParameters().put('firstname', '');
-        ApexPages.currentPage().getParameters().put('directoryemail', 'noone@asu.edu');
-        controller.runSearch();
-
-        controller.toggleSort();
-        controller.clearContactSearch();
-        controller.newContact();
-        controller.cancelNewContact();
-        controller.newContact();
-        controller.mycontact.lastname = 'Doe';
-        controller.saveContact();
-        controller.newCase();
-        controller.cancelCase();
-        controller.newCase();
-        controller.saveAndCloseCase();
-        controller.cancelCloseCase();
-        controller.saveAndCloseCase();
-        List<SelectOption> closeStatuses = new List<SelectOption>();
-        closeStatuses = controller.getcloseCaseStatusOptions();
-
-        System.assertNotEquals(closeStatuses.size(), 0);
-        controller.selectedCloseCaseStatusOption = closeStatuses[0].getValue();
-        controller.saveCloseCase();
-    }
-
-    @isTest static void testCreateContactCreateCaseSaveAndTransferCase()
-    {
-        PageReference pageRef = Page.HelpDesk;
-        Test.setCurrentPage(pageRef);
-
-        // Populate some initial Contact search parameters
-        ApexPages.currentPage().getParameters().put('ANI', '4805551213');
-        ApexPages.currentPage().getParameters().put('phone', '4805551213');
-        ApexPages.currentPage().getParameters().put('birthdate', '12/12/1970');
-        ApexPages.currentPage().getParameters().put('firstname', 'John');
-        ApexPages.currentPage().getParameters().put('lastname', 'Doe');
-        ApexPages.currentPage().getParameters().put('asuriteid', 'jdoe');
-        ApexPages.currentPage().getParameters().put('emplid', '1111111');
-        ApexPages.currentPage().getParameters().put('directoryemail', 'noone@asu.edu');
-        ApexPages.currentPage().getParameters().put('personalemail', 'noone@asu.edu');
-
-
-        HelpDeskController controller = new HelpDeskController();
-        controller.runSearch();
-        controller.toggleSort();
-        controller.clearContactSearch();
-        controller.newContact();
-        controller.cancelNewContact();
-        controller.newContact();
-        controller.mycontact.FirstName = 'John';
-        controller.mycontact.LastName = 'Doe';
-        controller.mycontact.Email = 'test@nomail.com';
-        controller.mycontact.MailingPostalCode = '11111';
-        controller.saveContact();
-        controller.newCase();
-        controller.cancelCase();
-        controller.newCase();
-        controller.saveAndCloseCase();
-        controller.cancelCloseCase();
-        PageReference failPage = controller.saveAndTransferCase();
-        controller.mycase.Subject = 'test';
-        controller.mycase.Description = 'test';
-        PageReference pr = controller.saveAndTransferCase();
-
-        System.assertNotEquals(pr, null);
-    }
-
-    @isTest static void testSearchExistingContactExistingCase()
-    {
-        PageReference pageRef = Page.HelpDesk;
-        Test.setCurrentPage(pageRef);
-
-        Contact testContact = new Contact(
-            Firstname = 'John',
-            Lastname = 'Doe',
-            Phone = '(480) 555-1213',
-            Email = 'noone@asu.edu'
-        );
-
-        insert testContact;
-
-        Case testCase = new Case(
-            Subject = 'test subject',
-            Description = 'test description',
-            ContactId = testContact.Id
-        );
-
-        insert testCase;
-
-        // Populate some initial Contact search parameters
-        ApexPages.currentPage().getParameters().put('ANI', '4805551213');
-        ApexPages.currentPage().getParameters().put('phone', '4805551213');
-        ApexPages.currentPage().getParameters().put('birthdate', '');
-        ApexPages.currentPage().getParameters().put('firstname', 'John');
-        ApexPages.currentPage().getParameters().put('lastname', 'Doe');
+        ApexPages.currentPage().getParameters().put('lastname', '');
         ApexPages.currentPage().getParameters().put('asuriteid', '');
         ApexPages.currentPage().getParameters().put('emplid', '');
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
 
-        HelpDeskController controller = new HelpDeskController();
-        controller.runSearch();
-        controller.toggleSort();
-        controller.selectedContactId = testContact.Id;
-        controller.contacts.add(testContact);
-        controller.setAsContact();
-        controller.setAsHelpDeskProvidedPhone();
-        controller.mycase = testCase;
-        controller.selectedCaseId = testCase.Id;
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
 
-        HelpDeskController.CaseWrapper mycasewrapper = new HelpDeskController.CaseWrapper(
-            controller.mycase
+        Test.startTest();
+
+        HelpDeskController hdc = new HelpDeskController();
+
+        // Flip these just to render the page back and forth.
+        hdc.newContact();
+        hdc.cancelNewContact();
+        hdc.setAsHelpDeskProvidedPhone();
+
+        // Test null search
+        hdc.buildSearchString();
+
+        // Search phone sizes.
+        ApexPages.currentPage().getParameters().put('birthdate', '08/12/1989');
+        ApexPages.currentPage().getParameters().put('phone', '111');
+        hdc.buildSearchString();
+
+        ApexPages.currentPage().getParameters().put('phone', '1111');
+        hdc.buildSearchString();
+
+        // Search name only.
+        ApexPages.currentPage().getParameters().put('ANI', '');
+        ApexPages.currentPage().getParameters().put('phone', '');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', 'test');
+        ApexPages.currentPage().getParameters().put('lastname', 'test');
+        ApexPages.currentPage().getParameters().put('asuriteid', '');
+        ApexPages.currentPage().getParameters().put('emplid', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', '');
+        ApexPages.currentPage().getParameters().put('personalemail', '');
+        hdc.buildSearchString();
+
+        // Search phone only.
+        ApexPages.currentPage().getParameters().put('ANI', '');
+        ApexPages.currentPage().getParameters().put('phone', '1111111111');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', '');
+        ApexPages.currentPage().getParameters().put('lastname', '');
+        ApexPages.currentPage().getParameters().put('asuriteid', '');
+        ApexPages.currentPage().getParameters().put('emplid', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', '');
+        ApexPages.currentPage().getParameters().put('personalemail', '');
+        hdc.buildSearchString();
+
+        // Search email fields.
+        ApexPages.currentPage().getParameters().put('ANI', '');
+        ApexPages.currentPage().getParameters().put('phone', '');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', '');
+        ApexPages.currentPage().getParameters().put('lastname', '');
+        ApexPages.currentPage().getParameters().put('asuriteid', '');
+        ApexPages.currentPage().getParameters().put('emplid', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', 'test@nomail.com');
+        ApexPages.currentPage().getParameters().put('personalemail', 'test@nomail.com');
+        hdc.buildSearchString();
+
+        // Test full date search
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+        ApexPages.currentPage().getParameters().put('phone', '1111111111');
+        ApexPages.currentPage().getParameters().put('birthdate', '08/12/1989');
+        ApexPages.currentPage().getParameters().put('firstname', 'test');
+        ApexPages.currentPage().getParameters().put('lastname', 'test');
+        ApexPages.currentPage().getParameters().put('asuriteid', 'testtest');
+        ApexPages.currentPage().getParameters().put('emplid', '1111111111');
+        ApexPages.currentPage().getParameters().put('directoryemail', 'test@nomail.com');
+        ApexPages.currentPage().getParameters().put('personalemail', 'test@nomail.com');
+        hdc.buildSearchString();
+        hdc.sortField = 'firstname';
+        hdc.toggleSort();
+
+        // Test full no date search
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+        ApexPages.currentPage().getParameters().put('phone', '1111111111');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', 'test');
+        ApexPages.currentPage().getParameters().put('lastname', 'test');
+        ApexPages.currentPage().getParameters().put('asuriteid', 'testtest');
+        ApexPages.currentPage().getParameters().put('emplid', '1111111111');
+        ApexPages.currentPage().getParameters().put('directoryemail', 'test@nomail.com');
+        ApexPages.currentPage().getParameters().put('personalemail', 'test@nomail.com');
+        hdc.buildSearchString();
+
+        // Create new case to save and close
+        hdc.newCase();
+
+        // Get sub and desc error to trigger
+        hdc.saveAndCloseCase();
+        hdc.cancelCloseCase();
+
+        // Add sub and desc to save
+        hdc.mycase.Subject = 'Test';
+        hdc.mycase.Description = 'Testing';
+        hdc.saveAndCloseCase();
+
+        // Get index 1 for close status, so its not --Select--
+        List<SelectOption> closeStatuses = hdc.getcloseCaseStatusOptions();
+        hdc.selectedCloseCaseStatusOption = closeStatuses[1].getValue();
+        hdc.saveCloseCase();
+
+        Test.stopTest();
+
+        PageReference queuePage = new PageReference('/500?fcf=00Bd0000005TDlX');
+
+        System.assertNotEquals(closeStatuses.size(), 0);
+        System.assertEquals(queuePage.getUrl(), hdc.saveCloseCase().getUrl());
+    }
+
+    @isTest static void testSetAsCaseForArticlePop()
+    {
+        setUpTest();
+        PageReference pageRef = Page.HelpDesk;
+        Test.setCurrentPage(pageRef);
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+        ApexPages.currentPage().getParameters().put('phone', '');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', '');
+        ApexPages.currentPage().getParameters().put('lastname', '');
+        ApexPages.currentPage().getParameters().put('asuriteid', '');
+        ApexPages.currentPage().getParameters().put('emplid', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', '');
+        ApexPages.currentPage().getParameters().put('personalemail', '');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        List<Case> caseList = CaseService.createTestCases(3, testContact);
+
+        insert caseList;
+
+        // Create a test FAQ
+        FAQ__kav testFAQ = new FAQ__kav(
+            Title = 'Testing a FAQ for the test',
+            Answer__c = 'This is the body of the FAQ',
+            UrlName = 'Testing-a-FAQ-for-the-test'
         );
 
-        controller.cases.add(mycasewrapper);
-        controller.setAsCase();
-        PageReference transferCasePage = controller.saveAndTransferCase();
+        insert testFAQ;
+
+        // After insert, query back for the KnowlegeArticleId
+        FAQ__kav faqArticle = [
+            SELECT KnowledgeArticleId
+            FROM FAQ__kav
+            WHERE Id = :testFAQ.id
+        ];
+
+        // Publish said FAQ
+        KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
+
+        // Create a new CaseArticle with the FAQ and Case
+        CaseArticle art = new CaseArticle(
+            CaseId = caseList[0].Id,
+            KnowledgeArticleId = faqArticle.KnowledgeArticleId
+        );
+
+        insert art;
+
+        Test.startTest();
+
+        HelpDeskController hdc = new HelpDeskController();
+        hdc.selectedCaseId = caseList[0].Id;
+        hdc.setAsCase();
+
+        // Make this fail with no sub and des
+        hdc.mycase.Subject = '';
+        hdc.mycase.Description = '';
+        hdc.saveAndTransferCase();
+
+        // Add sub and desc and save again
+        hdc.mycase.Subject = 'Test';
+        hdc.mycase.Description = 'Testing desc';
+        hdc.saveAndTransferCase();
+
+        Test.stopTest();
+
+        PageReference control = new PageReference('/apex/CaseTransfer?id=' + hdc.mycase.Id);
+        System.assertEquals(control.getUrl(), hdc.saveAndTransferCase().getUrl());
+    }
+
+    @isTest static void testKnowledgeSearchAttachAndRemove()
+    {
+        setUpTest();
+        PageReference pageRef = Page.HelpDesk;
+        Test.setCurrentPage(pageRef);
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+        ApexPages.currentPage().getParameters().put('phone', '');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', '');
+        ApexPages.currentPage().getParameters().put('lastname', '');
+        ApexPages.currentPage().getParameters().put('asuriteid', '');
+        ApexPages.currentPage().getParameters().put('emplid', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', '');
+        ApexPages.currentPage().getParameters().put('personalemail', '');
+
+        List<Case> caseList = CaseService.createTestCases(3, testContact);
+
+        insert caseList;
+
+        // Create a test FAQ
+        FAQ__kav testFAQ = new FAQ__kav(
+            Title = 'Testing FAQ for Articles',
+            Answer__c = 'This is the body of the FAQ',
+            UrlName = 'Testing-FAQ-for-Articles'
+        );
+
+        insert testFAQ;
+
+        // After insert, query back for the KnowlegeArticleId
+        FAQ__kav faqArticle = [
+            SELECT KnowledgeArticleId
+            FROM FAQ__kav
+            WHERE Id = :testFAQ.id
+        ];
+
+        // Publish said FAQ
+        KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
+
+        // Create a second FAQ for testing the search params.
+        testFAQ = new FAQ__kav(
+            Title = 'Testing FAQ for Articles2',
+            Answer__c = 'This is the body of the FAQ',
+            UrlName = 'Testing-FAQ-for-Articles2'
+        );
+
+        insert testFAQ;
+
+        // After insert, query back for the KnowlegeArticleId
+        faqArticle = [
+            SELECT KnowledgeArticleId
+            FROM FAQ__kav
+            WHERE Id = :testFAQ.id
+        ];
+
+        // Publish said FAQ
+        KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
+
+        // Create a new CaseArticle with the FAQ and Case
+        CaseArticle art = new CaseArticle(
+            CaseId = caseList[0].Id,
+            KnowledgeArticleId = faqArticle.KnowledgeArticleId
+        );
+
+        insert art;
+
+        // Set the results for the SOSL search to the contact and FAQ
+        Id[] fixedSearchResults = new Id[2];
+        fixedSearchResults[0] = testContact.Id;
+        fixedSearchResults[1] = faqArticle.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        Test.startTest();
+
+        HelpDeskController hdc = new HelpDeskController();
+        hdc.selectedContactId = testContact.Id;
+        hdc.setAsContact();
+        hdc.selectedCaseId = caseList[0].Id;
+        hdc.setAsCase();
+
+        // Test null search for knowledge
+        hdc.knowledgeSearch();
+
+        // Test with string
+        hdc.knowString = 'test';
+        hdc.knowledgeSearch();
+        hdc.selectedKnowledgeArticleId = faqArticle.KnowledgeArticleId;
+        hdc.articleDetails();
+        hdc.attachArticleToCase();
+        hdc.removeArticleFromCase();
+
+        Test.stopTest();
+
+        List<CaseArticle> caseArtList = [
+            SELECT Id
+            FROM CaseArticle
+            WHERE CaseId = :caseList[0].Id
+        ];
+
+        System.assertEquals(0, caseArtList.size());
     }
 }

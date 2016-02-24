@@ -447,19 +447,18 @@ public with sharing class HelpDeskController
                 'FAQ__kav(' +
                     'KnowledgeArticleId, Title, Answer__c, Summary ' +
                     'WHERE Language = \'en_US\' ' +
-                    'AND PublishStatus = \'Online\' ' +
-                    'LIMIT 30';
+                    'AND PublishStatus = \'Online\'';
 
             Set<Id> caseArticleIds = getCaseArticleIds();
 
             // if we found some, query for their info to display on the page.
             if (caseArticleIds.size() > 0)
             {
-                sosl += ' AND KnowledgeArticleId NOT IN :caseArticleIds)';
+                sosl += ' AND KnowledgeArticleId NOT IN :caseArticleIds LIMIT 30)';
             }
             else
             {
-                sosl += ')';
+                sosl += ' LIMIT 30)';
             }
 
             knowledgeResults = Search.query(sosl);

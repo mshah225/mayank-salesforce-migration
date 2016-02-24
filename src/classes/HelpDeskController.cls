@@ -447,7 +447,8 @@ public with sharing class HelpDeskController
                 'FAQ__kav(' +
                     'KnowledgeArticleId, Title, Answer__c, Summary ' +
                     'WHERE Language = \'en_US\' ' +
-                    'AND PublishStatus = \'Online\'';
+                    'AND PublishStatus = \'Online\' ' +
+                    'LIMIT 30';
 
             Set<Id> caseArticleIds = getCaseArticleIds();
 

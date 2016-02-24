@@ -490,7 +490,7 @@
 
                                     <apex:pageBlockSection columns="2"
                                                            collapsible="false">
-                                        <apex:inputField value="{!mycase.Origin}"/>
+                                        <apex:inputField value="{!mycase.Origin__c}"/>
                                     </apex:pageBlockSection>
                                 </fieldset>
                             </div>

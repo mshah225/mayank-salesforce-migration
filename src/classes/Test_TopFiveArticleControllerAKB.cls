@@ -62,13 +62,16 @@ public with sharing class Test_TopFiveArticleControllerAKB
         req.httpMethod = 'GET';
         RestContext.request = req;
         RestContext.response = res;
-
+        
+        Test.startTest();
         List<TopFiveArticleControllerAKB.ArticleInfo> postResults1 = TopFiveArticleControllerAKB.getTopFiveArticles2('Classes');
         List<TopFiveArticleControllerAKB.ArticleInfo> postResults2 = TopFiveArticleControllerAKB.getTopFiveArticles2('Programs and eAdvisor');
         List<TopFiveArticleControllerAKB.ArticleInfo> postResults3 = TopFiveArticleControllerAKB.getTopFiveArticles2('Application Status');
         List<TopFiveArticleControllerAKB.ArticleInfo> postResults4 = TopFiveArticleControllerAKB.getTopFiveArticles2('Devil2Devil');
         List<TopFiveArticleControllerAKB.ArticleInfo> postResults5 = TopFiveArticleControllerAKB.getTopFiveArticles2('Account Charges');
         List<TopFiveArticleControllerAKB.ArticleInfo> postResults6 = TopFiveArticleControllerAKB.getTopFiveArticles2('Financial Aid and Scholarships');
+        Test.stopTest();
+        
         System.assert(postResults1.size() == 0);
         System.assert(postResults2.size() == 0);
         System.assert(postResults3.size() == 0);
@@ -79,7 +82,21 @@ public with sharing class Test_TopFiveArticleControllerAKB
         for (Integer x = 0; x < 5; x++)
         {
             TopFiveArticleControllerAKB.ArticleInfo ai = postResults6.get(x);
-            System.assert(ai.url == TopFiveArticleControllerAKB.getUrlPrefix() + 'SCLaunch?akb_article_id=' + ai.id);
+            System.assert(ai.url == TopFiveArticleControllerAKB.getUrlPrefix() + 'akb?id=' + ai.id);
         }
+    }
+
+    static testMethod void testGetMoreArticlesUrl()
+    {
+        String dcGroup = 'Finances__c';
+        String dataCategory = 'My_ASU_Devil2Devil';
+     
+        Test.startTest();
+        String checkUrl = TopFiveArticleControllerAKB.getMoreArticlesUrl(dcGroup, dataCategory);
+        Test.stopTest();
+
+        System.assert(checkUrl.contains('viewAllArticles'));
+        System.assert(checkUrl.contains('My_ASU_Devil2Devil'));
+        System.assert(checkUrl.contains('Finances'));
     }
 }

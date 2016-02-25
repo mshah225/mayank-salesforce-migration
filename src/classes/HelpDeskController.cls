@@ -171,7 +171,13 @@ public with sharing class HelpDeskController
     // Runs the actual query, set boolean to run SOQL search. Default SOSL search.
     public void runSearch(Boolean runSOQL)
     {
-        contacts = new List<Contact>();
+        isContactSet = false;
+        isNewCaseSelected = false;
+        isExistingCaseSelected = false;
+        isCloseCase = false;
+        isKnowledgeSearch = false;
+        isNewContactSelected = false;
+//        contacts = new List<Contact>();
 
         try
         {
@@ -201,7 +207,6 @@ public with sharing class HelpDeskController
     // runs the search with parameters passed via Javascript
     public void buildSearchString()
     {
-        isKnowledgeSearch = false;
         String firstName = Apexpages.currentPage().getParameters().get('firstname');
         String lastName = Apexpages.currentPage().getParameters().get('lastname');
         String phone = Apexpages.currentPage().getParameters().get('phone');
@@ -576,7 +581,7 @@ public with sharing class HelpDeskController
 
         mycase.ContactId = selectedContactId;
         mycase.Status = 'New';
-        mycase.Origin__c = 'Phone';
+        mycase.Origin__c = 'Incoming Call';
         mycase.Campus__c = 'Tempe';
         mycase.Functional_Group__c = 'Help Desk';
     }

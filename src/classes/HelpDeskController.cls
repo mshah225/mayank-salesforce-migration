@@ -831,10 +831,7 @@ public with sharing class HelpDeskController
         {
             upsert mycase;
 
-            PageReference page = new PageReference('/500?fcf=00Bd0000005TDlX');
-            page.setRedirect(true);
-
-            return page;
+            return null;
         }
         catch (Exception e)
         {

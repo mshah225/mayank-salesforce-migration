@@ -16,7 +16,12 @@
         // Close the current tab in the Console
         function closeTab() {
             //First find the ID of the current tab to close it
-            sforce.console.getEnclosingTabId(closeSubtab);
+            if (sforce.console.isInConsole()) {
+                sforce.console.getEnclosingTabId(closeSubtab);
+            }
+            else {
+                window.location.href = '/500?fcf=00Bd0000005TDlX';
+            }
         }
 
         var closeSubtab = function closeSubtab(result) {
@@ -506,8 +511,7 @@
                                                     value="Save"
                                                     reRender="messages"
                                                     styleClass="customBtn"
-                                                    status="loadingStatus4"
-                                                    oncomplete="closeTab();"/>
+                                                    status="loadingStatus4"/>
 
                                 <apex:commandButton id="saveAndTransferCaseButton"
                                                     action="{!saveAndTransferCase}"
@@ -582,7 +586,7 @@
                                                     rerender="messages"
                                                     status="loadingStatus5"
                                                     styleClass="customActionBtn"
-                                                    onComplete="closeTab();"/>
+                                                    oncomplete="closeTab();"/>
 
                                 <apex:commandButton id="cancelCloseCaseButton"
                                                     action="{!cancelCloseCase}"
@@ -591,7 +595,7 @@
                                                     status="loadingStatus5"
                                                     styleClass="customBtn"
                                                     reRender="innersecond"
-                                                    onComplete="closeTab();"/>
+                                                    onComplete="disableCaseFields();"/>
 
                                 <apex:actionStatus id="loadingStatus5" >
                                     <apex:facet name="start" >

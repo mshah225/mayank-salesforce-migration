@@ -116,6 +116,13 @@ global class TopFiveArticleControllerAKB
             articles.add(ai);
         }
 
+        ArticleInfo allArticleLink = new ArticleInfo();
+        allArticleLink.rank = 0;
+        allArticleLink.title = 'More Articles';
+        allArticleLink.url = getMoreArticlesUrl(dcGroup, dataCategory);
+        allArticleLink.id = 'noId';
+        articles.add(allArticleLink);
+
         return articles;
     }
 
@@ -126,8 +133,10 @@ global class TopFiveArticleControllerAKB
 
     global static string getMoreArticlesUrl(string dcGroup, string dataCategory)
     {
-        String baseUrl = getUrlPrefix() + '/viewAllArticles';
-        baseUrl += dcGroup.replace('__c', '') + '%3A' + dataCategory.replace('__c','');
+        String baseUrl = getUrlPrefix() + 'viewAllArticles?q=';
+        String dcgroupFix = dcGroup.replace('__c', '');
+        String dataCategoryGroupFix = dataCategory.replace('__c','');
+        baseUrl += dcgroupFix.replace('_', '+') + '+' + dataCategoryGroupFix.replace('_','+');
 
         return baseUrl;
     }

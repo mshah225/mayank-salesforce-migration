@@ -33,8 +33,15 @@ public with sharing class Test_TopFiveArticleControllerAKB
 
         for (Integer i = 0; i < howMany; i++)
         {
-            FAQ__kav faqArticle = [SELECT Id, KnowledgeArticleId FROM FAQ__kav WHERE Id = :faqList[i].Id];
+
+            FAQ__kav faqArticle =  [
+                SELECT Id, KnowledgeArticleId 
+                FROM FAQ__kav 
+                WHERE Id = :faqList[i].Id
+            ];
+
             KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
+            
             FAQ__DataCategorySelection faqDCS = new FAQ__DataCategorySelection(
                 ParentId = faqArticle.Id,
                 DataCategoryGroupName = 'Finances',
@@ -72,12 +79,12 @@ public with sharing class Test_TopFiveArticleControllerAKB
         List<TopFiveArticleControllerAKB.ArticleInfo> postResults6 = TopFiveArticleControllerAKB.getTopFiveArticles2('Financial Aid and Scholarships');
         Test.stopTest();
         
-        System.assert(postResults1.size() == 0);
-        System.assert(postResults2.size() == 0);
-        System.assert(postResults3.size() == 0);
-        System.assert(postResults4.size() == 0);
-        System.assert(postResults5.size() == 0);
-        System.assert(postResults6.size() == 5);
+        System.assert(postResults1.size() == 1);
+        System.assert(postResults2.size() == 1);
+        System.assert(postResults3.size() == 1);
+        System.assert(postResults4.size() == 1);
+        System.assert(postResults5.size() == 1);
+        System.assert(postResults6.size() == 6);
 
         for (Integer x = 0; x < 5; x++)
         {
@@ -96,7 +103,7 @@ public with sharing class Test_TopFiveArticleControllerAKB
         Test.stopTest();
 
         System.assert(checkUrl.contains('viewAllArticles'));
-        System.assert(checkUrl.contains('My_ASU_Devil2Devil'));
+        System.assert(checkUrl.contains('My+ASU+Devil2Devil'));
         System.assert(checkUrl.contains('Finances'));
     }
 }

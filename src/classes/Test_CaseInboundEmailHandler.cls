@@ -44,6 +44,34 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         insert car;
 
+        Case_Assignment_Rule__c rmmCar1 = new Case_Assignment_Rule__c();
+        rmmCar1.Email_Address__c = 'reply-fec817737361077e-10607_html-31250844-7204971-0@e.asu.edu';
+        rmmCar1.Customer_notice_email_from_name__c = 'Test RMM Service 1';
+        rmmCar1.Email_template_id__c = templateId;
+        rmmCar1.Queue_id__c = queueId;
+        rmmCar1.Fallback_Queue_Id__c = fallbackQueueId;
+        rmmCar1.Origin__c = 'Test RMM Origin 1';
+        rmmCar1.Functional_Group__c = 'Test RMM Group 1';
+        rmmCar1.Category__c = 'Test RMM Category 1';
+        rmmCar1.Sub_Category__c = 'Test RMM Subcategory 1';
+        rmmCar1.Priority__c = 998;
+
+        insert rmmCar1;
+
+        Case_Assignment_Rule__c rmmCar2 = new Case_Assignment_Rule__c();
+        rmmCar2.Email_Address__c = 'reply-fdf1234-9999_html-foobar12345-1234567-0@e.asu.edu';
+        rmmCar2.Customer_notice_email_from_name__c = 'Test RMM Service 2';
+        rmmCar2.Email_template_id__c = templateId;
+        rmmCar2.Queue_id__c = queueId;
+        rmmCar2.Fallback_Queue_Id__c = fallbackQueueId;
+        rmmCar2.Origin__c = 'Test RMM Origin 2';
+        rmmCar2.Functional_Group__c = 'Test RMM Group 2';
+        rmmCar2.Category__c = 'Test RMM Category 2';
+        rmmCar2.Sub_Category__c = 'Test RMM Subcategory 2';
+        rmmCar2.Priority__c = 997;
+
+        insert rmmCar2;
+
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c();
         carDefault.Email_Address__c = 'default@test.test';
         carDefault.Customer_notice_email_from_name__c = 'Default Test Service';
@@ -453,7 +481,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertNotEquals(result.Id, null, 'An error occurred when logging the failure');
     }
 
-    @isTest static void testPartialMatch() 
+    @isTest static void testRMMPartialMatchExact() 
     {
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
@@ -463,7 +491,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service12345123451234512346@test.test');   
+        toAddresses.add('reply-fec817737361077e-10607_html-31250844-7204971-0@e.asu.edu');   
         email.toAddresses = toAddresses;
         email.subject = 'test';
         email.fromAddress = 'user2@acme.com.test';
@@ -484,6 +512,40 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
-        System.assertEquals('Test Group', createdCase.Functional_Group__c);
+        System.assertEquals('Test RMM Group 1', createdCase.Functional_Group__c);
    }  
+
+    @isTest static void testRMMPartialMatchPartial() 
+    {
+        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+        insert c;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('reply-fec817737361077e-10607_html-31250844-1234567-0@e.asu.edu');   
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user2@acme.com.test';
+        email.fromName = 'Last, First';
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env );  
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+        System.assertEquals('Test RMM Group 2', createdCase.Functional_Group__c);
+   } 
 }

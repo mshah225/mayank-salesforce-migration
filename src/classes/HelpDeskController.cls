@@ -685,7 +685,8 @@ public with sharing class HelpDeskController
                 'Private_Note_Help_Desk__c, ClosedDate, CaseNumber ' +
             'FROM Case ' +
             'WHERE ContactId = :selectedContactId ' +
-            'ORDER BY CreatedDate DESC'
+            'ORDER BY CreatedDate DESC ' +
+            'LIMIT 25'
         );
 
         if (cases == null)

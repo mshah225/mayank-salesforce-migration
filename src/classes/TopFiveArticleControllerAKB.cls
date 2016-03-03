@@ -116,18 +116,27 @@ global class TopFiveArticleControllerAKB
             articles.add(ai);
         }
 
+        ArticleInfo allArticleLink = new ArticleInfo();
+        allArticleLink.rank = 0;
+        allArticleLink.title = 'More Articles';
+        allArticleLink.url = getMoreArticlesUrl(dcGroup, dataCategory);
+        allArticleLink.id = 'noId';
+        articles.add(allArticleLink);
+
         return articles;
     }
 
     global static string getArticleUrl(KnowledgeArticleVersion kav)
     {
-        return getUrlPrefix() + 'SCLaunch?akb_article_id=' + kav.KnowledgeArticleId;
+        return getUrlPrefix() + 'akb?id=' + kav.KnowledgeArticleId;
     }
 
     global static string getMoreArticlesUrl(string dcGroup, string dataCategory)
     {
-        String baseUrl = getUrlPrefix() + 'kb/pkb_Home?l=en_US&c=';
-        baseUrl += dcGroup.replace('__c', '') + '%3A' + dataCategory.replace('__c','');
+        String baseUrl = getUrlPrefix() + 'viewAllArticles?q=';
+        String dcgroupFix = dcGroup.replace('__c', '');
+        String dataCategoryGroupFix = dataCategory.replace('__c','');
+        baseUrl += dcgroupFix.replace('_', '+') + '+' + dataCategoryGroupFix.replace('_','+');
 
         return baseUrl;
     }
@@ -135,6 +144,7 @@ global class TopFiveArticleControllerAKB
     global static string getUrlPrefix()
     {
         String urlPrefix = 'https://myasu.force.com/';
+        
         if(isSandbox())
         {
             List<String> tokens = URL.getSalesforceBaseUrl().getHost().split('\\.');

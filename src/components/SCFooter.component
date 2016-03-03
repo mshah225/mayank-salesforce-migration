@@ -1,8 +1,14 @@
 <apex:component>
-<!-- This component renders the Service Center Footer -->
-<div class="myasu-cont">
+    <!-- This component renders the Service Center Footer -->
+    <div class="myasu-cont">
         <a href="/feedback">
-            <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg" alt="Feedback" title="Please leave your feedback" onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'" onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'" border="0" style="float:right;"/>
+            <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg"
+                 alt="Feedback"
+                 title="Please leave your feedback"
+                 onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'"
+                 onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'"
+                 border="0"
+                 style="float:right;"/>
         </a>
     </div>
     <br />
@@ -17,4 +23,11 @@
             <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
         </ul>
     </div>
+
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303,
+            '/dist/js/jquery-1.10.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.MyASUHeader4_3,
+            'MyASUHeader4_3/js/asu_header.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303,
+            '/dist/js/bootstrap.min.js')}"/>
 </apex:component>

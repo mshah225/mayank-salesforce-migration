@@ -127,6 +127,61 @@ public without sharing class CaseHandler implements ITrigger
             c.Most_Recent_Functional_Group__c = c.Functional_Group__c;
         }
 
+        //Support for Drupal Webforms
+        if(c.Status == 'Processing')
+        {
+            List<String> subjectSplit = c.Subject.split('%');
+            if(subjectSplit.size() >= 4)
+            {
+                String emplid = '';
+                String first = '';
+                String last = '';
+                
+                for(Integer x = 0; x < subjectSplit.size(); x++)
+                {
+                    List<String> tokenSplit = subjectSplit[x].split(':');
+                    if(tokenSplit.size() >= 2 && tokenSplit[1] != '')
+                    {
+                        if(tokenSplit[0] == 'ASURITE')
+                        {
+                            emplid = tokenSplit[1];
+                        }
+                        else if(tokenSplit[0] == 'First')
+                        {
+                            first = tokenSplit[1];
+                        }
+                        else if(tokenSplit[0] == 'Last')
+                        {
+                            last = tokenSplit[1];
+                        }
+                    }
+                }
+
+                Contact conToCreate = new Contact();
+
+                if(emplid != null && emplid != '')
+                {
+                    List<Contact> contactUsers = [SELECT Id FROM Contact WHERE EMPLID__c = :emplid LIMIT 1];
+                    if(contactUsers != null && contactUsers.size() > 0)
+                    {
+                        c.ContactId = contactUsers[0].Id;
+                    }
+                    else
+                    {
+                        conToCreate.EMPLID__c = emplid;
+                    }
+                }
+
+                if(c.ContactId == null && first != null && first != '' && last != null && last != '')
+                {
+                    conToCreate.FirstName = first;
+                    conToCreate.LastName = last;
+                    insert conToCreate;
+                    c.ContactId = conToCreate.Id;
+                }
+            }
+        }
+
         if (recruitmentCaseRT.size() > 0 && c.RecordTypeId == recruitmentCaseRT[0].Id)
         {
             Contact con = relatedContactMap.get(c.ContactId);

@@ -30,10 +30,10 @@ public with sharing class Test_CaseHandler {
 		return oppList;
 	}
 
-	private static Case createCase(Id queue_id)
+	private static Case createCase(Id queue_id, Contact con)
     {
         Case newCase = new Case(
-            Subject = 'Test Subject%ASURITE:9999999999%Queue:' + queue_id,
+            Subject = 'Test Subject%ASURITE:' + con.EMPLID__c + '%Queue:' + queue_id + '%First:' + con.FirstName + '%Last:' + con.LastName,
             Description = 'Test Description',
             Status = 'Processing'
         );
@@ -960,56 +960,6 @@ public with sharing class Test_CaseHandler {
 			system.assert(ca.OwnerId == ECUser.Id, 'Case owner was not assigned to Enrollment Coach User as specified by Default CAR');
 		}
 	}	
-
-	
-/*
-	static void createCaseAssignmentRule() {
-		Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
-		
-		EmailTemplate e;
-		QueueSobject testQueue;
-		Group testGroup;
-		System.runAs(new User(Id = Userinfo.getUserId())) {
-			e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
-			insert e;
-
-			testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
-			insert testGroup;
-			
-			testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Lead');
-	    	insert testQueue;
-		}
-		
-
-
-	    string queueId = String.valueOf(testQueue.Id).substring(0,15);
-	    string templateId = String.valueOf(e.Id).substring(0,15);
-	    
-	    Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
-	    														  customer_notice_email_from_name__c = 'Test Service',
-	    														  email_template_id__c = templateId,
-	    														  queue_id__c = queueId,
-	    														  origin__c = 'Test Origin',
-	    														  functional_group__c = 'Admission Services - Undergraduate',
-	    														  category__c = 'Test Category',
-	    														  sub_category__c = 'Test Subcategory',
-	    														  priority__c = 99);
-	    insert car;
-
-	    Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu', 
-	    														  customer_notice_email_from_name__c = 'Default Test Service',
-	    														  email_template_id__c = templateId,
-	    														  origin__c = 'Test Origin',
-	    														  queue_id__c = queueId,
-	    														  functional_group__c = 'Admission Services - Undergraduate',
-	    														  category__c = 'Test Category',
-	    														  sub_category__c = 'Test Subcategory',
-	    														  priority__c = 999);
-	    insert carDefault;
-	}
-*/
-
-
     
     static testmethod void TestFAChangeStateWithSufficientLinks()
     {
@@ -1021,7 +971,7 @@ public with sharing class Test_CaseHandler {
         ].Id;
 
         Contact con = createContact();
-        Case c = createCase(fa_id);
+        Case c = createCase(fa_id, con);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '3';
         Test.startTest();
@@ -1038,6 +988,88 @@ public with sharing class Test_CaseHandler {
         System.assert(stat.IsClosedOnCreate == TRUE);
     }
 
+    static testmethod void testCreateWebformsCase()
+    {
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        Contact con = createContact();
+        Test.startTest();
+        Case c = createCase(reg_id, con);
+        Test.stopTest();
+        Case stat = [
+            SELECT ContactId, Status, Visible_by_Contact__c
+            FROM Case
+            WHERE Id = :c.Id LIMIT 1
+        ];
+
+        System.assert(stat.ContactId == con.Id);
+    }
+
+    static testmethod void testCreateWebformsCaseCreateContact()
+    {
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        Contact con = createContact();
+        Test.startTest();
+        Case c = new Case(
+            Subject = 'Test Subject%ASURITE:1234567890%Queue:' + reg_id + '%First:Test%Last:Contact',
+            Description = 'Test Description',
+            Status = 'Processing'
+        );
+        
+        insert c;
+        Test.stopTest();
+        Case stat = [
+            SELECT ContactId, Status, Visible_by_Contact__c
+            FROM Case
+            WHERE Id = :c.Id LIMIT 1
+        ];
+
+        System.assert(stat.ContactId != null);
+
+        Contact newCon = [SELECT Id, FirstName, LastName FROM Contact WHERE Id = :stat.ContactId LIMIT 1];
+        System.assert(newCon.FirstName == 'Test');
+        System.assert(newCon.LastName == 'Contact');
+    }
+
+    static testmethod void testCreateWebformsCaseNoContact()
+    {
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        Contact con = createContact();
+        Test.startTest();
+        Case c = new Case(
+            Subject = 'Test Subject%ASURITE:%Queue:' + reg_id + '%First:%Last:',
+            Description = 'Test Description',
+            Status = 'Processing'
+        );
+        
+        insert c;
+        Test.stopTest();
+        Case stat = [
+            SELECT ContactId, Status, Visible_by_Contact__c
+            FROM Case
+            WHERE Id = :c.Id LIMIT 1
+        ];
+
+        System.assert(stat.ContactId == null);
+    }
+
     static testmethod void TestRegChangeStateWithSufficientLinks()
     {
         Id reg_id = [
@@ -1048,7 +1080,7 @@ public with sharing class Test_CaseHandler {
         ].Id;
 
         Contact con = createContact();
-        Case c = createCase(reg_id);
+        Case c = createCase(reg_id, con);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '3';
         Test.startTest();
@@ -1074,7 +1106,7 @@ public with sharing class Test_CaseHandler {
         ].Id;
 
         Contact con = createContact();
-        Case c = createCase(reg_id);
+        Case c = createCase(reg_id, con);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '5';
         Test.startTest();

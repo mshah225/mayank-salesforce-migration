@@ -1,7 +1,5 @@
 global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 {
-    private Static Boolean TRACE = true;
-
     private Map<String, String> configMap = new Map<String, String>();
     private Id queueId;
     private Id templateId;
@@ -89,11 +87,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             if (caseId != null)
             {
-                if (TRACE)
-                {
-                    System.debug(Logginglevel.ERROR,'CaseEmailInBoundUtilities.  extracted case id: "' + caseId + '"');
-                }
-
                 Case caseSearch = CaseService.getCaseInformation(caseId);
 
                 if (caseSearch != null)
@@ -221,6 +214,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 theCase.Functional_Group__c = functionalGroup;
                 theCase.SuppliedEmail = email.fromAddress;
                 theCase.SuppliedName = fname + ' ' + lname;
+                if(theCase.SuppliedName.length() > 80)
+                {
+                    theCase.SuppliedName = theCase.SuppliedName.subString(0, 80);
+                }
+
                 theCase.Status = 'New';
                 theCase.Priority = 'Normal';
                 theCase.Case_Feed_Email__c = replyToAddress;
@@ -372,6 +370,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     if (rtypes.size() > 0)
                     {
                         rtId = rtypes[0].Id;
+                    }
+
+                    if(fname.length() > 40)
+                    {
+                        fname = fname.subString(0, 40);
+                    }
+
+                    if(lname.length() > 80)
+                    {
+                        lname = lname.subString(0, 80);
                     }
 
                     Contact c = new Contact(FirstName = fname, LastName = lname, Email = email.fromAddress, RecordTypeId=rtId);
@@ -982,23 +990,18 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         try
         {
             oweaToUse = [SELECT Id FROM OrgWideEmailAddress WHERE Address = :replyToAddress];
-            System.debug('!!!FINE: Using ' + oweaToUse + ' as OrgWideEmailAddress');
             mail.setOrgWideEmailAddressId(oweaToUse.Id);
         }
         catch (Exception e)
         {
-            System.debug('!!!ERROR: Query for OrgWideEmailAddress failed when using ' + replyToAddress + '.\n' + e.getMessage());
-
             // Use context user's information if there is no default OrgWideEmailAddress configured
             if (defaultOwea == null)
             {
                 mail.setSenderDisplayName(emailFromName);
-                System.debug('!!!ERROR: No default OrgWideAddress configured. Using context user\'s email information instead.');
             }
             else
             {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);
-                System.debug('!!!WARN: Using default OrgWideEmailAddress ' + defaultOwea);
             }
         }
 

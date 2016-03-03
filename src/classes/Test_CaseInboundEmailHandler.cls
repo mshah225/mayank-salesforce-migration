@@ -120,6 +120,59 @@ public with sharing class Test_CaseInboundEmailHandler {
                             
     }    
 
+    @isTest static void newContactLongName() 
+    {
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');   
+        toAddresses.add('default@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user@acme.com.test';
+        email.fromName = '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789, 01234567890123456789012345678901234567890123456789';
+        env.fromAddress = 'user@acme.com.test';
+
+        // set the body of the attachment
+        inAtt.body = blob.valueOf('test');
+        inAtt.fileName = 'attach.pdf';
+        inAtt.mimeTypeSubType = 'plain/txt';
+
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { inAtt }; 
+       
+        Messaging.InboundEmail.TextAttachment tattachment = new Messaging.InboundEmail.TextAttachment();
+        String csv = 'this is just a test';
+        tattachment.body = csv;
+        tattachment.fileName = 'data.txt';
+        tattachment.mimeTypeSubType = 'text/plain';
+          
+        email.textAttachments = new Messaging.inboundEmail.TextAttachment[] { tattachment };   
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env );  
+
+        Contact createdContact = [
+            SELECT Id, FirstName, LastName, Email FROM Contact LIMIT 1
+        ];
+
+        System.assert(createdContact != null);
+        System.assert(createdContact.FirstName == '012345678901234567890123456789012345678'); 
+        System.assert(createdContact.LastName == '01234567890123456789012345678901234567890123456789012345678901234567890123456789'); 
+        System.assert(createdContact.Email == 'user@acme.com.test');
+
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :createdContact.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status); 
+    } 
 
     @isTest static void existingContact() 
     {

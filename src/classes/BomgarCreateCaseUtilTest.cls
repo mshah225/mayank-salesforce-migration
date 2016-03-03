@@ -17,6 +17,7 @@ private class BomgarCreateCaseUtilTest
 
         Contact testContact = ContactService.createTestContact();
         testContact.EMPLID__c = '1231231231';
+        testContact.ASURite_Id__c = 'testuser';
         insert testContact;
 
         List<User> userList = UserService.createMultipleTestUsers(2);
@@ -60,9 +61,9 @@ private class BomgarCreateCaseUtilTest
             WHERE Id = :value
         ];
 
-        System.assertEquals('Finances (Help Desk)', testCase.Category__c);
-
         Test.stopTest();
+
+        System.assertEquals('Finances (Help Desk)', testCase.Category__c);
     }
 
     @isTest static void testCreateCaseOther()
@@ -85,9 +86,9 @@ private class BomgarCreateCaseUtilTest
             WHERE Id = :value
         ];
 
-        System.assertEquals('General Help Desk', testCase.Category__c);
-
         Test.stopTest();
+
+        System.assertEquals('General Help Desk', testCase.Category__c);
     }
 
     @isTest static void testCreateCaseNoExternalKey()
@@ -110,9 +111,9 @@ private class BomgarCreateCaseUtilTest
             WHERE Id = :value
         ];
 
-        System.assertEquals('General Help Desk', testCase.Category__c);
-
         Test.stopTest();
+
+        System.assertEquals('General Help Desk', testCase.Category__c);
     }
 
     @isTest static void testContactLookupNoEmplId()
@@ -141,9 +142,9 @@ private class BomgarCreateCaseUtilTest
             WHERE ASURite_ID__c = 'testuser'
         ];
 
-        System.assertEquals(testContact.Id, testCase.ContactId);
-
         Test.stopTest();
+
+        System.assertEquals(testContact.Id, testCase.ContactId);
     }
 
     @isTest static void testAssignCase()
@@ -161,9 +162,10 @@ private class BomgarCreateCaseUtilTest
         Test.startTest();
 
         User testUser = BomgarCreateCaseUtil.lookupUserByFederationId('testuser');
-        System.assertNotEquals(null, testUser);
 
         Test.stopTest();
+
+        System.assertNotEquals(null, testUser);
     }
 
     @isTest static void testlookupUserByBomgarUsername()
@@ -171,9 +173,10 @@ private class BomgarCreateCaseUtilTest
         Test.startTest();
 
         User testUser = BomgarCreateCaseUtil.lookupUserByBomgarUsername('testuser');
-        System.assertNotEquals(null, testUser);
 
         Test.stopTest();
+
+        System.assertNotEquals(null, testUser);
     }
 
     @isTest static void testGetOwnerIdBySessionId()
@@ -208,8 +211,116 @@ private class BomgarCreateCaseUtilTest
 
         Id testId = BomgarCreateCaseUtil.getOwnerIdBySessionId(bs.Id);
 
+        Test.stopTest();
+
         System.assertNotEquals(null, testId);
+    }
+
+    @isTest static void testBBChatCaseCreationNoFullName()
+    {
+        // This test has an asuriteId passed in the external key
+        // however, it only has a first name.
+        Test.startTest();
+
+        String value = null;
+        bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
+        webEvent.bomgar__Username__c = 'joetest123123';
+        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
+            '"employeeNumber":"", ' +
+            '"description":"SPAM: SPAM: How can I reattempt an assessment?' +
+            '----------------- User Details-----------------' +
+            'ASURITE ID: testyo_@ce.asu.edu' +
+            'Full Name: ' +
+            'Course Role: NO ROLE FOUND' +
+            'Course ID: @X@course.id@X@' +
+            'Course Name: @X@course.course_name@X@", ' +
+            '"asuriteId":"testyo_@ce.asu.edu", ' +
+            '"externalKey":"BB"}';
+        value = BomgarCreateCaseUtil.createCase(webEvent);
+
+        Case testCase = [
+            SELECT Id, ContactId, Description
+            FROM Case
+            WHERE Id = :value
+        ];
+
+        Contact testContact =[
+            SELECT Id, FirstName, LastName
+            FROM Contact
+            WHERE Id = :testCase.ContactId
+        ];
 
         Test.stopTest();
+
+        System.assertNotEquals(null, testCase.ContactId);
+        System.assertEquals('BomgarError', testContact.FirstName);
+        System.assertEquals('testyo', testContact.LastName);
+    }
+
+    @isTest static void testBBChatCaseCreation()
+    {
+        // This test passes no asuriteId in the external key
+        // but does pass one, including full name, in the description for parsing.
+        Test.startTest();
+
+        String value = null;
+        bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
+        webEvent.bomgar__Username__c = 'joetest123123';
+        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
+            '"employeeNumber":"", ' +
+            '"description":"SPAM: SPAM: How can I reattempt an assessment?' +
+            '----------------- User Details-----------------' +
+            'ASURITE ID: testyo_@ce.asu.edu' +
+            'Full Name: Test Guy' +
+            'Course Role: NO ROLE FOUND' +
+            'Course ID: @X@course.id@X@' +
+            'Course Name: @X@course.course_name@X@", ' +
+            '"asuriteId":"", ' +
+            '"externalKey":"BB"}';
+        value = BomgarCreateCaseUtil.createCase(webEvent);
+
+        Case testCase = [
+            SELECT Id, ContactId
+            FROM Case
+            WHERE Id = :value
+        ];
+
+        Test.stopTest();
+
+        System.assertNotEquals(null, testCase.ContactId);
+    }
+
+    @isTest static void testBBChatNoASURITEError()
+    {
+        // This test passes no asuriteId in the external key
+        // but does pass one, including full name, in the description for parsing.
+        Test.startTest();
+
+        String value = null;
+        bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
+        webEvent.bomgar__Username__c = 'joetest123123';
+        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
+            '"employeeNumber":"", ' +
+            '"description":"SPAM: SPAM: How can I reattempt an assessment?' +
+            '----------------- User Details-----------------' +
+            'ASURITE ID: ' +
+            'Full Name: Test Guy' +
+            'Course Role: NO ROLE FOUND' +
+            'Course ID: @X@course.id@X@' +
+            'Course Name: @X@course.course_name@X@", ' +
+            '"asuriteId":"", ' +
+            '"externalKey":"BB"}';
+        value = BomgarCreateCaseUtil.createCase(webEvent);
+
+        Case testCase = [
+            SELECT Id, ContactId, Reason
+            FROM Case
+            WHERE Id = :value
+        ];
+
+        Test.stopTest();
+
+        System.assertEquals(null, testCase.ContactId);
+        System.assertEquals('Bomgar Error', testCase.Reason);
     }
 }

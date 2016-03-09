@@ -3,7 +3,17 @@ global class BomgarCreateCaseUtil
     global static String createCase(bomgar__BomgarWebEvent__c bgEvent)
     {
         Map<String, String> dynamicFieldMap = new Map<String, String>();
-        JSONParser parser = JSON.createParser(bgEvent.bomgar__ExternalKey__c.substring(5));
+
+        // Handle special chars in external key
+        String jsonObject = bgEvent.bomgar__ExternalKey__c.substring(5)
+                                                          .replace('\r\n', '\\r\\n')
+                                                          .replace('\n', '\\n')
+                                                          .replace('\r', '\\r')
+                                                          .replace('\t', '\\t')
+                                                          .replace('\b', '\\b')
+                                                          .replace('\f', '\\f');
+        String.escapeSinglequotes(jsonObject);
+        JSONParser parser = JSON.createParser(jsonObject);
 
         while (parser.nextToken() != null)
         {

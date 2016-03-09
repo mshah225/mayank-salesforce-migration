@@ -44,12 +44,12 @@ private class BomgarCreateCaseUtilTest
         webEvent.bomgar__Username__c = 'joetest123123';
         webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
             '"employeeNumber":"1231231231", ' +
-            '"description":"Bacon ipsum dolor amet bresaola drumstick leberkas, meatloaf ' +
+            '"description":"Bacon ipsum dolor amet bresaola drumstick leberkas, \nmeatloaf ' +
             'picanha turducken tenderloin alcatra biltong cow pastrami tongue swine. Ham ' +
-            'meatloaf fatback biltong bresaola. Kevin pork shank, meatball t-bone ball ' +
+            'meatloaf \bfatback biltong bresaola. \nKevin pork shank, meatball t-bone ball ' +
             'tip hamburger short loin tenderloin prosciutto salami turducken fatback tongue ' +
-            'porchetta. Brisket fatback corned beef bacon shankle filet mignon doner kevin ' +
-            'short loin meatloaf salami. Pork turducken tenderloin brisket corned beef ' +
+            'porchetta. Brisket fatback corned beef bacon \\"shankle filet \fmignon doner kevin ' +
+            'short loin meatloaf salami. \r\nPork turducken tenderloin brisket corned beef ' +
             'turkey. Pork chop boudin corned beef", ' +
             '"asuriteId":"testc", ' +
             '"externalKey":"Finances"}';

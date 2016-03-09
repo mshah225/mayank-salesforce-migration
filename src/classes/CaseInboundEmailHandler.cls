@@ -485,10 +485,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         Long attachmentSize = 0;
         Set<String> validFileExtensionSet = new Set<String>();
         String[] validFileExtensionList = getConfigurationSetting('Valid Attachment Types').split(',');
-        List<String> fileNames = new List<String>();
-        List<Long> fileSizes = new List<Long>();
-        List<String> erroredFiles = new List<String>();
-        List<String> erroredReasons = new List<String>();
 
         if (validFileExtensionList.size() > 0)
         {
@@ -504,14 +500,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                 attachmentSize += tAttachment.body.length();
 
-                fileNames.add(tAttachment.fileName);
-                fileSizes.add(tAttachment.body.length());
                 if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
                 {
                     if (tAttachment.body.length() > 5000000)
                     {
-                        erroredFiles.add(tAttachment.fileName);
-                        erroredReasons.add('File size greater than 5000000');
                         successfulAttachment = false;
                     }
                     else
@@ -525,8 +517,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
                 else if (!validFileExtensionSet.isEmpty())
                 {
-                    erroredFiles.add(tAttachment.fileName);
-                    erroredReasons.add('Invalid file type ' + tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.')+1).toLowerCase());
                     successfulAttachment = false;
                 }
             }
@@ -534,20 +524,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         if (email.binaryAttachments!=null && email.binaryAttachments.size() >0)
         {
-
             for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments)
             {
                 attachmentSize += bAttachment.body.size();
-
-                fileNames.add(bAttachment.fileName);
-                fileSizes.add(bAttachment.body.size());
 
                 if (validFileExtensionSet.isEmpty() || validFileExtensionSet.contains(bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.')+1).toLowerCase()))
                 {
                     if (bAttachment.body.size() > 5000000)
                     {
-                        erroredFiles.add(bAttachment.fileName);
-                        erroredReasons.add('File size greater than 5000000');
                         successfulAttachment = false;
                     }
                     else
@@ -561,8 +545,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
                 else if (!validFileExtensionSet.isEmpty())
                 {
-                    erroredFiles.add(bAttachment.fileName);
-                    erroredReasons.add('Invalid file type ' + bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.')+1).toLowerCase());
                     successfulAttachment = false;
                 }
             }
@@ -570,14 +552,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         if (attachmentSize > 25000000)
         {
-            erroredFiles.add('All');
-            erroredReasons.add('Total file size greater than 25000000');
             successfulAttachment = false;
-        }
-
-        if(!successfulAttachment)
-        {
-            logDebugLostEmail(parentObject.Id, validFileExtensionList, attachmentSize, fileNames, fileSizes, erroredFiles, erroredReasons);
         }
 
         return successfulAttachment;
@@ -799,10 +774,63 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
     private void setCaseAssignmentRule(String[] toEmailAddresses, String[] ccEmailAddresses)
     {
-        Case_Assignment_Rule__c[] assignmentRuleList = [SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c,Customer_Notice_Email_From_Name__c,Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
-        FROM Case_Assignment_Rule__c
-        WHERE Email_Address__c IN :toEmailAddresses
-        ORDER BY Priority__c];
+        Case_Assignment_Rule__c[] assignmentRuleList;
+
+        if(toEmailAddresses.size() > 1)
+        {
+            assignmentRuleList = [
+                SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c,Customer_Notice_Email_From_Name__c,Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
+                FROM Case_Assignment_Rule__c
+                WHERE Email_Address__c IN :toEmailAddresses
+                ORDER BY Priority__c
+            ];
+        }
+        else
+        {
+            String toEmailAddress = toEmailAddresses.get(0);
+
+            //See if this is an RMM email
+            String rmmSevenChar = '';
+            List<String> splitAt = toEmailAddress.split('@');
+            if(splitAt.size() == 2 && splitAt[1] == 'e.asu.edu')
+            {
+                List<String> splitDash = new List<String>();
+                splitDash = splitAt[0].split('-');
+                if(splitDash.size() > 1)
+                {
+                    rmmSevenChar = splitDash.get(splitDash.size() - 2);
+                }
+            }
+
+            if(rmmSevenChar.length() == 7)
+            {
+                String toEmailAddressPartial = '%-' + rmmSevenChar + '-_@e.asu.edu';
+                assignmentRuleList = [
+                    SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c,Customer_Notice_Email_From_Name__c,Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
+                    FROM Case_Assignment_Rule__c
+                    WHERE Email_Address__c LIKE :toEmailAddressPartial
+                    ORDER BY Priority__c
+                ];
+            }
+            else
+            {
+
+                assignmentRuleList = [
+                    SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c,Customer_Notice_Email_From_Name__c,Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
+                    FROM Case_Assignment_Rule__c
+                    WHERE Email_Address__c = :toEmailAddress
+                    ORDER BY Priority__c
+                ];
+            }
+
+
+            String toEmailAddressPartial = toEmailAddress;
+            if(toEmailAddressPartial.length() > 15)
+            {
+                toEmailAddressPartial = toEmailAddressPartial.substring(0, 15) + '%';
+            }
+
+        }
 
         if (assignmentRuleList.size() > 0)
         {

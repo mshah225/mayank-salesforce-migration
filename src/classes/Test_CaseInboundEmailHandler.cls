@@ -31,7 +31,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         String templateId = String.valueOf(e1.Id).substring(0,15);
         
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c();
-        car.Email_Address__c = 'service@test.test'; 
+        car.Email_Address__c = 'service12345123451234512345@test.test'; 
         car.Customer_notice_email_from_name__c = 'Test Service';
         car.Email_template_id__c = templateId;
         car.Queue_id__c = queueId;
@@ -44,16 +44,44 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         insert car;
 
+        Case_Assignment_Rule__c rmmCar1 = new Case_Assignment_Rule__c();
+        rmmCar1.Email_Address__c = 'reply-fec817737361077e-10607_html-31250844-7204971-0@e.asu.edu';
+        rmmCar1.Customer_notice_email_from_name__c = 'Test RMM Service 1';
+        rmmCar1.Email_template_id__c = templateId;
+        rmmCar1.Queue_id__c = queueId;
+        rmmCar1.Fallback_Queue_Id__c = fallbackQueueId;
+        rmmCar1.Origin__c = 'Test RMM Origin 1';
+        rmmCar1.Functional_Group__c = 'Test RMM Group 1';
+        rmmCar1.Category__c = 'Test RMM Category 1';
+        rmmCar1.Sub_Category__c = 'Test RMM Subcategory 1';
+        rmmCar1.Priority__c = 998;
+
+        insert rmmCar1;
+
+        Case_Assignment_Rule__c rmmCar2 = new Case_Assignment_Rule__c();
+        rmmCar2.Email_Address__c = 'reply-fdf1234-9999_html-foobar12345-1234567-0@e.asu.edu';
+        rmmCar2.Customer_notice_email_from_name__c = 'Test RMM Service 2';
+        rmmCar2.Email_template_id__c = templateId;
+        rmmCar2.Queue_id__c = queueId;
+        rmmCar2.Fallback_Queue_Id__c = fallbackQueueId;
+        rmmCar2.Origin__c = 'Test RMM Origin 2';
+        rmmCar2.Functional_Group__c = 'Test RMM Group 2';
+        rmmCar2.Category__c = 'Test RMM Category 2';
+        rmmCar2.Sub_Category__c = 'Test RMM Subcategory 2';
+        rmmCar2.Priority__c = 997;
+
+        insert rmmCar2;
+
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c();
         carDefault.Email_Address__c = 'default@test.test';
         carDefault.Customer_notice_email_from_name__c = 'Default Test Service';
         carDefault.Email_template_id__c = templateId;
         carDefault.Queue_Id__c = queueId;
         carDefault.Fallback_Queue_Id__c = fallbackQueueId;
-        carDefault.Origin__c = 'Test Origin';
-        carDefault.Functional_Group__c = 'Test Group';
-        carDefault.Category__c = 'Test Category';
-        carDefault.Sub_Category__c = 'Test Subcategory';
+        carDefault.Origin__c = 'Test Origin 2';
+        carDefault.Functional_Group__c = 'Test Group 2';
+        carDefault.Category__c = 'Test Category 2';
+        carDefault.Sub_Category__c = 'Test Subcategory 2';
         carDefault.Priority__c = 999;
 
         insert carDefault;
@@ -88,7 +116,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');   
+        toAddresses.add('service12345123451234512345@test.test');   
         toAddresses.add('default@test.test');
         email.toAddresses = toAddresses;
         email.subject = 'test';
@@ -114,11 +142,27 @@ public with sharing class Test_CaseInboundEmailHandler {
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env );  
-        
-        email.subject = 'Test 2';
-        emailServiceObj.handleInboundEmail(email, env );  
-                            
-    }    
+
+        Contact createdContact = [
+            SELECT Id, FirstName, LastName, Email FROM Contact LIMIT 1
+        ];
+
+        System.debug('CREATED CONTACT: ' + createdContact);
+        System.assert(createdContact != null);
+        System.assert(createdContact.FirstName == 'First'); 
+        System.assert(createdContact.LastName == 'Last'); 
+        System.assert(createdContact.Email == 'user@acme.com.test');
+
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :createdContact.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+    }
 
     @isTest static void newContactLongName() 
     {
@@ -184,7 +228,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');   
+        toAddresses.add('service12345123451234512345@test.test');   
         email.toAddresses = toAddresses;
         email.subject = 'test';
         email.fromAddress = 'user2@acme.com.test';
@@ -194,10 +238,19 @@ public with sharing class Test_CaseInboundEmailHandler {
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env );  
-        email.subject = 'Test 2';
-        emailServiceObj.handleInboundEmail(email, env );  
-                            
-    }  
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+        System.assertEquals('Test Group', createdCase.Functional_Group__c);
+   }  
 
     @isTest static void existingContactCcOnly() 
     {
@@ -208,7 +261,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
         List<string> ccAddresses = new List<string>();
-        ccAddresses.add('service@test.test');   
+        ccAddresses.add('service12345123451234512345@test.test');   
         email.ccAddresses = ccAddresses;
         email.subject = 'test';
         email.fromAddress = 'user2@acme.com.test';
@@ -217,10 +270,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.handleInboundEmail(email, env );  
-        email.subject = 'Test CC Only';
-        emailServiceObj.handleInboundEmail(email, env );  
-                            
+        emailServiceObj.handleInboundEmail(email, env);  
     }  
 
 
@@ -236,7 +286,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');   
+        toAddresses.add('service12345123451234512345@test.test');   
         email.toAddresses = toAddresses;
         email.subject = 'test';
         email.fromAddress = 'user@acme.com.test';
@@ -246,9 +296,18 @@ public with sharing class Test_CaseInboundEmailHandler {
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env );  
-        email.subject = 'Test 2';
-        emailServiceObj.handleInboundEmail(email, env );  
-                            
+
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c1.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
     }  
 
     @isTest static void existingContactDefaultRule() 
@@ -404,7 +463,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');
+        toAddresses.add('service12345123451234512345@test.test');
         email.toAddresses = toAddresses;
         email.subject = 'test email';
         email.fromName = 'Last, First';
@@ -438,7 +497,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
         List<string> toAddresses = new List<string>();
-        toAddresses.add('service@test.test');
+        toAddresses.add('service12345123451234512345@test.test');
         email.toAddresses = toAddresses;
         email.fromName = 'Last, First';
         email.fromAddress = 'user@acme.com.test';
@@ -474,4 +533,72 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assertNotEquals(result.Id, null, 'An error occurred when logging the failure');
     }
+
+    @isTest static void testRMMPartialMatchExact() 
+    {
+        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+        insert c;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('reply-fec817737361077e-10607_html-31250844-7204971-0@e.asu.edu');   
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user2@acme.com.test';
+        email.fromName = 'Last, First';
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env );  
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+        System.assertEquals('Test RMM Group 1', createdCase.Functional_Group__c);
+   }  
+
+    @isTest static void testRMMPartialMatchPartial() 
+    {
+        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+        insert c;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('reply-fec817737361077e-10607_html-31250844-1234567-0@e.asu.edu');   
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user2@acme.com.test';
+        email.fromName = 'Last, First';
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env );  
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+        System.assertEquals('Test RMM Group 2', createdCase.Functional_Group__c);
+   } 
 }

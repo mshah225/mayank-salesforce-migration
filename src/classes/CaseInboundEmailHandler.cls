@@ -246,7 +246,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 theCase.Subject = email.Subject;
                 theCase.Description = email.plainTextBody;
-                if(theCase.Description == null)
+                if(theCase.Description == null && email.htmlBody != null)
+                {
+                    theCase.Description = 'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\n'
+                        + email.htmlBody.replaceAll('<[^>]+>', ''); 
+                }
+                else
                 {
                     theCase.Description = '';
                 }

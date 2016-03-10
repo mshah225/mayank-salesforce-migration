@@ -249,13 +249,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 if(email.plainTextBody != null)
                 {
-                    System.debug('WE ARE HERE');
                     theCase.Description = email.plainTextBody;
                 }
                 else if(email.htmlBody != null)
                 {
-                    System.debug('WE ARE HERE 2');
-                    System.debug('REPLACE ALL: ' + email.htmlBody.replaceAll('<[^>]+>', '')); 
                     theCase.Description = 'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\n'
                         + email.htmlBody.replaceAll('<[^>]+>', ''); 
                 }

@@ -147,7 +147,6 @@ public with sharing class Test_CaseInboundEmailHandler {
             SELECT Id, FirstName, LastName, Email FROM Contact LIMIT 1
         ];
 
-        System.debug('CREATED CONTACT: ' + createdContact);
         System.assert(createdContact != null);
         System.assert(createdContact.FirstName == 'First'); 
         System.assert(createdContact.LastName == 'Last'); 
@@ -667,7 +666,6 @@ public with sharing class Test_CaseInboundEmailHandler {
             LIMIT 1
         ];
 
-        System.debug('HTML BODY: ' + createdCase.Description);
         System.assert(createdCase.Description == 'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\nThis is a HTML body');
    }
 
@@ -702,7 +700,6 @@ public with sharing class Test_CaseInboundEmailHandler {
             LIMIT 1
         ];
 
-        System.debug('NULL BODY: ' + createdCase.Description);
         System.assert(createdCase.Description == null);
    }
 }

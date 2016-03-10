@@ -601,4 +601,108 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals('New', createdCase.Status);
         System.assertEquals('Test RMM Group 2', createdCase.Functional_Group__c);
    } 
+
+   @isTest static void testEmailPlainTextBody()
+   {
+        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+        insert c;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');   
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user2@acme.com.test';
+        email.fromName = 'Last, First';
+        email.plainTextBody = 'This is a plaintext body';
+        email.htmlBody = '<span>This is a <b>HTML</b> body</span>';
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env );  
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.assert(createdCase.Description == 'This is a plaintext body');
+   }
+
+   @isTest static void testHTMLPlainTextBody()
+   {
+        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+        insert c;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');   
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user2@acme.com.test';
+        email.fromName = 'Last, First';
+        email.plainTextBody = null;
+        email.htmlBody = '<span>This is a <b>HTML</b> body</span>';
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env );  
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.debug('HTML BODY: ' + createdCase.Description);
+        System.assert(createdCase.Description == 'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\nThis is a HTML body');
+   }
+
+   @isTest static void testBlankPlainTextBody()
+   {
+        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+        insert c;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');   
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user2@acme.com.test';
+        email.fromName = 'Last, First';
+        email.plainTextBody = null;
+        email.htmlBody = null;
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env );  
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.debug('NULL BODY: ' + createdCase.Description);
+        System.assert(createdCase.Description == null);
+   }
 }

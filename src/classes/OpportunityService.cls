@@ -5,16 +5,40 @@ public class OpportunityService
     * @param contactToAssociate A contact that will be associated
     * @return undergradProspect An undergraduate prospect opportunity
     */
+
+    static Id undergradProspectId;
+    static Id gradProspectId;
+
+    private static void loadIds()
+    {
+        List<RecordType> prospectIds = [
+            SELECT Id, Name
+            FROM RecordType
+            WHERE (Name = 'Undergraduate Prospect'
+            OR Name = 'Graduate Prospect')
+            AND SobjectType = 'Opportunity'
+        ];
+
+        for(RecordType id : prospectIds)
+        {
+            if(id.Name == 'Undergraduate Prospect')
+            {
+                undergradProspectId = id.Id;
+            }
+            if(id.Name == 'Graduate Prospect')
+            {
+                gradProspectId = id.Id;
+            }
+        }
+    }
+
     public static Opportunity createTestUndergraduateProspect(Contact contactToAssociate)
     {
         Date closeDate = Date.today();
-
-        Id undergradProspectId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Undergraduate Prospect'
-            LIMIT 1
-        ].Id;
+        if(undergradProspectId == null)
+        {
+            loadIds();
+        }
 
         Opportunity undergradProspect = new Opportunity();
         undergradProspect.Contact__c = contactToAssociate.Id;
@@ -38,12 +62,10 @@ public class OpportunityService
 
         Date closeDate = Date.today();
 
-        Id undergradProspectId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Undergraduate Prospect'
-            LIMIT 1
-        ].Id;
+        if(undergradProspectId == null)
+        {
+            loadIds();
+        }
 
         for (Contact con : contactsToAssociate)
         {
@@ -71,13 +93,10 @@ public class OpportunityService
 
         Date closeDate = Date.today();
 
-        Id gradProspectId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Graduate Prospect'
-            AND SobjectType = 'Opportunity'
-            LIMIT 1
-        ].Id;
+        if(gradProspectId == null)
+        {
+            loadIds();
+        }
 
         for (Contact con : contactsToAssociate)
         {

@@ -1,6 +1,8 @@
 @isTest
 public with sharing class Test_LeadHandler
 {
+    static Integer TRIGGERLOAD = 5;
+
     // Build Leads
     static List<Lead> createLeads (Integer quantity)
     {
@@ -9,10 +11,10 @@ public with sharing class Test_LeadHandler
         for (Integer i=0;i<quantity;i++)
         {
             Lead l = new Lead(LastName='LName'+i,
-                              FirstName='FName'+i,
-                              Company='Company',
-                              Email='test'+i+'@test.test',
-                              LeadSource='Email');
+                FirstName='FName'+i,
+                Company='Company',
+                Email='test'+i+'@test.test',
+                LeadSource='Email');
             leadList.add(l);
         }
 
@@ -47,54 +49,52 @@ public with sharing class Test_LeadHandler
             liList.add(li);
         }
 
-        System.debug('Lead Interests: ' + liList);
-
         return liList;
     }
 
     @isTest static void testManualLeadConversion()
     {
-         Integer numberOfLeads = 200;
-         Lead[] leadList = createLeads(numberOfLeads);
-         insert leadList;
+        Lead[] leadList = createLeads(TRIGGERLOAD);
+        insert leadList;
 
-         Lead_Interest__c[] liList = createLeadInterests(leadList);
-         insert liList;
+        Lead_Interest__c[] liList = createLeadInterests(leadList);
+        insert liList;
 
-         Set<Id> leadIds = new Set<Id>();
+        Set<Id> leadIds = new Set<Id>();
 
-         // Perform Conversion
-         for (Lead l: leadList)
-         {
+        // Perform Conversion
+        for (Lead l: leadList)
+        {
             l.Convert_Perform_Conversion__c = true;
             leadIds.add(l.Id);
-         }
+        }
 
-         update leadList;
+        Test.startTest();
+        update leadList;
+        Test.stopTest();
 
-         //Check conversion results
-         List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
+        //Check conversion results
+        List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
 
-         System.assertEquals(numberOfLeads, convertedLeads.size());
+        System.assertEquals(TRIGGERLOAD, convertedLeads.size());
     }
 
     @isTest static void testConvertMultipleLeadsToOneAccount()
     {
         Integer DUPETHRESHOLD = 1;
-        Integer LEADLOAD = 200;
 
         Account institution = AccountService.createTestInstitution();
         insert institution;
 
-        List<Contact> testContacts = ContactService.createTestContacts(LEADLOAD);
+        List<Contact> testContacts = ContactService.createTestContacts(TRIGGERLOAD, false);
         insert testContacts;
 
         List<Lead> testLeads = LeadService.createTestLeadsToConvert(testContacts);
         insert testLeads;
 
         testContacts = [
-                SELECT Name, FirstName, LastName, Email, AccountId
-                FROM Contact
+            SELECT Name, FirstName, LastName, Email, AccountId
+            FROM Contact
         ];
 
         List<Opportunity> testOpptys = OpportunityService.createTestUndergraduateProspects(testContacts);
@@ -123,7 +123,7 @@ public with sharing class Test_LeadHandler
         //Check conversion results
         List<Lead> convertedLeads = new List<Lead>([SELECT Id FROM Lead WHERE Id IN :leadIds AND IsConverted = true]);
 
-        System.assertEquals(LEADLOAD, convertedLeads.size(), 'Leads were not converted correctly');
+        System.assertEquals(TRIGGERLOAD, convertedLeads.size(), 'Leads were not converted correctly');
     }
 
     @isTest static void testLeadToOppFieldMapping()
@@ -131,12 +131,12 @@ public with sharing class Test_LeadHandler
         Term__c testTerm = TermService.createTestTerm();
         insert testTerm;
 
-        List<Contact> testContacts = ContactService.createTestContacts(10);
+        List<Contact> testContacts = ContactService.createTestContacts(10, false);
         insert testContacts;
 
         testContacts = [
-                SELECT Name, FirstName, LastName, Email, AccountId
-                FROM Contact
+            SELECT Name, FirstName, LastName, Email, AccountId
+            FROM Contact
         ];
 
         List<Opportunity> testOpptys = OpportunityService.createTestUndergraduateProspects(testContacts);
@@ -168,9 +168,9 @@ public with sharing class Test_LeadHandler
         Test.stopTest();
 
         List<Opportunity> oppsCreated = [
-                SELECT Contact__c, Career__c, Term__c, Online_Degree__c, International_Student__c, First_Generation__c, Potential_National_Scholar__c, Potential_WUE__c, Search_Segment__c, Self_Reported_SES__c, Military_Status__c
-                FROM Opportunity
-                WHERE Contact__c IN :contactIds
+            SELECT Contact__c, Career__c, Term__c, Online_Degree__c, International_Student__c, First_Generation__c, Potential_National_Scholar__c, Potential_WUE__c, Search_Segment__c, Self_Reported_SES__c, Military_Status__c
+            FROM Opportunity
+            WHERE Contact__c IN :contactIds
         ];
 
         Lead expectedData = testLeads.get(0);
@@ -184,12 +184,12 @@ public with sharing class Test_LeadHandler
         Account institution = AccountService.createTestInstitution();
         insert institution;
 
-        List<Contact> testContacts = ContactService.createTestContacts(5);
+        List<Contact> testContacts = ContactService.createTestContacts(5, false);
         insert testContacts;
 
         testContacts = [
-                SELECT Name, FirstName, LastName, Email, AccountId
-                FROM Contact
+            SELECT Name, FirstName, LastName, Email, AccountId
+            FROM Contact
         ];
 
         List<Opportunity> testOpptys = OpportunityService.createTestUndergraduateProspects(testContacts);

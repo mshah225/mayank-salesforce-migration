@@ -12,6 +12,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
     private static Set<CampaignMember> externalCMsToPrimary = new Set<CampaignMember>();
     private static Map<Id, Opportunity> opportunitiesToUpdate = new Map<Id, Opportunity>();
     private static List<Lead> leadsToUpdate = new List<Lead>();
+    private static Boolean ranCampaignMembersUpdatePrimary = false;
 
     /**
      * bulkBefore
@@ -21,371 +22,361 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkBefore() 
     {
-        if(Trigger.isInsert)
+        if(!ranCampaignMembersUpdatePrimary)
         {
-            System.debug('STARTING CAMPAIGN MEMBER BULK BEFORE FOR INSERT');
-        }
-        else if(Trigger.isUpdate)
-        {
-            System.debug('STARTING CAMPAIGN MEMBER BULK BEFORE FOR UPDATE');
-        }
-        else if(Trigger.isDelete)
-        {
-            System.debug('STARTING CAMPAIGN MEMBER BULK BEFORE FOR DELETE');
-        }
+            Set<Id> campaignIdsInTrigger = new Set<Id>();
+            Set<Id> contactIdsInTrigger = new Set<Id>();
 
-        Set<Id> campaignIdsInTrigger = new Set<Id>();
+            List<CampaignMember> cmsInTriggerWithContacts = new List<CampaignMember>();
+            Set<Id> leadIdsInTrigger = new Set<Id>();
+            Map<Id, Lead> leadsInTrigger = new Map<Id, Lead>();
+            List<CampaignMember> cmsInTriggerWithLeads = new List<CampaignMember>();
+            List<Opportunity> opportunitiesInTrigger = new List<Opportunity>();
 
-        Set<Id> contactIdsInTrigger = new Set<Id>();
+            List<CampaignMember> listOfAffectedCMs;
+            Map<Id, String> campaignRecordTypesById = new Map<Id, String>();
 
-        List<CampaignMember> cmsInTriggerWithContacts = new List<CampaignMember>();
-        Set<Id> leadIdsInTrigger = new Set<Id>();
-        Map<Id, Lead> leadsInTrigger = new Map<Id, Lead>();
-        List<CampaignMember> cmsInTriggerWithLeads = new List<CampaignMember>();
-        List<Opportunity> opportunitiesInTrigger = new List<Opportunity>();
-
-        List<CampaignMember> listOfAffectedCMs;
-        Map<Id, String> campaignRecordTypesById = new Map<Id, String>();
-
-        // If we are inserting or updating Campaign Member(s) we fill a Set with their IDs
-        if (Trigger.isInsert || Trigger.isUpdate) 
-        {
-            listOfAffectedCMs = Trigger.new;
-        }
-        else if(Trigger.isDelete)
-        {
-            listOfAffectedCMs = Trigger.old;
-        }
-
-        //For each Campaign Member in this trigger
-        for (Integer x = 0; x < listOfAffectedCMs.size(); x++) 
-        {
-            CampaignMember cm = listOfAffectedCMs.get(x);
-
-            //Add the CM ID to a set
-            cmIds.add(cm.Id);
-
-            //Add the CM's campaign ID to the set
-            campaignIdsInTrigger.add(cm.CampaignId);
-
-            //If the CM has a contact, add the Contact ID to the set
-            if(cm.ContactId != null)
+            // If we are inserting or updating Campaign Member(s) we fill a Set with their IDs
+            if (Trigger.isInsert || Trigger.isUpdate) 
             {
-                contactIdsInTrigger.add(cm.ContactId);
-                cmsInTriggerwithContacts.add(cm);
-                if(!CampaignMembersByContactMap.containsKey(cm.ContactId))
-                {
-                    CampaignMembersByContactMap.put(cm.ContactId, new List<CampaignMember>());
-                }
+                listOfAffectedCMs = Trigger.new;
+            }
+            else if(Trigger.isDelete)
+            {
+                listOfAffectedCMs = Trigger.old;
             }
 
-            //If the CM has a lead, add the Lead ID to the set
-            if(cm.LeadId != null)
+            //For each Campaign Member in this trigger
+            for (Integer x = 0; x < listOfAffectedCMs.size(); x++) 
             {
-                leadIdsInTrigger.add(cm.LeadId);
-                cmsInTriggerWithLeads.add(cm);
-                if(!CampaignMembersByLeadMap.containsKey(cm.LeadId))
+                CampaignMember cm = listOfAffectedCMs.get(x);
+
+                //Add the CM ID to a set
+                cmIds.add(cm.Id);
+
+                //Add the CM's campaign ID to the set
+                campaignIdsInTrigger.add(cm.CampaignId);
+
+                //If the CM has a contact, add the Contact ID to the set
+                if(cm.ContactId != null)
                 {
-                    CampaignMembersByLeadMap.put(cm.LeadId, new List<CampaignMember>());
-                }
-            }
-
-            //Deal with updating the Last Member Status Change
-            if(Trigger.isInsert)
-            {
-                if(cm.Last_Member_Status_Change__c == null)
-                {
-                    cm.Last_Member_Status_Change__c = Datetime.now();
-                }
-            }
-            else if(Trigger.isUpdate)
-            {
-                CampaignMember oldCM = (CampaignMember) Trigger.old.get(x); 
-                if(oldCM.Status != cm.Status)
-                {
-                    cm.Last_Member_Status_Change__c = Datetime.now();
-                }
-            }
-        }
-
-        opportunitiesInTrigger = [SELECT Id, Contact__c, National_Merit_Semifinalist__c, Primary_Interest__c FROM Opportunity WHERE Contact__c IN :contactIDsInTrigger];
-        for(Opportunity o : opportunitiesInTrigger)
-        {
-            OpportunitiesByContactMap.put(o.Contact__c, o);
-        }
-        leadsInTrigger = new Map<Id, Lead>([SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :leadIDsInTrigger]);
-
-        Set<CampaignMember> setOfAffectedCMs = new Set<CampaignMember>(listOfAffectedCMs);
-
-        //For all Campaigns on the CMs in this trigger, get their names and link id to name
-        List<Campaign> campaignList = [SELECT Id, RecordType.DeveloperName FROM Campaign WHERE Id IN :campaignIdsInTrigger];
-        for(Campaign c : campaignList)
-        {
-            campaignRecordTypesById.put(c.Id, c.RecordType.DeveloperName);
-        }
-
-        Set<String> acceptableMajors = new Set<String> {'PSMajors', 'Academic', 'ASU Colleges', 'Degree Search by Interest'};
-
-        //Get the list of CMs on the contacts. Ignore any that are in this trigger, they will be added in later
-        List<CampaignMember> cmsForContacts = [SELECT Id, CampaignId, Status, CreatedDate, ContactId, Is_Primary_Interest__c, Last_Member_Status_Change__c, Campaign_Type__c, Campaign.RecordType.DeveloperName 
-                                    FROM CampaignMember 
-                                    WHERE ContactId IN :contactIdsInTrigger 
-                                    AND Id NOT IN :cmIds
-                                    AND Status != 'No Longer Interested' 
-                                    AND Campaign.RecordType.DeveloperName = 'Interest' 
-                                    AND Campaign.Type IN :acceptableMajors];
-
-        //Parse the Contact CMs into a map
-        for(CampaignMember cm : cmsForContacts)
-        {              
-            CampaignMembersByContactMap.get(cm.ContactId).add(cm);
-        }
-
-        //When inserting or updating, need to add the new CMs to the Contact map
-        if(Trigger.isInsert || Trigger.isUpdate)
-        {
-            for(Integer x = 0; x < cmsInTriggerwithContacts.size(); x++)
-            {
-                CampaignMember cm = cmsInTriggerWithContacts.get(x);
-                if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest' && cm.Status != 'No Longer Interested')
-                {
-                    if(CampaignMembersByContactMap.containsKey(cm.ContactId))
+                    contactIdsInTrigger.add(cm.ContactId);
+                    cmsInTriggerwithContacts.add(cm);
+                    if(!CampaignMembersByContactMap.containsKey(cm.ContactId))
                     {
-                        CampaignMembersByContactMap.get(cm.ContactId).add(cm);
+                        CampaignMembersByContactMap.put(cm.ContactId, new List<CampaignMember>());
                     }
-                    else
+                }
+
+                //If the CM has a lead, add the Lead ID to the set
+                if(cm.LeadId != null)
+                {
+                    leadIdsInTrigger.add(cm.LeadId);
+                    cmsInTriggerWithLeads.add(cm);
+                    if(!CampaignMembersByLeadMap.containsKey(cm.LeadId))
                     {
-                        List<CampaignMember> newList = new List<CampaignMember>();
-                        newList.add(cm);
-                        CampaignMembersByContactMap.put(cm.ContactId, newList);
+                        CampaignMembersByLeadMap.put(cm.LeadId, new List<CampaignMember>());
+                    }
+                }
+
+                //Deal with updating the Last Member Status Change
+                if(Trigger.isInsert)
+                {
+                    if(cm.Last_Member_Status_Change__c == null)
+                    {
+                        cm.Last_Member_Status_Change__c = Datetime.now();
+                    }
+                }
+                else if(Trigger.isUpdate)
+                {
+                    CampaignMember oldCM = (CampaignMember) Trigger.old.get(x); 
+                    if(oldCM.Status != cm.Status)
+                    {
+                        cm.Last_Member_Status_Change__c = Datetime.now();
                     }
                 }
             }
-        }
 
-        //Get the list of CMs on the leads. Ignore any that are in this trigger, they will be added in later
-        List<CampaignMember> cmsForLeads = [SELECT Id, CampaignId, Status, CreatedDate, LeadId, Is_Primary_Interest__c, Campaign_Type__c, Last_Member_Status_Change__c, Campaign.RecordType.DeveloperName
-                                FROM CampaignMember 
-                                WHERE LeadId IN :leadIdsInTrigger 
-                                AND Id NOT IN :cmIds
-                                AND Status != 'No Longer Interested' 
-                                AND Campaign.RecordType.DeveloperName = 'Interest' 
-                                AND Campaign.Type IN :acceptableMajors];
+            opportunitiesInTrigger = [
+                SELECT Id, Contact__c, National_Merit_Semifinalist__c, Primary_Interest__c 
+                FROM Opportunity 
+                WHERE Contact__c IN :contactIDsInTrigger
+            ];
 
-        //Parse the Lead CMs into a map
-        for(CampaignMember cm : cmsForLeads)
-        {              
-            CampaignMembersByLeadMap.get(cm.LeadId).add(cm);
-        }
-        
-        //When inserting or updating, need to add the new CMs to the Lead map
-        if(Trigger.isInsert || Trigger.isUpdate)
-        {
-            for(Integer x = 0; x < cmsInTriggerWithLeads.size(); x++)
+            for(Opportunity o : opportunitiesInTrigger)
             {
-                CampaignMember cm = cmsInTriggerWithLeads.get(x);
-                
-                if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest' && cm.Status != 'No Longer Interested')
+                OpportunitiesByContactMap.put(o.Contact__c, o);
+            }
+
+            leadsInTrigger = new Map<Id, Lead>([
+                SELECT Id, Primary_Interest__c 
+                FROM Lead 
+                WHERE Id IN :leadIDsInTrigger
+            ]);
+
+            Set<CampaignMember> setOfAffectedCMs = new Set<CampaignMember>(listOfAffectedCMs);
+
+            //For all Campaigns on the CMs in this trigger, get their names and link id to name
+            List<Campaign> campaignList = [
+                SELECT Id, RecordType.DeveloperName 
+                FROM Campaign 
+                WHERE Id IN :campaignIdsInTrigger
+            ];
+
+            for(Campaign c : campaignList)
+            {
+                campaignRecordTypesById.put(c.Id, c.RecordType.DeveloperName);
+            }
+
+            Set<String> acceptableMajors = new Set<String> {'PSMajors', 'Academic', 'ASU Colleges', 'Degree Search by Interest'};
+
+            //Get the list of CMs on the contacts and leads. Ignore any that are in this trigger, they will be added in later
+            List<CampaignMember> cmsForContactsOrLeads = [
+                SELECT Id, CampaignId, Status, CreatedDate, ContactId, LeadId, Is_Primary_Interest__c, Last_Member_Status_Change__c, Campaign_Type__c, Campaign.RecordType.DeveloperName 
+                FROM CampaignMember 
+                WHERE (ContactId IN :contactIdsInTrigger 
+                OR LeadId IN :leadIdsInTrigger)
+                AND Id NOT IN :cmIds
+                AND Status != 'No Longer Interested' 
+                AND Campaign.RecordType.DeveloperName = 'Interest' 
+                AND Campaign.Type IN :acceptableMajors
+            ];
+
+            //Parse the Contact and Lead CMs into maps
+            for(CampaignMember cm : cmsForContactsOrLeads)
+            {              
+                if(contactIdsInTrigger.contains(cm.ContactId))
                 {
-                    if(CampaignMembersByLeadMap.containsKey(cm.LeadId))
+                    CampaignMembersByContactMap.get(cm.ContactId).add(cm);
+                }
+
+                if(leadIdsInTrigger.contains(cm.LeadId))
+                {
+                    CampaignMembersByLeadMap.get(cm.LeadId).add(cm);
+                }
+            }
+
+            //When inserting or updating, need to add the new CMs to the Contact map
+            if(Trigger.isInsert || Trigger.isUpdate)
+            {
+                for(Integer x = 0; x < cmsInTriggerwithContacts.size(); x++)
+                {
+                    CampaignMember cm = cmsInTriggerWithContacts.get(x);
+                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest' && cm.Status != 'No Longer Interested')
                     {
-                        CampaignMembersByLeadMap.get(cm.LeadId).add(cm);
-                    }
-                    else
-                    {
-                        List<CampaignMember> newList = new List<CampaignMember>();
-                        newList.add(cm);
-                        CampaignMembersByLeadMap.put(cm.LeadId, newList);
+                        if(CampaignMembersByContactMap.containsKey(cm.ContactId))
+                        {
+                            CampaignMembersByContactMap.get(cm.ContactId).add(cm);
+                        }
+                        else
+                        {
+                            List<CampaignMember> newList = new List<CampaignMember>();
+                            newList.add(cm);
+                            CampaignMembersByContactMap.put(cm.ContactId, newList);
+                        }
                     }
                 }
             }
-        }
 
-        //We now have the CMs attached to all affected Contacts / Leads queued up
-        //We need to go through each Contact / Lead, and reset the primary for each set of CMs
-
-        //Reset the primary for the Contacts
-        if(CampaignMembersByContactMap.size() > 0)
-        {
-            for(Id contactId : CampaignMembersByContactMap.keySet())
+            //When inserting or updating, need to add the new CMs to the Lead map
+            if(Trigger.isInsert || Trigger.isUpdate)
             {
-                List<CampaignMember> contactCMs = CampaignMembersByContactMap.get(contactId);
-
-                //Update the Primary Interest on the CM
-                CampaignMember primary;
-                
-                //Pass 1 - Find PSMajor w/ greatest Last Member Status Change 
-                for(CampaignMember ccm : contactCMs)
+                for(Integer x = 0; x < cmsInTriggerWithLeads.size(); x++)
                 {
-                    if(ccm.Campaign_Type__c == 'PSMajors' && (primary == null || ccm.Last_Member_Status_Change__c > primary.Last_Member_Status_Change__c) && ccm.Status != 'No Longer Interested')
+                    CampaignMember cm = cmsInTriggerWithLeads.get(x);
+                    
+                    if(acceptableMajors.contains(cm.Campaign_Type__c) && campaignRecordTypesById.get(cm.CampaignId) == 'Interest' && cm.Status != 'No Longer Interested')
                     {
-                        primary = ccm;
+                        if(CampaignMembersByLeadMap.containsKey(cm.LeadId))
+                        {
+                            CampaignMembersByLeadMap.get(cm.LeadId).add(cm);
+                        }
+                        else
+                        {
+                            List<CampaignMember> newList = new List<CampaignMember>();
+                            newList.add(cm);
+                            CampaignMembersByLeadMap.put(cm.LeadId, newList);
+                        }
                     }
                 }
-                
-                //Pass 2 - Find any CM w/ greatest Last Member Status Change 
-                if(primary == null)
+            }
+
+            //We now have the CMs attached to all affected Contacts / Leads queued up
+            //We need to go through each Contact / Lead, and reset the primary for each set of CMs
+
+            //Reset the primary for the Contacts
+            if(CampaignMembersByContactMap.size() > 0)
+            {
+                for(Id contactId : CampaignMembersByContactMap.keySet())
                 {
+                    List<CampaignMember> contactCMs = CampaignMembersByContactMap.get(contactId);
+
+                    //Update the Primary Interest on the CM
+                    CampaignMember primary;
+                    
+                    //Pass 1 - Find PSMajor w/ greatest Last Member Status Change 
                     for(CampaignMember ccm : contactCMs)
                     {
-                        if(ccm.Status != 'No Longer Interested' && (primary == null || ccm.Last_Member_Status_Change__c >= primary.Last_Member_Status_Change__c))
+                        if(ccm.Campaign_Type__c == 'PSMajors' && (primary == null || ccm.Last_Member_Status_Change__c > primary.Last_Member_Status_Change__c) && ccm.Status != 'No Longer Interested')
                         {
                             primary = ccm;
                         }
                     }
-                }
-
-                //By now we should have a Primary
-                //There are three possibilities
-                //1. None of the CMs have primary
-                //2. One of the CMs has a primary, and it is the one we have identified (e.g. no change)
-                //3. One of the CMs has a primary, and it is different from the one we have identified, so we must update the new and falsify the old
-                if(primary != null)
-                {
-                    //If the primary is in the trigger
-                    if(setOfAffectedCMs.contains(primary))
+                    
+                    //Pass 2 - Find any CM w/ greatest Last Member Status Change 
+                    if(primary == null)
                     {
-                        triggerCMsToPrimary.add(primary);
+                        for(CampaignMember ccm : contactCMs)
+                        {
+                            if(ccm.Status != 'No Longer Interested' && (primary == null || ccm.Last_Member_Status_Change__c >= primary.Last_Member_Status_Change__c))
+                            {
+                                primary = ccm;
+                            }
+                        }
+                    }
+
+                    //By now we should have a Primary
+                    //There are three possibilities
+                    //1. None of the CMs have primary
+                    //2. One of the CMs has a primary, and it is the one we have identified (e.g. no change)
+                    //3. One of the CMs has a primary, and it is different from the one we have identified, so we must update the new and falsify the old
+                    if(primary != null)
+                    {
+                        //If the primary is in the trigger
+                        if(setOfAffectedCMs.contains(primary))
+                        {
+                            triggerCMsToPrimary.add(primary);
+                        }
+                        else
+                        {
+                            externalCMsToPrimary.add(primary);    
+                        }
+
+                        for(CampaignMember ccm : contactCMs)
+                        {
+                            if(ccm.Is_Primary_Interest__c == TRUE && ccm != primary)
+                            {
+                                if(setOfAffectedCMs.contains(ccm))
+                                {
+                                    triggerCMsToFalsify.add(ccm);
+                                }
+                                else
+                                {
+                                    externalCMsToFalsify.add(ccm);    
+                                }
+                            }
+                        }
+
+                        Opportunity opp = OpportunitiesByContactMap.get(contactId);
+                        if(opp != null)
+                        {
+                            if(opp.Primary_Interest__c != primary.CampaignId)
+                            {
+                                opp.Primary_Interest__c = primary.CampaignId;
+                                opportunitiesToUpdate.put(opp.Id, opp);
+                            }
+                        }
                     }
                     else
                     {
-                        externalCMsToPrimary.add(primary);    
-                    }
-
-                    for(CampaignMember ccm : contactCMs)
-                    {
-                        if(ccm.Is_Primary_Interest__c == TRUE && ccm != primary)
+                        Opportunity opp = OpportunitiesByContactMap.get(contactId);
+                        if(opp != null)
                         {
-                            if(setOfAffectedCMs.contains(ccm))
+                            if(opp.Primary_Interest__c != null)
                             {
-                                triggerCMsToFalsify.add(ccm);
+                                opp.Primary_Interest__c = null;
+                                opportunitiesToUpdate.put(opp.Id, opp);
                             }
-                            else
-                            {
-                                externalCMsToFalsify.add(ccm);    
-                            }
-                        }
-                    }
-
-                    Opportunity opp = OpportunitiesByContactMap.get(contactId);
-                    if(opp != null)
-                    {
-                        if(opp.Primary_Interest__c != primary.CampaignId)
-                        {
-                            opp.Primary_Interest__c = primary.CampaignId;
-                            opportunitiesToUpdate.put(opp.Id, opp);
-                        }
-                    }
-                }
-                else
-                {
-                    Opportunity opp = OpportunitiesByContactMap.get(contactId);
-                    if(opp != null)
-                    {
-                        if(opp.Primary_Interest__c != null)
-                        {
-                            opp.Primary_Interest__c = null;
-                            opportunitiesToUpdate.put(opp.Id, opp);
                         }
                     }
                 }
             }
-        }
 
-        //Reset the primary for the Leads 
-        if(CampaignMembersByLeadMap.size() > 0)
-        {
-            for(Id leadId : CampaignMembersByLeadMap.keySet())
+            //Reset the primary for the Leads 
+            if(CampaignMembersByLeadMap.size() > 0)
             {
-                List<CampaignMember> leadCMs = CampaignMembersByLeadMap.get(leadId);
+                for(Id leadId : CampaignMembersByLeadMap.keySet())
+                {
+                    List<CampaignMember> leadCMs = CampaignMembersByLeadMap.get(leadId);
 
-                //Update the Primary Interest on the CM
-                CampaignMember primary;
-                
-                //Pass 1 - Find PSMajor w/ greatest Last Member Status Change 
-                for(CampaignMember lcm : leadCMs)
-                {
-                    if(lcm.Campaign_Type__c == 'PSMajors' && (primary == null || lcm.Last_Member_Status_Change__c > primary.Last_Member_Status_Change__c) && lcm.Status != 'No Longer Interested')
-                    {
-                        primary = lcm;
-                    }
-                }
-                
-                //Pass 2 - Find any CM w/ greatest Last Member Status Change 
-                if(primary == null)
-                {
+                    //Update the Primary Interest on the CM
+                    CampaignMember primary;
+                    
+                    //Pass 1 - Find PSMajor w/ greatest Last Member Status Change 
                     for(CampaignMember lcm : leadCMs)
                     {
-                        if(lcm.Status != 'No Longer Interested' && (primary == null || lcm.Last_Member_Status_Change__c >= primary.Last_Member_Status_Change__c))
+                        if(lcm.Campaign_Type__c == 'PSMajors' 
+                            && (primary == null || lcm.Last_Member_Status_Change__c > primary.Last_Member_Status_Change__c) 
+                            && lcm.Status != 'No Longer Interested')
                         {
                             primary = lcm;
                         }
                     }
-                }
-
-                //By now we should have a Primary
-                //There are three possibilities
-                //1. None of the CMs have primary
-                //2. One of the CMs has a primary, and it is the one we have identified (e.g. no change)
-                //3. One of the CMs has a primary, and it is different from the one we have identified, so we must update the new and falsify the old
-                if(primary != null)
-                {
-                    //If the primary is in the trigger
-                    if(setOfAffectedCMs.contains(primary))
+                    
+                    //Pass 2 - Find any CM w/ greatest Last Member Status Change 
+                    if(primary == null)
                     {
-                        triggerCMsToPrimary.add(primary);
-                    }
-                    else
-                    {
-                        externalCMsToPrimary.add(primary);    
-                    }
-
-                    for(CampaignMember lcm : leadCMs)
-                    {
-                        if(lcm.Is_Primary_Interest__c == TRUE && lcm != primary)
+                        for(CampaignMember lcm : leadCMs)
                         {
-                            if(setOfAffectedCMs.contains(lcm))
+                            if(lcm.Status != 'No Longer Interested' 
+                                && (primary == null || lcm.Last_Member_Status_Change__c >= primary.Last_Member_Status_Change__c))
                             {
-                                triggerCMsToFalsify.add(lcm);
-                            }
-                            else
-                            {
-                                externalCMsToFalsify.add(lcm);    
+                                primary = lcm;
                             }
                         }
                     }
 
-                    Lead leadToUpdate = leadsInTrigger.get(leadId);
-                    if(leadToUpdate.Primary_Interest__c != primary.CampaignId)
+                    //By now we should have a Primary
+                    //There are three possibilities
+                    //1. None of the CMs have primary
+                    //2. One of the CMs has a primary, and it is the one we have identified (e.g. no change)
+                    //3. One of the CMs has a primary, and it is different from the one we have identified, so we must update the new and falsify the old
+                    if(primary != null)
                     {
-                        leadToUpdate.Primary_Interest__c = primary.CampaignId;
-                        leadsToUpdate.add(leadToUpdate);
+                        //If the primary is in the trigger
+                        if(setOfAffectedCMs.contains(primary))
+                        {
+                            triggerCMsToPrimary.add(primary);
+                        }
+                        else
+                        {
+                            externalCMsToPrimary.add(primary);    
+                        }
+
+                        for(CampaignMember lcm : leadCMs)
+                        {
+                            if(lcm.Is_Primary_Interest__c == TRUE && lcm != primary)
+                            {
+                                if(setOfAffectedCMs.contains(lcm))
+                                {
+                                    triggerCMsToFalsify.add(lcm);
+                                }
+                                else
+                                {
+                                    externalCMsToFalsify.add(lcm);    
+                                }
+                            }
+                        }
+
+                        Lead leadToUpdate = leadsInTrigger.get(leadId);
+                        if(leadToUpdate.Primary_Interest__c != primary.CampaignId)
+                        {
+                            leadToUpdate.Primary_Interest__c = primary.CampaignId;
+                            leadsToUpdate.add(leadToUpdate);
+                        }
                     }
-                }
-                else
-                {
-                    Lead leadToUpdate = leadsInTrigger.get(leadId);
-                    if(leadToUpdate.Primary_Interest__c != null)
+                    else
                     {
-                        leadToUpdate.Primary_Interest__c = null;
-                        leadsToUpdate.add(leadToUpdate);
+                        Lead leadToUpdate = leadsInTrigger.get(leadId);
+                        if(leadToUpdate.Primary_Interest__c != null)
+                        {
+                            leadToUpdate.Primary_Interest__c = null;
+                            leadsToUpdate.add(leadToUpdate);
+                        }
                     }
                 }
             }
         }
-
-        if(Trigger.isInsert)
-        {
-            System.debug('FINISHING CAMPAIGN MEMBER BULK BEFORE FOR INSERT');
-        }
-        else if(Trigger.isUpdate)
-        {
-            System.debug('FINISHING CAMPAIGN MEMBER BULK BEFORE FOR UPDATE');
-        }
-        else if(Trigger.isDelete)
-        {
-            System.debug('FINISHING CAMPAIGN MEMBER BULK BEFORE FOR DELETE');
-        }  
     }
  
     /**
@@ -469,19 +460,6 @@ public without sharing class CampaignMemberHandler implements ITrigger
      */
     public void bulkAfter() 
     {
-        if(Trigger.isInsert)
-        {
-            System.debug('STARTING CAMPAIGN MEMBER BULK AFTER FOR INSERT');
-        }
-        else if(Trigger.isUpdate)
-        {
-            System.debug('STARTING CAMPAIGN MEMBER BULK AFTER FOR UPDATE');
-        }
-        else if(Trigger.isDelete)
-        {
-            System.debug('STARTING CAMPAIGN MEMBER BULK AFTER FOR DELETE');
-        }
-
         Set<Id> triggerIDs = new Set<Id>();
         List<Id> nationalMeritContactIds = new List<Id>();
         if(Trigger.isInsert || Trigger.isUpdate)
@@ -504,12 +482,14 @@ public without sharing class CampaignMemberHandler implements ITrigger
             'Flinn Semifinalist', 
             'Flinn Finalist'};
 
-        List<CampaignMember> nmsList = new List<CampaignMember>([SELECT Id, ContactId 
-                                                         FROM CampaignMember 
-                                                         WHERE Id IN :triggerIDs 
-                                                         AND ContactId != null
-                                                         AND Campaign.RecordType.DeveloperName = 'Scholarship' 
-                                                         AND Campaign.Name IN :NationalMeritCampaignNames]);
+        List<CampaignMember> nmsList = new List<CampaignMember>([
+            SELECT Id, ContactId 
+            FROM CampaignMember 
+            WHERE Id IN :triggerIDs 
+            AND ContactId != null
+            AND Campaign.RecordType.DeveloperName = 'Scholarship' 
+            AND Campaign.Name IN :NationalMeritCampaignNames
+        ]);
 
         //Extract the Contact IDs from our CM set
         for (CampaignMember cm : nmsList) 
@@ -559,52 +539,22 @@ public without sharing class CampaignMemberHandler implements ITrigger
 
         if(opportunitiesToUpdate.size() > 0)
         {
-            System.debug('IN CAMPAIGN MEMBER HANDLER, ABOUT TO UPDATE OPPORTUNITIES');
             List<Opportunity> oppsToUpdateList = new List<Opportunity>();
             oppsToUpdateList.addAll(opportunitiesToUpdate.values());
             update oppsToUpdateList;
-            System.debug('IN CAMPAIGN MEMBER HANDLER, FINISHED UPDATING OPPORTUNITIES');
-        }
-        else
-        {
-           System.debug('IN CAMPAIGN MEMBER HANDLER, NO OPPORTUNITIES TO UPDATE'); 
         }
         opportunitiesToUpdate = new Map<Id, Opportunity>();
 
         if(leadsToUpdate.size() > 0)
         {
-            System.debug('IN CAMPAIGN MEMBER HANDLER, ABOUT TO UPDATE LEADS');
             update leadsToUpdate;
-            System.debug('IN CAMPAIGN MEMBER HANDLER, FINISHED UPDATING LEADS');
-        }
-        else
-        {
-           System.debug('IN CAMPAIGN MEMBER HANDLER, NO LEADS TO UPDATE'); 
         }
         leadsToUpdate = new List<Lead>();
 
         if(cmsToUpdate.size() > 0)
         {
-            System.debug('IN CAMPAIGN MEMBER HANDLER, ABOUT TO UPDATE CAMPAIGN MEMBERS');
+            ranCampaignMembersUpdatePrimary = true;
             update cmsToUpdate;
-            System.debug('IN CAMPAIGN MEMBER HANDLER, FINISHED UPDATING CAMPAIGN MEMBERS');
-        }
-        else
-        {
-           System.debug('IN CAMPAIGN MEMBER HANDLER, NO CAMPAIGN MEMBERS TO UPDATE') ;
-        }
-
-        if(Trigger.isInsert)
-        {
-            System.debug('FINISHING CAMPAIGN MEMBER BULK AFTER FOR INSERT');
-        }
-        else if(Trigger.isUpdate)
-        {
-            System.debug('FINISHING CAMPAIGN MEMBER BULK AFTER FOR UPDATE');
-        }
-        else if(Trigger.isDelete)
-        {
-            System.debug('FINISHING CAMPAIGN MEMBER BULK AFTER FOR DELETE');
         }
     }
 

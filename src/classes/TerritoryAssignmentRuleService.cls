@@ -29,7 +29,6 @@ public class TerritoryAssignmentRuleService
 		try
 		{
 			String selectAllTars = 'SELECT ' + fieldsToString() + ', User__r.IsActive ' + 'FROM Territory_Assignment_Rule__c';
-			
 			tars = Database.query(selectAllTars);
 		}
 		catch (Exception e)

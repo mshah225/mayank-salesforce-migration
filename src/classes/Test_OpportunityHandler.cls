@@ -1,6 +1,8 @@
 @isTest
 public with sharing class Test_OpportunityHandler
 {
+    static Integer TRIGGERLOAD = 5;
+
     // Build Leads
     static List<Lead> createLeads (Integer quantity)
     {
@@ -9,11 +11,11 @@ public with sharing class Test_OpportunityHandler
         for (Integer i=0;i<quantity;i++)
         {
             Lead l = new Lead(
-                    LastName='LName'+i,
-                    FirstName='FName'+i,
-                    Company='Company',
-                    Email='test'+i+'@test.test',
-                    LeadSource='Email'
+                LastName='LName'+i,
+                FirstName='FName'+i,
+                Company='Company',
+                Email='test'+i+'@test.test',
+                LeadSource='Email'
             );
 
             leadList.add(l);
@@ -25,27 +27,27 @@ public with sharing class Test_OpportunityHandler
     static Id insertProgram(String programName, String programCode)
     {
         Program__c testProgram = new Program__c(
-                Name=programName, Program_Code__c =
-                programCode
+            Name=programName, Program_Code__c =
+            programCode
         );
 
         insert testProgram;
         return testProgram.Id;
     }
-    
+
     static Id insertPlan(String planName, String planCode, Id programId)
     {
         Plan__c testPlan = new Plan__c(
-                Name = planName, Plan_Code__c = planCode,
-                // Plan_Status__c = 'Active',
-                Plan_Effective_Date__c = Date.today(),
-                Program__c = programId
+            Name = planName, Plan_Code__c = planCode,
+            // Plan_Status__c = 'Active',
+            Plan_Effective_Date__c = Date.today(),
+            Program__c = programId
         );
 
         insert testPlan;
         return testPlan.Id;
     }
-    
+
     static List<Lead_Interest__c> createLeadInterests(List<Lead> associatedLeads)
     {
         List<Lead_Interest__c> liList = new List<Lead_Interest__c>();
@@ -56,9 +58,9 @@ public with sharing class Test_OpportunityHandler
         for (Lead l: associatedLeads)
         {
             Lead_Interest__c li = new Lead_Interest__c(
-                    College__c=program1,
-                    Plan__c=plan1,
-                    Leads__c=l.Id
+                College__c=program1,
+                Plan__c=plan1,
+                Leads__c=l.Id
             );
             liList.add(li);
         }
@@ -69,14 +71,14 @@ public with sharing class Test_OpportunityHandler
     //Convert Leads and create Opportunities
     static testMethod void testOpportunityHandler()
     {
-        List<Contact> contacts = ContactService.createTestContacts(5);
+        List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD, false);
         insert contacts;
 
         List<Lead> leadList = LeadService.createTestLeadsToConvert(contacts);
         insert leadList;
-       
+
         Set<Id> leadIds = new Set<Id>();
-       
+
         // Perform Conversion
         for (Lead l: leadList)
         {
@@ -85,34 +87,34 @@ public with sharing class Test_OpportunityHandler
             leadIds.add(l.Id);
         }
 
+        Test.startTest();
         update leadList;
-        
+        Test.stopTest();
+
         List<Lead> checkLeads = new List<Lead>([SELECT ConvertedContactID FROM Lead WHERE Id IN :leadIds]);
-    
+
         Set<Id> contactIds = new Set<Id>();
 
         for (Lead l: checkLeads)
         {
             contactIds.add(l.ConvertedContactId);
         }
-    
+
         // Confirm that Opps were created during lead conversion
         List<Opportunity> oppList = new List<Opportunity>([
-                SELECT Id, contact__c
-                FROM Opportunity
-                WHERE contact__c IN :contactIds
+            SELECT Id, contact__c
+            FROM Opportunity
+            WHERE contact__c IN :contactIds
         ]);
 
         System.assertEquals(opplist.size(), leadList.size());
     }
 
-// Validate that Contacts were updated on Opps (contact__c field)
-
-// Validate that Lead Interest Contacts were updated (contact__c field)
-
+    // Validate that Contacts were updated on Opps (contact__c field)
+    // Validate that Lead Interest Contacts were updated (contact__c field)
     static testMethod void testCollegeFieldInsert()
     {
-        List<Contact> contacts = ContactService.createTestContacts(5);
+        List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD, false);
         insert contacts;
 
         contacts = [SELECT AccountId, Name FROM Contact];
@@ -131,14 +133,15 @@ public with sharing class Test_OpportunityHandler
         opps.get(3).Academic_Plan__c = academicPlan1;
         opps.get(3).College__c = program2;
 
+        Test.startTest();
         insert opps;
+        Test.stopTest();
 
         Opportunity o1 = opps[0];
         Opportunity o2 = opps[1];
         Opportunity o3 = opps[2];
         Opportunity o4 = opps[3];
 
-        Test.startTest();
         System.assert(opps.get(0).College__c == null);
         o1 = [SELECT College__c FROM Opportunity WHERE Id = :o1.Id];
         System.assert(o1.College__c == program2);
@@ -164,12 +167,12 @@ public with sharing class Test_OpportunityHandler
         update o2;
         o2 = [SELECT College__c FROM Opportunity WHERE Id = :o2.Id];
         System.assert(o2.College__c == program1);
-        Test.stopTest();
     }
+    
 
     static testMethod void testCollegeFieldUpdate()
     {
-        List<Contact> contacts = ContactService.createTestContacts(5);
+        List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD, false);
         insert contacts;
 
         contacts = [SELECT AccountId, Name FROM Contact];
@@ -190,6 +193,8 @@ public with sharing class Test_OpportunityHandler
         o1.Academic_Plan__c = academicPlan1;
         System.assert(o1.College__c == null);
         update o1;
+        Test.stopTest();
+
         o1 = [SELECT College__c FROM Opportunity WHERE Id = :o1.Id];
         System.assert(o1.College__c == program1);
 
@@ -214,6 +219,5 @@ public with sharing class Test_OpportunityHandler
         update o2;
         o2 = [SELECT College__c FROM Opportunity WHERE Id = :o2.Id];
         System.assert(o2.College__c == program2);
-        Test.stopTest();
     }
 }

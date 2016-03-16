@@ -1,8 +1,11 @@
 public without sharing class OpportunityHandler implements ITrigger
 {
     private Map<Id, Id> oppToContactMap = new Map<Id, Id>();
-    private Map<Id, Id> leadToContactMap = new Map<Id, Id>();
-    private Map<Id, Account> accountToContactMap;
+    private Map<Id, Id> leadToContactMap = new Map<Id, Id>();    
+    private static Map<Id, Account> accountMap;
+    private List<Id> planIds = new List<Id>();
+    private Map<Id, Id> programColleges = new Map<Id, Id>();
+    private static Set<Id> accountIds;
 
     /**
     * bulkBefore
@@ -12,66 +15,102 @@ public without sharing class OpportunityHandler implements ITrigger
     */
     public void bulkBefore()
     {
+        accountIds = new Set<Id>();
+        accountMap = new Map<Id, Account>();
+
         if (Trigger.isInsert || Trigger.isUpdate)
         {
-            Set<Id> accountIds = new Set<Id>();
-            for (SObject so: Trigger.new)
+            //Get all accounts attached to the opportunity
+            Boolean missingContact = false;
+            Boolean changedPlan = false;
+
+            for (Integer x = 0; x < Trigger.new.size(); x++)
             {
-                Opportunity o = (Opportunity)so;
+                Opportunity o = (Opportunity) Trigger.new.get(x);
+
                 if (o.AccountId != null)
                 {
                     accountIds.add(o.AccountId);
                 }
-            }
 
-            accountToContactMap = new Map<Id, Account>([SELECT Id, Contact__c FROM Account WHERE Id IN :accountIds]);
+                if(o.Contact__c == null)
+                {
+                    missingContact = true;
+                }
 
-            List<Opportunity> newOpps = Trigger.new;
-            List<Id> admittedPlanIds = new List<Id>();
-            List<Id> academicPlanIds = new List<Id>();
-            Map<Id, Id> admittedPlanPrograms = new Map<Id, Id>();
-            Map<Id, Id> academicPlanPrograms = new Map<Id, Id>();
-
-            for(Integer x = 0; x < newOpps.size(); x++)
-            {
-                admittedPlanIds.add(newOpps.get(x).Admitted_Plan__c);
-                academicPlanIds.add(newOpps.get(x).Academic_Plan__c);
-            }
-
-            List<Plan__c> admittedPrograms = [SELECT Id, Program__c FROM Plan__c WHERE Id in :admittedPlanIds];
-            List<Plan__c> academicPrograms = [SELECT Id, Program__c FROM Plan__c WHERE Id in :academicPlanIds];
-            for(Integer x = 0; x < admittedPrograms.size(); x++)
-            {
-                Plan__c c = admittedPrograms.get(x);
-                admittedPlanPrograms.put(c.Id, c.Program__c);
-            }
-
-            for(Integer x = 0; x < academicPrograms.size(); x++)
-            {
-                Plan__c c = academicPrograms.get(x);
-                academicPlanPrograms.put(c.Id, c.Program__c);
-            }
-
-            for(Integer x = 0; x < newOpps.size(); x++)
-            {
                 Id oldAdmittedPlan = null;
                 Id oldAcademicPlan = null;
+
                 if(Trigger.isUpdate)
                 {
-                    Opportunity oldOpp = (Opportunity)Trigger.old.get(x);
+                    Opportunity oldOpp = (Opportunity) Trigger.old.get(x);
                     oldAdmittedPlan = oldOpp.Admitted_Plan__c;
                     oldAcademicPlan = oldOpp.Academic_Plan__c;
                 }
-                Opportunity newOpp = newOpps.get(x);
-                if(newOpp.Academic_Plan__c != oldAcademicPlan || newOpp.Admitted_Plan__c != oldAdmittedPlan)
+                
+                if(o.Academic_Plan__c != oldAcademicPlan || o.Admitted_Plan__c != oldAdmittedPlan)
                 {
-                    if(newOpp.Admitted_Plan__c != null)
+                    changedPlan = true;
+                    if(o.Academic_Plan__c != oldAcademicPlan)
                     {
-                        newOpp.College__c = admittedPlanPrograms.get(newOpp.Admitted_Plan__c);
+                        planIds.add(o.Academic_Plan__c);    
                     }
-                    else if(newOpp.Academic_Plan__c != null)
+
+                    if(o.Admitted_Plan__c != oldAdmittedPlan)
                     {
-                        newOpp.College__c = academicPlanPrograms.get(newOpp.Academic_Plan__c);
+                        planIds.add(o.Admitted_Plan__c); 
+                    }
+                }
+            }
+
+            if(missingContact && accountIds.size() > 0)
+            {
+                //Get all Contacts linked to the Opportunities via the Accounts
+                accountMap = new Map<Id, Account>([
+                    SELECT Id, Contact__c 
+                    FROM Account 
+                    WHERE Id IN :accountIds
+                ]);
+            }
+
+            if(changedPlan)
+            {
+                List<Plan__c> programs = [
+                    SELECT Id, Program__c 
+                    FROM Plan__c 
+                    WHERE Id IN :planIds
+                ];
+                for(Integer x = 0; x < programs.size(); x++)
+                {
+                    Plan__c c = programs.get(x);
+                    programColleges.put(c.Id, c.Program__c);
+                }
+
+                //For each of the new opportunities, if we have changed the academic or admitted plans,
+                //update the college on the opportunity to point to the plan's college
+                for(Integer x = 0; x < Trigger.new.size(); x++)
+                {
+                    Opportunity newOpp = (Opportunity) Trigger.new.get(x);  
+
+                    Id oldAdmittedPlan = null;
+                    Id oldAcademicPlan = null;
+                    if(Trigger.isUpdate)
+                    {
+                        Opportunity oldOpp = (Opportunity)Trigger.old.get(x);
+                        oldAdmittedPlan = oldOpp.Admitted_Plan__c;
+                        oldAcademicPlan = oldOpp.Academic_Plan__c;
+                    }
+
+                    if(newOpp.Academic_Plan__c != oldAcademicPlan || newOpp.Admitted_Plan__c != oldAdmittedPlan)
+                    {
+                        if(newOpp.Admitted_Plan__c != null)
+                        {
+                            newOpp.College__c = programColleges.get(newOpp.Admitted_Plan__c);
+                        }  
+                        else if(newOpp.Academic_Plan__c != null)
+                        {
+                            newOpp.College__c = programColleges.get(newOpp.Academic_Plan__c);
+                        }
                     }
                 }
             }
@@ -88,18 +127,24 @@ public without sharing class OpportunityHandler implements ITrigger
     {
         if (Trigger.isInsert || Trigger.isUpdate)
         {
-            Set<Id> accountIds = new Set<Id>();
+            Set<Id> afterAccountIds = new Set<Id>();
             for (SObject so: Trigger.new)
             {
                 Opportunity o = (Opportunity)so;
                 if (o.AccountId != null)
                 {
-                    accountIds.add(o.AccountId);
+                    afterAccountIds.add(o.AccountId);
                 }
             }
 
-            Map<Id, Account> accountMap = new Map<Id, Account>([SELECT Id, Contact__c FROM Account WHERE Id IN :accountIds]);
-            for (SObject so: Trigger.new)
+            //If the accounts on the Opportunity have changed since we last queried them, get them again
+            if(afterAccountIds.size() > 0 
+                && (accountMap == null || !accountIds.containsAll(afterAccountIds)))
+            {
+                accountMap = new Map<Id, Account>([SELECT Id, Contact__c FROM Account WHERE Id IN :afterAccountIds]);
+            }
+
+            for (SObject so : Trigger.new)
             {
                 Opportunity o = (Opportunity)so;
                 if (o.converted_lead_id__c != null && o.AccountId != null)
@@ -123,10 +168,10 @@ public without sharing class OpportunityHandler implements ITrigger
         o.Opportunity_Assignment_Number_Rand__c = OpportunityService.generateOpportunityAssignmentNumber();
 
         // Populate the contact reference on the Opportunity if there is none set
-        if (o.Contact__c == null)
+        if (o.Contact__c == null && accountMap.size() > 0)
         {
             // We should always have an account for an Opportunity
-            Account oppsAccount = accountToContactMap.get(o.AccountId);
+            Account oppsAccount = accountMap.get(o.AccountId);
             o.Contact__c = oppsAccount.Contact__c;
         }
     }
@@ -197,7 +242,7 @@ public without sharing class OpportunityHandler implements ITrigger
     */
     public void andFinally()
     {
-        if (Trigger.isInsert)
+        if (Trigger.isAfter && Trigger.isInsert)
         {
             cleanUpLeadInterests(Trigger.new);
         }
@@ -210,13 +255,11 @@ public without sharing class OpportunityHandler implements ITrigger
             return;
         }
 
-        Set<Id> accountIds = new Set<Id>();
         Set<Id> contactIds = new Set<Id>();
         Set<Id> leadIds = new Set<Id>();
 
         for (Opportunity o: opportunityList)
         {
-            //accountIds.add(o.AccountId);
             if (o.converted_lead_id__c != null)
             {
                 leadIds.add(ID.valueOf(o.converted_lead_id__c));
@@ -244,7 +287,7 @@ public without sharing class OpportunityHandler implements ITrigger
                 update leadInterestList;
             }
         }
-
+        
         return;
     }
 }

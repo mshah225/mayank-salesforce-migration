@@ -71,7 +71,7 @@ public with sharing class Test_OpportunityHandler
     //Convert Leads and create Opportunities
     static testMethod void testOpportunityHandler()
     {
-        List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD, false);
+        List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD);
         insert contacts;
 
         List<Lead> leadList = LeadService.createTestLeadsToConvert(contacts);
@@ -114,7 +114,7 @@ public with sharing class Test_OpportunityHandler
     // Validate that Lead Interest Contacts were updated (contact__c field)
     static testMethod void testCollegeFieldInsert()
     {
-        List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD, false);
+        List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD);
         insert contacts;
 
         contacts = [SELECT AccountId, Name FROM Contact];
@@ -172,7 +172,7 @@ public with sharing class Test_OpportunityHandler
 
     static testMethod void testCollegeFieldUpdate()
     {
-        List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD, false);
+        List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD);
         insert contacts;
 
         contacts = [SELECT AccountId, Name FROM Contact];

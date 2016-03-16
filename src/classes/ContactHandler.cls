@@ -14,12 +14,6 @@ public without sharing class ContactHandler implements ITrigger
     private List<Account> accountsToUpdate = new List<Account>();
     private List<Contact> contactsToCheckIfUpdate = new List<Contact>();
 
-    // Vars related to Scanbiz process
-    private static Id EngineeringGOEECampaignId;
-    private static Id scanbizRelationshipRTId;
-    private List<CampaignMember> scanbizCampaignMembers = new List<CampaignMember>();
-    private List<Relationship__c> scanbizRelationships = new List<Relationship__c>();
-
     public void bulkBefore()
     {
         accountsToCreate = new List<Account>();
@@ -88,12 +82,6 @@ public without sharing class ContactHandler implements ITrigger
             {
                 Contact c = (Contact) so;
 
-                // Exclude Scanbiz created contacts
-                if (c.scanbizcards__ScanBizCards__c && Trigger.IsInsert)
-                {
-                    continue;
-                }
-
                 if (c.EMPLID__c == null && c.RecordTypeId != SFMasteredContactRTId)
                 {
                     c.RecordTypeId = SFMasteredContactRTId;
@@ -147,44 +135,13 @@ public without sharing class ContactHandler implements ITrigger
                 ]);
             }
         }  
-
-        //Scanbiz and GOEE Stuff
-        
-        List<Campaign> goeeCampaign = [
-            SELECT Id
-            FROM Campaign
-            WHERE Name LIKE 'Engineering%GOEE'
-            AND IsActive = true
-        ];
-
-        if (goeeCampaign.size() > 0)
-        {
-            EngineeringGOEECampaignId = goeeCampaign[0].Id;
-        }
-        else
-        {
-            EngineeringGOEECampaignId = null;
-            System.debug(LoggingLevel.WARN, 'No Engineering - GOEE campaign was found. ' +
-                'Scanbiz Contacts will not be associated to any campaigns');
-        }
     }
     
     public void beforeInsert(SObject so)
     {
         Contact c = (Contact)so;
-
-        // Cache the Account Id that was on this scanbiz contact
-        if (c.scanbizcards__ScanBizCards__c)
-        {
-            c.Scanbiz_Account__c = c.AccountId;
-            c.Corporate_Relations_Contact_Owner__c = UserInfo.getUserId();
-            c.AccountId = null;
-        }
-        else
-        {
-            //Automatically generate a PIN for a new contact
-            c.Self_Service_PIN__c = ContactService.generateRandomPin(c.Birthdate);
-        }
+        //Automatically generate a PIN for a new contact
+        c.Self_Service_PIN__c = ContactService.generateRandomPin(c.Birthdate);
     }
     
     public void beforeUpdate(SObject oldSo, SObject so)
@@ -231,77 +188,6 @@ public without sharing class ContactHandler implements ITrigger
 
             update accountsToCreate;
         }
-
-        if(Trigger.isInsert)
-        {
-            for(Contact c : (List<Contact>) Trigger.new)
-            {
-                // We need to create a relationship and a campaign member for this
-                // Contact that was provided by Scanbiz
-                if (c.Scanbiz_Account__c != null)
-                {
-
-                    //Get Scanbiz Relationship RT ID if we haven't already
-                    if(scanbizRelationshipRTId == null)
-                    {
-                        List<RecordType> scanbizRecordTypes = [
-                            SELECT Id
-                            FROM RecordType
-                            WHERE SobjectType = 'Relationship__c'
-                            AND Name = 'Contact to Account'
-                        ];
-
-                        if (scanbizRecordTypes.size() > 0)
-                        {
-                            scanbizRelationshipRTId = scanbizRecordTypes[0].Id;
-                        }
-                        else
-                        {
-                            break;
-                            System.debug(LoggingLevel.WARN, 'No Scanbiz Record type for Relationship was found.');
-                        }
-                    }
-
-                    scanbizRelationships.add(
-                        RelationshipService.createScanbizRelationship(
-                            c, scanbizRelationshipRTId
-                        )
-                    );
-
-                    if (EngineeringGOEECampaignId != null)
-                    {
-
-                        //Get EngineeringGOEE Campaign ID if we haven't already
-                        if(EngineeringGOEECampaignId == null)
-                        {
-                            List<Campaign> goeeCampaign = [
-                                SELECT Id
-                                FROM Campaign
-                                WHERE Name LIKE 'Engineering%GOEE'
-                                AND IsActive = true
-                            ];
-
-                            if (goeeCampaign.size() > 0)
-                            {
-                                EngineeringGOEECampaignId = goeeCampaign[0].Id;
-                            }
-                            else
-                            {
-                                break;
-                                System.debug(LoggingLevel.WARN, 'No Engineering - GOEE campaign was found. ' +
-                                    'Scanbiz Contacts will not be associated to any campaigns');
-                            }
-                        }
-
-                        scanbizCampaignMembers.add(
-                            CampaignMemberService.createScanbizCampaignMember(
-                                c, EngineeringGOEECampaignId
-                            )
-                        );
-                    }
-                }
-            }
-        }
     }
 
     public void afterInsert(SObject so) { }
@@ -310,18 +196,7 @@ public without sharing class ContactHandler implements ITrigger
 
     public void afterDelete(SObject so) { }
 
-    public void andFinally() 
-    { 
-        if (!scanbizRelationships.isEmpty())
-        {
-            insert scanbizRelationships;
-        }
-
-        if (!scanbizCampaignMembers.isEmpty())
-        {
-            insert scanbizCampaignMembers;
-        }
-    }
+    public void andFinally() { }
 
     private Account createAccount(Contact c)
     {

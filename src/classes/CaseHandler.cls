@@ -20,6 +20,7 @@ public without sharing class CaseHandler implements ITrigger
 
         if (Trigger.isInsert)
         {
+            LogSuite.log('query', 'Calling recruitment case RT query');
             recruitmentCaseRT = new List<RecordType>([SELECT Id FROM RecordType WHERE SobjectType='Case' AND DeveloperName = 'ASU_Admission_Services']);
             if (recruitmentCaseRT.size() < 1)
             {
@@ -42,10 +43,12 @@ public without sharing class CaseHandler implements ITrigger
                 }
             }
 
+            LogSuite.log('query', 'Calling related contact map query');
             relatedContactMap = new Map<Id, Contact>([SELECT Id, (Select Id, StageName, Territory_Assignment_Last_Rule_Type__c, OwnerId, Owner.IsActive, Enrollment_Coach__c, Enrollment_Coach__r.IsActive, CreatedDate, IsClosed FROM Opportunities__r ORDER BY IsClosed ASC, CreatedDate DESC) FROM Contact WHERE Id in :caseContactIdSet]);
 
             if (campaignIdSet.size() > 0)
             {
+                LogSuite.log('query', 'Calling source map query');
                 sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.Category__c, Case_Assignment_Rule__r.Sub_Category__c, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.Functional_Group__c, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
             }
         }
@@ -79,6 +82,7 @@ public without sharing class CaseHandler implements ITrigger
                             c.Subject = subjectSplit[0];
                         }
 
+                        LogSuite.log('query', 'Calling FA case queue query');
                         Id faCaseQueue = [
                                 SELECT Id
                                 FROM Group
@@ -161,6 +165,7 @@ public without sharing class CaseHandler implements ITrigger
 
                 if(emplid != null && emplid != '')
                 {
+                    LogSuite.log('query', 'Calling contact users query');
                     List<Contact> contactUsers = [SELECT Id FROM Contact WHERE EMPLID__c = :emplid LIMIT 1];
                     if(contactUsers != null && contactUsers.size() > 0)
                     {
@@ -194,9 +199,6 @@ public without sharing class CaseHandler implements ITrigger
                 opList = con.Opportunities__r;
             }
 
-            system.debug('GRF c: ' + c);
-            system.debug('GRF opList: ' + opList);
-
             // SFR-1109; moved boolean check here to correct bug on webform submissions
             if (c.Associate_Case_to_Active_Opportunity__c == true && opList != null && opList.size() > 0)
             {
@@ -204,8 +206,6 @@ public without sharing class CaseHandler implements ITrigger
             }
 
             // Special handling for API users below for webform integrations'
-            system.debug('GRF Username: ' + UserInfo.getFirstName());
-            system.debug('GRF sourceMap: ' + sourceMap);
             if (!UserInfo.getFirstName().equals('API') || UserInfo.getLastName().equals('ASU EMAIL SERVICE'))
             {
                 // SFR-1109; added opList check here to correct bug on webform submissions
@@ -298,6 +298,7 @@ public without sharing class CaseHandler implements ITrigger
                             // No valid Territory Manager found; use default Case Assignment Rule
                             if (defaultCAR == null)
                             {
+                                LogSuite.log('query', 'Calling default CAR query');
                                 defaultCar = [SELECT Id, Queue_ID__c, Origin__c, Category__c, Sub_Category__c, Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
                                 if (!(defaultCAR == null))
                                 {

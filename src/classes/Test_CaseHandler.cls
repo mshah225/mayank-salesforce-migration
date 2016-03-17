@@ -83,7 +83,9 @@ public with sharing class Test_CaseHandler {
 		}
 
 		Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Admissions Case Opportunity Association');
 		insert caseList;
+		LogSuite.deactivateTestFlowSuite();
 		Test.stopTest();
 
 		//List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
@@ -148,7 +150,9 @@ public with sharing class Test_CaseHandler {
 		}
 
 		Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Admissions Case Territory Manager Assignment');
 		insert caseList;
+		LogSuite.deactivateTestFlowSuite();
 		Test.stopTest();
 
 		//List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
@@ -212,7 +216,9 @@ public with sharing class Test_CaseHandler {
 		}
 
 		Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Admissions Case Enrollment Coach Assignment');
 		insert caseList;
+		LogSuite.deactivateTestFlowSuite();
 		Test.stopTest();
 
 		//List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
@@ -348,9 +354,11 @@ public with sharing class Test_CaseHandler {
 		}
 
 		Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Admissions Case Webform CAR Assignment');
 		System.runAs(APIUser) {
 			insert caseList;
 		}
+		LogSuite.deactivateTestFlowSuite();
 		Test.stopTest();
 
 		//List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
@@ -504,9 +512,11 @@ public with sharing class Test_CaseHandler {
 		}
 
 		Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Admissions Case Webform EC Assignment');
 		System.runAs(APIUser) {
 			insert caseList;
 		}
+		LogSuite.deactivateTestFlowSuite();
 		Test.stopTest();
 
 		//List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
@@ -641,9 +651,11 @@ public with sharing class Test_CaseHandler {
 		}
 
 		Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Admissions Case Webform Functional Group Assignment');
 		System.runAs(APIUser) {
 			insert caseList;
 		}
+		LogSuite.deactivateTestFlowSuite();
 		Test.stopTest();
 
 		//List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
@@ -787,9 +799,11 @@ public with sharing class Test_CaseHandler {
 		}
 
 		Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Admissions Case Webform Default CAR Assignment');
 		System.runAs(APIUser) {
 			insert caseList;
 		}
+		LogSuite.deactivateTestFlowSuite();
 		Test.stopTest();
 
 		//List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
@@ -949,9 +963,11 @@ public with sharing class Test_CaseHandler {
 		}
 
 		Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Admissions Case Webform Default CAR EC Assignment');
 		System.runAs(APIUser) {
 			insert caseList;
 		}
+		LogSuite.deactivateTestFlowSuite();
 		Test.stopTest();
 
 		//List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
@@ -974,9 +990,13 @@ public with sharing class Test_CaseHandler {
         Case c = createCase(fa_id, con);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '3';
+
         Test.startTest();
+		LogSuite.activateTestFlowSuite('Test FA Change State With Sufficient Links');
         update c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
+
         Case stat = [
             SELECT Status, Visible_by_Contact__c, IsClosedOnCreate
             FROM Case
@@ -998,9 +1018,13 @@ public with sharing class Test_CaseHandler {
         ].Id;
 
         Contact con = createContact();
+
         Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Create Webforms Case');
         Case c = createCase(reg_id, con);
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
+
         Case stat = [
             SELECT ContactId, Status, Visible_by_Contact__c
             FROM Case
@@ -1021,6 +1045,7 @@ public with sharing class Test_CaseHandler {
 
         Contact con = createContact();
         Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Create Webforms Case Create Contact');
         Case c = new Case(
             Subject = 'Test Subject%ASURITE:1234567890%Queue:' + reg_id + '%First:Test%Last:Contact',
             Description = 'Test Description',
@@ -1028,6 +1053,7 @@ public with sharing class Test_CaseHandler {
         );
         
         insert c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
         Case stat = [
             SELECT ContactId, Status, Visible_by_Contact__c
@@ -1052,7 +1078,9 @@ public with sharing class Test_CaseHandler {
         ].Id;
 
         Contact con = createContact();
+
         Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Create Webforms Case No Contact');
         Case c = new Case(
             Subject = 'Test Subject%ASURITE:%Queue:' + reg_id + '%First:%Last:',
             Description = 'Test Description',
@@ -1060,7 +1088,9 @@ public with sharing class Test_CaseHandler {
         );
         
         insert c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
+
         Case stat = [
             SELECT ContactId, Status, Visible_by_Contact__c
             FROM Case
@@ -1083,9 +1113,13 @@ public with sharing class Test_CaseHandler {
         Case c = createCase(reg_id, con);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '3';
+
         Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Reg Change State With Sufficient Links');
         update c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
+
         Case stat = [
             SELECT Status, Visible_by_Contact__c
             FROM Case
@@ -1109,9 +1143,13 @@ public with sharing class Test_CaseHandler {
         Case c = createCase(reg_id, con);
         c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         c.Number_of_Files__c = '5';
+
         Test.startTest();
+		LogSuite.activateTestFlowSuite('Test Change State With Sufficient Links');
         update c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
+        
         Case stat = [SELECT Status FROM Case WHERE Id = :c.Id LIMIT 1];
         System.assert(stat.Status == 'Processing');
     }

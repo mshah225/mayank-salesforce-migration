@@ -132,7 +132,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                                 // Option to do something else
                             }
 
-
                             if (String.isEmpty(this.theCase.Most_Recent_Functional_Group__c))
                             {
                                 // Handle NPE on Most_Recent_Functional_Group__c
@@ -775,7 +774,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
     private void setCaseAssignmentRule(String[] toEmailAddresses, String[] ccEmailAddresses)
     {
-        Case_Assignment_Rule__c[] assignmentRuleList;
+        List<Case_Assignment_Rule__c> assignmentRuleList = new List<Case_Assignment_Rule__c>();
 
         if(toEmailAddresses.size() > 1)
         {
@@ -786,7 +785,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 ORDER BY Priority__c
             ];
         }
-        else
+        else if(toEmailAddresses.size() > 0)
         {
             String toEmailAddress = toEmailAddresses.get(0);
 

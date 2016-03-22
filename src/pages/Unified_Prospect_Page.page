@@ -5,12 +5,9 @@
     showHeader="true"
     standardStylesheets="false">
 <head>
-
     <style>
-        body .bPageBlock,
-        body .bPageBlock .pbBody,
-        body .bPageBlock .pbBottomButtons {
-            background-color: transparent/Lead !important;
+        body {
+            min-width: 1200px;
         }
         
         .Custom3Tab .primaryPalette,
@@ -47,20 +44,14 @@
             background: #a30046 !important;
             color: #fff !important;
             border: none !important;
-            padding: 7px !important;
+            padding: 8px 15px 8px 15px !important;
             font-weight: 400 !important;
-            border-radius: 4px !important;
+            border-radius: 3px !important;
             min-width: 70px;
-            width: auto;
         }
 
         .button:hover {
             background: #d23153 !important;
-            color: #fff !important;
-            border: none !important;
-            padding: 7px !important;
-            font-weight: 300 !important;
-            border-radius: 4px !important;
         }
 
         .activeTab {
@@ -71,7 +62,7 @@
             height: 15px;
             padding: 8px;
             font-size: 9pt;
-            border-top-radius: 4px !important;
+            border: none !important;
         }
 
         .inactiveTab {
@@ -80,8 +71,9 @@
             color: #000 !important;
             background-image:none;
             width: 200px;
-            height: 15px;
+            height: 17px;
             padding-top: 5px;
+            border: none !important;
         }
 
         .inactiveTab:hover {
@@ -89,7 +81,7 @@
             color: #fff !important;
             background-image:none;
             width: 200px;
-            height: 15px;
+            height: 17px;
             padding-top: 5px;
         }
     </style>
@@ -202,29 +194,27 @@
             <apex:pageBlockSection title="Career Selection" 
                                    collapsible="false"
                                    columns="2">
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel for="careerList">Select Career</apex:outputLabel>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="careerList">Select Career</apex:outputLabel>
 
-                        <apex:actionRegion >
-                            <apex:selectList id="careerList" 
-                                             value="{!career}"
-                                             size="1"
-                                             multiselect="false">
-                                <apex:selectOptions value="{!careers}" id="career" />
+                    <apex:actionRegion >
+                        <apex:selectList id="careerList"
+                                         value="{!career}"
+                                         size="1"
+                                         multiselect="false">
+                            <apex:selectOptions value="{!careers}" id="career" />
+                            <apex:actionSupport event="onchange"
+                                                rerender="opportunity_info, msgs"
+                                                status="careerEvent" />
+                        </apex:selectList>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
 
-                                <apex:actionSupport event="onchange" 
-                                                    rerender="opportunity_info, msgs" 
-                                                    status="careerEvent" />
-
-                                <apex:actionStatus id="careerEvent">
-                                    <apex:facet name="start" >
-                                        <img src="/img/loading.gif" />
-                                    </apex:facet>
-                                </apex:actionStatus>
-
-                            </apex:selectList>
-                        </apex:actionRegion>
-                    </apex:pageBlockSectionItem>
+                <apex:actionStatus id="careerEvent">
+                    <apex:facet name="start" >
+                        <img src="/img/loading.gif" />
+                    </apex:facet>
+                </apex:actionStatus>
             </apex:pageBlockSection>
 
             <apex:pageBlockSection id="undergrad_opportunity_info" 
@@ -258,8 +248,66 @@
                                  value="{!previousEducation.Account__c}"
                                  id="previous_education_account"
                                  tabOrderHint="105"/>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Interest: " for="asuLocationIntList"/>
+                    <apex:actionRegion >
+                        <apex:selectList id="interestPickList"
+                                         value="{!pickSelection}"
+                                         size="1">
+                            <apex:selectOption itemValue="--Select--" />
+                            <apex:selectOption itemValue="ASU Location" />
+                            <apex:selectOption itemValue="ASU Colleges" />
+                            <apex:selectOption itemValue="Academic" />
+                            <apex:actionSupport event="onchange"
+                                                reRender="undergrad_opportunity_info,msgs"
+                                                status="intEvent"/>
+                        </apex:selectList>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+
+                <apex:actionStatus id="intEvent">
+                    <apex:facet name="start" >
+                        <img src="/img/loading.gif" />
+                    </apex:facet>
+                </apex:actionStatus>
+
+                <apex:pageBlockSectionItem rendered="{!IF(pickSelection == 'ASU Location',true,false)}">
+                    <apex:outputLabel value="ASU Location: "
+                                      for="asuLocationIntList"/>
+
+                    <apex:selectList id="asuLocationIntList"
+                                     value="{!selectedInterestId}"
+                                     size="1">
+                        <apex:selectOptions value="{!asuLocationIntList}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}">
+                    <apex:outputLabel value="College Interest: "
+                                      for="asuCollegesIntList"/>
+
+                    <apex:selectList id="asuCollegesIntList"
+                                     value="{!selectedInterestId}"
+                                     size="1"
+                                     multiselect="false">
+                        <apex:selectOptions value="{!asuCollegesIntList}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!IF(pickSelection == 'Academic',true,false)}">
+                    <apex:outputLabel value="Academic Interest: "
+                                      for="academicIntList"/>
+
+                    <apex:selectList id="academicIntList"
+                                     value="{!selectedInterestId}"
+                                     size="1"
+                                     multiselect="false">
+                        <apex:selectOptions value="{!academicIntList}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
-            
+
             <apex:pageBlockSection id="grad_opportunity_info" 
                                    rendered="{!career == 'graduate' || career == 'law'}"
                                    title="Graduate Opportunity Information"
@@ -337,98 +385,22 @@
                                      taborderhint="209"/>
                 </apex:pageBlockSection>
             </apex:pageBlockSection>
-            
-            <apex:pageBlockSection rendered="{!career == 'undergraduate'}" 
-                                   id="interestBlock"
-                                   collapsible="false"
-                                   title="Interests (Optional)"
-                                   columns="1">
-                <apex:actionRegion >
-                    <h1>Interest - Select a type, and then an interest:</h1>
-                    <br />
-                    <br />
-                    <apex:outputLabel value="Select an option: " for="asuLocationIntList"/>
-
-                    <apex:selectList id="interestPickList" 
-                                     value="{!pickSelection}"
-                                     size="1"
-                                     multiselect="false">
-                         <apex:selectOption itemValue="--Select--" />
-
-                         <apex:selectOption itemValue="ASU Location" />
-
-                         <apex:selectOption itemValue="ASU Colleges" />
-
-                         <apex:selectOption itemValue="Academic" />
-
-                         <apex:actionSupport event="onchange" 
-                                                reRender="interestsPicks, msgs" 
-                                                status="intEvent"/>
-                    </apex:selectList>
-
-                    <apex:actionStatus id="intEvent">
-                        <apex:facet name="start" >
-                            <img src="/img/loading.gif" />
-                        </apex:facet>
-                    </apex:actionStatus>
-                    <br />
-                    <br />
-                    <apex:outputPanel id="interestsPicks">
-                        <apex:outputLabel value="ASU Location: " 
-                                          for="asuLocationIntList"
-                                          rendered="{!IF(pickSelection == 'ASU Location',true,false)}"/>
-
-                        <apex:selectList id="asuLocationIntList" 
-                                         value="{!selectedInterestId}"
-                                         size="1"
-                                         multiselect="false"
-                                         rendered="{!IF(pickSelection == 'ASU Location',true,false)}">
-                             <apex:selectOptions value="{!asuLocationIntList}"/>
-                        </apex:selectList>
-
-                        <apex:outputLabel value="College Interest: " 
-                                          for="asuCollegesIntList"
-                                          rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}"/>
-
-                        <apex:selectList id="asuCollegesIntList" 
-                                         value="{!selectedInterestId}"
-                                         size="1"
-                                         multiselect="false"
-                                         rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}">
-                             <apex:selectOptions value="{!asuCollegesIntList}"/>
-                        </apex:selectList>
-
-                        <apex:outputLabel value="Academic Interest: " 
-                                          for="academicIntList"
-                                          rendered="{!IF(pickSelection == 'Academic',true,false)}"/>
-
-                        <apex:selectList id="academicIntList" 
-                                         value="{!selectedInterestId}"
-                                         size="1"
-                                         multiselect="false"
-                                         rendered="{!IF(pickSelection == 'Academic',true,false)}">
-                             <apex:selectOptions value="{!academicIntList}"/>
-                        </apex:selectList>
-                    </apex:outputPanel>
-                </apex:actionRegion>
-            </apex:pageBlockSection>
         </apex:pageBlock>
 
-        <apex:pageBlock >
-            <apex:pageBlockSection id="sourceEventBlock" 
-                                    title="Select a Case or Event" 
-                                    collapsible="false" 
-                                    columns="1">
+        <apex:pageBlock id="sourceEventBlock">
+            <apex:pageBlockSection id="sourceEventSection"
+                                   title="Create EITHER a Case or Event"
+                                   collapsible="false"
+                                   columns="1">
                 <apex:tabPanel switchType="client" 
-                                selectedTab="source" 
-                                id="theTabPanel" 
-                                tabClass="activeTab" 
-                                inactiveTabClass="inactiveTab" 
-                                width="100%">
+                               selectedTab="source"
+                               id="theTabPanel"
+                               tabClass="activeTab"
+                               inactiveTabClass="inactiveTab"
+                               width="100%">
                     <apex:tab label="Case" 
-                                name="source" 
-                                id="sourceTab" >
-
+                              name="source"
+                              id="sourceTab" >
                         <apex:outputPanel layout="block" style="overflow:auto;height:260px">
                             <table style="width:100%;">
                                 <tr>
@@ -438,9 +410,9 @@
                                         </apex:outputLabel>
                                         <br />
                                         <apex:selectList id="originPickList" 
-                                                            value="{!originSelection}" 
-                                                            size="1" 
-                                                            multiselect="false">
+                                                         value="{!originSelection}"
+                                                         size="1"
+                                                         multiselect="false">
                                             <apex:selectOption itemValue="--Select--" />
 
                                             <apex:selectOption itemValue="Email" />
@@ -460,8 +432,8 @@
                                         <br />
                                         <br />
                                         <apex:inputField id="cStatus" 
-                                                            value="{!caseC.Status}" 
-                                                            style="display:none;"/>
+                                                         value="{!caseC.Status}"
+                                                         style="display:none;"/>
 
                                         <apex:outputLabel for="cCate">Category:</apex:outputLabel>
                                         <br />
@@ -507,13 +479,15 @@
                     </apex:tab>
 
                     <apex:tab label="Event" 
-                                name="event" 
-                                id="eventTab">
-                        <apex:outputPanel layout="block" style="overflow:hidden;height:260px">
+                              name="event"
+                              id="eventTab">
+                        <apex:outputPanel id="eventSearchPanel"
+                                          layout="block"
+                                          style="overflow:hidden;height:260px">
                             <apex:actionRegion >
                                 <table style="width:100%;">
                                     <tr>
-                                        <td style="padding-right:20px;width:20%;">
+                                        <td style="padding-right:20px;width:15%;">
                                             <apex:outputLabel for="elIdInput">
                                                 <b>Selected Event:</b>
                                             </apex:outputLabel>
@@ -522,69 +496,117 @@
                                             <apex:inputText id="elIdInput" 
                                                             value="{!eventName}" 
                                                             html-placeholder="Selected event will appear here" 
-                                                            style="width:250px;padding:5px;color:#990033;" 
+                                                            style="width:250px;padding:6px;
+                                                            color:#990033;"
                                                             disabled="true"/>
-                                            <apex:actionStatus id="actStatusEvent1">
-                                                <apex:facet name="start" >
-                                                    <img src="/img/loading.gif" />
-                                                </apex:facet>
-                                            </apex:actionStatus>
+                                            <br />
                                             <br />
                                             <apex:outputText id="eventSelectedHelpText">
                                                 <i>Search for an event on the right and click 'Select'</i>
                                             </apex:outputText>
+                                            <br />
+                                            <br />
+                                            <apex:outputPanel id="statusSelect">
+                                                <apex:outputLabel for="camStatus"
+                                                                  value="Status:"
+                                                                  rendered="{!IF(elId != null,true,false)}"/>
+                                                <br />
+                                                <apex:selectList id="camStatus"
+                                                                 rendered="{!IF(elId != null,true,false)}"
+                                                                 value="{!camMemEvent.Status}"
+                                                                 size="1">
+                                                    <apex:selectOptions
+                                                        value="{!selectedEventCamMemStatuses}"/>
+                                                </apex:selectList>
+                                            </apex:outputPanel>
                                         </td>
 
                                         <td style="padding-left:20px;border-left:solid 1px #ccc;width:80%;">
-                                            <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                                            <apex:outputPanel layout="block"
+                                                              style="overflow:auto;height:250px">
                                                 <apex:outputLabel for="eventSearchInput">
                                                     <b>Search:</b>
                                                 </apex:outputLabel>
                                                 <br />
                                                 <br />
-                                                <apex:inputText id="eventSearchInput" 
-                                                                value="{!eventSearchString}" 
-                                                                html-placeholder="Enter search terms" 
-                                                                style="width:250px;padding:5px;">
-                                                    <apex:actionSupport event="onkeyup" 
-                                                                        action="{!eventSearch}" 
-                                                                        reRender="eventList,eventPanel,msgs" 
-                                                                        status="actStatusEvent"/>
+                                                <apex:inputText id="eventSearchInput"
+                                                                value="{!eventSearchString}"
+                                                                html-placeholder="Enter search terms"
+                                                                style="width:250px;padding:6px;"
+                                                                onkeypress="return noenter(event,'{!$Component.searchSubmit}');"/>
 
-                                                    <apex:actionSupport event="onchange" 
-                                                                        action="{!eventSearch}" 
-                                                                        reRender="eventList,eventPanel,msgs" 
-                                                                        status="actStatusEvent"/>
-                                                </apex:inputText>
+                                                <apex:commandLink id="searchSubmit"
+                                                                  value="Search"
+                                                                  style="text-decoration:none;
+                                                                  margin-left:5px;"
+                                                                  styleClass="button"
+                                                                  action="{!eventSearch}"
+                                                                  status="actStatusEvent"
+                                                                  reRender="eventList,eventPanel,msgs"/>
 
                                                 <apex:actionStatus id="actStatusEvent">
                                                     <apex:facet name="start" >
-                                                        <img src="/img/loading.gif" />
+                                                        <img src="/img/loading.gif"
+                                                             style="margin-top:7px;margin-left:-90px;position:absolute;"/>
                                                     </apex:facet>
                                                 </apex:actionStatus>
+
+                                                <br />
+                                                <br />
+
+                                                <span>
+                                                    <apex:outputLabel for="deptCollList"
+                                                                      value="Department/College:"/>
+                                                    <apex:selectList id="deptCollList"
+                                                                     size="1"
+                                                                     value="{!deptColl}"
+                                                                     style="margin-left:5px;">
+                                                        <apex:selectOptions
+                                                            value="{!departmentsColleges}"/>
+                                                    </apex:selectList>
+                                                </span>
+
+                                                <span style="margin-left:10px;">
+                                                    <apex:outputLabel for="camLocation"
+                                                                      value="Location:"/>
+                                                    <apex:inputField id="camLocation"
+                                                                     value="{!tempCampaign.Campus_Location__c}"
+                                                                     style="margin-left:5px;"/>
+                                                </span>
+
+                                                <span style="margin-left:10px;">
+                                                    <apex:outputLabel for="camStart"
+                                                                      value="Event Start Date:"/>
+                                                    <apex:input id="camStart"
+                                                                value="{!camStartDate}"
+                                                                type="date"
+                                                                style="margin-left:5px;"/>
+                                                </span>
+                                                <br />
                                                 <br />
                                                 <apex:outputText id="eventHelpText">
                                                     <i>Search by Name, Type, or Category</i>
                                                 </apex:outputText>
                                                 <br />
+                                                <br />
                                                 <apex:outputPanel id="eventPanel">
-                                                    <apex:dataTable id="eventList" 
-                                                                    value="{!eventList}" 
-                                                                    var="el" 
-                                                                    width="100%" 
-                                                                    cellpadding="8" 
-                                                                    rowClasses="even,odds" 
-                                                                    rendered="{!IF(eventSearchString != null,true,false)}">
+                                                    <apex:dataTable id="eventList"
+                                                                    value="{!eventList}"
+                                                                    var="el"
+                                                                    width="100%"
+                                                                    cellpadding="8"
+                                                                    rowClasses="even,odds"
+                                                                    rendered="{!IF(eventList.size
+                                                                            > 0, true, false)}">
                                                         <apex:column >
-                                                            <apex:commandLink value="Select" 
-                                                                              reRender="elIdInput,msgs"
-                                                                              status="actStatusEvent1">
-                                                                <apex:param name="elId" 
-                                                                            value="{!el.Id}" 
+                                                            <apex:commandLink value="Select"
+                                                                              reRender="elIdInput,msgs,statusSelect"
+                                                                              status="actStatusEvent">
+                                                                <apex:param name="elId"
+                                                                            value="{!el.Id}"
                                                                             assignTo="{!elId}"/>
-
-                                                                <apex:param name="eventName" 
-                                                                            value="{!el.Name}" 
+                                                                <apex:param name="eventName"
+                                                                            value="{!el.Name}"
                                                                             assignTo="{!eventName}"/>
                                                             </apex:commandLink>
                                                         </apex:column>
@@ -603,7 +625,20 @@
 
                                                         <apex:column headerValue="Location"
                                                                      value="{!el.Event_Location__c}"/>
+
+                                                        <apex:column
+                                                            headerValue="Department/College"
+                                                            value="{!el.Requested__c}"/>
                                                     </apex:dataTable>
+
+                                                    <apex:outputText rendered="{!IF((eventList.size = 0
+                                                            && eventSearchString != null),true, false)}">
+                                                        <br />
+                                                        <br />
+                                                        No results found for
+                                                        <b>{!eventSearchString}</b>.
+
+                                                    </apex:outputText>
                                                 </apex:outputPanel>
                                             </apex:outputPanel>
                                         </td>
@@ -633,5 +668,30 @@
                 </apex:actionStatus>
         </apex:pageBlock>
     </apex:form>
+
+    <script>
+        function noenter(ev, element) {
+            if (window.event) {
+                ev = window.event;
+            }
+
+            var keyCode;
+
+            if (ev.keyCode) {
+                keyCode = ev.keyCode;
+            } else {
+                keyCode = ev.charCode;
+            }
+
+            if (keyCode == 13) {
+                var ele = document.getElementById(element);
+                ele.click();
+
+                return false;
+            } else {
+                return true;
+            }
+        }
+    </script>
 </body>
 </apex:page>

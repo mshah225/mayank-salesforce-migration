@@ -1,11 +1,16 @@
 public class UnifiedProspectPageController 
 {
+    private Id eventRecId;
+    private Id eossRecId;
+
     public Boolean smsText { get; set; }
     public Boolean error { get; set; }
     public Contact contact;
     public Case caseC;
+    public Campaign tempCampaign { get; set; }
     public CampaignMember camMemInterest;
     public CampaignMember camMemEvent;
+    public Date camStartDate { get; set; }
     public Id selectedInterestId { get; set; }
     public Id accId;
     public Id oppRecType;
@@ -27,7 +32,16 @@ public class UnifiedProspectPageController
     public String career { get; set; }
     public String collegeSelected { get; set; }
     public String planSelected { get; set; }
-    
+    public String deptColl { get; set; }
+
+    public UnifiedProspectPageController()
+    {
+        eventRecId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id;
+        eossRecId = [SELECT Id FROM RecordType WHERE Name = 'EOSS Event'].Id;
+        eventList = new List<Campaign>();
+        tempCampaign = new Campaign();
+    }
+
     public void setContact(Contact contact)
     {
         this.contact = contact;
@@ -43,12 +57,12 @@ public class UnifiedProspectPageController
         this.previousEducation = previousEducation;
     }
 
-    public void setCampaignMemberInterest(CampaignMember camMemInterest) 
+    public void setCampaignMemberInterest(CampaignMember camMemInterest)
     {
         this.camMemInterest = camMemInterest;
     }
 
-    public void setCampaignMemberEvent(CampaignMember camMemEvent) 
+    public void setCampaignMemberEvent(CampaignMember camMemEvent)
     {
         this.camMemEvent = camMemEvent;
     }
@@ -108,7 +122,7 @@ public class UnifiedProspectPageController
         return previousEducation;
     }
 
-    public CampaignMember getCampaignMemberInterest() 
+    public CampaignMember getCamMemInterest() 
     {
         if (camMemInterest == null) 
         {
@@ -118,7 +132,7 @@ public class UnifiedProspectPageController
         return camMemInterest;
     }
 
-    public CampaignMember getCampaignMemberEvent() 
+    public CampaignMember getCamMemEvent() 
     {
         if(camMemEvent == null) 
         {
@@ -206,35 +220,14 @@ public class UnifiedProspectPageController
         return eventList;
     }
 
-    public void eventSearch() 
-    {
-        Id eventRecId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id;
-        Id eossRecId = [SELECT Id FROM RecordType WHERE Name = 'EOSS Event'].Id;
-
-        String searchQuery = '' +
-            'SELECT Id, Name, Type, Category__c, ' +
-                'Event_Start_Date__c, Event_Start_Time__c, Campus_Location__c, ' +
-                'Event_Location__c, RecordTypeId ' +
-            'FROM Campaign ' +
-            'WHERE (Name LIKE \'%' + String.escapeSingleQuotes(eventSearchString) + '%\' ' +
-                'OR Type LIKE \'%' + String.escapeSingleQuotes(eventSearchString) + '%\' ' +
-                'OR Category__c LIKE \'%' + String.escapeSingleQuotes(eventSearchString) + '%\') ' +
-            'AND (RecordTypeId = :eventRecId OR RecordTypeID = :eossRecId) ' +
-            'AND IsActive = true ' +
-            'ORDER BY Name ASC ' +
-            'LIMIT 40';
-
-        eventList = Database.query(searchQuery);
-    }
-    
-    public List<Account> getInstList() 
+    public List<Account> getInstList()
     {
         return instList;
     }
 
     public List<SelectOption> getCareers()
     {
-        if(careers == null)
+        if (careers == null)
         {
             careers = new List<SelectOption>();
             careers.add(new SelectOption('--Select--', '--Select--'));
@@ -242,6 +235,60 @@ public class UnifiedProspectPageController
             careers.add(new SelectOption('graduate', 'Graduate'));
         }
         return careers;
+    }
+
+    public void eventSearch() 
+    {
+        if (eventSearchString.length() < 2)
+        {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must enter at least 2 characters.'
+                )
+            );
+
+            return;
+        }
+
+        String sosl = '' +
+            'FIND \'*' + String.escapeSingleQuotes(eventSearchString.trim()) + '*\' ' +
+            'IN NAME FIELDS ' +
+            'RETURNING Campaign(Id, Name, Type, Category__c, Event_Start_Date__c, ' +
+                'Event_Start_Time__c, Campus_Location__c, Event_Location__c, ' +
+                'RecordTypeId, Requested__c ' +
+                'WHERE (RecordTypeId = :eventRecId OR RecordTypeId = :eossRecId) ' +
+                'AND IsActive = true ';
+
+        if (deptColl != null)
+        {
+            sosl += 'AND Requested__c = :deptColl ';
+        }
+
+        Id location = tempCampaign.Campus_Location__c;
+        if (tempCampaign.Campus_Location__c != null)
+        {
+            sosl += 'AND Campus_Location__c = :location ';
+        }
+
+        if (camStartDate != null)
+        {
+            System.debug('date: ' + camStartDate);
+            sosl += 'AND Event_Start_Date__c = :camStartDate ';
+        }
+
+        sosl += 'ORDER BY Name ASC LIMIT 40)';
+
+        List<List<SObject>> sObjects = Search.query(sosl);
+
+        if (sObjects.size() > 0)
+        {
+            eventList = sObjects[0];
+        }
+        else
+        {
+            eventList = new List<Campaign>();
+        }
     }
 
     public void instSearch() 
@@ -252,6 +299,43 @@ public class UnifiedProspectPageController
             'WHERE Id = ' + instId;
 
         instList = Database.query(instSearchTerm);
+    }
+
+    public List<SelectOption> getSelectedEventCamMemStatuses()
+    {
+        List<CampaignMemberStatus> camStatuses = [
+            SELECT Id, Label
+            FROM CampaignMemberStatus
+            WHERE CampaignId = :elId
+            ORDER BY Label ASC
+        ];
+
+        List<SelectOption> camOptions = new List<SelectOption>();
+        camOptions.add(new SelectOption('' ,'--Select--'));
+
+        for (CampaignMemberStatus cs : camStatuses)
+        {
+            camOptions.add(new SelectOption(cs.Label , cs.Label));
+        }
+
+        return camOptions;
+    }
+
+    public List<SelectOption> getDepartmentsColleges()
+    {
+        List<SelectOption> options = new List<SelectOption>();
+        options.add(new SelectOption('', '--Select--'));
+
+        Schema.DescribeFieldResult fieldResult =
+            Campaign.Requested__c.getDescribe();
+        List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+
+        for( Schema.PicklistEntry f : ple)
+        {
+            options.add(new SelectOption(f.getLabel(), f.getValue()));
+        }
+
+        return options;
     }
 
     public List<SelectOption> getASULocationIntList() 
@@ -268,9 +352,9 @@ public class UnifiedProspectPageController
         ];
 
         List<SelectOption> asuLocationIntList = new List<SelectOption>();
-        asuLocationIntList.add(new SelectOption( '' ,'--Select--'));
+        asuLocationIntList.add(new SelectOption('' ,'--Select--'));
 
-        for (Campaign i : interests ) 
+        for (Campaign i : interests)
         {
             asuLocationIntList.add(new SelectOption(i.Id , i.Name));
         }
@@ -292,9 +376,9 @@ public class UnifiedProspectPageController
         ];
 
         List<SelectOption> academicIntList = new List<SelectOption>();
-        academicIntList.add(new SelectOption( '' ,'--Select--'));
+        academicIntList.add(new SelectOption('' ,'--Select--'));
 
-        for (Campaign i : interests ) 
+        for (Campaign i : interests)
         {
             academicIntList.add(new SelectOption(i.Id , i.Name));
         }
@@ -340,7 +424,7 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
-                        'You must provide either a Phone number or a Zip code!'
+                        'You must provide either a Phone number or a Zip code.'
                     )
                 );
 
@@ -352,7 +436,7 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
-                        'You must select a career!'
+                        'You must select a career.'
                     )
                 );
 
@@ -364,7 +448,7 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
-                        'You must select a college!'
+                        'You must select a college.'
                     )
                 );
 
@@ -413,7 +497,7 @@ public class UnifiedProspectPageController
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
-                        'A case must have a Subject and a Description!'
+                        'A case must have a Subject and a Description.'
                     )
                 );
 
@@ -576,11 +660,20 @@ public class UnifiedProspectPageController
             //Create CampaignMember Event
             if (elId != null && originSelection == '--Select--') 
             {
-                getCampaignMemberEvent();
+                if (camMemEvent.Status == null)
+                {
+                    ApexPages.addmessage(
+                        new ApexPages.message(
+                            ApexPages.severity.ERROR,
+                            'Please select an event status.'
+                        )
+                    );
+
+                    return false;
+                }
+
                 camMemEvent.Id = null;
                 camMemEvent.CampaignId = elId;
-                //It appears that this value is not being preserved, but is instead being switched to 'Sent'?
-                camMemEvent.Status = 'Registered';
                 camMemEvent.ContactId = contact.Id;
                 camMemEvent.Opportunity__c = opportunity.Id;
                 camMemEvent.Inbound_Interaction__c = true;
@@ -670,7 +763,7 @@ public class UnifiedProspectPageController
 
                 update opportunity;
             }
-            else if (originSelection != '--Select--' && elId != null) 
+            else if (originSelection != '--Select--' && elId != null)
             {
                 return false;
             }
@@ -688,7 +781,6 @@ public class UnifiedProspectPageController
             {
                 if (selectedInterestId != null) 
                 {
-                    getCampaignMemberInterest();
                     camMemInterest.Id = null;
                     camMemInterest.CampaignId = selectedInterestId;
                     //This doesn't seem to work either, Status once again is set to 'Sent'

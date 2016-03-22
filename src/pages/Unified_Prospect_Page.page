@@ -340,6 +340,7 @@
             
             <apex:pageBlockSection rendered="{!career == 'undergraduate'}" 
                                    id="interestBlock"
+                                   collapsible="false"
                                    title="Interests (Optional)"
                                    columns="1">
                 <apex:actionRegion >
@@ -411,10 +412,6 @@
                     </apex:outputPanel>
                 </apex:actionRegion>
             </apex:pageBlockSection>
-
-            <script>
-                twistSection(document.getElementById("{!$Component.interestBlock}").childNodes[0].childNodes[0]); 
-            </script>
         </apex:pageBlock>
 
         <apex:pageBlock >

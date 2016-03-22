@@ -330,7 +330,8 @@ public class UnifiedProspectPageController
     {
         getCaseC();
         List<CampaignMember> cams = new List<CampaignMember>();
-        try 
+
+        try
         {
             error = false;
 
@@ -447,7 +448,7 @@ public class UnifiedProspectPageController
                 error = true;
             }
 
-            if(error)
+            if (error)
             {
                return false; 
             }
@@ -476,6 +477,7 @@ public class UnifiedProspectPageController
             contact.SF_Mailing_Address_Updated__c = Datetime.now();
             contact.SF_Birthdate__c = contact.Birthdate;
             contact.SF_Birthdate_Updated__c = Datetime.now();
+            contact.silverpop__Sync_to_Silverpop_Chk__c = true;
             
             Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
             Integer hasPhone = contact.Phone == null ? 0 : 1;
@@ -525,7 +527,23 @@ public class UnifiedProspectPageController
             String TodayString = DatePreString.format('yyyy-MM-dd');
             opportunity.Contact__c = contact.id;
             opportunity.Name = contact.FirstName + ' ' + contact.LastName + ' ' + TodayString;
-            opportunity.CloseDate = Date.Today() + 365;
+
+            if (career == 'graduate')
+            {
+                Term__c tempTerm = [
+                    SELECT Id, Session_A_C_Start_Date__c
+                    FROM Term__c
+                    WHERE Id = :opportunity.Term__c
+                    LIMIT 1
+                ];
+
+                opportunity.CloseDate = tempTerm.Session_A_C_Start_Date__c + 22;
+            }
+            else
+            {
+                opportunity.CloseDate = Date.Today() + 365;
+            }
+
             accId = [SELECT AccountId FROM Contact WHERE Id = :Contact.Id][0].AccountId;
             opportunity.AccountId = accId;
             opportunity.StageName = 'Prospect';

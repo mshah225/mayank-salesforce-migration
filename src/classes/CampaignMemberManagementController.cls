@@ -53,13 +53,16 @@ public class CampaignMemberManagementController
             FROM Contact
             WHERE Id = :ApexPages.currentPage().getParameters().get('id')
         ];
+
         contId = campaignContact.Id;
+
         crRecordTypeId = [
             SELECT Id
             FROM RecordType
             WHERE Name = 'Corporate Relations'
             AND SobjectType = 'Campaign'
         ].Id;
+
         currentCampaigns = [
             SELECT Id, Campaign.Name, Campaign.ParentId
             FROM CampaignMember
@@ -68,6 +71,7 @@ public class CampaignMemberManagementController
             AND Status = 'Active'
             ORDER BY Campaign.Name
         ];
+
         inActiveCampaigns = [
             SELECT Id, Campaign.Name
             FROM CampaignMember
@@ -76,17 +80,21 @@ public class CampaignMemberManagementController
             AND Status = 'Inactive'
             ORDER BY Campaign.Name
         ];
+
         String profileName = [
             SELECT Profile.Name
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ].Profile.Name;
+
         List<PermissionSetAssignment> userPermissions = [
             SELECT PermissionSet.Name
             FROM PermissionSetAssignment
             WHERE AssigneeId = :UserInfo.getUserId()
         ];
+
         Boolean hasCRPerm = false;
+
         if (userPermissions.size() > 0)
         {
             for (PermissionSetAssignment psa : userPermissions)
@@ -102,9 +110,7 @@ public class CampaignMemberManagementController
             }
         }
 
-        if ((profileName.equals('ASU Corporate Relations')
-                || profileName.equals('System Administrator'))
-                || hasCRPerm)
+        if (profileName.equals('ASU Corporate Relations') || hasCRPerm)
         {
             crProfile = true;
             renderedTab = 'crTab';
@@ -125,6 +131,7 @@ public class CampaignMemberManagementController
             WHERE Name = 'Event'
             AND SobjectType = 'Campaign'
         ].Id;
+
         Id eossRecId = [
             SELECT Id
             FROM RecordType
@@ -134,9 +141,9 @@ public class CampaignMemberManagementController
 
         eventList = [
             SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
-                    Campaign.Interest_PeopleSoft_Major__c, Campaign.Event_Start_Date__c,
-                    Number_Of_Guests__c, Status, Last_Member_Status_Change__c,
-                    ContactId, CampaignId
+                Campaign.Interest_PeopleSoft_Major__c, Campaign.Event_Start_Date__c,
+                Number_Of_Guests__c, Status, Last_Member_Status_Change__c,
+                ContactId, CampaignId
             FROM CampaignMember
             WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
             AND (Campaign.RecordTypeId = :eventRecId OR Campaign.RecordTypeId = :eossRecId)
@@ -161,6 +168,7 @@ public class CampaignMemberManagementController
             WHERE Name = 'Event'
             AND SobjectType = 'Campaign'
         ].Id;
+
         Id eossRecId = [
             SELECT Id
             FROM RecordType
@@ -168,7 +176,17 @@ public class CampaignMemberManagementController
             AND SobjectType = 'Campaign'
         ].Id;
         
-        String eSearchQuery = 'SELECT Id, Name, Type, Category__c, Event_Start_Date__c, Event_Start_Time__c, Campus_Location__c, Event_Location__c, RecordTypeId FROM Campaign WHERE (Name LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\' OR Type LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\' OR Category__c LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\') AND (Campaign.RecordTypeId = :eventRecId OR Campaign.RecordTypeId = :eossRecId) AND IsActive = true ORDER BY Name ASC LIMIT 40';
+        String eSearchQuery = '' +
+            'SELECT Id, Name, Type, Category__c, Event_Start_Date__c, Event_Start_Time__c, ' +
+                'Campus_Location__c, Event_Location__c, RecordTypeId ' +
+            'FROM Campaign ' +
+            'WHERE (Name LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\' ' +
+                'OR Type LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\' ' +
+                'OR Category__c LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\') ' +
+            'AND (Campaign.RecordTypeId = :eventRecId OR Campaign.RecordTypeId = :eossRecId) ' +
+            'AND IsActive = true ' +
+            'ORDER BY Name ASC ' +
+            'LIMIT 40';
 
         eventSearchResults = Database.query(eSearchQuery);
     }
@@ -216,7 +234,15 @@ public class CampaignMemberManagementController
             AND SobjectType = 'Campaign'
         ].Id;
         
-        String iSearchQuery = 'SELECT Id, Name, Type, Campaign_External_ID__c FROM Campaign WHERE (Name LIKE \'%' + String.escapeSingleQuotes(iSearchString) + '%\' OR Type LIKE \'%' + String.escapeSingleQuotes(iSearchString) + '%\') AND Campaign.RecordTypeId = :intRecId AND IsActive = true ORDER BY Name ASC LIMIT 40';
+        String iSearchQuery = '' +
+            'SELECT Id, Name, Type, Campaign_External_ID__c ' +
+            'FROM Campaign ' +
+            'WHERE (Name LIKE \'%' + String.escapeSingleQuotes(iSearchString) + '%\' ' +
+                'OR Type LIKE \'%' + String.escapeSingleQuotes(iSearchString) + '%\') ' +
+            'AND Campaign.RecordTypeId = :intRecId ' +
+            'AND IsActive = true ' +
+            'ORDER BY Name ASC ' +
+            'LIMIT 40';
 
         interestSearchResults = Database.query(iSearchQuery);
     }
@@ -238,7 +264,7 @@ public class CampaignMemberManagementController
 
         scholarList = [
             SELECT Id, Campaign.Name, Campaign.Type, Amount__c, Award_Date__c,
-                    Letter_Date__c, Status, Last_Member_Status_Change__c
+                Letter_Date__c, Status, Last_Member_Status_Change__c
             FROM CampaignMember
             WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
             AND Campaign.RecordTypeId = :schRecId
@@ -259,7 +285,7 @@ public class CampaignMemberManagementController
 
         cohortList = [
             SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
-                    Status, Last_Member_Status_Change__c
+                Status, Last_Member_Status_Change__c
             FROM CampaignMember
             WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
             AND Campaign.RecordTypeId = :cohRecId
@@ -280,7 +306,7 @@ public class CampaignMemberManagementController
 
         oSourceList = [
             SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
-                    Status, Last_Member_Status_Change__c
+                Status, Last_Member_Status_Change__c
             FROM CampaignMember
             WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
             AND Campaign.RecordTypeId = :sourceRecId
@@ -301,7 +327,7 @@ public class CampaignMemberManagementController
 
         markCommList = [
             SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
-                    Status, Last_Member_Status_Change__c
+                Status, Last_Member_Status_Change__c
             FROM CampaignMember
             WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
             AND Campaign.RecordTypeId = :markCommRecId
@@ -322,8 +348,8 @@ public class CampaignMemberManagementController
 
         partCourseList = [
             SELECT Id, Campaign.Name, Campaign.Type, Campaign.StartDate,
-                    Campaign.EndDate, edX_Enrollment_Date__c, edX_Active_Enrollment__c,
-                    Campaign.Requested__c, Status, Last_Member_Status_Change__c
+                Campaign.EndDate, edX_Enrollment_Date__c, edX_Active_Enrollment__c,
+                Campaign.Requested__c, Status, Last_Member_Status_Change__c
             FROM CampaignMember
             WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
             AND Campaign.RecordTypeId = :partCourseRecid
@@ -343,9 +369,6 @@ public class CampaignMemberManagementController
         camMemEvent.Status = 'Invited';
         
         insert camMemEvent;
-
-        System.Debug('Inserted a Event Campaign Member');
-        System.Debug(camMemEvent);
     }
 
     // Add Interest button
@@ -359,9 +382,6 @@ public class CampaignMemberManagementController
         camMemInterest.Status = 'Interested';
         
         insert camMemInterest;
-
-        System.Debug('Inserted an Interest Campaign Member');
-        System.Debug(camMemInterest);
     }
 
 
@@ -369,19 +389,20 @@ public class CampaignMemberManagementController
     public List<CampaignMember> getSortList() 
     {
         sortList = new List<CampaignMember>();
+
         for (CampaignMember cm: currentCampaigns)
         {
             if (cm.Campaign.ParentId == null)
             {
                 sortList.add(cm);
                 for (CampaignMember ch: [
-                        SELECT Campaign.Name, Campaign.ParentId
-                        FROM CampaignMember
-                        WHERE ContactId = :campaignContact.Id
-                        AND Campaign_Type__c = 'Corporate Relations'
-                        AND Status = 'Active'
-                        AND Campaign.ParentId = :cm.Campaign.Id
-                        ORDER BY Campaign.Name
+                    SELECT Campaign.Name, Campaign.ParentId
+                    FROM CampaignMember
+                    WHERE ContactId = :campaignContact.Id
+                    AND Campaign_Type__c = 'Corporate Relations'
+                    AND Status = 'Active'
+                    AND Campaign.ParentId = :cm.Campaign.Id
+                    ORDER BY Campaign.Name
                 ])
                 {
                     sortList.add(ch);
@@ -397,7 +418,15 @@ public class CampaignMemberManagementController
         childCampaigns = null;
         selectedParentCampaignName = null; 
 
-        String queryString = 'SELECT Id, Name FROM Campaign WHERE RecordTypeId = \'' + crRecordTypeId + '\' AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\' AND ParentId = null AND isActive = true AND Type = \'Corporate Relations\'';
+        String queryString = '' +
+            'SELECT Id, Name ' +
+            'FROM Campaign ' +
+            'WHERE RecordTypeId = \'' + crRecordTypeId + '\' ' +
+            'AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\' ' +
+            'AND ParentId = null ' +
+            'AND isActive = true ' +
+            'AND Type = \'Corporate Relations\'';
+
         parentCampaigns = Database.query(queryString);
     }
 
@@ -419,9 +448,16 @@ public class CampaignMemberManagementController
             childSearchSet.add(c.CampaignId);
         }
 
-        String queryString = 'SELECT Id, Name FROM Campaign WHERE RecordTypeId = \'' + crRecordTypeId + '\' AND ParentId = \'' + selectedParentCampaign + '\' AND isActive = true';
+        String queryString = '' +
+            'SELECT Id, Name ' +
+            'FROM Campaign ' +
+            'WHERE RecordTypeId = \'' + crRecordTypeId + '\' ' +
+            'AND ParentId = \'' + selectedParentCampaign + '\' ' +
+            'AND isActive = true';
+
         childCampaigns = Database.query(queryString);
-        for (Campaign cc: childCampaigns) 
+
+        for (Campaign cc: childCampaigns)
         {
             if(!childSearchSet.contains(cc.Id))
             {
@@ -471,11 +507,13 @@ public class CampaignMemberManagementController
     public void inActivateCM() 
     {
         List<CampaignMember> childKillList = new List<CampaignMember>();
+
         inActivateCamMem = [
             SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name
             FROM CampaignMember
             WHERE Id = :inActivateCMId
         ];
+
         User currentUser = [
             SELECT Id, UserRole.Name
             FROM User
@@ -485,6 +523,7 @@ public class CampaignMemberManagementController
         if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name)
         {
             inActivateCamMem.Status = 'Inactive';
+
             if (inActivateCamMem.Campaign.ParentId == null)
             {
                 childKillList = [
@@ -498,6 +537,7 @@ public class CampaignMemberManagementController
                     kill.Status = 'Inactive';
                 }
             }
+
             try
             {
                 update inActivateCamMem;
@@ -511,17 +551,20 @@ public class CampaignMemberManagementController
             shouldRedirect = true;
         }
         else{
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You do not have access to remove this Affiliation, only a member of the Department that created it can.'));
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You do not have access to remove this Affiliation, only a ' +
+                        'member of the Department that created it can.'
+                )
+            );
         }
     }
 
     public void save() 
     {
-        System.debug('!!!!!!!!!!!! SAVE !!!!!!!!!!!!!!');
         try
         {
-            System.debug(newChildCamMem);
-            System.debug(newParentCamMem);
             currentSet = new Set<String>();
 
             for (CampaignMember c: currentCampaigns)
@@ -530,6 +573,7 @@ public class CampaignMemberManagementController
             }
 
             inActiveSet = new Set<String>();
+
             for (CampaignMember ia: inActiveCampaigns)
             {
                 inActiveSet.add(ia.Campaign.Name);
@@ -540,7 +584,6 @@ public class CampaignMemberManagementController
                 if (!currentSet.contains(selectedParentCampaignName))
                 {
                     insert newParentCamMem;
-                    System.debug('Inserted Parent camMem ' + newParentCamMem);
                 }
             }
             else
@@ -556,14 +599,14 @@ public class CampaignMemberManagementController
 
                 update activateParentCamMem;
             }
-            if(selectedChildCampaign != null)
+
+            if (selectedChildCampaign != null)
             {
                 if (!inActiveSet.contains(selectedChildCampaignName))
                 {
                     if (!currentSet.contains(selectedChildCampaignName))
                     {
                         insert newChildCamMem;
-                        System.debug('Inserted chil camMem ' + newChildCamMem);
                     }
                 }
                 else 
@@ -583,9 +626,14 @@ public class CampaignMemberManagementController
         }
         catch (Exception e)
         {
-            System.debug('EXCEPTION');
-            System.debug(e);
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    e.getMessage()
+                )
+            );
         }
+
         shouldRedirect = true;
     }
 }

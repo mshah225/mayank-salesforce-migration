@@ -2,97 +2,97 @@ public class ObjectService
 {
     static Integer s_num = 1;
 
-	/**
-	* Returns all the fields for a specified object
-	* @param An object API name
-	* @return A map containing the fields of the specified object
-	*/
-	public static Map<String, SObjectField> getObjectFieldMap(String objectName)
-	{
-		SObjectType objToken = Schema.getGlobalDescribe().get(objectName);
-		DescribeSObjectResult objDef = objToken.getDescribe();
-		Map<String, SObjectField> fields = objDef.fields.getMap();
+    /**
+    * Returns all the fields for a specified object
+    * @param An object API name
+    * @return A map containing the fields of the specified object
+    */
+    public static Map<String, SObjectField> getObjectFieldMap(String objectName)
+    {
+        SObjectType objToken = Schema.getGlobalDescribe().get(objectName);
+        DescribeSObjectResult objDef = objToken.getDescribe();
+        Map<String, SObjectField> fields = objDef.fields.getMap();
 
-		return fields;
-	}
+        return fields;
+    }
 
-	/**
-	* Returns all the fields on an object in a string delimited by ','
-	* @param A map containing the fields of an object
-	* @return A string of the field names
-	*/
-	public static String objectFieldsToString(Map<String, SObjectField> objectFieldMap)
-	{
-		String fieldsToString = null;
+    /**
+    * Returns all the fields on an object in a string delimited by ','
+    * @param A map containing the fields of an object
+    * @return A string of the field names
+    */
+    public static String objectFieldsToString(Map<String, SObjectField> objectFieldMap)
+    {
+        String fieldsToString = null;
 
-		Set<String> fieldSet = objectFieldMap.keySet();
-		for(String s : fieldSet)
-		{
-			SObjectField fieldToken = objectFieldMap.get(s);
-			DescribeFieldResult selectedField = fieldToken.getDescribe();
+        Set<String> fieldSet = objectFieldMap.keySet();
+        for(String s : fieldSet)
+        {
+            SObjectField fieldToken = objectFieldMap.get(s);
+            DescribeFieldResult selectedField = fieldToken.getDescribe();
 
-			if (fieldsToString == null)
-			{
-				fieldsToString = selectedField.getName();
-			}
-			else
-			{
-				fieldsToString = fieldsToString + ', ' + selectedField.getName();
-			}
-		}
+            if (fieldsToString == null)
+            {
+                fieldsToString = selectedField.getName();
+            }
+            else
+            {
+                fieldsToString = fieldsToString + ', ' + selectedField.getName();
+            }
+        }
 
-		return fieldsToString;
-	}
+        return fieldsToString;
+    }
 
-	/**
-	* Returns all the fields on an object in a string delimited by ','
-	* Overload of String objectFieldsToString
-	* @param An object API name
-	* @return A string of the field names
-	*/
-	public static String objectFieldsToString(String objectName)
-	{
-		String fieldsToString = null;
+    /**
+    * Returns all the fields on an object in a string delimited by ','
+    * Overload of String objectFieldsToString
+    * @param An object API name
+    * @return A string of the field names
+    */
+    public static String objectFieldsToString(String objectName)
+    {
+        String fieldsToString = null;
 
-		Map<String, SObjectField> objectFieldMap = getObjectFieldMap(objectName);
+        Map<String, SObjectField> objectFieldMap = getObjectFieldMap(objectName);
 
-		Set<String> fieldSet = objectFieldMap.keySet();
-		for(String s : fieldSet)
-		{
-			SObjectField fieldToken = objectFieldMap.get(s);
-			DescribeFieldResult selectedField = fieldToken.getDescribe();
+        Set<String> fieldSet = objectFieldMap.keySet();
+        for(String s : fieldSet)
+        {
+            SObjectField fieldToken = objectFieldMap.get(s);
+            DescribeFieldResult selectedField = fieldToken.getDescribe();
 
-			if (fieldsToString == null)
-			{
-				fieldsToString = selectedField.getName();
-			}
-			else
-			{
-				fieldsToString = fieldsToString + ', ' + selectedField.getName();
-			}
-		}
+            if (fieldsToString == null)
+            {
+                fieldsToString = selectedField.getName();
+            }
+            else
+            {
+                fieldsToString = fieldsToString + ', ' + selectedField.getName();
+            }
+        }
 
-		return fieldsToString;
-	}
+        return fieldsToString;
+    }
 
-	/**
-	* Returns a string list of all the fields for an object
-	* @param The object API Name
-	* @return A string list of all field names for the object
-	*/
-	public static List<String> getFieldLabelsToList(String objectName)
-	{
-		Map<String, Schema.SObjectField> obFields = getObjectFieldMap(objectName);
+    /**
+    * Returns a string list of all the fields for an object
+    * @param The object API Name
+    * @return A string list of all field names for the object
+    */
+    public static List<String> getFieldLabelsToList(String objectName)
+    {
+        Map<String, Schema.SObjectField> obFields = getObjectFieldMap(objectName);
 
-		List<String> fieldLabelsToList = new List<String>();
-		for (String obf: obFields.keySet())
-		{
-			fieldLabelsToList.add(obFields.get(obf).getDescribe().getLabel());
-		}
-		fieldLabelsToList.sort();
+        List<String> fieldLabelsToList = new List<String>();
+        for (String obf: obFields.keySet())
+        {
+            fieldLabelsToList.add(obFields.get(obf).getDescribe().getLabel());
+        }
+        fieldLabelsToList.sort();
 
-		return fieldLabelsToList;
-	}
+        return fieldLabelsToList;
+    }
 
     /**
     * Generates a fake Id for the given object type
@@ -101,21 +101,44 @@ public class ObjectService
     * @param sot A Schema.SObjectType
     * @return String A fake Id for the given SObjectType
     */
-	public static String getFakeId(Schema.SObjectType sot)
-	{
-		String result = String.valueOf(s_num++);
-		return sot.getDescribe().getKeyPrefix() + '0'.repeat(12-result.length()) + result;
-	}
+    public static String getFakeId(Schema.SObjectType sot)
+    {
+        String result = String.valueOf(s_num++);
+        return sot.getDescribe().getKeyPrefix() + '0'.repeat(12-result.length()) + result;
+    }
 
-	/**
-	* Generates a uuid
-	* @return guid A string guid
-	*/
+    /**
+    * Generates a uuid
+    * @return guid A string guid
+    */
     public static String getGuid()
     {
         Blob blobby = Crypto.generateAesKey(128);
         return EncodingUtil.convertToHex(blobby);
     }
 
-	public class ObjectServiceException extends Exception {}
+    /**
+    * Use this method to prevent the ListException: Duplicate id in list
+    * @param objs List<SObject>
+    * @param objToAdd SObject
+    */
+    public static void addToListSafely(List<SObject> objs, SObject objToAdd)
+    {
+        boolean safeToAdd = true;
+
+        for (SObject obj : objs)
+        {
+            if (obj.Id == objToAdd.Id)
+            {
+                safeToAdd = false;
+            }
+        }
+
+        if (safeToAdd)
+        {
+            objs.add(objToAdd);
+        }
+    }
+    
+    public class ObjectServiceException extends Exception {}
 }

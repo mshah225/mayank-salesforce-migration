@@ -104,111 +104,68 @@ private class Test_CampaignMemberManagementController {
 
         tempCrCamList.addAll(parents);
 
-        List<Campaign> children =
-            CampaignService.createTestCampaignOfType(5, 'Corporate Relations');
-
-        for (Campaign child : children)
+        // Create multiple child campaigns for each parent
+        for (Campaign parent : parents)
         {
-            child.Name = child.Name = ' Child CR';
-            child.Event_Start_Date__c = date.newinstance(2016, 3, 28);
-            child.Type = 'Corporate Relations';
+            List<Campaign> tempChildren =
+                CampaignService.createTestCampaignOfType(2, 'Corporate Relations');
+
+            for (Campaign child : tempChildren)
+            {
+                child.Name = child.Name = ' Child CR';
+                child.Event_Start_Date__c = date.newinstance(2016, 3, 28);
+                child.Type = 'Corporate Relations';
+            }
+
+            tempChildren[0].ParentId = parent.Id;
+            tempCrCamList.addAll(tempChildren);
         }
 
-        // Add the parent Campaigns to the children
-        for (Integer i = 0; i < parents.size(); i++)
-        {
-            children[i].ParentId = parents[i].Id;
-        }
+        upsert tempCrCamList;
 
-        insert children;
-
-        // Query back for children
-        List<Campaign> childrenList = [
-            SELECT Id, Name, RecordType.Name
+        // Query back for the inserted campaigns so we have the ids
+        List<Campaign> camsToAddStatuses = [
+            SELECT Id, Name
             FROM Campaign
-            WHERE Name LIKE '%Child CR'
+            WHERE RecordType.Name = 'Corporate Relations'
         ];
 
-        tempCrCamList.addAll(childrenList);
+        List<CampaignMemberStatus> cmStatuses = new List<CampaignMemberStatus>();
+
+        for (Campaign camToAddStatusToAdd : camsToAddStatuses)
+        {
+            CampaignMemberStatus cmActive1 = new CampaignMemberStatus(
+                CampaignId = camToAddStatusToAdd.Id,
+                IsDefault = true,
+                SortOrder = 3,
+                Label = 'Active'
+            );
+
+            CampaignMemberStatus cmInactive1 = new CampaignMemberStatus(
+                CampaignId = camToAddStatusToAdd.Id,
+                IsDefault = true,
+                SortOrder = 4,
+                Label = 'Inactive'
+            );
+
+            cmStatuses.add(cmActive1);
+            cmStatuses.add(cmInactive1);
+        }
+
+        camsToAddStatuses[0].Status = 'Active';
+        camsToAddStatuses[13].Status = 'Inactive';
+        insert cmStatuses;
+
+        List<Campaign> camsToAddToContact = new List<Campaign>();
+
+        for (Integer i = 0; i < 8; i++)
+        {
+            camsToAddToContact.add(camsToAddStatuses[i]);
+        }
 
         crCamMemsToInsert =
-            CampaignMemberService.createTestCampaignMembers(testContact.Id, tempCrCamList);
+            CampaignMemberService.createTestCampaignMembers(testContact.Id, camsToAddToContact);
         insert crCamMemsToInsert;
-
-        // CampaignMemberStatuses
-//        CampaignMemberStatus cmActive1 = new CampaignMemberStatus(
-//            CampaignId = testParentCampaign.Id,
-//            IsDefault = true,
-//            SortOrder = 3,
-//            Label = 'Active'
-//        );
-//
-//        campaignMemberStatusList.add(cmActive1);
-//
-//        CampaignMemberStatus cmInActive1 = new CampaignMemberStatus(
-//            CampaignId = testParentCampaign.Id,
-//            IsDefault = false,
-//            SortOrder = 4,
-//            Label = 'Inactive'
-//        );
-//
-//        campaignMemberStatusList.add(cmInActive1);
-//
-//        CampaignMemberStatus cmActive2 = new CampaignMemberStatus(
-//            CampaignId = testChildCampaign.Id,
-//            IsDefault = true,
-//            SortOrder = 3,
-//            Label = 'Active'
-//        );
-//
-//        campaignMemberStatusList.add(cmActive2);
-//
-//        CampaignMemberStatus cmInActive2 = new CampaignMemberStatus(
-//            CampaignId = testChildCampaign.Id,
-//            IsDefault = false,
-//            SortOrder = 4,
-//            Label = 'Inactive'
-//        );
-//
-//        campaignMemberStatusList.add(cmInActive2);
-//
-//        CampaignMemberStatus cmActive3 = new CampaignMemberStatus(
-//            CampaignId = testParentCampaignTwo.Id,
-//            IsDefault = true,
-//            SortOrder = 3,
-//            Label = 'Active'
-//        );
-//
-//        campaignMemberStatusList.add(cmActive3);
-//
-//        CampaignMemberStatus cmInActive3 = new CampaignMemberStatus(
-//            CampaignId = testParentCampaignTwo.Id,
-//            IsDefault = false,
-//            SortOrder = 4,
-//            Label = 'Inactive'
-//        );
-//
-//        campaignMemberStatusList.add(cmInActive3);
-//
-//        CampaignMemberStatus cmActive4 = new CampaignMemberStatus(
-//            CampaignId = testChildCampaignTwo.Id,
-//            IsDefault = true,
-//            SortOrder = 3,
-//            Label = 'Active'
-//        );
-//
-//        campaignMemberStatusList.add(cmActive4);
-//
-//        CampaignMemberStatus cmInActive4 = new CampaignMemberStatus(
-//            CampaignId = testChildCampaignTwo.Id,
-//            IsDefault = false,
-//            SortOrder = 4,
-//            Label = 'Inactive'
-//        );
-//
-//        campaignMemberStatusList.add(cmInActive4);
-//
-//        insert campaignMemberStatusList;
     }
     
     @isTest static void testEventsAndInterest()
@@ -333,7 +290,28 @@ private class Test_CampaignMemberManagementController {
         std = new ApexPages.standardController(tempContact);
         cm = new CampaignMemberManagementController(std);
 
+        // Search for and assign to parent campaign
         cm.getActiveCRCamMems();
+        cm.searchString = '';
+        cm.parentCampaignSearch();
+        cm.searchString = 'test';
+        cm.parentCampaignSearch();
+        cm.selectedParentCampaign = cm.parentCampaigns[0].Id;
+        cm.selectedParentCampaignName = cm.parentCampaigns[0].Name;
+        cm.assignToParentCampaign();
+
+        // Search for and assign to child campaign
+        cm.selectedChildCampaign = cm.fixedChildCampaigns[0].Id;
+        cm.selectedChildCampaignName = cm.fixedChildCampaigns[0].Name;
+        cm.assignToChildCampaign();
+
+        // Remove CampaignMember from CR Campaign
+        cm.inActivateCMId = cm.activeCrCamMems[0].Id;
+        cm.inActivateCM();
+
+        // Reactivate the CampaignMember
+        cm.inActivateCMId = cm.activeCrCamMems[0].Id;
+        cm.assignToParentCampaign();
 
         Test.stopTest();
     }

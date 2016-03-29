@@ -36,8 +36,20 @@ public class UnifiedProspectPageController
 
     public UnifiedProspectPageController()
     {
-        eventRecId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id;
-        eossRecId = [SELECT Id FROM RecordType WHERE Name = 'EOSS Event'].Id;
+        eventRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'Event'
+            AND SobjectType = 'Campaign'
+        ].Id;
+
+        eossRecId = [
+            SELECT Id
+            FROM RecordType
+            WHERE Name = 'EOSS Event'
+            AND SobjectType = 'Campaign'
+        ].Id;
+
         eventList = new List<Campaign>();
         tempCampaign = new Campaign();
     }
@@ -273,7 +285,6 @@ public class UnifiedProspectPageController
 
         if (camStartDate != null)
         {
-            System.debug('date: ' + camStartDate);
             sosl += 'AND Event_Start_Date__c = :camStartDate ';
         }
 

@@ -69,12 +69,12 @@ public class UnifiedProspectPageController
         this.previousEducation = previousEducation;
     }
 
-    public void setCampaignMemberInterest(CampaignMember camMemInterest)
+    public void setCamMemInterest(CampaignMember camMemInterest)
     {
         this.camMemInterest = camMemInterest;
     }
 
-    public void setCampaignMemberEvent(CampaignMember camMemEvent)
+    public void setCamMemEvent(CampaignMember camMemEvent)
     {
         this.camMemEvent = camMemEvent;
     }
@@ -86,7 +86,7 @@ public class UnifiedProspectPageController
 
     public Contact getContact()
     {
-        if (contact == null) 
+        if (contact == null)
         {
             contact= new Contact();
         }

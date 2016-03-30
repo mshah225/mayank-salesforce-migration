@@ -10,24 +10,10 @@ private class Test_CampaignMemberManagementController {
         List<CampaignMember> campaignMemberList = new List<CampaignMember>();
         List<CampaignMemberStatus> campaignMemberStatusList = new List<CampaignMemberStatus>();
 
-        Id cohortRecId = [
+        Id crRecId = [
             SELECT Id
             FROM RecordType
-            WHERE Name = 'Cohort'
-            AND SobjectType = 'Campaign'
-        ].Id;
-
-        Id interestRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Interest'
-            AND SobjectType = 'Campaign'
-        ].Id;
-
-        Id eventRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Event'
+            WHERE Name = 'Corporate Relations'
             AND SobjectType = 'Campaign'
         ].Id;
 
@@ -91,6 +77,7 @@ private class Test_CampaignMemberManagementController {
             cCam.Name = cCam.Name + ' Parent CR';
             cCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
             cCam.Type = 'Corporate Relations';
+            cCam.RecordTypeId = crRecId;
         }
 
         insert crs;
@@ -115,9 +102,10 @@ private class Test_CampaignMemberManagementController {
                 child.Name = child.Name = ' Child CR';
                 child.Event_Start_Date__c = date.newinstance(2016, 3, 28);
                 child.Type = 'Corporate Relations';
+                child.RecordTypeId = crRecId;
+                child.ParentId = parent.Id;
             }
 
-            tempChildren[0].ParentId = parent.Id;
             tempCrCamList.addAll(tempChildren);
         }
 
@@ -125,9 +113,10 @@ private class Test_CampaignMemberManagementController {
 
         // Query back for the inserted campaigns so we have the ids
         List<Campaign> camsToAddStatuses = [
-            SELECT Id, Name
+            SELECT Id, Name, RecordType.Name
             FROM Campaign
             WHERE RecordType.Name = 'Corporate Relations'
+            AND Id NOT IN :camListWithIds
         ];
 
         List<CampaignMemberStatus> cmStatuses = new List<CampaignMemberStatus>();
@@ -156,9 +145,10 @@ private class Test_CampaignMemberManagementController {
         camsToAddStatuses[13].Status = 'Inactive';
         insert cmStatuses;
 
+        // Add the contact to only the back 5 campaigns, so we get some results during search.
         List<Campaign> camsToAddToContact = new List<Campaign>();
 
-        for (Integer i = 0; i < 8; i++)
+        for (Integer i = 9; i < 15; i++)
         {
             camsToAddToContact.add(camsToAddStatuses[i]);
         }
@@ -265,22 +255,32 @@ private class Test_CampaignMemberManagementController {
     {
         Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
 
-        Campaign crCamParent = [
+        List<Campaign> crCamParents = [
             SELECT Id, Name
             FROM Campaign
             WHERE Name LIKE '%Parent CR'
-            LIMIT 1
+            AND ParentId = null
         ];
 
-        Campaign crCamChild = [
+        List<Campaign> crChilds = [
             SELECT Id, Name
             FROM Campaign
-            WHERE ParentId = :crCamParent.Id
+            WHERE ParentId IN :crCamParents
         ];
 
-        Id[] fixedSearchResults = new Id[2];
-        fixedSearchResults[0] = crCamParent.Id;
-        fixedSearchResults[1] = crCamChild.Id;
+        List<Campaign> allCRCams = new List<Campaign>();
+        allCRCams.addAll(crCamParents);
+        allCRCams.addAll(crChilds);
+
+        Integer listSize = crCamParents.size() + crChilds.size();
+
+        Id[] fixedSearchResults = new Id[listSize];
+
+        for (Integer i = 0; i < listSize; i++)
+        {
+            fixedSearchResults[i] = allCRCams[i].Id;
+        }
+
         Test.setFixedSearchResults(fixedSearchResults);
         Test.setCurrentPage(Page.CampaignMemberManagement);
         System.currentPageReference().getParameters().put('Id', tempContact.Id);
@@ -314,5 +314,13 @@ private class Test_CampaignMemberManagementController {
         cm.assignToParentCampaign();
 
         Test.stopTest();
+
+        Id tempParentId = [
+            SELECT Id
+            FROM CampaignMember
+            WHERE Id = :cm.activeCrCamMems[0].Id
+        ].Id;
+
+        System.assertNotEquals(null, tempParentId);
     }
 }

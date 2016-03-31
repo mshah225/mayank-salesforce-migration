@@ -506,7 +506,6 @@ private class Test_UnifiedProspectPageController
         Test.stopTest();
 
         List<Apexpages.Message> msgs = ApexPages.getMessages();
-        System.debug('GRAD MSGS ' + msgs);
         System.assert(result == true);
 
         contact = [
@@ -666,8 +665,6 @@ private class Test_UnifiedProspectPageController
         Plan__c plan3 = [SELECT Id FROM Plan__c WHERE Name = 'Test Law Plan' LIMIT 1];
 
         uppc.collegeSelected = prog.Id;
-        System.debug(plan.Id);
-        System.debug('merf: ' + uppc.planList);
         List<SelectOption> selPlan = uppc.planList;
         System.assert(selPlan.get(0).getValue() == '0');
         System.assert(selPlan.get(1).getValue() == plan.Id);

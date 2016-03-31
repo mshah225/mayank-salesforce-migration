@@ -250,6 +250,7 @@ private class Test_UnifiedProspectPageController
         Campaign eventCampaign = [SELECT Id FROM Campaign WHERE Name = 'ASU Test Event' LIMIT 1];
         uppc.originSelection = '--Select--';
         uppc.elId = eventCampaign.Id;
+        uppc.getSelectedEventCamMemStatuses();
         uppc.getCamMemEvent();
         uppc.camMemEvent.Status = 'Sent';
 
@@ -262,6 +263,48 @@ private class Test_UnifiedProspectPageController
         ];
 
         uppc.getCamMemInterest();
+        uppc.selectedInterestId = interestTestCam.Id;
+
+        uppc.instSearch();
+
+        // Get page messages to pop up
+
+        // Must select a career
+        uppc.career = '--Select--';
+        uppc.save();
+        uppc.career = 'undergraduate';
+
+        // Must provide phone or zip
+        uppc.contact.Phone = null;
+        uppc.contact.MailingPostalCode = null;
+        uppc.save();
+        uppc.contact.Phone = '5785785789';
+        uppc.contact.MailingPostalCode = '45656';
+
+        // Graduate career and collegeselected 0
+        uppc.career = 'graduate';
+        uppc.collegeSelected = '0';
+        uppc.save();
+
+        // Graduate career and term null
+        uppc.opportunity.Term__c = null;
+        uppc.save();
+        uppc.career = 'undergraduate';
+        uppc.opportunity.Term__c = testTerm.Id;
+
+        // origin select and elId not null
+        uppc.originSelection = 'something else';
+        uppc.save();
+        uppc.originSelection = '--Select--';
+
+        // Origin selected null and elId null
+        uppc.elId = null;
+        uppc.save();
+        uppc.elId = eventCampaign.Id;
+
+        // selectedInterestId null
+        uppc.selectedInterestId = null;
+        uppc.save();
         uppc.selectedInterestId = interestTestCam.Id;
 
         PageReference referenceToCheck = uppc.savePage();
@@ -337,6 +380,7 @@ private class Test_UnifiedProspectPageController
         Plan__c plan2 = [SELECT Id FROM Plan__c WHERE Name = 'Test Grad Plan' LIMIT 1];
 
         uppc.career = 'graduate';
+        uppc.getDepartmentsColleges();
         Term__c testTerm = [SELECT Id FROM Term__c WHERE Name = 'Spring 2017' LIMIT 1];
         opportunity.Term__c = testTerm.Id;
         opportunity.Type = 'Transfer';
@@ -357,6 +401,15 @@ private class Test_UnifiedProspectPageController
         uppc.setCaseC(c);
 
         uppc.pickSelection = '--Select--';
+
+        // Get page messages to pop up
+
+        // Fail on case creation
+        uppc.originSelection = '';
+        uppc.caseC.Functional_Group__c = null;
+        uppc.save();
+        uppc.originSelection = 'Incoming Call';
+        uppc.caseC.Functional_Group__c = 'ASU Online';
 
         PageReference referenceToCheck = uppc.saveAndNew();
 

@@ -573,24 +573,6 @@ public class UnifiedProspectPageController
             contact.SF_Birthdate__c = contact.Birthdate;
             contact.SF_Birthdate_Updated__c = Datetime.now();
             contact.silverpop__Sync_to_Silverpop_Chk__c = true;
-            
-            Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
-            Integer hasPhone = contact.Phone == null ? 0 : 1;
-            Integer result = hasMailingCode + hasPhone;
-
-            if (result < 1)
-            {
-               ApexPages.addmessage(
-                   new ApexPages.message(
-                       ApexPages.severity.ERROR,
-                       'You must fill out these required fields in order to ' +
-                       'save the contact: First Name, Last Name, Email, and ' +
-                       'one of these two fields: Phone or Zip Code.'
-                   )
-               );
-
-               return false;
-            }
 
             insert contact;
 

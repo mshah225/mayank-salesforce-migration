@@ -249,7 +249,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
         System.assertEquals('Test Group', createdCase.Functional_Group__c);
-   }  
+   }
 
     @isTest static void existingContactCcOnly() 
     {
@@ -270,6 +270,22 @@ public with sharing class Test_CaseInboundEmailHandler {
         // call the class and test it with the data in the testMethod
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env);  
+
+        List<LostEmail__c> lostEmails = [SELECT Recipient__c, Cause__c, Sender__c, Subject__c FROM LostEmail__c];
+        System.debug('LOST EMAIL: ' + lostEmails.size());
+        System.debug('LOST EMAIL: ' + lostEmails);
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+        System.assertEquals('Test Group', createdCase.Functional_Group__c);
     }  
 
 

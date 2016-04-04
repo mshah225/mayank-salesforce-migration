@@ -24,7 +24,32 @@ public with sharing class TriggerFactory
         }
          
         // Execute the handler to fulfil the trigger
-        execute(handler);
+        String triggerType = '';
+        if(Trigger.isInsert)
+        {
+            triggerType = 'insert';
+        }
+        else if(Trigger.isUpdate)
+        {
+            triggerType = 'update';
+        }
+        else if(Trigger.isDelete)
+        {
+            triggerType = 'delete';
+        }
+
+        if(Trigger.isBefore)
+        {
+            LogSuite.log('DML', 'Starting ' + triggerType + ' of ' + t);
+        }
+
+        execute(handler, t);
+        LogSuite.log('runstats', '# of QUERIES: ' + Limits.getQueries() + '; # OF DML: ' + Limits.getDMLStatements());
+
+        if(Trigger.isAfter)
+        {
+            LogSuite.log('DML', 'Finishing ' + triggerType + ' of ' + t);
+        }
     }
  
     /**
@@ -32,20 +57,24 @@ public with sharing class TriggerFactory
      *
      * Arguments:   ITrigger handler - A Trigger Handler to execute
      */
-    private static void execute(ITrigger handler)
+    private static void execute(ITrigger handler, Type t)
     {
         // Before Trigger
         if (Trigger.isBefore)
         {
             // Call the bulk before to handle any caching of data and enable bulkification
+            LogSuite.log('CODEFLOW', 'Starting ' + t + ' Bulk Before');
             handler.bulkBefore();
+            LogSuite.log('CODEFLOW', 'Finishing ' + t + ' Bulk Before');
  
             // Iterate through the records to be deleted passing them to the handler.
             if (Trigger.isDelete)
             {
                 for (SObject so : Trigger.old)
                 {
+                    LogSuite.log('CODEFLOW', 'Starting ' + t + ' Before Delete');
                     handler.beforeDelete(so);
+                    LogSuite.log('CODEFLOW', 'Finishing ' + t + ' Before Delete');
                 }
             }
             // Iterate through the records to be inserted passing them to the handler.
@@ -53,7 +82,9 @@ public with sharing class TriggerFactory
             {
                 for (SObject so : Trigger.new)
                 {
+                    LogSuite.log('CODEFLOW', 'Starting ' + t + ' Before Insert');
                     handler.beforeInsert(so);
+                    LogSuite.log('CODEFLOW', 'Finishing ' + t + ' Before Insert');
                 }
             }
             // Iterate through the records to be updated passing them to the handler.
@@ -61,25 +92,33 @@ public with sharing class TriggerFactory
             {
                 for (SObject so : Trigger.old)
                 {
+                    LogSuite.log('CODEFLOW', 'Starting ' + t + ' Before Update');
                     handler.beforeUpdate(so, Trigger.newMap.get(so.Id));
+                    LogSuite.log('CODEFLOW', 'Finishing ' + t + ' Before Update');
                 }
             }
             
              // Call the bulk beforeFinally to handle any bulk operations at the end of the
              // BEFORE process
+            LogSuite.log('CODEFLOW', 'Starting ' + t + ' Before Finally');
             handler.beforeFinally();
+            LogSuite.log('CODEFLOW', 'Finishing ' + t + ' Before Finally');
         }
         else
         {
             // Call the bulk after to handle any caching of data and enable bulkification
+            LogSuite.log('CODEFLOW', 'Starting ' + t + ' Bulk After');
             handler.bulkAfter();
+            LogSuite.log('CODEFLOW', 'Finishing ' + t + ' Bulk After');
  
             // Iterate through the records deleted passing them to the handler.
             if (Trigger.isDelete)
             {
                 for (SObject so : Trigger.old)
                 {
+                    LogSuite.log('CODEFLOW', 'Starting ' + t + ' After Delete');
                     handler.afterDelete(so);
+                    LogSuite.log('CODEFLOW', 'Finishing ' + t + ' After Delete');
                 }
             }
             // Iterate through the records inserted passing them to the handler.
@@ -87,7 +126,9 @@ public with sharing class TriggerFactory
             {
                 for (SObject so : Trigger.new)
                 {
+                    LogSuite.log('CODEFLOW', 'Starting ' + t + ' After Insert');
                     handler.afterInsert(so);
+                    LogSuite.log('CODEFLOW', 'Finishing ' + t + ' After Insert');
                 }
             }
             // Iterate through the records updated passing them to the handler.
@@ -95,13 +136,17 @@ public with sharing class TriggerFactory
             {
                 for (SObject so : Trigger.old)
                 {
+                    LogSuite.log('CODEFLOW', 'Starting ' + t + ' After Update');
                     handler.afterUpdate(so, Trigger.newMap.get(so.Id));
+                    LogSuite.log('CODEFLOW', 'Finishing ' + t + ' After Update');
                 }
             }
         }
 
         // Perform any post processing
+        LogSuite.log('CODEFLOW', 'Starting ' + t + ' And Finally');
         handler.andFinally();
+        LogSuite.log('CODEFLOW', 'Finishing ' + t + ' And Finally');
     }
  
     /**

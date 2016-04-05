@@ -1,10 +1,13 @@
 public with sharing class CaseTransferController
 {
-    public Boolean toUser;
     private final Case c;
+    private String caseSub;
+    private String caseDesc;
+
+    public Boolean toUser;
     public Integer page { get; set; }
     public Id selectedId { get; set; }
-    public List<Case_Assignment_Rule__c> allCARs;
+    public List<Case_Assignment_Rule__c> allNonGenCARs;
     public List<Case_Assignment_Rule__c> allGenCARs;
     public List<Schema.PickListEntry> columnList;
     public List<User> userList { get; set; }
@@ -14,8 +17,6 @@ public with sharing class CaseTransferController
     public String selectedCARLabel { get; set; }
     public String source { get; set; }
     public String searchString { get; set; }
-    private String caseSub;
-    private String caseDesc;
 
     public CaseTransferController(ApexPages.StandardController stdController)
     {
@@ -26,30 +27,13 @@ public with sharing class CaseTransferController
         this.c = (Case) stdController.getRecord();
 
         // The general list of CARs. Their labels should have '(General)' in them.
-        allGenCARs = [
-            SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
-                Functional_Group__c, Label__c, Name, Queue_ID__c
-            FROM Case_Assignment_Rule__c
-            WHERE CTPColumn__c != null
-            AND CTPGroup__c != null
-            AND Label__c != null
-            AND CTPVisible__c = true
-            AND Label__c LIKE '%(General)%'
-    ];
+        allGenCARs = CARService.getGeneralCARs();
 
         // All the CARs for this org that do not have the '(General)' tag
-        allCARs = [
-            SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
-                Functional_Group__c, Label__c, Name, Queue_ID__c
-            FROM Case_Assignment_Rule__c
-            WHERE CTPColumn__c != null
-            AND CTPGroup__c != null
-            AND Label__c != null
-            AND CTPVisible__c = true
-            AND (NOT Label__c LIKE '%(General)%')
-            ORDER BY Label__c ASC
-    ];
-        allGenCARs.addAll(allCARS);
+        allNonGenCARs = CARService.getNonGeneralCARs();
+
+        // Add the non General CARs to the main list. This way General ones are first.
+        allGenCARs.addAll(allNonGenCARs);
         searchUsers();
 
         for (Case_Assignment_Rule__c car : allGenCARs)
@@ -79,19 +63,20 @@ public with sharing class CaseTransferController
         }
 
         Case cValidate = [
-                SELECT Id, Subject, Description
-                FROM Case
-                WHERE Id = :c.Id
+            SELECT Id, Subject, Description
+            FROM Case
+            WHERE Id = :c.Id
         ];
 
         caseSub = cValidate.Subject;
         caseDesc = cValidate.Description;
+
         if (caseSub == null || caseDesc == null)
         {
             ApexPages.addmessage(
                 new ApexPages.message(ApexPages.severity.ERROR, 'The Subject and Description ' +
-                'are required fields for case transfer. Please fill out the missing fields ' +
-                'before transferring the case.')
+                    'are required fields for case transfer. Please fill out the missing fields ' +
+                    'before transferring the case.')
             );
         }
     }
@@ -161,14 +146,14 @@ public with sharing class CaseTransferController
         else
         {
             // Create search query for users.
-            String queryString = 'SELECT Id, Name, UserRole.ParentRoleId, Title, Department ' +
-                    'FROM User ' +
-                    'WHERE UserRoleId = \'' + UserInfo.getUserRoleId() + '\' ' +
-                    'AND Id != \'' + UserInfo.getUserId() + '\' ' +
-                    'AND IsActive = true ' +
-                    'AND UserPermissionsSupportUser = true';
-
-            usersToAdd = Database.query(queryString);
+            usersToAdd = [
+                SELECT Id, Name, UserRole.ParentRoleId, Title, Department
+                FROM User
+                WHERE UserRoleId = :UserInfo.getUserRoleId()
+                AND Id != :UserInfo.getUserId()
+                AND IsActive = true
+                AND UserPermissionsSupportUser = true
+            ];
 
             // Find subordinants for the current user, if they exist.
             List<User> subordinateList = [
@@ -188,10 +173,10 @@ public with sharing class CaseTransferController
         {
             // Get Uber Role Ids
             List<UserRole> uberRoleIdList = [
-                    SELECT Id, Name
-                    FROM UserRole
-                    WHERE (NOT Name LIKE 'Z Unassigned%')
-                    AND ParentRoleId = null
+                SELECT Id, Name
+                FROM UserRole
+                WHERE (NOT Name LIKE 'Z Unassigned%')
+                AND ParentRoleId = null
             ];
 
             // Add Uber Role Ids to set for later.
@@ -203,19 +188,20 @@ public with sharing class CaseTransferController
 
             // Grab users parent role id
             Id usersParentRoleId = [
-                    SELECT UserRole.ParentRoleId
-                    FROM User
-                    WHERE Id = :UserInfo.getUserId()
+                SELECT UserRole.ParentRoleId
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
             ].UserRole.ParentRoleId;
 
             // Check for null and that the parent role id is not an uber role
             if (usersParentRoleId != null && !uberRoleIdSet.contains(usersParentRoleId))
             {
                 List<User> managers = [
-                        SELECT Id, Name, Title, Department
-                        FROM User
-                        WHERE UserRole.Id = :usersParentRoleId
+                    SELECT Id, Name, Title, Department
+                    FROM User
+                    WHERE UserRole.Id = :usersParentRoleId
                 ];
+
                 userList.addAll(managers);
             }
         }
@@ -223,24 +209,31 @@ public with sharing class CaseTransferController
         //If we're performing a search, filter on search term, else add all to userList
         if(searchString != null)
         {
-            String searchFilterString = 'Select Id, Name, Title, Department ' +
-                'FROM User ' +
+            String sosl = '' +
+                'FIND \'' + String.escapeSingleQuotes(searchString.trim()) + '*\' ' +
+                'IN ALL FIELDS RETURNING ' +
+                'User(' +
+                'Id, Name, Title, Department ' +
                 'WHERE Id IN :usersToAdd ' +
                 'AND IsActive = true ' +
-                'AND UserPermissionsSupportUser = true ' +
-                'AND Name LIKE \'%' +
-                String.escapeSingleQuotes(searchString) + '%\'';
+                'AND UserPermissionsSupportUser = true)';
 
+            List<List<SObject>> soslResults = Search.query(sosl);
 
-            List<User> filteredUsers = DAtabase.query(searchFilterString);
-            userList.addAll(filteredUsers);
+            if (soslResults.size() > 0)
+            {
+                userList = soslResults[0];
+            }
+            else
+            {
+                userList = new List<User>();
+            }
         }
         else
         {
             userList.addAll(usersToAdd);
         }
 
-        System.debug('User list populated');
         userList.sort();
     }
 
@@ -298,24 +291,17 @@ public with sharing class CaseTransferController
                  */
                 if (!toUser)
                 {
-                    Case_Assignment_Rule__c selectedCAR = [
-                        SELECT Id, CTPColumn__c, CTPGroup__c, CTPVisible__c, Email_Address__c,
-                            Functional_Group__c, Category__c, Sub_Category__c, Label__c, Name,
-                            Queue_ID__c, Case_Feed_Email_Template_Id__c
-                        FROM Case_Assignment_Rule__c
-                        WHERE Id = :selectedId
-                    ];
-
+                    Case_Assignment_Rule__c selectedCAR = CARService.getCAR(selectedId);
                     c.OwnerId = selectedCAR.Queue_ID__c;
                     c.Functional_Group__c = selectedCAR.Functional_Group__c;
                     c.Category__c = selectedCAR.Category__c;
                     c.Sub_Category__c = selectedCAR.Sub_Category__c;
                     c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
                     c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
+                    c.Campus__c = selectedCAR.Campus__c;
                 }
                 else
                 {
-                    System.debug('!!!!!!!!SelectedId: ' + selectedId);
                     c.OwnerId = selectedId;
                 }
 
@@ -326,8 +312,8 @@ public with sharing class CaseTransferController
                 ApexPages.getMessages().clear();
                 ApexPages.addmessage(
                     new ApexPages.message(ApexPages.severity.ERROR, 'The Subject and ' +
-                    'Description are required fields for case transfer. Please fill ' +
-                    'out the missing fields before transferring the case.')
+                        'Description are required fields for case transfer. Please fill ' +
+                        'out the missing fields before transferring the case.')
                 );
 
                 return null;
@@ -336,10 +322,6 @@ public with sharing class CaseTransferController
         catch (Exception e)
         {
             ApexPages.addMessages(e);
-            System.debug('Exception type caught: ' + e.getTypeName());
-            System.debug('Message: ' + e.getMessage());
-            System.debug('Line number: ' + e.getLineNumber());
-            System.debug('Stack trace: ' + e.getStackTraceString());
 
             return null;
         }

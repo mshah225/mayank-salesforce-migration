@@ -164,7 +164,7 @@
                                       layout="block"
                                       rendered="{!isNewContactSelected = false}">
                         <apex:pageBlock title="{!IF(isContactSet,
-                                            'Contact Details', 'Contact Search')}"
+                                'Contact Details', 'Contact Search')}"
                                         id="criteria">
                             <apex:actionFunction name="searchServer"
                                                  action="{!buildSearchString}"
@@ -208,7 +208,7 @@
                                 <apex:param name="personalemail" value=""/>
                             </apex:actionFunction>
 
-                            <div style="height:234px;overflow-y:auto;">
+                            <div style="height:264px;overflow-y:auto;">
                                 <apex:pageBlockSection id="criteriasection" showHeader="false">
                                     <apex:inputField value="{!contactsrch.firstname}"
                                                      id="firstnamesrch"/>
@@ -284,7 +284,6 @@
                                 </apex:pageBlockSection>
                             </div>
 
-                            <br />
                             <i>Note: Due to platform limitations on date searches, searching
                                Birthdate may take longer than usual.</i>
 
@@ -395,15 +394,16 @@
                     <apex:outputPanel id="innersecondOpenCases"
                                       layout="block"
                                       rendered="{!NOT(isNewCaseSelected)
-                                                 && NOT(isExistingCaseSelected)
-                                                 && NOT(isCloseCase)}">
+                                              && NOT(isExistingCaseSelected)
+                                              && NOT(isCloseCase)}">
                         <apex:pageBlock title="Cases" id="opencasespb">
-                            <div style="height:258px;overflow-y:auto;border-bottom: solid 1px #ccc;">
+                            <div style="height:286px;overflow-y:auto;border-bottom: solid 1px
+                            #ccc;">
                                 <apex:pageBlockTable value="{!cases}"
                                                      var="case"
                                                      id="opencasespbt"
                                                      rendered="{!NOT(isNewContactSelected)
-                                                                && isContactSet}">
+                                                             && isContactSet}">
                                     <apex:column headerValue="">
                                         <apex:commandLink action="{!setAsCase}"
                                                           title="Set as Case"
@@ -462,7 +462,7 @@
                                       layout="block"
                                       rendered="{!(isNewCaseSelected || isExistingCaseSelected) && NOT(isCloseCase)}">
                         <apex:pageBlock title="Case Details - {!mycase.CaseNumber}" id="case">
-                            <div style="height:258px;overflow-y:auto;">
+                            <div style="height:307px;overflow-y:auto;margin:-10px;">
                                 <fieldset id="caseFieldset">
                                     <apex:pageBlockSection columns="2"
                                                            collapsible="false">
@@ -484,15 +484,20 @@
 
                                         <apex:inputField value="{!mycase.Status}"/>
 
-                                        <apex:inputField value="{!mycase.Private_Note_Help_Desk__c}"/>
-
                                         <apex:inputField value="{!mycase.Description}"
-                                                         style="width:100%"/>
-                                    </apex:pageBlockSection>
+                                                         style="width:80%;height:100px;"/>
 
-                                    <apex:pageBlockSection columns="2"
-                                                           collapsible="false">
-                                        <apex:inputField value="{!mycase.Origin__c}"/>
+                                        <apex:inputField value="{!mycase.Private_Note_Help_Desk__c}"
+                                                         style="width:80%;height:100px;"/>
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel for="originSelect"
+                                                              value="Origin"/>
+                                            <apex:selectList id="originSelect"
+                                                             value="{!mycase.Origin__c}"
+                                                             size="1">
+                                                <apex:selectOptions value="{!originOptions}"/>
+                                            </apex:selectList>
+                                        </apex:pageBlockSectionItem>
                                     </apex:pageBlockSection>
                                 </fieldset>
                             </div>
@@ -524,7 +529,8 @@
                                                     value="Save & Close"
                                                     rerender="innersecond"
                                                     styleClass="customBtn"
-                                                    status="loadingStatus4"/>
+                                                    status="loadingStatus4"
+                                                    oncomplete="closeTab();"/>
 
                                 <apex:commandButton id="cancelCaseButton"
                                                     action="{!cancelCase}"
@@ -544,69 +550,6 @@
                             </apex:pageBlockButtons>
                         </apex:pageBlock>
                     </apex:outputPanel>
-
-                    <apex:outputPanel id="innersecondCloseCase"
-                                      layout="block"
-                                      rendered="{!isCloseCase}">
-                        <apex:pageBlock title="Close Case - {!mycase.CaseNumber}" id="caseclose">
-                            <div style="height:260px;overflow-y:auto;">
-                                <apex:pageBlockSection >
-                                    <apex:selectList value="{!selectedCloseCaseStatusOption}"
-                                                     multiselect="false"
-                                                     size="1"
-                                                     label="Status"
-                                                     required="true">
-                                        <apex:selectOptions value="{!closeCaseStatusOptions}"/>
-                                    </apex:selectList>
-
-                                    <br />
-
-                                    <apex:inputField value="{!mycase.Functional_Group__c}"/>
-
-                                     <br />
-
-                                    <apex:inputField value="{!mycase.Category__c}"/>
-
-                                    <br />
-
-                                    <apex:inputField value="{!mycase.Sub_Category__c}"/>
-
-                                    <br />
-
-                                    <apex:inputField value="{!mycase.Status}"
-                                                     label=""
-                                                     style="display:none;visibility:hidden"/>
-                                </apex:pageBlockSection>
-                            </div>
-
-                            <apex:pageBlockButtons location="bottom">
-                                <apex:commandButton id="saveCloseCaseButton"
-                                                    action="{!saveCloseCase}"
-                                                    value="Save"
-                                                    rerender="messages"
-                                                    status="loadingStatus5"
-                                                    styleClass="customActionBtn"
-                                                    oncomplete="closeTab();"/>
-
-                                <apex:commandButton id="cancelCloseCaseButton"
-                                                    action="{!cancelCloseCase}"
-                                                    value="Cancel"
-                                                    immediate="true"
-                                                    status="loadingStatus5"
-                                                    styleClass="customBtn"
-                                                    reRender="innersecond"
-                                                    onComplete="disableCaseFields();"/>
-
-                                <apex:actionStatus id="loadingStatus5" >
-                                    <apex:facet name="start" >
-                                        <i class="fa fa-spinner fa-spin"
-                                           style="margin-top:8px;margin-left:5px;
-                                             font-size:14pt;color:#334b70;position:absolute;"></i>
-                                    </apex:facet>
-                                </apex:actionStatus>
-                            </apex:pageBlockButtons>
-                        </apex:pageBlock>
-                    </apex:outputPanel>
                 </apex:outputPanel>
             </div>
         </apex:form>
@@ -616,12 +559,12 @@
                 <apex:form id="knowledgeForm">
                     <apex:pageBlock id="resultsBlock"
                                     rendered="{!IF(!isKnowledgeSearch
-                                                   && !isNewContactSelected, true, false)}"
+                                            && !isNewContactSelected, true, false)}"
                                     title="Search Results">
                         <div style="max-height:300px;overflow-y:auto;">
                             <apex:outputPanel rendered="{!IF((contacts.size == 0 &&
                                     !isKnowledgeSearch), true, false)}">
-                                <div style="font-weight:bold;height:100px;padding:1å5px;">
+                                <div style="font-weight:bold;height:100px;padding:15px;">
                                     No Results found.
                                 </div>
                             </apex:outputPanel>
@@ -767,6 +710,20 @@
 
                                     <apex:outputField value="{!contact.Personal_Email__c}"/>
                                 </apex:column>
+
+                                <apex:column>
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="CAP"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="CAP__c"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
+
+                                    <apex:outputField value="{!contact.CAP__c}"/>
+                                </apex:column>
                             </apex:pageBlockTable>
                         </div>
                     </apex:pageBlock>
@@ -830,14 +787,14 @@
                                             <apex:param name="isAttached"
                                                         value="true"
                                                         assignTo="{!isAttached}"/>
-                                            {!af.Title}
+                                                {!af.Title}
                                         </apex:commandLink>
 
                                         <br />
 
                                         <apex:outputText rendered="{!IF(af.Summary != null,
                                                 true, false)}">
-                                            {!af.Summary}
+                                                {!af.Summary}
                                         </apex:outputText>
                                     </apex:column>
                                 </apex:pageBlockTable>
@@ -868,7 +825,7 @@
                                 <apex:actionStatus id="knowStatus" >
                                     <apex:facet name="start" >
                                         <i class="fa fa-spinner fa-spin"
-                                             style="padding:0px 5px;font-size:14pt;color:#334b70;
+                                           style="padding:0px 5px;font-size:14pt;color:#334b70;
                                              "></i>
                                     </apex:facet>
                                 </apex:actionStatus>
@@ -904,14 +861,14 @@
                                             <apex:param name="isAttached"
                                                         value="false"
                                                         assignTo="{!isAttached}"/>
-                                            {!f.Title}
+                                                {!f.Title}
                                         </apex:commandLink>
 
                                         <br />
 
                                         <apex:outputText rendered="{!IF(f.Summary != null,
                                                 true, false)}">
-                                            {!f.Summary}
+                                                {!f.Summary}
                                         </apex:outputText>
                                     </apex:column>
                                 </apex:pageBlockTable>
@@ -982,7 +939,7 @@
                                         <br />
 
                                         <h3 style="font-size:12pt;text-decoration:underline">
-                                            {!selectedFAQ.Title}
+                                                {!selectedFAQ.Title}
                                         </h3>
 
                                         <p><apex:outputText escape="false"

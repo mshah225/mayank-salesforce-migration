@@ -446,15 +446,15 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             Boolean success = handleAttachments(theCase, emailContact, email);
             Boolean hasAttachments = (email.textAttachments != null && email.textAttachments.size() >0) || 
                 (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
-            if(hasAttachments && success && String.isBlank(this.theCase.Description))
+            if(hasAttachments && success && String.isBlank(email.HtmlBody) && String.isBlank(email.plainTextBody))
             {
-               this.theCase.Description = 'Attachment received at ' + Datetime.now().formatLong(); 
-               update this.theCase;
-            }
-
-            if (sendAutoReply && templateId != null)
-            {
-                sendAutoReply(theCase, emailContact, templateId);
+                if(this.theCase.Description == null)
+                {
+                   this.theCase.Description = ''; 
+                }
+                
+                this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong(); 
+                update this.theCase;
             }
         }
         catch (Exception e)

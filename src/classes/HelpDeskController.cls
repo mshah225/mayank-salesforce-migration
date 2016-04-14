@@ -137,40 +137,33 @@ public with sharing class HelpDeskController
                     ')';
 
                 runSearch(false);
+            }
+        }
+    }
 
-                System.debug('merf: ' + contacts.size());
-                System.debug(contacts);
+    // Help Desk requests to have the non affiliate 1st in the list at all times.
+    // Call this method after all searches to place it there.
+    public void populateNonAffiliate()
+    {
+        // Always add the Non-Affiliate Caller to the list results.
+        List<Contact> nonAffiliateList = [
+            SELECT Id, Name, FirstName, LastName, Phone, Help_Desk_Provided_Phone__c,
+                Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, Personal_Email__c,
+                CAP__c
+            FROM Contact
+            WHERE Name = 'Non-Affiliate Caller'
+        ];
 
-                if (contacts.size() == 1)
-                {
-                    selectedContactId = contacts[0].Id;
-                    setAsContact();
-                }
-                else
-                {
-                    // Always add the Non-Affiliate Caller to the list results.
-                    List<Contact> nonAffiliateList = [
-                        SELECT Id, Name, FirstName, LastName, Phone, Help_Desk_Provided_Phone__c,
-                            Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, Personal_Email__c,
-                            CAP__c
-                        FROM Contact
-                        WHERE Name = 'Non-Affiliate Caller'
-                    ];
-
-                    if (nonAffiliateList.size() > 0)
-                    {
-                        // Add the non affiliate caller to the list at index 0 if
-                        // there are multiple results. If not, just add it.
-                        if (contacts.size() > 0)
-                        {
-                            contacts.add(0, nonAffiliateList[0]);
-                        }
-                        else
-                        {
-                            contacts.add(nonAffiliateList[0]);
-                        }
-                    }
-                }
+        if (nonAffiliateList.size() > 0)
+        {
+            // Add the non affiliate caller to the list at index 0
+            if (contacts.size() > 0)
+            {
+                contacts.add(0, nonAffiliateList[0]);
+            }
+            else
+            {
+                contacts.add(nonAffiliateList[0]);
             }
         }
     }
@@ -230,6 +223,14 @@ public with sharing class HelpDeskController
 
                 contacts = ((List<Contact>) queryList[0]);
             }
+
+            if (contacts.size() == 1)
+            {
+                selectedContactId = contacts[0].Id;
+                setAsContact();
+            }
+
+            populateNonAffiliate();
         }
         catch (Exception e)
         {

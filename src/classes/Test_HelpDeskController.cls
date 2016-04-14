@@ -1,15 +1,17 @@
 @isTest
 private class Test_HelpDeskController
 {
-    private static Contact testContact;
-
     private static void setUpTest()
     {
-        testContact = ContactService.createTestContact();
-        testContact.Phone = '1111111111';
-        testContact.EMPLID__c = '1111111111';
+        List<Contact> testContacts = ContactService.createTestContacts(2);
 
-        insert testContact;
+        testContacts[0].Phone = '1111111111';
+        testContacts[0].EMPLID__c = '1111111111';
+
+        testContacts[1].FirstName = 'Non-Affiliate';
+        testContacts[1].LastName = 'Caller';
+
+        insert testContacts;
     }
 
     @isTest static void testCreateContactCreateCaseSaveCase()
@@ -17,6 +19,12 @@ private class Test_HelpDeskController
         setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
 
         List<Case> caseList = CaseService.createTestCases(2, testContact);
 
@@ -92,6 +100,12 @@ private class Test_HelpDeskController
         ApexPages.currentPage().getParameters().put('emplid', '');
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
 
         Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
@@ -231,6 +245,12 @@ private class Test_HelpDeskController
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
 
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
         Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
@@ -304,6 +324,12 @@ private class Test_HelpDeskController
         ApexPages.currentPage().getParameters().put('emplid', '');
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
 
         List<Case> caseList = CaseService.createTestCases(3, testContact);
 

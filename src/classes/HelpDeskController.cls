@@ -697,6 +697,8 @@ public with sharing class HelpDeskController
         {
             contacts.clear();
         }
+
+        populateNonAffiliate();
     }
 
     public void setAsContact()

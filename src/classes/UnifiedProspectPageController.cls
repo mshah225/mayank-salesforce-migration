@@ -665,6 +665,7 @@ public class UnifiedProspectPageController
                     return false;
                 }
 
+                getCamMemEvent();
                 camMemEvent.Id = null;
                 camMemEvent.CampaignId = elId;
                 camMemEvent.ContactId = contact.Id;
@@ -774,6 +775,7 @@ public class UnifiedProspectPageController
             {
                 if (selectedInterestId != null) 
                 {
+                    getCamMemInterest();
                     camMemInterest.Id = null;
                     camMemInterest.CampaignId = selectedInterestId;
                     //This doesn't seem to work either, Status once again is set to 'Sent'

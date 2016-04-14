@@ -251,6 +251,9 @@ private class Test_UnifiedProspectPageController
         uppc.originSelection = '--Select--';
         uppc.elId = eventCampaign.Id;
         uppc.getSelectedEventCamMemStatuses();
+
+        // This emulates the Sent status picklist on the page. Because Visualforce calls
+        // the getter method automatically, we'll need to call it here manually.
         uppc.getCamMemEvent();
         uppc.camMemEvent.Status = 'Sent';
 
@@ -262,9 +265,7 @@ private class Test_UnifiedProspectPageController
             LIMIT 1
         ];
 
-        uppc.getCamMemInterest();
         uppc.selectedInterestId = interestTestCam.Id;
-
         uppc.instSearch();
 
         // Get page messages to pop up

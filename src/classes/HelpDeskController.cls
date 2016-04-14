@@ -1,6 +1,7 @@
 // Custom controller for the HelpDesk page
 public with sharing class HelpDeskController
 {
+    public Boolean isPageLoaded;
     private String soql { get; set; }
 
     public Boolean isNewCaseSelected { get; set; }
@@ -115,6 +116,7 @@ public with sharing class HelpDeskController
         isKnowSearchBox = false;
         isArticleDetails = false;
         isAttached = false;
+        isPageLoaded = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
@@ -138,7 +140,17 @@ public with sharing class HelpDeskController
 
                 runSearch(false);
             }
+            else
+            {
+                populateNonAffiliate();
+            }
         }
+        else
+        {
+            populateNonAffiliate();
+        }
+
+        isPageLoaded = true;
     }
 
     // Help Desk requests to have the non affiliate 1st in the list at all times.
@@ -224,10 +236,13 @@ public with sharing class HelpDeskController
                 contacts = ((List<Contact>) queryList[0]);
             }
 
-            if (contacts.size() == 1)
+            if (!isPageLoaded)
             {
-                selectedContactId = contacts[0].Id;
-                setAsContact();
+                if (contacts.size() == 1)
+                {
+                    selectedContactId = contacts[0].Id;
+                    setAsContact();
+                }
             }
 
             populateNonAffiliate();

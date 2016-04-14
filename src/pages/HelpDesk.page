@@ -468,9 +468,8 @@
                                                            collapsible="false">
 
                                         <apex:inputField value="{!mycase.Subject}"
-                                                         html-autofocus="true"/>
-
-                                        <apex:inputField value="{!mycase.Reason}"/>
+                                                         html-autofocus="true"
+                                                         style="width:90%;"/>
 
                                         <apex:inputField value="{!mycase.Campus__c}"/>
 
@@ -484,11 +483,6 @@
 
                                         <apex:inputField value="{!mycase.Status}"/>
 
-                                        <apex:inputField value="{!mycase.Description}"
-                                                         style="width:80%;height:100px;"/>
-
-                                        <apex:inputField value="{!mycase.Private_Note_Help_Desk__c}"
-                                                         style="width:80%;height:100px;"/>
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel for="originSelect"
                                                               value="Origin"/>
@@ -498,6 +492,12 @@
                                                 <apex:selectOptions value="{!originOptions}"/>
                                             </apex:selectList>
                                         </apex:pageBlockSectionItem>
+
+                                        <apex:inputField value="{!mycase.Description}"
+                                                         style="width:90%;height:120px;"/>
+
+                                        <apex:inputField value="{!mycase.Private_Note_Help_Desk__c}"
+                                                         style="width:90%;height:120px;"/>
                                     </apex:pageBlockSection>
                                 </fieldset>
                             </div>

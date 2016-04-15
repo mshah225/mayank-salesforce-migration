@@ -1,6 +1,11 @@
 public with sharing class CaseTransferController
 {
     private final Case c;
+    private Boolean isUserPageLoaded;
+    private Boolean isCARPageLoaded;
+    private List<User> asUsersToAdd;
+    private Set<Id> asRoleIds;
+    private Set<Id> uberRoleIds;
     private String caseSub;
     private String caseDesc;
 
@@ -9,7 +14,6 @@ public with sharing class CaseTransferController
     public Id selectedId { get; set; }
     public List<Case_Assignment_Rule__c> allNonGenCARs;
     public List<Case_Assignment_Rule__c> allGenCARs;
-    public List<Schema.PickListEntry> columnList;
     public List<User> userList { get; set; }
     public Map<String, List<Case_Assignment_Rule__c>> serviceCARS { get; set; }
     public Map<String, List<Case_Assignment_Rule__c>> collegeCARS { get; set; }
@@ -21,46 +25,12 @@ public with sharing class CaseTransferController
     public CaseTransferController(ApexPages.StandardController stdController)
     {
         page = 1;
+        isUserPageLoaded = false;
+        isCARPageLoaded = false;
         userList = new List<User>();
         serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         this.c = (Case) stdController.getRecord();
-
-        // The general list of CARs. Their labels should have '(General)' in them.
-        allGenCARs = CARService.getGeneralCARs();
-
-        // All the CARs for this org that do not have the '(General)' tag
-        allNonGenCARs = CARService.getNonGeneralCARs();
-
-        // Add the non General CARs to the main list. This way General ones are first.
-        allGenCARs.addAll(allNonGenCARs);
-        searchUsers();
-
-        for (Case_Assignment_Rule__c car : allGenCARs)
-        {
-            if (car.CTPColumn__c.equals('Service Departments'))
-            {
-                if (serviceCARS.containsKey(car.CTPGroup__c))
-                {
-                    serviceCARS.get(car.CTPGroup__c).add(car);
-                }
-                else
-                {
-                    serviceCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c> { car });
-                }
-            }
-            else if (car.CTPColumn__c.equals('Colleges'))
-            {
-                if (collegeCARS.containsKey(car.CTPGroup__c))
-                {
-                    collegeCARS.get(car.CTPGroup__c).add(car);
-                }
-                else
-                {
-                    collegeCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c> { car });
-                }
-            }
-        }
 
         Case cValidate = [
             SELECT Id, Subject, Description
@@ -71,7 +41,7 @@ public with sharing class CaseTransferController
         caseSub = cValidate.Subject;
         caseDesc = cValidate.Description;
 
-        if (caseSub == null || caseDesc == null)
+        if (String.isBlank(caseSub) || String.isBlank(caseDesc))
         {
             ApexPages.addmessage(
                 new ApexPages.message(ApexPages.severity.ERROR, 'The Subject and Description ' +
@@ -90,8 +60,49 @@ public with sharing class CaseTransferController
 
     public PageReference page2()
     {
+        searchString = null;
         toUser = true;
         page = 2;
+
+        // Populate various page variables on page2 first load.
+        if (!isUserPageLoaded)
+        {
+            // Populate the admission services user set
+            asRoleIds = getAsRoleIds();
+
+            if (asRoleIds.contains(UserInfo.getUserRoleId()))
+            {
+                asUsersToAdd = [
+                    SELECT Id, Name, Department, Title, UserRole.Id
+                    FROM User
+                    WHERE UserRole.Id IN :asRoleIds
+                ];
+
+                if (asUsersToAdd.size() == 0) asUsersToAdd = new List<User>();
+            }
+
+            // Get Uber Role Ids
+            List<UserRole> uberRoleIdList = [
+                SELECT Id, Name
+                FROM UserRole
+                WHERE (NOT Name LIKE 'Z Unassigned%')
+                AND ParentRoleId = null
+            ];
+
+            // Add Uber Role Ids to set for later.
+            uberRoleIds = new Set<Id>();
+
+            for (UserRole ur: uberRoleIdList)
+            {
+                uberRoleIds.add(ur.Id);
+            }
+
+            // After first run, set loaded variable.
+            isUserPageLoaded = true;
+        }
+
+        // Search for all users.
+        searchUsers();
 
         return ApexPages.currentPage();
     }
@@ -101,6 +112,48 @@ public with sharing class CaseTransferController
         toUser = false;
         page = 3;
 
+        // Populate various page variables on page3 first load.
+        if (!isCARPageLoaded)
+        {
+            // The general list of CARs. Their labels should have '(General)' in them.
+            allGenCARs = CARService.getGeneralCARs();
+
+            // All the CARs for this org that do not have the '(General)' tag
+            allNonGenCARs = CARService.getNonGeneralCARs();
+
+            // Add the non General CARs to the main list. This way General ones are first.
+            allGenCARs.addAll(allNonGenCARs);
+
+            for (Case_Assignment_Rule__c car : allGenCARs)
+            {
+                if (car.CTPColumn__c.equals('Service Departments'))
+                {
+                    if (serviceCARS.containsKey(car.CTPGroup__c))
+                    {
+                        serviceCARS.get(car.CTPGroup__c).add(car);
+                    }
+                    else
+                    {
+                        serviceCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c> { car });
+                    }
+                }
+                else if (car.CTPColumn__c.equals('Colleges'))
+                {
+                    if (collegeCARS.containsKey(car.CTPGroup__c))
+                    {
+                        collegeCARS.get(car.CTPGroup__c).add(car);
+                    }
+                    else
+                    {
+                        collegeCARS.put(car.CTPGroup__c, new List<Case_Assignment_Rule__c> { car });
+                    }
+                }
+            }
+
+            // After first run, set loaded variable.
+            isCARPageLoaded = true;
+        }
+
         return ApexPages.currentPage();
     }
 
@@ -109,14 +162,6 @@ public with sharing class CaseTransferController
         page = 4;
 
         return ApexPages.currentPage();
-    }
-
-    public List<Schema.PickListEntry> getColumnList()
-    {
-        Schema.DescribeFieldResult fieldResult = Case_Assignment_Rule__c.CTPColumn__c.getDescribe();
-        columnList = fieldResult.getPicklistValues();
-
-        return columnList;
     }
 
     public void resetSearch()
@@ -129,19 +174,12 @@ public with sharing class CaseTransferController
     public void searchUsers()
     {
         userList.clear();
-        Set<Id> ASroleIds = getASRoleIds();
         List<User> usersToAdd = new List<User>();
 
-        //Check if user is AS, else query for specific user roles
+        // Check if user is AS, else query for specific user roles
         if (asRoleIds.contains(UserInfo.getUserRoleId()))
         {
-            List<User> ASusersToAdd = [
-                SELECT Id, Name, Department, Title, UserRole.Id
-                FROM User
-                WHERE UserRole.Id IN : ASroleIds
-            ];
-
-            usersToAdd.addAll(ASusersToAdd);
+            usersToAdd.addAll(asUsersToAdd);
         }
         else
         {
@@ -168,24 +206,9 @@ public with sharing class CaseTransferController
             }
         }
 
-        //If the user isn't an AS user, grab their managers
-        if(!asRoleIds.contains(UserInfo.getUserRoleId()))
+        // If the user isn't an AS user, grab their managers
+        if (!asRoleIds.contains(UserInfo.getUserRoleId()))
         {
-            // Get Uber Role Ids
-            List<UserRole> uberRoleIdList = [
-                SELECT Id, Name
-                FROM UserRole
-                WHERE (NOT Name LIKE 'Z Unassigned%')
-                AND ParentRoleId = null
-            ];
-
-            // Add Uber Role Ids to set for later.
-            Set<Id> uberRoleIdSet = new Set<Id>();
-            for (UserRole ur: uberRoleIdList)
-            {
-                uberRoleIdSet.add(ur.Id);
-            }
-
             // Grab users parent role id
             Id usersParentRoleId = [
                 SELECT UserRole.ParentRoleId
@@ -194,7 +217,7 @@ public with sharing class CaseTransferController
             ].UserRole.ParentRoleId;
 
             // Check for null and that the parent role id is not an uber role
-            if (usersParentRoleId != null && !uberRoleIdSet.contains(usersParentRoleId))
+            if (usersParentRoleId != null && !uberRoleIds.contains(usersParentRoleId))
             {
                 List<User> managers = [
                     SELECT Id, Name, Title, Department
@@ -202,12 +225,12 @@ public with sharing class CaseTransferController
                     WHERE UserRole.Id = :usersParentRoleId
                 ];
 
-                userList.addAll(managers);
+                usersToAdd.addAll(managers);
             }
         }
 
-        //If we're performing a search, filter on search term, else add all to userList
-        if(searchString != null)
+        // If we're performing a search, filter on search term, else add all to userList
+        if (searchString != null)
         {
             String sosl = '' +
                 'FIND \'' + String.escapeSingleQuotes(searchString.trim()) + '*\' ' +
@@ -223,6 +246,7 @@ public with sharing class CaseTransferController
             if (soslResults.size() > 0)
             {
                 userList = soslResults[0];
+                userList.sort();
             }
             else
             {
@@ -232,96 +256,97 @@ public with sharing class CaseTransferController
         else
         {
             userList.addAll(usersToAdd);
+            userList.sort();
         }
-
-        userList.sort();
     }
 
-    //Helper method to get all AS role ids
-    public Set<Id> getASRoleIds()
+    // Helper method to get all AS role Ids. Store these in a set for later.
+    public Set<Id> getAsRoleIds()
     {
-        Set<Id> ASroleIds = new Set<Id>();
+        Set<Id> asRoleIds = new Set<Id>();
 
         // Get Admission Services Uber Role Id
-        Id ASuberRoleId = [
+        Id asUberRoleId = [
             SELECT Id
             FROM UserRole
             WHERE Name = 'AS Admission Services'
         ].Id;
 
-        ASroleIds.add(ASuberRoleId);
+        asRoleIds.add(asUberRoleId);
 
         // Get Admission Services manager roles
-        List<UserRole> ASmanagerRoleIds = [
+        List<UserRole> asManagerRoleIds = [
             SELECT Id
             FROM UserRole
-            WHERE ParentRoleId = :ASuberRoleId
+            WHERE ParentRoleId = :asUberRoleId
         ];
 
-        for (UserRole manRoles : ASmanagerRoleIds)
+        for (UserRole manRoles : asManagerRoleIds)
         {
-            ASroleIds.add(manRoles.Id);
+            asRoleIds.add(manRoles.Id);
         }
 
         // Get Adminssion Services subordinate roles
-        List<UserRole> ASsubRoleIds = [
+        List<UserRole> asSubRoleIds = [
             SELECT Id
             FROM UserRole
-            WHERE ParentRoleId IN :ASmanagerRoleIds
+            WHERE ParentRoleId IN :asManagerRoleIds
         ];
 
-        for (UserRole subRoles : ASsubRoleIds)
+        for (UserRole subRoles : asSubRoleIds)
         {
-            ASroleIds.add(subRoles.Id);
+            asRoleIds.add(subRoles.Id);
         }
 
-        return ASroleIds;
+        return asRoleIds;
     }
 
-    //Transfer the case and redirect
+    // Transfer the case and redirect
     public PageReference transferCase()
     {
-        try
-        {
-            if (caseSub != null && caseDesc != null)
-            {
-                /*
-                 *  Transfer to a department by setting the case information
-                 * according to the selected CAR
-                 */
-                if (!toUser)
-                {
-                    Case_Assignment_Rule__c selectedCAR = CARService.getCAR(selectedId);
-                    c.OwnerId = selectedCAR.Queue_ID__c;
-                    c.Functional_Group__c = selectedCAR.Functional_Group__c;
-                    c.Category__c = selectedCAR.Category__c;
-                    c.Sub_Category__c = selectedCAR.Sub_Category__c;
-                    c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
-                    c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
-                    c.Campus__c = selectedCAR.Campus__c;
-                }
-                else
-                {
-                    c.OwnerId = selectedId;
-                }
+        System.debug(String.isBlank(caseSub));
+        System.debug(String.isBlank(caseDesc));
 
-                update c;
+        if (!String.isBlank(caseSub) || !String.isBlank(caseDesc))
+        {
+            /*
+            * Transfer to a department by setting the case information
+            * according to the selected CAR
+            */
+            if (!toUser)
+            {
+                Case_Assignment_Rule__c selectedCAR = CARService.getCAR(selectedId);
+                c.OwnerId = selectedCAR.Queue_ID__c;
+                c.Functional_Group__c = selectedCAR.Functional_Group__c;
+                c.Category__c = selectedCAR.Category__c;
+                c.Sub_Category__c = selectedCAR.Sub_Category__c;
+                c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
+                c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
+                c.Campus__c = selectedCAR.Campus__c;
             }
             else
             {
-                ApexPages.getMessages().clear();
-                ApexPages.addmessage(
-                    new ApexPages.message(ApexPages.severity.ERROR, 'The Subject and ' +
-                        'Description are required fields for case transfer. Please fill ' +
-                        'out the missing fields before transferring the case.')
-                );
+                c.OwnerId = selectedId;
+            }
+
+            try
+            {
+                update c;
+            }
+            catch (Exception e)
+            {
+                ApexPages.addMessages(e);
 
                 return null;
             }
         }
-        catch (Exception e)
+        else
         {
-            ApexPages.addMessages(e);
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'The Subject and ' +
+                    'Description are required fields for case transfer. Please fill ' +
+                    'out the missing fields before transferring the case.')
+            );
 
             return null;
         }

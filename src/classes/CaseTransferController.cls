@@ -304,16 +304,17 @@ public with sharing class CaseTransferController
     // Transfer the case and redirect
     public PageReference transferCase()
     {
-        System.debug(String.isBlank(caseSub));
-        System.debug(String.isBlank(caseDesc));
-
         if (!String.isBlank(caseSub) || !String.isBlank(caseDesc))
         {
             /*
             * Transfer to a department by setting the case information
             * according to the selected CAR
             */
-            if (!toUser)
+            if (toUser)
+            {
+                c.OwnerId = selectedId;
+            }
+            else
             {
                 Case_Assignment_Rule__c selectedCAR = CARService.getCAR(selectedId);
                 c.OwnerId = selectedCAR.Queue_ID__c;
@@ -323,10 +324,6 @@ public with sharing class CaseTransferController
                 c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
                 c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
                 c.Campus__c = selectedCAR.Campus__c;
-            }
-            else
-            {
-                c.OwnerId = selectedId;
             }
 
             try

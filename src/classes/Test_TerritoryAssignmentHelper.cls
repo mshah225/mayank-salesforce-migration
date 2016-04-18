@@ -49,19 +49,16 @@ public without sharing class Test_TerritoryAssignmentHelper
         TerritoryAssignmentHelper.accountTADone = false;
 
         Test.startTest();
-
         HS.ShippingPostalCode = '85287';
         HS.Territory_Manager__c = TestUser.Id;
         update HS;
+        Test.stopTest();
 
         String accountGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
         FROM Account
         WHERE Id =: HS.Id
         LIMIT 1].Geomarket_Code__c;
 
-        Test.stopTest();
-
-        System.Debug('Account Geomarket Code after update: '+ accountGeoCodeAfterUpdate + ', Key Value Geomarket Code: ' + KV.Geomarket_Code__c );
         System.Assert(accountGeoCodeAfterUpdate == KV.Geomarket_Code__c,'Account Geomarket Code did not match by ZIP code');
     }
 
@@ -119,12 +116,12 @@ public without sharing class Test_TerritoryAssignmentHelper
         //opp.Territory_Assignment_UserID__c = TestUser.Id;
 
         Test.startTest();
-
+ 
         insert opp;
         String contactGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-        FROM Contact
-        WHERE Id = :con.Id
-        LIMIT 1].Geomarket_Code__c;
+                                            FROM Contact
+                                            WHERE Id = :con.Id
+                                            LIMIT 1].Geomarket_Code__c;
 
         // Fire Account Trigger to set Account.Geomarketcode__c
         HS.ShippingPostalCode = '84108';
@@ -139,9 +136,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         update opp;
 
         String contactHSGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-        FROM Contact
-        WHERE Id = :Con.Id
-        LIMIT 1].Geomarket_Code__c;
+                                                FROM Contact
+                                                WHERE Id = :Con.Id
+                                                LIMIT 1].Geomarket_Code__c;
 
         opp.Type = 'Transfer';
         update opp;
@@ -155,19 +152,14 @@ public without sharing class Test_TerritoryAssignmentHelper
         update opp;
 
         String contactCollegeGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-        FROM Contact
-        WHERE Id = :Con.Id
-        LIMIT 1].Geomarket_Code__c;
+                                                    FROM Contact
+                                                    WHERE Id = :Con.Id
+                                                    LIMIT 1].Geomarket_Code__c;
 
         Test.stopTest();
 
-        System.Debug('Contact Geomarket Code after update: '+ contactGeoCodeAfterUpdate + ', Key Value Contact Geomarket Code: ' + KVContact.Geomarket_Code__c);
         System.Assert(contactGeoCodeAfterUpdate == KVContact.Geomarket_Code__c,'Contact Geomarket Code did not match by ZIP code');
-
-        System.Debug('Contact High School Geomarket Code after update: '+ contactHSGeoCodeAfterUpdate + ', Key Value Contact High School Geomarket Code: ' + KVHS.Geomarket_Code__c);
         System.Assert(contactHSGeoCodeAfterUpdate == KVHS.Geomarket_Code__c,'Contact Geomarket Code did not match by Last Attended High School Geomarket Code');
-
-        System.Debug('Contact College Geomarket Code after update: '+ contactCollegeGeoCodeAfterUpdate + ', Key Value Contact College Geomarket Code: ' + KVCollege.Geomarket_Code__c );
         System.Assert(contactCollegeGeoCodeAfterUpdate == KVCollege.Geomarket_Code__c,'Contact Geomarket Code did not match by Last Attended College Geomarket Code');
     }
 
@@ -202,7 +194,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert opp;
 
         Test.startTest();
-
         opp.Type = 'First Time Freshman';
         opp.Potential_National_Scholar__c = true;
         update opp;
@@ -213,11 +204,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         FROM Opportunity
         WHERE Id = :opp.Id
         LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-
-        System.Debug('Opportunity Details: ' + Opp);
-        System.Debug('Last Rule Type: ' + lastRuleType);
         System.Assert(lastRuleType  == 'Freshman Scholar','Rule did not assign correctly by rule type Freshman Scholar: ' + lastRuleType);
-
     }
 
     @isTest public static void testGraduateOpportunity()
@@ -293,20 +280,17 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert Opp;
 
         Test.startTest();
-
         Opp.International_Student__c = true;
         update Opp;
 
         Test.stopTest();
 
-        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-        FROM Opportunity
-        WHERE Id = :Opp.Id
-        LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        String LastRuleType = [SELECT Id, Territory_Assignment_Last_Rule_Type__c
+                                FROM Opportunity
+                                WHERE Id = :Opp.Id
+                                LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
 
-        System.Debug('Opportunity Details: ' + Opp);
-        System.Debug('Last Rule Type: ' + LastRuleType);
-        System.Assert(LastRuleType == tarRuleKey,'Rule did not assign correctly by rule type International');
+        System.Assert(LastRuleType == tarRuleKey,'Rule did not assign correctly by rule type International');    
     }
 
     @isTest public static void testInternationalChina()
@@ -386,7 +370,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert chinaOpp2;
 
         Test.startTest();
-
         chinaOpp1.Opportunity_Assignment_Number_Rand__c = 25;
         chinaOpp1.International_Student__c = true;
 
@@ -493,7 +476,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert usOpp2;
 
         Test.startTest();
-
         usOpp1.Opportunity_Assignment_Number_Rand__c = 25;
         usOpp1.International_Student__c = true;
 
@@ -593,7 +575,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert transferOpp2;
 
         Test.startTest();
-
         transferOpp.International_Student__c = true;
         transferOpp2.International_Student__c = true;
 
@@ -624,9 +605,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert testContact;
 
         testContact = [
-                SELECT Id, AccountId
-                FROM Contact
-                WHERE Id = :testContact.Id
+            SELECT Id, AccountId
+            FROM Contact
+            WHERE Id = :testContact.Id
         ];
 
         Opportunity admitCondOpp = OpportunityService.createTestUndergraduateProspect(testContact);
@@ -636,7 +617,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert admitCondOpp;
 
         Test.startTest();
-
         admitCondOpp.International_Student__c = true;
 
         update admitCondOpp;
@@ -679,7 +659,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         System.assertNotEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct default territory manager.');
 
         Test.startTest();
-
         admitCondOpp.StageName = 'Admitted - Conditional';
 
         update admitCondOpp;
@@ -729,19 +708,16 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.Location__c = LakeHavasu.Id;
 
         Test.startTest();
-
         insert Opp;
 
         Test.stopTest();
 
         String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-        FROM Opportunity
-        WHERE Id = :Opp.Id
-        LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-
-        System.Debug('Opportunity Details: ' + Opp);
-        System.Debug('Last Rule Type: ' + LastRuleType);
+                                FROM Opportunity
+                                WHERE Id = :Opp.Id
+                                LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
         System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
+
     }
 
     @isTest public static void testAdmittedLocation()
@@ -780,13 +756,9 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.startTest();
         insert Opp;
-        //Opp.Location__c = LakeHavasu.Id;
-        //update Opp;
         Test.stopTest();
 
         String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-        System.Debug('Opportunity Details: ' + Opp);
-        System.Debug('Last Rule Type: ' + LastRuleType);
         System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
     }
 
@@ -826,22 +798,18 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert Opp;
 
         Test.startTest();
-
         Opp.Type = 'First Time Freshman';
         update Opp;
 
         Test.stopTest();
 
         String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-        FROM Opportunity
-        WHERE Id = :Opp.Id
-        LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+                                FROM Opportunity
+                                WHERE Id = :Opp.Id
+                                LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
 
-        System.Debug('Opportunity Details: ' + Opp);
-        System.Debug('Last Rule Type: ' + LastRuleType);
         System.Assert(LastRuleType == 'Last Attended High School','Rule did not assign correctly by rule type Last High School Attended');
     }
-
 
     @isTest public static void testLastCollegeAttended()
     {
@@ -920,7 +888,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert Opp;
 
         Test.startTest();
-
         Opp.Type = 'First Time Freshman';
         update Opp;
         Opp.Type = 'Transfer';
@@ -929,14 +896,12 @@ public without sharing class Test_TerritoryAssignmentHelper
         Test.stopTest();
 
         String LastRuleType = [
-                SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                FROM Opportunity
-                WHERE Id = :Opp.Id
-                LIMIT 1
+            SELECT Id,Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :Opp.Id
+            LIMIT 1
         ].Territory_Assignment_Last_Rule_Type__c;
 
-        System.Debug('Opportunity Details: ' + Opp);
-        System.Debug('Last Rule Type: ' + LastRuleType);
         System.Assert(LastRuleType == 'Last Attended College, Type ' + Opp.Type,'Rule did not assign correctly by rule type Last College Attended');
     }
 
@@ -976,20 +941,17 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.AccountId = Con.AccountId;
 
         Test.startTest();
-
         insert Opp;
 
         Test.stopTest();
 
         String LastRuleType = [
-                SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                FROM Opportunity
-                WHERE Id = :Opp.Id
-                LIMIT 1
+            SELECT Id,Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :Opp.Id
+            LIMIT 1
         ].Territory_Assignment_Last_Rule_Type__c;
 
-        System.Debug('Opportunity Details: ' + Opp);
-        System.Debug('Last Rule Type: ' + LastRuleType);
         System.Assert(LastRuleType == 'Geomarket, Type ' + Opp.Type, 'Rule did not assign correctly by rule type Geomarket');
     }
 
@@ -1024,21 +986,18 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert Opp;
 
         Test.startTest();
-
         Con.MailingState = 'Arizona';
         update Con;
 
         Test.stopTest();
 
         String LastRuleType = [
-                SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                FROM Opportunity
-                WHERE Id = :Opp.Id
-                LIMIT 1
+            SELECT Id,Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :Opp.Id
+            LIMIT 1
         ].Territory_Assignment_Last_Rule_Type__c;
 
-        System.Debug('Opportunity Details: ' + Opp);
-        System.Debug('Last Rule Type: ' + LastRuleType);
         System.Assert(LastRuleType == 'State, ' + Con.MailingState + ', Type ' + Opp.Type,'Rule did not assign correctly by rule type State: ' + LastRuleType);
     }
 
@@ -1069,20 +1028,17 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.AccountId = Con.AccountId;
 
         Test.startTest();
-
         insert Opp;
 
         Test.stopTest();
 
         String LastRuleType = [
-                SELECT Territory_Assignment_Last_Rule_Type__c
-                FROM Opportunity
-                WHERE Id = :Opp.Id
-                LIMIT 1
+            SELECT Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :Opp.Id
+            LIMIT 1
         ].Territory_Assignment_Last_Rule_Type__c;
 
-        System.Debug('Opportunity Details: ' + Opp);
-        System.Debug('Last Rule Type: ' + LastRuleType);
         System.Assert(LastRuleType == 'Default User','Rule did not assign correctly by rule type Default User: ' + LastRuleType);
     }
 
@@ -1146,20 +1102,17 @@ public without sharing class Test_TerritoryAssignmentHelper
 
 
         Test.startTest();
-
         insert Opp;
 
         Test.stopTest();
 
         Opportunity OppAfterInsert = [
-                SELECT Territory_Assignment_Last_Rule_Type__c,OwnerId
-                FROM Opportunity
-                WHERE Id = :Opp.Id
-                LIMIT 1
+            SELECT Territory_Assignment_Last_Rule_Type__c,OwnerId
+            FROM Opportunity
+            WHERE Id = :Opp.Id
+            LIMIT 1
         ];
 
-        System.Debug('Opportunity Details: ' + OppAfterInsert);
-        System.Debug('Last Rule Type: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c);
         System.Assert(OppAfterInsert.OwnerId ==TestUser.Id);
         System.Assert(OppAfterInsert.Territory_Assignment_Last_Rule_Type__c == 'Inactive Territory Manager','Did not correctly identify inactive User: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c);
     }
@@ -1173,12 +1126,12 @@ public without sharing class Test_TerritoryAssignmentHelper
         for (Integer i=0;i<1;i++)
         {
             Lead l = new Lead(LastName='LName'+i,
-                    FirstName='FName'+i,
-                    Company='Company',
-                    Email='test'+i+'@test.test',
-                    LeadSource='Email',
-                    Potential_National_Scholar__c=true,
-                    Type__c='First Time Freshman');
+                FirstName='FName'+i,
+                Company='Company',
+                Email='test'+i+'@test.test',
+                LeadSource='Email',
+                Potential_National_Scholar__c=true,
+                Type__c='First Time Freshman');
             leadList.add(l);
         }
 
@@ -1191,20 +1144,17 @@ public without sharing class Test_TerritoryAssignmentHelper
 
 
         Test.startTest();
-
         insert leadList;
 
         Test.stopTest();
 
         List<Lead> newLeadList = new List<Lead>([
-                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-                FROM Lead
-                WHERE Id = :leadList[0].Id
-                LIMIT 1
+            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
+            FROM Lead
+            WHERE Id = :leadList[0].Id
+            LIMIT 1
         ]);
 
-        System.Debug('Lead Details: ' + leadList[0]);
-        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
         System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Freshman Scholar','Rule did not assign correctly by rule type Freshman Scholar');
     }
 
@@ -1217,13 +1167,13 @@ public without sharing class Test_TerritoryAssignmentHelper
         for (Integer i=0;i<1;i++)
         {
             Lead l = new Lead(
-                    LastName='LName'+i,
-                    FirstName='FName'+i,
-                    Company='Company',
-                    Email='test'+i+'@test.test',
-                    LeadSource='Email',
-                    Type__c='First Time Freshman',
-                    International_Student__c = true
+                LastName='LName'+i,
+                FirstName='FName'+i,
+                Company='Company',
+                Email='test'+i+'@test.test',
+                LeadSource='Email',
+                Type__c='First Time Freshman',
+                International_Student__c = true
             );
             leadList.add(l);
         }
@@ -1234,20 +1184,17 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert ATar1;
 
         Test.startTest();
-
         insert leadList;
 
         Test.stopTest();
 
         List<Lead> newLeadList = new List<Lead>([
-                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-                FROM Lead
-                WHERE Id = :leadList[0].Id
-                LIMIT 1
+            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
+            FROM Lead
+            WHERE Id = :leadList[0].Id
+            LIMIT 1
         ]);
 
-        System.Debug('Lead Details: ' + leadList[0]);
-        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
         System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International||','Rule did not assign correctly by rule type Default User: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
     }
 
@@ -1273,32 +1220,29 @@ public without sharing class Test_TerritoryAssignmentHelper
         for (Integer i=0;i<1;i++)
         {
             Lead l = new Lead(
-                    LastName='LName'+i,
-                    FirstName='FName'+i,
-                    Company='Company',
-                    Email='test'+i+'@test.test',
-                    LeadSource='Email',
-                    Type__c='First Time Freshman',
-                    Last_Institution_Attended__c = HS.id
+                LastName='LName'+i,
+                FirstName='FName'+i,
+                Company='Company',
+                Email='test'+i+'@test.test',
+                LeadSource='Email',
+                Type__c='First Time Freshman',
+                Last_Institution_Attended__c = HS.id
             );
             leadList.add(l);
         }
 
         Test.startTest();
-
         insert leadList;
 
         Test.stopTest();
 
         List<Lead> newLeadList = new List<Lead>([
-                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c, OwnerId
-                FROM Lead
-                WHERE Id = :leadList[0].Id
-                LIMIT 1
+            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c, OwnerId
+            FROM Lead
+            WHERE Id = :leadList[0].Id
+            LIMIT 1
         ]);
 
-        System.Debug('Lead Details: ' + leadList[0]);
-        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
         System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Last Institution Attended','Rule did not assign correctly by rule type Last Institution Attended');
         System.Assert(newLeadList[0].OwnerId == testUser.Id, 'Territory Assignment did not assign Owner correctly for Lead/Last Institution');
     }
@@ -1324,33 +1268,30 @@ public without sharing class Test_TerritoryAssignmentHelper
         for (Integer i=0;i<1;i++)
         {
             Lead l = new Lead(
-                    LastName='LName'+i,
-                    FirstName='FName'+i,
-                    Company='Company',
-                    PostalCode='84108',
-                    Email='test'+i+'@test.test',
-                    LeadSource='Email',
-                    Type__c='First Time Freshman'
+                LastName='LName'+i,
+                FirstName='FName'+i,
+                Company='Company',
+                PostalCode='84108',
+                Email='test'+i+'@test.test',
+                LeadSource='Email',
+                Type__c='First Time Freshman'
             );
             leadList.add(l);
         }
 
 
         Test.startTest();
-
         insert leadList;
 
         Test.stopTest();
 
         List<Lead> newLeadList = new List<Lead>([
-                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-                FROM Lead
-                WHERE Id = :leadList[0].Id
-                LIMIT 1
+            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
+            FROM Lead
+            WHERE Id = :leadList[0].Id
+            LIMIT 1
         ]);
 
-        System.Debug('Lead Details: ' + leadList[0]);
-        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
         System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Geomarket, Type ' +  newLeadList[0].Type__c,'Rule did not assign correctly by rule type Lead/GeoMarket');
     }
 
@@ -1371,35 +1312,31 @@ public without sharing class Test_TerritoryAssignmentHelper
         for (Integer i=0;i<1;i++)
         {
             Lead l = new Lead(
-                    LastName='LName'+i,
-                    FirstName='FName'+i,
-                    Company='Company',
-                    State='Texas',
-                    Country='United States',
-                    Email='test'+i+'@test.test',
-                    LeadSource='Email',
-                    Type__c='First Time Freshman'
+                LastName='LName'+i,
+                FirstName='FName'+i,
+                Company='Company',
+                State='Texas',
+                Country='United States',
+                Email='test'+i+'@test.test',
+                LeadSource='Email',
+                Type__c='First Time Freshman'
             );
             leadList.add(l);
         }
 
 
         Test.startTest();
-
         insert leadList;
 
         Test.stopTest();
 
         List<Lead> newLeadList = new List<Lead>([
-                SELECT Id, Type__c, OwnerId, Territory_Assignment_Last_Rule_Type__c
-                FROM Lead
-                WHERE Id = :leadList[0].Id
-                LIMIT 1
+            SELECT Id, Type__c, OwnerId, Territory_Assignment_Last_Rule_Type__c
+            FROM Lead
+            WHERE Id = :leadList[0].Id
+            LIMIT 1
         ]);
 
-        System.Debug('Lead Details: ' + leadList[0]);
-        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
-        System.Debug('Last Rule Type to Match: ' + 'State, Type ' + leadList[0].Type__c);
         System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'State, Type ' + leadList[0].Type__c,'Rule did not assign correctly by rule type Lead/State');
     }
 
@@ -1412,12 +1349,12 @@ public without sharing class Test_TerritoryAssignmentHelper
         for (Integer i=0;i<1;i++)
         {
             Lead l = new Lead(
-                    LastName='LName'+i,
-                    FirstName='FName'+i,
-                    Company='Company',
-                    Email='test'+i+'@test.test',
-                    LeadSource='Email',
-                    Type__c='First Time Freshman'
+                LastName='LName'+i,
+                FirstName='FName'+i,
+                Company='Company',
+                Email='test'+i+'@test.test',
+                LeadSource='Email',
+                Type__c='First Time Freshman'
             );
             leadList.add(l);
         }
@@ -1431,20 +1368,17 @@ public without sharing class Test_TerritoryAssignmentHelper
 
 
         Test.startTest();
-
         insert leadList;
 
         Test.stopTest();
 
         List<Lead> newLeadList = new List<Lead>([
-                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-                FROM Lead
-                WHERE Id = :leadList[0].Id
-                LIMIT 1
+            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
+            FROM Lead
+            WHERE Id = :leadList[0].Id
+            LIMIT 1
         ]);
 
-        System.Debug('Lead Details: ' + leadList[0]);
-        System.Debug('Last Rule Type: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
         System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Default User','Rule did not assign correctly by rule type Default User');
     }
 
@@ -1472,17 +1406,16 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert aTar2;
 
         Lead l = new Lead(
-                LastName='LName',
-                FirstName='FName',
-                Company='Company',
-                Email='test@test.test',
-                LeadSource='Email',
-                Type__c='First Time Freshman'
+            LastName='LName',
+            FirstName='FName',
+            Company='Company',
+            Email='test@test.test',
+            LeadSource='Email',
+            Type__c='First Time Freshman'
         );
         insert l;
 
         Test.startTest();
-
         // Force an update to run on lead
         TerritoryAssignmentHelper.leadTADone = false;
 

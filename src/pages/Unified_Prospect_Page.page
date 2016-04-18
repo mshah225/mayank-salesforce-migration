@@ -637,7 +637,6 @@
                                                         <br />
                                                         No results found for
                                                         <b>{!eventSearchString}</b>.
-
                                                     </apex:outputText>
                                                 </apex:outputPanel>
                                             </apex:outputPanel>

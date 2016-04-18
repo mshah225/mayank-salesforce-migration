@@ -265,7 +265,7 @@ public class UnifiedProspectPageController
 
         String sosl = '' +
             'FIND \'*' + String.escapeSingleQuotes(eventSearchString.trim()) + '*\' ' +
-            'IN NAME FIELDS ' +
+            'IN ALL FIELDS ' +
             'RETURNING Campaign(Id, Name, Type, Category__c, Event_Start_Date__c, ' +
                 'Event_Start_Time__c, Campus_Location__c, Event_Location__c, ' +
                 'RecordTypeId, Requested__c ' +
@@ -274,7 +274,7 @@ public class UnifiedProspectPageController
 
         if (deptColl != null)
         {
-            sosl += 'AND Requested__c = :deptColl ';
+            sosl += 'AND Requested__c INCLUDES (:deptColl) ';
         }
 
         Id location = tempCampaign.Campus_Location__c;

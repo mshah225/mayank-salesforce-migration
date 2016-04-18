@@ -99,7 +99,7 @@ public without sharing class PreviousEducationHandler implements ITrigger
                 if (thisContact.Last_HS_Attended__c == null)
                 {
                     thisContact.Last_HS_Attended__c = PEsToUpdate.Account__c;
-                    contactsToUpdate.add(thisContact);
+                    ObjectService.addToListSafely(contactsToUpdate, thisContact);
                     hsContactsToUpdateIds.add(PEsToUpdate.Contact__c);
                 }
                 //If this contact DOES have a Last HS attended, but it doesn't match the one on the PE, update it
@@ -107,7 +107,7 @@ public without sharing class PreviousEducationHandler implements ITrigger
                     && peMap.get(thisContact.Id + '|H').Id != thisContact.Last_HS_Attended__c)
                 {
                     thisContact.Last_HS_Attended__c = peMap.get(thisContact.Id +'|H').Account__c;
-                    contactsToUpdate.add(thisContact);
+                    ObjectService.addToListSafely(contactsToUpdate, thisContact);
                 }
             }
             //Else, if this PE is a college PE and we're not already updating its contact
@@ -118,7 +118,7 @@ public without sharing class PreviousEducationHandler implements ITrigger
                 if (thisContact.Last_College_Attended__c == null)
                 {
                     thisContact.Last_College_Attended__c = PEsToUpdate.Account__c;
-                    contactsToUpdate.add(thisContact);
+                    ObjectService.addToListSafely(contactsToUpdate, thisContact);
                     collegeContactsToUpdateIds.add(PEsToUpdate.Contact__c);
                 }
                 //If the contact DOES have a college attended, but it doesn't match the one on the PE, update it
@@ -127,7 +127,7 @@ public without sharing class PreviousEducationHandler implements ITrigger
                         && peMap.get(thisContact.Id + '|C').Id != thisContact.Last_College_Attended__c))
                 {
                     thisContact.Last_College_Attended__c = peMap.get(thisContact.Id +'|C').Account__c;
-                    contactsToUpdate.add(thisContact);
+                    ObjectService.addToListSafely(contactsToUpdate, thisContact);
                 }
             }
         }

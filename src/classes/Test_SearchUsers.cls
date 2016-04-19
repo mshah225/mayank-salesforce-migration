@@ -21,7 +21,7 @@ private class Test_SearchUsers
         PageReference searchUsers = Page.searchUsers;
         Test.setCurrentPage(searchUsers);
 
-        Id [] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testUser.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 

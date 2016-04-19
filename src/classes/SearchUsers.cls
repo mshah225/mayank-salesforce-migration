@@ -19,9 +19,9 @@ public with sharing class SearchUsers
                 'FIND \'*' + String.escapeSingleQuotes(searchString) + '*\' ' +
                 'IN ALL FIELDS ' +
                 'RETURNING User(' +
-                    'Id, Name, Profile.Name, Contact.Name, ContactId, Contact.ASURite_Id__c, ' +
-                    'EmplId__c, contact.EMPLID__c, Alias, FederationIdentifier, ' +
-                    'ASU_User_Type__c, IsActive ';
+                'Id, FirstName, LastName, Profile.Name, Contact.Name, ContactId, ' +
+                'Contact.ASURite_Id__c, EmplId__c, contact.EMPLID__c, Alias, ' +
+                'FederationIdentifier, ASU_User_Type__c, IsActive ';
 
             if (hideCommunity)
             {

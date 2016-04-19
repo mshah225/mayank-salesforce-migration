@@ -1,6 +1,6 @@
 <apex:page controller="SearchUsers"
-    docType="html-5.0"
-    sideBar="false">
+           docType="html-5.0"
+           sideBar="false">
 <head>
     <style>
         .even>td, .odds>td {
@@ -104,7 +104,7 @@
                                 <apex:outputLink styleClass="nameLink"
                                                  value="/{!u.Id}?noredirect=1"
                                                  target="_blank">
-                                        {!u.Name}
+                                    {!u.FirstName} {!u.LastName}
                                 </apex:outputLink>
                             </apex:column>
 
@@ -116,7 +116,7 @@
 
                             <apex:column headerValue="ASURITE Id">
                                 <apex:outputText rendered="{!NOT(ISNULL(u.Contact.ASURite_ID__c))}">
-                                        {!u.Contact.ASURite_ID__c}
+                                    {!u.Contact.ASURite_ID__c}
                                 </apex:outputText>
 
                                 <apex:outputText rendered="{!ISNULL(u.Contact.ASURite_ID__c)}">

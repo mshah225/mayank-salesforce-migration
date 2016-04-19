@@ -35,40 +35,6 @@ private class Test_SearchUsers
         Test.stopTest();
 
         System.assert(su.uList.size() == 1);
-        System.assertEquals(false, su.getNoResults());
-    }
-
-    @isTest static void testClearList()
-    {
-        User testUser = [
-            SELECT Id
-            FROM User
-            LIMIT 1
-        ];
-
-        PageReference searchUsers = Page.searchUsers;
-        Test.setCurrentPage(searchUsers);
-
-        Id [] fixedSearchResults = new Id[1];
-        fixedSearchResults[0] = testUser.Id;
-        Test.setFixedSearchResults(fixedSearchResults);
-
-        Test.startTest();
-
-        SearchUsers su = new SearchUsers();
-        su.hideCommunity = true;
-        su.searchString = 'test';
-        su.search();
-
-        // The clear functionality clears the list, but then repopulates
-        // with all users just like when the page loads.
-        su.clear();
-
-        Test.stopTest();
-
-        // The list should be greater than just the one result above at this point.
-        System.assert(su.uList.size() == 50);
-        System.assertEquals(false, su.getNoResults());
     }
 
     @isTest static void testPageSearchError()
@@ -106,7 +72,6 @@ private class Test_SearchUsers
 
         Test.stopTest();
 
-        System.assertEquals(true, su.getNoResults());
         System.assert(su.uList.size() == 0);
     }
 }

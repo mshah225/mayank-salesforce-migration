@@ -16,7 +16,7 @@ public with sharing class SearchUsers
         if (searchString.length() >= 2)
         {
             String searchQuery = '' +
-                'FIND \'*' + String.escapeSingleQuotes(searchString) + '*\' ' +
+                'FIND \'' + String.escapeSingleQuotes(searchString) + '*\' ' +
                 'IN ALL FIELDS ' +
                 'RETURNING User(' +
                 'Id, FirstName, LastName, Profile.Name, Contact.Name, ContactId, ' +

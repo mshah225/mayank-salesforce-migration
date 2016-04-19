@@ -3,18 +3,27 @@ private class Test_SearchUsers
 {
     @testSetup static void setUp()
     {
+        Profile p = [
+            SELECT Id
+            FROM Profile
+            WHERE Name = 'System Administrator'
+            LIMIT 1
+        ];
+
         User testUser = UserService.createTestUser();
         testUser.FederationIdentifier = 'test@admin.asu.edu';
-        Id p = [SELECT Id FROM Profile LIMIT 1].Id;
-        testUser.ProfileId = p;
+        testUser.ProfileId = p.Id;
         insert testUser;
     }
 
     @isTest static void testUListResults()
     {
         User testUser = [
-            SELECT Id
+            SELECT Id, FirstName, LastName, Profile.Name, Contact.Name, ContactId,
+                Contact.ASURite_Id__c, EmplId__c, contact.EMPLID__c, Alias,
+                FederationIdentifier, ASU_User_Type__c, IsActive
             FROM User
+            WHERE FederationIdentifier = 'test@admin.asu.edu'
             LIMIT 1
         ];
 

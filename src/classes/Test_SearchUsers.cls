@@ -34,7 +34,7 @@ private class Test_SearchUsers
 
         Test.stopTest();
 
-        System.assertNotEquals(null, su.uList);
+        System.assert(su.uList.size() == 1);
         System.assertEquals(false, su.getNoResults());
     }
 
@@ -67,7 +67,7 @@ private class Test_SearchUsers
         Test.stopTest();
 
         // The list should be greater than just the one result above at this point.
-        System.assert(su.uList.size() > 1);
+        System.assert(su.uList.size() == 50);
         System.assertEquals(false, su.getNoResults());
     }
 

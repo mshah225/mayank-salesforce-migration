@@ -272,7 +272,7 @@ public class CampaignMemberManagementController
 
         if (deptColl != null)
         {
-            sosl += 'AND Requested__c = :deptColl ';
+            sosl += 'AND Requested__c INCLUDES (:deptColl) ';
         }
 
         Id location = tempCampaign.Campus_Location__c;

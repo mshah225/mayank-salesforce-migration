@@ -1,12 +1,10 @@
 public with sharing class SearchUsers
 {
-    public Boolean hideCommunity { get; set; }
     public List<User> uList { get; set; }
     public String searchString { get; set; }
 
     public SearchUsers()
     {
-        hideCommunity = false;
         uList = new List<User>();
     }
 
@@ -21,15 +19,7 @@ public with sharing class SearchUsers
                 'RETURNING User(' +
                 'Id, FirstName, LastName, Profile.Name, Contact.Name, ContactId, ' +
                 'Contact.ASURite_Id__c, EmplId__c, contact.EMPLID__c, Alias, ' +
-                'FederationIdentifier, ASU_User_Type__c, IsActive ';
-
-            if (hideCommunity)
-            {
-                searchQuery += 'WHERE Profile.Name != \'ASU Community\' ' +
-                    'AND Profile.Name != \'ASU Community CAP\' ';
-            }
-
-            searchQuery += 'LIMIT 50)';
+                'FederationIdentifier, ASU_User_Type__c, IsActive LIMIT 50)';
 
             List<List<SObject>> sobjectList = Search.query(searchQuery);
 

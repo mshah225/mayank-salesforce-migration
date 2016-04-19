@@ -11,7 +11,7 @@ private class Test_SearchUsers
         ];
 
         User testUser = UserService.createTestUser();
-        testUser.FederationIdentifier = 'test@admin.asu.edu';
+        testUser.FederationIdentifier = 'testSU@admin.asu.edu';
         testUser.ProfileId = p.Id;
         insert testUser;
     }
@@ -19,25 +19,21 @@ private class Test_SearchUsers
     @isTest static void testUListResults()
     {
         User testUser = [
-            SELECT Id, FirstName, LastName, Profile.Name, Contact.Name, ContactId,
-                Contact.ASURite_Id__c, EmplId__c, contact.EMPLID__c, Alias,
-                FederationIdentifier, ASU_User_Type__c, IsActive
+            SELECT Id
             FROM User
-            WHERE FederationIdentifier = 'test@admin.asu.edu'
+            WHERE FederationIdentifier = 'testSU@admin.asu.edu'
             LIMIT 1
         ];
 
         PageReference searchUsers = Page.searchUsers;
         Test.setCurrentPage(searchUsers);
 
-        Id[] fixedSearchResults = new Id[1];
-        fixedSearchResults[0] = testUser.Id;
+        Id[] fixedSearchResults = new Id[]{testUser.Id};
         Test.setFixedSearchResults(fixedSearchResults);
 
         Test.startTest();
 
         SearchUsers su = new SearchUsers();
-        su.hideCommunity = true;
         su.searchString = 'test';
         su.search();
 
@@ -51,7 +47,6 @@ private class Test_SearchUsers
         Test.startTest();
 
         SearchUsers su = new SearchUsers();
-        su.hideCommunity = true;
         su.searchString = 't';
         su.search();
 

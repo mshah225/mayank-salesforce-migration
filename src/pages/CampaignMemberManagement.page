@@ -323,7 +323,7 @@
                                                              rendered="{!IF(eventSearchResults.size > 0,true,false)}">
                                             <apex:column headerValue="Action">
                                                 <apex:commandLink styleClass="linkBtn"
-                                                                  value="Add to Event"
+                                                                  value="Add"
                                                                   status="actStatusEvent"
                                                                   rerender="eventPanel">
                                                     <apex:param name="elId"

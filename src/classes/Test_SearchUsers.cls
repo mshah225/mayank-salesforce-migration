@@ -1,76 +1,81 @@
 @isTest
-private class Test_SearchUsers {
+private class Test_SearchUsers
+{
+    @testSetup static void setUp()
+    {
+        Profile p = [
+            SELECT Id
+            FROM Profile
+            WHERE Name = 'System Administrator'
+            LIMIT 1
+        ];
 
-    private static SearchUsers su;
-    private static User testUser;
-    private static Contact testContact;
-    
-    static testMethod void setUp() {
-        testContact = new Contact();
-     	testContact.FirstName = 'Jonny';
-     	testContact.LastName = 'Test';
-     	insert testContact;
-        
-        testUser = new User();
-    	testUser.FirstName = 'Jonny';
-    	testUser.LastName = 'Test';
-    	testUser.Username = 'username@test.com';
-    	testUser.Email = 'test@nomail.com';
-    	testUser.Alias = 'jontest';
-    	testUser.CommunityNickname = 'jontestComm';
-    	testUser.TimeZoneSidKey = 'America/Phoenix';
-    	testUser.LocaleSidKey = 'en_US';
-    	testUser.EmailEncodingKey = 'ISO-8859-1';
-    	testUser.LanguageLocaleKey = 'en_US';
-    	testUser.ProfileId = '00ed00000019z5nAAA';
-    	testuser.ContactId = testContact.Id;
-    	insert testUser;
-    	
-    	PageReference searchUsers = Page.searchUsers;
-  		Test.setCurrentPage(searchUsers);
-     	su = new SearchUsers();
+        User testUser = UserService.createTestUser();
+        testUser.FederationIdentifier = 'testSU@admin.asu.edu';
+        testUser.ProfileId = p.Id;
+        insert testUser;
     }
-    
-    static testMethod void getUListTest() {
-    	setUp();
-    	Test.startTest();
-     	System.AssertNotEquals(null, su.getUList());
-    	Test.stopTest();
+
+    @isTest static void testUListResults()
+    {
+        User testUser = [
+            SELECT Id
+            FROM User
+            WHERE FederationIdentifier = 'testSU@admin.asu.edu'
+            LIMIT 1
+        ];
+
+        PageReference searchUsers = Page.searchUsers;
+        Test.setCurrentPage(searchUsers);
+
+        Id[] fixedSearchResults = new Id[]{testUser.Id};
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        Test.startTest();
+
+        SearchUsers su = new SearchUsers();
+        su.searchString = 'test';
+        su.search();
+
+        Test.stopTest();
+
+        System.assert(su.uList.size() == 1);
     }
-    
-    static testMethod void searchTest() {
-    	setUp();
-    	Test.startTest();
-    	su.searchString = 'test';
-    	su.search();
-    	System.AssertNotEquals(null, su.getUList());
-    	Test.stopTest();
+
+    @isTest static void testPageSearchError()
+    {
+        Test.startTest();
+
+        SearchUsers su = new SearchUsers();
+        su.searchString = 't';
+        su.search();
+
+        Test.stopTest();
+
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean errorPresent = false;
+
+        for (Apexpages.Message msg : msgs)
+        {
+            if (msg.getDetail().contains('You must enter at least 2 search characters'))
+            {
+                errorPresent = true;
+            }
+        }
+
+        System.assert(errorPresent);
     }
-    
-    static testMethod void clearSearchTest() {
-    	setUp();
-    	Test.startTest();
-    	su.clear();
-    	System.AssertNotEquals(null, su.getUList());
-    	Test.stopTest();
-    }
-    
-    static testMethod void noResultsTest() {
-    	setUp();
-    	Test.startTest();
-    	su.searchString = '!';
-    	su.search();
-    	System.AssertEquals(true, su.getNoResults());
-    	Test.stopTest();	
-    }
-    
-    static testMethod void resultsTest() {
-    	setUp();
-    	Test.startTest();
-    	su.searchString = 'test';
-    	su.search();
-    	su.getUList();
-    	System.AssertEquals(false, su.getNoResults());
-    	Test.stopTest();	
+
+    @isTest static void testNoSOSLResults()
+    {
+        Test.startTest();
+
+        SearchUsers su = new SearchUsers();
+        su.searchString = 'test';
+        su.search();
+
+        Test.stopTest();
+
+        System.assert(su.uList.size() == 0);
     }
 }

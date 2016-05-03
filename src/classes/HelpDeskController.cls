@@ -1,6 +1,7 @@
 // Custom controller for the HelpDesk page
 public with sharing class HelpDeskController
 {
+    public Boolean isPageLoaded;
     private String soql { get; set; }
 
     public Boolean isNewCaseSelected { get; set; }
@@ -41,6 +42,16 @@ public with sharing class HelpDeskController
         }
 
         return closeCaseStatusOptions;
+    }
+
+    public List<SelectOption> getOriginOptions()
+    {
+        List<SelectOption> origins = new List<SelectOption>();
+        origins.add(new SelectOption('Incoming Call', 'Incoming Call'));
+        origins.add(new SelectOption('My ASU', 'My ASU'));
+        origins.add(new SelectOption('Chat', 'Chat'));
+
+        return origins;
     }
 
     public String selectedCloseCaseStatusOption { get; set; }
@@ -105,36 +116,67 @@ public with sharing class HelpDeskController
         isKnowSearchBox = false;
         isArticleDetails = false;
         isAttached = false;
+        isPageLoaded = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
-        String searchNumber;
+        contacts = new List<Contact>();
 
         if (ApexPages.currentPage().getParameters().containsKey('ANI'))
         {
-            searchNumber = ApexPages.currentPage().getParameters().get('ANI');
-            callerId = formatPhone(searchNumber);
+            if (ApexPages.currentPage().getParameters().get('ANI') != '')
+            {
+                String searchNumber = ApexPages.currentPage().getParameters().get('ANI');
+                callerId = formatPhone(searchNumber);
 
-            soql = 'FIND \'' + searchNumber + '\' ' +
-                'IN PHONE FIELDS ' +
-                'RETURNING Contact(' +
-                'Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
-                'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
-                'Personal_Email__c WHERE FirstName != null ' +
-                'ORDER BY ' + sortField + ' ' + sortDir + ' LIMIT 25' +
-                ')';
+                soql = 'FIND \'' + callerId + '\' ' +
+                    'IN PHONE FIELDS ' +
+                    'RETURNING Contact(' +
+                    'Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
+                    'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
+                    'Personal_Email__c, CAP__c WHERE FirstName != null ' +
+                    'ORDER BY ' + sortField + ' ' + sortDir + ' LIMIT 25' +
+                    ')';
 
-            runSearch(false);
+                runSearch(false);
+            }
+            else
+            {
+                populateNonAffiliate();
+            }
         }
         else
         {
-            contacts = new List<Contact>();
+            populateNonAffiliate();
         }
 
-        if (contacts.size() == 1)
+        isPageLoaded = true;
+    }
+
+    // Help Desk requests to have the non affiliate 1st in the list at all times.
+    // Call this method after all searches to place it there.
+    public void populateNonAffiliate()
+    {
+        // Always add the Non-Affiliate Caller to the list results.
+        List<Contact> nonAffiliateList = [
+            SELECT Id, Name, FirstName, LastName, Phone, Help_Desk_Provided_Phone__c,
+                Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, Personal_Email__c,
+                CAP__c
+            FROM Contact
+            WHERE Name = 'Non-Affiliate Caller'
+        ];
+
+        if (nonAffiliateList.size() > 0)
         {
-            selectedContactId = contacts[0].Id;
-            setAsContact();
+            // Add the non affiliate caller to the list at index 0
+            if (contacts.size() > 0)
+            {
+                contacts.add(0, nonAffiliateList[0]);
+            }
+            else
+            {
+                contacts.add(nonAffiliateList[0]);
+            }
         }
     }
 
@@ -147,15 +189,17 @@ public with sharing class HelpDeskController
         // remove all non numeric
         phoneDigits = phone.replaceAll(nondigits, '');
 
+        if (phoneDigits == '') phoneDigits = '0000000000';
+
         // 10 digit: reformat with dashes
         if (phoneDigits.length() == 10)
+        {
             return '(' + phoneDigits.substring(0, 3) + ') ' +
                 phoneDigits.substring(3, 6) + '-' +
                 phoneDigits.substring(6, 10);
+        }
 
-        // if it isn't a 10 digit number, return the original because
-        // it may contain an extension or special information
-        return(phone);
+        return phoneDigits;
     }
 
     // toggles the sorting of query from asc<-->desc
@@ -177,7 +221,7 @@ public with sharing class HelpDeskController
         isCloseCase = false;
         isKnowledgeSearch = false;
         isNewContactSelected = false;
-//        contacts = new List<Contact>();
+        contacts = new List<Contact>();
 
         try
         {
@@ -191,6 +235,17 @@ public with sharing class HelpDeskController
 
                 contacts = ((List<Contact>) queryList[0]);
             }
+
+            if (!isPageLoaded)
+            {
+                if (contacts.size() == 1)
+                {
+                    selectedContactId = contacts[0].Id;
+                    setAsContact();
+                }
+            }
+
+            populateNonAffiliate();
         }
         catch (Exception e)
         {
@@ -324,7 +379,7 @@ public with sharing class HelpDeskController
                 'OR Phone like \'' + phoneWildcarded + '\' ' +
                 'OR Work_Phone__c like \'' + phoneWildcarded + '\' ' +
                 'OR Help_Desk_Provided_Phone__c like \'' + phoneWildcarded + '\'' +
-            ')';
+                ')';
         }
 
         // This only sets the soqlOptions if date is being searched. Doesn't set date for SOSL.
@@ -378,7 +433,7 @@ public with sharing class HelpDeskController
             soql = '' +
                 'SELECT Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
                 'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
-                'Personal_Email__c ' +
+                'Personal_Email__c, CAP__c ' +
                 'FROM Contact ' +
                 'WHERE FirstName != null';
 
@@ -418,7 +473,7 @@ public with sharing class HelpDeskController
                     returnString + ' ' +
                     'RETURNING Contact(' +
                     'Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
-                    'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
+                    'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, CAP__c, ' +
                     'Personal_Email__c WHERE FirstName != null ' +
                     'ORDER BY ' + sortField + ' ' + sortDir + ' ' +
                     'LIMIT 25' +
@@ -450,9 +505,9 @@ public with sharing class HelpDeskController
                 'FIND \'' + String.escapeSingleQuotes(knowString.trim()) + '*\' ' +
                 'IN ALL FIELDS RETURNING ' +
                 'FAQ__kav(' +
-                    'KnowledgeArticleId, Title, Answer__c, Summary ' +
-                    'WHERE Language = \'en_US\' ' +
-                    'AND PublishStatus = \'Online\'';
+                'KnowledgeArticleId, Title, Answer__c, Summary ' +
+                'WHERE Language = \'en_US\' ' +
+                'AND PublishStatus = \'Online\'';
 
             Set<Id> caseArticleIds = getCaseArticleIds();
 
@@ -581,7 +636,6 @@ public with sharing class HelpDeskController
 
         mycase.ContactId = selectedContactId;
         mycase.Status = 'New';
-        mycase.Origin__c = 'Incoming Call';
         mycase.Campus__c = 'Tempe';
         mycase.Functional_Group__c = 'Help Desk';
     }
@@ -658,6 +712,8 @@ public with sharing class HelpDeskController
         {
             contacts.clear();
         }
+
+        populateNonAffiliate();
     }
 
     public void setAsContact()
@@ -682,11 +738,11 @@ public with sharing class HelpDeskController
         casesbase = Database.query(
             'SELECT Id, Subject, Reason, Description, Status, Origin__c, Campus__c, ' +
                 'Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, ' +
-                'Private_Note_Help_Desk__c, ClosedDate, CaseNumber ' +
-            'FROM Case ' +
-            'WHERE ContactId = :selectedContactId ' +
-            'ORDER BY CreatedDate DESC ' +
-            'LIMIT 25'
+                'Private_Note_Help_Desk__c, ClosedDate, CaseNumber, CreatedDate ' +
+                'FROM Case ' +
+                'WHERE ContactId = :selectedContactId ' +
+                'ORDER BY Status, CreatedDate DESC ' +
+                'LIMIT 25'
         );
 
         if (cases == null)
@@ -703,7 +759,6 @@ public with sharing class HelpDeskController
             CaseWrapper mycw = new CaseWrapper(ca);
             cases.add(mycw);
         }
-
     }
 
     // Set user selected case for view on page.
@@ -811,15 +866,15 @@ public with sharing class HelpDeskController
             return;
         }
 
-        upsert mycase;
+        mycase.Status = 'Closed: Resolved';
 
-        isCloseCase = true;
+        upsert mycase;
     }
 
     public PageReference saveCloseCase()
     {
         if (!(selectedCloseCaseStatusOption == null
-             || selectedCloseCaseStatusOption.length() == 0))
+            || selectedCloseCaseStatusOption.length() == 0))
         {
             mycase.Status = [
                 SELECT MasterLabel

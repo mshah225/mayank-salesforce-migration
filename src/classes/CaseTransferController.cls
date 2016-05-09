@@ -198,6 +198,7 @@ public with sharing class CaseTransferController
                 SELECT Id, Name, Title, Department, UserRole.Id
                 FROM User
                 WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
+                AND IsActive = true
             ];
 
             if (subordinateList.size() > 0)

@@ -183,21 +183,10 @@ public with sharing class HelpDeskController
     // Reformats a 10 digit phone number to the following format: (xxx) xxx-xxxx
     private static String formatPhone(String phone)
     {
-        string nondigits = '[^0-9]';
-        string phoneDigits;
-
         // remove all non numeric
-        phoneDigits = phone.replaceAll(nondigits, '');
+        String phoneDigits = phone.replaceAll('[^0-9]', '');
 
         if (phoneDigits == '') phoneDigits = '0000000000';
-
-        // 10 digit: reformat with dashes
-        if (phoneDigits.length() == 10)
-        {
-            return '(' + phoneDigits.substring(0, 3) + ') ' +
-                phoneDigits.substring(3, 6) + '-' +
-                phoneDigits.substring(6, 10);
-        }
 
         return phoneDigits;
     }

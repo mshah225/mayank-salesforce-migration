@@ -1,5 +1,6 @@
 public class UnifiedProspectPageController 
 {
+
     private Id eventRecId;
     private Id eossRecId;
 
@@ -598,29 +599,20 @@ public class UnifiedProspectPageController
                 ].Id;
             }
 
+            Term__c tempTerm = [
+                SELECT Id, Session_A_C_Start_Date__c
+                FROM Term__c
+                WHERE Id = :opportunity.Term__c
+                LIMIT 1
+            ];
+
+            opportunity.CloseDate = tempTerm.Session_A_C_Start_Date__c + 22;
             opportunity.Career__c = career;
 
             Datetime DatePreString = Datetime.now();
             String TodayString = DatePreString.format('yyyy-MM-dd');
-            opportunity.Contact__c = contact.id;
             opportunity.Name = contact.FirstName + ' ' + contact.LastName + ' ' + TodayString;
-
-            if (career == 'graduate')
-            {
-                Term__c tempTerm = [
-                    SELECT Id, Session_A_C_Start_Date__c
-                    FROM Term__c
-                    WHERE Id = :opportunity.Term__c
-                    LIMIT 1
-                ];
-
-                opportunity.CloseDate = tempTerm.Session_A_C_Start_Date__c + 22;
-            }
-            else
-            {
-                opportunity.CloseDate = Date.Today() + 365;
-            }
-
+            opportunity.Contact__c = contact.id;
             accId = [SELECT AccountId FROM Contact WHERE Id = :Contact.Id][0].AccountId;
             opportunity.AccountId = accId;
             opportunity.StageName = 'Prospect';

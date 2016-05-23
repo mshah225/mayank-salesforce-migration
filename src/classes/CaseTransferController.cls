@@ -76,6 +76,7 @@ public with sharing class CaseTransferController
                     SELECT Id, Name, Department, Title, UserRole.Id
                     FROM User
                     WHERE UserRole.Id IN :asRoleIds
+                    
                 ];
 
                 if (asUsersToAdd.size() == 0) asUsersToAdd = new List<User>();

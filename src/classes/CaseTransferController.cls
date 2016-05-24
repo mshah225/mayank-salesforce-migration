@@ -225,6 +225,7 @@ public with sharing class CaseTransferController
                     SELECT Id, Name, Title, Department
                     FROM User
                     WHERE UserRole.Id = :usersParentRoleId
+                    AND IsActive = true
                 ];
 
                 usersToAdd.addAll(managers);

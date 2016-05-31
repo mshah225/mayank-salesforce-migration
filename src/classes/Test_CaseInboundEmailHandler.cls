@@ -814,7 +814,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEmail.Header header2 = new Messaging.InboundEmail.Header();
         Messaging.InboundEmail.Header header3 = new Messaging.InboundEmail.Header();
 
-        header.name = 'Test 12345'; 
+        header.name = 'Test 12345';
         header.value = 'Test value 55555';
         header2.name = 'Received';
         header2.value = 'from [209.85.223.170] ([209.85.223.170:35832] helo=mail-io0-f170.google.com) by mx3-was3.mta.salesforce.com (for <gwgmer@gmail.com>) (ecelerity 3.6.17.52090 r(Core:3.6.17.0)) with ESMTPS (cipher=AES128-GCM-SHA256 subject="/C=US/ST=California/L=Mountain View/O=Google Inc/CN=smtp.gmail.com")  id 12/B8-14396-D28B3275; Fri, 29 Apr 2016 19:38:21 +0000';

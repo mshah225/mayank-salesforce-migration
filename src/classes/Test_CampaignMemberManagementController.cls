@@ -3,286 +3,203 @@ private class Test_CampaignMemberManagementController {
 
     private static ApexPages.standardController std;
     private static CampaignMemberManagementController cm;
-    private static Campaign interest;
-    private static Campaign event;
-    private static Contact testContact;
-
-    private static Campaign testParentCampaign;
-    private static Campaign testParentCampaignTwo;
-    private static Campaign testChildCampaign;
-    private static Campaign testChildCampaignTwo;
-    private static CampaignMember testParentCamMem;
-    private static CampaignMember testParentCamMemTwo;
-    private static CampaignMember testChildCamMem;
-    private static CampaignMember testChildCamMemTwo;
-    private static CampaignMemberStatus cmActive1;
-    private static CampaignMemberStatus cmInActive1;
-    private static CampaignMemberStatus cmActive2;
-    private static CampaignMemberStatus cmInActive2;
-    private static CampaignMemberStatus cmActive3;
-    private static CampaignMemberStatus cmInActive3;
-    private static CampaignMemberStatus cmActive4;
-    private static CampaignMemberStatus cmInActive4;
-    private static Id cohortRecId;
-    private static Id eventRecId;
-    private static Id interestRecId;
     
-    private static void setUp() { 
-        cohortRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Cohort'
-            AND SobjectType = 'Campaign'
-        ].Id;
-        interestRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Interest'
-            AND SobjectType = 'Campaign'
-        ].Id;
-        eventRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Event'
-            AND SobjectType = 'Campaign'
-        ].Id;
-
-        testContact = ContactService.createTestContact();
-
-        insert testContact;        
-        
-        interest = new Campaign(
-            Name = 'Test interest',
-            RecordTypeId = interestRecId,
-            isActive = true);
-
-        insert interest;
-
-        event = new Campaign(
-            Name = 'Test event',
-            RecordTypeId = eventRecId,
-            isActive = true);
-
-        insert event;
-
-        testParentCampaign = new Campaign(
-            Name = 'Test Parent Campaign',
-            RecordTypeId = cohortRecId,
-            Type = 'Corporate Relations',
-            IsActive = true);
-
-        insert testParentCampaign;
-
-        testChildCampaign = new Campaign(
-            Name = 'Test Child Campaign',
-            RecordTypeId = cohortRecId,
-            Type = 'Corporate Relations',
-            IsActive = true,
-            ParentId = testParentCampaign.Id);
-
-        insert testChildCampaign;
-
-        cmActive1 = new CampaignMemberStatus(
-            CampaignId = testParentCampaign.Id,
-            IsDefault = true,
-            SortOrder = 3,
-            Label = 'Active');
-
-        insert cmActive1;
-
-        cmInActive1 = new CampaignMemberStatus(
-            CampaignId = testParentCampaign.Id,
-            IsDefault = false,
-            SortOrder = 4,
-            Label = 'Inactive');
-
-        insert cmInActive1;
-
-        cmActive2 = new CampaignMemberStatus(
-            CampaignId = testChildCampaign.Id,
-            IsDefault = true,
-            SortOrder = 3,
-            Label = 'Active');
-
-        insert cmActive2;
-
-        cmInActive2 = new CampaignMemberStatus(
-            CampaignId = testChildCampaign.Id,
-            IsDefault = false,
-            SortOrder = 4,
-            Label = 'Inactive');
-
-        insert cmInActive2;
-
-        testParentCamMem = new CampaignMember(
-            CampaignId = testParentCampaign.Id,
-            ContactId = testContact.Id,
-            Status = 'Active');
-
-        insert testParentCamMem;
-
-        testChildCamMem = new CampaignMember(
-            CampaignId = testChildCampaign.Id,
-            ContactId = testContact.Id,
-            Status = 'Active');
-
-        insert testChildCamMem;
-
-        Test.setCurrentPage(Page.CampaignMemberManagement);
-        System.currentPageReference().getParameters().put('Id', testContact.Id);
-        std = new ApexPages.standardController(testContact);
-        cm = new CampaignMemberManagementController(std);
-    }
-
-    private static void setUpInactive() 
+    @testSetup static void setUp()
     {
-        cohortRecId = [
+        List<Campaign> campaignList = new List<Campaign>();
+        List<CampaignMember> campaignMemberList = new List<CampaignMember>();
+        List<CampaignMemberStatus> campaignMemberStatusList = new List<CampaignMemberStatus>();
+
+        Id crRecId = [
             SELECT Id
             FROM RecordType
-            WHERE Name = 'Cohort'
-            AND SobjectType = 'Campaign'].Id;
+            WHERE Name = 'Corporate Relations'
+            AND SobjectType = 'Campaign'
+        ].Id;
 
-        testContact = new Contact(
-            FirstName = 'Jonny',
-            LastName = 'Test',
-            ASURite_ID__c = 'jontest');
-
+        Contact testContact = ContactService.createTestContact();
         insert testContact;
 
-        testParentCampaign = new Campaign(
-            Name = 'Test Parent Campaign',
-            RecordTypeId = cohortRecId,
-            Type = 'Corporate Relations',
-            IsActive = true);
+        // Create some test Campaigns to add the Contact to
+        List<Campaign> camList = CampaignService.createTestCampaigns();
+        insert camList;
 
-        insert testParentCampaign;
+        // After insert, query back for those Campaigns to grab the Ids too
+        List<Campaign> camListWithIds = [
+            SELECT Id, Name, RecordType.Name, RecordTypeId
+            FROM Campaign
+            WHERE Status = 'Active'
+        ];
 
-        testParentCampaignTwo = new Campaign(
-            Name = 'Test Parent Campaign Two',
-            RecordTypeId = cohortRecId,
-            Type = 'Corporate Relations',
-            IsActive = true);
+        // Create test Location__c
+        Location__c tempe = new Location__c(
+            Name = 'Tempe Campus',
+            Location_Code__c = 'TEMPE'
+        );
+        insert tempe;
 
-        insert testParentCampaignTwo;
+        // Add the Contact to the Campaigns
+        List<CampaignMember> camMemList =
+            CampaignMemberService.createTestCampaignMembers(testContact.Id, camListWithIds);
+        insert camMemList;
 
-        testChildCampaign = new Campaign(
-            Name = 'Test Child Campaign',
-            RecordTypeId = cohortRecId,
-            Type = 'Corporate Relations',
-            IsActive = true,
-            ParentId = testParentCampaign.Id);
+        // Create some test Campaigns the contact is not currently a part of for searching
+        List<Campaign> events = CampaignService.createTestCampaignOfType(5, 'Event');
 
-        insert testChildCampaign;
+        for (Campaign eCam : events)
+        {
+            eCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
+            eCam.Requested__c = 'Barret The Honors College';
+            eCam.Campus_Location__c = tempe.Id;
+        }
 
-        testChildCampaignTwo = new Campaign(
-            Name = 'Test Child Campaign Two',
-            RecordTypeId = cohortRecId,
-            Type = 'Corporate Relations',
-            IsActive = true,
-            ParentId = testParentCampaign.Id);
+        insert events;
 
-        insert testChildCampaignTwo;
+        List<Campaign> interests = CampaignService.createTestCampaignOfType(5, 'Interest');
 
-        cmActive1 = new CampaignMemberStatus(
-            CampaignId = testParentCampaign.Id,
-            IsDefault = true,
-            SortOrder = 3,
-            Label = 'Active');
+        for (Campaign iCam : events)
+        {
+            iCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
+            iCam.Requested__c = 'Barret The Honors College';
+            iCam.Campus_Location__c = tempe.Id;
+        }
 
-        insert cmActive1;
+        insert interests;
 
-        cmInActive1 = new CampaignMemberStatus(
-            CampaignId = testParentCampaign.Id,
-            IsDefault = false,
-            SortOrder = 4,
-            Label = 'Inactive');
+        // Create Corporate Relations Campaigns for Testing
+        List<Campaign> tempCrCamList = new List<Campaign>();
+        List<CampaignMember> crCamMemsToInsert = new List<CampaignMember>();
 
-        insert cmInActive1;
+        List<Campaign> crs = CampaignService.createTestCampaignOfType(5, 'Corporate Relations');
 
-        cmActive2 = new CampaignMemberStatus(
-            CampaignId = testChildCampaign.Id,
-            IsDefault = true,
-            SortOrder = 3,
-            Label = 'Active');
+        for (Campaign cCam : crs)
+        {
+            cCam.Name = cCam.Name + ' Parent CR';
+            cCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
+            cCam.Type = 'Corporate Relations';
+            cCam.RecordTypeId = crRecId;
+        }
 
-        insert cmActive2;
+        insert crs;
 
-        cmInActive2 = new CampaignMemberStatus(
-            CampaignId = testChildCampaign.Id,
-            IsDefault = false,
-            SortOrder = 4,
-            Label = 'Inactive');
+        // Query back for the CR Campaigns so we can create children
+        List<Campaign> parents = [
+            SELECT Id, Name, RecordType.Name
+            FROM Campaign
+            WHERE Name LIKE '%Parent CR'
+        ];
 
-        insert cmInActive2;
+        tempCrCamList.addAll(parents);
 
-        cmActive3 = new CampaignMemberStatus(
-            CampaignId = testParentCampaignTwo.Id,
-            IsDefault = true,
-            SortOrder = 3,
-            Label = 'Active');
+        // Create multiple child campaigns for each parent
+        for (Campaign parent : parents)
+        {
+            List<Campaign> tempChildren =
+                CampaignService.createTestCampaignOfType(2, 'Corporate Relations');
 
-        insert cmActive3;
+            for (Campaign child : tempChildren)
+            {
+                child.Name = child.Name = ' Child CR';
+                child.Event_Start_Date__c = date.newinstance(2016, 3, 28);
+                child.Type = 'Corporate Relations';
+                child.RecordTypeId = crRecId;
+                child.ParentId = parent.Id;
+            }
 
-        cmInActive3 = new CampaignMemberStatus(
-            CampaignId = testParentCampaignTwo.Id,
-            IsDefault = false,
-            SortOrder = 4,
-            Label = 'Inactive');
+            tempCrCamList.addAll(tempChildren);
+        }
 
-        insert cmInActive3;
+        upsert tempCrCamList;
 
-        cmActive4 = new CampaignMemberStatus(
-            CampaignId = testChildCampaignTwo.Id,
-            IsDefault = true,
-            SortOrder = 3,
-            Label = 'Active');
+        // Query back for the inserted campaigns so we have the ids
+        List<Campaign> camsToAddStatuses = [
+            SELECT Id, Name, RecordType.Name
+            FROM Campaign
+            WHERE RecordType.Name = 'Corporate Relations'
+            AND Id NOT IN :camListWithIds
+        ];
 
-        insert cmActive4;
+        List<CampaignMemberStatus> cmStatuses = new List<CampaignMemberStatus>();
 
-        cmInActive4 = new CampaignMemberStatus(
-            CampaignId = testChildCampaignTwo.Id,
-            IsDefault = false,
-            SortOrder = 4,
-            Label = 'Inactive');
+        for (Campaign camToAddStatusToAdd : camsToAddStatuses)
+        {
+            CampaignMemberStatus cmActive1 = new CampaignMemberStatus(
+                CampaignId = camToAddStatusToAdd.Id,
+                IsDefault = true,
+                SortOrder = 3,
+                Label = 'Active'
+            );
 
-        insert cmInActive4;
+            CampaignMemberStatus cmInactive1 = new CampaignMemberStatus(
+                CampaignId = camToAddStatusToAdd.Id,
+                IsDefault = true,
+                SortOrder = 4,
+                Label = 'Inactive'
+            );
 
-        testParentCamMem = new CampaignMember(
-            CampaignId = testParentCampaign.Id,
-            ContactId = testContact.Id,
-            Status = 'Inactive');
+            cmStatuses.add(cmActive1);
+            cmStatuses.add(cmInactive1);
+        }
 
-        insert testParentCamMem;
+        camsToAddStatuses[0].Status = 'Active';
+        camsToAddStatuses[13].Status = 'Inactive';
+        insert cmStatuses;
 
-        testParentCamMemTwo = new CampaignMember(
-            CampaignId = testParentCampaignTwo.Id,
-            ContactId = testContact.Id,
-            Status = 'Active');
+        // Add the contact to only the back 5 campaigns, so we get some results during search.
+        List<Campaign> camsToAddToContact = new List<Campaign>();
 
-        insert testParentCamMemTwo;
+        for (Integer i = 9; i < 15; i++)
+        {
+            camsToAddToContact.add(camsToAddStatuses[i]);
+        }
 
-        testChildCamMem = new CampaignMember(
-            CampaignId = testChildCampaign.Id,
-            ContactId = testContact.Id,
-            Status = 'Inactive');
-
-        insert testChildCamMem;
-
-        testChildCamMemTwo = new CampaignMember(
-            CampaignId = testChildCampaignTwo.Id,
-            ContactId = testContact.Id,
-            Status = 'Active');
-
-        insert testChildCamMemTwo;
-
-        Test.setCurrentPage(Page.CampaignMemberManagement);
-        System.currentPageReference().getParameters().put('Id', testContact.Id);
-        std = new ApexPages.standardController(testContact);
-        cm = new CampaignMemberManagementController(std);
+        crCamMemsToInsert =
+            CampaignMemberService.createTestCampaignMembers(testContact.Id, camsToAddToContact);
+        insert crCamMemsToInsert;
     }
     
-    @isTest static void Test_CampaignMemberMangementController() {
-        setUp();
+    @isTest static void testEventsAndInterest()
+    {
+        Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
+
+        Campaign eventCam = [
+            SELECT Id, Name
+            FROM Campaign
+            WHERE RecordType.Name = 'Event'
+            AND Name LIKE '%Test Campaign%'
+            LIMIT 1
+        ];
+
+        Campaign intCam = [
+            SELECT Id, Name
+            FROM Campaign
+            WHERE RecordType.Name = 'Interest'
+            AND Name LIKE '%Test Campaign%'
+            LIMIT 1
+        ];
+
+        Location__c tempe = [
+            SELECT Id, Name
+            FROM Location__c
+            WHERE Name = 'Tempe Campus'
+        ];
+
+        eventCam.Requested__c = 'Barret The Honors College';
+        eventCam.Campus_Location__c = tempe.Id;
+        eventCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
+
+        Id[] fixedSearchResults = new Id[2];
+        fixedSearchResults[0] = eventCam.Id;
+        fixedSearchResults[1] = intCam.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+        Test.setCurrentPage(Page.CampaignMemberManagement);
+        System.currentPageReference().getParameters().put('Id', tempContact.Id);
+
+        Test.startTest();
+
+        std = new ApexPages.standardController(tempContact);
+        cm = new CampaignMemberManagementController(std);
+
         cm.getEventList();
         cm.getInterestList();     
         cm.getScholarList();
@@ -290,80 +207,120 @@ private class Test_CampaignMemberManagementController {
         cm.getoSourceList();
         cm.getMarkCommList();
         cm.getPartCourseList();
-        cm.eSearchString = 'test';
+        cm.getDepartmentsColleges();
+        cm.getSelectedEventCamMemStatuses();
+
+        // Test add to event
+        cm.eSearchString = '';
         cm.doEventSearch();
-        cm.getEventSearchResults();
+        cm.eSearchString = 'test';
+        cm.deptColl = 'Barret The Honors College';
+        cm.tempCampaign.Campus_Location__c = tempe.Id;
+        cm.camStartDate = date.newinstance(2016, 3, 28);
+        cm.doEventSearch();
         cm.elId = cm.eventSearchResults[0].Id;
         cm.AddToEvent();
+        cm.camMemEvent.Status = 'Sent';
+        cm.AddToEvent();
+
+        // Test add to interest
+        cm.iSearchString = '';
+        cm.doInterestSearch();
         cm.iSearchString = 'test';
         cm.doInterestSearch();
-        cm.getInterestSearchResults();
         cm.intId = cm.interestSearchResults[0].Id;
         cm.AddInterest();
 
         CampaignMember checkEventTestContact = [
             SELECT Id, ContactId, CampaignId
             FROM CampaignMember
-            WHERE ContactId = :testContact.Id
-            AND CampaignId = :event.Id
+            WHERE ContactId = :tempContact.Id
+            LIMIT 1
         ];
+
         CampaignMember checkIntTestContact = [
             SELECT Id, ContactId, CampaignId
             FROM CampaignMember
-            WHERE ContactId = :testContact.Id
-            AND CampaignId = :interest.Id
+            WHERE ContactId = :tempContact.Id
+            LIMIT 1
         ];
 
-        Test.startTest();
-        System.AssertEquals(checkEventTestContact.ContactId, testContact.Id);
-        System.AssertEquals(checkIntTestContact.ContactId, testContact.Id);
         Test.stopTest();
+
+        System.AssertEquals(checkEventTestContact.ContactId, tempContact.Id);
+        System.AssertEquals(checkIntTestContact.ContactId, tempContact.Id);
     }
 
-    @isTest static void testViewCampaigns() 
+    @isTest public static void testCorporateRelations()
     {
-        setUp();
-        cm.getSortList();
+        Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
 
-        System.assert(true,cm.sortList.size() > 0);
-    }
+        List<Campaign> crCamParents = [
+            SELECT Id, Name
+            FROM Campaign
+            WHERE Name LIKE '%Parent CR'
+            AND ParentId = null
+        ];
 
-    @isTest static void testAssignToCampaign()
-    {
-        setUp();
-        cm.searchString = 'Test Parent';
+        List<Campaign> crChilds = [
+            SELECT Id, Name
+            FROM Campaign
+            WHERE ParentId IN :crCamParents
+        ];
+
+        List<Campaign> allCRCams = new List<Campaign>();
+        allCRCams.addAll(crCamParents);
+        allCRCams.addAll(crChilds);
+
+        Integer listSize = crCamParents.size() + crChilds.size();
+
+        Id[] fixedSearchResults = new Id[listSize];
+
+        for (Integer i = 0; i < listSize; i++)
+        {
+            fixedSearchResults[i] = allCRCams[i].Id;
+        }
+
+        Test.setFixedSearchResults(fixedSearchResults);
+        Test.setCurrentPage(Page.CampaignMemberManagement);
+        System.currentPageReference().getParameters().put('Id', tempContact.Id);
+
+        Test.startTest();
+
+        std = new ApexPages.standardController(tempContact);
+        cm = new CampaignMemberManagementController(std);
+
+        // Search for and assign to parent campaign
+        cm.getActiveCRCamMems();
+        cm.searchString = '';
         cm.parentCampaignSearch();
-        System.assert(true,cm.parentCampaigns.size() > 0);
-        cm.selectedParentCampaign = testParentCampaign.Id;
-        cm.assignToParentCampaign();
-        System.assert(true,cm.fixedChildCampaigns.size() > 0);
-        cm.selectedChildCampaign = testChildCampaign.Id;
-        cm.parentCamNameSearch();
-        cm.childCamNameSearch();
-        cm.assignToChildCampaign();
-    }
-
-    @isTest static void testActivate()
-    {
-        setUpInactive();
-        cm.searchString = 'Test Parent';
+        cm.searchString = 'test';
         cm.parentCampaignSearch();
-        cm.selectedParentCampaign = testParentCampaign.Id;
+        cm.selectedParentCampaign = cm.parentCampaigns[0].Id;
+        cm.selectedParentCampaignName = cm.parentCampaigns[0].Name;
         cm.assignToParentCampaign();
-        cm.selectedChildCampaign = testChildCampaign.Id;
-        cm.parentCamNameSearch();
-        cm.childCamNameSearch();
+
+        // Search for and assign to child campaign
+        cm.selectedChildCampaign = cm.fixedChildCampaigns[0].Id;
+        cm.selectedChildCampaignName = cm.fixedChildCampaigns[0].Name;
         cm.assignToChildCampaign();
 
-        System.assertEquals('Active',cm.activateChildCamMem.Status);
-    }
-
-    @isTest static void testInactivate()
-    {
-        setUp();
-        cm.inActivateCMId = testChildCamMem.Id;
+        // Remove CampaignMember from CR Campaign
+        cm.inActivateCMId = cm.activeCrCamMems[0].Id;
         cm.inActivateCM();
 
-        System.assertEquals('Inactive',cm.inActivateCamMem.Status);
+        // Reactivate the CampaignMember
+        cm.inActivateCMId = cm.activeCrCamMems[0].Id;
+        cm.assignToParentCampaign();
+
+        Test.stopTest();
+
+        Id tempParentId = [
+            SELECT Id
+            FROM CampaignMember
+            WHERE Id = :cm.activeCrCamMems[0].Id
+        ].Id;
+
+        System.assertNotEquals(null, tempParentId);
     }
 }

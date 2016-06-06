@@ -557,6 +557,10 @@ public class UnifiedProspectPageController
             contact.SF_Last_Name_Updated__c = Datetime.now();
             contact.SF_Mobile__c = contact.MobilePhone;
             Pattern SMSValidate = Pattern.compile('[^0-9]');
+            
+            if (contact.Email == null && contact.Lead_Email__c != null) {
+                contact.Email = contact.Lead_Email__c;
+            }
 
             if (contact.MobilePhone != null && smsText == true) 
             {

@@ -715,7 +715,7 @@ public with sharing class Test_CaseInboundEmailHandler {
             LIMIT 1
         ];
 
-        System.assert(createdCase.Description == null);
+        System.assert(createdCase.Description.contains('without email body or attachment'));
    }
 
    @isTest static void testNoBodiesPopulatedBinaryAttachment()

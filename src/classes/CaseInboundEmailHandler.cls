@@ -449,18 +449,25 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             createEmailMessage(theCase, email);
             Boolean success = handleAttachments(theCase, emailContact, email);
-            Boolean hasAttachments = (email.textAttachments != null && email.textAttachments.size() >0) || 
-                (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
-            if(hasAttachments && success && (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) && String.isBlank(email.plainTextBody))
-            {
-                if(this.theCase.Description == null)
-                {
+            Boolean hasAttachments = (email.textAttachments != null 
+                                      && email.textAttachments.size() >0) 
+                                      || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
+
+             if (success && (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) && String.isBlank(email.plainTextBody)) {
+                
+                if(this.theCase.Description == null) {
                    this.theCase.Description = ''; 
                 }
-                
-                this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong(); 
+
+                if (hasAttachments) {
+                    this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong(); 
+                } else {
+                    this.theCase.Description += ' Email received at ' + Datetime.now().formatLong() + ' without email body or attachment.';
+                }
+
                 update this.theCase;
             }
+            sendAutoReply(theCase, emailContact, templateId);
         }
         catch (Exception e)
         {

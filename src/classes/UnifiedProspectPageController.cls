@@ -35,8 +35,7 @@ public class UnifiedProspectPageController
     public String planSelected { get; set; }
     public String deptColl { get; set; }
 
-    public UnifiedProspectPageController()
-    {
+    public UnifiedProspectPageController() {
         eventRecId = [
             SELECT Id
             FROM RecordType
@@ -55,64 +54,51 @@ public class UnifiedProspectPageController
         tempCampaign = new Campaign();
     }
 
-    public void setContact(Contact contact)
-    {
+    public void setContact(Contact contact) {
         this.contact = contact;
     }
 
-    public void setOpportunity(Opportunity opportunity)
-    {
+    public void setOpportunity(Opportunity opportunity) {
         this.opportunity = opportunity;
     }
 
-    public void setPreviousEducation(Previous_Education__c previousEducation)
-    {
+    public void setPreviousEducation(Previous_Education__c previousEducation) {
         this.previousEducation = previousEducation;
     }
 
-    public void setCamMemInterest(CampaignMember camMemInterest)
-    {
+    public void setCamMemInterest(CampaignMember camMemInterest) {
         this.camMemInterest = camMemInterest;
     }
 
-    public void setCamMemEvent(CampaignMember camMemEvent)
-    {
+    public void setCamMemEvent(CampaignMember camMemEvent) {
         this.camMemEvent = camMemEvent;
     }
 
-    public void setCaseC(Case caseC)
-    {
+    public void setCaseC(Case caseC) {
         this.caseC = caseC;
     }
 
-    public Contact getContact()
-    {
-        if (contact == null)
-        {
+    public Contact getContact() {
+        if (contact == null) {
             contact= new Contact();
         }
 
         return contact;
     }
 
-    public Opportunity getOpportunity() 
-    {
-        if (opportunity == null) 
-        {
+    public Opportunity getOpportunity()  {
+        if (opportunity == null)  {
             opportunity = new Opportunity();
         }
 
-        if(career == 'graduate' || career == 'law')
-        {
+        if(career == 'graduate' || career == 'law') {
             oppRecType = [
                 SELECT Id
                 FROM RecordType
                 WHERE Name = 'Graduate Prospect'
                 LIMIT 1
             ].Id;
-        }
-        else
-        {
+        } else {
             oppRecType = [
                 SELECT Id
                 FROM RecordType
@@ -125,40 +111,32 @@ public class UnifiedProspectPageController
         return opportunity;
     }
 
-    public Previous_Education__c getPreviousEducation() 
-    {
-        if (previousEducation == null) 
-        {
+    public Previous_Education__c getPreviousEducation() {
+        if (previousEducation == null) {
             previousEducation = new Previous_Education__c();
         }
 
         return previousEducation;
     }
 
-    public CampaignMember getCamMemInterest() 
-    {
-        if (camMemInterest == null) 
-        {
+    public CampaignMember getCamMemInterest() {
+        if (camMemInterest == null) {
             camMemInterest = new CampaignMember();
         }
 
         return camMemInterest;
     }
 
-    public CampaignMember getCamMemEvent() 
-    {
-        if(camMemEvent == null) 
-        {
+    public CampaignMember getCamMemEvent() {
+        if(camMemEvent == null) {
             camMemEvent = new CampaignMember();
         }
 
         return camMemEvent;
     }
     
-    public List<SelectOption> programList
-    {
-        get
-        {
+    public List<SelectOption> programList {
+        get {
             List<Program__c> ProgramTemp = [
                 SELECT p.Name, p.Id
                 FROM Program__c p
@@ -169,8 +147,7 @@ public class UnifiedProspectPageController
             programList = new List<SelectOption>();
             programList.add(new SelectOption('0', '-- None --'));
             
-            for (Program__c temp : ProgramTemp)
-            {
+            for (Program__c temp : ProgramTemp) {
                 programList.add(new SelectOption(temp.Id, temp.Name));
             }
 
@@ -180,14 +157,11 @@ public class UnifiedProspectPageController
         set;
     }
 
-    public List<SelectOption> planList
-    {
-        get
-        {
+    public List<SelectOption> planList {
+        get {
             planList = new List<SelectOption>();
             
-            if (collegeSelected != null && collegeSelected != '0')
-            {
+            if (collegeSelected != null && collegeSelected != '0') {
                 List<Plan__c> PlanTemp = [
                     SELECT p.Degree_Search_Name__c, p.Name, p.Id
                     FROM Plan__c p 
@@ -197,8 +171,7 @@ public class UnifiedProspectPageController
                 
                 planList.add(new SelectOption('0', '-- None --'));
                 
-                for(Plan__c temp : PlanTemp)
-                {
+                for(Plan__c temp : PlanTemp) {
                     planList.add(new SelectOption(temp.Id, temp.Degree_Search_Name__c));
                 }
             }
@@ -209,10 +182,8 @@ public class UnifiedProspectPageController
         set;
     }
 
-    public Case getCaseC() 
-    {
-        if (caseC == null) 
-        {
+    public Case getCaseC() {
+        if (caseC == null) {
             caseC = new Case();
 
             Id asuAdmissionRecId = [
@@ -228,20 +199,16 @@ public class UnifiedProspectPageController
         return caseC;
     }
     
-    public List<Campaign> getEventList() 
-    {
+    public List<Campaign> getEventList() {
         return eventList;
     }
 
-    public List<Account> getInstList()
-    {
+    public List<Account> getInstList() {
         return instList;
     }
 
-    public List<SelectOption> getCareers()
-    {
-        if (careers == null)
-        {
+    public List<SelectOption> getCareers() {
+        if (careers == null) {
             careers = new List<SelectOption>();
             careers.add(new SelectOption('--Select--', '--Select--'));
             careers.add(new SelectOption('undergraduate', 'Undergraduate'));
@@ -250,10 +217,8 @@ public class UnifiedProspectPageController
         return careers;
     }
 
-    public void eventSearch() 
-    {
-        if (eventSearchString.length() < 2)
-        {
+    public void eventSearch() {
+        if (eventSearchString.length() < 2) {
             ApexPages.addmessage(
                 new ApexPages.message(
                     ApexPages.severity.ERROR,
@@ -273,19 +238,17 @@ public class UnifiedProspectPageController
                 'WHERE (RecordTypeId = :eventRecId OR RecordTypeId = :eossRecId) ' +
                 'AND IsActive = true ';
 
-        if (deptColl != null)
-        {
+        if (deptColl != null) {
             sosl += 'AND Requested__c INCLUDES (:deptColl) ';
         }
 
         Id location = tempCampaign.Campus_Location__c;
-        if (tempCampaign.Campus_Location__c != null)
-        {
+        
+        if (tempCampaign.Campus_Location__c != null) {
             sosl += 'AND Campus_Location__c = :location ';
         }
 
-        if (camStartDate != null)
-        {
+        if (camStartDate != null) {
             sosl += 'AND Event_Start_Date__c = :camStartDate ';
         }
 
@@ -293,18 +256,14 @@ public class UnifiedProspectPageController
 
         List<List<SObject>> sObjects = Search.query(sosl);
 
-        if (sObjects.size() > 0)
-        {
+        if (sObjects.size() > 0) {
             eventList = sObjects[0];
-        }
-        else
-        {
+        } else {
             eventList = new List<Campaign>();
         }
     }
 
-    public void instSearch() 
-    {
+    public void instSearch() {
         String instSearchTerm = '' +
             'SELECT Id, Name, BillingCity, BillingState, Institution_Type__c ' +
             'FROM Account ' +
@@ -313,8 +272,7 @@ public class UnifiedProspectPageController
         instList = Database.query(instSearchTerm);
     }
 
-    public List<SelectOption> getSelectedEventCamMemStatuses()
-    {
+    public List<SelectOption> getSelectedEventCamMemStatuses() {
         List<CampaignMemberStatus> camStatuses = [
             SELECT Id, Label
             FROM CampaignMemberStatus
@@ -325,16 +283,14 @@ public class UnifiedProspectPageController
         List<SelectOption> camOptions = new List<SelectOption>();
         camOptions.add(new SelectOption('' ,'--Select--'));
 
-        for (CampaignMemberStatus cs : camStatuses)
-        {
+        for (CampaignMemberStatus cs : camStatuses) {
             camOptions.add(new SelectOption(cs.Label , cs.Label));
         }
 
         return camOptions;
     }
 
-    public List<SelectOption> getDepartmentsColleges()
-    {
+    public List<SelectOption> getDepartmentsColleges() {
         List<SelectOption> options = new List<SelectOption>();
         options.add(new SelectOption('', '--Select--'));
 
@@ -342,16 +298,14 @@ public class UnifiedProspectPageController
             Campaign.Requested__c.getDescribe();
         List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
 
-        for( Schema.PicklistEntry f : ple)
-        {
+        for( Schema.PicklistEntry f : ple) {
             options.add(new SelectOption(f.getLabel(), f.getValue()));
         }
 
         return options;
     }
 
-    public List<SelectOption> getASULocationIntList() 
-    {
+    public List<SelectOption> getASULocationIntList() {
         Id interestRecId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id;
 
         List<Campaign> interests = [
@@ -366,16 +320,14 @@ public class UnifiedProspectPageController
         List<SelectOption> asuLocationIntList = new List<SelectOption>();
         asuLocationIntList.add(new SelectOption('' ,'--Select--'));
 
-        for (Campaign i : interests)
-        {
+        for (Campaign i : interests) {
             asuLocationIntList.add(new SelectOption(i.Id , i.Name));
         }
         
         return asuLocationIntList;
     }
 
-    public List<SelectOption> getAcademicIntList() 
-    {
+    public List<SelectOption> getAcademicIntList() {
         Id interestRecId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id;
 
         List<Campaign> interests = [
@@ -390,16 +342,14 @@ public class UnifiedProspectPageController
         List<SelectOption> academicIntList = new List<SelectOption>();
         academicIntList.add(new SelectOption('' ,'--Select--'));
 
-        for (Campaign i : interests)
-        {
+        for (Campaign i : interests) {
             academicIntList.add(new SelectOption(i.Id , i.Name));
         }
 
         return academicIntList;
     }
 
-    public List<SelectOption> getASUCollegesIntList() 
-    {
+    public List<SelectOption> getASUCollegesIntList() {
         Id interestRecId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id;
 
         List<Campaign> interests = [
@@ -414,25 +364,21 @@ public class UnifiedProspectPageController
         List<SelectOption> asuCollegesIntList = new List<SelectOption>();
         asuCollegesIntList.add(new SelectOption( '' ,'--Select--'));
 
-        for (Campaign i : interests ) 
-        {
+        for (Campaign i : interests ) {
             asuCollegesIntList.add(new SelectOption(i.Id , i.Name));
         }
 
         return asuCollegesIntList;
     }
 
-    public Boolean save()
-    {
+    public Boolean save() {
         getCaseC();
         List<CampaignMember> cams = new List<CampaignMember>();
 
-        try
-        {
+        try {
             error = false;
 
-            if (contact.Phone == null && contact.MailingPostalCode == null)
-            {
+            if (contact.Phone == null && contact.MailingPostalCode == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -443,8 +389,7 @@ public class UnifiedProspectPageController
                 error = true;
             }
 
-            if (career == '--Select--')
-            {
+            if (career == '--Select--') {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -455,8 +400,7 @@ public class UnifiedProspectPageController
                 error = true;
             }
 
-            if (career == 'graduate' && collegeSelected == '0')
-            {
+            if (career == 'graduate' && collegeSelected == '0') {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -467,8 +411,7 @@ public class UnifiedProspectPageController
                 error = true;
             }
 
-            if (career == 'graduate' && opportunity.Term__c == null)
-            {
+            if (career == 'graduate' && opportunity.Term__c == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -479,8 +422,7 @@ public class UnifiedProspectPageController
                 error = true;
             }
 
-            if (originSelection != '--Select--' && elId != null) 
-            {
+            if (originSelection != '--Select--' && elId != null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -491,8 +433,7 @@ public class UnifiedProspectPageController
                 error = true;
             }
 
-            if (originSelection == '--Select--' && elId == null) 
-            {
+            if (originSelection == '--Select--' && elId == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -504,8 +445,7 @@ public class UnifiedProspectPageController
             }
 
             if (originSelection != '--Select--'
-                && (String.isBlank(caseC.Subject) || String.isBlank(caseC.Description)))
-            {
+                && (String.isBlank(caseC.Subject) || String.isBlank(caseC.Description))) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -518,8 +458,7 @@ public class UnifiedProspectPageController
 
             if (originSelection != '--Select--'
                 && elId == null
-                && caseC.Functional_Group__c == null)
-            {
+                && caseC.Functional_Group__c == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -532,8 +471,7 @@ public class UnifiedProspectPageController
 
             if (pickSelection != null
                 && pickSelection != '--Select--'
-                && selectedInterestId == null)
-            {
+                && selectedInterestId == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -544,8 +482,7 @@ public class UnifiedProspectPageController
                 error = true;
             }
 
-            if (error)
-            {
+            if (error) {
                return false; 
             }
 
@@ -557,9 +494,12 @@ public class UnifiedProspectPageController
             contact.SF_Last_Name_Updated__c = Datetime.now();
             contact.SF_Mobile__c = contact.MobilePhone;
             Pattern SMSValidate = Pattern.compile('[^0-9]');
+            
+            if (contact.Email == null && contact.Lead_Email__c != null) {
+                contact.Email = contact.Lead_Email__c;
+            }
 
-            if (contact.MobilePhone != null && smsText == true) 
-            {
+            if (contact.MobilePhone != null && smsText == true) {
                 contact.SMS_Phone__c = contact.MobilePhone;
                 contact.SMS_Phone__c = SMSValidate.matcher(contact.SMS_Phone__c).replaceAll('');
             }
@@ -580,17 +520,14 @@ public class UnifiedProspectPageController
             //Create Opportunity
             opportunity.Id = null;
 
-            if (career == 'undergraduate')
-            {
+            if (career == 'undergraduate') {
                 opportunity.RecordTypeId = [
                     SELECT Id
                     FROM RecordType
                     WHERE Name = 'Undergraduate Prospect'
                     LIMIT 1
                 ].Id;
-            }
-            else
-            {
+            } else {
                 opportunity.RecordTypeId = [
                     SELECT Id
                     FROM RecordType
@@ -617,13 +554,11 @@ public class UnifiedProspectPageController
             opportunity.AccountId = accId;
             opportunity.StageName = 'Prospect';
             
-            if (collegeSelected != null && collegeSelected != '0')
-            {
+            if (collegeSelected != null && collegeSelected != '0') {
                opportunity.College__c = collegeSelected; 
             }
 
-            if (planSelected != null && planSelected != '0')
-            {
+            if (planSelected != null && planSelected != '0') {
                opportunity.Academic_Plan__c = planSelected; 
             }
 
@@ -634,8 +569,7 @@ public class UnifiedProspectPageController
             //Create Previous Education
             getPreviousEducation();
 
-            if (previousEducation.Account__c != null) 
-            {
+            if (previousEducation.Account__c != null) {
                 previousEducation.Id = null;
                 previousEducation.Contact__c = contact.id;
 
@@ -643,10 +577,8 @@ public class UnifiedProspectPageController
             }
 
             //Create CampaignMember Event
-            if (elId != null && originSelection == '--Select--') 
-            {
-                if (camMemEvent.Status == null)
-                {
+            if (elId != null && originSelection == '--Select--') {
+                if (camMemEvent.Status == null) {
                     ApexPages.addmessage(
                         new ApexPages.message(
                             ApexPages.severity.ERROR,
@@ -666,17 +598,14 @@ public class UnifiedProspectPageController
                 cams.add(camMemEvent);
             }
             //Create Case
-            else if (originSelection != '--Select--' && elId == null) 
-            {
+            else if (originSelection != '--Select--' && elId == null) {
                 caseC.Id = null;
                 caseC.Status = 'Closed: Resolved';
                 caseC.ContactId = contact.Id;
                 caseC.Opportunity__c = opportunity.Id;
 
-                if (originSelection == 'Incoming Call') 
-                {
-                    if (phoneOrig == null) 
-                    {
+                if (originSelection == 'Incoming Call') {
+                    if (phoneOrig == null) {
                         Campaign phoneCamp = [
                             SELECT Id
                             FROM Campaign
@@ -684,16 +613,12 @@ public class UnifiedProspectPageController
                             LIMIT 1
                         ];
 
-                        if(phoneCamp != null)
-                        {
+                        if(phoneCamp != null) {
                             caseC.Case_Source__c = phoneCamp.Id;
                         }
                     }
-                }
-                else if (originSelection == 'Email') 
-                {
-                    if (emailOrig == null) 
-                    {
+                } else if (originSelection == 'Email') {
+                    if (emailOrig == null) {
                         Campaign emailCamp = [
                             SELECT Id
                             FROM Campaign
@@ -701,16 +626,12 @@ public class UnifiedProspectPageController
                             LIMIT 1
                         ];
 
-                        if (emailCamp != null)
-                        {
+                        if (emailCamp != null) {
                             caseC.Case_Source__c = emailCamp.Id;
                         }
                     }
-                }
-                else 
-                {
-                    if (walkInOrig == null) 
-                    {
+                } else {
+                    if (walkInOrig == null) {
                         Campaign walkCamp = [
                             SELECT Id
                             FROM Campaign
@@ -718,8 +639,7 @@ public class UnifiedProspectPageController
                             LIMIT 1
                         ];
 
-                        if (walkCamp != null)
-                        {
+                        if (walkCamp != null) {
                             caseC.Case_Source__c = walkCamp.Id;
                         }
                     }
@@ -737,8 +657,7 @@ public class UnifiedProspectPageController
                     LIMIT 1
                 ].Term__r.Name;
 
-                if (caseC.Subject == null && caseC.Description == null) 
-                {
+                if (caseC.Subject == null && caseC.Description == null) {
                     caseC.Subject = caseC.Origin__c + ' Submission - ' + termName;
                 }
 
@@ -748,25 +667,17 @@ public class UnifiedProspectPageController
                 opportunity.Prospect_Case__c = caseC.Id;
 
                 update opportunity;
-            }
-            else if (originSelection != '--Select--' && elId != null)
-            {
+            } else if (originSelection != '--Select--' && elId != null){
                 return false;
-            }
-            else if (originSelection == '--Select--' && elId == null) 
-            {
+            } else if (originSelection == '--Select--' && elId == null) {
                 return false;
-            }
-            else 
-            {
+            } else {
                 return false;
             }
             
             //Create CampaignMember Interest
-            if (pickSelection != null && pickSelection != '--Select--') 
-            {
-                if (selectedInterestId != null) 
-                {
+            if (pickSelection != null && pickSelection != '--Select--') {
+                if (selectedInterestId != null) {
                     getCamMemInterest();
                     camMemInterest.Id = null;
                     camMemInterest.CampaignId = selectedInterestId;
@@ -775,9 +686,7 @@ public class UnifiedProspectPageController
                     camMemInterest.ContactId = contact.Id;
                     camMemInterest.Opportunity__c = opportunity.Id;
                     cams.add(camMemInterest);
-                }
-                else 
-                {
+                } else {
                     ApexPages.addmessage(
                         new ApexPages.message(
                             ApexPages.severity.ERROR,
@@ -789,45 +698,34 @@ public class UnifiedProspectPageController
                 }
             }
 
-            if(cams.size() > 0)
-            {
+            if(cams.size() > 0) {
                 insert cams;
             }
 
             //Save success, return true.
             return true;
-        } 
-        catch (Exception e) 
-        {
+        } catch (Exception e) {
             ApexPages.addMessages(e);
             return false;
         }
     }
 
-    public PageReference savePage() 
-    {
-        if (save()) 
-        {
+    public PageReference savePage() {
+        if (save()) {
             PageReference save = new PageReference('/' + newOppId);
             save.setRedirect(true);
             return save;
-        }
-        else 
-        {
+        } else {
             return null;
         }
     }
 
-    public PageReference saveAndNew() 
-    {
-        if (save()) 
-        {
+    public PageReference saveAndNew() {
+        if (save()) {
             PageReference save = new PageReference('/apex/Unified_Prospect_Page?saved=true');
             save.setRedirect(true);
             return save;
-        }
-        else 
-        {
+        } else {
             return null;
         }
     }

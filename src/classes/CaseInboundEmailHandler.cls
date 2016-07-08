@@ -449,7 +449,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             createEmailMessage(theCase, email);
             Boolean success = handleAttachments(theCase, emailContact, email);
-            Boolean hasAttachments = (email.textAttachments != null 
+            Boolean hasAttachments = (email.textAttachments != null                                
                                       && email.textAttachments.size() >0) 
                                       || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
 
@@ -474,8 +474,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             // Catch any exceptions and create a lost email.
             String error = e.getMessage() + '\n' + e.getStackTraceString();
             generateLostEmail(email, error);
-        }
-
+        }   
         return result;
     }
 

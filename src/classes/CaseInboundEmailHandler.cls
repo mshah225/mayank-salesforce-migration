@@ -223,6 +223,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 theCase.Case_Feed_Email__c = replyToAddress;
                 theCase.Case_Feed_Email_Template_Id__c = caseFeedTemplateId;
 
+                if(email.headers != null)
+                {
+                    extractSourceFromHeaders(email);
+                }
+
                 // The Queue ID should be set as long as a Cse Assignment Rule was found; just in case, adding
                 // and else clause to be sure the Owner is not set to null, which would prevent the insert
                 if (queueId != null)
@@ -444,19 +449,27 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             createEmailMessage(theCase, email);
             Boolean success = handleAttachments(theCase, emailContact, email);
-            Boolean hasAttachments = (email.textAttachments != null && email.textAttachments.size() >0) || 
-                (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
-            if(hasAttachments && success && (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) && String.isBlank(email.plainTextBody))
-            {
-                sendAutoReply(theCase, emailContact, templateId);
-                if(this.theCase.Description == null)
-                {
+
+            Boolean hasAttachments = (email.textAttachments != null 
+                                     
+                                      && email.textAttachments.size() >0) 
+                                      || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
+
+             if (success && (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) && String.isBlank(email.plainTextBody)) {
+                
+                if(this.theCase.Description == null) {
                    this.theCase.Description = ''; 
                 }
 
-                this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong(); 
+                if (hasAttachments) {
+                    this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong(); 
+                } else {
+                    this.theCase.Description += ' Email received at ' + Datetime.now().formatLong() + ' without email body or attachment.';
+                }
+
                 update this.theCase;
             }
+            sendAutoReply(theCase, emailContact, templateId);
         }
         catch (Exception e)
         {
@@ -1092,6 +1105,26 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         }
 
         return false;
+    }
+
+    private void extractSourceFromHeaders(Messaging.InboundEmail email)
+    {
+        for(Integer x = 0; x < email.headers.size(); x++)
+        {
+            if(email.headers[x].name == 'Received'  && email.headers[x].value.contains(''))
+            {
+                List<String> emailValue1 = email.headers[x].value.split('for \\<');
+                if(emailValue1.size() > 1)
+                {
+                    List<String> emailValue2 = emailValue1[1].split('\\>');
+                    if(emailValue2.size() > 0)
+                    {
+                        this.theCase.Intended_Recipient__c = emailValue2[0];
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     // Make this public for unit test access

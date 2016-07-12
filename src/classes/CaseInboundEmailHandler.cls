@@ -467,7 +467,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                 update this.theCase;
             }
-            sendAutoReply(theCase, emailContact, templateId);
+            
+            if (Trigger.isInsert) {
+                sendAutoReply(theCase, emailContact, templateId);
+            }
         }
         catch (Exception e)
         {
@@ -489,7 +492,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             if (attachmentFailureTemplateId != null && attachmentFailureTemplateId != '')
             {
-                sendAutoReply(theCase, theContact, attachmentFailureTemplateId);
+                if (Trigger.isInsert) {
+                    sendAutoReply(theCase, theContact, attachmentFailureTemplateId);
+                }
             }
         }
 

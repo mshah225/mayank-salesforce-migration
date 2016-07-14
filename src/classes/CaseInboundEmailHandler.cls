@@ -453,7 +453,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                                       && email.textAttachments.size() >0) 
                                       || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
 
-             if (success && (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) && String.isBlank(email.plainTextBody)) {
+            if (success && (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) && String.isBlank(email.plainTextBody)) {
                 
                 if(this.theCase.Description == null) {
                    this.theCase.Description = ''; 
@@ -468,7 +468,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 update this.theCase;
             }
             
-            if (Trigger.isInsert) {
+            if (sendAutoReply && templateId != null) {
                 sendAutoReply(theCase, emailContact, templateId);
             }
         }
@@ -492,9 +492,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             if (attachmentFailureTemplateId != null && attachmentFailureTemplateId != '')
             {
-                if (Trigger.isInsert) {
                     sendAutoReply(theCase, theContact, attachmentFailureTemplateId);
-                }
             }
         }
 

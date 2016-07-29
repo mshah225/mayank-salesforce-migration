@@ -813,7 +813,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             //See if this is an RMM email
             String rmmSevenChar = '';
             List<String> splitAt = toEmailAddress.split('@');
-            if(splitAt.size() == 2 && splitAt[1] == 'e.asu.edu')
+            if(splitAt.size() == 2 && 
+                (splitAt[1] == 'e.asu.edu' || splitAt[1] == 'reply.asu.edu'))
             {
                 List<String> splitDash = new List<String>();
                 splitDash = splitAt[0].split('-');
@@ -825,7 +826,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             if(rmmSevenChar.length() == 7)
             {
-                String toEmailAddressPartial = '%-' + rmmSevenChar + '-_@e.asu.edu';
+                String toEmailAddressPartial = '%-' + rmmSevenChar + '-_@%';
                 assignmentRuleList = [
                     SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c,Customer_Notice_Email_From_Name__c,Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
                     FROM Case_Assignment_Rule__c

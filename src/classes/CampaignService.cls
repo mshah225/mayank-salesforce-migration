@@ -11,6 +11,7 @@ public with sharing class CampaignService
             SELECT Id, Name
             FROM RecordType
             WHERE SObjectType = 'Campaign'
+            AND Name != 'Subscription Center'
         ];
 
         for (RecordType rt : camRecordTypes)

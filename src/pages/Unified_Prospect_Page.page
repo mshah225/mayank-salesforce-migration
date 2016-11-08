@@ -515,8 +515,7 @@
                                                                  rendered="{!IF(elId != null,true,false)}"
                                                                  value="{!camMemEvent.Status}"
                                                                  size="1">
-                                                    <apex:selectOptions
-                                                        value="{!selectedEventCamMemStatuses}"/>
+                                                    <apex:selectOptions value="{!selectedEventCamMemStatuses}"/>
                                                 </apex:selectList>
                                             </apex:outputPanel>
                                         </td>
@@ -561,8 +560,7 @@
                                                                      size="1"
                                                                      value="{!deptColl}"
                                                                      style="margin-left:5px;">
-                                                        <apex:selectOptions
-                                                            value="{!departmentsColleges}"/>
+                                                        <apex:selectOptions value="{!departmentsColleges}"/>
                                                     </apex:selectList>
                                                 </span>
 
@@ -626,8 +624,7 @@
                                                         <apex:column headerValue="Location"
                                                                      value="{!el.Event_Location__c}"/>
 
-                                                        <apex:column
-                                                            headerValue="Department/College"
+                                                        <apex:column headerValue="Department/College"
                                                             value="{!el.Requested__c}"/>
                                                     </apex:dataTable>
 

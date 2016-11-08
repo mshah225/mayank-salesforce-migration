@@ -5,6 +5,7 @@ public class NavLinks
     public NavLinks(AKBController controller) { }
     public NavLinks(ViewAllCasesController controller) { }
     public NavLinks(ApexPages.StandardController controller) { }
+    public NavLinks(UnsubscribeController controller) { }
 
     public String links { get; set; }
     public List<Link> linkList { get; set; }

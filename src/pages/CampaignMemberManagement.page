@@ -280,8 +280,7 @@
                                                      size="1"
                                                      value="{!deptColl}"
                                                      style="margin-left:5px;">
-                                        <apex:selectOptions
-                                            value="{!departmentsColleges}"/>
+                                        <apex:selectOptions value="{!departmentsColleges}"/>
                                     </apex:selectList>
                                 </span>
 
@@ -347,8 +346,7 @@
                                                          value="{!el.Event_Location__c}"/>
                                             <apex:column headerValue="Campus"
                                                          value="{!el.Campus_Location__c}"/>
-                                            <apex:column
-                                                headerValue="Department/College"
+                                            <apex:column headerValue="Department/College"
                                                 value="{!el.Requested__c}"/>
                                         </apex:pageBlockTable>
 
@@ -377,8 +375,7 @@
                                                              rendered="{!IF(elId != null,true,false)}"
                                                              value="{!camMemEvent.Status}"
                                                              size="1">
-                                                <apex:selectOptions
-                                                    value="{!selectedEventCamMemStatuses}"/>
+                                                <apex:selectOptions value="{!selectedEventCamMemStatuses}"/>
                                             </apex:selectList>
                                         </apex:outputPanel>
 
@@ -455,13 +452,13 @@
                                                  style="font-size:9pt;"
                                                  headerClass="none"
                                                  columnClasses="remCols">
-                                <apex:column>
+                                <apex:column >
                                     <apex:outputPanel rendered="{!IF(ec.Campaign.ParentId == null,true,false)}">
                                         <h4>
                                             <apex:outputText value="{!ec.Campaign.Name}"/>
                                         </h4>
 
-                                        <apex:actionRegion>
+                                        <apex:actionRegion >
                                             <apex:commandLink styleClass="linkBtn"
                                                               style="margin-left:10px;"
                                                               value="Remove"
@@ -481,7 +478,7 @@
                                         <apex:outputText value="{!ec.Campaign.Name}"
                                                          style="margin-left:15px;"/>
 
-                                        <apex:actionRegion>
+                                        <apex:actionRegion >
                                             <apex:commandLink styleClass="linkBtn"
                                                               style="margin-left:10px;"
                                                               value="Remove"
@@ -601,7 +598,7 @@
                                                                  && selectedParentCampaignName ==
                                                                  null,true,false)}">
                                         <apex:column width="50px">
-                                            <apex:actionRegion>
+                                            <apex:actionRegion >
                                                 <apex:commandLink value="Select"
                                                                   action="{!assignToParentCampaign}"
                                                                   styleClass="linkBtn"
@@ -625,7 +622,7 @@
 
                         <apex:outputPanel id="childResultsPanel" style="float:right;width:49.5%;">
                             <apex:pageBlock rendered="{!IF(childCampaigns != null,true,false)}">
-                                <apex:outputText>
+                                <apex:outputText >
                                     <b style="font-size:11pt;">
                                         Campaigns for {!selectedParentCampaignName}
                                     </b>
@@ -649,7 +646,7 @@
                                                      columnClasses="remCols"
                                                      rendered="{!IF(fixedChildCampaigns.size != 0,true,false)}">
                                     <apex:column width="50px">
-                                        <apex:actionRegion>
+                                        <apex:actionRegion >
                                             <apex:commandLink styleClass="linkBtn"
                                                               value="Select"
                                                               action="{!assignToChildCampaign}"

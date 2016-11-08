@@ -198,6 +198,11 @@
             <li class="no-border"><a href="http://www.asu.edu/contactasu/">Contact ASU</a></li>
         </ul>
     </div>
+    
+    <apex:outputText styleClass="title" value="{!$Label.site.error}">
+                   <apex:param value="{!$Site.ErrorDescription}" />
+                   <!-- this parameter needs to be italic in the site.error label -->
+                  </apex:outputText>
 </body>
 </html>
 </apex:page>

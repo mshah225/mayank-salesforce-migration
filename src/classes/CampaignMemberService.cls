@@ -31,7 +31,7 @@ public with sharing class CampaignMemberService
             'SELECT ' + camFields + ', Campaign.RecordType.Name, Campaign.Name, ' +
             'Campaign.ParentId, Campaign.Type, Campaign.Requested__c, ' +
             'Campaign.Event_Start_Date__c, Campaign.Event_End_Date__c, ' +
-            'Campaign.Interest_PeopleSoft_Major__c ' +
+            'Campaign.Interest_PeopleSoft_Major__c, Campaign.StartDate, Campaign.EndDate ' +
             'FROM CampaignMember ' +
             'WHERE ContactId = :contactId';
 

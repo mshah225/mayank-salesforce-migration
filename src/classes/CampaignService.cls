@@ -7,22 +7,15 @@ public with sharing class CampaignService
     {
         List<Campaign> cams = new List<Campaign>();
 
-        List<RecordType> camRecordTypes = [
-            SELECT Id, Name
+        for (RecordType rt : [SELECT Id, Name
             FROM RecordType
             WHERE SObjectType = 'Campaign'
-            AND Name != 'Subscription Center'
-        ];
-
-        for (RecordType rt : camRecordTypes)
-        {
-            Campaign tempCam = new Campaign(
+            AND Name != 'Subscription Center']) {
+            cams.add(new Campaign(
                 Name = rt.Name + ' Test',
                 RecordTypeId = rt.Id,
                 Status = 'Active'
-            );
-
-            cams.add(tempCam);
+            ));
         }
 
         return cams;

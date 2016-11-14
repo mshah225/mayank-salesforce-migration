@@ -1,4 +1,28 @@
 public with sharing class SuccessPortal_MainPageController {
+    /*
+    Code Revision History
+    08/31/2016 - JCG - Added code to fix the UI refresh of the Dashboard elements after a Send Mass/Email
+    08/31/2016 - JCG - Modified code to set the Status of a new Ad Hoc Case and Wacthlist Case based on Coach or Advisor
+    08/31/2016 - JCG - Added code to differentiate the Coach and Advisor Engagement types for Email template selection
+    09/01/2016 - JCG - Modified code to append the newEmailMessage content to the description of the Task record after a Send Mass/Email
+    09/01/2016 - JCG - Modified code to append the newEmailMessage content to the Preview Message output text in the Send Email window.
+    09/01/2016 - JCG - Modified code to filter out inActive students from MyStudents List and AdvisorQueue List
+    09/01/2016 - JCG - Added code to populate Case Email Replies grid for emails replied to from the MC
+    09/01/2016 - JCG - Added code to insert resourceId in the Engagement_Contact record for the MC
+    09/07/2016 - JCG - Uncommented Pitch Chat code
+    *****09/14/2016 - JCG - SFE-6313 - Added the Session_Code__c field to the UI****
+    09/14/2016 - JCG - SFE-6453 - Allow Advisor User roles to see the "View As" dropdown list.
+    09/14/2016 - JCG - SFE-6473 - Display the Committee Code along with the College in the "View As" dropdown
+    09/15/2016 - JCG - SFE-6422 - Removed the Category__c field from being inserted into upon Case creation
+    09/15/2016 - JCG - SFE-6482 - Fixed issue with Chats Dash Count not refreshing after an AdHoc Email Send
+    09/15/2016 - JCG - SFE-6252 - Modified the ActivityDate column to use CreateDate in the Outreach History grid
+    09/16/2016 - JCG - SFE-6508 - Fixed ViewAsQueues method to filter by POD recordtypeid
+    09/19/2016 - JCG - SFE-6417 - Fixed initial case grid hydration (empty) for Advisors
+    09/19/2016 - JCG - SFE-6427 - Fixed Students and Cases grid to populate over 800 records
+    09/22/2016 - JCG - SFE-6662 - Fixed Students and Cases grid to populate over 1000 records by paging
+    10/21/2016 - JCG - SFE-6920 - Fixed bug with selectedCaseId holding the previous selected Case Id
+    10/31/2016 - JCG - SFE-7226 - Fixed bug with refresh of grids after a Case update
+    */
     
     //external data
     public String ri {get;set;}

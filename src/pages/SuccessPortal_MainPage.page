@@ -393,7 +393,7 @@
     }
     
     function OpenEmailMessageWindow(emailId){
-        var redirectUrl = '/apex/EmailMessageViewer?id='+emailId;
+        var redirectUrl = '/apex/EmailMessageViewer?id='+emailId; 
         window.open(redirectUrl,'_blank','width=500,height=500');
     }
 
@@ -404,7 +404,7 @@
      
     <!--VISUALSTRAP COMPONENTS-->
     <c:vsimportvisualstrap theme="paper" />
-    <c:vsPageBlockTableEnhancer enableExport="false" noConflict="true" targetPbTableIds="tblSummaryCases,tblTasksGrid,tblEmailsGrid,tblStudents1,tblStudents2,tblStudents3,tblStudentCases1,tblStudentCases2,tblStudentCases3,tblCaseCommentsHistory" paginate="true" defaultPageSize="20" pageSizeOptions="5,10,20,30,40,50,100,200"/>  
+    <c:vsPageBlockTableEnhancer enableExport="false" noConflict="true" targetPbTableIds="tblSummaryCases,tblTasksGrid,tblEmailsGrid,tblStudents,tblStudentCases,tblCaseCommentsHistory" paginate="true" defaultPageSize="20" pageSizeOptions="5,10,20,30,40,50,100,200"/>  
     <!--START TABS-->
     <div style="padding:0px;border:0px;">
     <c:SuccessPortal_MainPage rendered="true" />

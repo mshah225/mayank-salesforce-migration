@@ -20,6 +20,8 @@ public with sharing class SuccessPortal_MainPageController {
     09/19/2016 - JCG - SFE-6417 - Fixed initial case grid hydration (empty) for Advisors
     09/19/2016 - JCG - SFE-6427 - Fixed Students and Cases grid to populate over 800 records
     09/22/2016 - JCG - SFE-6662 - Fixed Students and Cases grid to populate over 1000 records by paging
+    10/21/2016 - JCG - SFE-6920 - Fixed bug with selectedCaseId holding the previous selected Case Id
+    10/31/2016 - JCG - SFE-7226 - Fixed bug with refresh of grids after a Case update
     */
     
     //external data
@@ -137,6 +139,7 @@ public with sharing class SuccessPortal_MainPageController {
     
     //transient selections
     public string selectedCaseDescription {get;set;}
+    public case selectedCase {get;set;}
     public string selectedContactASURiteId {get;set;}
     public string selectedContactCaseId {get;set;}
     public string selectedContactName {get;set;}
@@ -710,7 +713,7 @@ public with sharing class SuccessPortal_MainPageController {
                 }
             }
         }
-
+        system.debug(isCoachAdmin);
     }
     
     /*
@@ -794,6 +797,7 @@ public with sharing class SuccessPortal_MainPageController {
     public PageReference selectStudent()
     {
         resetAllFlags();
+        selectedCaseId = null;
         selectedContactId = System.currentPageReference().getParameters().get('selectedContactId');
         Contact con = new Contact();
         con = [SELECT Id, ASURite_Id__c,FirstName,LastName,Emplid__c,HomePhone,OtherPhone,MobilePhone,Email 
@@ -827,6 +831,7 @@ public with sharing class SuccessPortal_MainPageController {
     public PageReference selectStudentCase()
     {
         clearFormSelections();
+        System.Debug('SELECTED CASE ID = '+selectedCaseId);
         selectedCaseId = System.currentPageReference().getParameters().get('selectedCaseId')!=null?System.currentPageReference().getParameters().get('selectedCaseId'):selectedCaseId;
         Case ca = new Case();
         ca = [SELECT Id,RecordTypeId,Subject,Status,Student_Intention__c,Followup_Date__c,
@@ -855,6 +860,7 @@ public with sharing class SuccessPortal_MainPageController {
         selectedStudentIntention = ca.Student_Intention__c;
         selectedFollowupDate = ca.Followup_Date__c;
         selectedCaseDescription = ca.Description;
+        selectedCase = ca;
         selectedCaseCreatedDate = string.valueOf(ca.CreatedDate);
         selectedCasePriority = ca.Priority;
         
@@ -1210,7 +1216,8 @@ public with sharing class SuccessPortal_MainPageController {
     public void populateCasesCount()
     {
         dashCasesCount = 0;
-        List<Case> agr = [SELECT Id
+        List<Case> agr = new List<Case>();
+        agr = [SELECT Id
                             FROM Case 
                             WHERE RecordTypeId =: coachCaseRecordTypeId 
                             AND OwnerId=:userid  
@@ -1221,7 +1228,8 @@ public with sharing class SuccessPortal_MainPageController {
     public void populateEmailsCount()
     {
         dashEmailsCount = 0;
-        List<Task> agr = [SELECT OwnerId, Status,Subject,TaskSubtype,Task_Source__c,Type,WhatId,WhoId,CreatedDate 
+        List<Task> agr = new List<Task>();
+        agr = [SELECT OwnerId, Status,Subject,TaskSubtype,Task_Source__c,Type,WhatId,WhoId,CreatedDate 
                             FROM Task
                             WHERE OwnerId=:userId 
                             AND TaskSubtype = 'Task'
@@ -1234,7 +1242,8 @@ public with sharing class SuccessPortal_MainPageController {
     public void populateSMSCount()
     {
         dashSMSCount = 0;
-        List<Task> agr = [SELECT OwnerId, Status,Subject,TaskSubtype,Task_Source__c,Type,WhatId,WhoId,CreatedDate 
+        List<Task> agr = new List<Task>();
+        agr = [SELECT OwnerId, Status,Subject,TaskSubtype,Task_Source__c,Type,WhatId,WhoId,CreatedDate 
                             FROM Task
                             WHERE OwnerId=:userId 
                             AND TaskSubtype = 'Task'
@@ -1247,7 +1256,8 @@ public with sharing class SuccessPortal_MainPageController {
     public void populateChatsCount()
     {
         dashChatsCount = 0;
-        List<Task> agr =  [SELECT OwnerId, Status,Subject,TaskSubtype,Task_Source__c,Type,WhatId,WhoId,CreatedDate 
+        List<Task> agr = new List<Task>();
+        agr =  [SELECT OwnerId, Status,Subject,TaskSubtype,Task_Source__c,Type,WhatId,WhoId,CreatedDate 
                             FROM Task
                             WHERE OwnerId=:userid 
                             AND TaskSubtype = 'Task'
@@ -3212,6 +3222,7 @@ public with sharing class SuccessPortal_MainPageController {
                 selectedFollowupDateMonth = '';
                 selectedFollowupDateDay = '';
                 selectedFollowupDate = null;
+                selectedCaseId = caseDetails.Id;
                 selectStudentCase();
                 isUpdateCaseSuccess = true;
              }
@@ -3224,16 +3235,14 @@ public with sharing class SuccessPortal_MainPageController {
             populateMyOpenCasesCount();
             populateMyWatchlistCount();
             populateMyChatsCount();
+            //reload grids
             populateMyCaseSummaries();
-            
             populateCasesGrid();
             getOtherProactiveCases();
             getOtherReactiveCases();
             getCaseTasks();
             getCaseComments();
             contactSelected = true;
-            //reload the selected case
-            selectUpdatedStudentCase();
 
         }
         catch(Exception ex){

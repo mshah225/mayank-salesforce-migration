@@ -41,8 +41,14 @@ public without sharing class UnsubscribeController {
      * is finished
      */
     public PageReference optOutOfEmails() {
+        boolean hasCampaignMember; // Determiens if a campaign member esits
+        CampaignMember tempCM; // Used to create a new campaign member if needed
+        List<CampaignMember> CMsToInsert; // Stores all new campaign members for insertion
+        
         try {
             if (urlParamsExistAndAreValid) {
+                hasCampaignMember = false;
+            	CMsToInsert = new List<CampaignMember>();
                 campaignMembersToUnsubscribe = new List<CampaignMember>();
                 subscriptionCenterRecordTypeId = [SELECT Id FROM RecordType WHERE Name ='Subscription Center' LIMIT 1].Id;
                 
@@ -61,7 +67,9 @@ public without sharing class UnsubscribeController {
                             FROM CampaignMembers
                             WHERE contactId = :subscriberId
                             OR leadId = :subscriberId),
-                        (SELECT Id FROM ChildCampaigns)
+                        (SELECT Id 
+                            FROM ChildCampaigns
+                            WHERE Visible_on_Subscription_Center__c = true)
                         FROM Campaign 
                         WHERE Id = :sendCampaign.parentId];
                 
@@ -69,8 +77,25 @@ public without sharing class UnsubscribeController {
                 // if this is a BU level campaign, we will unsub any members here and on all
                 // child category campaigns
                 for (CampaignMember cm : displayCampaign.campaignMembers) {
+                    hasCampaignMember = true;
                     cm.isSubscribed__c = false;
                     campaignMembersToUnsubscribe.add(cm);
+                }
+                
+                // Add a campaign member to the send campaign's parent if it does not exist
+                if (!hasCampaignMember) {
+                    tempCM = new CampaignMember(
+                    	isSubscribed__c = false,
+                        campaignId = displayCampaign.Id
+                    );
+                    
+                    if (isContact) {
+                        tempCM.ContactId = subscriberId;
+                    } else {
+                        tempCM.LeadId = subscriberId;
+                    }
+                    
+                    CMsToInsert.add(tempCM);
                 }
                 
                 // Handle Business Unit Level Campaign
@@ -88,15 +113,37 @@ public without sharing class UnsubscribeController {
 	                        OR leadId = :subscriberId)
 	                    FROM Campaign
 	                    WHERE Id IN :campaignsToUnsubscribeFrom]) {
+                        hasCampaignMember = false;
+                            
 	                    for (CampaignMember cm : c.campaignMembers) {
+                            hasCampaignMember = true;
 	                        cm.IsSubscribed__c = false;
 	                        campaignMembersToUnsubscribe.add(cm);
 	                    }
+                            
+                        if (!hasCampaignMember) {
+                            tempCM = new CampaignMember(
+                            	isSubscribed__c = true,
+                                campaignId = c.Id
+                            );
+                            
+                            if (isContact) {
+                     		   tempCM.ContactId = subscriberId;
+                    		} else {
+                    		    tempCM.LeadId = subscriberId;
+                    		}
+                            
+                            CMsToInsert.add(tempCM);
+                        }
 	                }
                 }
                 
                 if (campaignMembersToUnsubscribe.size() > 0) {
                     update campaignMembersToUnsubscribe;
+                }
+                
+                if (CMsToInsert.size() > 0) {
+                    insert CMsToInsert;
                 }
             } else {
                 throw new unsubscribeException('URL Parameters are missing or invalid');

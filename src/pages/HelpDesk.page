@@ -208,8 +208,11 @@
                                 <apex:param name="personalemail" value=""/>
                             </apex:actionFunction>
 
-                            <div style="height:264px;overflow-y:auto;">
+                            <div style="height:335px;overflow-y:auto;">
                                 <apex:pageBlockSection id="criteriasection" showHeader="false">
+                                    <apex:outputField value="{!contactsrch.FERPA_Directory_Hold__c}"
+                                                     id="ferpaStatus"/>
+                                    <apex:PageBlockSectionItem />
                                     <apex:inputField value="{!contactsrch.firstname}"
                                                      id="firstnamesrch"/>
 
@@ -226,13 +229,15 @@
                                                      style="width:125px;"
                                                      id="birthdatesrch"/>
 
-                                    <apex:inputField value="{!contactsrch.ASURite_ID__c}"
+                                    <apex:inputText label="ASURITE ID"
                                                      required="false"
-                                                     id="asuriteidsrch"/>
+                                                     id="asuriteidsrch"
+                                                     value="{!contactsrch.ASURite_ID__c}"/>
 
-                                    <apex:inputField value="{!contactsrch.EMPLID__c}"
+                                    <apex:inputText label="EMPLID"
                                                      required="false"
-                                                     id="emplidsrch"/>
+                                                     id="emplidsrch"
+                                                     value="{!contactsrch.EMPLID__c}"/>
 
                                     <apex:inputField value="{!contactsrch.ASU_Email__c}"
                                                      required="false"
@@ -269,7 +274,7 @@
                                         </apex:outputText>
                                     </apex:pageBlockSectionItem>
 
-                                    <apex:pageBlockSectionItem>
+                                    <apex:pageBlockSectionItem >
                                         <apex:outputLabel for="snLink" value="Service Now"/>
 
                                         <apex:outputLink id="snLink"
@@ -282,11 +287,11 @@
                                         </apex:outputLink>
                                     </apex:pageBlockSectionItem>
                                 </apex:pageBlockSection>
+                                
+                                <i>Note: Due to platform limitations on date searches, searching
+                               	Birthdate may take longer than usual.</i>
                             </div>
-
-                            <i>Note: Due to platform limitations on date searches, searching
-                               Birthdate may take longer than usual.</i>
-
+                            
                             <div style="text-align:center;border-top:1px solid #dbdbdb;padding-top:10px;margin-top:10px;">
                                 <apex:commandButton id="searchBtn"
                                                     value="Search"
@@ -397,7 +402,7 @@
                                               && NOT(isExistingCaseSelected)
                                               && NOT(isCloseCase)}">
                         <apex:pageBlock title="Cases" id="opencasespb">
-                            <div style="height:286px;overflow-y:auto;border-bottom: solid 1px
+                            <div style="height:335px;overflow-y:auto;border-bottom: solid 1px
                             #ccc;">
                                 <apex:pageBlockTable value="{!cases}"
                                                      var="case"
@@ -462,7 +467,7 @@
                                       layout="block"
                                       rendered="{!(isNewCaseSelected || isExistingCaseSelected) && NOT(isCloseCase)}">
                         <apex:pageBlock title="Case Details - {!mycase.CaseNumber}" id="case">
-                            <div style="height:307px;overflow-y:auto;margin:-10px;">
+                            <div style="height:335px;overflow-y:auto;margin:-10px;">
                                 <fieldset id="caseFieldset">
                                     <apex:pageBlockSection columns="2"
                                                            collapsible="false">
@@ -480,6 +485,10 @@
                                         <apex:inputField value="{!mycase.Category__c}"/>
 
                                         <apex:inputField value="{!mycase.Sub_Category__c}"/>
+                                        
+                                        <apex:pageBlockSectionItem />
+                                        
+                                        <apex:inputField value="{!mycase.Reporting_Category__c}" />
 
                                         <apex:inputField value="{!mycase.Status}"/>
 
@@ -586,7 +595,7 @@
                                     </apex:commandLink>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="First Name"
                                                           onClick="doSearch(true); return false;"
@@ -600,7 +609,7 @@
                                     <apex:outputField value="{!contact.firstName}"/>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Last Name"
                                                           onClick="doSearch(true); return false;"
@@ -614,7 +623,7 @@
                                     <apex:outputField value="{!contact.lastName}"/>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Phone"
                                                           onClick="doSearch(true); return false;"
@@ -628,7 +637,7 @@
                                     <apex:outputField value="{!contact.Phone}"/>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Help Desk Provided Phone"
                                                           onClick="doSearch(true); return false;"
@@ -642,7 +651,7 @@
                                     <apex:outputField value="{!contact.Help_Desk_Provided_Phone__c}"/>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Birthdate"
                                                           onClick="doSearch(true); return false;"
@@ -656,7 +665,7 @@
                                     <apex:outputField value="{!contact.Birthdate}"/>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="ASURITE"
                                                           onClick="doSearch(true); return false;"
@@ -670,7 +679,7 @@
                                     <apex:outputField value="{!contact.ASURite_ID__c}"/>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="EMPLID"
                                                           onClick="doSearch(true); return false;"
@@ -684,7 +693,7 @@
                                     <apex:outputField value="{!contact.EMPLID__c}"/>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Directory Email"
                                                           onClick="doSearch(true); return false;"
@@ -697,7 +706,7 @@
                                     <apex:outputField value="{!contact.ASU_Email__c}"/>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Personal Email"
                                                           onClick="doSearch(true); return false;"
@@ -711,7 +720,7 @@
                                     <apex:outputField value="{!contact.Personal_Email__c}"/>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="CAP"
                                                           onClick="doSearch(true); return false;"
@@ -723,6 +732,20 @@
                                     </apex:facet>
 
                                     <apex:outputField value="{!contact.CAP__c}"/>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        <apex:commandLink value="FERPA Hold"
+                                                          onClick="doSearch(true); return false;"
+                                                          rerender="results">
+                                            <apex:param name="sortField"
+                                                        value="FERPA"
+                                                        assignTo="{!sortField}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
+
+                                    <apex:outputField value="{!contact.FERPA_Directory_Hold__c}"/>
                                 </apex:column>
                             </apex:pageBlockTable>
                         </div>
@@ -776,7 +799,7 @@
                                         </apex:commandLink>
                                     </apex:column>
 
-                                    <apex:column>
+                                    <apex:column >
                                         <apex:commandLink action="{!articleDetails}"
                                                           rerender="results"
                                                           status="knowStatus1"

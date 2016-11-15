@@ -7,9 +7,11 @@ public with sharing class ServiceCenter
     private Id caseId;
     private Map<String, String> viewAsMap;
     public List<Opportunity> oppList;
+    
     private Term__c termcAC;
     private Term__c termcB;
 
+    // public List<bomgar__Event__c> chatMessages;
     public Boolean viewingAs { get; set; }
     public Case newCase { get; set; }
     public Case suggestAnArticle { get; set; }
@@ -217,6 +219,18 @@ public with sharing class ServiceCenter
             );
         }
     }
+
+    public List<bomgar__Event__c> getChatMessages() {
+        return [
+            SELECT bomgar__DestinationValue__c, bomgar__EventDateTime__c, bomgar__EventType__c, bomgar__PerformedByType__c, 
+            	bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId 
+            FROM bomgar__Event__c 
+			WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c =  :ApexPages.currentPage().getParameters().get('Id')
+            AND (bomgar__PerformedByType__c = 'representative' OR bomgar__PerformedByType__c  = 'customer') 
+            AND bomgar__DestinationValue__c = 'everyone' order by bomgar__EventDateTime__c asc
+        ];
+    }
+
 
     public PageReference viewCase()
     {

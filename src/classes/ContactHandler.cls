@@ -1,3 +1,4 @@
+// TODO : Exception handling on all DML statements : SP
 public without sharing class ContactHandler implements ITrigger 
 {
     private Map<Id, Account> existingAccountMap = new Map<Id, Account>();
@@ -7,127 +8,162 @@ public without sharing class ContactHandler implements ITrigger
     private static Id SFMasteredContactRTId;
     private static Id ExtMasteredContactAccountRTId;
     private static Id SFMasteredContactAccountRTId;
+    private static Id relationshipContactToAccountRTID;
     private static Id bucketAccountId;
     private Map<Id, Id> contactToAccountRTIdMap = new Map<Id, Id>();
     private Map<Id, Id> accountIdsByContactId = new Map<Id, Id>();
-    private static List<Account> accountsToCreate;
+    private static Map<Contact,Account> newContactToNewAccountMap;
     private List<Account> accountsToUpdate = new List<Account>();
     private List<Contact> contactsToCheckIfUpdate = new List<Contact>();
+    private List<Relationship__c> bizcardRelationships = new List<Relationship__c>();
+    private Map<String, List<CampaignMember>> bizcardCampaignMembers = new Map<String, List<CampaignMember>>();
 
-    public void bulkBefore()
-    {
-        accountsToCreate = new List<Account>();
-
-        if (Trigger.IsInsert || Trigger.IsUpdate) 
-        {
-            if(ExtMasteredContactRTId == null
+    public void bulkBefore() {
+        // Create a map of Contact to Account
+        newContactToNewAccountMap = new Map<Contact,Account>();
+        
+        if (Trigger.IsInsert || Trigger.IsUpdate) {  
+            // If any of the necessary Record Type IDs are null...
+            if (ExtMasteredContactRTId == null
                 || SFMasteredContactRTId == null
                 || ExtMasteredContactAccountRTId == null
-                || SFMasteredContactAccountRTId == null)
-            {
-                // Get the pertinent RecordType IDs
+                || SFMasteredContactAccountRTId == null) {
+
+                // ...get the necessary RecordType IDs
                 List<RecordType> recordTypeList = new List<RecordType>([
                     SELECT Id, sObjectType, DeveloperName 
                     FROM RecordType 
-                    WHERE sObjectType IN ('Account', 'Contact')
+                    WHERE sObjectType IN ('Account', 'Contact', 'Relationship__c')
                 ]);
 
-                for (RecordType rt : recordTypeList) 
-                {
-                    if (rt.SobjectType == 'Contact') 
-                    {
-                        if (rt.DeveloperName == 'External_Mastered')
-                        {
+                // For each Record Type in our list...
+                for (RecordType rt : recordTypeList) {
+
+                    // Determine whether the Record Type is Contact, Account, or Relationship,
+                    // and store its ID based to its Developer Name
+                    if (rt.SobjectType == 'Contact') {
+                        if (rt.DeveloperName == 'External_Mastered') {
                             ExtMasteredContactRTId = rt.Id;
-                        }
-                        else if (rt.DeveloperName == 'SF_Mastered')
-                        {
+                        } else if (rt.DeveloperName == 'SF_Mastered') {
                             SFMasteredContactRTId = rt.Id;
                         }
-                    }
-                    else if (rt.SobjectType == 'Account') 
-                    {
-                        if (rt.DeveloperName == 'External_Mastered_Contact')
-                        {
+                    } else if (rt.SobjectType == 'Account') {
+                        if (rt.DeveloperName == 'External_Mastered_Contact') {
                             ExtMasteredContactAccountRTId = rt.Id;
-                        }
-                        else if (rt.DeveloperName == 'SF_Mastered_Contact')
-                        {
+                        } else if (rt.DeveloperName == 'SF_Mastered_Contact') {
                             SFMasteredContactAccountRTId = rt.Id;
                         }
+                    } else if (rt.SobjectType == 'Relationship__c') {
+                        if (rt.DeveloperName == 'Contact_to_Account') {
+                            relationshipContactToAccountRTID = rt.Id;
+                        } 
                     }
                 }
             }    
 
-            // Populate a Map that we use to translate from Contact RT Id to Accound RT Id
+            // Populate a Map that we use to translate from Contact Record Type ID to Account
+            // Record Type ID
             contactToAccountRTIdMap.put(ExtMasteredContactRTId, ExtMasteredContactAccountRTId);
             contactToAccountRTIdMap.put(SFMasteredContactRTId, SFMasteredContactAccountRTId);
 
             // Get the Id for the old bucket Account to check
-            if(bucketAccountId == null)
-            {
+            if (bucketAccountId == null) {
                 List<Account> bucketAccountList = new List<Account>([
                     SELECT Id 
                     FROM Account 
                     WHERE Name = 'Arizona State University'
                 ]);
 
-                if (bucketAccountList.size() > 0)
-                {
+                if (bucketAccountList.size() > 0) {
                     bucketAccountId = bucketAccountList[0].Id;
                 }
             }
 
-            for(SObject so : Trigger.new)
-            {
+            // For each sObject triggering on Before Insert or Before Update
+            for (SObject so : Trigger.new) {
+
+                // Store the triggering sObject as a Contact
                 Contact c = (Contact) so;
 
-                if (c.EMPLID__c == null && c.RecordTypeId != SFMasteredContactRTId)
-                {
+
+                if (c.EMPLID__c == null && c.RecordTypeId != SFMasteredContactRTId) {
                     c.RecordTypeId = SFMasteredContactRTId;
-                }
-                else if(c.EMPLID__c != null && c.RecordTypeId != ExtMasteredContactRTId)
-                {
+                } else if (c.EMPLID__c != null && c.RecordTypeId != ExtMasteredContactRTId) {
                     c.RecordTypeId = ExtMasteredContactRTId;
                 }
 
-                if(Trigger.IsInsert)
-                {
-                    accountsToCreate.add(createAccount(c));
-                }
-                else if(Trigger.IsUpdate)
-                {
-                    if(c.AccountId == null || c.AccountId == bucketAccountId)
-                    {
-                        accountsToCreate.add(createAccount(c));
+                // If we are inserting a new Contact...
+                if (Trigger.IsInsert) {
+                    System.debug('Trigger fired...');
+                    // If the Contact was created using the VisionE/Scan application...
+                    if (c.eContacts__Created_By_eContacts__c) {
+                        System.debug('Account ID: ' + c.AccountId);
+                        // Store the Contact's Account lookup as the Business Card Account
+                        c.Bizcard_Account__c = c.AccountId;    
+                        c.AccountId = null;
+                        
+                        // Populate the Corporate Relations Account Owner
+                        Id userId = UserInfo.getUserId();
+                        List<User> userList = [SELECT Id, Name FROM User WHERE Id = :userId];
+                        System.debug('USER LIST: ' + userList);
+                        System.debug('CRCO: ' + c.Corporate_Relations_Contact_Owner__c);
+                        c.Corporate_Relations_Contact_Owner__c = userList[0].Id;
+                    } else {
+                        // Otherwise, create an Account from the Contact and store it in our map
+                        // of new Contacts to new Accounts
+                        Account a = createAccount(c);
+                        newContactToNewAccountMap.put(c,a);
                     }
-                    else
-                    {
-                        contactsToCheckIfUpdate.add(c);    
+
+                // If we are updating an existing Contact which wasn't created by the VisionE/Scan
+                // application...
+                } else if (Trigger.IsUpdate) {
+
+                    // If the Account ID is null, or if its the same as the ASU Account ID
+                    if (c.AccountId == null || c.AccountId == bucketAccountId) {
+                        // Create a new Account from the Contact, and store it in our map of new
+                        // Contacts to new Accounts
+                        Account a = createAccount(c);
+                        newContactToNewAccountMap.put(c,a);
+                    } else {
+                        // Otherwise, add the Contact to our list of Contacts to check on Update 
+                        contactsToCheckIfUpdate.add(c);  
+                    }
+                }
+            }
+            
+            // If there were any new Accounts created...
+            if (newContactToNewAccountMap.size() > 0) {
+                // Insert the new Accounts
+                insert newContactToNewAccountMap.values();
+
+                // For each triggering sObject...
+                for (SObject so : Trigger.New) {
+                    // Store the triggering Contact
+                    Contact c = (Contact) so;
+
+                    // If the Account for this Contact exists in our map of new Contacts to new
+                    // Accounts...
+                    if (newContactToNewAccountMap.get(c) != null) {
+                        // Store the account and set it on the Contact
+                        Account a = newContactToNewAccountMap.get(c);
+                        c.AccountId = a.Id;
                     }
                 }
             }
 
-            if(accountsToCreate.size() > 0)
-            {
-                insert accountsToCreate;
-                for(Integer x = 0; x < Trigger.new.size(); x++)
-                {
-                    Contact c = (Contact) Trigger.new.get(x);
-                    Account a = accountsToCreate.get(x);
-                    c.AccountId = a.Id;
-                }
-            }
-
-            if(contactsToCheckIfUpdate.size() > 0)
-            {
-                // Get a Map of all the existing related Accounts
+            // If there are any Contacts to check on Update...
+            if (contactsToCheckIfUpdate.size() > 0) {
+                // Create a set of IDs for existing accounts
                 Set<Id> existingAccountIds = new Set<Id>();
-                for (Contact c : contactsToCheckIfUpdate)
-                {
+
+                // Add the Account ID of each Contact being updated to our set of existing Account
+                // IDs
+                for (Contact c : contactsToCheckIfUpdate) {
                     existingAccountIds.add(c.AccountId);
                 }
 
+                // Populate a map of all of the existing Accounts for the Contacts being updated
                 existingAccountMap = new Map<Id, Account>([
                     SELECT Id, Name, Contact__c, OwnerId, RecordType.Name 
                     FROM Account 
@@ -137,24 +173,27 @@ public without sharing class ContactHandler implements ITrigger
         }  
     }
     
-    public void beforeInsert(SObject so)
-    {
+    public void beforeInsert(SObject so) {
         Contact c = (Contact)so;
         //Automatically generate a PIN for a new contact
         c.Self_Service_PIN__c = ContactService.generateRandomPin(c.Birthdate);
     }
     
-    public void beforeUpdate(SObject oldSo, SObject so)
-    {
+    public void beforeUpdate(SObject oldSo, SObject so) {
+        // Store the triggering sObject as a Contact
         Contact c = (Contact) so;
+
+        // Store the Account ID of the triggering Contact
         Account a = existingAccountMap.get(c.AccountId);
-        if(a != null && 
+
+        // If an Account exists for the triggering contact, and its information doesn't match up
+        // with the Contact, add it to our set of Accounts to update
+        if (a != null && 
             (a.Name != c.FirstName + ' ' + c.LastName 
                 || a.OwnerId != c.OwnerId
                 || a.RecordTypeId != contactToAccountRTIdMap.get(c.RecordTypeID)
                 || a.Contact__c != c.Id
-            ))
-        {
+            )) {
             a.Name = c.FirstName + ' ' + c.LastName;
             a.OwnerId = c.OwnerId;
             a.RecordTypeId = contactToAccountRTIdMap.get(c.RecordTypeID);
@@ -166,27 +205,133 @@ public without sharing class ContactHandler implements ITrigger
 
     public void beforeDelete(SObject so) { }
     
-    public void beforeFinally() 
-    { 
-        if(accountsToUpdate.size() > 0)
-        {
+    public void beforeFinally() { 
+        // If there are any Accounts to update, update them.
+        if (accountsToUpdate.size() > 0) {
             update accountsToUpdate;
         }
     }
 
-    public void bulkAfter()
-    {   
-        if(Trigger.IsInsert && accountsToCreate.size() > 0)
-        {
-            for(Integer x = 0; x < Trigger.new.size(); x++)
-            {
-                Contact c = (Contact) Trigger.new.get(x);
-                Account a = accountsToCreate.get(x);
-                a.Contact__c = c.Id;
-                accountsToCreate[x] = a;
-            } 
+    public void bulkAfter() {  
+        // On After Insert... 
+        if (Trigger.IsInsert) {
+            // Create a list to store our Business Card Contact IDs
+            List<Id> bizcardContactIds = new List<Id>();
+            
+            // For each triggering sObject...
+            for (SObject so : Trigger.New) {
+                // Store the sObject as a Contact
+                Contact c = (Contact) so;
 
-            update accountsToCreate;
+                // If there are any new Contact/Account pairs
+                if (newContactToNewAccountMap.get(c) != null) {
+                    // Store the Account associated with the Contact
+                    Account a = newContactToNewAccountMap.get(c);
+
+                    // Set the Contact lookup field on the Account to the ID of the triggering
+                    // Contact
+                    a.Contact__c = c.Id;
+                }
+
+                // If the triggering contact was created by the VisionE/Scan application, add the
+                // Contact's ID to our list of Business Card Contact IDs.
+                if (c.eContacts__Created_By_eContacts__c) {
+                    System.debug('Contact ID added to list...');
+                    bizcardContactIds.add(c.Id);
+                    System.debug('Contact IDs: ' + bizcardContactIds);
+                }
+            
+            }
+
+            // If any Contacts were created by the VisionE/Scan application...
+            if (bizcardContactIds.size() > 0) {
+                // Populate a list of all the Contacts created by the VisionE/Scan application
+                List<Contact> contacts = [
+                    SELECT Id, Bizcard_Account__c, Title,CreatedBy.UserRole.Name 
+                    FROM Contact WHERE Id IN :bizcardContactIds
+                ];
+
+                // For each Contact that was created by the VisionE/Scan application...
+                for (Contact c : contacts) {
+                    System.debug('Contact ' + c);
+                    
+                    // Create a Relationship between the Contact and its Account, and add it to our
+                    // list of Business Card Relationships.
+                    if (c.Bizcard_Account__c != null) {
+                        bizcardRelationships.add(
+                            RelationshipService.createContactAccountRelationship(
+                                c.Id, c.Bizcard_Account__c, relationshipContactToAccountRTID, c.Title
+                            )
+                        );
+                    }
+
+                    System.debug('Business Card Relationships: ' + bizcardRelationships);
+
+                    // Create a Campaign Member object and assign it the ID of the Contact
+                    CampaignMember cm = new CampaignMember(
+                        ContactId = c.Id
+                    );
+
+                    System.debug('CREATED BY: ' + c.CreatedBy);
+
+                    // If the map of Business Card Campaign Members is empty, add the Name of the User
+                    // who created the Contact to the map, and map it to an empty list of Campaign Members.
+                    if (bizcardCampaignMembers.get(c.CreatedBy.UserRole.Name) == null) {
+                        bizcardCampaignMembers.put(c.CreatedBy.UserRole.Name, new List<CampaignMember>());
+                    }
+
+                    // Add the existing Campaign Member to the empty list we just created in the
+                    // Business Card Campaign Members map
+                    bizcardCampaignMembers.get(c.CreatedBy.UserRole.Name).add(cm);
+                }
+            } 
+        }
+
+        // If there are any new Contact/Account pairs, update them.
+        if (newContactToNewAccountMap.size() > 0) {
+            update newContactToNewAccountMap.values();
+        }
+
+        // If any Relationship objects were created linking a Contact to an Account (because a
+        // Contact was created by the VisionE/Scan application), insert those Relationships.
+        if (bizcardRelationships.size() > 0) {
+            insert bizcardRelationships;
+        }
+
+        // If there are any Business Card Campaign Members...
+        if (bizcardCampaignMembers.size() > 0) {
+
+            System.debug('Bizcard Campaign Members: ' + bizcardCampaignMembers);
+            
+            // Create a set of roles from the map
+            Set<String> roleNames = bizcardCampaignMembers.keySet();
+
+            // Create a list of Campaign Members to insert
+            List<CampaignMember> cmsToInsert = new List<CampaignMember>();
+
+            // Create a list of Business Card Campaign Links whose roles match those in the map of
+            // Business Card Campaign Members
+            List<Bizcard_Campaign_Link__c> campaignLinks = [
+                SELECT Id, Role__c, Campaign__c
+                FROM Bizcard_Campaign_Link__c
+                WHERE Role__c IN :roleNames
+            ];
+
+            // For each Business Card Campaign Link...
+            for (Bizcard_Campaign_Link__c bcl : campaignLinks) {
+                // ...iterate through the Business Card Campaign Members associated with it, and
+                // set the CampaignID of the Campaign Member to the Campaign ID of the Campaign
+                // Link, and then add it to the list of Campaign Members to Insert
+                for (CampaignMember cm : bizcardCampaignMembers.get(bcl.Role__c)) {
+                    cm.CampaignId = bcl.Campaign__c;
+                    cmsToInsert.add(cm);
+                }
+            }
+
+            // If there are any Campaign Members to insert, insert them.
+            if (cmsToInsert.size() > 0) {
+                insert cmsToInsert;
+            }
         }
     }
 
@@ -198,8 +343,7 @@ public without sharing class ContactHandler implements ITrigger
 
     public void andFinally() { }
 
-    private Account createAccount(Contact c)
-    {
+    private Account createAccount(Contact c) {
         // Create the new 1:1 Account record for this Contact
         Account a = new Account(
             Name = c.FirstName + ' ' + c.LastName, 

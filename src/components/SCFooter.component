@@ -1,16 +1,5 @@
-<apex:component>
+<apex:component >
     <!-- This component renders the Service Center Footer -->
-    <div class="myasu-cont">
-        <a href="/feedback">
-            <img src="https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg"
-                 alt="Feedback"
-                 title="Please leave your feedback"
-                 onmouseover="this.src='https://webapp4.asu.edu/myasu/images/feedback-2-web.jpg'"
-                 onmouseout="this.src='https://webapp4.asu.edu/myasu/images/feedback-1-web.jpg'"
-                 border="0"
-                 style="float:right;"/>
-        </a>
-    </div>
     <br />
     <br />
     <div id="asu_footer">

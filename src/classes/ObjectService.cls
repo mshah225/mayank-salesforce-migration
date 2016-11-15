@@ -106,6 +106,15 @@ public class ObjectService
         String result = String.valueOf(s_num++);
         return sot.getDescribe().getKeyPrefix() + '0'.repeat(12-result.length()) + result;
     }
+    
+    /**
+     * Returns the keyPrefix of the desired SObjectType
+     * @param sot A Schema.SObjectType
+     * @return String The the keyprefix for the passed object type
+     */
+    public static String getKeyPrefix(Schema.SObjectType sot) {
+        return sot.getDescribe().getKeyPrefix();
+    }
 
     /**
     * Generates a uuid

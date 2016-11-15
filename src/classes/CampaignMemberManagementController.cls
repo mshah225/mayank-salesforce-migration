@@ -1,92 +1,73 @@
 public class CampaignMemberManagementController 
 {
-    // Main page variables
-    public CampaignMember camMemInterest;
-    public CampaignMember camMemEvent;
-    public Id elId { get; set; }
-    public Id intId { get; set; }
-    public Id contId { get; set; }
-    public List<CampaignMember> eventList;
-    public List<CampaignMember> interestList;
-    public List<CampaignMember> scholarList;
-    public List<CampaignMember> cohortList;
-    public List<CampaignMember> oSourceList;
-    public List<CampaignMember> markCommList;
-    public List<CampaignMember> partCourseList;
-    public List<Campaign> eventSearchResults;
-    public List<Campaign> interestSearchResults;
-    public String eSearchString { get;set; }
-    public String iSearchString { get;set; }
+    private Set<Id> assignedEventIds;
+    private Set<Id> assignedIntIds;
+    private Map<String, List<CampaignMember>> campaignMemberMap;
+    private Map<String, Id> recordTypeIdMap;
 
-    // CR specific variables
-    public Contact campaignContact;
-    public CampaignMember newParentCamMem { get; set; }
+    public Boolean crProfile { get; set; }
+    public Boolean admin { get; set; }
+    public Boolean eventDeets { get; set; }
+    public Campaign tempCampaign { get; set; }
+    public CampaignMember newParentCamMem;
     public CampaignMember newChildCamMem { get; set; }
     public CampaignMember inActivateCamMem { get; set; }
     public CampaignMember activateParentCamMem { get; set; }
     public CampaignMember activateChildCamMem { get; set; }
-    public Boolean shouldRedirect { get; set; }
-    public Id crRecordTypeId;
+    public CampaignMember camMemInterest;
+    public CampaignMember camMemEvent { get; set; }
+    public Date camStartDate { get; set; }
     public Id selectedParentCampaign { get; set; }
     public Id selectedChildCampaign { get; set; }
-    public String inActivateCMId { get; set; }
-    public List<CampaignMember> currentCampaigns { get; set; }
+    public Id elId { get; set; }
+    public Id intId { get; set; }
+    public Id contactId { get; set; }
+    public List<CampaignMember> activeCrCamMems;
     public List<CampaignMember> currentChildCams { get; set; }
-    public List<CampaignMember> inActiveCampaigns { get; set; }
-    public List<CampaignMember> sortList;
+    public List<CampaignMember> inactiveCrCamMems { get; set; }
     public List<Campaign> parentCampaigns { get; set; }
     public List<Campaign> childCampaigns { get; set; }
     public List<Campaign> fixedChildCampaigns { get; set; }
-    public Set<String> currentSet;
-    public Set<String> inActiveSet;
-    public Set<String> childSearchSet;
+    public List<Campaign> eventSearchResults { get; set; }
+    public List<Campaign> interestSearchResults { get; set; }
     public String searchString { get; set; }
     public String selectedParentCampaignName { get; set; }
     public String selectedChildCampaignName { get; set; }
-    public Boolean crProfile { get; set; }
     public String renderedTab { get; set; }
+    public String inActivateCMId { get; set; }
+    public String eSearchString { get;set; }
+    public String iSearchString { get;set; }
+    public String deptColl { get; set; }
+    public String selectedEventName { get; set; }
 
     public CampaignMemberManagementController(ApexPages.StandardController controller) 
-    { 
-        campaignContact = [
-            SELECT Id
-            FROM Contact
-            WHERE Id = :ApexPages.currentPage().getParameters().get('id')
-        ];
-        contId = campaignContact.Id;
-        crRecordTypeId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Corporate Relations'
-            AND SobjectType = 'Campaign'
-        ].Id;
-        currentCampaigns = [
-            SELECT Id, Campaign.Name, Campaign.ParentId
-            FROM CampaignMember
-            WHERE ContactId = :campaignContact.Id
-            AND Campaign_Type__c = 'Corporate Relations'
-            AND Status = 'Active'
-            ORDER BY Campaign.Name
-        ];
-        inActiveCampaigns = [
-            SELECT Id, Campaign.Name
-            FROM CampaignMember
-            WHERE ContactId = :campaignContact.Id
-            AND Campaign_Type__c = 'Corporate Relations'
-            AND Status = 'Inactive'
-            ORDER BY Campaign.Name
-        ];
+    {
+        contactId = ApexPages.currentPage().getParameters().get('id');
+        admin = false;
+        eventDeets = false;
+        recordTypeIdMap = new Map<String, Id>();
+        eventSearchResults = new List<Campaign>();
+        interestSearchResults = new List<Campaign>();
+        parentCampaigns = new List<Campaign>();
+        tempCampaign = new Campaign();
+        camMemEvent = new CampaignMember();
+
+        buildCampaignMemberMap();
+
         String profileName = [
             SELECT Profile.Name
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ].Profile.Name;
+
         List<PermissionSetAssignment> userPermissions = [
             SELECT PermissionSet.Name
             FROM PermissionSetAssignment
             WHERE AssigneeId = :UserInfo.getUserId()
         ];
+
         Boolean hasCRPerm = false;
+
         if (userPermissions.size() > 0)
         {
             for (PermissionSetAssignment psa : userPermissions)
@@ -102,9 +83,7 @@ public class CampaignMemberManagementController
             }
         }
 
-        if ((profileName.equals('ASU Corporate Relations')
-                || profileName.equals('System Administrator'))
-                || hasCRPerm)
+        if (profileName.equals('ASU Corporate Relations') || hasCRPerm)
         {
             crProfile = true;
             renderedTab = 'crTab';
@@ -114,135 +93,290 @@ public class CampaignMemberManagementController
             crProfile = false;
             renderedTab = 'events';
         }
+
+        if (profileName.equals('System Administrator'))
+        {
+            admin = true;
+        }
+    }
+
+    public void buildCampaignMemberMap()
+    {
+        campaignMemberMap = new Map<String, List<CampaignMember>>();
+        List<CampaignMember> contactCamMems = CampaignMemberService.getCampaignMembers(contactId);
+        List<CampaignMember> tempCrActiveList = new List<CampaignMember>();
+        List<CampaignMember> tempCrInactiveList = new List<CampaignMember>();
+        List<CampaignMember> tempEventList = new List<CampaignMember>();
+        List<CampaignMember> tempEossList = new List<CampaignMember>();
+        List<CampaignMember> tempInterestList = new List<CampaignMember>();
+        List<CampaignMember> tempScholList = new List<CampaignMember>();
+        List<CampaignMember> tempCohortList = new List<CampaignMember>();
+        List<CampaignMember> tempOtherList = new List<CampaignMember>();
+        List<CampaignMember> tempCommList = new List<CampaignMember>();
+        List<CampaignMember> tempCourseList = new List<CampaignMember>();
+
+        for (CampaignMember cm : contactCamMems)
+        {
+            if ((cm.Campaign.RecordType.Name == 'Corporate Relations')
+                && (cm.Status == 'Active'))
+            {
+                tempCrActiveList.add(cm);
+            }
+            else if ((cm.Campaign.RecordType.Name == 'Corporate Relations')
+                && (cm.Status == 'Inactive'))
+            {
+                tempCrInactiveList.add(cm);
+            }
+            else if (cm.Campaign.RecordType.Name == 'Event')
+            {
+                tempEventList.add(cm);
+            }
+            else if (cm.Campaign.RecordType.Name == 'EOSS Event')
+            {
+                tempEossList.add(cm);
+            }
+            else if (cm.Campaign.RecordType.Name == 'Interest')
+            {
+                tempInterestList.add(cm);
+            }
+            else if (cm.Campaign.RecordType.Name == 'Scholarship')
+            {
+                tempScholList.add(cm);
+            }
+            else if (cm.Campaign.RecordType.Name == 'Cohort')
+            {
+                tempCohortList.add(cm);
+            }
+            else if (cm.Campaign.RecordType.Name == 'Other Source')
+            {
+                tempOtherList.add(cm);
+            }
+            else if (cm.Campaign.RecordType.Name == 'Communication')
+            {
+                tempCommList.add(cm);
+            }
+            else if (cm.Campaign.RecordType.Name == 'Course')
+            {
+                tempCourseList.add(cm);
+            }
+        }
+
+        campaignMemberMap.put('Active CR', tempCrActiveList);
+        campaignMemberMap.put('Inactive CR', tempCrInactiveList);
+        campaignMemberMap.put('Event', tempEventList);
+        campaignMemberMap.put('EOSS Event', tempEossList);
+        campaignMemberMap.put('Interest', tempInterestList);
+        campaignMemberMap.put('Scholarship', tempScholList);
+        campaignMemberMap.put('Cohort', tempCohortList);
+        campaignMemberMap.put('Other Source', tempOtherList);
+        campaignMemberMap.put('Communication', tempCommList);
+        campaignMemberMap.put('Course', tempCourseList);
+    }
+
+    public List<SelectOption> getDepartmentsColleges()
+    {
+        List<SelectOption> options = new List<SelectOption>();
+        options.add(new SelectOption('', '--Select--'));
+
+        Schema.DescribeFieldResult fieldResult =
+            Campaign.Requested__c.getDescribe();
+        List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+
+        for( Schema.PicklistEntry f : ple)
+        {
+            options.add(new SelectOption(f.getLabel(), f.getValue()));
+        }
+
+        return options;
+    }
+
+    public List<SelectOption> getSelectedEventCamMemStatuses()
+    {
+        List<CampaignMemberStatus> camStatuses = [
+            SELECT Id, Label
+            FROM CampaignMemberStatus
+            WHERE CampaignId = :elId
+            ORDER BY Label ASC
+        ];
+
+        List<SelectOption> camOptions = new List<SelectOption>();
+        camOptions.add(new SelectOption('' ,'--Select--'));
+
+        for (CampaignMemberStatus cs : camStatuses)
+        {
+            camOptions.add(new SelectOption(cs.Label , cs.Label));
+        }
+
+        return camOptions;
     }
 
     // Event tab.
     public List<CampaignMember> getEventList() 
     {
-        Id eventRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Event'
-            AND SobjectType = 'Campaign'
-        ].Id;
-        Id eossRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'EOSS Event'
-            AND SobjectType = 'Campaign'
-        ].Id;
+        List<CampaignMember> tempEvents = campaignMemberMap.get('Event');
+        List<CampaignMember> tempEOSSEvents = campaignMemberMap.get('EOSS Event');
+        List<CampaignMember> eventList = new List<CampaignMember>();
 
-        eventList = [
-            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
-                    Campaign.Interest_PeopleSoft_Major__c, Campaign.Event_Start_Date__c,
-                    Number_Of_Guests__c, Status, Last_Member_Status_Change__c,
-                    ContactId, CampaignId
-            FROM CampaignMember
-            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
-            AND (Campaign.RecordTypeId = :eventRecId OR Campaign.RecordTypeId = :eossRecId)
-            LIMIT 40
-        ];
+        if (tempEvents.size() > 0)
+        {
+            eventList.addAll(tempEvents);
+        }
+
+        if (tempEOSSEvents.size() > 0)
+        {
+            eventList.addAll(tempEOSSEvents);
+        }
 
         if (eventList != null) 
         {
-            return eventList;
+            assignedEventIds = new Set<Id>();
+
+            for (CampaignMember cm : eventList)
+            {
+                assignedEventIds.add(cm.CampaignId);
+            }
+
+            eventList.sort();
         }
-        else 
-        {
-            return null;
-        }
+
+        return eventList;
     }
 
     public void doEventSearch() 
     {
-        Id eventRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Event'
-            AND SobjectType = 'Campaign'
-        ].Id;
-        Id eossRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'EOSS Event'
-            AND SobjectType = 'Campaign'
-        ].Id;
-        
-        String eSearchQuery = 'SELECT Id, Name, Type, Category__c, Event_Start_Date__c, Event_Start_Time__c, Campus_Location__c, Event_Location__c, RecordTypeId FROM Campaign WHERE (Name LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\' OR Type LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\' OR Category__c LIKE \'%' + String.escapeSingleQuotes(eSearchString) + '%\') AND (Campaign.RecordTypeId = :eventRecId OR Campaign.RecordTypeId = :eossRecId) AND IsActive = true ORDER BY Name ASC LIMIT 40';
+        eventDeets = false;
 
-        eventSearchResults = Database.query(eSearchQuery);
-    }
+        if (eSearchString.length() < 2)
+        {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must enter at least 2 characters.'
+                )
+            );
 
-    public List<Campaign> getEventSearchResults() 
-    {
-        return eventSearchResults;
+            return;
+        }
+
+        String sosl = '' +
+            'FIND \'*' + String.escapeSingleQuotes(eSearchString.trim()) + '*\' ' +
+            'IN NAME FIELDS ' +
+            'RETURNING Campaign(Id, Name, Type, Category__c, Event_Start_Date__c, ' +
+            'Event_Start_Time__c, Campus_Location__c, Event_Location__c, ' +
+            'RecordTypeId, Requested__c ' +
+            'WHERE (RecordType.Name = \'Event\' ' +
+                    'OR RecordType.Name = \'EOSS Event\'' +
+            ') ' +
+            'AND Id NOT IN :assignedEventIds ' +
+            'AND IsActive = true ';
+
+        if (deptColl != null)
+        {
+            sosl += 'AND Requested__c INCLUDES (:deptColl) ';
+        }
+
+        Id location = tempCampaign.Campus_Location__c;
+        if (tempCampaign.Campus_Location__c != null)
+        {
+            sosl += 'AND Campus_Location__c = :location ';
+        }
+
+        if (camStartDate != null)
+        {
+            sosl += 'AND Event_Start_Date__c = :camStartDate ';
+        }
+
+        sosl += 'ORDER BY Name ASC)';
+
+        List<List<SObject>> sObjects = Search.query(sosl);
+
+        if (sObjects.size() > 0)
+        {
+            eventSearchResults = sObjects[0];
+        }
+        else
+        {
+            eventSearchResults = new List<Campaign>();
+        }
     }
 
     // Interest tab.
     public List<CampaignMember> getInterestList() 
     {
-        Id intRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Interest'
-            AND SobjectType = 'Campaign'
-        ].Id;
+        List<CampaignMember> tempInterests = new List<CampaignMember>();
+        List<CampaignMember> interestList = new List<CampaignMember>();
 
-        interestList = [
-            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
-                    Campaign.Interest_PeopleSoft_Major__c, Status, Last_Member_Status_Change__c
-            FROM CampaignMember
-            WHERE Campaign.RecordTypeId = :intRecId
-            AND ContactId = :ApexPages.currentPage().getParameters().get('id')
-            LIMIT 40
-        ];
+        tempInterests = campaignMemberMap.get('Interest');
+
+        if (tempInterests.size() > 0)
+        {
+            interestList.addAll(tempInterests);
+        }
 
         if (interestList != null) 
         {
-            return interestList;
+            assignedIntIds = new Set<Id>();
+
+            for (CampaignMember cm : interestList)
+            {
+                assignedIntIds.add(cm.CampaignId);
+            }
         }
-        else 
-        {
-            return null;
-        }
+
+        return interestList;
     }
 
     public void doInterestSearch() 
     {
-        Id intRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Interest'
-            AND SobjectType = 'Campaign'
-        ].Id;
-        
-        String iSearchQuery = 'SELECT Id, Name, Type, Campaign_External_ID__c FROM Campaign WHERE (Name LIKE \'%' + String.escapeSingleQuotes(iSearchString) + '%\' OR Type LIKE \'%' + String.escapeSingleQuotes(iSearchString) + '%\') AND Campaign.RecordTypeId = :intRecId AND IsActive = true ORDER BY Name ASC LIMIT 40';
+        if (iSearchString.length() < 2)
+        {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must enter at least 2 characters.'
+                )
+            );
 
-        interestSearchResults = Database.query(iSearchQuery);
-    }
+            return;
+        }
 
-    public List<Campaign> getInterestSearchResults() 
-    {
-        return interestSearchResults;
+        String sosl = '' +
+            'FIND \'*' + String.escapeSingleQuotes(iSearchString.trim()) + '*\' ' +
+            'IN NAME FIELDS ' +
+            'RETURNING Campaign(Id, Name, Type, Category__c, Event_Start_Date__c, ' +
+                'Event_Start_Time__c, Campus_Location__c, ' +
+                'Event_Location__c, Campaign_External_ID__c, ' +
+                'RecordTypeId, Requested__c ' +
+                'WHERE RecordType.Name = \'Interest\' ' +
+                'AND IsActive = true ' +
+                'AND Id NOT IN :assignedIntIds ' +
+                'ORDER BY Name ASC ' +
+            ')';
+
+        List<List<SObject>> sObjects = Search.query(sosl);
+
+        if (sObjects.size() > 0)
+        {
+            interestSearchResults = sObjects[0];
+        }
+        else
+        {
+            interestSearchResults = new List<Campaign>();
+        }
     }
 
     // Scholarship tab.
     public List<CampaignMember> getScholarList() 
     {
-        Id schRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Scholarship'
-            AND SobjectType = 'Campaign'
-        ].Id;
+        List<CampaignMember> tempScholarList = new List<CampaignMember>();
+        List<CampaignMember> scholarList = new List<CampaignMember>();
 
-        scholarList = [
-            SELECT Id, Campaign.Name, Campaign.Type, Amount__c, Award_Date__c,
-                    Letter_Date__c, Status, Last_Member_Status_Change__c
-            FROM CampaignMember
-            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
-            AND Campaign.RecordTypeId = :schRecId
-        ];
+        tempScholarList = campaignMemberMap.get('Scholarship');
+
+        if (tempScholarList.size() > 0)
+        {
+            scholarList.addAll(tempScholarList);
+        }
         
         return scholarList;
     }
@@ -250,20 +384,15 @@ public class CampaignMemberManagementController
     // Cohort tab.
     public List<CampaignMember> getCohortList() 
     {
-        Id cohRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Cohort'
-            AND SobjectType = 'Campaign'
-        ].Id;
+        List<CampaignMember> tempCohortList = new List<CampaignMember>();
+        List<CampaignMember> cohortList = new List<CampaignMember>();
 
-        cohortList = [
-            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
-                    Status, Last_Member_Status_Change__c
-            FROM CampaignMember
-            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
-            AND Campaign.RecordTypeId = :cohRecId
-        ];
+        tempCohortList = campaignMemberMap.get('Cohort');
+
+        if (tempCohortList.size() > 0)
+        {
+            cohortList.addAll(tempCohortList);
+        }
         
         return cohortList;
     }
@@ -271,20 +400,15 @@ public class CampaignMemberManagementController
     // Other Sources tab.
     public List<CampaignMember> getoSourceList() 
     {
-        Id sourceRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Other Source'
-            AND SobjectType = 'Campaign'
-        ].Id;
+        List<CampaignMember> tempOtherList = new List<CampaignMember>();
+        List<CampaignMember> oSourceList = new List<CampaignMember>();
 
-        oSourceList = [
-            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
-                    Status, Last_Member_Status_Change__c
-            FROM CampaignMember
-            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
-            AND Campaign.RecordTypeId = :sourceRecId
-        ];
+        tempOtherList = campaignMemberMap.get('Other Source');
+
+        if (tempOtherList.size() > 0)
+        {
+            oSourceList.addAll(tempOtherList);
+        }
         
         return oSourceList;
     }
@@ -292,20 +416,15 @@ public class CampaignMemberManagementController
     // Marketing/Communications tab.
     public List<CampaignMember> getMarkCommList() 
     {
-        Id markCommRecid = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Communication'
-            AND SobjectType = 'Campaign'
-        ].Id;
+        List<CampaignMember> tempCommList = new List<CampaignMember>();
+        List<CampaignMember> markCommList = new List<CampaignMember>();
 
-        markCommList = [
-            SELECT Id, Campaign.Name, Campaign.Type, Campaign.Requested__c,
-                    Status, Last_Member_Status_Change__c
-            FROM CampaignMember
-            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
-            AND Campaign.RecordTypeId = :markCommRecId
-        ];
+        tempCommList = campaignMemberMap.get('Communication');
+
+        if (tempCommList.size() > 0)
+        {
+            markCommList.addAll(tempCommList);
+        }
         
         return markCommList;
     }
@@ -313,92 +432,140 @@ public class CampaignMemberManagementController
     // Partnered Courses tab.
     public List<CampaignMember> getPartCourseList() 
     {
-        Id partCourseRecid = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Course'
-            AND SobjectType = 'Campaign'
-        ].Id;
+        List<CampaignMember> tempCourseList = new List<CampaignMember>();
+        List<CampaignMember> partCourseList = new List<CampaignMember>();
 
-        partCourseList = [
-            SELECT Id, Campaign.Name, Campaign.Type, Campaign.StartDate,
-                    Campaign.EndDate, edX_Enrollment_Date__c, edX_Active_Enrollment__c,
-                    Campaign.Requested__c, Status, Last_Member_Status_Change__c
-            FROM CampaignMember
-            WHERE ContactId = :ApexPages.currentPage().getParameters().get('id')
-            AND Campaign.RecordTypeId = :partCourseRecid
-        ];
+        tempCourseList = campaignMemberMap.get('Course');
+
+        if (tempCourseList.size() > 0)
+        {
+            partCourseList.addAll(tempCourseList);
+        }
         
         return partCourseList;
     }
 
     // Add to event button
-    public void AddToEvent() 
+    public void addToEvent()
     {
-        camMemEvent = new CampaignMember();
-        camMemEvent.Id = null;
-        camMemEvent.LeadId = null;
-        camMemEvent.CampaignId = elId;
-        camMemEvent.ContactId = campaignContact.Id;
-        camMemEvent.Status = 'Invited';
-        
-        insert camMemEvent;
+        if (camMemEvent.Status == null)
+        {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must select a Campaign status.'
+                )
+            );
 
-        System.Debug('Inserted a Event Campaign Member');
-        System.Debug(camMemEvent);
+            return;
+        }
+
+        try
+        {
+            camMemEvent.Id = null;
+            camMemEvent.LeadId = null;
+            camMemEvent.CampaignId = elId;
+            camMemEvent.ContactId = contactId;
+
+            insert camMemEvent;
+
+            buildCampaignMemberMap();
+        }
+        catch (Exception e)
+        {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    e.getMessage()
+                )
+            );
+
+            return;
+        }
+
+        eventDeets = false;
+        eSearchString = null;
     }
 
     // Add Interest button
-    public void AddInterest() 
+    public void addInterest()
     {
-        camMemInterest = new CampaignMember();
-        camMemInterest.Id = null;
-        camMemInterest.LeadId = null;
-        camMemInterest.CampaignId = intId;
-        camMemInterest.ContactId = campaignContact.Id;
-        camMemInterest.Status = 'Interested';
-        
-        insert camMemInterest;
+        try
+        {
+            camMemInterest = new CampaignMember();
+            camMemInterest.Id = null;
+            camMemInterest.LeadId = null;
+            camMemInterest.CampaignId = intId;
+            camMemInterest.ContactId = contactId;
+            camMemInterest.Status = 'Interested';
 
-        System.Debug('Inserted an Interest Campaign Member');
-        System.Debug(camMemInterest);
+            insert camMemInterest;
+
+            buildCampaignMemberMap();
+        }
+        catch (Exception e)
+        {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    e.getMessage()
+                )
+            );
+
+            return;
+        }
+
+        iSearchString = null;
     }
 
 
     // CR methods
-    public List<CampaignMember> getSortList() 
+    public List<CampaignMember> getActiveCRCamMems()
     {
-        sortList = new List<CampaignMember>();
-        for (CampaignMember cm: currentCampaigns)
-        {
-            if (cm.Campaign.ParentId == null)
-            {
-                sortList.add(cm);
-                for (CampaignMember ch: [
-                        SELECT Campaign.Name, Campaign.ParentId
-                        FROM CampaignMember
-                        WHERE ContactId = :campaignContact.Id
-                        AND Campaign_Type__c = 'Corporate Relations'
-                        AND Status = 'Active'
-                        AND Campaign.ParentId = :cm.Campaign.Id
-                        ORDER BY Campaign.Name
-                ])
-                {
-                    sortList.add(ch);
-                }
-            }
-        }   
-        return sortList;
+        activeCrCamMems = campaignMemberMap.get('Active CR');
+
+        return activeCrCamMems;
     }
 
     public void parentCampaignSearch()
     {
         parentCampaigns = null;
         childCampaigns = null;
-        selectedParentCampaignName = null; 
+        selectedParentCampaignName = null;
 
-        String queryString = 'SELECT Id, Name FROM Campaign WHERE RecordTypeId = \'' + crRecordTypeId + '\' AND Name LIKE \'%' + String.escapeSingleQuotes(searchString) + '%\' AND ParentId = null AND isActive = true AND Type = \'Corporate Relations\'';
-        parentCampaigns = Database.query(queryString);
+        if (searchString.length() < 2)
+        {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must enter at least 2 characters.'
+                )
+            );
+
+            return;
+        }
+
+        String sosl = '' +
+            'FIND \'*' + String.escapeSingleQuotes(searchString.trim()) + '*\' ' +
+            'IN NAME FIELDS ' +
+            'RETURNING Campaign(Id, Name ' +
+                'WHERE RecordType.Name = \'Corporate Relations\' ' +
+                'AND IsActive = true ' +
+                'AND ParentId = null ' +
+                'AND Type = \'Corporate Relations\' ' +
+                'ORDER BY Name ASC ' +
+            ')';
+
+        List<List<SObject>> sObjects = Search.query(sosl);
+
+        if (sObjects.size() > 0)
+        {
+            parentCampaigns = sObjects[0];
+        }
+        else
+        {
+            parentCampaigns = new List<Campaign>();
+        }
     }
 
     public void childCampaignSearch()
@@ -406,12 +573,12 @@ public class CampaignMemberManagementController
         currentChildCams = [
             SELECT CampaignId
             FROM CampaignMember
-            WHERE ContactId = :campaignContact.Id
+            WHERE ContactId = :contactId
             AND Campaign.ParentId = :selectedParentCampaign
             AND Status = 'Active'
         ];
 
-        childSearchSet = new Set<String>();
+        Set<String> childSearchSet = new Set<String>();
         fixedChildCampaigns = new List<Campaign>();
 
         for (CampaignMember c: currentChildCams)
@@ -419,9 +586,16 @@ public class CampaignMemberManagementController
             childSearchSet.add(c.CampaignId);
         }
 
-        String queryString = 'SELECT Id, Name FROM Campaign WHERE RecordTypeId = \'' + crRecordTypeId + '\' AND ParentId = \'' + selectedParentCampaign + '\' AND isActive = true';
+        String queryString = '' +
+            'SELECT Id, Name ' +
+            'FROM Campaign ' +
+            'WHERE RecordType.Name = \'Corporate Relations\' ' +
+            'AND ParentId = \'' + selectedParentCampaign + '\' ' +
+            'AND isActive = true';
+
         childCampaigns = Database.query(queryString);
-        for (Campaign cc: childCampaigns) 
+
+        for (Campaign cc: childCampaigns)
         {
             if(!childSearchSet.contains(cc.Id))
             {
@@ -430,28 +604,10 @@ public class CampaignMemberManagementController
         }
     }
 
-    public void parentCamNameSearch() {
-        parentCampaigns.clear();
-
-        selectedParentCampaignName = [
-            SELECT Name
-            FROM Campaign
-            WHERE Id = :selectedParentCampaign
-        ].Name;
-    }
-
-    public void childCamNameSearch() {
-        selectedChildCampaignName = [
-            SELECT Name
-            FROM Campaign
-            WHERE Id = :selectedChildCampaign
-        ].Name;
-    }
-
     public void assignToParentCampaign()
     {
         newParentCamMem = new CampaignMember();
-        newParentCamMem.ContactId = campaignContact.Id;
+        newParentCamMem.ContactId = contactId;
         newParentCamMem.CampaignId = selectedParentCampaign;
         newParentCamMem.Status = 'Active';
         searchString = null;
@@ -461,21 +617,22 @@ public class CampaignMemberManagementController
     public void assignToChildCampaign()
     {
         newChildCamMem = new CampaignMember();
-        newChildCamMem.ContactId = campaignContact.Id;
+        newChildCamMem.ContactId = contactId;
         newChildCamMem.CampaignId = selectedChildCampaign;
         newChildCamMem.Status = 'Active';
-        childCamNameSearch();
         save();
     } 
 
     public void inActivateCM() 
     {
         List<CampaignMember> childKillList = new List<CampaignMember>();
+
         inActivateCamMem = [
             SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name
             FROM CampaignMember
             WHERE Id = :inActivateCMId
         ];
+
         User currentUser = [
             SELECT Id, UserRole.Name
             FROM User
@@ -485,6 +642,7 @@ public class CampaignMemberManagementController
         if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name)
         {
             inActivateCamMem.Status = 'Inactive';
+
             if (inActivateCamMem.Campaign.ParentId == null)
             {
                 childKillList = [
@@ -498,49 +656,47 @@ public class CampaignMemberManagementController
                     kill.Status = 'Inactive';
                 }
             }
-            try
-            {
-                update inActivateCamMem;
-                update childKillList;
-            }
-            catch (Exception e)
-            {
 
-            }
+            update inActivateCamMem;
+            update childKillList;
+        }
+        else
+        {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You do not have access to remove this Affiliation, only a ' +
+                        'member of the Department that created it can.'
+                )
+            );
+        }
 
-            shouldRedirect = true;
-        }
-        else{
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You do not have access to remove this Affiliation, only a member of the Department that created it can.'));
-        }
+        buildCampaignMemberMap();
     }
 
     public void save() 
     {
-        System.debug('!!!!!!!!!!!! SAVE !!!!!!!!!!!!!!');
         try
         {
-            System.debug(newChildCamMem);
-            System.debug(newParentCamMem);
-            currentSet = new Set<String>();
+            inactiveCrCamMems = campaignMemberMap.get('Inactive CR');
+            Set<String> activeCamMemNameSet = new Set<String>();
+            Set<String> inactiveCamMemNameSet = new Set<String>();
 
-            for (CampaignMember c: currentCampaigns)
+            for (CampaignMember c: activeCrCamMems)
             {
-                currentSet.add(c.Campaign.Name);
+                activeCamMemNameSet.add(c.Campaign.Name);
             }
 
-            inActiveSet = new Set<String>();
-            for (CampaignMember ia: inActiveCampaigns)
+            for (CampaignMember ia: inactiveCrCamMems)
             {
-                inActiveSet.add(ia.Campaign.Name);
+                inactiveCamMemNameSet.add(ia.Campaign.Name);
             }
 
-            if (!inActiveSet.contains(selectedParentCampaignName))
+            if (!inactiveCamMemNameSet.contains(selectedParentCampaignName))
             {
-                if (!currentSet.contains(selectedParentCampaignName))
+                if (!activeCamMemNameSet.contains(selectedParentCampaignName))
                 {
                     insert newParentCamMem;
-                    System.debug('Inserted Parent camMem ' + newParentCamMem);
                 }
             }
             else
@@ -556,14 +712,14 @@ public class CampaignMemberManagementController
 
                 update activateParentCamMem;
             }
-            if(selectedChildCampaign != null)
+
+            if (selectedChildCampaign != null)
             {
-                if (!inActiveSet.contains(selectedChildCampaignName))
+                if (!inactiveCamMemNameSet.contains(selectedChildCampaignName))
                 {
-                    if (!currentSet.contains(selectedChildCampaignName))
+                    if (!activeCamMemNameSet.contains(selectedChildCampaignName))
                     {
                         insert newChildCamMem;
-                        System.debug('Inserted chil camMem ' + newChildCamMem);
                     }
                 }
                 else 
@@ -580,12 +736,21 @@ public class CampaignMemberManagementController
                     update activateChildCamMem;
                 }
             }
+
+            searchString = null;
+            selectedParentCampaignName = null;
+            selectedChildCampaignName = null;
+            childCampaigns = null;
+            buildCampaignMemberMap();
         }
         catch (Exception e)
         {
-            System.debug('EXCEPTION');
-            System.debug(e);
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    e.getMessage()
+                )
+            );
         }
-        shouldRedirect = true;
     }
 }

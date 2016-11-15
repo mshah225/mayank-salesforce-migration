@@ -3422,7 +3422,7 @@
                                         html += "" +
                                             (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
                                                 "<td>" + updatedDate + "</td>" +
-                                                "<td style='font-weight:bold;font-color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
+                                                "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
                                                 "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
                                                 "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
                                                 result.me3_Careers__r[i].Plan_Code__c + ")</td>" +

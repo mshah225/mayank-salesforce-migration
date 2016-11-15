@@ -48,9 +48,9 @@ public with sharing class HelpDeskController
     {
         List<SelectOption> origins = new List<SelectOption>();
         origins.add(new SelectOption('Incoming Call', 'Incoming Call'));
-        origins.add(new SelectOption('Outbound Call', 'Outbound Call'));
         origins.add(new SelectOption('My ASU', 'My ASU'));
         origins.add(new SelectOption('Chat', 'Chat'));
+
         return origins;
     }
 
@@ -133,7 +133,7 @@ public with sharing class HelpDeskController
                     'IN PHONE FIELDS ' +
                     'RETURNING Contact(' +
                     'Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
-                    'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, FERPA_Directory_Hold__c,' +
+                    'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
                     'Personal_Email__c, CAP__c WHERE FirstName != null ' +
                     'ORDER BY ' + sortField + ' ' + sortDir + ' LIMIT 25' +
                     ')';
@@ -161,7 +161,7 @@ public with sharing class HelpDeskController
         List<Contact> nonAffiliateList = [
             SELECT Id, Name, FirstName, LastName, Phone, Help_Desk_Provided_Phone__c,
                 Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, Personal_Email__c,
-                CAP__c, FERPA_Directory_Hold__c
+                CAP__c
             FROM Contact
             WHERE Name = 'Non-Affiliate Caller'
         ];
@@ -422,7 +422,7 @@ public with sharing class HelpDeskController
             soql = '' +
                 'SELECT Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
                 'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, ' +
-                'Personal_Email__c, CAP__c, FERPA_Directory_Hold__c ' +
+                'Personal_Email__c, CAP__c ' +
                 'FROM Contact ' +
                 'WHERE FirstName != null';
 
@@ -463,7 +463,7 @@ public with sharing class HelpDeskController
                     'RETURNING Contact(' +
                     'Name, Firstname, Lastname, Phone, Help_Desk_Provided_Phone__c, ' +
                     'Birthdate, ASURite_ID__c, EMPLID__c, ASU_Email__c, CAP__c, ' +
-                    'Personal_Email__c, FERPA_Directory_Hold__c WHERE FirstName != null ' +
+                    'Personal_Email__c WHERE FirstName != null ' +
                     'ORDER BY ' + sortField + ' ' + sortDir + ' ' +
                     'LIMIT 25' +
                     ')';

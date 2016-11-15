@@ -321,7 +321,8 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <div class="pull-left">
-                                                    <apex:commandButton value="Submit"
+                                                    <apex:commandButton
+                                                        value="Submit"
                                                         action="{!helpfulNo}"
                                                         styleClass="btn btn-default"
                                                         style="width:40px;height:15px;padding:3px;"/>
@@ -436,13 +437,13 @@
                                                 newPin="{!newPin}"
                                                 changePin="{!changePin}"/>
 
-                    <c:SCMyCasesBox />
+                    <c:SCMyCasesBox/>
                 </div><!-- end col-md-4 -->
             </div>
         </div><!-- end row -->
     </div><!-- end ASU Content -->
 
-    <c:SCFooter />
+    <c:SCFooter/>
 
     <script>
         if (!(navigator.userAgent.match(/Android/i)

@@ -198,8 +198,6 @@ public with sharing class CaseTransferController
                 SELECT Id, Name, Title, Department, UserRole.Id
                 FROM User
                 WHERE UserRole.ParentRoleId = :UserInfo.getUserRoleId()
-                AND IsActive = true
-                AND UserPermissionsSupportUser = true
             ];
 
             if (subordinateList.size() > 0)
@@ -225,8 +223,6 @@ public with sharing class CaseTransferController
                     SELECT Id, Name, Title, Department
                     FROM User
                     WHERE UserRole.Id = :usersParentRoleId
-                    AND IsActive = true
-                    AND UserPermissionsSupportUser = true
                 ];
 
                 usersToAdd.addAll(managers);

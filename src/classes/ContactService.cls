@@ -193,36 +193,19 @@ public class ContactService
     }
 
     /**
-    * Get all of the information pertaining to the provided contact Id or emplId
-    * If emplId is provided and contactId is not, query on emplId. Else always query
-    * on the provided contactId.
+    * Get all of the information pertaining to the provided contact Id
     * @param contactId A Contact ID
-    * @param emplId the contacts EMPLID__c
     * @return contactInfo The corresponding Contact
     */
-    public static Contact getContactInformation(String contactId, String emplId)
+    public static Contact getContactInformation(Id contactId)
     {
         Contact contactInfo = null;
         String contactFields = contactFieldsToString();
-        String contactInfoQuery;
 
         // Get the list of cases associated with our set of contacts
         try
         {
-            if (emplId != '')
-            {
-                contactInfoQuery = '' +
-                    'SELECT ' + contactFields + ' ' +
-                    'FROM Contact ' +
-                    'WHERE EMPLID__c = :emplId';
-            }
-            else
-            {
-                contactInfoQuery = '' +
-                    'SELECT ' + contactFields + ' ' +
-                    'FROM Contact ' +
-                    'WHERE Id = :contactId';
-            }
+            String contactInfoQuery = 'SELECT ' + contactFields + ' FROM Contact WHERE Id = :contactId';
 
             contactInfo = Database.query(contactInfoQuery);
         }
@@ -236,18 +219,6 @@ public class ContactService
 
         return contactInfo;
     }
-
-   /**
-    * Get all of the information pertaining to the provided contact Id; overloaded for 
-    * backward comptibility
-    * @param contactId A Contact ID
-    * @return contactInfo The corresponding Contact
-    */
-    public static Contact getContactInformation(Id contactId)
-    {
-        return getContactInformation(contactId, '');
-    }
-
 
 	public class ContactServiceException extends Exception {}
 }

@@ -15,8 +15,6 @@ global class BomgarCreateCaseUtil
         String.escapeSinglequotes(jsonObject);
         JSONParser parser = JSON.createParser(jsonObject);
 
-        System.debug(jsonObject);
-
         while (parser.nextToken() != null)
         {
             if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
@@ -42,18 +40,23 @@ global class BomgarCreateCaseUtil
 
         // Handle ASURITE for BB chat if asurite is null.
         // (bb_asurite__ca or asurite_@ce.asu.edu)
-        if (externalKey == 'BB' && asurite == '') {
-            if (description.contains('ASURITE ID:')) {
+        if (externalKey == 'BB' && asurite == '')
+        {
+            if (description.contains('ASURITE ID:'))
+            {
                 asurite = description.substring(
                     description.indexOf('ASURITE ID:') + 12,
                     description.indexOf('Full Name:')
                 );
 
-                if (asurite.contains('_')) {
+                if (asurite.contains('_'))
+                {
                     String[] strs = asurite.split('_');
 
-                    for (String s : strs) {
-                        if (s.length() > 5 && !s.contains('@') && !s.contains('.')) {
+                    for (String s : strs)
+                    {
+                        if (s.length() > 5 && !s.contains('@') && !s.contains('.'))
+                        {
                             asurite = s;
                         }
                     }
@@ -61,13 +64,16 @@ global class BomgarCreateCaseUtil
             }
         }
 
-        if (externalKey == 'BB' && asurite != '') {
-            if (asurite.contains('_')) {
-                
+        if (externalKey == 'BB' && asurite != '')
+        {
+            if (asurite.contains('_'))
+            {
                 String[] strs = asurite.split('_');
 
-                for (String s : strs) {
-                    if (s.length() > 5 && !s.contains('@') && !s.contains('.')) {
+                for (String s : strs)
+                {
+                    if (s.length() > 5 && !s.contains('@') && !s.contains('.'))
+                    {
                         asurite = s;
                     }
                 }
@@ -86,13 +92,20 @@ global class BomgarCreateCaseUtil
         }
 
         // Set case values
+        if (description.length() > 255)
+        {
+            c.Subject = description.substring(0, 254);
+        }
+        else
+        {
+            c.Subject = description;
+        }
 
         c.Status = 'New';
         c.Description = description;
         c.Priority = 'Normal';
         c.Origin__c = 'Chat';
         c.Functional_Group__c = 'Help Desk';
-        c.Subject = c.Functional_Group__c + ' Live Chat';
 
         // Check if finance chat and route, if not default to gen
         if (externalKey == 'Finances')
@@ -153,10 +166,11 @@ global class BomgarCreateCaseUtil
                 }
             }
 
-            if (asurite != '') {
+            if (asurite != '')
+            {
                 // Try to create a new Contact
                 Contact newContact = new Contact();
-                newContact.Email = firstname + '.' + lastname + '@asu.edu';
+
                 newContact.Email = asurite + '@asu.edu';
                 newContact.ASURite_ID__c = asurite;
                 newContact.EMPLID__c = emplId;

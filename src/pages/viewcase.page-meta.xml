@@ -5,4 +5,9 @@
     <confirmationTokenRequired>false</confirmationTokenRequired>
     <description>Shows the case details based on the Case Id in the URL params.</description>
     <label>viewcase</label>
+    <packageVersions>
+        <majorNumber>2</majorNumber>
+        <minorNumber>10</minorNumber>
+        <namespace>bomgar</namespace>
+    </packageVersions>
 </ApexPage>

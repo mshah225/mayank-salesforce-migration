@@ -1,0 +1,729 @@
+<apex:page docType="html-5.0"
+           showHeader="false"
+           sidebar="false"
+           cache="false"
+           controller="SubscriptionCenterController"
+           action="{!init}">
+    <head>
+        <title>ASU | Subscription Center</title>
+        <c:asu_responsive_header_section />
+        <style>
+            .feedbackButton {
+            	float:right;
+            }
+            
+            #bgWrapper h3 {
+                display:block;
+            }
+            
+            #bgWrapper tr {
+                height:100%;
+            }
+            
+            #bgWrapper td {
+                height:100%;
+            }
+            
+            #bgWrapper table {
+                margin:0px !important;
+                padding:0px !important;
+                border-collapse:collapse !important;
+            } 
+            
+            #bgWrapper table > tbody > tr > td {
+                padding:0px !important;
+                margin:0px !important;
+            }
+            
+            #bgWrapper table > tbody + tbody {
+                border:1px !important;
+            }
+            
+            #bgWrapper tr {
+                padding:0px !important;
+                margin:0px !important;
+            }
+            
+            #bgWrapper .row {
+                padding:0px !important;
+                padding-top:17px !important;
+                padding-bottom:17px !important;
+            }
+            
+            #bgWrapper .parentCampaign {
+                border:1px solid rgb(183,183,183) !important;
+                padding:20px !important;
+            }
+            
+            .parentCampaign.expandedCampaign {
+                margin:auto;
+                background-color:#333;
+            }
+            
+            .parentCampaign.expandedCampaign h4 {
+                color:white !important;
+                padding:0px !important;
+            }
+            .parentCampaign.collapsedCampaign {
+                margin:auto;
+                background-color:RGB(240,240,240);
+            }
+            
+            .parentCampaign.collapsedCampaign h4 {
+                padding:0px !important;
+                color:black !important;
+            }
+            
+            .childCampaigns {
+                display:none;
+            }
+            
+            #bgWrapper .childCampaign {
+                border:1px solid rgb(183,183,183) !important;
+                padding:20px !important;
+                background-color:white !important;
+                color:black !important;
+                border-bottom:none;
+            }
+
+            #bgWrapper .childCampaign h6 {
+                color:black !important;
+                display:block;
+                margin:0px !important;
+            }
+            
+            .campaignTitle {
+                display:inline-block !important;
+                width:78% !important;
+                padding:0px !important;
+                margin:0px !important;
+                float:left;
+            }
+            
+            #bgWrapper p.campaignDescription {
+                display:inline-block !important;
+                width:85% !important;
+                padding:0px !important;
+                margin:0px !important;
+            }
+            
+            .campaignButtons {
+                height:100%;
+                display:inline-block;
+                float:right;
+                width:20% !important;
+                padding:0px !important;
+                margin:0px !important;
+            }
+            
+            .campaignButtons > div {
+                position:relative !important;
+                top:calc(50% - 14px) !important;
+            }
+            
+            #bgWrapper .form-type-checkbox {
+                display:inline-block !important;
+                margin-bottom:0 !important;
+            }
+            
+            #bgWrapper .form-item {
+                margin-top:0 !important;
+            }
+            
+            #bgWrapper .form-type-checkbox label {
+                margin-bottom:0 !important;
+            }
+            
+            #bgWrapper label {
+                display:inline-block !important;
+                float:left !important;
+            }
+            
+            #bgWrapper .expansionIndicator {
+                display:inline-block !important;
+                float:right !important;
+                height:28px !important;
+                width:28px !important;
+                overflow:hidden !important;
+            }
+            
+            #bgWrapper .collapsedArrow {
+                fill:#333;
+            }
+            
+            #bgWrapper .expandedArrow {
+                display:none;
+                fill:white;
+            }
+            
+            #bgWrapper .childCampaignInformation {
+                display: inline-block !important;
+                width: 78% !important;
+                height: 100% !important;
+            }
+            
+            #bgWrapper .childCampaignButtons {
+                width: 20% !important;
+                float: right !important;
+                height: 100% !important;
+                position:relative;
+            }
+            
+            #bgWrapper .childCampaignButtons label {
+                position:absolute !important;
+                top:calc(50% - 14px);
+            }
+            
+            #pageBlackOut {
+                display:none;
+                background: RGBA(33,33,33,.7) !important;
+                position: fixed !important;
+                width: 100% !important;
+                z-index: 999 !important;
+                top: -100px !important;
+                height: calc(100% + 100px) !important;
+            }
+            
+            #pageBlackOut #MessageBox {
+                background:white;
+                position: absolute;
+                width:400px;
+                height:200px;
+                top:calc(50% - 100px);
+                left:calc(50% - 200px);
+                padding:30px;
+                border-radius: 5px;
+            }
+            
+            #pageBlackOut #MessageBox #successMessage {
+                position:relative;
+                width:100%;
+                height:100%;
+                padding:0px !important;
+                margin:0px !important;
+            }
+            
+            #pageBlackOut #MessageBox #successMessage  #successMenuBar{
+                height:20px;
+                width:100%;
+                margin:0px !important;
+                padding:0px !important;
+            }
+            
+            #successMessageContent,
+            #warningMessageContent {
+                text-align:center;
+                position:relative;
+            }
+            
+            #successMessageContent,
+            #warningMessageContent {
+                display:none;
+            }
+            
+            #bgWrapper #warningMessageContent a.btn,
+            #bgWrapper #warningMessageContent .btn {
+                margin-left:15px !important;
+                margin-right:15px !important;
+            }
+            
+            #bgWrapper a.close {
+                color:black !important;
+                border-bottom:1px dotted black !important;
+            }
+            
+            #bgWrapper a.close:hover {
+                color:black !important;
+            }
+            
+            #bgWrapper #searchBoxCont input {
+                margin:5px !important;
+                width:25% !important;
+                display:inline !important;
+            }
+            
+            #bgWrapper #searchBoxCont a {
+                margin:5px !important;
+            }
+            
+            @media screen and (max-width:650px) {
+                #bgWrapper #searchBoxCont input {
+                    width:calc(100% - 34px) !important;
+                    display:block !important;
+                }
+                
+                #bgWrapper #searchBoxCont a {
+                    width:calc(100% - 58px) !important;
+                }
+                
+                #bgWrapper .updateButton {
+                   width:calc(100% - 58px) !important;
+                }
+                
+                #pageBlackOut #MessageBox {
+                    width:100% !important;
+                    left:0px;
+                }
+                
+                #bgWrapper .expandedArrow {
+                    fill:RGBA(0,0,0,0);
+                }
+            }
+        </style>
+        <script>
+            window.onclick = function(event) {
+                modal = document.getElementById('pageBlackOut');
+            
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            
+            }
+        
+            function stopRKey(evt) {
+               var evt = (evt) ? evt : ((event) ? event : null);
+               var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+               if ((evt.keyCode == 13) && (node.type=="text")) {return false;}
+            }
+            
+            document.onkeypress = stopRKey;
+        
+            $(document).ready(function() {
+                $('.close').click(closeWithoutAction);
+                $('.cancel').click(closeWithoutAction);
+            });
+        
+            // Used named functions since SFDC unbinds events on rerender
+            function unsubscribeFromAll() {
+                var checkBoxes = $('.checkbox').each(function () {
+                    $(this).prop('checked', false);
+                });
+                
+                if (upsertAllSubs() == null) { //Should always equals null
+                    $('#warningMessageContent').css('display', 'none');
+                    $('#successMessageContent').css('display','block');
+                } else {
+                    // WHAT?! May want to show an error message?
+                }
+                
+                goToTop();
+            }
+            
+            function showWarning() {
+                $('#successMessageContent').css('display', 'none');
+                $('#warningMessageContent').css('display', 'block');
+                $('#pageBlackOut').css('display', 'block');
+            }
+            
+            function parentCheckBoxHandler(ele) {
+                var checked = $(ele).find('input').is(':checked');
+                var childCampaigns = $(ele).parentsUntil('table').next('.childCampaigns');
+                
+                $(childCampaigns).find('.checkbox').prop('checked', checked);
+                
+                expandCampaign(ele);
+            }
+        
+            function childCheckBoxHandler(ele) {
+                var oneTrue = false;
+                var parentCheckBox = $(ele).parentsUntil('tbody').parent().prev('tbody')
+                    .find('.parentCheckBox').children('input');
+                var childCheckboxes = $(ele).parentsUntil('.childCampaigns').parent()
+                    .find('.childCheckBox').children('.checkbox');
+                
+                $(childCheckboxes).each(function() {
+                    if ($(this).is(':checked')) {
+                        oneTrue = true;
+                    }
+                });
+                
+                $(parentCheckBox).prop('checked', oneTrue);
+            }
+            
+            //Function to scroll to anchor when a campaign is expanded
+            function goToCampaign(button){
+                var ele = $(button).parentsUntil('.parentCampaign').parent();
+                $('html,body').animate({scrollTop: ele.offset().top},0);
+            }
+            
+            function goToTop(){
+                var ele = $('[id*="mySubscriptions"]');
+                $('html,body').animate({scrollTop: ele.offset().top},0);
+            }
+            
+            //Expand a campaign
+            function expandCampaign(button) {
+                var parentCampaign = $(button).parentsUntil('.parentCampaign').parent();
+                var childCampaigns = $(button).parentsUntil('table').next('.childCampaigns');
+                var expansionIndicator = $(button).parentsUntil('.campaignButtons').parent().find('.expansionIndicator');
+                
+                $(parentCampaign).removeClass('collapsedCampaign');
+                $(expansionIndicator).children('.collapsedArrow').hide();
+                $(parentCampaign).addClass('expandedCampaign');
+                $(expansionIndicator).children('.expandedArrow').show();
+                $(childCampaigns).show();
+            }
+            
+            function toggleCampaignExpansion(button) {
+                var childCampaigns = $(button).parentsUntil('table').next('.childCampaigns');
+                var expansionIndicator;
+                var parentCampaign;
+                
+                if ($(button).hasClass('campaignTitle')) {
+                    parentCampaign = $(button).parent();
+                    expansionIndicator = $(button).parent().find('.expansionIndicator');
+                } else {
+                    parentCampaign = $(button).parentsUntil('.parentCampaign').parent();
+                    expansionIndicator = $(button).parentsUntil('.campaignButtons').parent().find('.expansionIndicator');
+                }
+                
+                if ($(childCampaigns).css('display') != 'table-row-group') {
+                    $(parentCampaign).removeClass('collapsedCampaign');
+                    $(expansionIndicator).children('.collapsedArrow').hide();
+                    $(parentCampaign).addClass('expandedCampaign');
+                    $(expansionIndicator).children('.expandedArrow').show();
+                    $(childCampaigns).show();
+                } else {
+                    $(parentCampaign).addClass('collapsedCampaign');
+                    $(expansionIndicator).children('.collapsedArrow').show();
+                    $(parentCampaign).removeClass('expandedCampaign');
+                    $(expansionIndicator).children('.expandedArrow').hide();
+                    $(childCampaigns).hide();
+                }
+            }
+            
+            function closeWithoutAction() {
+                $('#pageBlackOut').css('display', 'none');
+                $('#warningMessageContact').css('display', 'none');
+                $('#successMessageContact').css('display', 'none');
+            }
+        </script>
+    </head>
+    <body>
+        <div id="main-search" class="main-search closed"></div>
+        <c:SCHeader pageHead="Subscription Center"
+            showNavBar="false"/>
+        <div id="bgWrapper">
+            <div id="pageBlackOut">
+                <div id="MessageBox">
+                    <div id="successMessage">
+                        <div id="successMenuBar">
+                            <a class="close" href="javascript:;">x</a>
+                        </div>
+                        <div id="successMessageContent">
+                            <p>You have successfully updated<br/>
+                            your subscriptions.</p>
+                        </div>
+                        <div id="warningMessageContent">
+                            <p>Unsubscribe from all ASU email publications.</p>
+                            <a href="javascript:;" class="btn btn-primary update" onclick="unsubscribeFromAll();">Unsubscribe</a>
+                            <a href="javascript:;" class="btn btn-secondary cancel">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="asu_content_well">
+                <div class="container">
+	                <apex:outputPanel layout="none" rendered="{!Not(failState)}">
+		                <apex:actionRegion >
+		                    <apex:form Id="mySubscriptions" styleClass="webform-client-form">
+		                        <apex:actionFunction name="upsertMySubs" action="{!upsertSubTree}" rerender="allSubscriptions, mySubscriptions"/>
+		                        <script>
+		                            function updateMySubs() {
+		                                $('#pageBlackOut').css('display', 'block');
+		                                
+		                                // Ensure the correct message is displaying
+		                                $('#warningMessageContent').css('display', 'none');
+		                                
+		                                if (upsertMySubs() == null) { //Should always equals null
+		                                    $('#successMessageContent').css('display','block');
+		                                } else {
+		                                    // WHAT?! May want to show an error message?
+		                                }
+		                                
+		                                goToTop();
+		                            }
+		                        </script>
+		                        <div class="row">
+                                    <div class="col-sm-12">
+                                        <h3>My Subscriptions</h3>
+                                    </div>
+		                        </div>
+		                        <div class="row">
+                                    <div class="col-sm-12">
+                                        <apex:outputPanel rendered="{!subtree.show}">
+                                            <table id="myCampaigns">
+                                                <apex:repeat value="{!subTree.buSubs}" var="buId">
+                                                    <apex:outputPanel rendered="{!subTree.buSubs[buId].show}" layout="none">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="parentCampaign collapsedCampaign">
+                                                                    <div class="campaignTitle" onclick="toggleCampaignExpansion(this);">
+                                                                        <h4>{!subTree.buSubs[buId].sub.info.name}</h4>
+                                                                    </div>
+                                                                    <div class="campaignButtons form-type-checkbox form-item checkbox">
+                                                                        <div style="display:inline-block;float:left;text-align:left; width:50%;">
+                                                                            <apex:outputLabel for="myBu" styleClass="parentCheckBox" onclick="parentCheckBoxHandler(this);" 
+                                                                                              title="Subscribe to General {!subTree.buSubs[buId].sub.info.name} emails">
+                                                                                <apex:inputCheckbox value="{!subTree.buSubs[buId].sub.subscriber.IsSubscribed__c}" id="myBu" styleClass="checkbox"/>
+                                                                                <span class="outer-wrap">
+                                                                                    <i class="fa fa-check"></i>
+                                                                                </span> 
+                                                                            </apex:outputLabel>
+                                                                        </div>
+                                                                        <div style="display:inline-block;float:left;text-align:right; width:50%;">
+                                                                            <span class="expansionIndicator" onclick="toggleCampaignExpansion(this);"
+                                                                                  title="Click to expand - Search for specific {!subTree.buSubs[buId].sub.info.name} email lists" >
+                                                                                <svg height="28" width="28" class="collapsedArrow">
+                                                                                    <polygon points="14,4 14,24 24,14" />
+                                                                                    +
+                                                                                </svg>
+                                                                                <svg height="28" width="28" class="expandedArrow">
+                                                                                    <polygon points="4,14 24,14 14,24" />
+                                                                                    -
+                                                                                </svg>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                        <tbody class="childCampaigns">
+                                                            <apex:repeat value="{!subTree.buSubs[buId].catSubs}" var="catId">
+                                                                <apex:outputPanel rendered="{!subTree.buSubs[buId].catSubs[catId].show}" layout="none">
+                                                                    <tr>
+                                                                        <td class="childCampaign">
+                                                                            <div class="childCampaignInformation">
+                                                                                <h6>{!subTree.buSubs[buId].catSubs[catId].info.name}</h6>
+                                                                                <p class="campaignDescription">{!subTree.buSubs[buId].catSubs[catId].info.Subscription_Center_Description__c}</p>
+                                                                            </div>
+                                                                            <div class=" form-type-checkbox form-item checkbox childCampaignButtons" style="">
+                                                                                <apex:outputLabel for="myCat" styleClass="childCheckBox" onclick="childCheckBoxHandler(this);"
+                                                                                                  title="Subscribe to {!subTree.buSubs[buId].catSubs[catId].info.name}">
+                                                                                    <apex:inputCheckbox value="{!subTree.buSubs[buId].catSubs[catId].subscriber.IsSubscribed__c}" id="myCat" styleClass="checkbox"/>
+                                                                                    <span class="outer-wrap">
+                                                                                        <i class="fa fa-check"></i>
+                                                                                    </span> 
+                                                                                </apex:outputLabel>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </apex:outputPanel>
+                                                            </apex:repeat>
+                                                        </tbody>
+                                                    </apex:outputPanel>
+                                                </apex:repeat>
+                                            </table>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!NOT(subtree.show)}">
+                                            <p>
+                                                You are not currently subscribed to any email lists. Please use the search below to subscribe to email lists that interest you.
+                                            </p>
+                                        </apex:outputPanel>
+                                    </div>
+		                        </div>
+		                        <div class="row">
+                                    <div class="col-sm-12">
+                                        <div style="text-align:right;">
+                                            <a href="javascript:;" class="btn btn-primary btn-lg updateButton" onclick="updateMySubs();">Update Subscriptions</a><br/>
+                                            <a href="javascript:;" onclick="showWarning();">Unsubscribe from all ASU email publications.</a>
+                                        </div>
+                                    </div>
+		                        </div>
+		                    </apex:form>
+		                    </apex:actionRegion>
+		                    <apex:actionRegion >
+		                    <apex:form id="allSubscriptions" styleClass="webform-client-form">
+		                        <apex:actionFunction name="upsertAllSubs" action="{!upsertSubTree}" rerender="allSubscriptions, mySubscriptions, testPanel"/>
+		                        <apex:actionFunction name="upsertSearchResults" action="{!upsertSearchResults}" rerender="allSubscriptions, mySubscriptions, searchSubscriptions"/>
+		                        <apex:actionFunction name="doSearch" action="{!doSearch}" rerender="allSubscriptions"/>
+		                        <script>
+		                            function submitListener(e) {
+		                                var k = 0;
+		                                
+		                                if (window.event) {
+		                                    k = e.keyCode;
+		                                } else if (e.which) {
+		                                    k = e.which;
+		                                }
+		                                
+		                                if (k == 13) {
+		                                    doSearch();
+		                                }
+		                            }
+		                        
+		                            function updateAllSubs() {
+		                                $('#pageBlackOut').css('display', 'block');
+		                                
+		                                // Ensure the correct message is displaying
+		                                $('#warningMessageContent').css('display', 'none');
+		                                
+		                                if (!{!showSearchResults}) {
+		                                    if (upsertAllSubs() == null) { //Should always equals null
+		                                        $('#successMessageContent').css('display','block');
+		                                    } else {
+		                                        // WHAT?! May want to show an error message?
+		                                    }
+		                                } else {
+		                                    if (upsertSearchResults() == null) {
+		                                        $('#successMessageContent').css('display','block');
+		                                    } else {
+		                                        //WHAT?! May want to show an error message?
+		                                    }
+		                                }
+		                                
+		                                goToTop();
+		                            }
+		                        </script>
+		                        <div class="row">
+                                    <div class="col-sm-12">
+                                        <h3>Manage My Subscriptions For:</h3><br/>
+                                        <a href="mailto:{!emailAddress}">{!emailAddress}</a><br/>
+                                        <p>We want to stay in touch, but only in ways that you find helpful. Select the types of emails you would like to receive below and click 'Update Subscriptions' when finished.</p>
+                                    </div>
+		                        </div>
+		                        <div class="row">
+                                    <div class="col-sm-12">
+                                        <div id="searchBoxCont" class="form-item webform-component webform-component-textfield webform-component--plain-input">
+                                            <apex:outputLabel for="searchBox" />
+                                            <apex:inputText id="searchBox" styleClass="form-control form-text" maxlength="128" size="60" value="{!searchInput}" onkeyup="submitListener(event);" />
+                                            <apex:commandLink action="{!doSearch}" value="Search" styleClass="btn btn-primary btn-lg" rerender="allSubscriptions"/>
+                                            <!--<apex:commandButton style="display:none !important;" rerender="allSubscriptions" action="{!doSearch}"/>-->
+                                        </div>
+                                    </div>
+		                        </div>
+		                        <div class="row">
+                                    <div class="col-sm-12">
+                                        <apex:outputPanel rendered="{!NOT(showSearchResults)}" layout="none">
+                                            <table id="allCampaigns">
+                                                <apex:repeat value="{!subTree.buSubs}" var="buId">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="parentCampaign collapsedCampaign">
+                                                                <div class="campaignTitle" onclick="toggleCampaignExpansion(this);">
+                                                                    <h4>{!subTree.buSubs[buId].sub.info.name}</h4>
+                                                                </div>
+                                                                <div class="campaignButtons form-type-checkbox form-item checkbox">
+                                                                    <div style="display:inline-block;float:left;text-align:left; width:50%;">
+                                                                        <apex:outputLabel for="allBu" styleClass="parentCheckBox" onclick="parentCheckBoxHandler(this);" 
+                                                                                          title="Subscribe to General {!subTree.buSubs[buId].sub.info.name} emails">
+                                                                            <apex:inputCheckbox value="{!subTree.buSubs[buId].sub.subscriber.IsSubscribed__c}" id="allBu" styleClass="checkbox"/>
+                                                                            <span class="outer-wrap">
+                                                                                <i class="fa fa-check"></i>
+                                                                            </span> 
+                                                                        </apex:outputLabel>
+                                                                    </div>
+                                                                    <div style="display:inline-block;float:left;text-align:right; width:50%;">
+                                                                        <span class="expansionIndicator" onclick="toggleCampaignExpansion(this);"
+                                                                              title="Click to expand - Search for specific {!subTree.buSubs[buId].sub.info.name} email lists" >
+                                                                            <svg height="28" width="28" class="collapsedArrow">
+                                                                                <polygon points="14,4 14,24 24,14" />
+                                                                                +
+                                                                            </svg>
+                                                                            <svg height="28" width="28" class="expandedArrow">
+                                                                                <polygon points="4,14 24,14 14,24" />
+                                                                                -
+                                                                            </svg>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tbody class="childCampaigns">
+                                                        <apex:repeat value="{!subTree.buSubs[buId].catSubs}" var="catId">
+                                                            <tr>
+                                                                <td class="childCampaign">
+                                                                    <div class="childCampaignInformation">
+                                                                        <h6>{!subTree.buSubs[buId].catSubs[catId].info.name}</h6>
+                                                                        <p class="campaignDescription">{!subTree.buSubs[buId].catSubs[catId].info.Subscription_Center_Description__c}</p>
+                                                                    </div>
+                                                                    <div class=" form-type-checkbox form-item checkbox childCampaignButtons" style="">
+                                                                        <apex:outputLabel for="allCat" styleClass="childCheckBox" onclick="childCheckBoxHandler(this);"
+                                                                                          title="Subscribe to {!subTree.buSubs[buId].catSubs[catId].info.name}">
+                                                                            <apex:inputCheckbox value="{!subTree.buSubs[buId].catSubs[catId].subscriber.IsSubscribed__c}" id="allCat" styleClass="checkbox"/>
+                                                                            <span class="outer-wrap">
+                                                                                <i class="fa fa-check"></i>
+                                                                            </span> 
+                                                                        </apex:outputLabel>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </apex:repeat>
+                                                    </tbody>
+                                                </apex:repeat>
+                                            </table>
+                                        </apex:outputPanel>
+                                    </div>
+                                    <apex:outputPanel id="searchSubscriptions" rendered="{!showSearchResults}">
+                                        <apex:outputPanel rendered="{! searchResults.size > 0}">
+                                            <table id="searchCampaigns">
+                                                <apex:repeat value="{!searchResults}" var="subscription">
+                                                    <tr>
+                                                        <td class="childCampaign">
+                                                            <div class="childCampaignInformation">
+                                                                <h6>{!subscription.info.Name}</h6>
+                                                                <p class="campaignDescription">{!subscription.info.Subscription_Center_Description__c}</p>
+                                                            </div>
+                                                            <div class=" form-type-checkbox form-item checkbox childCampaignButtons" style="">
+                                                                <apex:outputLabel for="searchCat" styleClass="childCheckBox" onclick="childCheckBoxHandler(this);">
+                                                                    <apex:inputCheckbox value="{!subscription.subscriber.IsSubscribed__c}" id="searchCat" styleClass="checkbox" />
+                                                                    <span class="outer-wrap">
+                                                                        <i class="fa fa-check"></i>
+                                                                    </span> 
+                                                                </apex:outputLabel>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </apex:repeat>
+                                            </table>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!searchResults.size = 0}">
+                                            <p>
+                                                No results found. Please try again.
+                                            </p>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+		                        </div>
+		                        <div class="row">
+                                    <div class="col-sm-12">
+                                        <div style="text-align:right;">
+                                            <a href="javascript:;" class="btn btn-primary btn-lg updateButton" onclick="updateAllSubs();">Update Subscriptions</a><br/>
+                                            <a href="javascript:;" onclick="showWarning();">Unsubscribe from all ASU email publications.</a>
+                                        </div>
+                                    </div>
+		                        </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <c:DynamicFeedbackButton carName="Subscription Center"
+                                            betaTag="true"
+                                            classes="btn btn-primary btn-lg"/>
+                                    </div>
+                                </div>
+		                    </apex:form>
+	                    </apex:actionRegion>
+	                </apex:outputPanel>
+	                <apex:outputPanel layout="none" rendered="{!failState}">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <p>ASU was unable to process your request. We apologize for the inconvenience. 
+                                    Our support team has been notified of this error.</p>
+                                <p>If you're unable to access the Subscription Center or need immediate assistance, please call 1-855-ASU-5080.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <c:DynamicFeedbackButton carName="Subscription Center"
+                                    betaTag="true"
+                                    classes="btn btn-primary btn-lg"
+                                    contactId="{!subscriberId}" 
+                                    miscInformation="Subscriber Id: {!subscriberId}"/>
+                            </div>
+                        </div>
+	                </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+        <c:SCFooter />
+    </body>
+</apex:page>

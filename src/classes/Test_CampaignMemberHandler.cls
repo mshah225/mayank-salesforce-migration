@@ -20,7 +20,7 @@ public class Test_CampaignMemberHandler {
             Opportunity opp = new Opportunity();
             opp.Name = 'Test Opp ' + c.LastName;
             opp.Contact__c = c.Id;
-            opp.AccountId = c.AccountId; // 
+            opp.AccountId = c.AccountId;
             opp.StageName = 'Prospect';
             opp.CloseDate = date.today() + 365;
             opp.Type = 'First Time Freshman';

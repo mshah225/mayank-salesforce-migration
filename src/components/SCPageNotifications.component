@@ -29,7 +29,7 @@
                 <button type="button"
                         class="close"
                         data-dismiss="alert">×</button>
-                <apex:outputText >
+                <apex:outputText>
                     You are currently viewing as {!firstName} {!lastName} in read only mode. You will not be able to take any actions on this page.
                 </apex:outputText>
             </div>
@@ -40,7 +40,7 @@
                 <button type="button"
                         class="close"
                         data-dismiss="alert">×</button>
-                <apex:outputText >
+                <apex:outputText>
                     Your PIN cannot contain your year of birth.
                     <br />
                     Your PIN must not use more than 4 duplicate numbers.

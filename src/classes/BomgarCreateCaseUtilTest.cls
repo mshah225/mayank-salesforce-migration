@@ -147,37 +147,6 @@ private class BomgarCreateCaseUtilTest
         System.assertEquals(testContact.Id, testCase.ContactId);
     }
 
-    @isTest static void testContactLookupNoEmplIdOrASURite()
-    {
-        Test.startTest();
-        Contact testContact = ContactService.createTestContact();
-        testContact.EMPLID__c = '';
-        testContact.ASURite_ID__c = '';
-        testContact.FirstName = 'nord';
-        testcontact.LastName = 'berg';
-        testContact.Email = testContact.FirstName + '.' + testContact.LastName + '@asu.edu';
-
-        String value = null;
-        bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
-        webEvent.bomgar__Username__c = 'joetest123123';
-        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
-            '"employeeNumber":"", ' +
-            '"description":"Bacon ipsum dolor amet bresaola drumstick leberkas", ' +
-            '"asuriteId":"", ' +
-            '"externalKey":"Other"}';
-        value = BomgarCreateCaseUtil.createCase(webEvent);
-
-        Case testCase = [
-            SELECT Id, ContactId
-            FROM Case
-            WHERE Id = :value
-        ];
-
-        Test.stopTest();
-
-        System.assertEquals(testContact.Email, 'nord.berg@asu.edu');
-    }
-
     @isTest static void testAssignCase()
     {
         Test.startTest();

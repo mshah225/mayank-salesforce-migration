@@ -617,7 +617,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals('Test RMM Group 2', createdCase.Functional_Group__c);
    } 
 
-  @isTest static void testBothBodiesPopulated()
+   @isTest static void testEmailPlainTextBody()
    {
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
@@ -651,7 +651,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assert(createdCase.Description == 'This is a plaintext body');
    }
 
-   @isTest static void testHTMLBodyPopulated()
+   @isTest static void testHTMLPlainTextBody()
    {
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
@@ -685,40 +685,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assert(createdCase.Description == 'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\nThis is a HTML body');
    }
 
-   @isTest static void testNoBodiesPopulatedNoAttachment()
-   {
-        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
-        insert c;
-
-        Messaging.InboundEmail email = new Messaging.InboundEmail();
-        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-
-        List<string> toAddresses = new List<string>();
-        toAddresses.add('service12345123451234512345@test.test');   
-        email.toAddresses = toAddresses;
-        email.subject = 'test';
-        email.fromAddress = 'user2@acme.com.test';
-        email.fromName = 'Last, First';
-        email.plainTextBody = null;
-        email.htmlBody = null;
-        env.fromAddress = 'user@acme.com.test';
-
-        // call the class and test it with the data in the testMethod
-        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.handleInboundEmail(email, env );  
-
-        // Verify that the case status was updated
-        Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
-            FROM Case
-            WHERE ContactId = :c.Id
-            LIMIT 1
-        ];
-
-        System.assert(createdCase.Description.contains('without email body or attachment'));
-   }
-
-   @isTest static void testNoBodiesPopulatedBinaryAttachment()
+   @isTest static void testBlankPlainTextBody()
    {
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
@@ -727,13 +694,6 @@ public with sharing class Test_CaseInboundEmailHandler {
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
 
-        // set the body of the attachment
-        inAtt.body = blob.valueOf('test');
-        inAtt.fileName = 'attach.pdf';
-        inAtt.mimeTypeSubType = 'plain/txt';
-        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { inAtt }; 
-  
-
         List<string> toAddresses = new List<string>();
         toAddresses.add('service12345123451234512345@test.test');   
         email.toAddresses = toAddresses;
@@ -756,176 +716,6 @@ public with sharing class Test_CaseInboundEmailHandler {
             LIMIT 1
         ];
 
-        System.assert(createdCase.Description != null);
-        System.assert(createdCase.Description.contains('Attachment received at'));
-   }
-
-   @isTest static void testNoBodiesPopulatedTextAttachment()
-   {
-        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
-        insert c;
-
-        Messaging.InboundEmail email = new Messaging.InboundEmail();
-        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-  
-        Messaging.InboundEmail.TextAttachment tattachment = new Messaging.InboundEmail.TextAttachment();
-        String csv = 'this is just a test';
-        tattachment.body = csv;
-        tattachment.fileName = 'data.txt';
-        tattachment.mimeTypeSubType = 'text/plain';
-          
-        email.textAttachments = new Messaging.inboundEmail.TextAttachment[] { tattachment };   
-
-
-        List<string> toAddresses = new List<string>();
-        toAddresses.add('service12345123451234512345@test.test');   
-        email.toAddresses = toAddresses;
-        email.subject = 'test';
-        email.fromAddress = 'user2@acme.com.test';
-        email.fromName = 'Last, First';
-        email.plainTextBody = null;
-        email.htmlBody = null;
-        env.fromAddress = 'user@acme.com.test';
-
-        // call the class and test it with the data in the testMethod
-        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.handleInboundEmail(email, env );  
-
-        // Verify that the case status was updated
-        Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
-            FROM Case
-            WHERE ContactId = :c.Id
-            LIMIT 1
-        ];
-
-        System.assert(createdCase.Description != null);
-        System.assert(createdCase.Description.contains('Attachment received at'));
-   }
-
-   @isTest static void testOriginalEmailPresent()
-   {
-        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
-        insert c;
-
-        Messaging.InboundEmail email = new Messaging.InboundEmail();
-        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-        Messaging.InboundEmail.Header header = new Messaging.InboundEmail.Header();
-        Messaging.InboundEmail.Header header2 = new Messaging.InboundEmail.Header();
-        Messaging.InboundEmail.Header header3 = new Messaging.InboundEmail.Header();
-
-        header.name = 'Test 12345';
-        header.value = 'Test value 55555';
-        header2.name = 'Received';
-        header2.value = 'from [209.85.223.170] ([209.85.223.170:35832] helo=mail-io0-f170.google.com) by mx3-was3.mta.salesforce.com (for <gwgmer@gmail.com>) (ecelerity 3.6.17.52090 r(Core:3.6.17.0)) with ESMTPS (cipher=AES128-GCM-SHA256 subject="/C=US/ST=California/L=Mountain View/O=Google Inc/CN=smtp.gmail.com")  id 12/B8-14396-D28B3275; Fri, 29 Apr 2016 19:38:21 +0000';
-        header3.name = 'Received';
-        header3.value = 'from [209.85.223.170] ([209.85.223.170:35832] helo=mail-io0-f170.google.com) by mx3-was3.mta.salesforce.com (for <foobar@gmail.com>) (ecelerity 3.6.17.52090 r(Core:3.6.17.0)) with ESMTPS (cipher=AES128-GCM-SHA256 subject="/C=US/ST=California/L=Mountain View/O=Google Inc/CN=smtp.gmail.com")  id 12/B8-14396-D28B3275; Fri, 29 Apr 2016 19:38:21 +0000';
-
-        List<string> toAddresses = new List<string>();
-        toAddresses.add('service12345123451234512345@test.test');   
-        email.toAddresses = toAddresses;
-        email.subject = 'test';
-        email.fromAddress = 'user2@acme.com.test';
-        email.fromName = 'Last, First';
-        email.plainTextBody = null;
-        email.htmlBody = null;
-        email.headers = new List<Messaging.InboundEmail.Header>();
-        email.headers.add(header);
-        email.headers.add(header2);
-        email.headers.add(header3);
-        env.fromAddress = 'user@acme.com.test';
-
-        // call the class and test it with the data in the testMethod
-        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.handleInboundEmail(email, env);  
-
-        // Verify that the case status was updated
-        Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c, Intended_Recipient__c
-            FROM Case
-            WHERE ContactId = :c.Id
-            LIMIT 1
-        ];
-
-        System.assert(createdCase.Intended_Recipient__c == 'gwgmer@gmail.com');
-   }
-
-   @isTest static void testOriginalEmailNotPresent1()
-   {
-        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
-        insert c;
-
-        Messaging.InboundEmail email = new Messaging.InboundEmail();
-        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-        Messaging.InboundEmail.Header header = new Messaging.InboundEmail.Header();
-        Messaging.InboundEmail.Header header2 = new Messaging.InboundEmail.Header();
-        Messaging.InboundEmail.Header header3 = new Messaging.InboundEmail.Header();
-
-        header.name = 'Test 12345';
-        header2.name = 'Received';
-        header2.value = 'Test value 55555';
-        header3.name = 'Received';
-        header3.value = 'Test value 55555';
-
-        List<string> toAddresses = new List<string>();
-        toAddresses.add('service12345123451234512345@test.test');   
-        email.toAddresses = toAddresses;
-        email.subject = 'test';
-        email.fromAddress = 'user2@acme.com.test';
-        email.fromName = 'Last, First';
-        email.plainTextBody = null;
-        email.htmlBody = null;
-        email.headers = new List<Messaging.InboundEmail.Header>();
-        email.headers.add(header);
-        email.headers.add(header2);
-        email.headers.add(header3);
-        env.fromAddress = 'user@acme.com.test';
-
-        // call the class and test it with the data in the testMethod
-        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.handleInboundEmail(email, env);  
-
-        // Verify that the case status was updated
-        Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c, Intended_Recipient__c
-            FROM Case
-            WHERE ContactId = :c.Id
-            LIMIT 1
-        ];
-
-        System.assert(createdCase.Intended_Recipient__c == null);
-   }
-
-   @isTest static void testOriginalEmailNotPresent2()
-   {
-        Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
-        insert c;
-
-        Messaging.InboundEmail email = new Messaging.InboundEmail();
-        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-
-        List<string> toAddresses = new List<string>();
-        toAddresses.add('service12345123451234512345@test.test');   
-        email.toAddresses = toAddresses;
-        email.subject = 'test';
-        email.fromAddress = 'user2@acme.com.test';
-        email.fromName = 'Last, First';
-        email.plainTextBody = null;
-        email.htmlBody = null;
-        env.fromAddress = 'user@acme.com.test';
-
-        // call the class and test it with the data in the testMethod
-        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.handleInboundEmail(email, env);  
-
-        // Verify that the case status was updated
-        Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c, Intended_Recipient__c
-            FROM Case
-            WHERE ContactId = :c.Id
-            LIMIT 1
-        ];
-
-        System.assert(createdCase.Intended_Recipient__c == null);
+        System.assert(createdCase.Description == null);
    }
 }

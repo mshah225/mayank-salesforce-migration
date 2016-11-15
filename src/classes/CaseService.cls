@@ -165,28 +165,6 @@ public class CaseService
     }
 
     /**
-    * Get all open cases for this contact
-    * @param the contact Id
-    * @return A list of all open cases for that contact
-    */
-    public static List<Case> getAllOpenCases(Id contactId)
-    {
-        List<Case> openCases = null;
-        String caseFields = caseFieldsToString();
-
-
-        String selectOpenVisibleCases = 'SELECT ' + caseFields + ' ' +
-            'FROM Case ' +
-            'WHERE IsClosed = false ' +
-            'AND ContactId = :contactId ' +
-            'ORDER BY CreatedDate DESC';
-
-        openCases = Database.query(selectOpenVisibleCases);
-
-        return openCases;
-    }
-
-    /**
     * Get all of the information pertaining to the provided case Id
     * @param caseId A Case ID
     * @return caseInfo The corresponding Case

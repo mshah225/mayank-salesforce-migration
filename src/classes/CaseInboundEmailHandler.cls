@@ -223,6 +223,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 theCase.Case_Feed_Email__c = replyToAddress;
                 theCase.Case_Feed_Email_Template_Id__c = caseFeedTemplateId;
 
+                if(email.headers != null)
+                {
+                    extractSourceFromHeaders(email);
+                }
+
                 // The Queue ID should be set as long as a Cse Assignment Rule was found; just in case, adding
                 // and else clause to be sure the Owner is not set to null, which would prevent the insert
                 if (queueId != null)
@@ -442,11 +447,28 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 }
             }
 
-            createEmailMessage(theCase,email);
-            handleAttachments(theCase, emailContact, email);
+            createEmailMessage(theCase, email);
+            Boolean success = handleAttachments(theCase, emailContact, email);
+            Boolean hasAttachments = (email.textAttachments != null                                
+                                      && email.textAttachments.size() >0) 
+                                      || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
 
-            if (sendAutoReply && templateId != null)
-            {
+            if (success && (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) && String.isBlank(email.plainTextBody)) {
+                
+                if(this.theCase.Description == null) {
+                   this.theCase.Description = ''; 
+                }
+
+                if (hasAttachments) {
+                    this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong(); 
+                } else {
+                    this.theCase.Description += ' Email received at ' + Datetime.now().formatLong() + ' without email body or attachment.';
+                }
+
+                update this.theCase;
+            }
+            
+            if (sendAutoReply && templateId != null) {
                 sendAutoReply(theCase, emailContact, templateId);
             }
         }
@@ -455,8 +477,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             // Catch any exceptions and create a lost email.
             String error = e.getMessage() + '\n' + e.getStackTraceString();
             generateLostEmail(email, error);
-        }
-
+        }   
         return result;
     }
 
@@ -471,7 +492,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             if (attachmentFailureTemplateId != null && attachmentFailureTemplateId != '')
             {
-                sendAutoReply(theCase, theContact, attachmentFailureTemplateId);
+                    sendAutoReply(theCase, theContact, attachmentFailureTemplateId);
             }
         }
 
@@ -792,7 +813,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             //See if this is an RMM email
             String rmmSevenChar = '';
             List<String> splitAt = toEmailAddress.split('@');
-            if(splitAt.size() == 2 && splitAt[1] == 'e.asu.edu')
+            if(splitAt.size() == 2 && 
+                (splitAt[1] == 'e.asu.edu' || splitAt[1] == 'reply.asu.edu'))
             {
                 List<String> splitDash = new List<String>();
                 splitDash = splitAt[0].split('-');
@@ -804,7 +826,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             if(rmmSevenChar.length() == 7)
             {
-                String toEmailAddressPartial = '%-' + rmmSevenChar + '-_@e.asu.edu';
+                String toEmailAddressPartial = '%-' + rmmSevenChar + '-_@%';
                 assignmentRuleList = [
                     SELECT Id, Name, Category__c, Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c,Customer_Notice_Email_From_Name__c,Reply_To_Email_Address__c, Email_Template_ID__c, Functional_Group__c, Priority__c, Queue_ID__c, Case_Record_Type_ID__c, Fallback_Queue_ID__c, Type_of_Additional_Assignment_Needed__c, Associate_Case_To_Active_Opportunity__c, Origin__c, Campus__c
                     FROM Case_Assignment_Rule__c
@@ -1084,6 +1106,26 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         }
 
         return false;
+    }
+
+    private void extractSourceFromHeaders(Messaging.InboundEmail email)
+    {
+        for(Integer x = 0; x < email.headers.size(); x++)
+        {
+            if(email.headers[x].name == 'Received'  && email.headers[x].value.contains(''))
+            {
+                List<String> emailValue1 = email.headers[x].value.split('for \\<');
+                if(emailValue1.size() > 1)
+                {
+                    List<String> emailValue2 = emailValue1[1].split('\\>');
+                    if(emailValue2.size() > 0)
+                    {
+                        this.theCase.Intended_Recipient__c = emailValue2[0];
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     // Make this public for unit test access

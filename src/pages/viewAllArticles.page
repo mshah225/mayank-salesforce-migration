@@ -69,8 +69,7 @@
 
                         <div class="modal-footer">
                             <div class="pull-left">
-                                <apex:commandButton
-                                    value="Submit"
+                                <apex:commandButton value="Submit"
                                     action="{!suggestAnArticleSubmit}"
                                     styleClass="btn btn-default"
                                     style="width:40px;height:15px;padding:3px;"/>
@@ -263,7 +262,7 @@
         </div>
     </div>
 
-    <c:SCFooter/>
+    <c:SCFooter />
 
     <script>
         viewAsLinks();

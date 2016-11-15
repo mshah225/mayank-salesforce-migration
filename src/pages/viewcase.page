@@ -90,6 +90,10 @@
             .morecontent {
                 display: none;
             }
+
+            .chatUserInfo {
+                font-weight: bold;
+            }
         </style>
 
         <script>
@@ -241,14 +245,12 @@
                                     <div class="panel panel-default">
                                         <div class="panel-body">
                                             <apex:outputLabel for="emailSentDate" value="Sent Date:"/>
-
                                             <apex:outputText id="emailSentDate"
                                                              value="{0, date, MMMM d',' yyyy, hh:MM a z}">
                                                 <apex:param value="{!EM.CreatedDate}"/>
                                             </apex:outputText>
                                             <br />
-                                            <apex:outputPanel
-                                                rendered="{!IF(EM.FromAddress != null,true,false)}">
+                                            <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
                                                 <apex:outputLabel for="fromAddress"
                                                                   value="From Address:"/>
                                                 &nbsp;
@@ -258,8 +260,7 @@
                                                 <br />
                                             </apex:outputPanel>
 
-                                            <apex:outputPanel
-                                                rendered="{!IF(EM.ToAddress != null,true,false)}">
+                                            <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
                                                 <apex:outputLabel for="toAddress"
                                                                   value="To Address:"/>
                                                 &nbsp;
@@ -268,8 +269,7 @@
                                                 <br />
                                             </apex:outputPanel>
 
-                                            <apex:outputPanel
-                                                rendered="{!IF(EM.CCAddress != null,true,false)}">
+                                            <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
                                                 <apex:outputLabel for="ccAddress" value="CC:"/>
                                                 &nbsp;
                                                 <apex:outputText id="ccAddress"
@@ -287,6 +287,27 @@
                             </div>
                         </div>
                     </apex:outputPanel>
+
+                    <apex:outputPanel id="chatMessagesBox" rendered="{!IF(chatMessages.empty,false,true)}" >
+                        <div class="box commentBox">
+                            <div class="header">
+                                <h6><b>Chat Session</b></h6>
+                            </div>
+                            
+                            <div class="content">
+                                <apex:repeat value="{!chatMessages}" var="cm">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <div class="chatUserInfo">
+                                                <apex:outputText id="chatUserInfo" value="{!cm.bomgar__PerformedByValue__c}"/>
+                                            </div>
+                                            <apex:outputText value="{!cm.bomgar__Text__c}"/>
+                                        </div>
+                                    </div>
+                                </apex:repeat>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
                 </div><!-- end col-md-8 -->
 
                 <div class="col-md-5">
@@ -296,7 +317,7 @@
                                                 myPin="{!myPin}"
                                                 newPin="{!newPin}"
                                                 changePin="{!changePin}"/>
-                    <c:SCMyCasesBox/>
+                    <c:SCMyCasesBox />
                 </div><!-- end col-md-4-->
             </div><!-- end row -->
         </div><!-- end container -->

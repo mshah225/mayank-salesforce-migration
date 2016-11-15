@@ -118,13 +118,46 @@ public without sharing class CampaignMemberHandler implements ITrigger
 
             //For all Campaigns on the CMs in this trigger, get their names and link id to name
             List<Campaign> campaignList = [
-                SELECT Id, RecordType.DeveloperName 
+                SELECT Id, RecordType.DeveloperName, Marketing_Cloud_Business_Unit__r.Name
                 FROM Campaign 
                 WHERE Id IN :campaignIdsInTrigger
             ];
 
-            for(Campaign c : campaignList)
-            {
+            // Validation to ensure that user is a member of the correct Business Unit
+            List<Profile> exceptions = [SELECT Id FROM Profile WHERE Name = 'Unsubscribe Profile' OR Name = 'System Administrator'];
+            User runningUser = [SELECT MC_Business_Unit_User__c FROM User WHERE Id = :userInfo.getUserId()];
+
+            // Added to ensure that a campaignMember will error if the following rule is violated
+            // User MC Business Unit must match Campaign business unit in order to add a campaign
+            // member to the campaign
+            List<String> userBusinessUnits = new List<string>();
+            
+            if (runningUser.MC_Business_Unit_User__c != null) {
+                userBusinessUnits = runningUser.MC_Business_Unit_User__c.split(';');
+            }
+
+            Boolean found = false;
+
+            for(Campaign c : campaignList) {
+                if (userInfo.getProfileId() != exceptions[0].Id && userInfo.getProfileId() != exceptions[1].Id) {
+                    if (c.RecordType.DeveloperName == 'Subscription_Center') {
+                        for (String s : userBusinessUnits) {
+                            if (c.Marketing_Cloud_Business_Unit__r.Name == s) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!found) {
+                            for (CampaignMember tcm : listOfAffectedCMs) {
+                                if (tcm.CampaignId == c.Id) {
+                                    tcm.addError('Cannot insert Campaign Members for campaigns outside your business unit');
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 campaignRecordTypesById.put(c.Id, c.RecordType.DeveloperName);
             }
 

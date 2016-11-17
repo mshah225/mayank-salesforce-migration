@@ -312,65 +312,66 @@
                             <!-- Tab panes -->
                             <div class="tab-content responsive">
                                 <div role="tabpanel" class="tab-pane active" id="general">
-                                    <apex:pageBlock mode="maindetail" id="generalTab">
+                                    <apex:pageBlock mode="maindetail">
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
                                                 &nbsp;Contact Information
                                             </h4>
                                         </div>
-
                                         <div class="row">
-                                            <div class="col-sm-6">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Address</th>
-                                                        <td>
-                                                            {!theContact.MailingStreet}
-                                                            <br />
-                                                            {!theContact.MailingCity}
-                                                            <br />
-                                                            {!theContact.MailingStateCode}
-                                                            -{!theContact.MailingPostalCode}
-                                                            <br />
-                                                            {!theContact.MailingCountryCode}
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                            <apex:outputPanel id="generalContact">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Address</th>
+                                                            <td>
+                                                                {!theContact.MailingStreet}
+                                                                <br />
+                                                                {!theContact.MailingCity}
+                                                                <br />
+                                                                {!theContact.MailingStateCode}
+                                                                -{!theContact.MailingPostalCode}
+                                                                <br />
+                                                                {!theContact.MailingCountryCode}
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
 
-                                            <div class="col-sm-6">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>ASU Email</th>
-                                                        <td>
-                                                            <a href="mailto:{!theContact.Email}">{!theContact.Email}</a>
-                                                        </td>
-                                                    </tr>
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>ASU Email</th>
+                                                            <td>
+                                                                <a href="mailto:{!theContact.Email}">{!theContact.Email}</a>
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>Other Email</th>
-                                                        <td>
-                                                            <a href="mailto:{!theContact.EPO_Email__c}">{!theContact.EPO_Email__c}</a>
-                                                        </td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Other Email</th>
+                                                            <td>
+                                                                <a href="mailto:{!theContact.EPO_Email__c}">{!theContact.EPO_Email__c}</a>
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>Cell Phone</th>
-                                                        <td class="phone">{!IF(ISBLANK(theContact.MobilePhone),'--', theContact.MobilePhone)}</td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Cell Phone</th>
+                                                            <td class="phone">{!IF(ISBLANK(theContact.MobilePhone),'--', theContact.MobilePhone)}</td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>Home Phone</th>
-                                                        <td class="phone">{!IF(ISBLANK(theContact.HomePhone), '--', theContact.HomePhone)}</td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Home Phone</th>
+                                                            <td class="phone">{!IF(ISBLANK(theContact.HomePhone), '--', theContact.HomePhone)}</td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>Local Phone</th>
-                                                        <td class="phone">{!IF(ISBLANK(theContact.OtherPhone), '--', theContact.OtherPhone)}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                                        <tr>
+                                                            <th>Local Phone</th>
+                                                            <td class="phone">{!IF(ISBLANK(theContact.OtherPhone), '--', theContact.OtherPhone)}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </apex:outputPanel>
                                         </div>
 
                                         <div class="page-header-smaller">
@@ -381,80 +382,82 @@
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-sm-6">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Gender</th>
-                                                        <td>{!theContact.Gender__c}</td>
-                                                    </tr>
+                                            <apex:outputPanel id="generalPersonal">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Gender</th>
+                                                            <td>{!theContact.Gender__c}</td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>Ethnicity</th>
-                                                        <td>{!theContact.Ethnicity__c}</td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Ethnicity</th>
+                                                            <td>{!theContact.Ethnicity__c}</td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>Age</th>
-                                                        <td>{!IF(ISBLANK(studentDemographic.AGE_YEARS__c), '--', 
-                                                             FLOOR(VALUE(studentDemographic.AGE_YEARS__c)))}</td>
-                                                        <!--td>{!FLOOR((TODAY() - theContact.BirthDate)/365.2425)}</td-->
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Age</th>
+                                                            <td>{!IF(ISBLANK(studentDemographic.AGE_YEARS__c), '--', 
+                                                                 FLOOR(VALUE(studentDemographic.AGE_YEARS__c)))}</td>
+                                                            <!--td>{!FLOOR((TODAY() - theContact.BirthDate)/365.2425)}</td-->
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>Birthdate</th>
-                                                        <td>
-                                                            <apex:outputText value="{0, date, MMMM d','  yyyy}">
-                                                                <apex:param value="{!theContact.Birthdate}"/>
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Birthdate</th>
+                                                            <td>
+                                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                                    <apex:param value="{!theContact.Birthdate}"/>
+                                                                </apex:outputText>
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <!--Opportunity Object
-                                                        First_Generation__c-->
-                                                        <th>First Generation</th>
-                                                        <td>{!IF(ISBLANK(studentDemographic.FIRST_GEN_FLG__c), '--', 
-                                                             studentDemographic.FIRST_GEN_FLG__c)}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                                        <tr>
+                                                            <!--Opportunity Object
+                                                            First_Generation__c-->
+                                                            <th>First Generation</th>
+                                                            <td>{!IF(ISBLANK(studentDemographic.FIRST_GEN_FLG__c), '--', 
+                                                                 studentDemographic.FIRST_GEN_FLG__c)}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
 
-                                            <div class="col-sm-6">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>WUE</th>
-                                                        <td>{!IF(ISBLANK(studentProgram.WUE__c), '--', 
-                                                             studentProgram.WUE__c)}</td>
-                                                    </tr>
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>WUE</th>
+                                                            <td>{!IF(ISBLANK(studentProgram.WUE__c), '--', 
+                                                                 studentProgram.WUE__c)}</td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>Residency</th>
-                                                        <td>{!IF(ISBLANK(studentProgram.RESIDENCY__c), '--', 
-                                                             studentProgram.RESIDENCY__c)}</td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Residency</th>
+                                                            <td>{!IF(ISBLANK(studentProgram.RESIDENCY__c), '--', 
+                                                                 studentProgram.RESIDENCY__c)}</td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>Country of Citizenship</th>
-                                                        <td>{!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__c)}
-                                                        </td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Country of Citizenship</th>
+                                                            <td>{!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__c)}
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>FERPA Level</th>
-                                                        <td>
-                                                            {!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--', theContact.FERPA_Directory_Hold__c)}
-                                                        </td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>FERPA Level</th>
+                                                            <td>
+                                                                {!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--', theContact.FERPA_Directory_Hold__c)}
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <!--Financial Aid Package Object
-                                                        EFC_Range__c-->
-                                                        <th>Financial Need Level</th>
-                                                        <td>{!IF(ISBLANK(studentProgram.FINANCIAL_NEED_LVL__c), '--', 
-                                                             studentProgram.FINANCIAL_NEED_LVL__c)}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                                        <tr>
+                                                            <!--Financial Aid Package Object
+                                                            EFC_Range__c-->
+                                                            <th>Financial Need Level</th>
+                                                            <td>{!IF(ISBLANK(studentProgram.FINANCIAL_NEED_LVL__c), '--', 
+                                                                 studentProgram.FINANCIAL_NEED_LVL__c)}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </apex:outputPanel>
                                         </div>
 
                                         <div class="page-header-smaller">
@@ -465,64 +468,66 @@
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-sm-6">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Current Academic Level</th>
-                                                        <td>{!IF(ISBLANK(profileHeader.COHORT__c), '--', 
-                                                             profileHeader.COHORT__c)}</td>
-                                                    </tr>
+                                            <apex:outputPanel id="generalStatus">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Current Academic Level</th>
+                                                            <td>{!IF(ISBLANK(profileHeader.COHORT__c), '--', 
+                                                                 profileHeader.COHORT__c)}</td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>{!currentTermName} Term Enrolled Hours</th>
-                                                        <td>{!IF(ISBLANK(studentProgram.ENRL_HRS__c), '--', 
-                                                             FLOOR(studentProgram.ENRL_HRS__c))}</td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>{!currentTermName} Term Enrolled Hours</th>
+                                                            <td>{!IF(ISBLANK(studentProgram.ENRL_HRS__c), '--', 
+                                                                 FLOOR(studentProgram.ENRL_HRS__c))}</td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>{!nextTermName} Term Enrolled Hours</th>
-                                                        <td>{!IF(ISBLANK(studentProgram.ENRL_HRS_PENDING__c), '--', 
-                                                             FLOOR(studentProgram.ENRL_HRS_PENDING__c))}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                                        <tr>
+                                                            <th>{!nextTermName} Term Enrolled Hours</th>
+                                                            <td>{!IF(ISBLANK(studentProgram.ENRL_HRS_PENDING__c), '--', 
+                                                                 FLOOR(studentProgram.ENRL_HRS_PENDING__c))}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
 
-                                            <div class="col-sm-6">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Expected Graduation Date</th>
-                                                        <td>{!IF(ISBLANK(studentProgram.EXP_GRAD_TERM__c), '--', 
-                                                             StudentProgram.EXP_GRAD_TERM__r.Name)}
-                                                        </td>
-                                                    </tr>
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Expected Graduation Date</th>
+                                                            <td>{!IF(ISBLANK(studentProgram.EXP_GRAD_TERM__c), '--', 
+                                                                 StudentProgram.EXP_GRAD_TERM__r.Name)}
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>{!currentTermName} Enrollment Appointment</th>
-                                                        <td>
-                                                            <!--
-                                                            <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
-                                                            -->
-                                                            <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
-                                                                <apex:param value="{!studentProgram.APPT_DT__c}"/>
-                                                            </apex:outputText>
-                                                            <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT__c)}">--</apex:outputText>
-                                                        </td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>{!currentTermName} Enrollment Appointment</th>
+                                                            <td>
+                                                                <!--
+                                                                <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
+                                                                -->
+                                                                <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
+                                                                    <apex:param value="{!studentProgram.APPT_DT__c}"/>
+                                                                </apex:outputText>
+                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT__c)}">--</apex:outputText>
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <th>{!nextTermName} Enrollment Appointment</th>
-                                                        <td>
-                                                            <!--
-                                                            <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT_PENDING__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
-                                                            -->
-                                                            <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
-                                                                <apex:param value="{!studentProgram.APPT_DT_PENDING__c}"/>
-                                                            </apex:outputText>
-                                                            <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT_PENDING__c)}">--</apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                                        <tr>
+                                                            <th>{!nextTermName} Enrollment Appointment</th>
+                                                            <td>
+                                                                <!--
+                                                                <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT_PENDING__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
+                                                                -->
+                                                                <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
+                                                                    <apex:param value="{!studentProgram.APPT_DT_PENDING__c}"/>
+                                                                </apex:outputText>
+                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT_PENDING__c)}">--</apex:outputText>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </apex:outputPanel>
                                         </div>
                                     </apex:pageBlock>
                                 </div>
@@ -1566,7 +1571,7 @@
         </script>
         
         <apex:form >
-            <apex:actionfunction name="executeCallouts" action="{!executeCallouts}" oncomplete="maskPhoneNumbers()" rerender="generalTab, admissionInformation, gradAdmissionInformation, photoRerenderPanel, serviceIndicatorsPanel"/>
+            <apex:actionfunction name="executeCallouts" action="{!executeCallouts}" oncomplete="maskPhoneNumbers()" rerender="generalContact, generalPersonal, generalStatus, admissionInformation, gradAdmissionInformation, photoRerenderPanel, serviceIndicatorsPanel"/>
             
             <script>
                 $j(document).ready(function() {

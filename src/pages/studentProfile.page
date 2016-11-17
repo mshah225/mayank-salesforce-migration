@@ -3213,13 +3213,13 @@
                                     document.getElementById("psAccountBalanceErrors").style.display =
                                         "none";
                                     document.getElementById('account_balance_past_due_tip').innerHTML =
-                                        "--";                                    
+                                        result.pastDueTIP.toLocaleString(o,s);                                    
                                     document.getElementById('account_balance_outstanding').innerHTML =
-                                        result.DUE_AMT__c.toLocaleString(o,s);
+                                        result.faBalance.DUE_AMT__c.toLocaleString(o,s);
                                     document.getElementById('account_balance_total').innerHTML =
-                                        result.BALANCE_AMT__c.toLocalString(o,s);
+                                        result.faBalance.BALANCE_AMT__c.toLocaleString(o,s);
     
-                                    cleanUpUndefined("ps_account_balance");
+                                    cleanUpUndefined("account_balance_table");
                                     accountBalanceLoaded = true;
                                 } else {
                                     document.getElementById("psAccountBalanceErrors").innerHTML =

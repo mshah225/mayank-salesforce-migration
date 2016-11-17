@@ -926,9 +926,17 @@ global with sharing class StudentProfileController
 
     }
 
-    @RemoteAction
-    global static PS_ASU_SP_FA_BAL_V__x getFinancesBalanceData(String emplId)
+    global class balancesWrapper
     {
+        PS_ASU_SP_FA_BAL_V__x faBalance = new PS_ASU_SP_FA_BAL_V__x();
+        Decimal pastDueTIP;
+    }
+
+    @RemoteAction
+    global static balancesWrapper getFinancesBalanceData(String emplId)
+    {
+        balancesWrapper wrapper = new balancesWrapper();
+
         List<PS_ASU_SP_FA_BAL_V__x> balanceList =
         (
             Test.isRunningTest() ? new List<PS_ASU_SP_FA_BAL_V__x>() :
@@ -939,8 +947,17 @@ global with sharing class StudentProfileController
             ]
         );
 
-        return (balanceList.size() > 0? balanceList[0] : new PS_ASU_SP_FA_BAL_V__x());
-    }   
+        if (!balanceList.isEmpty())
+            wrapper.faBalance = balanceList[0];
+
+        List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
+        if (!snpRecords.isEmpty())
+        {
+            wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;
+        }
+
+        return wrapper;
+    } 
 
     @RemoteAction
     global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)

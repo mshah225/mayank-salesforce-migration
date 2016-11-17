@@ -295,7 +295,7 @@
                                         Comments
                                     </a>
                                 </li>
-								<!--
+
                                 <li role="presentation">
                                     <a href="#careerdevelopment"
                                        aria-controls="careerdevelopment"
@@ -307,7 +307,6 @@
                                         Career Development
                                     </a>
                                 </li>
-								-->
                             </ul>
 
                             <!-- Tab panes -->
@@ -503,7 +502,7 @@
                                                             <!--
                                                             <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
                                                             -->
-                                                            <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa z}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
+                                                            <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
                                                                 <apex:param value="{!studentProgram.APPT_DT__c}"/>
                                                             </apex:outputText>
                                                             <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT__c)}">--</apex:outputText>
@@ -516,7 +515,7 @@
                                                             <!--
                                                             <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT_PENDING__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
                                                             -->
-                                                            <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa z}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
+                                                            <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
                                                                 <apex:param value="{!studentProgram.APPT_DT_PENDING__c}"/>
                                                             </apex:outputText>
                                                             <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT_PENDING__c)}">--</apex:outputText>
@@ -1214,7 +1213,6 @@
                                     </apex:pageBlock>
                                 </div>
 
-								<!--
                                 <div role="tabpanel" class="tab-pane" id="careerdevelopment">
                                     <apex:pageBlock mode="maindetail" id="careerdevtab">
                                         <div class="page-header-smaller">
@@ -1223,63 +1221,67 @@
                                                 &nbsp;me3 Results
                                             </h4>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Test Completion Date</th>
-                                                        <td>--</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                        <div id="Me3Results"
+                                             style="display:none;width:100%;">
+                                            <div class="row">
                                                 <div class="col-sm-6">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Source</th>
-                                                        <td>--</td>
-                                                    </tr>
-                                                </table>
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Test Completion Date</th>
+                                                            <td id="me3_completion_date">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                    <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Source</th>
+                                                            <td id="me3_source">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Realistic (R) Score</th>
+                                                            <td id="me3_r_score">--</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Investigative (I) Score</th>
+                                                            <td id="me3_i_score">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Artistic (A) Score</th>
+                                                            <td id="me3_a_score">--</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Social (S) Score</th>
+                                                            <td id="me3_s_score">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Enterprising (E) Score</th>
+                                                            <td id="me3_e_score">--</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Conventional (C) Score</th>
+                                                            <td id="me3_c_score">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
                                             </div>
-                                            <div class="col-sm-4">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Realistic (R) Score</th>
-                                                        <td>--</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Investigative (I) Score</th>
-                                                        <td>--</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Artistic (A) Score</th>
-                                                        <td>--</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Social (S) Score</th>
-                                                        <td>--</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Enterprising (E) Score</th>
-                                                        <td>--</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Conventional (C) Score</th>
-                                                        <td>--</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
+                                            <div id="me3_career_interest_table"/>
                                         </div>
+                                        <div id="me3ResponseErrors"/>
                                     </apex:pageBlock>
                                 </div>
-								-->
 
 
 
@@ -1585,6 +1587,7 @@
             var gradAcademicProgressLoaded = false;
             var accountBalanceLoaded = false;
             var indicatorHistoryLoaded = false;
+            var careerDevelopmentTabLoaded = false;
     
             var classesData;
             var financialAidData;
@@ -1624,6 +1627,11 @@
                 getComments();
                 getGuestAccess();
             }
+
+            function loadCareerDevelopmentTab() {
+                getMe3Results();
+            }
+
     
             // Method to replace all undefined/missing fields after callout
             function cleanUpUndefined(elementId) {
@@ -3358,6 +3366,89 @@
                 document.getElementById('fa_accepted_total').innerHTML = acceptedTotal.toLocaleString(o,s);
                 document.getElementById('fa_disbursed_total').innerHTML = disbursedTotal.toLocaleString(o,s);
             }
+
+            // Method to load the Undergraduate Indicators tab
+            function getMe3Results() {
+                if (!careerDevelopmentTabLoaded) {
+                    var errorHtml = "";
+    
+                    document.getElementById("me3ResponseErrors").innerHTML =
+                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+    
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.StudentProfileController.getMe3Results}',
+                        '{!theContact.Id}',
+                        function (result, event) {
+                            if (event.status) {
+                                document.getElementById("me3ResponseErrors").innerHTML =
+                                    "";     
+                                if (!Object.getOwnPropertyNames(result).length == 0) {
+                                    document.getElementById("Me3Results").style.display =
+                                        "initial";
+
+                                    var utcSeconds = result.Test_Completed_Date__c;
+                                    var testDate = new Date(utcSeconds);
+                                    testDate = (testDate.getUTCMonth() + 1) + '/' +
+                                        testDate.getUTCDate() + '/' +
+                                        testDate.getUTCFullYear();
+
+                                    document.getElementById('me3_completion_date').innerHTML =
+                                        testDate;
+                                     document.getElementById('me3_source').innerHTML = result.Source__c;
+                                     document.getElementById('me3_r_score').innerHTML = 
+                                        (result.R_Score__c > 0 ? result.R_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_a_score').innerHTML = 
+                                        (result.A_Score__c > 0 ? result.A_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_i_score').innerHTML = 
+                                        (result.I_Score__c > 0 ? result.I_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_s_score').innerHTML = 
+                                        (result.S_Score__c > 0 ? result.S_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_e_score').innerHTML = 
+                                        (result.E_Score__c > 0 ? result.E_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_c_score').innerHTML = 
+                                        (result.C_Score__c > 0 ? result.C_Score__c : '0') + ' / 100';
+
+                                    var html = 
+                                     "<div class='table-responsive'>" +
+                                        "<table id='career_dev_table' class='table table-striped table-bordered'> " +
+                                        "<tbody>";
+
+                                    for (var i = 0; i < result.me3_Careers__r.length; i++) {
+                                        var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
+                                        var updatedDate = new Date(cdUtcSeconds);
+                                        updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
+                                            updatedDate.getUTCDate() + '/' +
+                                            updatedDate.getUTCFullYear();       
+                                        html += "" +
+                                            (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
+                                                "<td>" + updatedDate + "</td>" +
+                                                "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
+                                                "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
+                                                "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
+                                                result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
+                                            "</tr>";
+                                    }
+                                    html += "</tbody></table></div>";
+                                    document.getElementById('me3_career_interest_table').innerHTML = html;
+
+                                    cleanUpUndefined("Me3Results");
+                                    careerDevelopmentTabLoaded = true;
+                                } else {
+                                    document.getElementById("me3ResponseErrors").innerHTML =
+                                        'No Me3 results found';
+                                    careerDevelopmentTabLoaded = true;
+                                }
+                            } else if (event.type === 'exception') {
+                               document.getElementById("me3ResponseErrors").innerHTML = "<br/>\n<pre>" + event.where + "</pre>";
+                            } else {
+                                document.getElementById("me3ResponseErrors").innerHTML = event.message;
+                            }
+                        },
+                        {escape: true}
+                    );
+                }
+            }
+
         </script>
         
         <!-- Script to mask Phone Numbers -->

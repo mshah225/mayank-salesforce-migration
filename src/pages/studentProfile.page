@@ -2094,7 +2094,7 @@
                                         "initial";
     
                                     var html = "" +
-                                        "<div class='table-responsive'>" +
+                                        "<div class='col-sm-12' style='padding:0px;'><div class='table-responsive'>" +
                                             "<table class='table table-striped table-bordered'> " +
                                                 "<thead>" +
                                                     "<tr>" +
@@ -2154,7 +2154,7 @@
                                             "</tr>";
                                     }
     
-                                    html += "</tbody></table></div>";
+                                    html += "</tbody></table></div></div>";
     
                                     document.getElementById('ps_milestone_section_ug').innerHTML = html;
                                     cleanUpUndefined("ps_milestone_section_ug");
@@ -2268,7 +2268,7 @@
                                         "initial";
     
                                     var html = "" +
-                                        "<div class='table-responsive'>" +
+                                        "<div class='col-sm-12' style='padding:0px;'><div class='table-responsive'>" +
                                             "<table class='table table-striped table-bordered'> " +
                                                 "<thead>" +
                                                     "<tr>" +
@@ -2328,7 +2328,7 @@
                                             "</tr>";
                                     }
     
-                                    html += "</tbody></table></div>";
+                                    html += "</tbody></table></div></div>";
     
                                     document.getElementById('ps_milestone_section_grad').innerHTML =
                                         html;

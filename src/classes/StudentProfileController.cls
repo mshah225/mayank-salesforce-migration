@@ -169,19 +169,27 @@ global with sharing class StudentProfileController
         }
     }
     
-    public PageReference executeCallouts() {
+    public PageReference executeCallouts() 
+    {    
         getTermInfo();
-        
+            
         System.debug('Parameters: ' + theContact.ASURite_ID__c + ' ' + theContact.EMPLID__c);
         
-        suncardPhotoURL = getSuncardPhotoURL(theContact.ASURite_ID__c, theContact.EMPLID__c);
-        
+        // Putting a try/catch around the Suncard Photo fetch to prevent VF/apex
+        // errors if it's unreachable
+        try
+        {    
+            suncardPhotoURL = getSuncardPhotoURL(theContact.ASURite_ID__c, theContact.EMPLID__c);
+        }
+        catch (Exception e)
+        {}
+            
         System.debug('Photo URL' + suncardPhotoURL);
         // Query once for Student Programs, then store UG and Grad programs separately, along with a "default"
         // record stored in "studentProgram" to be used on the General tab
         studentProgramDataList = new List<JBT_RET_GENERAL_RIGHT__x>();
-        
-        studentProgramDataList = getStudentProgramData(theContact.EMPLID__c); 
+
+        studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
         for (JBT_RET_GENERAL_RIGHT__x programData: studentProgramDataList)
         {
             if (programData.ACAD_CAREER__c == 'UGRD')
@@ -192,15 +200,15 @@ global with sharing class StudentProfileController
                 studentProgram = programData;
             }
         }
-        
+            
         if (gradStudentProgram == null && ugStudentProgram != null)
             studentProgram = ugStudentProgram;
         
         studentDemographic = getStudentDemographicData(theContact.EMPLID__C);
         siList = getServiceIndicators(theContact.EMPLID__C);
         profileHeader = getProfileHeader(theContact.EMPLID__C);
-        
-        return null;
+
+        return null;        
     }
 
     public String getSuncardPhotoURL(String asurite, String emplId)

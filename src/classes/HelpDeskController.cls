@@ -726,7 +726,7 @@ public with sharing class HelpDeskController
         // query to get open cases for the contact
         casesbase = Database.query(
             'SELECT Id, Subject, Reason, Description, Status, Origin__c, Campus__c, ' +
-                'Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, ' +
+                'Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, Reporting_Category__c, ' +
                 'Private_Note_Help_Desk__c, ClosedDate, CaseNumber, CreatedDate ' +
                 'FROM Case ' +
                 'WHERE ContactId = :selectedContactId ' +

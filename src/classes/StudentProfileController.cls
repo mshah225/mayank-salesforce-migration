@@ -169,19 +169,27 @@ global with sharing class StudentProfileController
         }
     }
     
-    public PageReference executeCallouts() {
+    public PageReference executeCallouts() 
+    {    
         getTermInfo();
-        
+            
         System.debug('Parameters: ' + theContact.ASURite_ID__c + ' ' + theContact.EMPLID__c);
         
-        suncardPhotoURL = getSuncardPhotoURL(theContact.ASURite_ID__c, theContact.EMPLID__c);
-        
+        // Putting a try/catch around the Suncard Photo fetch to prevent VF/apex
+        // errors if it's unreachable
+        try
+        {    
+            suncardPhotoURL = getSuncardPhotoURL(theContact.ASURite_ID__c, theContact.EMPLID__c);
+        }
+        catch (Exception e)
+        {}
+            
         System.debug('Photo URL' + suncardPhotoURL);
         // Query once for Student Programs, then store UG and Grad programs separately, along with a "default"
         // record stored in "studentProgram" to be used on the General tab
         studentProgramDataList = new List<JBT_RET_GENERAL_RIGHT__x>();
-        
-        studentProgramDataList = getStudentProgramData(theContact.EMPLID__c); 
+
+        studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
         for (JBT_RET_GENERAL_RIGHT__x programData: studentProgramDataList)
         {
             if (programData.ACAD_CAREER__c == 'UGRD')
@@ -192,15 +200,15 @@ global with sharing class StudentProfileController
                 studentProgram = programData;
             }
         }
-        
+            
         if (gradStudentProgram == null && ugStudentProgram != null)
             studentProgram = ugStudentProgram;
         
         studentDemographic = getStudentDemographicData(theContact.EMPLID__C);
         siList = getServiceIndicators(theContact.EMPLID__C);
         profileHeader = getProfileHeader(theContact.EMPLID__C);
-        
-        return null;
+
+        return null;        
     }
 
     public String getSuncardPhotoURL(String asurite, String emplId)
@@ -650,7 +658,7 @@ global with sharing class StudentProfileController
         (
             Test.isRunningTest() ? new List<JBT_RET_GENERAL_RIGHT__x>() :
             [
-                SELECT ACAD_CAREER__c, ADM_APPL_DT__c, ADM_APPL_PROG__c, 
+             SELECT ACAD_CAREER__c, ADM_APPL_DT__c, ADM_APPL_PROG__c, 
                        ADMIT_TERM__c, ADMIT_TYPE__c, APPT_DT__c, 
                        APPT_DT_PENDING__c, ASU_CITZN_COUNTRY__c, CAMPUS__c, 
                        CURR_ADMIT_TYPE__c, CURR_PLAN__c, CURR_PROG__c, DisplayUrl, 
@@ -926,9 +934,17 @@ global with sharing class StudentProfileController
 
     }
 
-    @RemoteAction
-    global static PS_ASU_SP_FA_BAL_V__x getFinancesBalanceData(String emplId)
+    global class balancesWrapper
     {
+        PS_ASU_SP_FA_BAL_V__x faBalance = new PS_ASU_SP_FA_BAL_V__x();
+        Decimal pastDueTIP;
+    }
+
+    @RemoteAction
+    global static balancesWrapper getFinancesBalanceData(String emplId)
+    {
+        balancesWrapper wrapper = new balancesWrapper();
+
         List<PS_ASU_SP_FA_BAL_V__x> balanceList =
         (
             Test.isRunningTest() ? new List<PS_ASU_SP_FA_BAL_V__x>() :
@@ -939,8 +955,17 @@ global with sharing class StudentProfileController
             ]
         );
 
-        return (balanceList.size() > 0? balanceList[0] : new PS_ASU_SP_FA_BAL_V__x());
-    }   
+        if (!balanceList.isEmpty())
+            wrapper.faBalance = balanceList[0];
+
+        List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
+        if (!snpRecords.isEmpty())
+        {
+            wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;
+        }
+
+        return wrapper;
+    } 
 
     @RemoteAction
     global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
@@ -1211,9 +1236,8 @@ global with sharing class StudentProfileController
         return (enrollmentHoldList.size() > 0? enrollmentHoldList : new List<PS_ASU_SP_ENRHLD_V__x>());
     }
 
-/*
     @RemoteAction
-    global static me3__c getMe3(String userid)
+    global static me3__c getMe3Results(String contactId)
     {
         List<me3__c> me3List =
         (
@@ -1222,9 +1246,11 @@ global with sharing class StudentProfileController
                     Source__c, Test_Completed_Date__c, User_Id__c, 
                     (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
                             Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
-                     FROM   me3_Careers__r) 
+                     FROM   me3_Careers__r
+                     ORDER BY Active__c DESC, Updated_Date__c DESC, Plan_Code__c
+                     LIMIT 10) 
              FROM   me3__c
-             WHERE  User_Id__c = :userid
+             WHERE  Contact__c = :contactId
              ORDER BY Test_Completed_Date__c DESC
              LIMIT 1 
             ]
@@ -1232,8 +1258,6 @@ global with sharing class StudentProfileController
 
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
-
-*/
 
     private class StudentProfileException extends Exception {}
 }

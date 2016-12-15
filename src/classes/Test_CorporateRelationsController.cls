@@ -1,6 +1,6 @@
 @isTest
 private class Test_CorporateRelationsController 
-{	
+{  
     private static Campaign testCampaign;
     private static Campaign testChildCampaign;
     private static Account testAccount;
@@ -12,6 +12,13 @@ private class Test_CorporateRelationsController
 
     private static void setupData()
     {
+        // Create custom setting to store the recip values
+        Relationships__c partnerRel = new Relationships__c();
+        partnerRel.Name = 'Partner';
+        partnerRel.Reciprocal__c = 'Partner';
+        
+        insert partnerRel;
+        
         crId = [
             SELECT Id
             FROM RecordType
@@ -49,7 +56,7 @@ private class Test_CorporateRelationsController
             Active_Relationship__c = true,
             Contact__c = testContact.Id,
             Title__c = 'Test Title',
-            Relationship_Type__c = 'Business Partner',
+            Relationship_Type__c = 'Partner',
             Relationship_Start_Date__c = Date.today());
 
         insert testR;

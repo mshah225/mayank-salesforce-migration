@@ -1,5 +1,5 @@
-public with sharing class NewCorporateRelationsContactController 
-{	
+public class NewCorporateRelationsContactController 
+{  
     public Account account { get;set; }
     public Contact contact { get;set; }
     public RecordType crRecordType { get;set; }
@@ -18,6 +18,18 @@ public with sharing class NewCorporateRelationsContactController
     public String selectedParentId { get;set; }
     public String selectedChildId { get;set; }
 
+    public Id contactToAccountRTId {
+        get {
+            if (contactToAccountRTId == null) {
+                contactToAccountRTId = [SELECT Id FROM RecordType WHERE SObjectType = 'Relationship__c' AND Name = 'Contact To Account' LIMIT 1].Id;
+            }
+            
+            return contactToAccountRTId;
+        }
+        
+        set;
+    }
+    
     public NewCorporateRelationsContactController()
     {
         page = 1;
@@ -26,6 +38,7 @@ public with sharing class NewCorporateRelationsContactController
         crRecordType = new RecordType();
         currentSet = new Set<String>();
         relationship = new Relationship__c();
+        relationship.recordTypeId = contactToAccountRTId;
         relationshipList = new List<Relationship__c>();
         campaignMemberList = new List<CampaignMember>();
         crRecordType = [
@@ -105,7 +118,7 @@ public with sharing class NewCorporateRelationsContactController
     {
         Relationship__c rNew = new Relationship__c();
         rNew.Title__c = relationship.Title__c;
-        rNew.Account__c = relationship.Account__c;
+        rNew.Related_Account__c = relationship.Account__c;
         rNew.Relationship_Type__c = relationship.Relationship_Type__c;
         rNew.Relationship_Start_Date__c = relationship.Relationship_Start_Date__c;
         relationshipList.add(rNew);
@@ -209,6 +222,7 @@ public with sharing class NewCorporateRelationsContactController
         showCancel = true;
         relationship = null;
         relationship = new Relationship__c();
+        relationship.RecordTypeId = contactToAccountRTId;
         selectedParentId = null;
         selectedChildId = null;
         childCampaignOptions = null;
@@ -233,6 +247,7 @@ public with sharing class NewCorporateRelationsContactController
         addCampaignMember();
         relationship = null;
         relationship = new Relationship__c();
+        relationship.RecordTypeId = contactToAccountRTId;
         page = 4;
     }
 
@@ -256,6 +271,7 @@ public with sharing class NewCorporateRelationsContactController
         addCampaignMember();
         relationship = null;
         relationship = new Relationship__c();
+        relationship.RecordTypeId = contactToAccountRTId;
         selectedParentId = null;
         selectedChildId = null;
         childCampaignOptions = null;
@@ -485,6 +501,7 @@ public with sharing class NewCorporateRelationsContactController
             {
                 r.Active_Relationship__c = true;
                 r.Contact__c = contact.Id;
+                r.recordTypeId = contactToAccountRTID;
             }
 
             insert relationshipList;

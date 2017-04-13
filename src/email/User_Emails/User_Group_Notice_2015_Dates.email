@@ -1,0 +1,42 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <left><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000004Ltn1&oid=00Dd0000000hLoc&lastMod=1412720297000" 
+                     width="60%" style="padding-top:20px; "/></left>
+                
+            
+                <div style="background: #fff;
+                    width: 550px;
+                    margin-right: auto;
+                    margin-left: 10px;">
+                
+                    <p>
+<h2>2015 Salesforce User Group Dates</h2>
+Please mark your calendars for the 2015 User Group Dates. Reminders and calendar invites will also be posted on Chatter. </p>
+                  <ul>
+                      <li>January: Tuesday 6th at 10am</li>
+                      <li>February: Tuesday 3rd at 10am</li>
+                      <li>March: Tuesday 3rd at 10am</li>
+                      <li>April: Tuesday 7th at 10am</li>
+                      <li>May: Tuesday 5th at 10am</li>
+                      <li>June: Tuesday 2nd at 10am</li>
+                      <li>July: Tuesday 7th at 10am</li>
+                      <li>August: Tuesday 4th at 10am</li>
+                      <li>September: Tuesday 1st at 2pm</li>
+                      <li>October: Tuesday 6th at 10am</li>
+                      <li>November: Tuesday 3rd at 10am</li>
+                      <li>December: Tuesday 1st at 10am</li>
+                      </li>
+                    </ul>
+
+                       <p><b>LOCATION:</b><br>
+
+CPCOM 120<br>
+https://connect.asu.edu/cpcom120</p>
+
+<h3><font color="#990033">December 2014 User Group Meeting:
+    <br>Tuesday 2nd at 10am</font><b></h3>
+                    <hr>
+                  <p>Questions? Contact Salesforce Support at <a href="mailto:salesforce.support@asu.edu">salesforce.support@asu.edu</a>.</p>
+                </div>
+    </body>
+</html>

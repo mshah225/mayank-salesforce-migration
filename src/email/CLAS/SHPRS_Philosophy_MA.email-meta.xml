@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>SHPRS - Philosophy MA</name>
+    <style>freeForm</style>
+    <subject>thank you for your interest in the MA in philosophy at ASU!</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in Arizona State University&apos;s master&apos;s in philosophy through the School of Historical, Philosophical and Religious Studies. We are excited that you are considering joining the ASU community. Here is some information to get you started on your journey:
+
+Program description and requirements:
+https://webapp4.asu.edu/programs/t5/majorinfo/ASU00/LAPHILMA/graduate/false
+
+Information on application process:
+https://shprs.clas.asu.edu/graduate/applying
+
+Information regarding philosophy programs:
+https://shprs.clas.asu.edu/graduate/philosophy-0
+
+Please review these documents closely, and contact me at Roxanne.Shand@asu.edu with any additional questions you may have.
+
+Sincerely,
+
+Roxanne Shand
+Graduate Program Coordinator
+School of Historical, Philosophical and Religious Studies
+College of Liberal Arts and Sciences</textOnly>
+    <type>html</type>
+</EmailTemplate>

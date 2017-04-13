@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Details on WUE eligibility</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>WUE Editable</name>
+    <style>freeForm</style>
+    <subject>You may be eligible for ASU&apos;s Western Undergraduate Exchange program!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Arizona State University participates in the Western Undergraduate Exchange (WUE); a program coordinated by the Western Interstate Commission for Higher Education (WICHE). Students in a WUE program only pay 150 percent of Arizona base resident tuition plus all applicable fees for fall and spring terms. Check out details at the following site: https://students.asu.edu/admission/wue
+
+In order to qualify for this reduced tuition, students must meet the following criteria:
+
+  - Students must be a permanent resident of Alaska, California, Colorado, Hawaii, Idaho,              Montana, Nevada, New Mexico, North Dakota, Oregon, South Dakota, Utah, Washington, Wyoming or residents of the Commonwealth of the Northern Mariana Islands.
+  - Students must apply to one of the ASU WUE-eligible majors or programs - check to see if your major or program applies: https://webapp4.asu.edu/programs/t5/programs/Keyword/wue/undergrad/false
+  - Transfer students must have an overall GPA of 2.50 or higher on a 4.00 scale in all transferable course work.
+  - Community college transfer students must have an associate degree or 60 transferable credit hours (BAS degree programs are only open to students who have an AAS or equivalent degree).
+
+Students who enroll in one of these majors and meet the eligibility requirements will automatically receive the discounted tuition. No separate application is required.
+
+Let me know if you have any additional questions about the admission process.
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

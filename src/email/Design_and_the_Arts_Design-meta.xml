@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailFolder xmlns="http://soap.sforce.com/2006/04/metadata">
+    <accessType>Shared</accessType>
+    <name>Design and the Arts - The Design School</name>
+    <publicFolderAccess>ReadWrite</publicFolderAccess>
+    <sharedTo>
+        <group>AS_Manage_Email_Templates</group>
+        <group>Design_and_the_Arts_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</EmailFolder>

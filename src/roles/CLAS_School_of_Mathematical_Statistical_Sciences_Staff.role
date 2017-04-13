@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Read</contactAccessLevel>
+    <description>CLAS SoMSS School of Mathematical &amp; Statistical Sciences Staff</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>CLAS SoMSS School of Mathematical &amp; Statistical Sciences Staff</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>CLAS_School_of_Mathematical_Statistical_Sciences_Manager</parentRole>
+</Role>

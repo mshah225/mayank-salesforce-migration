@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Herberger_Institute_for_Design_and_the_Arts</letterhead>
+    <name>Incomplete Grade Form</name>
+    <style>freeForm</style>
+    <subject>Incomplete Grade Form</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+According to our records, you received an incomplete grade in the following course(s) for SEMESTER, for which the Incomplete Grade Request Form has not yet been filed.
+•
+The deadline to submit the form is DATE. Please work with the instructor of record for each course in which an incomplete grade was issued to submit the Incomplete Grade Request Form no later than August 28.
+You may download the Incomplete Graduate Request form.
+Once the form has been completed, with the instructor¹s signature, submit the form to the School of Music Office of Academic Affairs, Music E167.
+After August 28, a registration hold for fall 2016 will be placed on your account, preventing you from registering or altering your fall 2016 schedule until the missing Incomplete Grade Request Form(s) have been submitted.
+Incomplete forms for DATE are due by DATE.
+Sincerely,
+
+Julie Stephens
+Coordinator, Academic Affairs + Admissions
+Arizona State University | Herberger Institute for Design and the Arts
+P.O. Box 870405 | Tempe, Arizona 85287-0405
+Phone: 480-965-5069
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

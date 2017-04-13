@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <help><!-- The organization tracked on this Relationship Record. --></help>
+        <label><!-- Account --></label>
+        <lookupFilter>
+            <errorMessage><!-- Can only associate contacts with Org accounts --></errorMessage>
+        </lookupFilter>
+        <name>Account__c</name>
+        <relationshipLabel><!-- Relationships --></relationshipLabel>
+    </fields><fields>
+        <help><!-- Indicates the Relationship is current. Will automatically be set to false when:
+1. The Relationship End Date is set to a value in the past - OR -
+2. A Relationship End Date set for the future is reached. --></help>
+        <label><!-- Active Relationship --></label>
+        <name>Active_Relationship__c</name>
+    </fields><fields>
+        <help><!-- The person tracked on this Relationship Record. --></help>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Relationships --></relationshipLabel>
+    </fields><fields>
+        <help><!-- Provides a direct connection between a Relationship and it&apos;s reciprocal record. Used for Contact to Contact and Account to Account Relationships. --></help>
+        <label><!-- Reciprocal Relationship --></label>
+        <name>Reciprocal_Relationship__c</name>
+        <relationshipLabel><!-- Reciprocal Relationships --></relationshipLabel>
+    </fields><fields>
+        <help><!-- The associated organization in an Account to Account Relationship. --></help>
+        <label><!-- Related Account (of) --></label>
+        <lookupFilter>
+            <errorMessage><!-- Can only associate contacts to ORG Accounts --></errorMessage>
+        </lookupFilter>
+        <name>Related_Account__c</name>
+        <relationshipLabel><!-- Relationships - Related Account --></relationshipLabel>
+    </fields><fields>
+        <help><!-- The associated person in a Contact to Contact Relationship. --></help>
+        <label><!-- Related Contact --></label>
+        <name>Related_Contact__c</name>
+        <relationshipLabel><!-- Relationships - Related Contact --></relationshipLabel>
+    </fields><fields>
+        <help><!-- The date this Relationship ended. Will automatically be set to Today&apos;s date if the Relationship Status is set to Inactive, but can be edited. --></help>
+        <label><!-- Relationship End Date --></label>
+        <name>Relationship_End_Date__c</name>
+    </fields><fields>
+        <label><!-- Relationship Notes --></label>
+        <name>Relationship_Notes__c</name>
+    </fields><fields>
+        <help><!-- The date this Relationship began. Will automatically be set to Today&apos;s date, but can be edited. --></help>
+        <label><!-- Relationship Start Date --></label>
+        <name>Relationship_Start_Date__c</name>
+    </fields><fields>
+        <label><!-- Relationship Type (is) --></label>
+        <name>Relationship_Type__c</name>
+        <picklistValues>
+            <masterLabel>Affiliate Organization</masterLabel>
+            <translation><!-- Affiliate Organization --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Child</masterLabel>
+            <translation><!-- Child --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Employee</masterLabel>
+            <translation><!-- Employee --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Employer</masterLabel>
+            <translation><!-- Employer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Intern Employee</masterLabel>
+            <translation><!-- Intern Employee --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Intern Employer</masterLabel>
+            <translation><!-- Intern Employer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Member</masterLabel>
+            <translation><!-- Member --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Organization</masterLabel>
+            <translation><!-- Organization --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Organization/Group</masterLabel>
+            <translation><!-- Organization/Group --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Parent Organization</masterLabel>
+            <translation><!-- Parent Organization --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Parent/Guardian</masterLabel>
+            <translation><!-- Parent/Guardian --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Partner</masterLabel>
+            <translation><!-- Partner --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Partner Organization</masterLabel>
+            <translation><!-- Partner Organization --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sibling</masterLabel>
+            <translation><!-- Sibling --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Spouse</masterLabel>
+            <translation><!-- Spouse --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Subsidiary</masterLabel>
+            <translation><!-- Subsidiary --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Volunteer</masterLabel>
+            <translation><!-- Volunteer --></translation>
+        </picklistValues>
+    </fields><fields>
+        <help><!-- Used for Contact to Account Relationships to indicate the Contact&apos;s Title at the associated Account. --></help>
+        <label><!-- Title --></label>
+        <name>Title__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Relationship</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Relationships</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Account to Account Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Notes - Account to Account --></label>
+            <section>Notes - Account to Account</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Account to Account Reciprocal Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Notes - Account to Account Reciprocal --></label>
+            <section>Notes - Account to Account Reciprocal</section>
+        </sections>
+        <sections>
+            <label><!-- Record Detail --></label>
+            <section>Record Detail</section>
+        </sections>
+        <sections>
+            <label><!-- This record is for reporting only. Use the &quot;Reciprocal Relationship&quot; link below. --></label>
+            <section>This record is for reporting only. Use the "Reciprocal Relationship" link below.</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Account to Contact Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Notes - Contact to Account --></label>
+            <section>Notes - Contact to Account</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Admin Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Notes - Account to Account --></label>
+            <section>Notes - Account to Account</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Contact to Account Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Notes - Contact to Account --></label>
+            <section>Notes - Contact to Account</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Contact to Contact Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Notes - Contact to Contact --></label>
+            <section>Notes - Contact to Contact</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Contact to Contact Reciprocal Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Notes - Contact to Contact Reciprocal --></label>
+            <section>Notes - Contact to Contact Reciprocal</section>
+        </sections>
+        <sections>
+            <label><!-- Record Detail --></label>
+            <section>Record Detail</section>
+        </sections>
+        <sections>
+            <label><!-- This record is for reporting only. Use the &quot;Reciprocal Relationship&quot; link below. --></label>
+            <section>This record is for reporting only. Use the "Reciprocal Relationship" link below.</section>
+        </sections>
+    </layouts><recordTypes>
+        <label><!-- Account to Account --></label>
+        <name>Account_to_Account</name>
+    </recordTypes><recordTypes>
+        <label><!-- Account to Account Reciprocal --></label>
+        <name>Account_to_Account_Reciprocal</name>
+    </recordTypes><recordTypes>
+        <label><!-- Account to Contact --></label>
+        <name>Account_to_Contact</name>
+    </recordTypes><recordTypes>
+        <label><!-- Contact to Account --></label>
+        <name>Contact_to_Account</name>
+    </recordTypes><recordTypes>
+        <label><!-- Contact to Contact --></label>
+        <name>Contact_to_Contact</name>
+    </recordTypes><recordTypes>
+        <label><!-- Contact to Contact Reciprocal --></label>
+        <name>Contact_to_Contact_Reciprocal</name>
+    </recordTypes><webLinks>
+        <label><!-- New_Account_to_Account --></label>
+        <name>New_Account_to_Account</name>
+    </webLinks><webLinks>
+        <label><!-- New_Account_to_Contact --></label>
+        <name>New_Account_to_Contact</name>
+    </webLinks><webLinks>
+        <label><!-- New_Contact_to_Account --></label>
+        <name>New_Contact_to_Account</name>
+    </webLinks><webLinks>
+        <label><!-- New_Contact_to_Contact --></label>
+        <name>New_Contact_to_Contact</name>
+    </webLinks></CustomObjectTranslation>

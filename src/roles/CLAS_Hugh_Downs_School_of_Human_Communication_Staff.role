@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Read</contactAccessLevel>
+    <description>CLAS HDSHC Hugh Downs School of Human Communication Staff</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>CLAS HDSHC Hugh Downs School of Human Communication Staff</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>CLAS_Hugh_Downs_School_of_Human_Communication_Manager</parentRole>
+</Role>

@@ -1,0 +1,62 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    
+             Dear {!Contact.FirstName},  <br /><br />
+
+
+Students may obtain a Sun Card without having to visit one of our offices. To get your Sun Card visit the <a href="https://cfo.asu.edu/cardservices#online-and-extended-campus-students">
+Online and Extended-Campus Students</a> portion of our website.<br /><br />
+
+Once you have read the photo upload guidelines, click on
+<a href="https://webapp4.asu.edu/cardservices/" target="_blank">
+UPLOAD YOUR PHOTO NOW</a>.
+Here you will upload the photo for your ASU ID as well as verification ID (driver’s license, passport, US visa). Please allow 1-2 business days for your photo to be approved.<br/><br/>
+
+You will receive an email once your photo has been approved. At this point you need to submit a <a href="https://cfo.asu.edu/campus-id-card-request-form">
+Sun Card Request Form</a>.<br/><br/>
+
+After we have processed your request, we will send you a confirmation email. A fee of $25.00 will be applied to your account within a few business days.<br/><br/>
+Regards, <br />
+ {!User.FirstName} {!User.LastName}
+                </div>
+
+             
+
+               <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               <p><b>
+Sun Devil Card Services
+</b><br/>
+Arizona State University<br />
+Phone: 480-965-2273<br/>
+<a href="https://cfo.asu.edu/cardservices" target="_blank">
+cardservices.asu.edu
+</a><br />
+                    </p>
+                    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>
+
+</p>

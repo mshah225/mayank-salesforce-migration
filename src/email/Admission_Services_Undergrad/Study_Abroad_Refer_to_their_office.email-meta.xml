@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Study abroad opportunities through ASU</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Study Abroad (Refer to their office)</name>
+    <style>freeForm</style>
+    <subject>Study abroad opportunities through ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting Admission Services at Arizona State University.
+
+The Study Abroad Office offers more than 250 different programs in more than 55 countries around the world. Please visit the study abroad website for detailed information on our exchange programs at http://studyabroad.asu.edu.
+
+If you have any questions, please feel free to contact me.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

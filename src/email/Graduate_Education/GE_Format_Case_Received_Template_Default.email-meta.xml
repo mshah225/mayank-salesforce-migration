@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Graduate Education | Format: auto-response email for case received.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>GE | Format: Case Received Template Default</name>
+    <style>none</style>
+    <subject>Email Received Case Number {!Case.CaseNumber}</subject>
+    <textOnly>Dear {!Contact.FirstName} {!Contact.LastName},
+
+Thank you for your email to the ASU Graduate Format Office. This is an automated email to acknowledge that your email has been received and to let you know that a personal response will occur in the order in which your email was received. If you are seeking format review, please expect a response within 3-5 business days.
+
+IMPORTANT: If you are a student planning to graduate in the current semester, please visit our website for important graduation deadlines:
+https://graduate.asu.edu/index.php?q=completing-your-degree
+
+ASU Graduate Format Office
+
+If you have any additional information to add to this case, please reply to this email.
+
+Case Number: {!Case.CaseNumber}
+Subject: {!Case.Subject}
+
+
+
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

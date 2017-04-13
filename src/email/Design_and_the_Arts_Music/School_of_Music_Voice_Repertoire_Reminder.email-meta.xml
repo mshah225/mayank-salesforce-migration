@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Herberger_Institute_for_Design_and_the_Arts</letterhead>
+    <name>School of Music Voice Repertoire Reminder</name>
+    <style>freeForm</style>
+    <subject>ASU School of Music Voice Repertoire Reminder</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+This is a friendly reminder that you have requested an ASU accompanist for your live audition on DATE. Please submit your audition program in the following format:
+
+Title
+Key in which you are singing
+Composer
+
+Voice applicants who have requested an ASU accompanist for the audition are required to bring piano scores of their pieces to the audition for the pianist. Scores should be clearly marked, double-sided and in a three-ring binder.
+
+Please email this repertoire information to musicadmissions@asu.edu no later than DATE.
+
+Sincerely,
+
+Julie Stephens
+Coordinator, Academic Affairs + Admissions
+Arizona State University | Herberger Institute for Design and the Arts
+P.O. Box 870405 | Tempe, Arizona 85287-0405
+Phone: 480-965-5069
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

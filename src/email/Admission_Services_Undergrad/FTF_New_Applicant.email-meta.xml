@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Next steps: activate My ASU, submit test scores, browse scholarships, schedule campus visit</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>FTF New Applicant</name>
+    <style>freeForm</style>
+    <subject>Thank you for applying to Arizona State University!</subject>
+    <textOnly>Hi {!Contact.FirstName},
+
+Thank you for applying to Arizona State University! My name is {!User.Recruiter_Full_Name__c}, and I will be your personal admission counselor. I am here to help you through the admission process and answer any questions you may have.
+
+Your next steps for admission
+
+1. Activate your My ASU (https://my.asu.edu) account to check the status of your application and view Priority Task items you need to complete, such as paying your application fee.
+2. Submit your ACT or SAT scores to be automatically considered for ASU’s merit-based scholarships. We accept scores sent directly from the testing centers using the ASU school code 4007 for SAT (https://www.collegeboard.org/) or 0088 for ACT (http://www.act.org/content/act/en/products-and-services/the-act.html).
+3. View a full list of next steps online.(https://students.asu.edu/freshman/requirements#application-steps)
+
+
+Once ASU has received your complete application, it will take about four to six weeks to receive your admission decision. Be sure to regularly check your My ASU account for updates.
+
+Explore more
+Use the Scholarship Estimator to see if you may be eligible for an automatic merit-based scholarship. (https://scholarships.asu.edu/estimator)
+
+The ASU Scholarship portal is now accepting 2017–2018 applications. The majority of the scholarships have a deadline from Jan. 1 through March 1, so use your time wisely. (https://scholarships.asu.edu/)
+
+Tips for navigating the scholarship portal:
+
+1. Use one filter at a time. Entering multiple filters will limit the scholarship search.
+2. Scholarships with a maroon portal application button are only available to ASU students, which reduces the pool of applicants you’re up against, and it will save your essay responses from application to application.
+3. Check out College Listings for links to additional ASU scholarships beyond what are listed on the portal. (https://scholarships.asu.edu/colleges)
+4. When in doubt — always apply.
+
+We highly encourage you to schedule a campus visit (https://visit.asu.edu/) to learn more about your future campus home. This is truly the best way to determine if ASU is the right fit for you.
+
+If you have any questions about the admission process or ASU in general, please don&apos;t hesitate to contact me directly.
+
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Edit</contactAccessLevel>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>OL ASU Online Staff</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>OL_ASU_Online_Manager</parentRole>
+</Role>

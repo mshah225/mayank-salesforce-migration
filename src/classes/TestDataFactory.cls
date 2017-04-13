@@ -1,4 +1,3 @@
-@isTest
 public class TestDataFactory {
     //ToDo: Create methods for generating test data (or filling sandboxes after refreshes)
     //ToDo: method for creating community users (students)
@@ -65,7 +64,7 @@ public class TestDataFactory {
     }
     
     /**
-     * Create a list oc cases with the statuses set to new and the subjects set to
+     * Create a list of cases with the statuses set to new and the subjects set to
      * "Test Case: " + integer for uniqueness
      *
      * @param Integer Number of cases to create
@@ -360,6 +359,215 @@ public class TestDataFactory {
         result.status = 'New';
         
         return result;
+    }
+    
+    /*
+     * Create a list of pods for insertion into the database
+     * 
+     * @param Integer The number of pods to be created
+     * @param ID The record type Id for the new pods
+     */
+    public static List<Success_Pod__c> createPods(Integer numberOfPods, Id RTID) {
+        List<Success_Pod__c> result = new List<Success_Pod__c>();
+        List<Group> groups = new List<Group>();
+        List<QueueSobject> queues = new List<QueueSobject>();
+        List<OrgWideEmailAddress> owas;
+        
+        owas = new List<OrgWideEmailAddress>([SELECT Address FROM OrgWideEmailAddress LIMIT :numberOfPods]);
+        
+        // Create list of groups
+        for (Integer x = 0; x < numberOfPods; x++) {
+            groups.add(new Group(
+                Name = 'Test Group Name ' + x,
+                Type = 'Queue'
+            ));
+        }
+        
+        insert groups;
+        
+        for (group g : groups) {
+            queues.add(new QueueSobject(
+            	QueueId = g.Id,
+                SobjectType = 'Success_Pod__c'
+            ));
+            
+            queues.add(new QueueSobject(
+            	QueueId = g.Id,
+                SobjectType = 'Case'
+            ));
+        }
+        
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert queues;
+        }
+        
+        for (Integer x = 0; x < numberOfPods; x++) {
+            result.add(createPod('Test Pod ' + x, RTID, groups[x].Id, owas[x].Address));
+        }
+        
+        return result;
+    }
+    
+    /*
+     * Creates a success_pod__c record
+     * 
+     * @param String The name of the pod to create
+     * @param Id The record type ID for the new pod
+     * @param Id The Id of the owner of the new record
+     */
+    public static Success_Pod__c createPod(String name, Id RTID, Id ownerId, String email) {
+        // Create a new queue per pod and set as owner
+        
+        return new Success_Pod__c(
+            OwnerId = ownerId,
+        	Name = name,
+            RecordTypeId = RTID,
+            Primary_Email__c = email
+        );
+    }
+    
+    /*
+     * Creates the specified number of success resource records. Each record
+     * is created with it's own unique pod.
+     * 
+     * @param Id The Id of the user the resource represents
+     * @param Integer the number of resources to create
+     * @param RecordType the record type for the resource. Note the name of the record type for
+     * the resource should match the name of the record type for the pod.
+     */
+    public static List<Success_Resource__c> createResources(Id userId, Integer numberOfResources, RecordType rt) {
+        List<Success_Resource__c> result = new List<Success_Resource__c>();
+        List<Success_Pod__c> pods;
+        
+        Id successPodId = [SELECT Id FROM RecordType WHERE Name = :rt.name AND SObjectType = 'Success_Pod__c'].Id;
+        
+        pods = createPods(numberOfResources, successPodId);
+        
+        insert pods;
+        
+        for (Success_Pod__c sp : pods) {
+            result.add(new Success_Resource__c(
+            	Resource__c = userId,
+                RecordTypeId = rt.Id,
+                Success_Pod__c = sp.Id,
+                Role__c = 'User',
+                IsActive__c = true
+            ));
+        }
+        
+        return result;
+    }
+    
+    /*
+     * Create a list of students for each provided resource.
+     * 
+     * @param List<Success_Resource__c> List of resources needing students
+     */
+    public static List<Success_Student__c> createSuccessStudents(List<Success_Resource__c> resources, Integer numberOfStudents) {
+		List<Success_Student__c> result = new List<Success_Student__c>();
+        List<contact> contacts;
+        List<Id> podIds = new List<Id>();
+        
+        // Create contacts to associate to students
+        contacts = createContacts(numberOfStudents);
+        insert contacts;
+        
+        // Loop through resources to get PodIds that need students
+        for (Success_Resource__c sr : resources) {
+            podIds.add(sr.Success_Pod__c);
+        }
+        
+        // Create 1 student per contact, per pod
+        for (Integer x = 0; x < podIds.size(); x++) {
+            for (Integer y = 0; y < numberOfstudents; y++) {
+                result.add(new Success_Student__c(
+                	Is_Active__c = true,
+                    Student__c = Contacts[y].Id,
+                    Success_Pod__c = podIds[x]
+                ));
+            }
+        }
+        
+        return result;
+    }
+    
+    /*
+     * Generates test data for the current user as if they were an advisor
+     */
+    public static void makeMeAnAdvisorUser(Integer numberOfPods, Integer numberOfCases, Integer numberOfStudents) {
+        // Create list of resources
+        RecordType advisorResourceRT = [SELECT Name FROM RecordType WHERE Name = 'Advisor' AND SObjectType = 'Success_Resource__c'];
+        List<Success_Resource__c> resources = CreateResources(UserInfo.getUserId(), numberOfPods, advisorResourceRT);
+        
+        insert resources;
+        
+        // Pass resource to create list of students
+        List<Success_Student__c> students = createSuccessStudents(resources, numberOfStudents);
+        
+        insert students;
+        
+        // Create watchlist and proactive cases for the pods/students
+        List<Id> podIds = new List<Id>();
+        
+        for (Success_Resource__c sr : resources) {
+            podIds.add(sr.Success_Pod__c);
+        }
+        
+        // Create cases
+        List<Case> cases = new List<Case>();
+        String mrq;
+        
+        for (Success_Pod__c sp : [SELECT OwnerId, Owner.Name FROM Success_Pod__c WHERE Id IN :podIds]) {
+            for (Integer x = 0; x < numberOfCases; x++) {
+                // proactive case
+                cases.add(new Case(
+                	OwnerId = sp.OwnerId,
+                    RecordTypeId = RTIDHelper.getRTID('Case', 'ASU Advisor Outreach'),
+                    Status = 'Outreach Required',
+                    Functional_Group__c = 'ASU Advisor Outreach',
+                    Category__c = 'Outreach',
+                    Origin__c = 'Outreach',
+                    Subject = 'Case Bloat ' + math.mod(x, 2),
+                    Description = 'Case Bloat',
+                    Most_Recent_Queue__c = sp.owner.name,
+                    contactId = students[(Integer) math.rint(math.random() * (students.size() - 1))].student__c
+                ));
+                
+                // Note owner doesn't matter for reactive cases
+                cases.add(new Case(
+                    OwnerId = sp.OwnerId,
+                    RecordTypeId = RTIDHelper.getRTID('Case', 'ASU Service'),
+                    Status = 'New',
+                    Functional_Group__c = 'ASU Service',
+                    Category__c = 'ASU Service',
+                    Origin__c = 'ASU Service',
+                    Subject = 'Case Bloat ' + math.mod(x, 2),
+                    Description = 'Case Bloat',
+                    Most_Recent_Queue__c = sp.owner.name,
+                    contactId = students[(Integer) math.rint(math.random() * (students.size() - 1))].student__c
+                ));
+                
+                // get a random Most_Recent_Queue for cases owned by user
+                mrq = sp.owner.name;
+            }
+        }
+        
+        for (Integer x = 0; x < numberOfCases; x++) {
+            cases.add(new Case(
+                OwnerId = UserInfo.getUserId(),
+                RecordTypeId = RTIDHelper.getRTID('Case', 'ASU Advisor Outreach'),
+                Status = 'Outreach Required',
+                Functional_Group__c = 'ASU Advisor Outreach',
+                Category__c = 'Watchlist',
+                Origin__c = 'Outreach',
+                Subject = 'Case Bloat ' + math.mod(x, 2),
+                Description = 'Case Bloat',
+                Most_Recent_Queue__c = mrq,
+                contactId = students[(Integer) math.rint(math.random() * (students.size() - 1))].student__c
+            ));
+        }
+        
+        insert cases;
     }
     
     /**

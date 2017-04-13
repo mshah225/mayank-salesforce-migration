@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Thank you for your interest in biomedical diagnostics</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>HealthSolutions_letterhead</letterhead>
+    <name>NHBMDMS   Welcome to Biomedical Diagnostics</name>
+    <style>formalLetter</style>
+    <subject>Thank you for your interest in biomedical diagnostics</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your inquiry regarding our new and innovative Master of Science in Biomedical Diagnostics. We are looking forward to a very exciting year with the inception of this new program.
+
+Diagnostics is at the center of health care innovation and is critical to personalized medicine. More than 60 percent of clinical decision-making uses biomedical diagnostics, and the industry employs more than 3.5 million people worldwide. Arizona State University (ASU) and Dublin City University (DCU) have launched an international Master of Science in Biomedical Diagnostics.
+
+Due to a very fresh launch, applications are still accepted now for fall 2014 enrollment. We will continue to consider applicants until the semester begins on August 21. There is no GRE requirement for this program and the late application fee may be waived if you are considering fall 2014.
+
+ This is a one year, 30-credit degree program will be delivered through a blended learning model with shared curriculum and courses offered by both schools. Students will:
+
+• Benefit from innovative, cross-disciplinary curriculum taught by expert faculty who are leaders in the fields of engineering, technology, medicine, law, and business.
+• Develop a comprehensive approach to health care.
+• Garner experience through involvement in research or industry immersion programs, as well as internship experiences in Arizona and Dublin.
+• Gain a competitive advantage in the job market, educational programs and postgraduate fellowships.
+• Benefit from ASU and DCU’s leadership in diagnostics. ASU is home to the Virginia G. Piper Center for Personalized Diagnostics and the National Biomarker Development Alliance, and DCU is home of the Biomedical Diagnostics Institute, a world-class, multidisciplinary research institute focused on the development of next-generation, point-of-care biomedical diagnostic devices. 
+
+Please visit https://chs.asu.edu/isbd/master-science-biomedical-diagnostics for more about the program and coursework. To learn more about the ASU-DCU partnership, visit https://dcu.asu.edu.  
+Let me know if you would like to speak by phone or meet in person, if possible.
+
+Please visit our webpage for more about the program and coursework. To learn more about the ASU-DCU partnership, visit our partnership site.
+
+Let me know if you would like to speak by phone or meet in person, if possible.
+
+Laura Kaufman
+Department of Biomedical Informatics, Arizona State University
+Samuel C. Johnson Research Building, Mayo Clinic Scottsdale
+(480) 884-0234
+Laura.Kaufman@asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

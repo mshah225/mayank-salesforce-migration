@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Case Subject Name --></label>
+        <name>Case_Subject_Name__c</name>
+    </fields><fields>
+        <label><!-- Category --></label>
+        <name>Category__c</name>
+        <picklistValues>
+            <masterLabel>Ad Hoc</masterLabel>
+            <translation><!-- Ad Hoc --></translation>
+        </picklistValues>
+    </fields><fields>
+        <help><!-- Used to set Case creation on or off. --></help>
+        <label><!-- CreateCase --></label>
+        <name>CreateCase__c</name>
+    </fields><fields>
+        <label><!-- FunctionalGroup --></label>
+        <name>FunctionalGroup__c</name>
+        <picklistValues>
+            <masterLabel>ASU Coach Outreach</masterLabel>
+            <translation><!-- ASU Coach Outreach --></translation>
+        </picklistValues>
+    </fields><fields>
+        <help><!-- Used to determine if this Case flag is still in use. --></help>
+        <label><!-- IsActive --></label>
+        <name>IsActive__c</name>
+    </fields><fields>
+        <label><!-- Origin --></label>
+        <name>Origin__c</name>
+        <picklistValues>
+            <masterLabel>Resource</masterLabel>
+            <translation><!-- Resource --></translation>
+        </picklistValues>
+    </fields><fields>
+        <help><!-- Used to set the Case priority upon creation. --></help>
+        <label><!-- Priority --></label>
+        <name>Priority__c</name>
+        <picklistValues>
+            <masterLabel>1 - Highest Priority</masterLabel>
+            <translation><!-- 1 - Highest Priority --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>2 - High Priority</masterLabel>
+            <translation><!-- 2 - High Priority --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>3 - Normal Priority</masterLabel>
+            <translation><!-- 3 - Normal Priority --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>4 - Minor Priority</masterLabel>
+            <translation><!-- 4 - Minor Priority --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>High</masterLabel>
+            <translation><!-- High --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Normal</masterLabel>
+            <translation><!-- Normal --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Urgent</masterLabel>
+            <translation><!-- Urgent --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- SendEmail --></label>
+        <name>SendEmail__c</name>
+    </fields><fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>New</masterLabel>
+            <translation><!-- New --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- StoredProcedureName --></label>
+        <name>StoredProcedureName__c</name>
+    </fields><fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>Coach Initiated</masterLabel>
+            <translation><!-- Coach Initiated --></translation>
+        </picklistValues>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Success Coach Case Flag</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Success Coach Case Flags</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Success Coach Case Flag Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

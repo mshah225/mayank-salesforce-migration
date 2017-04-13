@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Ad Hoc Advisor Email used in Portal</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Ad Hoc Advisor Email</name>
+    <style>none</style>
+    <subject>A message from your ASU College and Department</subject>
+    <textOnly>Dear {!Contact.FirstName}, 		
+
+
+Sincerely,
+{!User.Name}
+
+If you have any additional information or questions related to this, please reply to this email.
+{!Case.Thread_Id__c}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

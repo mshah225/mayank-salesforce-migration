@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Pre-Med inquiry response including links to professional school FAQs, pre-health advising, and degree search.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Pre Med Inquiry</name>
+    <style>freeForm</style>
+    <subject>Interested in being pre-med? Check out the options ASU can offer!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University! ASU does not have a separate major for pre-medical students. We believe that students should experience a broad education in college, with some specialization in one area of knowledge. Many professional school admission committees prefer applicants with traditional academic majors. Review the FAQ about professional school here: http://prehealth.asu.edu/explore/faqs
+
+At ASU, you can choose any academic major based on your interests and still receive comprehensive pre-health advising services to help you attend a professional health program following completion of your bachelor&apos;s degree. Please visit prehealth.asu.edu for more information.
+
+Explore our academic programs using degree search. Using a keyword, you can find degrees related to your interest. Click on the specific major for more information, including admission requirements. Click on Major Map to see the required courses for that program.
+
+To receive guidance on declaring a major and what else you can do to prepare for medical school, I invite you to speak with an advisor in our pre-health department. This advisor will help you find the right major for you and guide you during your undergraduate career at ASU to help you successfully attend a professional program after graduation. You can reach an advisor at 480-965-2365 or online at http://prehealth.asu.edu/node/3.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

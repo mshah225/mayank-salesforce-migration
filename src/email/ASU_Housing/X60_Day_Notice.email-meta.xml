@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>HTML templates for 60 Day Notice</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Case_Management</letterhead>
+    <name>60 Day Notice</name>
+    <style>freeForm</style>
+    <subject>60 Day Notice</subject>
+    <textOnly>{!Contact.FirstName} {!Contact.LastName}:
+
+
+Our records indicate that you are 60 days or more past due on your Housing rental payments. Failure to remain current on amounts owed is a direct violation of your license agreement. Your account must be made current by 1 week after date of letter; failure to bring your account current will result in immediate termination of your license agreement.
+
+
+
+In order to remain in University Housing, you need to pay $X,XXX.XX by 1 week after date of letter.
+
+
+
+You may submit payment via mail by check payable to ASU University Housing, Attn: Lorrie Woesner, PO Box 870212, Tempe, AZ 85287-0212 or in person at the Polytechnic Cashiering Services located in Quad 2, where acceptable forms of payment include cash or checks only. You may also pay online through your ASU student account using MasterCard, Discover or American Express.
+
+
+If payment is not received by 1 week after date of letter, your license agreement will be terminated and your expected move out date will be 2 weeks after date of letter. Please note that you can stop the termination of your license agreement by paying your balance in full. You may also contact Lorrie Woesner  (lorrie.woesner@asu.edu or 480-727-8273), Scott Patton (scott.patton@asu.edu or 480-965-5702) or Jim Beadle (james.beadle@asu.edu or 480-965-6658) to discuss your account.
+
+
+If you feel this has reached you in error, or would like to schedule an appointment to speak with someone, please send an e-mail addressing your concerns no later than 1 week after date of letter to Lorrie.Woesner@asu.edu, or call 480-727-8273. Your e-mail should include the name of the primary license holder, their affiliate ID, campus address and specific information regarding your concerns.
+
+
+Again, it is very important that you bring your account current. Failure to do so will result in termination of your license agreement with an expected move out date of 2 weeks after date of letter.
+
+
+Sincerely,
+
+
+
+
+Jim Beadle
+
+Director, Finance &amp; Administration
+
+University Housing &amp; Dining Services</textOnly>
+    <type>html</type>
+</EmailTemplate>

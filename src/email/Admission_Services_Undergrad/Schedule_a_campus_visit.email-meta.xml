@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Info on scheduling a campus visit.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Schedule a campus visit</name>
+    <style>freeForm</style>
+    <subject>Schedule a visit to Arizona State University!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+We encourage all students to visit the campus of their major. Scheduling a campus visit at https://visit.asu.edu/ will provide you the opportunity to see what life is like as an ASU student.
+
+You can customize your visit experience to include academic sessions, residential hall open houses, or a tour of Barrett, The Honors College.
+
+If you have any questions, let me know and I’ll be happy to help!
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

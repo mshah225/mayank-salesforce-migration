@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <help><!-- A unique key name used for identifying the variable in SQL. --></help>
+        <label><!-- Flag Key --></label>
+        <name>Flag_Key__c</name>
+    </fields><fields>
+        <help><!-- The actual value of the key to be used in the SQL stored procedure. --></help>
+        <label><!-- Flag Value --></label>
+        <name>Flag_Value__c</name>
+    </fields><fields>
+        <label><!-- Success Coach Case Flag --></label>
+        <name>Success_Coach_Case_Flag__c</name>
+        <relationshipLabel><!-- Success Coach Case Flag Rules --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Success Coach Case Flag Rule</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Success Coach Case Flag Rules</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Success Coach Case Flag Rule Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

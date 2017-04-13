@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailFolder xmlns="http://soap.sforce.com/2006/04/metadata">
+    <accessType>Shared</accessType>
+    <name>MU Information Desk</name>
+    <publicFolderAccess>ReadOnly</publicFolderAccess>
+    <sharedTo>
+        <group>MU_Information_Desk_Case</group>
+        <group>UTO_Administration</group>
+        <group>UTO_Student_Workers</group>
+        <role>S_Service</role>
+    </sharedTo>
+</EmailFolder>

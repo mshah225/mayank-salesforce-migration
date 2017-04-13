@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Martha Bennett Memorial Scholarship</name>
+    <style>freeForm</style>
+    <subject>Congratulations on your scholarship!</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+I hope that you are enjoying your summer break and getting ready to begin the fall semester on Aug. 18, 2016. We look forward to seeing you at ASU Colleges at Lake Havasu City.
+
+Due to your exceptional academic profile and pursuit of a science-related degree program, you have been awarded a ${xxxx} Martha Bennett Memorial Scholarship. This scholarship is made possible through the generosity of Mr. Dean Barlow, who contributed funds in memory of the late Martha Bennett. Bennett was a well-known Food and Drug Administration consultant from Lake Havasu City, who believed in the importance of higher education and the sciences.
+
+You will see your scholarship posted in your My ASU.
+
+Go Devils!
+
+David A. Young
+Director
+ASU Colleges at Lake Havasu City</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Help Desk template to direct to Service Center</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management Help Desk - Service Center</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for contacting Arizona State University. We were able to research your question.
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+For help and support visit the Service Center in My ASU
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Read</contactAccessLevel>
+    <description>Success Coach Manager</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>SC Success Coach Manager</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>EP_Ed_Plus</parentRole>
+</Role>

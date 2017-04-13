@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Academic Status Date --></label>
+        <name>Academic_Status_Date__c</name>
+    </fields><fields>
+        <label><!-- Academic Status Report Actions --></label>
+        <name>Academic_Status_Reasons_Actions__c</name>
+    </fields><fields>
+        <label><!-- Academic Status Reasons --></label>
+        <name>Academic_Status_Reasons__c</name>
+    </fields><fields>
+        <label><!-- Academic Status Report Comments --></label>
+        <name>Academic_Status_Report__c</name>
+    </fields><fields>
+        <label><!-- Case Number --></label>
+        <name>Case_Number__c</name>
+    </fields><fields>
+        <label><!-- Case Status --></label>
+        <name>Case_Status__c</name>
+    </fields><fields>
+        <label><!-- Case Type --></label>
+        <name>Case_Type__c</name>
+        <picklistValues>
+            <masterLabel>Advisor</masterLabel>
+            <translation><!-- Advisor --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Coach</masterLabel>
+            <translation><!-- Coach --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Case --></label>
+        <name>Case__c</name>
+        <relationshipLabel><!-- Case Creation Indicators --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Class Nbr --></label>
+        <name>Class_Nbr__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Case Creation Indicators --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Course Code --></label>
+        <name>Course_Code__c</name>
+    </fields><fields>
+        <label><!-- Create Case --></label>
+        <name>Create_Case__c</name>
+    </fields><fields>
+        <label><!-- EMPLID --></label>
+        <name>EMPLID__c</name>
+    </fields><fields>
+        <label><!-- Indicator Case Type --></label>
+        <name>Indicator_Case_Type__c</name>
+        <picklistValues>
+            <masterLabel>CCI flag initiated</masterLabel>
+            <translation><!-- CCI flag initiated --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Delayed Send</masterLabel>
+            <translation><!-- Delayed Send --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mass Email</masterLabel>
+            <translation><!-- Mass Email --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Indicator Type --></label>
+        <name>Indicator_Type__c</name>
+        <picklistValues>
+            <masterLabel>Academic DQ</masterLabel>
+            <translation><!-- Academic DQ --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Academic Probation</masterLabel>
+            <translation><!-- Academic Probation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Academic Status Report</masterLabel>
+            <translation><!-- Academic Status Report --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Applied for Graduation</masterLabel>
+            <translation><!-- Applied for Graduation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BB Access Minutes in bottom 1/4</masterLabel>
+            <translation><!-- BB Access Minutes in bottom 1/4 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BB Activity in bottom 1/4</masterLabel>
+            <translation><!-- BB Activity in bottom 1/4 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BB Grade in bottom 1/4</masterLabel>
+            <translation><!-- BB Grade in bottom 1/4 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BB Login &gt; 8 Days</masterLabel>
+            <translation><!-- BB Login &gt; 8 Days --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BB New Class no log in</masterLabel>
+            <translation><!-- BB New Class no log in --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BB No Activity &gt; 4 Days</masterLabel>
+            <translation><!-- BB No Activity &gt; 4 Days --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Change of Major</masterLabel>
+            <translation><!-- Change of Major --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Course Prep Check-In</masterLabel>
+            <translation><!-- Course Prep Check-In --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>DEW Grade</masterLabel>
+            <translation><!-- DEW Grade --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Difficult Course</masterLabel>
+            <translation><!-- Difficult Course --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Drop/Withdrawn - One Course</masterLabel>
+            <translation><!-- Drop/Withdrawn - One Course --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Dropped All Classes in Session</masterLabel>
+            <translation><!-- Dropped All Classes in Session --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Dropped Orientation</masterLabel>
+            <translation><!-- Dropped Orientation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>First Week Check-In</masterLabel>
+            <translation><!-- First Week Check-In --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Graduated</masterLabel>
+            <translation><!-- Graduated --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hold(s) exist</masterLabel>
+            <translation><!-- Hold(s) exist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mid Session Check-In</masterLabel>
+            <translation><!-- Mid Session Check-In --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>New Student Welcome</masterLabel>
+            <translation><!-- New Student Welcome --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No Orientation</masterLabel>
+            <translation><!-- No Orientation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Enrolled</masterLabel>
+            <translation><!-- Not Enrolled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Reg 12 Weeks after Reg Open</masterLabel>
+            <translation><!-- Not Reg 12 Weeks after Reg Open --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Reg 16 Weeks after Reg Open</masterLabel>
+            <translation><!-- Not Reg 16 Weeks after Reg Open --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Reg 2 Weeks before Class Start</masterLabel>
+            <translation><!-- Not Reg 2 Weeks before Class Start --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Reg 20 Weeks after Reg Open</masterLabel>
+            <translation><!-- Not Reg 20 Weeks after Reg Open --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Reg 24 Weeks after Reg Open</masterLabel>
+            <translation><!-- Not Reg 24 Weeks after Reg Open --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Reg 28 Weeks after Reg Open</masterLabel>
+            <translation><!-- Not Reg 28 Weeks after Reg Open --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Reg 4 Weeks after Reg Open</masterLabel>
+            <translation><!-- Not Reg 4 Weeks after Reg Open --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Reg 8 Weeks after Reg Open</masterLabel>
+            <translation><!-- Not Reg 8 Weeks after Reg Open --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Probation</masterLabel>
+            <translation><!-- Probation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Registration Open for this Student</masterLabel>
+            <translation><!-- Registration Open for this Student --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>eAdvisor Off Track</masterLabel>
+            <translation><!-- eAdvisor Off Track --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Term --></label>
+        <name>STRM__c</name>
+    </fields><fields>
+        <label><!-- Session Code --></label>
+        <name>Session_Code__c</name>
+    </fields><fields>
+        <label><!-- Session Decode --></label>
+        <name>Session_Decode__c</name>
+    </fields><fields>
+        <label><!-- Session --></label>
+        <name>Session__c</name>
+    </fields><fields>
+        <label><!-- Success Student --></label>
+        <name>Success_Student__c</name>
+        <relationshipLabel><!-- Case Creation Indicators --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Case Creation Indicator</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Case Creation Indicators</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Case Creation Indicator Layout</layout>
+        <sections>
+            <label><!-- Academic Status Report --></label>
+            <section>Academic Status Report</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- New Section --></label>
+            <section>New Section</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

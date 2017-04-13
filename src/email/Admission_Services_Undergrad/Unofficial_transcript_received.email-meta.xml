@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>INTL - Unofficial transcript received</name>
+    <style>freeForm</style>
+    <subject>Your unofficial transcripts have been received by Arizona State University</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+The transcript we have received from you is unofficial. Arizona State University requires an official transcript as part of your application.
+
+Please see our website at https://students.asu.edu/international/future/undergrad for more information about the documents we need and how you can send them.
+
+Sincerely,
+
+International Admission Services
+Arizona State University
+Tel +1-480-965-2437
+Office hours: Tues-Fri, 8 a.m. to 5 p.m. MST
+Mondays, 8 a.m. to 4 p.m. MST</textOnly>
+    <type>html</type>
+</EmailTemplate>

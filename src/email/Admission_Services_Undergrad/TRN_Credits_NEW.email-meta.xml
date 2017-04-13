@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>How ASU awards transfer credit and the Transfer Credit Guide</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TRN Credits</name>
+    <style>freeForm</style>
+    <subject>Information on transferring credits to ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University. ASU awards transfer credit for college level course work as long as it was completed at a regionally accredited institution, you earned a grade of “C” or higher and ASU offers a similar course. The course must also be a 100-level course or above. We will accept up to 64 credits from two-year institutions and an unlimited number of credits from four-year institutions. Upon admission to the university, you will work with an ASU academic advisor to determine how your transferable credits apply toward your selected major.
+
+To see how your credits transfer to ASU, you can use our online Transfer Credit Guide (https://webapp4.asu.edu/transfercreditguide/app/home). If you cannot find all of your classes, you may submit courses for evaluation. To do this, click on Sign Up to create an account. You may use your personal email account to sign up for the Transfer Credit Guide. Once you are logged in, you can submit each missing course for review. You will be able to log back in later and view the status of your requests. Read more about how credits transfer to ASU at https://transfer.asu.edu/transfer-credits.
+
+Once you have determined how your credits transfer, you can compare that to the major map (eight-semester course plan) for your major. If you have any questions on course requirements, please contact the advising office for your major. View major maps and advising contact information for your degree program at https://asu.edu/degrees.
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

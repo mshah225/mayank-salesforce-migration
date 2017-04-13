@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplicationComponent xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buttonIconUrl>https://asu.my.salesforce.com/resource/1407539140000/Alert_gif</buttonIconUrl>
+    <buttonText>SYSTEM OUTAGE THIS WEEKEND 8/10/14 FROM 12AM-4AM</buttonText>
+    <height>500</height>
+    <isHeightFixed>false</isHeightFixed>
+    <isHidden>false</isHidden>
+    <isWidthFixed>true</isWidthFixed>
+    <visualforcePage>systemoutage</visualforcePage>
+    <width>300</width>
+</CustomApplicationComponent>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Herberger_Institute_for_Design_and_the_Arts</letterhead>
+    <name>School of Music Prescreening Result</name>
+    <style>freeForm</style>
+    <subject>ASU School of Music Prescreening Result</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for application for admission to the Herberger Institute School of Music at Arizona State University. We are pleased to inform you that you have been invited for a live audition/interview as a result of your prescreening submission. At this time we cannot schedule an on-campus audition because you are missing the following items from your application:
+
+Transcripts - INSTITUTION
+Proof of English Proficiency
+English Proficiency Exemption
+Letters of Recommendation
+
+Transcripts: Transcripts must be sealed and sent from the registrar’s office of each university attended. All international transcripts music be submitted in the original language accompanied by an official English translation. You may not complete your own translation. Electronic copies are NOT accepted and must be delivered to the address listed below.
+
+Please send official transcripts, to the following address:
+
+If sending by U.S. Mail:
+Arizona State University
+Graduate Admission Services
+PO Box 871003
+Tempe, AZ 58287-1003
+
+If Sending by FedEx, DHL or UPS:
+Graduate Admission Services
+Arizona State University
+1151 S. Forest Avenue, #SSV 112
+Tempe, AZ 85287-0112
+
+Proof of English Proficiency Exemption: You may qualify for the English proficiency exemption if you have met the following:
+
+1. Successfully completed the highest level at the American English              and Culture Program (AECP) with grades of B or better
+
+OR
+
+2. Attended in person a regionally accredited college or university in              the United States and meet one of the following conditions:
+
+Earned a bachelor&apos;s degree or higher in the US, or
+Completed at least 12 hours of graduate coursework with a cumulative GPA of 3.0 on a 4.0 scale, or
+Completed at least 90 credit hours of undergraduate coursework with a cumulative GPA of 3.0 on a 4.0 scale.
+
+Letters of Recommendation: Letters are completed by your references listed in your School of Music Application through DecisionDesk. Please login to your account here to determine which letters you are missing.
+
+We will confirm your audition/interview date once all above items have been received. Please bear in mind that audition/interview dates are filling quickly and that your desired date may not be available if there is a further delay in the submission of your outstanding items.
+
+If you have any questions about the above items mentioned, please contact musicadmissions@asu.edu.
+
+Thank you for your interest in studying in the Herberger Institute School of Music. We look forward to receiving your missing application items and scheduling your audition.
+
+ASU School of Music in the Herberger Institute for Design and the Arts
+Office of Admissions
+MusicAdmissions@asu.edu
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

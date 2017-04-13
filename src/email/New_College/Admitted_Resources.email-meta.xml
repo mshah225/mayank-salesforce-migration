@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>New_College</letterhead>
+    <name>Admitted Resources</name>
+    <style>freeForm</style>
+    <subject>Welcome to ASU - your success is important to us</subject>
+    <textOnly>Dear Future Sun Devil,
+
+Dear Sun Devil,
+
+Your life as a university student is exciting and filled with opportunities. At times it can also be challenging, and many people are available to provide you with the right level of support for any issue you may encounter. Our focus is ensuring that you make the most of your ASU experience and meet your academic and personal goals. From career guidance to managing stressful situations, we are prepared to assist you. Our mission is your success, and we work diligently to be the best resource possible. Below is a list of the services and departments available to support you.
+
+ASU Counseling Services &lt;https://eoss.asu.edu/counseling&gt;
+
+ASU Health Services &lt;https://eoss.asu.edu/health&gt;
+
+ASU Wellness &lt;https://eoss.asu.edu/wellness&gt;
+
+Career Services &lt;https://eoss.asu.edu/cs&gt;
+
+Disability Resource Center &lt;https://eoss.asu.edu/drc/&gt;
+
+International Student Office &lt;https://students.asu.edu/international&gt;
+
+OCSS (Off-Campus Student Services) &lt;https://eoss.asu.edu/ocss/&gt;
+
+OUT@ASU &lt;https://eoss.asu.edu/out&gt;
+
+Pat Tillman Veterans Center &lt;https://veterans.asu.edu/&gt;
+
+Student Advocacy &lt;https://eoss.asu.edu/dos/srr/StudentAdvocacyandAssistance&gt;
+
+Student Success - Tutoring and Writing Centers &lt;https://tutoring.asu.edu/&gt;
+
+TRiO Student Support Services &lt;https://eoss.asu.edu/trio&gt;
+
+Kindest Regards,
+
+New College Recruitment Team
+New College of Interdisciplinary Arts and Sciences
+Arizona State University, West campus
+asknewcollege@asu.edu
+602-543-2890
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

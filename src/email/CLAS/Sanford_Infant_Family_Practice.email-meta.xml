@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Infant Family Practice MA Program on hiatus</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Sanford_School</letterhead>
+    <name>Sanford: Infant Family Practice</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in the Infant Family Practice program at ASU</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for your interest in the Infant Family Practice Master&apos;s program at the T. Denny Sanford School of Social and Family Dynamics.
+
+Unfortunately, this program has been put on indefinite hiatus. Please check back with us for any updates in the future.
+
+Thank you,
+
+Gina Perez, M.Ed.
+Graduate Programs Coordinator
+T. Denny Sanford School of Social and Family Dynamics</textOnly>
+    <type>html</type>
+</EmailTemplate>

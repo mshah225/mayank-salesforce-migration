@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Edit</contactAccessLevel>
+    <description>Admission Services General Manager</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>AS Admission Services General Manager</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>AS_Admission_Services</parentRole>
+</Role>

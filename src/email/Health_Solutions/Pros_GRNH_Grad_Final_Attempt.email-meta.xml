@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>HealthSolutions_letterhead</letterhead>
+    <name>Pros GRNH Grad Final Attempt</name>
+    <style>freeForm</style>
+    <subject>Are you still interested? Let us know.</subject>
+    <textOnly>{!Contact.FirstName},
+
+You recently reached out to my department in search of information about a graduate degree program in the College of Health Solutions at Arizona State University. I attempted to contact you, but my emails may have gone to your junk folder so I am reaching out again to find out if you are still interested.
+Do you plan to apply for the upcoming academic year? Please reply so I can keep your record up to date. If you are no longer interested, I will close your file. If you remain interested, I hope you&apos;ll contact me soon to set up a call. We can discuss your personal goals, and explore how a graduate degree can help you take the next step in your career.
+
+I hope to hear from you soon.
+
+Sincerely,
+
+{!User.Email}
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

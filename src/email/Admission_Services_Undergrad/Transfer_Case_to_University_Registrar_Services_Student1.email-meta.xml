@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>When processing staff transfers case to Registrar Services.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Transfer Case to University Registrar Services (Student)</name>
+    <style>freeForm</style>
+    <subject>Your question has been transferred</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting Admission Services. Upon further review of your question, we have determined that University Registrar Services staff should address your question. We have transferred your question to them, and you should expect to receive a reply soon. You don’t need to take any action at this time.
+
+Thank you,
+
+Admission Services
+http://asu.edu
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

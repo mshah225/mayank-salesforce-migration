@@ -1,0 +1,254 @@
+<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
+<tr valign="top" height="400" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[<font face="Arial,Sans-Serif"><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</font><style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:-520092929 1073786111 9 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:Calibri;
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:Calibri;
+	mso-fareast-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	mso-themecolor:hyperlink;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-noshow:yes;
+	mso-style-priority:99;
+	color:purple;
+	mso-themecolor:followedhyperlink;
+	text-decoration:underline;
+	text-underline:single;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	mso-default-props:yes;
+	font-size:11.0pt;
+	mso-ansi-font-size:11.0pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:Calibri;
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:Calibri;
+	mso-fareast-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+.MsoPapDefault
+	{mso-style-type:export-only;
+	margin-bottom:10.0pt;
+	line-height:115%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style><p class="MsoNormal"><font face="Arial,Sans-Serif"><span style="background-color: rgb(255, 255, 255);"><span style="background-image: none; background-repeat: repeat; background-attachment: scroll; background-position: 0% 0%; background-clip: border-box; background-origin: padding-box; background-size: auto auto;">{!Contact.FirstName} {!Contact.LastName}:<br></span></span></font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">&nbsp;</font></p><font face="Arial,Sans-Serif">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</font><style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:-520092929 1073786111 9 0 415 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:Calibri;
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:Calibri;
+	mso-fareast-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	mso-themecolor:hyperlink;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-noshow:yes;
+	mso-style-priority:99;
+	color:purple;
+	mso-themecolor:followedhyperlink;
+	text-decoration:underline;
+	text-underline:single;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	mso-default-props:yes;
+	font-size:11.0pt;
+	mso-ansi-font-size:11.0pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:Calibri;
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:Calibri;
+	mso-fareast-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+.MsoPapDefault
+	{mso-style-type:export-only;
+	margin-bottom:10.0pt;
+	line-height:115%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style><p class="MsoNormal"><font face="Arial,Sans-Serif">Our records indicate that you are 60 days or more past due
+on your Housing rental payments.<span style="mso-spacerun:yes">&nbsp; </span>Failure
+to remain current on amounts owed is a direct violation of your license
+agreement.<span style="mso-spacerun:yes">&nbsp; </span>Your account must be made
+current by <span style="background:yellow;mso-highlight:yellow">1 week after
+date of letter</span>; failure to bring your account current will result in
+immediate termination of your license agreement.<span style="mso-spacerun:yes">&nbsp; </span><u><br></u></font></p><p class="MsoNormal"><font face="Arial,Sans-Serif"><u><br></u></font></p><p class="MsoNormal"><font face="Arial,Sans-Serif"><u>In order to remain in University Housing,
+you need to pay <span style="background:yellow;mso-highlight:yellow">$X,XXX.XX</span>
+by <span style="background:yellow;mso-highlight:yellow">1 week after date of
+letter</span>.</u> <span style="mso-spacerun:yes">&nbsp;</span><br></font></p><p class="MsoNormal"><font face="Arial,Sans-Serif"><br></font></p><p class="MsoNormal"><font face="Arial,Sans-Serif">You may submit
+payment via mail by check payable to ASU University Housing, Attn:<span style="mso-spacerun:yes">&nbsp;&nbsp;</span></font><font face="Arial,Sans-Serif">Lorrie Woesner, PO Box 870212, Tempe, AZ
+85287-0212 or in person at the Polytechnic Cashiering Services located in Quad
+2, where acceptable forms of payment include cash or checks only.<span style="mso-spacerun:yes">&nbsp; </span>You may also pay online through your ASU
+student account using MasterCard, Discover or American Express.<span style="mso-spacerun:yes">&nbsp; </span></font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif"><b style="mso-bidi-font-weight:normal">&nbsp;</b></font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">If payment is not received by <span style="background:yellow;
+mso-highlight:yellow">1 week after date of letter</span>, your license
+agreement will be terminated and your expected move out date will be <span style="background:yellow;mso-highlight:yellow">2 weeks after date of letter</span>.<span style="mso-spacerun:yes">&nbsp; </span>Please note that you can stop the termination
+of your license agreement by paying your balance in full.<span style="mso-spacerun:yes">&nbsp; </span>You may also contact </font><font face="Arial,Sans-Serif">Lorrie Woesner
+ (<a href="mailto:Lorrie.Woesner@asu.edu">lorrie.woesner@asu.edu</a> or
+480-727-8273), Scott Patton (<a href="mailto:scott.patton@asu.edu">scott.patton@asu.edu</a><span class="MsoHyperlink"> </span>or 480-965-5702) or Jim Beadle (<a href="mailto:james.beadle@asu.edu">james.beadle@asu.edu</a> or 480-965-6658) to
+discuss your account. </font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">&nbsp;</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">If you feel this has reached you in error, or would like to
+schedule an appointment to speak with someone, please send an e-mail addressing
+your concerns no later than <span style="background:yellow;mso-highlight:yellow">1
+week after date of letter</span> to <span class="MsoHyperlink"></span></font><font face="Arial,Sans-Serif"><a href="mailto:Lorrie.Woesner@asu.edu "><span class="MsoHyperlink"><font face="Arial,Sans-Serif">Lorrie.Woesner@asu.edu </font></span></a>or call 480-727-8273.<span style="mso-spacerun:yes">&nbsp; </span>Your e-mail
+should include the name of the primary license holder, their affiliate ID,
+campus address and specific information regarding your concerns.</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">&nbsp;</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">Again, it is very important that you bring your account
+current.<span style="mso-spacerun:yes">&nbsp; </span>Failure to do so will result in
+termination of your license agreement with an expected move out date of <span style="background:yellow;mso-highlight:yellow">2 weeks after date of letter</span>.</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">&nbsp;</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">Sincerely,</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif"><span style="mso-spacerun:yes">&nbsp;</span></font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">&nbsp;</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">&nbsp;</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">Jim Beadle</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">Director, Finance &amp; Administration</font></p><font face="Arial,Sans-Serif">
+
+</font><p class="MsoNormal"><font face="Arial,Sans-Serif">University Housing &amp; Dining Services</font></p>]]></td>
+</tr>
+</table>

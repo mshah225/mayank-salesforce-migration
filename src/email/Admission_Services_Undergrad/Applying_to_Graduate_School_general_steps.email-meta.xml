@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>GRAD - Applying to Graduate School (general steps)</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in graduate programs at ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University. To apply for a graduate-level program at ASU, you will first need to determine which program you are interested in, fill out the online application and pay the nonrefundable application fee. Please send send official transcripts from the university that granted your bachelor&apos;s degree to one of the following addresses:
+
+If sending by U.S. Mail:
+Arizona State University
+Graduate Admission Services
+PO Box 871003
+Tempe AZ 85287-1003
+
+If sending by FedEx, DHL or UPS:
+Graduate Admission Services
+Arizona State University
+1151 S. Forest Avenue, SSV 112
+Tempe AZ 85287-0112
+
+If you are from a country whose native language is not English (regardless of where you may now reside), you must provide proof of English proficiency. Your application will not be reviewed without valid proof of English proficiency. For more information, please visit the Graduate Admission website at https://students.asu.edu/graduate/proficiency.
+
+The academic department may require materials to supplement the application, which may include test scores, letters of recommendation, a personal statement or resume. These supplemental requirements, along with application due dates and departmental contact info, can be found on each program&apos;s description page. For questions about specific program requirements, please refer to the program description page found in the online academic catalog here: https://webapp4.asu.edu/programs/t5/graduate/false?init=false&amp;nopassive=true.
+
+Thank you,
+
+Graduate Admission Services
+
+If you have additional questions related to this, please refer to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

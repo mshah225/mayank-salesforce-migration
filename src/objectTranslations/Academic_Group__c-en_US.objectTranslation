@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Academic Group Code --></label>
+        <name>Academic_Group_Code__c</name>
+    </fields><fields>
+        <label><!-- Academic Group Status --></label>
+        <name>Academic_Group_Status__c</name>
+    </fields><fields>
+        <label><!-- Effective Date --></label>
+        <name>Effective_Date__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Academic Group</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Academic Groups</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

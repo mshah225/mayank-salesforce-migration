@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>false</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>ASU School of Music - Audition Date Confirmation - UGRD</name>
+    <style>freeForm</style>
+    <subject>ASU School of Music Audition Date Confirmation</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for applying for admission to the Herberger Institute School of Music at Arizona State University. This is to confirm that you will be scheduled for an audition in the School of Music on the ASU Tempe Campus on:
+
+Event Instrument Date
+
+Audition
+
+Music Education Interview
+
+Your audition time will be sent to you approximately 10 days before your audition date. As you may have interviews in addition to your audition(s), please arrange your travel plans so that you can be here all day.
+
+Auditions
+Review the audition requirements here.
+
+Informational Sessions and Tours
+We encourage you to attend the informational sessions that are offered each audition day so that we may answer any questions that you may have about ASU and the Herberger Institute School of Music. The schedule of events for each audition day is available to you upon check-in the day of your audition.
+
+To request a School of Music tour, please email MusicAdmissions@asu.edu at least two weeks in advance of your audition date with your name, the number of people in your party, and the tour(s) you are interested in attending. While tours arrangements cannot be guaranteed, every effort will be made to accommodate your request.
+
+Undergraduate Admission Interviews
+If your composition prescreening portfolio was selected for further consideration, or if you selected Music Therapy as your first choice degree or Music Education as your first or second choice degree on your School of Music application, you will be scheduled for an interview with the faculty in those respective areas.
+
+Transcripts &amp; Test Scores
+Remember to send transcripts and test scores directly to ASU Undergraduate Admission or Graduate Admission Services as appropriate, and not to the School of Music.
+
+Graduate Teaching Assistantships &amp; Spoken English Requirement
+Applicants interested in applying for a graduate teaching assistantship and whose native language is not English must first meet spoken English requirements before being eligible for a teaching assistantship. The spoken English requirement is met by either attaining a score of 26 or better of the speaking portion of the TOEFL iBT or by passing the ASU SPEAK test administered locally on the ASU Tempe Campus. Please contact musicadmissions@asu.edu at least two weeks before your audition date to register for the ASU SPEAK test.
+
+Thank you for your interest in studying in the Herberger Institute School of Music. We look forward to meeting you soon.
+
+ASU School of Music in the Herberger Institute for Design and the Arts
+Office of Admissions
+480-965-5069 | MusicAdmissions@asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

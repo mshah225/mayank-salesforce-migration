@@ -1,0 +1,52 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <br>             Dear {!Contact.FirstName}, <br /><br />
+
+We just called to follow up on the conversation you recently had with your enrollment advisor. We are still available by phone or email if you have any questions about the Starbucks College Achievement Plan or completing your financial aid file. We can be reached at 480-965-3200 or <a href="mailto:cap@asu.edu" target="_blank">cap@asu.edu</a>. <br /><br />
+
+
+
+<br>Sincerely, <br />
+ {!User.FirstName} {!User.LastName}
+</div>
+               
+                </div>
+
+             
+
+               <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               <p><b>Financial Aid and Scholarship Services</b><br />
+                    Arizona State University<br />
+                    PO Box 870412<br />
+                    Tempe, AZ 85287-0412<br />
+                     Phone: 1-844-278-6693 
+
+</p>
+    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>
+
+</p>

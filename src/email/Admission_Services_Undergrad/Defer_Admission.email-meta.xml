@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Deferring undergraduate admission.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Defer Admission</name>
+    <style>freeForm</style>
+    <subject>How to defer your admission to ASU.</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+If you have decided to delay your first semester at Arizona State University, you should defer your admission. Consider your options carefully before taking this step.
+Typical reasons for deferring your admission include: involuntary military activation, ecclesiastical service or volunteer service.
+
+The admission deferment guarantees only admission into the university and not necessarily admission to a particular major or program of study. You may defer your admission for a period of up to five terms or two and a half years.
+
+To learn more or to defer your admission, visit students.asu.edu/deferadmissions.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

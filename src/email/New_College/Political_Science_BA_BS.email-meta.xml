@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>New_College</letterhead>
+    <name>Political Science BA/BS</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in Political Science at ASU</subject>
+    <textOnly>Dear Future Sun Devil,
+
+Thank you for expressing interest in the Political Science (BA/BS) (https://newcollege.asu.edu/political-science-degree-ba/https://newcollege.asu.edu/political-science-degree-bs) program at Arizona State University. Political science is the study of governmental practices, politics and theories and the course work in the political science program covers American institutions, international relations, political theory and world affairs. It helps students gain a basic understanding of the assumptions underlying political science and develops the necessary research skills for analyzing complex sociopolitical issues. The BS degree requires an additional statistics course and a methods course. Students usually look to work as Lawyers, Paralegals &amp; legal assistants, Arbitrators, Political Scientists, and Social and Community Service Managers among many others. By viewing the major map &lt;https://webapp4.asu.edu/programs/t5/roadmaps/ASU00/ASPOLBS/null/ALL/2016&gt;, you can see the degree requirements outlined for graduation.
+
+Be sure to review our admission and application requirements &lt;https://students.asu.edu/freshman/requirements&gt; for more information about the application process in an easy to follow format. For information on how to pay for college, please visit our scholarships page &lt;https://newcollege.asu.edu/college-scholarships&gt;.
+
+It&apos;s important to find the right fit for your undergraduate program. A great way to learn more about this degree is to register for one of our upcoming information sessions. You can visit ASU and register for a tour &lt;https://visit.asu.edu/&gt;.
+
+We can’t wait to see you here at West campus! If you have any questions about New College, West campus, or one of our 35 programs, please contact our Recruitment Office through the information listed below. Thank you, and we’ll talk to you soon!
+
+Kindest Regards,
+
+New College Recruitment Team
+New College of Interdisciplinary Arts and Sciences
+Arizona State University, West campus
+asknewcollege@asu.edu
+602-543-2890
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

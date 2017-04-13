@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>MLF_letterhead</letterhead>
+    <name>Amy H - Online Session Reminder</name>
+    <style>freeForm</style>
+    <subject>Reminder: You are registered for an info session with Mary Lou Fulton Teachers College</subject>
+    <textOnly>Good afternoon {!Contact.FirstName},
+
+Thank you for registering for tonight’s information session.  This session will be covering the [Masters without Arizona teacher certification programs], including complete program details and admissions information.
+
+This is an in-person information session, and takes place today, [Tuesday, September 16th, from 5:30pm-7:30pm in room 000 located in the AAA Building].
+
+I look forward to having you join the session.  If you have any questions or concerns please feel free to contact me!
+
+Kindest regards,
+
+Donna Parris
+
+Student Outreach Coordinator
+
+Arizona State University | Mary Lou Fulton Teachers College  donna.parris@asu.edu
+
+480.727.1745</textOnly>
+    <type>html</type>
+</EmailTemplate>

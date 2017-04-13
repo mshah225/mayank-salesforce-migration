@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Obama Scholar Award notification, Next Generation Service Corps, complete your next steps</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Obama Scholars Program Selection</name>
+    <style>freeForm</style>
+    <subject>Congratulations on your selection for the Obama Scholars Program!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+You have been selected for the Obama Scholars Program (https://students.asu.edu/obama.). Our mission at ASU is to make college as affordable as possible. With this program, there is no need for repayment and it will cover your direct costs of attendance for up to four years.
+
+Your Financial Aid Notification is now posted in My ASU (http://my.asu.edu/) under the Finances tab. Please take advantage of our Student Budget Worksheet to determine if you want to accept, modify or decline any part of your financial aid package (https://students.asu.edu/financialaid/budget).
+
+I also encourage you to apply to the Next Generation Service Corps through the Public Service Academy. This four-year leadership and career development program trains future leaders like you to serve the greater good through your career path. View more information and apply at https://psa.asu.edu/. 
+
+Complete your Priority Tasks in My ASU (http://my.asu.edu/):
+
+-pay your enrollment deposit* (https://students.asu.edu/freshman/deposit)
+-confirm your housing preferences (https://housing.asu.edu/)
+-sign up for orientation (https://eoss.asu.edu/orientation)
+-take the math placement test (https://students.asu.edu/math)
+-submit your MMR immunization records (https://eoss.asu.edu/health/services/immunization)
+
+*As a Federal Pell Grant recipient, you have the opportunity to defer your enrollment deposit (https://asu.secure.force.com/kb/articles/FAQ/How-do-I-defer-my-enrollment-deposit/?q=enrollment&amp;l=en_US&amp;fs=Search&amp;pn=1).
+
+If you have any questions, please feel free to contact me or Financial Aid and Scholarship Services at https://students.asu.edu/contact/financialaid. I&apos;d also be happy to discuss the costs and paying for your education.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

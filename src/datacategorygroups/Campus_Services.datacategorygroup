@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataCategoryGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <dataCategory>
+        <dataCategory>
+            <label>Academic Technologies</label>
+            <name>Academic_Technologies</name>
+        </dataCategory>
+        <dataCategory>
+            <label>ASU Bookstore</label>
+            <name>ASU_Bookstore</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Career Services</label>
+            <name>Career_Services</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Changemaker Central</label>
+            <name>Changemaker_Central</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Clubs &amp; Organizations</label>
+            <name>Clubs_Organizations</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Counseling Services</label>
+            <name>Counseling_Services</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Disability Resource Center</label>
+            <name>Disability_Resource_Center</name>
+        </dataCategory>
+        <dataCategory>
+            <label>First Year Success</label>
+            <name>First_Year_Success</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Fraternity &amp; Sorority Life</label>
+            <name>Fraternity_Sorority_Life</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Guest Access</label>
+            <name>Guest_Access</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Health Services</label>
+            <name>Health_Services</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Housing</label>
+            <name>Housing</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Library Resources</label>
+            <name>Library_Resources</name>
+        </dataCategory>
+        <dataCategory>
+            <label>My ASU Devil2Devil</label>
+            <name>My_ASU_Devil2Devil</name>
+        </dataCategory>
+        <dataCategory>
+            <label>On Campus Living</label>
+            <name>On_Campus_Living</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Orientation and Family Programs</label>
+            <name>Orientation_and_Family_Programs</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Pat Tillman Veterans Center</label>
+            <name>Pat_Tillman_Veterans_Center</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Registrar</label>
+            <name>Registrar</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Sexual Violence Awareness</label>
+            <name>Sexual_Violence_Awareness</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Student Advocacy &amp; Assistance</label>
+            <name>Student_Advocacy_Assistance</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Student Government</label>
+            <name>Student_Government</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Student Rights &amp; Responsibilities</label>
+            <name>Student_Rights_Responsibilities</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Student Success and Support</label>
+            <name>Student_Success_and_Support</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Sun Devil Athletics</label>
+            <name>Sun_Devil_Athletics</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Sun Devil Dining</label>
+            <name>Sun_Devil_Dining</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Sun Devil Fitness</label>
+            <name>Sun_Devil_Fitness</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Technical Resources: Email</label>
+            <name>Technical_Resources</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Technical Resources: Identity Management</label>
+            <name>Technical_Resources_Identity_Management</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Technical Resources: MyApps &amp; Software</label>
+            <name>Technical_Resources_MyApps_Software</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Technical Resources: Network</label>
+            <name>Technical_Resources_Network</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Technical Resources: Other Support</label>
+            <name>Technical_Resources_Other_Support</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Transportation</label>
+            <name>Transportation</name>
+        </dataCategory>
+        <dataCategory>
+            <label>TRIO</label>
+            <name>TRIO</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Wellness</label>
+            <name>Wellness</name>
+        </dataCategory>
+        <label>All</label>
+        <name>All</name>
+    </dataCategory>
+    <label>Campus Services</label>
+    <objectUsage>
+        <object>KnowledgeArticleVersion</object>
+    </objectUsage>
+</DataCategoryGroup>

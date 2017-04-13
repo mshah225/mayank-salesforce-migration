@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Contact --></label>
+        <name>SG_Contact__c</name>
+        <relationshipLabel><!-- Student Groups --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Description --></label>
+        <name>SG_Description__c</name>
+        <picklistValues>
+            <masterLabel>All Arizona Academic Team</masterLabel>
+            <translation><!-- All Arizona Academic Team --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>CI reqs alt Sun Devil Success</masterLabel>
+            <translation><!-- CI reqs alt Sun Devil Success --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>CI requires Sun Devil Success</masterLabel>
+            <translation><!-- CI requires Sun Devil Success --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Denied Pathway Eligible Student</masterLabel>
+            <translation><!-- Denied Pathway Eligible Student --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Eastern AZ College</masterLabel>
+            <translation><!-- Eastern AZ College --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HONORS GD STND LOW DIV &lt; 2107</masterLabel>
+            <translation><!-- HONORS GD STND LOW DIV &lt; 2107 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HONORS GD STND LOW DIV &gt;= 2107</masterLabel>
+            <translation><!-- HONORS GD STND LOW DIV &gt;= 2107 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HONORS GD STND UPP DIV &lt; 2107</masterLabel>
+            <translation><!-- HONORS GD STND UPP DIV &lt; 2107 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HONORS GD STND UPP DIV &gt;= 2107</masterLabel>
+            <translation><!-- HONORS GD STND UPP DIV &gt;= 2107 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HONORS, PROV-LOWER DIVISION</masterLabel>
+            <translation><!-- HONORS, PROV-LOWER DIVISION --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HONORS, PROV-UPPER DIVISION</masterLabel>
+            <translation><!-- HONORS, PROV-UPPER DIVISION --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Huazhong Unv Sci&amp;Tech students (HUST)</masterLabel>
+            <translation><!-- Huazhong Unv Sci&amp;Tech students (HUST) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lake Havasu</masterLabel>
+            <translation><!-- Lake Havasu --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>MLFTC ESP provisional admits</masterLabel>
+            <translation><!-- MLFTC ESP provisional admits --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>National Achievement Semifinalist</masterLabel>
+            <translation><!-- National Achievement Semifinalist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>National Hispanic Scholar Finalist</masterLabel>
+            <translation><!-- National Hispanic Scholar Finalist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>National Merit Semifinalist</masterLabel>
+            <translation><!-- National Merit Semifinalist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>New College GAIN</masterLabel>
+            <translation><!-- New College GAIN --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Admissible recvd CC invite</masterLabel>
+            <translation><!-- Not Admissible recvd CC invite --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Provisional Admt - NR students</masterLabel>
+            <translation><!-- Provisional Admt - NR students --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>RHHE</masterLabel>
+            <translation><!-- RHHE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SDS 2013 - 11 credit hour option</masterLabel>
+            <translation><!-- SDS 2013 - 11 credit hour option --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SDS 2013 - 4 credit hour option</masterLabel>
+            <translation><!-- SDS 2013 - 4 credit hour option --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SDS 2013 Exceptions (Veteran, Athlete, Tribal Scholar)</masterLabel>
+            <translation><!-- SDS 2013 Exceptions (Veteran, Athlete, Tribal Scholar) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SDS 2013 Overall group</masterLabel>
+            <translation><!-- SDS 2013 Overall group --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sichun University</masterLabel>
+            <translation><!-- Sichun University --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sponsored International App</masterLabel>
+            <translation><!-- Sponsored International App --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TA Prospect-Signed Agreement</masterLabel>
+            <translation><!-- TA Prospect-Signed Agreement --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>W.P. Carey Provisional</masterLabel>
+            <translation><!-- W.P. Carey Provisional --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>WUE Western Undergrad Exchange</masterLabel>
+            <translation><!-- WUE Western Undergrad Exchange --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Effective Date --></label>
+        <name>SG_Effective_Date__c</name>
+    </fields><fields>
+        <label><!-- PeopleSoft Code --></label>
+        <name>SG_PeopleSoft_Code__c</name>
+    </fields><fields>
+        <label><!-- Active --></label>
+        <name>SG_Status__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Student Group</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Student Groups</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Student Group Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

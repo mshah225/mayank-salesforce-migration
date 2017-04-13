@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Adding minor</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Adding a Spanish Minor</name>
+    <style>none</style>
+    <subject>ASU SILC Advising - adding a Spanish minor</subject>
+    <type>text</type>
+</EmailTemplate>

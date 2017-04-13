@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Sun Devil Card Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Sun Devil Card Services Card Found</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Your student ID card has been found and is available at the ENTER LOCATION Sun Card Office. You may pick up your card at your earliest convenience.
+For maps and hours of operation, please visit our website https://cfo.asu.edu/cardservices#fees-and-location
+
+Regards,
+{!User.FirstName} {!User.LastName}
+
+Sun Devil Card Services
+Arizona State University
+Phone: 480-965-2273
+cardservices.asu.edu
+https://cfo.asu.edu/cardservices
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

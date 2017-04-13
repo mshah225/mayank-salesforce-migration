@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>HTML templates for Final Notice</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Case_Management</letterhead>
+    <name>Final Notice</name>
+    <style>freeForm</style>
+    <subject>Final Notice</subject>
+    <textOnly>{!Contact.FirstName} {!Contact.LastName}:
+
+
+
+Despite multiple collection letters between date of first letter and date of most recent letter, you have failed to pay the total amount due to University Housing by due date from most recent letter. Consequently, your license agreement has been cancelled. You MUST vacate address by date at 12:00 p.m.
+
+
+In accordance with the terms of your License Agreement, further charges will be assessed to your account if all personal items are not removed from the interior and exterior of the residence and the keys returned to the Housing office in Quad 2. You may schedule a joint walk-through inspection to assess property condition and potential charges for damage to the property. If you don’t schedule a joint inspection, one will be completed without you and appropriate charges will be added to your account.
+
+
+After 12:00 p.m. on date, access to the campus address will be restricted. Should you fail to vacate the campus address, ASU Police Department will be called for assistance to escort you from campus.
+
+
+Please contact University Housing at 480-965-3433 with any questions or concerns.
+
+
+Thank you,
+
+
+
+
+Jim Beadle
+
+Director, Finance &amp; Administration
+
+University Housing &amp; Dining Services</textOnly>
+    <type>html</type>
+</EmailTemplate>

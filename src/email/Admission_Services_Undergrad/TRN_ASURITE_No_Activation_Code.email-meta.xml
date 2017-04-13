@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Previous applicants to ASU do not get new activation codes.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TRN ASURITE No Activation Code</name>
+    <style>freeForm</style>
+    <subject>ASURITE UserID and activation code from ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+You did not receive an activation code and ASURITE UserID because you have previously applied to ASU, and unfortunately, we do not resend that information when you apply again. Your ASURITE UserID will be the same as it was when you applied previously.
+
+Your ASURITE UserID is: {!Contact.ASURite_ID__c}
+
+If you cannot remember your password, you can contact the Help Desk at 855-278-5080 to reset it.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

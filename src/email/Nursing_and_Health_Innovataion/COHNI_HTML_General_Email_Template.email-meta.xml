@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General email template listing basic information about college and the user&apos;s name and phone number</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Case_Management</letterhead>
+    <name>COHNI HTML General Email Template</name>
+    <style>formalLetter</style>
+    <subject>Thank you for contacting ASU College of Nursing &amp; Health Innovation</subject>
+    <textOnly>{!Contact.FirstName},
+
+Sincerely,
+{!User.Name}
+College of Nursing &amp; Health Innovation
+Arizona State University
+550 North 3rd Street | Phoenix, AZ 85004
+{!User.Phone}
+https://nursingandhealth.asu.edu
+
+If you have any additional information or questions, please reply to this email.
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

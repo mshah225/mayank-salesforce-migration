@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><layouts>
+        <layout>Feed - Coach Outreach Contact Layout</layout>
+        <sections>
+            <label><!-- Afilliation --></label>
+            <section>Afilliation</section>
+        </sections>
+        <sections>
+            <label><!-- Case Comment History --></label>
+            <section>Case Comment History</section>
+        </sections>
+        <sections>
+            <label><!-- Coach Notes --></label>
+            <section>Coach Notes</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Feed - External Mastered Contact Layout</layout>
+        <sections>
+            <label><!-- Affiliation --></label>
+            <section>Affiliation</section>
+        </sections>
+        <sections>
+            <label><!-- Campaign Member Management --></label>
+            <section>Campaign Member Management</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Details --></label>
+            <section>Contact Details</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Insight --></label>
+            <section>Contact Insight</section>
+        </sections>
+        <sections>
+            <label><!-- I-20 Process Details --></label>
+            <section>I-20 Process Details</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+        <sections>
+            <label><!-- Prospect Data --></label>
+            <section>Prospect Data</section>
+        </sections>
+        <sections>
+            <label><!-- Recruitment Data --></label>
+            <section>Recruitment Data</section>
+        </sections>
+        <sections>
+            <label><!-- Silverpop --></label>
+            <section>Silverpop</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Feed - External Mastered Contact Layout for ADMIN</layout>
+        <sections>
+            <label><!-- Affiliation --></label>
+            <section>Affiliation</section>
+        </sections>
+        <sections>
+            <label><!-- Campaign Member Management --></label>
+            <section>Campaign Member Management</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Details --></label>
+            <section>Contact Details</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Insight --></label>
+            <section>Contact Insight</section>
+        </sections>
+        <sections>
+            <label><!-- I-20 Process Details --></label>
+            <section>I-20 Process Details</section>
+        </sections>
+        <sections>
+            <label><!-- MDM Registry --></label>
+            <section>MDM Registry</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+        <sections>
+            <label><!-- Prospect Data --></label>
+            <section>Prospect Data</section>
+        </sections>
+        <sections>
+            <label><!-- Recruitment Data --></label>
+            <section>Recruitment Data</section>
+        </sections>
+        <sections>
+            <label><!-- Silverpop --></label>
+            <section>Silverpop</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Feed - External Mastered Corporate Relations</layout>
+        <sections>
+            <label><!-- Affiliation --></label>
+            <section>Affiliation</section>
+        </sections>
+        <sections>
+            <label><!-- Campaign Member Management --></label>
+            <section>Campaign Member Management</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Details --></label>
+            <section>Contact Details</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Feed - SF Mastered Contact Layout</layout>
+        <sections>
+            <label><!-- Campaign Member Management --></label>
+            <section>Campaign Member Management</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Details --></label>
+            <section>Contact Details</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Insight --></label>
+            <section>Contact Insight</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+        <sections>
+            <label><!-- Silverpop --></label>
+            <section>Silverpop</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Feed - SF Mastered Contact Layout for ADMIN</layout>
+        <sections>
+            <label><!-- Campaign Member Management --></label>
+            <section>Campaign Member Management</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Details --></label>
+            <section>Contact Details</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Insight --></label>
+            <section>Contact Insight</section>
+        </sections>
+        <sections>
+            <label><!-- MDM Registry --></label>
+            <section>MDM Registry</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+        <sections>
+            <label><!-- Silverpop --></label>
+            <section>Silverpop</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Feed - SF Mastered Corporate Relations</layout>
+        <sections>
+            <label><!-- Campaign Member Management --></label>
+            <section>Campaign Member Management</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Details --></label>
+            <section>Contact Details</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Help Desk Contact Layout</layout>
+        <sections>
+            <label><!-- Campaign Member Management --></label>
+            <section>Campaign Member Management</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Information --></label>
+            <section>Contact Information</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Insight --></label>
+            <section>Contact Insight</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Details --></label>
+            <section>Details</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Lightening Help Desk (beta)</layout>
+        <sections>
+            <label><!-- Affiliation --></label>
+            <section>Affiliation</section>
+        </sections>
+        <sections>
+            <label><!-- Campaign Member Management --></label>
+            <section>Campaign Member Management</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Details --></label>
+            <section>Contact Details</section>
+        </sections>
+        <sections>
+            <label><!-- Contact Insight --></label>
+            <section>Contact Insight</section>
+        </sections>
+        <sections>
+            <label><!-- I-20 Process Details --></label>
+            <section>I-20 Process Details</section>
+        </sections>
+        <sections>
+            <label><!-- Prospect Data --></label>
+            <section>Prospect Data</section>
+        </sections>
+        <sections>
+            <label><!-- Recruitment Data --></label>
+            <section>Recruitment Data</section>
+        </sections>
+        <sections>
+            <label><!-- Silverpop --></label>
+            <section>Silverpop</section>
+        </sections>
+    </layouts><quickActions>
+        <label><!-- Account Relationship --></label>
+        <name>Account_Relationship</name>
+    </quickActions><quickActions>
+        <label><!-- Automation - Case Creation --></label>
+        <name>Automation_Case_Creation</name>
+    </quickActions><quickActions>
+        <label><!-- Automation - Case Creation - Advisor --></label>
+        <name>Automation_Case_Creation_Advisor</name>
+    </quickActions><quickActions>
+        <label><!-- Contact Relationship --></label>
+        <name>Contact_Relationship</name>
+    </quickActions><quickActions>
+        <label><!-- Contact to Account --></label>
+        <name>Contact_to_Account</name>
+    </quickActions><quickActions>
+        <label><!-- Graduate Prospect --></label>
+        <name>Graduate_Prospect</name>
+    </quickActions><quickActions>
+        <label><!-- New CR Opportunity --></label>
+        <name>New_Corporate_Relations_Opportunity</name>
+    </quickActions><quickActions>
+        <label><!-- UG Prospect --></label>
+        <name>UG_Prospect</name>
+    </quickActions><recordTypes>
+        <label><!-- External Mastered --></label>
+        <name>External_Mastered</name>
+    </recordTypes><recordTypes>
+        <label><!-- SF Mastered --></label>
+        <name>SF_Mastered</name>
+    </recordTypes><validationRules>
+        <errorMessage><!-- You must fill out these required fields in order to save the Contact: First Name, Last Name, and either Phone or Email. --></errorMessage>
+        <name>Contact_Data_Entry_Minimum_Requirements</name>
+    </validationRules><validationRules>
+        <errorMessage><!-- The field needs to be at least 6 digits long --></errorMessage>
+        <name>Minimum_Length</name>
+    </validationRules><validationRules>
+        <errorMessage><!-- SMS Phone must only contain 10 or 15 numbers. Please check the length and remove any symbols () + - / or letters. --></errorMessage>
+        <name>SMS_Phone_Contains_Only_Numbers</name>
+    </validationRules><webLinks>
+        <label><!-- GoogleMaps --></label>
+        <name>GoogleMaps</name>
+    </webLinks><webLinks>
+        <label><!-- GoogleSearch --></label>
+        <name>GoogleSearch</name>
+    </webLinks><webLinks>
+        <label><!-- Mass_Delete --></label>
+        <name>Mass_Delete</name>
+    </webLinks><webLinks>
+        <label><!-- SendGmail --></label>
+        <name>SendGmail</name>
+    </webLinks><webLinks>
+        <label><!-- Start_Chat --></label>
+        <name>Start_Chat</name>
+    </webLinks><webLinks>
+        <label><!-- YahooMaps --></label>
+        <name>YahooMaps</name>
+    </webLinks><webLinks>
+        <label><!-- YahooWeather --></label>
+        <name>YahooWeather</name>
+    </webLinks></CustomObjectTranslation>

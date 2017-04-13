@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Template for TRN ambassadors to use when they have left a voicemail.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TRN Ambassador Thanks for Signing a MAPP</name>
+    <style>freeForm</style>
+    <subject>Thank you for signing a MAPP agreement</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for signing a Maricopa to ASU Pathways Program agreement — your path to becoming a Sun Devil. Now that you are on a MAPP, you will know exactly which classes you need to complete to make your transition to your desired major at Arizona State University a seamless one.
+
+As a MAPP student, you have access to ASU’s pathway tracker tool. This tool shows how the classes you have taken will transfer and which classes you still need to take in order to complete the MAPP.
+
+The pathway tracker can be found on My ASU under the View My Progress section. You should have access to My ASU (https://my.asu.edu) through My Maricopa (https://my.maricopa.edu/). Please click on the ASU Alliance link on My Maricopa to access My ASU. You can also access My ASU through http://www.asu.edu/ by using your ASURITE UserID and password.
+
+If you have any questions about your MAPP or the pathway tracker, please contact your transfer specialist, {!User.Recruiter_Full_Name__c}, at {!User.Recruiter_Email__c}.
+Thank you,
+{!User.FirstName}
+Student Transfer Ambassador
+transferambassadors@asu.edu
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

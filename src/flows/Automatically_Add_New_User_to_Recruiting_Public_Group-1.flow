@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Adds new user to the ASU Recruiting User public group</description>
+    <interviewLabel>Automatically Add New User to Recruiting Public Group {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Automatically Add New User to Recruiting (Role) Public Group</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Add_User_to_Recruiting_Public_Group</name>
+        <label>Add User to Recruiting Public Group</label>
+        <locationX>21</locationX>
+        <locationY>13</locationY>
+        <inputAssignments>
+            <field>GroupId</field>
+            <value>
+                <elementReference>RecruitingPublicGroupId_VarT</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>UserOrGroupId</field>
+            <value>
+                <elementReference>UserId_VarT</elementReference>
+            </value>
+        </inputAssignments>
+        <object>GroupMember</object>
+    </recordCreates>
+    <startElementReference>Add_User_to_Recruiting_Public_Group</startElementReference>
+    <variables>
+        <description>Used to store Public Group Id</description>
+        <name>RecruitingPublicGroupId_VarT</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <stringValue>00Gd0000003bl8H</stringValue>
+        </value>
+    </variables>
+    <variables>
+        <description>Text variable to store the User Id to be passed through to the Process Builder</description>
+        <name>UserId_VarT</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <stringValue></stringValue>
+        </value>
+    </variables>
+</Flow>

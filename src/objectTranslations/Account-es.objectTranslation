@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><layouts>
+        <layout>External Mastered Contact Layout</layout>
+        <sections>
+            <label><!-- This Account record is associated with Contact record below --></label>
+            <section>This Account record is associated with Contact record below</section>
+        </sections>
+    </layouts><layouts>
+        <layout>External Mastered Contact Layout ADMIN</layout>
+        <sections>
+            <label><!-- MDM Registry --></label>
+            <section>MDM Registry</section>
+        </sections>
+        <sections>
+            <label><!-- This Account record is associated with Contact record below --></label>
+            <section>This Account record is associated with Contact record below</section>
+        </sections>
+    </layouts><layouts>
+        <layout>External Mastered Org Layout</layout>
+        <sections>
+            <label><!-- Address Information --></label>
+            <section>Address Information</section>
+        </sections>
+        <sections>
+            <label><!-- Institution Details --></label>
+            <section>Institution Details</section>
+        </sections>
+    </layouts><layouts>
+        <layout>External Mastered Org Layout ADMIN</layout>
+        <sections>
+            <label><!-- Address Information --></label>
+            <section>Address Information</section>
+        </sections>
+        <sections>
+            <label><!-- Institution Details --></label>
+            <section>Institution Details</section>
+        </sections>
+    </layouts><layouts>
+        <layout>SF Mastered Contact Layout</layout>
+        <sections>
+            <label><!-- This Account record is associated with Contact record below --></label>
+            <section>This Account record is associated with Contact record below</section>
+        </sections>
+    </layouts><layouts>
+        <layout>SF Mastered Contact Layout ADMIN</layout>
+        <sections>
+            <label><!-- MDM Registry --></label>
+            <section>MDM Registry</section>
+        </sections>
+        <sections>
+            <label><!-- This Account record is associated with Contact record below --></label>
+            <section>This Account record is associated with Contact record below</section>
+        </sections>
+    </layouts><layouts>
+        <layout>SF Mastered Org Layout</layout>
+        <sections>
+            <label><!-- Corporate Relationship Details --></label>
+            <section>Corporate Relationship Details</section>
+        </sections>
+        <sections>
+            <label><!-- Institution Details --></label>
+            <section>Institution Details</section>
+        </sections>
+    </layouts><layouts>
+        <layout>SF Mastered Org Layout ADMIN</layout>
+        <sections>
+            <label><!-- Corporate Relationship Details --></label>
+            <section>Corporate Relationship Details</section>
+        </sections>
+        <sections>
+            <label><!-- Institution Details --></label>
+            <section>Institution Details</section>
+        </sections>
+    </layouts><quickActions>
+        <label><!-- Account to Account --></label>
+        <name>Account_to_Account</name>
+    </quickActions><quickActions>
+        <label><!-- Account to Contact --></label>
+        <name>Account_to_Contact</name>
+    </quickActions><quickActions>
+        <label><!-- Contact --></label>
+        <name>Contact</name>
+    </quickActions><quickActions>
+        <label><!-- Account --></label>
+        <name>New_Account_to_Account</name>
+    </quickActions><recordTypes>
+        <label><!-- External Mastered Contact --></label>
+        <name>External_Mastered_Contact</name>
+    </recordTypes><recordTypes>
+        <label><!-- External Mastered Org --></label>
+        <name>External_Mastered_Org</name>
+    </recordTypes><recordTypes>
+        <label><!-- SF Mastered Contact --></label>
+        <name>SF_Mastered_Contact</name>
+    </recordTypes><recordTypes>
+        <label><!-- SF Mastered Org --></label>
+        <name>SF_Mastered_Org</name>
+    </recordTypes><validationRules>
+        <errorMessage><!-- Please ensure this account has a billing city and website. --></errorMessage>
+        <name>Billing_City_and_Website_Required_on_Acc</name>
+    </validationRules><webLinks>
+        <label><!-- AltavistaNews --></label>
+        <name>AltavistaNews</name>
+    </webLinks><webLinks>
+        <label><!-- GoogleMaps --></label>
+        <name>GoogleMaps</name>
+    </webLinks><webLinks>
+        <label><!-- GoogleNews --></label>
+        <name>GoogleNews</name>
+    </webLinks><webLinks>
+        <label><!-- GoogleSearch --></label>
+        <name>GoogleSearch</name>
+    </webLinks><webLinks>
+        <label><!-- HooversProfile --></label>
+        <name>HooversProfile</name>
+    </webLinks><webLinks>
+        <label><!-- Mass_Delete --></label>
+        <name>Mass_Delete</name>
+    </webLinks><webLinks>
+        <label><!-- YahooMaps --></label>
+        <name>YahooMaps</name>
+    </webLinks></CustomObjectTranslation>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Read</contactAccessLevel>
+    <description>CLAS SGSUP School of Geographical Sciences and Urban Planning Staff</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>CLAS SGSUP School of Geographical Sciences and Urban Planning Staff</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>CLAS_School_of_Geographical_Sciences_and_Urban_Planning_Manager</parentRole>
+</Role>

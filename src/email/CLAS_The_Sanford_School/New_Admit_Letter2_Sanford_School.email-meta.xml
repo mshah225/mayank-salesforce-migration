@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Newly Admitted Student Welcome Letter (May 2016)</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Sanford_School</letterhead>
+    <name>New Admit Letter 2 - Sanford School</name>
+    <style>formalLetter</style>
+    <subject>Welcome to the T. Denny Sanford School of Social &amp; Family Dynamics!</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+On behalf of our advising team, congratulations on your acceptance to Arizona State University and welcome to the T. Denny Sanford School of Social &amp; Family Dynamics! We provide academic advising for ASU Online students in the Sociology &amp; Family/Human Development programs.
+
+We are excited to meet you and to assist you in your academic journey. We recommend that all new students schedule an advising appointment prior to starting their classes. Please review your Degree Audit Report (DARS), prior to scheduling an appointment.
+
+Please click here for information on how to request and read your DARS Self-service Degree Audit:
+
+Degree Audit Resource Center
+https://provost.asu.edu/curriculum-development/dars
+
+*Please note that the evaluation of your transfer work may be still be in progress and that this evaluation process can take up to three weeks to complete. If you do not see any transfer courses listed in your DARS (Degree Audit Report), your evaluation is still in progress.
+ 
+Once you see your transfer courses appearing in your DARS, your evaluation is complete and we can more fully review your transfer work and outstanding requirements for your degree with you.
+
+At this point, we would encourage you to schedule an advising appointment with us by clicking on the link below. 
+
+Click here to schedule an appointment
+https://webapp4.asu.edu/advsched/?acad_org=CSOCFAM
+
+We look forward to working with you as you begin your academic journey here at Arizona State. Please let us know if you have any questions and/or concerns.
+
+Sincerely,
+The Sanford Online Advising Team
+Lisa Barth, Kelli Ramirez, and Wes Jackson
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Degree search, transfer website and general transfer admission requirements.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TRN web form</name>
+    <style>freeForm</style>
+    <subject>Information on transferring to ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting Admission Services at Arizona State University.
+
+I highly encourage you to find out more about your degree program of interest using ASU’s degree search (https://webapp4.asu.edu/programs/t5/undergrad). Each page lists the location of the program, program description, admission requirements, career opportunities and the major map for each program. The major map lists the classes you will take in the program to graduate from ASU with that degree. You will also find contact information for your degree program of interest at the bottom of the page if you have specific questions or would like more information. ASU requires students complete 120 credits with at least 30 credits being completed at ASU to graduate from the university.
+
+I also recommend you view ASU’s transfer website at https://transfer.asu.edu/. It explains the admission requirements to the university. ASU requires a cumulative 2.50 GPA with 24 or more transferable credits. If you have under 24 transferable credits, ASU will base your admission on your high school course work and your completed college course work. You would, however, still be considered a transfer student. Please remember, some programs have higher requirements than the general admission requirements to ASU.
+
+If you have further questions, please let me know.
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

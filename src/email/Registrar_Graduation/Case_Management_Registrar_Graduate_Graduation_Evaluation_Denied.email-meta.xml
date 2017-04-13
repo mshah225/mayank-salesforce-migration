@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Default template for the Registrar - Graduate Graduation Evaluation Denied</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management Registrar Graduate Graduation Evaluation Denied</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Student ID: {!Contact.EMPLID__c}
+
+Thank you for submitting your application for graduation from Arizona State University. At this time, your application has been denied for the following reason(s):
+
+You have not reached candidacy. Once you have reached candidacy you may reapply for graduation with no additional fee.
+
+Your iPOS (Plan of Study) indicates that you have exceeded your graduation deadline. You must submit a petition requesting a time limit extension for a Graduate College decision. If this petition is approved you will need to reapply for graduation with no additional fee.
+
+Your iPOS (Plan of Study) GPA, Overall Graduate (500 level courses and above) GPA or Cumulative GPA is below 3.00. Graduate College requires that students maintain a minimum 3.00 GPA on all GPAs (iPOS, Overall Graduate and Cumulative) to graduate. Please contact your academic unit staff/advisor to review your options and create a plan of action. Once you have communicated with your academic unit, please e-mail the Graduation Office with an update on your status. To calculate your GPA please visit https://students.asu.edu/gpa-calculator.
+
+Your iPOS (Plan of Study) has not been approved by Graduate College. Your iPOS must be approved by Graduate College by the graduation conferral date.  https://students.asu.edu/academic-calendar
+
+ Once your iPOS has been approved you can reapply for graduation with no additional fee.
+
+
+You are not registered for the semester in which you have applied for graduation. Graduate College requires that all graduate students be enrolled in at least one graduate level credit hour in the semester they are graduating.
+
+
+
+For more information on ASU Graduate Policies and Procedures please visit  https://graduate.asu.edu/policies-procedures
+
+Please contact your department for guidance if you have questions. Your academic unit staff have been copied on this email for reference.
+
+Sincerely,
+{!Case.OwnerFullName}
+
+Graduation
+University Registrar Services
+Arizona State University
+Phone: (480) 965-3256
+https://asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

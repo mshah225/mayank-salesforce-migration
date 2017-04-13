@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>For internal use to send to advisors</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>INTL - Course Credits to DARS-Advisors</name>
+    <style>freeForm</style>
+    <subject>Update on international transfer credits</subject>
+    <textOnly>Hello,
+
+The international transfer credits have been added to the student&apos;s DARS. Please run a new audit for the updates to appears. International transfer hours appear as one lump sum on the student&apos;s DARS record.
+
+You should be able to see the evaluated transcript in WebXtender/AppXtender. If you are unable to see the transcript please let us know and we can send you a copy of the annotated transcript for you to review.
+
+If you have any further questions or requests please send them to intltransreq@asu.edu.
+
+Thank you,
+
+International Admission Services
+Arizona State University</textOnly>
+    <type>html</type>
+</EmailTemplate>

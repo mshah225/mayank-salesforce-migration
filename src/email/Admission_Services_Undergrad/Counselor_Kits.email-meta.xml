@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Counselor kit and pennant have been mailed.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Counselor Kits</name>
+    <style>freeForm</style>
+    <subject>Your counselor kit from Arizona State University is on its way!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University. I have mailed you a counselor kit and pennant for your school.
+
+Please let me know if I can be of further assistance.
+
+{!User.FirstName} {!User.LastName}
+{!User.Title}
+Admission Services
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Transcript processing time</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Transcript processing time</name>
+    <style>freeForm</style>
+    <subject>Your transcript status</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting us regarding the status of your transcript. It generally takes two to three weeks to match a transcript to your application, though it could take longer at times of higher volume. If you requested your transcript be sent to ASU more than a month ago, please check with your registrar to make sure it was delivered. You may need to have it resent.
+
+I appreciate your patience, and I encourage you to check My ASU regularly at https://my.asu.edu. Your Priority Tasks list will be updated once the transcript has been received.
+
+Please let me know if you have any additional questions about the admission process.
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

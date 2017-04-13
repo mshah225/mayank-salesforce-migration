@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Letterhead xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <backgroundColor>#FFFFFF</backgroundColor>
+    <bodyColor>#FFFFFF</bodyColor>
+    <bottomLine>
+        <color>#AAAAFF</color>
+        <height>0</height>
+    </bottomLine>
+    <description>for use of college of liberal arts and sciences</description>
+    <footer>
+        <backgroundColor>#FFFFFF</backgroundColor>
+        <height>60</height>
+        <horizontalAlignment>Right</horizontalAlignment>
+        <logo>Recruitment_Images/CLAS_logo.jpg</logo>
+        <verticalAlignment>Top</verticalAlignment>
+    </footer>
+    <header>
+        <backgroundColor>#FFFFFF</backgroundColor>
+        <height>50</height>
+        <horizontalAlignment>Left</horizontalAlignment>
+        <logo>Administrator/Arizona_State_University_gold_text_logo.png</logo>
+        <verticalAlignment>Top</verticalAlignment>
+    </header>
+    <middleLine>
+        <color>#666666</color>
+        <height>1</height>
+    </middleLine>
+    <name>CLAS letterhead</name>
+    <topLine>
+        <color>#AAAAFF</color>
+        <height>0</height>
+    </topLine>
+</Letterhead>

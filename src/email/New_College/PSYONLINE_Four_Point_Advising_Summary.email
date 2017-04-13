@@ -1,0 +1,6 @@
+<table height="400" width="550" cellpadding="5" border="0" cellspacing="5" >
+<tr height="400" valign="top" >
+<td style=" color:#000000; font-size:12pt; background-color:#FFFFFF; font-family:arial; bLabel:main; bEditID:r3st1;" tEditID="c1r1" locked="0" aEditID="c1r1" >
+<![CDATA[Hello {!Contact.FirstName},<br><br>It was a pleasure speaking with you today. Please find a summary of our discussion below for your reference. If you have any follow up questions please email <a href="mailto:Psyonline@asu.edu">psyonline@asu.edu</a> and we will get back to you as soon as possible. <br><br>Purpose of appointment:<br><br><br>What was discussed:<br><br><br>Resolution achieved:<br><br><br>Summary of next steps:<br><br><br>Additional items and/or student feedback:<br><br><br>Regards,<br><br><b><br>New College of Interdisciplinary Arts &amp; Sciences</b><br>Arizona State University<br>ASU Online Psychology<br>602-543-6265<br><a href="mailto:Psyonline@asu.edu">psyonline@asu.edu</a><br><br><font color="#C0C0C0">{!Case.Thread_Id}</font><br><br>]]></td>
+</tr>
+</table>

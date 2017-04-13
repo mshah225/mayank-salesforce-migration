@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>ASU gold header with CTI footer. Software Eng Email</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>CTI_letterhead</letterhead>
+    <name>CTI Thank you for your interest in an MS in Software Engineering</name>
+    <style>formalLetter</style>
+    <subject>Thank you for your interest in software engineering (MS)</subject>
+    <textOnly>{!Contact.FirstName},
+Thank you for your interest in the Master of Science in software engineering. Students in this program complete a combination of courses in a core and technical focus area, and develop and apply skills directly to their chosen area of software engineering. The program focuses on developing professional skills in this discipline as well as providing opportunities for students to engage in research.
+
+
+Focus areas include:
+-web and mobile applications
+-gaming and visualization
+
+The Master of Science in software engineering requires 27 credit hours, plus six hours of capstone courses and an applied project or thesis.
+
+
+Admission Information
+
+Consideration is given to students who have an appropriate technical, science or business baccalaureate degree from an accredited college or university, and who possess course work in statistics and technical writing. Applicants must also submit a GRE score, and international applicants must meet university TOEFL standards. The applicant’s past work and professional experience are also evaluated and taken into consideration. Industrial experience beyond completion of a baccalaureate degree is strongly recommended.
+
+
+I hope this information proves useful to you as you consider degree programs. If you are ready to apply, I encourage you to start your application today.
+
+
+
+Sincerely,
+
+
+Jennifer Ash
+
+Student Recruitment Coordinator
+
+College of Technology and Innovation</textOnly>
+    <type>html</type>
+</EmailTemplate>

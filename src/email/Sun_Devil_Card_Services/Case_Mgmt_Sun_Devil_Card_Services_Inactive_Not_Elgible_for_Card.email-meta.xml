@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Sun Devil Card Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Sun Devil Card Services - Inactive Not Elgible for Card</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Hello,
+
+You recently submitted a request for an ID card however you are not currently listed as active.  ASU only issues ID cards to active students, staff and faculty.
+
+If you have any questions regarding this please email us at  sundevilcardinfo@asu.edu.
+
+Regards,
+
+{!User.FirstName} {!User.LastName}
+
+Sun Devil Card Services
+Arizona State University
+Phone: 480-965-2273
+cardservices.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Event Confirmation: Scholar Day and Overnight at West campus</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Event Confirmation: Scholar Day and Overnight at West campus</name>
+    <style>freeForm</style>
+    <subject>RSVP Confirmation: Scholar Day Overnight Event</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for registering for the Scholar Overnight Experience at the West campus. Please keep this for your records.
+
+
+Overnight Event Arrival information
+
+Date: Wednesday, November 11 – Thursday, November 12, 2015
+
+Check-in: 5:30 - 6 p.m.
+
+Program: 5:30 p.m. – 8 a.m.
+
+Location: Check in at the Casa De Oro Residence Hall
+
+4811 W Verde Mall
+
+Glendale, AZ 85306
+
+
+Overnight parking
+
+Parking requires a reservation. Make your reservation by contacting Angela.Huizar@asu.edu.
+
+
+Please Note: Students will not be permitted to leave campus once checked-in to the program.
+
+
+What to bring
+
+Bring a change of clothing, sleeping bag, pillow, towel and any personal items (medication, soap, etc.). Luggage storage is available at 7:30 a.m. on Nov.12 during check-in for the Scholar Day event, please bring your luggage to the Barrett Honors Suite, UCB 201.
+
+
+Meals
+
+We will provide dinner and breakfast in our Verde Dining Pavilion for each overnight participant.
+
+
+What to send ahead of time
+
+All students must complete student waivers in order to stay overnight in the residence hall. If under the age of 18 must have their parent/guardian complete the forms. Email the completed form to Angela.Huizar@asu.edu.
+
+
+Scholar Day
+
+Your guests may participate in Day 2 of the event on Thursday, Nov. 12. We will send you a personalized agenda in a confirmation email so you can coordinate your parent or guardian’s arrival time and meeting location.
+
+
+Parking
+
+Overnight parking in is available in Lot 19 (reservation required). For the next day’s event, please park in visitor Lot 12, your parking will be validated at the conclusion of the event.
+
+
+Scholar Day Check-in
+
+Check-in for Monday’s Scholar Day Event begins at 8:30 a.m. in the Barrett Suite in University Center Building 205 (UCB201).
+
+
+If you have questions regarding this event, please contact Sasha Billbe at Sasha.Billbe@asu.edu.
+
+Sincerely,
+
+Angela Huizer
+Program Coordinator
+Admission Services
+visit.asu.edu
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

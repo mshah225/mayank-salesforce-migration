@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Sun Devil Card Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Sun Devil Card Services Processed - Pickup with fee</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+We have printed your new ASU ID card. You may pick up your card at the ENTERLOCATION Campus Sun Card Office.  Please note that a $25 fee will be billed to your Student Account within a few business days. For locations and hours of operation, click here.  https://cfo.asu.edu/cardservices#fees-and-location
+
+If you have any questions, please contact us at  sundevilcardinfo@asu.edu.
+
+Regards,
+{!User.FirstName} {!User.LastName}
+
+Sun Devil Card Services
+Arizona State University
+Phone: 480-965-2273
+cardservices.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

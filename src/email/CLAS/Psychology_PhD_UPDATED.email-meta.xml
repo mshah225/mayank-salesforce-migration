@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>CLAS_letterhead</letterhead>
+    <name>Psychology PhD UPDATED</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in the PhD in Psychology</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for contacting the Department of Psychology at Arizona State University. We invite you to check out our website for details on our graduate programs, including program descriptions, admission requirements, application deadlines and faculty research.
+
+The Department of Psychology offers graduate studies leading to the Doctor of Philosophy degree in six major areas of doctoral study: behavioral neuroscience, clinical psychology, cognitive science, developmental psychology, quantitative psychology and social psychology.The PhD includes a master’s in passing as part of the doctoral training.
+
+Please review the program details on our website. If you have specific program questions, please feel free to contact me. I wish you all the best in your pursuit of graduate studies.
+
+Have a wonderful day,
+
+Sno Kleespies
+
+Graduate Studies Coordinator
+
+Department of Psychology
+
+480-965-7606
+
+psychgrad@asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

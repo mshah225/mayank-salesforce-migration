@@ -1,0 +1,47 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    Dear {!Contact.FirstName}, <br /><br />
+
+Your request to be classified as an Arizona resident for tuition purposes for the <<'INSERT TERM'>> term is denied. An explanation of this decision is included in the attached decision summary. <br /><br />  
+ 
+You have the right to appeal this decision. Information about the appeal process can be found at <a href="https://students.asu.edu/residencyappeals">https://students.asu.edu/residencyappeals</a> . <br /><br />
+ 
+<B>The deadline to submit an appeal request and supporting documentation is <<'INSERT DEADLINE DATE'>>.  </b><br /><br />
+ 
+Failure to request an appeal by this date will constitute a waiver of your right to appeal this decision. Your appeal form must be signed and notarized and all issues noted in your decision summary should be addressed with new documentation and/or further explanation.   <br /><br />
+ 
+The Residency Classification Office can be reached via email at <a href="mailto:residencydocs@asu.edu"> residencydocs@asu.edu</a> or by calling 480-965-7712.  <br /><br />
+
+Sincerely, <br />
+ {!User.FirstName} {!User.LastName}<br><br>
+                    
+
+        <div style="color:#990033;font-family: Arial, Helvetica !important;">
+                        <b>Residency Classification<br />
+                        University Registrar Services</b><br />
+                        Arizona State University<br />
+                        Phone: (480) 965-7712<br />
+                        <a href="www.asu.edu" style="color:#990033 !important">www.asu.edu</a>
+    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>

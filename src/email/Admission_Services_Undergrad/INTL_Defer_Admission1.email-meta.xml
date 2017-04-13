@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Deferring your admission</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>INTL Defer Admission (no header)</name>
+    <style>none</style>
+    <subject>Deferring your admission</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your email. To defer your admission to the following semester, please complete the deferment form that will be emailed to you and email the completed form to DeferUGAdmissions@asu.edu.
+
+If you have already selected a housing option for the upcoming semester, you need to email housing@asu.edu to cancel it. Otherwise, you will be charged for your housing selection.
+
+Regards,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

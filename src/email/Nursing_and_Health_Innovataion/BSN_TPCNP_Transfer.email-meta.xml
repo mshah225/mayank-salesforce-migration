@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Nursing</letterhead>
+    <name>BSN TPCNP Transfer</name>
+    <style>freeForm</style>
+    <subject>Thank you for contacting ASU College of Nursing and Health Innovation</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in the College of Nursing &amp; Health Innovation at Arizona State University.
+
+We offer several pathways for students to earn their Bachelor of Science in Nursing (BSN). One conventional pathway is the Traditional Pre-licensure Clinical Nursing Program (TPCNP) located at ASU’s Downtown Phoenix campus. Students take nursing prerequisite courses and then advance into the upper division clinical nursing program for their junior and senior year.
+
+Like many nursing programs across the country, space is limited. Selection for the program is competitive and decisions are based upon the applicant’s prerequisite GPA and test score on the Test of Essential Academic Skills (TEAS).
+
+To learn more about the selection process for the TPCNP, attend a BSN Information Session either in-person or online, which will help answer any questions you have related to admission requirements, prerequisites, and deadlines. Once you have attended a BSN Information Session, you will be provided with instructions to have additional questions answered, apply for admission, and learn about transfer credits.
+
+To transfer to ASU’s Nursing program:
+
+Apply to ASU and submit all documents required by Admission Services.
+All transfer students will be admitted to Community Health. If necessary, this will allow you to complete any remaining prerequisites before applying for a space in the upper division clinical nursing program.
+After admission, an advisor will review your transfer credits, help plan future courses, and provide further instruction on how and when to apply to the upper division clinical nursing program.
+To check your transfer credits, either before or after admission, please use the Transfer Credit Guide (TCG). If a course you have taken is not listed in the TCG, you can submit a course for evaluation to have your course(s) officially evaluated for equivalency.
+
+If you have completed all pre-requisites and non-academic requirements (refer to BSN Information Session for details), the deadline to apply for advancement into the clinical nursing program are as follows:
+
+Summer or Fall Advancement – February 1
+Spring Advancement – September 1
+
+Below are some additional links to assist you in transferring to ASU:
+Academic Calendar
+Financial Aid and Scholarship Services (includes tuition estimator and scholarship search)
+Transfer Admissions Services
+College of Nursing and Health Innovation
+
+I hope this information is useful. If you have additional questions, please reply to this email or call our office at 602-496-0937, and we will be happy to help.
+
+Sincerely,
+
+College of Nursing and Health Innovation
+Phone: 602-496-0937
+Office Hours: Monday - Friday, 8 a.m. - 5 p.m.
+asu.bsn@asu.edu
+nursingandhealth.asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

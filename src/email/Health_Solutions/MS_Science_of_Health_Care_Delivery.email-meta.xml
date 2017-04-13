@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>MS - Science of Health Care Delivery</name>
+    <style>freeForm</style>
+    <subject>Welcome to the M.S. in the Science of Health Care Delivery at ASU</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your inquiry into the M.S. in the Science of Health Care Delivery at Arizona State University. As the health care industry continues its rapid expansion, ASU&apos;s School for the Science of Health Care Delivery is helping students gain a competitive advantage in the field. Graduates of our program will acquire real-world experience in exclusive interactive settings, gain unique knowledge from an interdisciplinary curriculum and enjoy opportunities to connect with industry leaders ranging from Mayo Clinic and Banner Health to Mountain Park Health Center and Barrow Neurological Institute.
+
+Take a moment to explore our site and learn about the scope of our program, our expert faculty members and ASU&apos;s exciting new partnership with Mayo Medical School. Please be sure to visit the FAQ section on our website, as it contains a wealth of information.
+
+Priority deadline to apply is May 1, but our admissions committee is happy to accept applications for the on-ground option at any time prior to the start of the program in the fall. We also accept applications for our online programs on a rolling basis and students that are accepted may begin at any one of six online starts per year.
+
+Choose from three learning options:
+full-time on-ground program (nine months)
+full-time online program (15 months)
+part-time online program (30 months)
+
+With this degree, students can enter such fields as health care delivery and administration, health policy and health system architecture, or use it as a foundation for a career in medicine, pharmacology or as a physician&apos;s assistant.
+
+In the past two years, graduates of the Science of Health Care Delivery program have been admitted to the University of Arizona College of Medicine; University of Arizona College Medicine, Phoenix; Creighton University School of Medicine; Albany Medical School; A.T. Still University School of Osteopathic Medicine, Arizona; Arizona College of Osteopathic Medicine of Midwestern University. Students complete capstone projects at health care sites such as Mayo Clinic, Banner Health and Arizona Department of Health Services.
+
+Applications are still being accepted. Learn more about the Master of Science in the Science of Health Care Delivery program and apply today.
+
+Sincerely,
+
+Laura Kaufman, M.Ed.
+Assistant Director, Graduate Programs
+School for the Science of Health Care Delivery
+College of Health Solutions - Arizona State University
+550 North 3rd Street | Phoenix, AZ 85004
+602-496-0092 | laura.kaufman@asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

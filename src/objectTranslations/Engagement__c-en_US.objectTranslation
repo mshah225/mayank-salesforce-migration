@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Campaign --></label>
+        <name>Campaign__c</name>
+        <relationshipLabel><!-- Engagements --></relationshipLabel>
+    </fields><fields>
+        <help><!-- Should this engagement create a Campaign Member in the specified Campaign afterwards? --></help>
+        <label><!-- Create Campaign Member? --></label>
+        <name>Create_Campaign_Member__c</name>
+    </fields><fields>
+        <help><!-- Should this engagement create a Case afterwards? --></help>
+        <label><!-- Create Case? --></label>
+        <name>Create_Case__c</name>
+    </fields><fields>
+        <help><!-- The date this engagement ends. --></help>
+        <label><!-- End Date --></label>
+        <name>End_Date__c</name>
+    </fields><fields>
+        <help><!-- Subscribers report --></help>
+        <label><!-- Engagement Add Report --></label>
+        <name>Engagement_Add_Report__c</name>
+    </fields><fields>
+        <help><!-- Unsubscribers report --></help>
+        <label><!-- Engagement Exit Report --></label>
+        <name>Engagement_Exit_Report__c</name>
+    </fields><fields>
+        <label><!-- Engagement Name --></label>
+        <name>Engagement_Name__c</name>
+    </fields><fields>
+        <label><!-- Engagement Type --></label>
+        <name>Engagement_Type__c</name>
+        <picklistValues>
+            <masterLabel>Ad Hoc Email</masterLabel>
+            <translation><!-- Ad Hoc Email --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Ad Hoc SMS Message</masterLabel>
+            <translation><!-- Ad Hoc SMS Message --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mass Email</masterLabel>
+            <translation><!-- Mass Email --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mass SMS Message</masterLabel>
+            <translation><!-- Mass SMS Message --></translation>
+        </picklistValues>
+    </fields><fields>
+        <help><!-- Some future date for this engagement (one-time send) --></help>
+        <label><!-- Planned Message 1 Date --></label>
+        <name>Planned_Message_1_Date__c</name>
+    </fields><fields>
+        <help><!-- The date this engagement begins. --></help>
+        <label><!-- Start Date --></label>
+        <name>Start_Date__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Engagement</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Engagements</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Engagement Layout</layout>
+        <sections>
+            <label><!-- Campaign Member Creation Info --></label>
+            <section>Campaign Member Creation Info</section>
+        </sections>
+        <sections>
+            <label><!-- Case Creation Info --></label>
+            <section>Case Creation Info</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Date Info --></label>
+            <section>Date Info</section>
+        </sections>
+    </layouts><recordTypes>
+        <label><!-- ASU Advisor Outreach --></label>
+        <name>ASU_Advisor_Outreach</name>
+    </recordTypes><recordTypes>
+        <label><!-- ASU Coach Outreach --></label>
+        <name>ASU_Coach_Outreach</name>
+    </recordTypes><recordTypes>
+        <label><!-- None --></label>
+        <name>None</name>
+    </recordTypes></CustomObjectTranslation>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for TRIO agents to use for Cases originated via email.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>TRIO | Student Support Services - STEM</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+ASU TRIO Student Support Services-STEM
+Arizona State University West
+PO Box 37100| Phoenix, AZ 85069 | UCB 220
+Phone: (602)543-8121 | Fax: (602) 543-8188 | Email: STEM@asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Default Case Management Template for MLF IT Department - Library Support</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>MLFTC IT - Case Reply Library Support</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.Name}
+Professional Learning Library Support
+Online home where P-20 educators connect, learn, collaborate and share
+asupll@asu.edu
+
+Arizona State University | Mary Lou Fulton Teachers College | Information Technology Integration Services Creating knowledge, mobilizing people and taking action to improve education
+541 E. Van Buren Street, Mercado B1
+Phoenix, AZ 85004-3944
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

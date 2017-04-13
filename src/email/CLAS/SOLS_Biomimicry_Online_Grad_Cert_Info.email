@@ -1,0 +1,50 @@
+<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
+<tr valign="top" height="400" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[Hello&nbsp;{!Contact.FirstName},<div><br></div><div><p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: Arial, sans-serif;">You recently requested
+some information on the Biomimicry online graduate certificate program at ASU. Please review this&nbsp;</span><span style="font-size:12.0pt;font-family:&quot;Arial&quot;,sans-serif;mso-fareast-font-family:
+&quot;Times New Roman&quot;"><a href="https://sols.asu.edu/graduate/online-graduate-certificate-biomimicry">useful website;</a> it will provide
+you with an overview of the program along with detailed information about how
+to apply.&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: Arial, sans-serif;">&nbsp;</span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: Arial, sans-serif;">To apply for the fall
+2017 semester, we must receive your application between&nbsp;<b>October 1 and
+December 15</b>. Our priority deadline for the fall semester is&nbsp;<b>December
+1</b>.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: Arial, sans-serif;">&nbsp;</span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: Arial, sans-serif;">If you need further
+information or have any questions, please contact <a href="mailto:dayna.baumeister@asu.edu">Dayna Baumeister.</a><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: Arial, sans-serif;">&nbsp;</span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: Arial, sans-serif;">Sincerely,<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: Arial, sans-serif;">&nbsp;</span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><b><span style="font-size: 24pt; font-family: 'Kunstler Script';">Wendi Simonson</span></b><span style="font-size: 12pt; font-family: 'Times New Roman', serif;"><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><b><span style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;,serif;
+mso-fareast-font-family:&quot;Times New Roman&quot;;color:#990000">Arizona State
+University</span></b><b><span style="font-size: 12pt; font-family: 'Times New Roman', serif;">&nbsp;|&nbsp;</span></b><b><span style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;,serif;mso-fareast-font-family:
+&quot;Times New Roman&quot;;color:#FFCC33">School of Life Sciences</span></b><span style="font-size: 12pt; font-family: 'Times New Roman', serif;"><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: 'Times New Roman', serif;">SOLS Graduate Programs
+Coordinator&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: 'Times New Roman', serif;">PO Box 874601 | Tempe,
+AZ 85287-4601<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: 'Times New Roman', serif;">Phone: 480-965-7490 |
+Fax: 480-965-7599<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-bottom: 0.0001pt;"><span style="font-size: 12pt; font-family: 'Times New Roman', serif;">email: sols.grad@asu.edu<o:p></o:p></span></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><span style="color:#CCCCCC">{!Case.Thread_Id}</span><o:p></o:p></p></div>]]></td>
+</tr>
+</table>

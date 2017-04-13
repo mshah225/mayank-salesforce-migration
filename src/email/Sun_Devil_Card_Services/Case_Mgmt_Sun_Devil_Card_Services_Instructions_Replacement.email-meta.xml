@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Sun Devil Card Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Sun Devil Card Services Instructions - Replacement</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+If you are in need of a replacement card, please visit the Replacement section of our website.  https://cfo.asu.edu/cardservices#replacement-cards
+
+If you wish to pick up your card at one of our four campus locations, please fill out a  Pickup Form.  https://cfo.asu.edu/webform/basic-sun-card-office-pick-form
+
+If you would like your card to be mailed to you, please fill out a  Mailing Form.  https://cfo.asu.edu/campus-id-card-request-form
+
+After we have processed your request, we will send you a confirmation email. The card is free if it is your first card. If this is a replacement card, a fee of $25.00 will be applied to your account within a few business days.
+
+Regards,
+{!User.FirstName} {!User.LastName}
+
+Sun Devil Card Services
+Arizona State University
+Phone: 480-965-2273
+cardservices.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

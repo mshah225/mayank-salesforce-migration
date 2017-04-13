@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Term has started - unable to cancel your ASU application</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Decline Request - Student enrolled (term has started)</name>
+    <style>freeForm</style>
+    <subject>Unable to cancel your ASU application</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting Admission Services at Arizona State University. We are unable to cancel your admission because you are currently enrolled in classes. Before you can cancel your admission, you must sign in to My ASU (https://my.asu.edu) to withdraw from your classes. You must withdraw from all classes before the end of ASU’s refund period or you will be responsible for all tuition charges.
+
+If you would still like to cancel your admission, please contact registrar@asu.edu using your email of record with ASU (the one you provided on your application) or your offical asu.edu email address, including either your ASU ID number or date of birth (mm/dd/yy). This information is needed to verify that we are canceling the correct student’s admission.
+
+Sincerely,
+
+Admission Services
+asu.edu
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

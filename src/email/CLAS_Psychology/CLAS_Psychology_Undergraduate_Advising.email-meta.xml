@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for CLAS - Psychology agents to use for Cases originated via email. For ongoing communication or Case closure.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>CLAS - Psychology | Undergraduate Advising</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Department of Psychology | Undergraduate Advising
+Arizona State University
+p: 480-965-7258| email: psych.advisor@asu.edu
+Tempe campus | Psychology Building, Room 202
+
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

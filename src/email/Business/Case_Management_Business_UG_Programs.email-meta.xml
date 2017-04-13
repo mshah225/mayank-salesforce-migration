@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Default Case Management Template</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management | Business UG Programs</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+W.P. Carey School of Business
+Undergraduate Programs 
+Arizona State University 
+Phone (480) 965-4227 
+
+W.P. Carey School of Business
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

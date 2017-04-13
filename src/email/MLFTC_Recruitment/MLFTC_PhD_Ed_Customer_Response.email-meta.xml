@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for MLFTC agents (phdeducation@asu.edu) to use for Cases originated via email. For ongoing communication or Case closure.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>*MLFTC - PhD Ed | Customer Response</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Mary Lou Fulton Teachers College
+Arizona State University
+Outreach and Enrollment Management
+Phone: (480) 727-1103
+Email: phdeducation@asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

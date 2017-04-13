@@ -112,8 +112,8 @@ private class TestEngagementContactsTrigger_Test{
         caseCoach1.ASR_Comments__c = 'comments here';
         caseCoach1.ASR_Reasons__c = 'reasons here';
         caseCoach1.ASR_Actions__c = 'actions here';
-        caseCoach1.Recommended_Actions__c = 'address financial issues;adjust course balance;Other';
-        caseCoach1.Reasons_Not_Returning__c = 'Academic;Disqualified;Other';
+        caseCoach1.Recommended_Actions__c = 'address financial issues;adjust course balance';
+        caseCoach1.Reasons_Not_Returning__c = 'Academic;Disqualified';
         insert caseCoach1;
         
     }

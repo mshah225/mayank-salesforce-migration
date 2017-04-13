@@ -1,0 +1,84 @@
+<messaging:emailTemplate subject="Case # {!relatedTo.CaseNumber} has been assigned to you" 
+    recipientType="User"
+    relatedToType="Case">
+    
+    <messaging:htmlEmailBody >
+        <html>
+            <style type="text/css">
+                body {
+                    font-family: Helvetica, Arial;
+                    margin: 0px;
+                }
+                
+                p {
+                    font-size: 14pt;
+                }
+                
+                .main {
+                    background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;
+                }
+                
+                .viewcase {
+                    float: right;                    
+                }
+                
+                /*.footer {
+                    width: 100%;
+                    height: 20px;
+                    background-color: #4c4c4c; 
+                    bottom: 0;
+                    margin: 0px;
+                    padding: 3px;
+                    margin-top: 50px;
+                }   
+                
+                .footer p {
+                    margin: 0px;
+                }*/
+                
+                td {
+                    border-bottom: solid 1px #e9e9e9;
+                }
+           
+            </style>
+            <body>
+                <center><img src="https://asu--c.na14.content.force.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                                         width="60%" style="padding-top:20px;max-width:200px;"/></center>
+
+                
+            
+                <div class="main">
+                    <hr />
+                    <center>
+                        <h2>NEW CASE ASSIGNMENT NOTIFICATION</h2>
+                    </center>
+                        <p>The following case has been assigned to you: <a class="viewcase" href="https://asu.my.salesforce.com/{!relatedTo.id}">View Case</a></p>
+                    <center>  
+                        <table border="0" cellpadding="7">
+                            <tr>
+                                <td width="30%" style="font-weight:bold">Case Number</td><td>{!relatedTo.CaseNumber}</td>
+                            </tr>
+                            <tr>
+                                <td width="30%" style="font-weight:bold">Contact Name</td><td>{!relatedTo.Contact.Name}</td>
+                            </tr>
+                            <tr>
+                                <td width="30%" style="font-weight:bold">Subject</td><td>{!relatedTo.Subject}</td>
+                            </tr>
+                            <tr>
+                                <td width="30%" style="font-weight:bold;" valign="top">Description</td>
+                                <td><apex:outputField value="{!relatedTo.Description}" /></td>
+                            </tr>
+                        </table>
+                    </center>
+                </div>
+                
+                <!--<div class="footer">
+                    
+                </div>-->
+            </body>
+        </html>
+    </messaging:htmlEmailBody>
+</messaging:emailTemplate>

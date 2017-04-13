@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Your ASU orientation experience</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Orientation</name>
+    <style>freeForm</style>
+    <subject>Your ASU orientation experience</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+New Student Orientation is a one-day, on-campus program incoming students are expected to attend before the fall semester begins. Learn more at https://eoss.asu.edu/orientation.
+
+During orientation, you will:
+
+-meet with your academic college and learn about academic expectations
+-complete course selections and registration for the upcoming semester
+-meet with current students and new classmates
+-explore ways to get involved on campus
+-learn about the university’s services and resources
+-visit a residence hall community
+
+
+If you are unable to attend orientation due to extenuating circumstances, please contact your academic advisor to discuss alternative class registration options. (There is no guarantee that a special accommodation can be made.) Your advisor&apos;s contact information can be found in My ASU at http://my.asu.edu/ under My Programs and eAdvisor.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

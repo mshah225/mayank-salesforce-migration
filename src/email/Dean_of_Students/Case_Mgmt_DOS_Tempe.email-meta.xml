@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Email template with Dean of Students Tempe campus address</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | DOS Tempe</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Office of the Dean of Students
+Arizona State University, Tempe Campus
+PO Box 870512, Tempe, AZ 85287-0512
+1151 S. Forest Ave., Tempe, AZ 85287-0512
+Office: (480) 965-6547
+Fax: (480) 965-9608
+https://eoss.asu.edu/dos
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

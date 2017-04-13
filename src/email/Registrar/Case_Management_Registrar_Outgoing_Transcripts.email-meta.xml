@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Default template for the Registrar - Outgoing Transcripts</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management Registrar Outgoing Transcripts</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Sincerely,
+{!User.Name}
+
+Outgoing Transcripts
+University Registrar Services
+Arizona State University
+Phone: (480) 965-7276
+www.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

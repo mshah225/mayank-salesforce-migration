@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Have you thought about Barrett, The Honors College?</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Barrett (Apply Push)</name>
+    <style>freeForm</style>
+    <subject>Have you thought about Barrett, The Honors College?</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+As a high-achieving scholar, I encourage you to apply to Barrett, The Honors College (http://barretthonors.asu.edu).
+
+You will benefit from being part of a fully developed four-year residential scholar community that combines the considerable resources of a premier Research Extensive university with the close, personal attention provided by our award-winning Barrett faculty and dedicated staff.
+
+The unique honors curriculum integrates seamlessly into ASU degree requirements to enhance the academic experience. You will have meaningful professor and advisor relationships and exclusive internship, research and study abroad opportunities. Learn more about the honors curriculum at http://barretthonors.asu.edu/academics/honors-courses-and-contracts/.
+
+Barrett students attend the best graduate schools, have exceptional success in national fellowship competitions and accept positions with prominent nonprofit and Fortune 500 companies.
+
+Students interested in Barrett, The Honors College must first apply to Arizona State University and then complete the separate Barrett application at http://barretthonors.asu.edu/admissions/. Be mindful of deadlines to ensure your complete application is on file by the appropriate date.
+
+Please let me know if I can answer any questions about the honors experience at ASU.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

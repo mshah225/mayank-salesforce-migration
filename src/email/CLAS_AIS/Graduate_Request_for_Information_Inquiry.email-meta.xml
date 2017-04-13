@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>CLAS_American_Indian_Studies</letterhead>
+    <name>Graduate Request for Information Inquiry</name>
+    <style>formalLetter</style>
+    <subject>Thank you for contacting ASU American Indian Studies!</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in the AIS master&apos;s program. We begin accepting and reviewing applications for the fall cohort at the start of spring semester, continuing until the end of June. Application reviews for the spring cohort begin at the start of fall semester, and continue until the middle of December. In the meantime, if you have not done so yet, please visit our web page: https://americanindian.clas.asu.edu/degrees/grad. Lastly, please feel free to contact me directly with any questions or concerns you may have about our program at David.Martinez.3@asu.edu. Thank you again for considering us as an option for your graduate career. We hope to hear from you again!
+
+Sincerely,
+David Martínez (Gila River Pima)
+
+Associate Professor
+Director of Graduate Studies
+American Indian Studies
+Tempe Campus
+(480) 727-9818 (office)
+(480) 965-2216 (fax)
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

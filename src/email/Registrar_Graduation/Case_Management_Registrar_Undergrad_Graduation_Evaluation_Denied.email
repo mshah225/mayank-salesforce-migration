@@ -1,0 +1,51 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                   Dear {!Contact.FirstName}, <br /><br />
+
+<b>Student ID: {!Contact.EMPLID__c}</b><br /><br />
+
+Thank you for submitting your application for graduation from Arizona State University. At this time, <b>your application has been denied</b> for the following reason(s): <br /><br />
+
+<ul>
+<li>You have not completed the total hours required for your degree <b>and</b> you have not indicated an adequate number of potential transfer credits. The university requires a minimum of 120 total credit hours. 
+</li> <br /><br />
+
+<li>You have not completed the total upper division hours required for your degree 
+<b>and</b> you have not indicated an adequate number of potential upper division transfer credits. The university requires a minimum of 45 (51 for business degrees) total upper division credit hours. </li> <br /><br />
+</ul>	
+
+<b><i>Please speak with your advisor if you have questions.</i></b> If corrections need to be made to your record, or if you are transferring in hours from another institution, please contact the Graduation office at <a href="mailto:graduation@asu.edu"> graduation@asu.edu</a> or 480-965-3256. <b>It is imperative that you contact the Graduation office to avoid your immediate withdrawal from the graduation process.</b>  If you will not meet the requirements in the original semester you requested, you will need to reapply, with no additional fee, for a future graduation date.<br /><br />
+
+Sincerely,<br />
+
+{!Case.OwnerFullName}<br /><br />
+
+        <div style="color:#990033;font-family: Arial, Helvetica !important;">
+                        <b>Graduation<br />
+                        University Registrar Services</b><br />
+                        Arizona State University<br />
+                        Phone: (480) 965-3256<br />
+                        <a href="https://asu.edu" style="color:#990033 !important">www.asu.edu</a>
+    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>

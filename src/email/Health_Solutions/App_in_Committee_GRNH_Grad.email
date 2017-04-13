@@ -1,0 +1,6 @@
+<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
+<tr valign="top" height="400" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[<font face="arial"><span style="font-size: 12pt;">Dear&nbsp;{!Contact.FirstName},</span></font><div style="color: rgb(0, 0, 0); font-family: arial; font-size: 12pt;"><br></div><div><div><font face="arial">I have reviewed your admission application packet and submitted it to the committee. The admission committee will provide an update shortly.&nbsp;</font></div><div><font face="arial"><br></font></div><div><font face="arial">If you have any questions, please do not hesitate to contact me directly. &nbsp;</font></div><div><font face="arial">&nbsp;</font></div><div><font face="arial">Regards,</font></div><div><font face="arial"><br></font></div><div><font face="arial">{!User.Email}</font></div><div><font face="arial"><br></font></div><div><font face="arial" color="#ffffff">{!Case.Thread_Id}</font></div></div>]]></td>
+</tr>
+</table>

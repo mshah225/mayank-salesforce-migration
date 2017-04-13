@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>false</available>
+    <description>Case Management FASS Missed Call</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management FASS Missed Call</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+We tried to reach you by phone at &lt;&gt;. Sorry we missed you! When you get a chance, please send an email to cap@asu.edu and let us know the best way to contact you - email or phone. If by phone, please let us know the best number and times to reach you between 8:00 a.m. - 5:00 p.m. (MST). A counselor from Financial Aid and Scholarship Services will reach out to you as soon as possible.
+
+In the meantime, you may want to visit the College Plan Welcome tool. If you have already begun the application process and now have My ASU access, you can view the Starbucks Students box in My ASU as well. It&apos;s in the Finances tab. Both options offer useful resources, including:
+
+Cost of attendance and financial assistance information
+The Starbucks College Achievement Plan program brochure
+Answers to frequently asked questions in the &quot;About the Program&quot; tab of the College Plan Welcome tool
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Financial Aid and Scholarship Services
+Arizona State University
+PO Box 870412
+Tempe, AZ 85287-0412
+Phone: 855-278-5080
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

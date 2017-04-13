@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for International Students and Scholars Center</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | International Students and Scholars Center | Technical template</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+International Students and Scholars Center
+Arizona State University
+Phone (480) 727-4776
+InternationalTech@asu.edu		
+
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

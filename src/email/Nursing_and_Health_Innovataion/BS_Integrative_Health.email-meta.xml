@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Response to general inquiry about the BS Integrative Health program</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Nursing</letterhead>
+    <name>BS Integrative Health</name>
+    <style>formalLetter</style>
+    <subject>Thank you for contacting ASU College of Nursing and Health Innovation</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your inquiry about our BS Integrative Health degree program.
+
+As the face of healthcare continues to change across a national and global scale, it is important for educational institutions to prepare students for the future of health and wellness. The College of Nursing and Health Innovation aims to prepare lifelong, dynamic learners who are able to adapt and overcome complex challenges involved with health.
+
+The BS Integrative Health is a new undergraduate degree focused on integrative and holistic health providing students with a broader perspective of treatment using approaches from allopathic and complementary medicine to elicit the best health outcomes.
+
+The BS Integrative Health provides a foundation in integrative health, a holistic approach to wellness that focuses on the mind, body, and spirit. The program provides students with a foundation of innovative and interprofessional approaches to serving and supporting diverse populations. Students will learn to differentiate the ethics, legalities, and standards of practice of integrative health and to think critically about different therapies, modalities and practitioners. Coursework and experiences include an emphasis on research and evidence-based practices and gaining an understanding of the historical and cultural foundations of the integrative health field.
+
+Graduates will be qualified for careers in many areas of the integrative health field including hospitals, physician’s offices, wellness and fitness centers, and holistic health centers.
+
+
+Program Requirements
+
+To view the BS Integrative Health degree requirements and submit an application click this link https://webapp4.asu.edu/programs/t5/majorinfo/ASU00/NUIHLTBS/undergrad/false.
+
+Our BS Integrative Health program is available on the Downtown Phoenix campus and the West campus. The plan of study for the campus based program can be found here https://webapp4.asu.edu/programs/t5/roadmaps/ASU00/NUIHLTBS/null/ALL/2015. To view the plan of study for the online program, please click this link https://webapp4.asu.edu/programs/t5/roadmaps/ASU00/NUIHLTBS/null/ONLINE/2015. The course descriptions are hyperlinked within the major maps.
+
+Benefits of pursuing a degree with ASU
+
+Growing your career and leading others
+Gaining broader perspectives on integrative health approaches and practices
+Surrounding yourself with expert faculty and quality mentors
+Preparing to positively impact health outcomes
+Applying theory and research to practice
+
+
+Contact us to get started!
+Recruitment and Admissions
+College of Nursing and Health Innovation
+Phone: (602) 496-0937
+Office Hours: Monday - Friday, 8a.m. - 5p.m.
+conhi_undergrad@asu.edu
+https://nursingandhealth.asu.edu
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

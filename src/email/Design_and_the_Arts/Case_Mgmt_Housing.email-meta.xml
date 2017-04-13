@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Recruitment and Admissions</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Housing</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Herberger Institute Arcadia Residential Community
+Arizona State University
+Best Hall C 113B (MB-C) | Tempe, AZ 85287
+480.727.0975
+ASU Herberger Institute for Design and the Arts
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

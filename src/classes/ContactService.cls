@@ -66,21 +66,38 @@ public class ContactService
     {
         Id loggedInContactId = null;
         Contact loggedInContact = null;
+        String EmployeeId;
+        List<Contact> lstLoggedInContact;
 		String contactFields = contactFieldsToString();
-
+        String selectContactInfoByLoggedInUser;
         try
         {
-			loggedInContactId = [
+			
+            //Try community user
+            loggedInContactId = [
                 SELECT ContactId
                 FROM User
                 WHERE Id = :UserInfo.getUserId()
             ].ContactId;
 
-			String selectContactInfoByLoggedInUser = 'SELECT ' + contactFields + ' ' +
+			//Try Employee User
+            if(loggedInContactId==null){
+                EmployeeId = [SELECT EmployeeNumber FROM User WHERE Id = :userInfo.getUserId()].EmployeeNumber;
+                if(EmployeeId!=null && EmployeeId!=''){
+                    lstLoggedInContact=[Select Id from Contact where EmplId__c=:EmployeeId LIMIT 1];
+                    if(lstLoggedInContact!=null && lstLoggedInContact.size()>0){
+                        loggedInContactId=lstLoggedInContact[0].Id;
+                    }
+
+                }
+            }
+            if(loggedInContactId!=null){
+                selectContactInfoByLoggedInUser = 'SELECT ' + contactFields + ' ' +
         											 'FROM Contact ' +
 													 'WHERE Id = :loggedInContactId';
 
-            loggedInContact = Database.query(selectContactInfoByLoggedInUser);
+                loggedInContact = Database.query(selectContactInfoByLoggedInUser);
+            }
         }
         catch (Exception e)
         {

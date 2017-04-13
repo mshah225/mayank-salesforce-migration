@@ -1,0 +1,65 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    
+             Dear {!Contact.FirstName},  <br /><br />
+Your photo was declined for the following reason:<br /><br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<i>Insert reason here</i><br /><br />
+
+Please submit a new photo following the guidelines below.  <u><i>After</i></u> your new photo is approved, you will need to resubmit the 
+<a href="https://cfo.asu.edu/campus-id-card-request-form">
+Mail Request Form</a> <b>OR</b> <a href="https://cfo.asu.edu/webform/basic-sun-card-office-pick-form">Pickup Request Form</a>.  You will need to attach a valid, current photo ID as proof of identity.  <i>  Acceptable forms of ID are: US drivers license, state issued ID card, US passport or US Visa.<br /><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>Uploaded photos must meet the following criteria:</b><br/><br/>
+
+<img src="https://asu--c.na14.content.force.com/servlet/servlet.ImageServer?id=015d000000Ag0lG&oid=00Dd0000000hLoc&lastMod=1467157571000" style="width:350px;height:228px;"><br/>
+
+<a href="https://webapp4.asu.edu/cardservices/" target="_blank">
+Upload your photo NOW
+</a><br/><br/>
+
+Regards, <br />
+ {!User.FirstName} {!User.LastName}
+                </div>
+
+             
+
+               <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               <p><b>
+Sun Devil Card Services
+</b><br/>
+Arizona State University<br />
+Phone: 480-965-2273<br/>
+<a href="https://cfo.asu.edu/cardservices" target="_blank">
+cardservices.asu.edu
+</a><br />
+                    </p>
+                    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>
+
+</p>

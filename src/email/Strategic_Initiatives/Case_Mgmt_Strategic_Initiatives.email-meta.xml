@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General email template for Strategic Initiatives</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Strategic Initiatives</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Educational Outreach &amp; Student Services
+Arizona State University
+Fulton Center 220
+480-965-2200
+eoss.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

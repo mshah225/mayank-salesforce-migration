@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Read</contactAccessLevel>
+    <description>Canon (Print Anywhere) Staff</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>CP Canon (Print Anywhere) Staff</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>CP_Canon_Print_Anywhere_Manager</parentRole>
+</Role>

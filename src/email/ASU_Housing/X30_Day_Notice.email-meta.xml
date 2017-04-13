@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>HTML templates for 30 Day Notice</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Case_Management</letterhead>
+    <name>30 Day Notice</name>
+    <style>freeForm</style>
+    <subject>30 Day Notice</subject>
+    <textOnly>{!Contact.FirstName} {!Contact.LastName}:
+
+
+Our records indicate that you are currently 30 days past due on your Housing rental payments. Failure to pay monthly rent is a violation of your license agreement and may impact your ability to renew the agreement for the upcoming (semester/year). In addition, residents who become 60 or more days past due will have their license agreement immediately cancelled and will be removed from University housing.
+
+
+In order to remain in University Housing on the Polytechnic Campus, you need to pay $XXX.XX by 1 week after the date of this letter.
+
+
+
+You may submit payment via mail by check payable to ASU University Housing, Attn: Lorrie Woesner, PO Box 870212, Tempe, AZ 85287-0212 or in person at the Polytechnic Cashiering Services located in Quad 2, where acceptable forms of payment include cash or checks only. You may also pay online through your ASU student account; using MasterCard, Discover or American Express.
+
+
+If you feel this message has reached you in error, please send an e-mail addressing your concerns to Lorrie.Woesner@asu.edu, or call 480-727.8273. Make sure to include the name of the primary license holder, their affiliate ID, campus address and specific information regarding your concerns.
+
+
+
+Sincerely,
+
+
+
+
+Jim Beadle
+
+Director, Finance &amp; Administration
+
+University Housing &amp; Dining Services</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,73 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                   Dear {!Contact.FirstName}, <br /><br />
+
+<b>Student ID: {!Contact.EMPLID__c}</b><br /><br />
+
+Thank you for submitting your application for graduation from Arizona State University. At this time, <b>your application has been placed in “Review” status</b> for the following reason(s): <br /><br />
+
+<ul>
+<li>You need to make changes to the following course(s) listed on your iPOS (Plan of Study) in order to meet graduation requirements. To make changes to courses, log in to <a href="https://my.asu.edu">My ASU</a>, navigate to <b>My Programs and Degree Progress</b> to access your iPOS, and click on the <b>Course Change</b> link. Course changes must be submitted before the <a href="https://students.asu.edu/academic-calendar">end of the semester.</a> <br /><br />
+
+<<'TERM/YEAR'>>&nbsp&nbsp&nbsp&nbsp <<'COURSE ID'>>&nbsp&nbsp&nbsp&nbsp<<'ERROR MESSAGE'>></li><br /><br />
+
+<li>You had a break in continuous enrollment. Graduate College requires all students to be enrolled in at <b><u>least one</u></b> graduate level credit hour from admission until graduation. Please contact your graduate advisor to discuss your options. </li><br /><br />
+
+
+<li>Records indicate that you have not scheduled a defense of your dissertation. Your dissertation must be scheduled and held by the assigned deadline, and passed, in order for you to be eligible for graduation. If you fail to schedule your dissertation by the assigned deadline you will need to reapply, at no additional cost, for a future graduation date. Please visit the <a href="https://graduate.asu.edu/cyd-graduation-deadlines-and-procedures">graduation deadlines and procedures website</a> to determine dissertation scheduling deadlines and procedures. </li><br /><br />
+
+
+<li>Records indicate that you have not scheduled a defense of your thesis. Your thesis must be scheduled and held by the assigned deadline, and passed, in order for you to be eligible for graduation. If you fail to schedule your thesis by the assigned deadline you will need to reapply, at no additional cost, for a future graduation date. Please visit the <a href="https://graduate.asu.edu/cyd-graduation-deadlines-and-procedures">graduation deadlines and procedures website</a>  to determine thesis scheduling deadlines and procedures. </li><br /><br />
+
+<li>Your iPOS (Plan of Study) currently lists <<# OF CREDITS>> dissertation credits. Only 12 dissertation credits are permitted on the iPOS. To make changes to your iPOS, log in to <a href="https://my.asu.edu">My ASU</a>, navigate to <b>My Programs and Degree Progress</b> to access your iPOS, and click on the <b>Course Change</b> link. Course changes must be submitted before the <a href="https://students.asu.edu/academic-calendar">end of the semester</a>. </li><br /><br />
+
+<li>Your iPOS (Plan of Study) currently lists <<# OF CREDITS>> thesis credits. Only 6 thesis credits are permitted on the iPOS. To make changes to your iPOS, log in to <a href="https://my.asu.edu">My ASU</a>, navigate to <b>My Programs and Degree Progress</b> to access your iPOS, and click on the <b>Course Change</b> link. Course changes must be submitted before the <a href="https://students.asu.edu/academic-calendar">end of the semester</a>.  </li><br /><br />
+
+<li>Your iPOS (Plan of Study) lists a grade of “I” (Incomplete) for <<'TERM/YEAR, COURSE ID, COURSE TITLE'>>. This grade of “I” is over a year old and must be removed from your iPOS. To make changes to your iPOS, log in to <a href="https://my.asu.edu">My ASU</a>, navigate to <b>My Programs and Degree Progress</b> to access your iPOS, and click on the <b>Course Change</b> link. Course changes must be submitted before the <a href="https://students.asu.edu/academic-calendar">end of the semester</a>.  </li><br /><br />
+
+<li>You have a course listed in your approved <<'DEGREE'>> iPOS (Plan of Study) which is beyond the graduation semester for which you have applied. You will need to either request to remove the course from your approved iPOS via a course change request, or reapply, with no additional fee, for a future graduation. To make changes to your iPOS, log in to <a href="https://my.asu.edu">My ASU</a>, navigate to <b>My Programs and Degree Progress</b> to access your iPOS, and click on the <b>Course Change</b> link. Course changes must be submitted before the <a href="https://students.asu.edu/academic-calendar">end of the semester</a>.   Please visit the <a href="https://graduate.asu.edu/cyd-graduation-deadlines-and-procedures">graduation deadlines and procedures website</a> to determine Graduate College deadlines. </li><br /><br />
+
+<li>Your iPOS (Plan of Study) currently lists a grade of “D”, “E” or “I” (Incomplete). Per Graduate College policies, grades of “D”, “E” or “I” cannot appear on the iPOS. </li><br /><br />
+
+<li>Your iPOS (Plan of Study) GPA, Overall Graduate (500 level courses and above) GPA or Cumulative GPA is below 3.00. Graduate College requires that students maintain a minimum 3.00 GPA on all GPAs (iPOS, Overall Graduate and Cumulative) to maintain satisfactory academic progress. To calculate your GPA please visit <a href="https://students.asu.edu/gpa-calculator">https://students.asu.edu/gpa-calculator.</a> </li><br /><br />
+</ul>
+
+For more information on ASU Graduate Policies and Procedures please visit <a href="https://graduate.asu.edu/policies-procedures">https://graduate.asu.edu/policies-procedures.</a><br /><br />
+
+Please contact your department for guidance if you have questions. Your academic unit staff have been copied on this email for reference. <br /><br />
+
+
+Sincerely, <br />
+
+{!Case.OwnerFullName} <br /><br />
+
+
+        <div style="color:#990033;font-family: Arial, Helvetica !important;">
+                        <b>Graduation<br />
+                        University Registrar Services</b><br />
+                        Arizona State University<br />
+                        Phone: (480) 965-3256<br />
+                        <a href="https://asu.edu" style="color:#990033 !important">www.asu.edu</a>
+    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>

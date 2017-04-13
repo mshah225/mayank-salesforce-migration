@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>SOLS: Evolutionary Bio PhD Info request</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in the Evolutionary Biology PhD at ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+You recently requested some information on the Evolutionary Biology PhD program at ASU. Please review this useful website; it will provide you with an overview of the program along with detailed information about how to apply.
+
+
+To apply for the fall 2017 semester, we must receive your application between October 1 and December 15. Our priority deadline for the fall semester is December 1.
+
+
+If you need further information or have any questions, please let me know.
+
+
+Sincerely,
+
+
+Wendi Simonson
+
+Arizona State University | School of Life Sciences
+
+SOLS Graduate Programs Coordinator
+
+PO Box 874601 | Tempe, AZ 85287-4601
+
+Phone: 480-965-7490 | Fax: 480-965-7599
+
+email: sols.grad@asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

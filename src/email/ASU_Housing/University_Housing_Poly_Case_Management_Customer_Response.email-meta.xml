@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for University Housing (Polytechnic) agents to use for Cases originated via email. For ongoing communication or Case closure.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt |  Poly | Customer Response</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+University Housing | Polytechnic
+7107-3 E Tiburon Ave
+Mesa, AZ  85212
+Phone: 480-727-1700 | Fax: 480-727-1711
+Email: polyhousing@asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

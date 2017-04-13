@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Lead State or Province Code</value>
+        </caseValues>
+        <name>state_code_lead</name>
+        <startsWith>Consonant</startsWith>
+    </fields><fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Lead State or Province</value>
+        </caseValues>
+        <name>state_lead</name>
+        <startsWith>Consonant</startsWith>
+    </fields><fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Postal Code</value>
+        </caseValues>
+        <name>zip_lead</name>
+        <startsWith>Consonant</startsWith>
+    </fields><layouts>
+        <layout>Admin Layout</layout>
+        <sections>
+            <label><!-- Contact Insight --></label>
+            <section>Contact Insight</section>
+        </sections>
+        <sections>
+            <label><!-- Graduate Recruitment Data --></label>
+            <section>Graduate Recruitment Data</section>
+        </sections>
+        <sections>
+            <label><!-- MDM Registry --></label>
+            <section>MDM Registry</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+        <sections>
+            <label><!-- Silverpop --></label>
+            <section>Silverpop</section>
+        </sections>
+        <sections>
+            <label><!-- Undergraduate Recruitment Data --></label>
+            <section>Undergraduate Recruitment Data</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Lead Layout</layout>
+        <sections>
+            <label><!-- Contact Insight --></label>
+            <section>Contact Insight</section>
+        </sections>
+        <sections>
+            <label><!-- Description Information --></label>
+            <section>Description Information</section>
+        </sections>
+        <sections>
+            <label><!-- Graduate Recruitment Data --></label>
+            <section>Graduate Recruitment Data</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Communication History --></label>
+            <section>Marketing Cloud Communication History</section>
+        </sections>
+        <sections>
+            <label><!-- Undergraduate Recruitment Data --></label>
+            <section>Undergraduate Recruitment Data</section>
+        </sections>
+    </layouts><recordTypes>
+        <label><!-- Processing --></label>
+        <name>Processing</name>
+    </recordTypes><recordTypes>
+        <label><!-- Prospective Student --></label>
+        <name>Prospective_Student</name>
+    </recordTypes><validationRules>
+        <errorMessage><!-- You must fill out these required fields in order to convert the Lead to a Contact: First Name, Last Name, and either Phone or Email. --></errorMessage>
+        <name>Lead_Data_Entry_Minimum_Requirements</name>
+    </validationRules><webLinks>
+        <label><!-- AltavistaNews --></label>
+        <name>AltavistaNews</name>
+    </webLinks><webLinks>
+        <label><!-- GoogleMaps --></label>
+        <name>GoogleMaps</name>
+    </webLinks><webLinks>
+        <label><!-- GoogleNews --></label>
+        <name>GoogleNews</name>
+    </webLinks><webLinks>
+        <label><!-- GoogleSearch --></label>
+        <name>GoogleSearch</name>
+    </webLinks><webLinks>
+        <label><!-- HooversProfile --></label>
+        <name>HooversProfile</name>
+    </webLinks><webLinks>
+        <label><!-- Mass_Delete --></label>
+        <name>Mass_Delete</name>
+    </webLinks><webLinks>
+        <label><!-- SendGmail --></label>
+        <name>SendGmail</name>
+    </webLinks><webLinks>
+        <label><!-- YahooMaps --></label>
+        <name>YahooMaps</name>
+    </webLinks></CustomObjectTranslation>

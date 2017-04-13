@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Ira_A_Fulton_Engineering</letterhead>
+    <name>MSE/ES - Software Engineering concentration</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in a graduate degree at ASU!</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in our online graduate programs offered through the Ira A. Fulton Schools of Engineering at Arizona State University. We received your inquiry about our graduate engineering offerings, specifically the MSE in Software Engineering.  We offer more information on our website such as admission criteria, I encourage you to review our website to learn more about this program. For information on the recommended course path for this program you may view our Graduate Handbook.
+
+Our programs are intended to be online programs aimed at working professionals who require the convenience and flexibility provided by our online offerings. We do not have a requirement for students to attend campus; you can go through the whole program without ever setting foot in Tempe, Arizona. Of course, we encourage all of our students to join us for graduation to celebrate your accomplishment but even then it is not required.
+
+Many of our working professional students take one to two courses per semester, on average. Students can complete the program as quickly as two years, on average approximately three years, but must be completed within six years. In order to stay active in the program, and abide by the Graduate College guidelines, students must be enrolled each fall and spring semester. We offer courses each fall, spring and summer semesters. Fall and spring are the traditional semester length (15 weeks) while summer sessions are more condensed (6 or 8 weeks).
+
+Students admitted to one of our online programs are assessed online tuition.  The program requires 10 courses and we encourage students to budget around $30,000 USD for tuition and fees. You can get the most up-to-date tuition information, including a breakdown on the cost per course, on this useful page on our site.
+
+We are currently accepting applications for the upcoming semester. You can review the admission application process and begin your application here.
+
+Sincerely,&lt;br&gt;Angela Harguess&lt;br&gt;&lt;br&gt;
+Global Outreach &amp; Extended Education&lt;br&gt;
+Ira A. Fulton Schools of Engineering
+&lt;br&gt;p: 480-965-1878 | f: 480-965-2929 | ASUEngineeringOnline.com
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

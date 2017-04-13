@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Thank you for your interest in the Master of Science in Human Nutrition, Dietetics Concentration</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>HealthSolutions_letterhead</letterhead>
+    <name>Master of Science in Human Nutrition, Dietetics Concentration for Registered Die</name>
+    <style>formalLetter</style>
+    <subject>Thank you for your interest in the MS in Human Nutrition, Dietetics Concentration</subject>
+    <textOnly>{!Contact.FirstName},
+Thank you for your interest in the Master of Science in Human Nutrition, Dietetics Concentration at Arizona State University! I look forward to assisting you as you consider your options at ASU.
+
+
+About the Program
+
+
+
+The Nutrition program offers a Master of Science (MS) in Nutrition with a concentration in dietetics. This degree is a non-thesis option for Registered Dietitians (RDs) seeking to continue their education, advance their skills as practitioners, and achieve their career goals.
+
+
+
+Designed with working professionals in mind, two program options are available depending on the student&apos;s learning preference. Students can enroll in our Phoenix downtown campus where classes are offered online or in-person or in our ASU Online program where classes are offered completely online. Both programs can be completed either on a full-time or part-time basis.
+
+
+
+The MS in Nutrition, Dietetics Concentration is based on the scientific foundations of nutrition and prepares students to have strong writing skills, computer literacy, interpretive expertise, and problem-solving skills. Students will be required to complete 30 credits, including six credits of an applied project that focuses on the practice and science of dietetics.
+
+
+
+Applicants to the MS in Nutrition, Dietetics Concentration must have one year, full-time work experience as an RD; however, applicants do not have to be employed at the time they apply to the program, nor will students have to be employed to maintain good standing within the program.
+
+
+About Admission
+
+We admit to this program for fall, spring, and summer semesters. To ensure consideration, all applicant materials for fall admission should be received by April 15. For spring admission, submit all program-requested materials by October 15. Summer admission materials should be received by February 15.
+
+
+
+Please let me know if you have any questions and thank you so much for your interest!
+
+
+
+Regards,
+
+
+Sue Callahan, MEd
+
+Nutrition Graduate Program and Dietetic Internship Administrative Coordinator
+
+School of Nutrition and Health Promotion
+
+College of Health Solutions
+
+550 North 3rd Street I Phoenix, AZ 85004 I MC 3020
+
+Office: 602.496.0869 I Fax: 602.496.1873 I Susan.Callahan@asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

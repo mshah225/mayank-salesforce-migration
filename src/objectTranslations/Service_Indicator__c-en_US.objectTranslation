@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Code --></label>
+        <name>SI_Code__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>SI_Contact__c</name>
+        <relationshipLabel><!-- Service Indicators --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Description --></label>
+        <name>SI_Description__c</name>
+    </fields><fields>
+        <label><!-- End Date --></label>
+        <name>SI_End_Date__c</name>
+    </fields><fields>
+        <label><!-- End Term --></label>
+        <name>SI_End_Term__c</name>
+        <relationshipLabel><!-- Service Indicators (End Term) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Positive Service Indicator --></label>
+        <name>SI_Positive_Service_Indicator__c</name>
+    </fields><fields>
+        <label><!-- Reason --></label>
+        <name>SI_Reason__c</name>
+    </fields><fields>
+        <label><!-- Start Date --></label>
+        <name>SI_Start_Date__c</name>
+    </fields><fields>
+        <label><!-- Start Term --></label>
+        <name>SI_Start_Term__c</name>
+        <relationshipLabel><!-- Service Indicators --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Service Indicator</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Service Indicators</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Service Indicator Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

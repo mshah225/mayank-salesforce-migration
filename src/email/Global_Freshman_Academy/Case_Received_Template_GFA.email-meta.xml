@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Auto-response email for case received. Customized for Global Freshman Academy</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Received Template GFA</name>
+    <style>none</style>
+    <subject>Email Received Case Number {!Case.CaseNumber}</subject>
+    <textOnly>Dear {!Contact.FirstName} {!Contact.LastName},
+
+Thank you for contacting us. We have received your email and are working on responding to you as soon as possible.
+
+If you have any additional information to add to this case, please reply to this email.
+
+Case Number: {!Case.CaseNumber}
+Subject: {!Case.Subject}
+Description: {!Case.Description}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

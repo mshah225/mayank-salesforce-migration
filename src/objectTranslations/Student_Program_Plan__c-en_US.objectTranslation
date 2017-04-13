@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Action Reason --></label>
+        <name>Action_Reason__c</name>
+        <picklistValues>
+            <masterLabel>Application Withdrawn</masterLabel>
+            <translation><!-- Application Withdrawn --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Applied to Graduate</masterLabel>
+            <translation><!-- Applied to Graduate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Concurrent Approved Program</masterLabel>
+            <translation><!-- Concurrent Approved Program --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Conversion</masterLabel>
+            <translation><!-- Conversion --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Courtesy App - Cert Prog Only</masterLabel>
+            <translation><!-- Courtesy App - Cert Prog Only --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Division of Graduate Studies</masterLabel>
+            <translation><!-- Division of Graduate Studies --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Grad POS Sub-Plan Chg</masterLabel>
+            <translation><!-- Grad POS Sub-Plan Chg --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Minor Added</masterLabel>
+            <translation><!-- Minor Added --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Non-degree to Degree</masterLabel>
+            <translation><!-- Non-degree to Degree --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Enrolled in Previous Term</masterLabel>
+            <translation><!-- Not Enrolled in Previous Term --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Requirement term changed</masterLabel>
+            <translation><!-- Requirement term changed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Student Request</masterLabel>
+            <translation><!-- Student Request --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Voluntary Withdrawal (GRAD)</masterLabel>
+            <translation><!-- Voluntary Withdrawal (GRAD) --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Program Action --></label>
+        <name>Action__c</name>
+        <picklistValues>
+            <masterLabel>Activate</masterLabel>
+            <translation><!-- Activate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Completion of Program</masterLabel>
+            <translation><!-- Completion of Program --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Data Change</masterLabel>
+            <translation><!-- Data Change --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Discontinuation</masterLabel>
+            <translation><!-- Discontinuation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Matriculation</masterLabel>
+            <translation><!-- Matriculation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Plan Change</masterLabel>
+            <translation><!-- Plan Change --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Program Change</masterLabel>
+            <translation><!-- Program Change --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Admit Term --></label>
+        <name>Admit_Term__c</name>
+        <relationshipLabel><!-- Student Program Plans --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Application Number --></label>
+        <name>Application_Number__c</name>
+    </fields><fields>
+        <label><!-- Campus --></label>
+        <name>Campus__c</name>
+        <relationshipLabel><!-- Student Program Plans --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Career Number --></label>
+        <name>Career_Number__c</name>
+    </fields><fields>
+        <label><!-- Career --></label>
+        <name>Career__c</name>
+        <picklistValues>
+            <masterLabel>Graduate</masterLabel>
+            <translation><!-- Graduate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Law</masterLabel>
+            <translation><!-- Law --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Undergraduate</masterLabel>
+            <translation><!-- Undergraduate --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- College Diploma Description --></label>
+        <name>College_Diploma_Description__c</name>
+    </fields><fields>
+        <label><!-- Completion Term --></label>
+        <name>Completion_Term__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Student Program Plans --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Degree Conferral Date --></label>
+        <name>Degree_Conferral_Date__c</name>
+    </fields><fields>
+        <label><!-- Degree --></label>
+        <name>Degree__c</name>
+    </fields><fields>
+        <label><!-- Effective Date --></label>
+        <name>Effective_Date__c</name>
+    </fields><fields>
+        <label><!-- Plan Code --></label>
+        <name>Plan_Code__c</name>
+    </fields><fields>
+        <label><!-- Plan Description --></label>
+        <name>Plan_Description__c</name>
+    </fields><fields>
+        <label><!-- Plan Sequence --></label>
+        <name>Plan_Sequence__c</name>
+    </fields><fields>
+        <label><!-- Plan Transcript Description --></label>
+        <name>Plan_Transcript_Description__c</name>
+    </fields><fields>
+        <label><!-- Plan Type --></label>
+        <name>Plan_Type_Text__c</name>
+    </fields><fields>
+        <label><!-- Plan URL --></label>
+        <name>Plan_URL__c</name>
+    </fields><fields>
+        <label><!-- Primary Flag --></label>
+        <name>Primary_Flag__c</name>
+    </fields><fields>
+        <label><!-- Program Code --></label>
+        <name>Program_Code__c</name>
+    </fields><fields>
+        <label><!-- Program Description --></label>
+        <name>Program_Description__c</name>
+    </fields><fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Active in Program</masterLabel>
+            <translation><!-- Active in Program --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Completed Program</masterLabel>
+            <translation><!-- Completed Program --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Discontinued</masterLabel>
+            <translation><!-- Discontinued --></translation>
+        </picklistValues>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Student Program Plan</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Student Program Plans</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Student Program Plan Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Plan URL --></label>
+            <section>Plan URL</section>
+        </sections>
+        <sections>
+            <label><!-- Program Plan Details --></label>
+            <section>Program Plan Details</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

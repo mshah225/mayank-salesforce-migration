@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for AISSS agents to use for Cases originated via email. For ongoing communication or Case closure.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>AISSS | Downtown</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+
+American Indian Student Support Services
+University College
+Downtown Phoenix, University Center (UCENT) 192/193
+Phone: 602-496-0355
+
+https://aisss.asu.edu/
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

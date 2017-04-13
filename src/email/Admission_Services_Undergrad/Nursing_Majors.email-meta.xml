@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Nursing degree options, including BSN, concurrent (CEP and BSN) and post-baccalaureat</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Nursing Majors</name>
+    <style>freeForm</style>
+    <subject>Your options for pursuing a degree in nursing at ASU!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University! I highly encourage you to review ASU’s nursing website, as there are a few options for completing your BSN at ASU.
+
+These options include:
+
+Traditional Prelicensure
+Post-Baccalaureate BSN
+Online RN to BSN
+Concurrent Enrollment Programs.
+
+Details about the course requirements for each can be reviewed online at https://nursingandhealth.asu.edu/degree-programs/undergraduate/nursing-bsn.
+
+If you have additional questions about the requirements for these programs, please contact the nursing department directly at nursingandhealth@asu.edu or 602-496-0937.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

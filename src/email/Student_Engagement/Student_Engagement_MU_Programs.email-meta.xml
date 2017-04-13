@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for Student Engagement agents to use for Cases originated via email.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Student Engagement | MU Programs</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+MU Programs
+Arizona State University
+480.965.9665
+1290 S. Normal
+Tempe, AZ 85287
+https://eoss.asu.edu/mu/things_to_do
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

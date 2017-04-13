@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Financial Aid Case Management Template for ASU&apos;s Student Engagement and Employment Development (SEED) program.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management Financial Aid - SEED</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for contacting Arizona State University&apos;s Student Engagement and Employment Development (SEED) program. This email is in response to a question you submitted to our office concerning [[state issue]]. We have looked into your inquiry and…. [[details]].
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+SEED Program | Student Employment
+Financial Aid and Scholarship Services
+Arizona State University
+PO Box 870412
+Tempe, AZ 85287-0412
+Phone: 855-278-5080
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

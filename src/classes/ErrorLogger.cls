@@ -51,12 +51,12 @@ public without sharing class  ErrorLogger {
             return false;
         } else {
             List<Case> oldCases; // Existing cases with the same subject
-            Id loggedInContactId; // Contact record ID for the logged in user
             List<Case_Assignment_Rule__c> sfCar; //The CAR to be used to assign the case to SF Support
             Group queue; // Owner of the case to be created
             string subject; // Case/Email subject
             Boolean createCase = false; // Determine if a case should be created
             string EMPLId;
+            Contact loggedInContact; // Contact Record for the logged in user
             
             
             try {
@@ -66,34 +66,18 @@ public without sharing class  ErrorLogger {
                 // Get contact for case
                 // The contact that is passed is not valid
                 if (!Validator.validateId(contactId, Contact.Class)) {
-                    // Attempt to locate a community user
-                    contactId = [SELECT ContactId 
-                        FROM User 
-                        WHERE Id = :userInfo.getUserId()].contactId;
                     
-                    if (contactId == null) { // If no community user is found
-                        // Attempt to use the EMPL Id
-                        EMPLId = [SELECT EmployeeNumber FROM User WHERE Id = :userInfo.getUserId()].EmployeeNumber;
-                        
-                        if (EMPLId != null) {
-                            for (Contact c : [SELECT Id FROM Contact WHERE EmplId__c = :EMPLId]) {
-                                contactId = c.Id;
-                            }
-                        }
-                    }
+                    //retrive logged in contact
+                    loggedInContact=ContactService.getLoggedInContact();
                 }
-                
-                // How reliable is this logic (from contact services "get logged in contact" method)
-                loggedInContactId = [SELECT ContactId 
-                    FROM User 
-                    WHERE Id = :userInfo.getUserId()].contactId;
-                
+                    
                 // Check to see if the logged in user has an open case
                 // with the same subject for de-duping
-                if (loggedInContactId != null || contactId != null) {
+                if (loggedInContact != null) {
+                    
                     oldCases = [SELECT Subject, IsClosed 
                        FROM Case 
-                       WHERE (ContactId = :loggedInContactId OR ContactId = :contactId)
+                       WHERE (ContactId = :loggedInContact.Id)
                        AND IsClosed = false 
                        AND subject = :subject];
                        
@@ -133,14 +117,14 @@ public without sharing class  ErrorLogger {
                     newCase.Case_Feed_Email_Template_Id__C = sfCar[0].Case_Feed_Email_Template_Id__c;
                     newCase.Campus__c = sfCar[0].Campus__c;
                     newCase.Origin__c = sfCar[0].Origin__c;
-                    newCase.recordTypeId = sfCar[0].Case_Record_Type_Id__c;
                     newCase.Subject = subject;
-                    
-                    
+                    newCase.Visible_by_Contact__c = false;
                     if (contactId != null && Validator.validateId((String) contactId, contact.class)) {
                         newCase.contactId = contactId;
                     } else {
-                        newCase.contactId = loggedInContactId;
+                        if (loggedInContact != null){
+                            newCase.contactId = loggedInContact.Id;
+                        }
                     }
                     
                     newCase.Description = ex.getMessage() + '\n'
@@ -165,50 +149,56 @@ public without sharing class  ErrorLogger {
                 List<Messaging.SingleEmailMessage> messageList = new List<Messaging.SingleEmailMessage>();
                 List<Messaging.SendEmailResult> results;
                 List<String> addresses = new List<String>();
-                //List<Id> recipientObjectIds = new List<Id>();
+                List<Id> recipientObjectIds = new List<Id>();
                 List<String> vars = new List<String>();
                 
-                // ToDo: Switch from hard emails to targetObjectId
-                // ToDo: Discuss adding a field to users to determine if they should recieve
-                // APEX errors
-                addresses.add('brendan.walton@asu.edu');
-                addresses.add('splumaj@asu.edu');
-                newEmail.setToAddresses(addresses);
-                newEmail.subject = subject;
-                newEmail.plainTextBody = ex.getMessage() + '\n'
+                // Uses targetObjectId to send Emails
+                // uses the Receive_Apex_errors__c field on user object to determine the users to which the Error email needs to be sent.
+                
+                for(User emailUser:[Select id,Email from User where Receive_Apex_Errors__c=true]){
+                    newEmail = new Messaging.SingleEmailMessage();
+                    newEmail.setTargetObjectId(emailUser.Id);
+                    newEmail.subject = subject;
+                    newEmail.setSaveAsActivity(false);
+                    newEmail.plainTextBody = ex.getMessage() + '\n'
                     + ex.getStackTraceString() + '\n'
                     + 'Variable Snap Shot:';
                 
-                if (variables.size() > 0) {
-                    for (String s : variables) {
+                    if (variables.size() > 0) {
+                        for (String s : variables) {
+                        newEmail.plainTextBody = newEmail.plainTextBody + '\n' + s;
+                        }
+                    }
+                
+                
+                    // Add exception info for why the case failed to create
+                    newEmail.plainTextBody = newEmail.plainTextBody + '\n\n\nLogger Failed to insert case:\n'
+                        + nex.getTypeName() + '\n'
+                        + nex.getMessage() + '\n'
+                        + nex.getStackTraceString() + '\n'
+                        + 'Variable Snap Shot:';
+                        
+                    vars.add(convertSObjectToJSON('newCase',newCase));
+                    vars.add(convertListToJSON('oldCases',oldCases));
+                    if (loggedInContact != null){
+                        vars.add(convertIdToJSON('loggedInContactId',loggedInContact.Id));
+                    }
+                    
+                    vars.add(convertSObjectToJSON('queue',queue));
+                    vars.add(convertStringToJSON('subject',subject));
+                    vars.add(convertBooleanToJSON('createCase',createCase));
+                    
+                    for (String s : vars) {
                         newEmail.plainTextBody = newEmail.plainTextBody + '\n' + s;
                     }
-                }
-                
-                
-                // Add exception info for why the case failed to create
-                newEmail.plainTextBody = newEmail.plainTextBody + '\n\n\nLogger Failed to insert case:\n'
-                    + nex.getTypeName() + '\n'
-                    + nex.getMessage() + '\n'
-                    + nex.getStackTraceString() + '\n'
-                    + 'Variable Snap Shot:';
                     
-                vars.add(convertSObjectToJSON('newCase',newCase));
-                vars.add(convertListToJSON('oldCases',oldCases));
-                vars.add(convertIdToJSON('loggedInContactId',loggedInContactId));
-                vars.add(convertSObjectToJSON('queue',queue));
-                vars.add(convertStringToJSON('subject',subject));
-                vars.add(convertBooleanToJSON('createCase',createCase));
-                
-                for (String s : vars) {
-                    newEmail.plainTextBody = newEmail.plainTextBody + '\n' + s;
-                }
-                
-                debug(ex, variables);
-                debug(nex, vars);
-                messageList.add(newEmail);
+                    debug(ex, variables);
+                    debug(nex, vars);
+                    messageList.add(newEmail);
+                        
+                }    
                 results = messaging.sendEmail(messageList);
-                
+                    
                 return null;
             }
         }

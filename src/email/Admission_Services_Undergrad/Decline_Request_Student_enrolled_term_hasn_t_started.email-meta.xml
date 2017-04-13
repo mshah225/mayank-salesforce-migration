@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Unable to cancel your ASU application</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Decline Request - Student enrolled (term hasn’t started)</name>
+    <style>freeForm</style>
+    <subject>Unable to cancel your ASU application</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting Admission Services at Arizona State University. We are unable to cancel your application because you are currently enrolled in classes. Before we can cancel your application, you must sign in to My ASU (https://my.asu.edu) to withdraw from your classes.
+
+Once you have withdrawn from your classes, you may request to cancel your application by logging in to https://students.asu.edu/canceladmissions with your ASURITE UserID and password. If you have forgotten your ASURITE ID or password, you may call the Help Desk at 480-965-6500 to reset your password.
+
+If you have any further questions, please contact your personal admission representative at https://asu.edu/findmyrep. We wish you all the best.
+
+Sincerely,
+
+Admission Services
+asu.edu
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

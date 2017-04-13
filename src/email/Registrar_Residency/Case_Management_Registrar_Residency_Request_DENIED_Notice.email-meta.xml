@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Default template for the Registrar - Residency Request DENIED Notice</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management Registrar Residency Request DENIED Notice</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Your request to be classified as an Arizona resident for tuition purposes for the &lt;&lt;&apos;INSERT TERM&apos;&gt;&gt; term is denied. An explanation of this decision is included in the attached decision summary.
+
+You have the right to appeal this decision. Information about the appeal process can be found at https://students.asu.edu/residencyappeals .
+
+The deadline to submit an appeal request and supporting documentation is &lt;&lt;&apos;INSERT DEADLINE DATE&apos;&gt;&gt;.
+
+Failure to request an appeal by this date will constitute a waiver of your right to appeal this decision. Your appeal form must be signed and notarized and all issues noted in your decision summary should be addressed with new documentation and/or further explanation.
+
+The Residency Classification Office can be reached via email at  residencydocs@asu.edu or by calling 480-965-7712.
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Residency Classification
+University Registrar Services
+Arizona State University
+Phone: (480) 965-7712
+www.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

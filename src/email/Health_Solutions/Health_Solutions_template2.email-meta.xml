@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>blank</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>HealthSolutions_letterhead</letterhead>
+    <name>Health Solutions template</name>
+    <style>formalLetter</style>
+    <subject>Greetings from Health Solutions</subject>
+    <textOnly>{!Contact.FirstName},
+Enter content here.
+
+
+
+
+
+
+
+
+
+Sincerely,
+&lt;insert sender signature&gt;</textOnly>
+    <type>html</type>
+</EmailTemplate>

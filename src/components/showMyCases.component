@@ -1,0 +1,251 @@
+<apex:component controller="showMyCasesController" allowDML="true" >
+    <apex:includeScript value="/support/console/38.0/integration.js"/>
+    <apex:includeScript value="{! $Resource.jQuery_3_1_1}"/>
+    <apex:includeScript value="{! URLFOR($Resource.showMyCasesResources, 'showMyCases.js') }" />
+    <apex:stylesheet value="{! URLFOR($Resource.showMyCasesResources, 'showMyCases.css') }"/>
+    <apex:stylesheet value="{! URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
+
+    <apex:attribute name="queryString" type="String" description="" assignTo="{!queryAttr}" />
+    <apex:attribute name="transferOptions" type="SelectOption[]" description="" />
+    <apex:attribute name="rerenderList" type="String" description="" />
+    <apex:attribute name="proactiveRTID" type="Id" description="" assignTo="{!proactiveCaseRTID}"/>
+    <apex:attribute name="emailRTID" type="Id" description="" assignTo="{!portalEmailRTID}" />
+    
+    <apex:attribute name="suppressSelection" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressName" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressEMPLID" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressSubject" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressStatus" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressFollowupDate" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressTransfer" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressMassEmail" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressProactive" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressReactive" type="boolean" description="" default="false" />
+    
+    <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
+        <apex:form >
+            <div class="headerFooter">
+                <div class="toolbar">
+                    <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px"
+                                     onclick="toggleTransferModal(this)" rendered="{! NOT(suppressTransfer)}">Mass Transfer</apex:outputLink>
+                    <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;"
+                                     onclick="toggleEmailModal(this, adjustTextHeight)" rendered="{! NOT(suppressMassEmail)}">Mass Email</apex:outputLink>
+                    <apex:commandLink style="float:right;" styleClass="btn btn-default asu-primary"
+                                      reRender="rerenderMe" status="ASUAjaxStatus">
+                        <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
+                        <i style="padding:3px;" class="fa fa-refresh fa-lg "></i>
+                    </apex:commandLink>
+                </div>
+                
+                <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}"
+                                  style="float:left;" styleClass="standardLink" reRender="rerenderMe"
+                                  status="ASUAjaxStatus" />
+                <apex:outputText value="Page Size " />
+                <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
+                    <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)"
+                                        status="ASUAjaxStatus" />
+                    <apex:selectOption itemValue="25" itemLabel="25" />
+                    <apex:selectOption itemValue="50" itemLabel="50" />
+                    <apex:selectOption itemValue="100" itemLabel="100" />
+                </apex:selectList>
+                <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
+                <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
+                <apex:outputText value="{!setCon.ResultSize} Records" />
+                <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}"
+                                  style="float:right;" styleClass="standardLink" reRender="rerenderMe"
+                                  status="ASUAjaxStatus" />
+            </div>
+        </apex:form>
+        <apex:form id="tableForm">
+            <apex:dataTable value="{!caseList}" var="c" styleClass="ASUTable">
+                <apex:column headerClass="ASUColumnHead centerText" styleClass="ASUColumn centerText" rendered="{! NOT(suppressSelection)}" >
+                    <apex:inputCheckbox value="{!c.selected}" styleClass="selectBox" onchange="handleSelectAll(this);" />
+                    <apex:facet name="header">
+                        <input type="checkbox" class="selectAll"  onchange="checkAll(this);" />
+                    </apex:facet>
+                </apex:column>
+
+                <apex:column headerClass="ASUColumnHead"
+                             styleClass="ASUColumn" rendered="{!NOT(suppressName)}">
+                    <!-- There is a bug with apex:column that forces me to move this formula out of the value attribute -->
+                    {!c.obj.contact.lastName & ', ' & c.obj.contact.firstName}
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="contactName"
+                                        value="Contact.LastName"
+                                        assignTo="{!sortField}"/>
+                            Name&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.LastName'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Contact.LastName'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+                
+                <apex:column headerValue="EMPLID" rendered="{! NOT(suppressEMPLID)}"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="contactEmplId"
+                                        value="Contact.EMPLID__c"
+                                        assignTo="{!sortField}"/>
+                            EMPLID&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.EMPLID__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Contact.EMPLID__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+
+                    <apex:outputLink value="javascript:;" onclick="openStudentProfile('{!c.obj.contactId}', '{!c.obj.contact.name}')" styleClass="standardLink">{!c.obj.contact.EMPLID__c}</apex:outputLink>
+                </apex:column>
+                
+                <apex:column headerValue="Case (Details)" rendered="{! NOT(suppressSubject)}"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="subject"
+                                        value="Subject"
+                                        assignTo="{!sortField}"/>
+                            Case (Details)&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Subject'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Subject'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+
+                    <apex:outputLink value="javascript:;" onclick="openCase('{!c.obj.Id}', '{!c.obj.CaseNumber}')" styleClass="standardLink">{!c.obj.subject}</apex:outputLink>
+                </apex:column>
+                
+                <apex:column headerValue="Status" value="{!c.obj.status}" rendered="{! NOT(suppressStatus)}"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="status"
+                                        value="Status"
+                                        assignTo="{!sortField}"/>
+                            Status&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Status'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Status'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+                
+                <apex:column headerValue="Followup Date" value="{!c.obj.Followup_Date__c}" rendered="{! NOT(suppressFollowupDate)}"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="followUpDate"
+                                        value="Followup_Date__c"
+                                        assignTo="{!sortField}"/>
+                            Followup Date&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Followup_Date__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Followup_Date__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+
+                <apex:column headerValue="Proactive" value="{!caseCounts[c.obj.contactId].proactiveCount}" rendered="{! NOT(suppressProactive)}"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn"/>
+                <apex:column headerValue="Reactive" value="{!caseCounts[c.obj.contactId].reactiveCount}" rendered="{! NOT(suppressReactive)}"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn"/>
+            </apex:dataTable>
+            <div class="modal fade transferModal" role="dialog">
+                <div class="modal-dialog" role="document" style ="padding-left: 5%">
+                    <div class="modal-content" style ="width: 95%">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">
+                                Transfer Cases
+                            </h4>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <h5>
+                                Transfer Cases To:
+                            </h5>
+                            <apex:selectList value="{!ownerId}" size="1" styleClass="transferList">
+                                <apex:selectOptions value="{!transferOptions}"/>
+                            </apex:selectList>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <apex:commandLink type="button" styleClass="btn btn-default asu-primary" action="{!transferCases}"
+                                              status="ASUAjaxStatus" reRender="rerenderMe,{!rerenderList}" value="Transfer" oncomplete="actionComplete()"
+                                              onclick="toggleTransferModal(this)" />
+                            <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade emailModal" role="dialog">
+                <div class="modal-dialog" role="document" style ="padding-left: 5%;">
+                    <div class="modal-content" style="width: 95%;">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">
+                                Mass Email
+                            </h4>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <h5>
+                                Select Email Template:
+                            </h5>
+                            <apex:inputField value="{!tempEmail.Email_Template_Name__c}" />
+                            <h5>
+                                Additional Text:
+                            </h5>
+                            <apex:inputField value="{!tempEmail.Additional_Message_Text__c}" styleClass="emailTextBox"  style="width:100%; height: 200px; resize: none;"  />
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <apex:commandLink type="button" action="{!massEmail}" styleClass="btn btn-default asu-primary"
+                                              status="ASUAjaxStatus" reRender="rerenderMe,{!rerenderList}" value="Send" oncomplete="actionComplete(1)"
+                                              onclick="toggleEmailModal(this, adjustTextHeight)"/>
+                            <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:form>
+        <apex:form >
+            <div class="headerFooter">
+                <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}"
+                                  style="float:left;" styleClass="standardLink" reRender="rerenderMe"
+                                  status="ASUAjaxStatus" />
+                <apex:outputText value="Page Size " />
+                <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
+                    <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)"
+                                        status="ASUAjaxStatus" />
+                    <apex:selectOption itemValue="25" itemLabel="25" />
+                    <apex:selectOption itemValue="50" itemLabel="50" />
+                    <apex:selectOption itemValue="100" itemLabel="100" />
+                </apex:selectList>
+                <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
+                <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
+                <apex:outputText value="{!setCon.ResultSize} Records" />
+                <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}"
+                                  style="float:right;" styleClass="standardLink" reRender="rerenderMe"
+                                  status="ASUAjaxStatus" />
+            </div>
+        </apex:form>
+    </apex:outputPanel>
+</apex:component>

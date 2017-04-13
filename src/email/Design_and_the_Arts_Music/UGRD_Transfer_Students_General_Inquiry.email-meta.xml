@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Herberger_Institute_for_Design_and_the_Arts</letterhead>
+    <name>UGRD Transfer Students General Inquiry</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in the School of Music at ASU!</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for your interest in undergraduate studies at the Herberger Institute for Design and the Arts School of Music at ASU. As one of the largest universities in the country, the ASU School of Music awards over $2 million to students annually, providing an excellent education at an unbeatable value. ASU&apos;s diverse and innovative community is a perfect complement to the personal attention you will receive in the School of Music. With a population of around 750 students, we offer small class sizes, state-of-the-art facilities and one-on-one instruction from world-renowned faculty. We invite you to consider the ASU School of Music for this important step in your music studies.
+
+Applications for 2017 admission will be available on the School of Music website at the end of August. If you are interested in future study at ASU, please review the information below for what to expect when you are ready to apply. For an idea of the course requirements for the various degree programs offered, select one of the major maps listed here.
+
+Eligibility, application, and admission information for transfer students can be found here. Please note that you are still required to complete a separate School of Music application and an audition to be considered for admission. In addition, please utilize our transfer credit guide to see how your credits could transfer to ASU.
+
+Tuition and fees at Arizona State University are reasonable, even for non-resident students. Financial aid, including academic scholarships, is available for both Freshman and Transfer applicants. Freshman applicants can use the Freshman Merit Scholarship Estimator to determine the amount they may be eligible to receive. Transfer applicants may learn about the New American University Transfer Scholarship here. In addition, music scholarship assistance is also available and awarded based on audition.
+
+Application Process
+
+Step 1: Apply to ASU
+Step 2: Submit the School of Music Application
+
+You do not need to be admitted to the university prior to submitting your music application (Step 2).
+The School of Music requires a separate application from the university. Please visit the School of Music website for more details.
+
+
+Step 3: Audition and Interview
+
+All applicants must perform an audition to be considered for admission to the School of Music.
+On-Campus auditions will not be scheduled until both applications are submitted.
+Recorded auditions are acceptable when uploaded online. However, music scholarship consideration is prioritized to those who audition live.
+
+Due to the high volume of applicants we receive each year, we recommend that you plan to apply as early as possible.
+
+Application Deadline
+
+Spring Admission: October 15 for all applicants except those applying to Music Composition.
+
+BM Composition applicants: Applications and prescreening portfolio must be received by October 1. Please visit our site for more information.
+
+Fall Admission: January 4 for all applicants except those applying to Music Composition
+
+BM Composition: Prescreening portfolio must be received by December 1. Please visit our site for more information.
+
+Audition Dates and Information
+
+For complete audition dates and audition information please visit the audition website.
+
+Recorded auditions (in lieu of live auditions) must be uploaded online by November 1 for spring admissions and February 1 for fall admission. CD/DVD audition recordings are not accepted. To be considered for a music scholarship or teaching assistantship, a live, on-campus audition is preferred.
+
+Ad hoc auditions may be scheduled with faculty (required for organ applicants, not available to voice applicants), but must be completed by November 30 for spring admission and February 28 for fall admission.
+
+We welcome you to contact us via email at MusicAdmissions@asu.edu if you have any additional questions. We also encourage you to refer to the School of Music Web site, music.asu.edu, as a resource for your admissions questions.
+
+Sincerely,
+
+Office of Admissions
+School of Music
+
+Herberger Institute for Design and the Arts
+Arizona State University
+
+music.asu.edu | musicadmissions@asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Information on the BSD in architectural studies.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TRN Architecture BSD</name>
+    <style>freeForm</style>
+    <subject>Information about the BSD in architectural studies at ASU.</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting Admission Services at ASU. I included some information below about the BSD in architectural studies:
+
+1. To be admitted to architectural studies, you must have at least 24 transferable credits completed and a cumulative transfer GPA of 2.50 or higher.
+
+2. Architectural studies is an eight-semester program requiring sequential completion of studio course work. These eight studio-based architecture courses are not offered at any of the Arizona community colleges and must be taken at ASU.
+
+3. A degree milestone must be passed in order to continue on in the program beyond the first year. You would apply to pass the milestone at the end of your second semester at ASU. You would have two studio-based courses completed at that point. Read more about these requirements at http://herbergerinstitute.asu.edu/admissions/undergrad/applying/major.php.
+
+4. It is ideal to start this major in the fall because the first studio-based course is only offered in the fall.
+
+If you need more information or would like to make an appointment with an architecture advisor, please follow the directions on the Herberger advising website at http://herbergerinstitute.asu.edu/students/undergrad/advising.php.
+
+To transfer to ASU, please complete the steps to apply at https://transfer.asu.edu/apply.
+
+Let me know if you have any additional questions.
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

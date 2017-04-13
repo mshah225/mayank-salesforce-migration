@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Sun Devil Card Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Sun Devil Card Services Cease Mailing to On-Campus Students</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+We have stopped mailing cards for on-campus students as online requests will not be processed in time for the first day of classes. You will need to pick up your card at one of the Sun Card Office locations.  Please click here for locations and hours of operation.  https://cfo.asu.edu/cardservices#fees-and-location
+
+Sun Cards cost $25.00 and can be purchased with cash, Visa /Mastercard, or be billed to your ASU Student Account. Cash is only accepted at the Tempe location.
+
+You will need to have your student ID number and a government issued ID available when you visit our office. Government issued ID may include: US driver’s license, US passport, US visa.
+
+Regards,
+{!User.FirstName} {!User.LastName}
+
+Sun Devil Card Services
+Arizona State University
+Phone: 480-965-2273
+cardservices.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>New_College</letterhead>
+    <name>Transfer Admitted</name>
+    <style>freeForm</style>
+    <subject>Congratulations on your admission to ASU</subject>
+    <textOnly>Dear Future Sun Devil,
+A big congratulation on being admitted to Arizona State University, New College!
+
+I would like to formally introduce myself, my name is Chris Kane and I am the Assistant Director of Recruitment at New College. I am reaching out to you today to give you some more information about New College and what makes us unique to other universities.
+
+The New College Experience
+New College is located at the vibrant West campus. Our college is focused on a personalized learning experience that incorporates the complex and unique ways that different fields interact and affect one another with the goal to better prepare you for the future. Through unique resources only offered at New College, students are able to maximize their potential by receiving a small liberal arts education, while having all the resources of top-tier research university.
+
+At New College, we encourage intellectual curiosity and an interest in new ideas and discussion. This has led to increased undergraduate research opportunities for students in all degree areas. With a state-of-the-art education and the access to research as an undergraduate, students like yourself are able to develop critical thinking skills that make you stand apart from your peers, and make you more marketable in today’s marketplace.
+
+As you move forward during this exciting time in your life, I sincerely hope that you will consider New College as your future home. If you have any questions about New College, West campus, or one of our many unique programs, please contact our Recruitment Office through the information listed below. Thank you, and we’ll talk to you soon!
+
+For information on how to pay for college, please visit our scholarships page &lt;https://newcollege.asu.edu/college-scholarships&gt;.
+
+To schedule an advising appointment please call 602-543-3000
+
+Kindest Regards,
+
+New College Recruitment Team
+New College of Interdisciplinary Arts and Sciences
+Arizona State University, West campus
+asknewcollege@asu.edu
+602-543-2890
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

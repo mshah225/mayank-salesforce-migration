@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>HealthSolutions_letterhead</letterhead>
+    <name>NEW Prospect GRNH Grad</name>
+    <style>freeForm</style>
+    <subject>Welcome to the College of Health Solutions</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in a graduate program at Arizona State University&apos;s College of Health Solutions. My name is {Advisor Name} and my role is to offer advice on the admission application and the graduate programs we offer. You and I will work together while you complete your application, and I’m available whenever you need support, ideas and assistance.
+I encourage you to schedule a short appointment with me. This is the best way to learn more about the application process, the curriculum, on- and off-campus resources, and what differentiates ASU from other schools. How does your schedule look during normal business hours? Let me know when would be a convenient time for us to meet.
+
+At the College of Health Solutions, we welcome bold visions and big ideas, and we take the success of our students seriously. The more we understand about your goals, the better we can help you accomplish them. I congratulate you for taking the important first step of contacting us, and I look forward to getting to know you and helping you during this exciting time!
+
+Feel free to contact me with any questions.
+
+Sincerely,
+
+{!User.Email}
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

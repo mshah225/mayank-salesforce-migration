@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>For inquiries regarding PhD in the Department of Physics</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Physics Dept PhD Inquiry</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in the Department of Physics at ASU</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in the Department of Physics at Arizona State University.
+
+Please be sure to review our website, which contains contact information for all of our faculty members (People link) and lists the application requirements and procedures (PhD Students/How to Apply). Most of the application process is completed online, but official transcripts and GRE/TOEFL scores must be submitted to the Graduate College as explained under the &quot;How to Apply&quot; link. Note that both the general and subject (physics) GRE exams are required.
+
+To receive full consideration for the fall semester, your application and all supporting materials, including reference letters, should be received by January 31.
+
+Many students inquire about the selectivity of our PhD program. The averages are different for domestic (D) and international (I) students. Typically, we receive 120 applications (D=40, I=80), make 50 offers (D=25, I=25), and receive 25 acceptances (D=15, I=10).
+
+Approximate average metrics for the incoming cohort
+GPA = 3.4 with the following GRE scores: Quantitative (D=75%, I=85%), Verbal (D=70%, I=60%), Written (D=50%, I=25%), Physics Subject (D=40%, I=75%).
+
+Regardless of averages, I can assure you that each file is reviewed carefully to assess items beyond scores and grades. ASU requires international students to have minimum TOEFL scores of 515 (PBT), 213 (CBT), or 83 (iBT). At the department level, we look for scores about 15% above these minima, since language skills are critical for teaching assistant positions.
+
+We have excellent programs to offer at ASU. I hope you will complete an application and I wish you all the best as you begin your graduate degree.
+
+Sincerely,
+
+Jeff Drucker
+Director of Graduate Admissions
+Department of Physics
+Arizona State University
+Jeff.Drucker@asu.edu
+480-965-9658</textOnly>
+    <type>html</type>
+</EmailTemplate>

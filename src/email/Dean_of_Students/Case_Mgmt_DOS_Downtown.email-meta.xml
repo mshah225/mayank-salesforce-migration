@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Email template with Dean of Students Downtown (Phoenix) address</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | DOS Downtown</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Office of the Dean of Students
+Downtown Phoenix Campus
+Arizona State University
+522 N. Central Ave, Suite 243
+Phoenix, AZ 85004
+Phone: 602-496-4357
+Fax: 602-496-1299
+https://campus.asu.edu/downtown
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

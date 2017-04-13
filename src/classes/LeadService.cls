@@ -1,31 +1,28 @@
-public class LeadService
-{
+public class LeadService {
 	/**
-	 * Creates a Lead with all required fields, usually for unit testing
-	 * @return testLead A lead with all required fields
-	 */
-	public static Lead createTestLead()
-	{
-		Lead testLead = new Lead();
-        testLead.FirstName = 'Jonny';
-        testLead.LastName = 'Test';
-        testLead.Email = 'test@nomail.com';
-        testLead.Company = 'Test Company';
+    * Creates a Lead with all required fields, usually for unit testing
+    * @return testLead A lead with all required fields
+    */
+    public static Lead createTestLead() {
+    Lead testLead = new Lead();
+            testLead.FirstName = 'Jonny';
+            testLead.LastName = 'Test';
+            testLead.Email = 'test@nomail.com';
+            testLead.Company = 'Test Company';
 
-		return testLead;
-	}
+    return testLead;
+    }
 
-	/**
+
+    /**
     * Generates a set of test leads to convert
     * @param contactsToConvertOn a set of Contacts to convert to
     * @return leads a list of test lead data
     */
-	public static List<Lead> createTestLeadsToConvert(List<Contact> contactsToConvertOn)
-	{
+	public static List<Lead> createTestLeadsToConvert(List<Contact> contactsToConvertOn) {
 		List<Lead> leads = new List<Lead>();
 
-		for (Contact con : contactsToConvertOn)
-		{
+		for (Contact con : contactsToConvertOn) {
 			Lead testLead = new Lead();
 			testLead.FirstName = con.FirstName;
 			testLead.LastName = con.LastName;
@@ -54,12 +51,10 @@ public class LeadService
 	 * @param  leadIds A set of Lead Ids
 	 * @return leadInterestList A list of lead interests
 	 */
-    public static List<Lead_Interest__c> reparentRelatedLeadInterests(Set<Id> leadIds)
-    {
+    public static List<Lead_Interest__c> reparentRelatedLeadInterests(Set<Id> leadIds) {
         List<Lead_Interest__c> leadInterestList = new List<Lead_Interest__c>();
 
-        if (leadIds.size() == 0)
-        {
+        if (leadIds.size() == 0) {
             return leadInterestList;
         }
 
@@ -69,8 +64,7 @@ public class LeadService
                 WHERE Leads__c IN :leadIds
         ];
 
-        if (leadInterestList.size() == 0)
-        {
+        if (leadInterestList.size() == 0) {
             return leadInterestList;
         }
 
@@ -81,8 +75,7 @@ public class LeadService
                 WHERE Id IN :leadIds
         ]);
 
-        for (Lead_Interest__c li: leadInterestList)
-        {
+        for (Lead_Interest__c li: leadInterestList) {
             li.Contact__c = leadToContactIdMap.get(li.leads__c).ConvertedContactId;
         }
 
@@ -94,12 +87,10 @@ public class LeadService
 	 * @param  leadIds A set of Lead Ids
 	 * @return peList A list of previous education records
 	 */
-    public static List<Previous_Education__c> createConvertedPreviousEducation(Set<Id> leadIds)
-    {
+    public static List<Previous_Education__c> createConvertedPreviousEducation(Set<Id> leadIds) {
         List<Previous_Education__c> peList = new List<Previous_Education__c>();
 
-        if (leadIds.size() == 0)
-        {
+        if (leadIds.size() == 0) {
             return peList;
         }
 
@@ -109,13 +100,11 @@ public class LeadService
                 WHERE Id in :leadIds
         ]);
 
-        for (Lead l : leadList)
-        {
+        for (Lead l : leadList) {
             Previous_Education__c pe = new Previous_Education__c(Contact__c = l.ConvertedContactId,
                     Account__c = l.Last_Institution_Attended__c);
 
-            if (l.Last_Institution_Attended__r.Institution_Type__c == 'HS')
-            {
+            if (l.Last_Institution_Attended__r.Institution_Type__c == 'HS') {
                 pe.Class_Rank__c = l.High_School_Class_Rank__c;
                 pe.Class_Size__c = l.High_School_Class_Size__c;
             }
@@ -126,6 +115,30 @@ public class LeadService
 
         return peList;
     }
+    /**
+    * Creates a new contact
+    * @param strFirstName First Name of the lead.
+    * @param strLastName Last Name of the lead.
+    * @return objContact An instance of the contact returned.
+    */
+    public static Contact createContact(String strFirstName, String strLastName, String strPhone, String strMobPhone, String strEmail) {
+        Contact objContact=new Contact();
+        if(strFirstName!=NULL) {
+            objContact.FirstName=strFirstName;
+        }
+        if(strPhone!=NULL){
+            objContact.Phone=strPhone;
+        }
+        if(strEmail!=NULL){
+            objContact.Email=strEmail;            
+        }
+        if(strMobPhone!=NULL){
+            objContact.MobilePhone=strMobPhone;
+        }
+        objContact.LastName=strLastName;
+        return objContact;
+    }
+
 
     /**
      * Generates a map of integers to a List of LeadConvert objects
@@ -133,8 +146,13 @@ public class LeadService
      * @param conversionStatus The MasterLabel from a LeadStatus that these leads should be converted to
      * @return leadConvertBatches A map of all the leadConvert objects in batches
      */
-    public static Map<Integer, List<Database.LeadConvert>> generateLeadConvertBatches(List<Lead> leadList, String conversionStatus)
-    {
+    public static Map<Integer, List<Database.LeadConvert>> generateLeadConvertBatches(List<Lead> leadList, String conversionStatus) {   
+        Map<Id,Lead> leadMap=new Map<Id,Lead>([
+            SELECT id,FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c 
+            FROM Lead 
+            WHERE Id IN: leadList
+        ]);
+        Map<Id,Contact> leadIdtoContactMap=new Map<Id,Contact>();
         Map<Id, List<Lead>> accountToLeadMap = new Map<Id, List<Lead>>();
         Map<Integer, List<Database.LeadConvert>> leadConvertBatches = new Map<Integer, List<Database.LeadConvert>>();
         Id thisLeadsAccount;
@@ -142,44 +160,63 @@ public class LeadService
         Integer numberOfBatches = 1;
         Integer additionalBatches = 0;
 
+        for(Lead eachlead: leadMap.values()) {
+            if(eachLead.Convert_Contact__c==null) {
+                leadIdToContactMap.put(eachLead.Id, createContact(eachLead.FirstName, eachLead.LastName, eachLead.Phone, eachLead.MobilePhone, eachLead.Email));
+            }
+        }
+        
+        try {
+            if (leadIdToContactMap!=null && leadIdToContactMap.size()>0) {
+                insert leadIdToContactMap.values();
+
+                for (Id leadId : leadIdToContactMap.keySet()) {
+                    if (leadMap.containsKey(leadId) && leadIdToContactMap.containsKey(leadId)) {
+                        leadMap.get(leadId).Convert_Contact__c=leadIdToContactMap.get(leadId).Id;
+                    }
+                }
+                update leadMap.values();
+            }
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            for(Contact objContact: leadIdToContactMap.values()) {
+                vars.add(ErrorLogger.convertStringToJSON('Contact Name',objContact.FirstName + ' ' + objContact.LastName));
+            }
+            ErrorLogger.log(e,vars,false);
+         }
+
         // Map leads to a single account and track the number of LeadConvert batches we need
-        for (Lead thisLead : leadList)
-        {
+        for (Lead thisLead : [
+            SELECT Id,FirstName, LastName, Convert_Contact__c,Convert_Contact_Account_ID__c,Convert_Create_Opportunity__c 
+            FROM Lead 
+            WHERE Id IN: leadList
+        ]) {
             thisLeadsAccount = thisLead.Convert_Contact_Account_ID__c;
 
             // This a lead insertion, so it has no account Id, but we need a unique Id so we can batch properly
-            if (thisLeadsAccount == null)
-            {
+            if (thisLeadsAccount == null) {
                 thisLeadsAccount = ObjectService.getFakeId(Account.SObjectType);
             }
 
-            if (accountToLeadMap.containsKey(thisLeadsAccount))
-            {
+            if (accountToLeadMap.containsKey(thisLeadsAccount)) {
                 List<Lead> thisList = accountToLeadMap.get(thisLeadsAccount);
-
                 thisList.add(thisLead);
-
-                if (thisList.size() > numberOfBatches)
-                {
+                if (thisList.size() > numberOfBatches) {
                     numberOfBatches = thisList.size();
                 }
             }
-            else
-            {
+            else {
                 List<Lead> newListOfLeads = new List<Lead> { thisLead };
                 accountToLeadMap.put(thisLeadsAccount, newListOfLeads);
             }
         }
 
         // Create LeadConvert objects from the leads and batch them up
-        for (Integer batchNumber = 0; batchNumber < numberOfBatches; batchNumber++)
-        {
+        for (Integer batchNumber = 0; batchNumber < numberOfBatches; batchNumber++) {
             List<Database.LeadConvert> leadConvertList = new List<Database.LeadConvert>();
 
-            for (List<Lead> leads : accountToLeadMap.values())
-            {
-                if (batchNumber < leads.size())
-                {
+            for (List<Lead> leads : accountToLeadMap.values()) {
+                if (batchNumber < leads.size()) {
                     Lead thisLead = leads.get(batchNumber);
 
                     // Create a lead convert object for this lead
@@ -188,8 +225,7 @@ public class LeadService
                     lc.setDoNotCreateOpportunity(!thisLead.Convert_Create_Opportunity__c);
                     lc.setConvertedStatus(conversionStatus);
 
-                    if (thisLead.Convert_Contact__c != null)
-                    {
+                    if (thisLead.Convert_Contact__c != null) {
                         lc.setContactId(thisLead.Convert_Contact__c);
                         lc.setAccountId(thisLead.Convert_Contact_Account_ID__c);
                     }
@@ -199,8 +235,7 @@ public class LeadService
 
                 // Check to make sure our lead convert list hasn't grown beyond the limit of Database.convertLeads()
                 // Handle it by putting the current contents into the map as a new batch and clearing the list
-                if (leadConvertList.size() == 99)
-                {
+                if (leadConvertList.size() == 99) {
                     additionalBatches++;
                     List<Database.LeadConvert> batchCut = leadConvertList.clone();
                     leadConvertBatches.put(numberOfBatches + additionalBatches, batchCut);

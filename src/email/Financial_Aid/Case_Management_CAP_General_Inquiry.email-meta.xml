@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Financial Aid template for CAP General Inquiries.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management CAP General Inquiry</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for your interest in the Starbucks College Achievement Plan. I&apos;d like to encourage you to start exploring what&apos;s possible at ASU Online by visiting starbucks.asu.edu. Through the &quot;STARBUCKS EMPLOYEES&quot; link to the upper, right-hand side of the page, you can learn more about:
+
+ASU and Starbucks&apos; commitment to support Starbucks partners pursuing higher education
+Cost of attendance and how the Starbucks College Achievement Plan can help to cover that cost
+ASU&apos;s 40+ bachelor&apos;s degree programs offered fully online
+
+From there, you will be able to begin your application to ASU Online, complete your Free Application for Federal Student Aid (FAFSA) and schedule an appointment with your personal enrollment counselor, who can walk you through each step in the process of getting enrolled.
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Financial Aid and Scholarship Services
+Arizona State University
+PO Box 870412
+Tempe, AZ 85287-0412
+Phone: 1-844-278-6693
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

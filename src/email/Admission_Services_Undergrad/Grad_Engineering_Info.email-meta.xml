@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Grad: Engineering Info</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in ASU</subject>
+    <textOnly>{!Contact.FirstName},
+
+
+
+Engineering graduate degrees
+
+
+Email: FultonSchools@asu.edu
+Phone: 480-727-1585
+
+
+
+
+Sincerely,
+
+
+Graduate Admission Services</textOnly>
+    <type>html</type>
+</EmailTemplate>

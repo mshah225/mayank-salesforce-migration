@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Contact your academic advisor to change your major.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Major Change Denied (Currently Enrolled in Classes)</name>
+    <style>freeForm</style>
+    <subject>One more step before we can change your major</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Your request to switch your major has been received; however, we are unable to complete the change because you are already enrolled in classes for your current major.
+
+To finalize your change of majors, please contact your academic advisor. You can find your advisor in the advising directory at https://students.asu.edu/advising/directory.
+
+If you have any questions, feel free to contact me at {!Case.Opportunity_Owner_s_Recruiter_Email__c}. I am your personal contact for admission-related questions, and I’ll be happy to help you through the admission process.
+
+Sincerely,
+
+{!Case.Opportunity_Owner_s_Full_Name__c}
+{!Case.Opportunity_Owner_s_Title__c}
+Admission Services
+{!Case.Opportunity_Owner_s_Recruiter_Email__c}
+{!Case.Opportunity_Owner_s_Pone__c}
+
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

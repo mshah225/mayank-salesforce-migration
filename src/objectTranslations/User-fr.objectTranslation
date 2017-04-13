@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><layouts>
+        <layout>User Layout</layout>
+        <sections>
+            <label><!-- ASU System Administration --></label>
+            <section>ASU System Administration</section>
+        </sections>
+        <sections>
+            <label><!-- Addition User Details --></label>
+            <section>Addition User Details</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Default Sandbox Users --></label>
+            <section>Default Sandbox Users</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud --></label>
+            <section>Marketing Cloud</section>
+        </sections>
+        <sections>
+            <label><!-- Salesforce PeopleSoft Roles --></label>
+            <section>Salesforce PeopleSoft Roles</section>
+        </sections>
+    </layouts><validationRules>
+        <errorMessage><!-- Only System Administrators can edit your email address. Please contact salesforce.support@asu.edu if you need to change your email address. --></errorMessage>
+        <name>Only_System_Admins_Create_Edit_Users</name>
+    </validationRules></CustomObjectTranslation>

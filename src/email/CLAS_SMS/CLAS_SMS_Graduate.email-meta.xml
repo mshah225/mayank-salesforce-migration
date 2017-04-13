@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for CLAS - SMS users to use for Cases originated via email. Lists the email address for SMS Graudate</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>CLAS - SMS | Graduate</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.Name}
+
+School of Molecular Sciences
+Arizona State University
+SMSgrad@asu.edu
+phone: 480-965-4664
+fax: 480-965-2747
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

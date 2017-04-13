@@ -1,0 +1,55 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <br>             Dear {!Contact.FirstName}, <br /><br />
+
+
+After review of your file, we have determined you are currently enrolled less than half-time. This may prevent you from qualifying for certain types of aid including federal loans which require you to be enrolled at least half-time. Half-time enrollment status is defined as 6 credits as an undergraduate students and 5 credits as a graduate student. <br /><br />
+
+We encourage you to view your Finances tab on MyASU to evaluate your expenses and expected financial aid you may be receiving. Financial Aid and Scholarship Services staff can help you understand your awards and how they may be impacted by your enrollment status.  Please call us at 855-278-5080 or respond to this email. <br /><br />
+
+
+
+<br>Sincerely, <br />
+ {!User.FirstName} {!User.LastName}
+</div>
+               
+                </div>
+
+             
+
+               <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               <p><b>Financial Aid and Scholarship Services</b><br />
+                    Arizona State University<br />
+                    PO Box 870412<br />
+                    Tempe, AZ 85287-0412<br />
+                     Phone: 1-844-278-6693 
+
+</p>
+    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>
+
+</p>

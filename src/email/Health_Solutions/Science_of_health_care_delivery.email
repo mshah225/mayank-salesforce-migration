@@ -1,0 +1,23 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000001v7IC&oid=00Dd0000000hLoc&lastMod=1378857676000" 
+                     width="60%" style="padding-top:40px;max-width:600px;"/></center>
+
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu--c.na14.content.force.com/servlet/servlet.FileDownload?file=015d0000009iDgc" 
+                     width="60%" style="padding-top:40px;max-width:600px;"/></center>
+
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+{!Contact.FirstName},<br /><br />
+ 
+Paragraph one goes here. Blah Blah blah, fun.<br/><br/>

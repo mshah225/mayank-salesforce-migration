@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Housing Scholarship</name>
+    <style>freeForm</style>
+    <subject>Congratulations on your scholarship!</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Congratulations on your admission to ASU Colleges at Lake Havasu City. I look forward to welcoming you to ASU at Lake Havasu in fall 2016.
+
+In recognition of your hard work and your decision to live in the residence hall, you&apos;re being awarded a ${xxxx} Housing Scholarship to assist in the cost of housing.This award is only available for your first year residing in the residence hall and will not be renewable, and is granted in addition to any other financial aid you receive.
+
+In order for the Housing Scholarship to be applied to your account, you will need to confirm your intent to attend ASU Colleges at Lake Havasu City by paying the enrollment deposit of $300.
+
+If you have questions, I encourage you to contact your admission counselor, Laura Shuffler, at ASULauraShuffler@asu.edu or 928-854-9707, at your earliest convenience.
+
+Welcome to ASU at Lake Havasu.
+
+Go Devils!
+
+David A. Young
+Director
+ASU Colleges at Lake Havasu City
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

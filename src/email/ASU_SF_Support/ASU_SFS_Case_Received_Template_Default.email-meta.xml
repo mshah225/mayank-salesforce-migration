@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Auto-response email for case received, for ASU Salesforce Support / Admins.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>ASU SFS | Case Received Template Default</name>
+    <style>none</style>
+    <subject>Email Received Case Number {!Case.CaseNumber}</subject>
+    <textOnly>Dear {!Contact.FirstName} {!Contact.LastName},
+
+Thank you for contacting the ASU Salesforce Support Team.  We have received your email and are working on responding to you as soon as possible.
+
+You can also view the status of your Case, add further information, and follow your Support Case within Salesforce.
+
+Case Number: {!Case.CaseNumber}
+Subject: {!Case.Subject}
+
+Click here to view your case in Salesforce.
+
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

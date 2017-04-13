@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Read</contactAccessLevel>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>EOSS NSFP New Student and Family Programs Staff</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>EOSS_NSFP_New_Student_and_Family_Programs_Manager</parentRole>
+</Role>

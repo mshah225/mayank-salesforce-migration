@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Case Management FSE SEMTE IT Standard Template</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management FSE SEMTE IT</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Ira A. Fulton Schools of Engineering
+Arizona State University
+School for Engineering of Matter, Transport &amp; Energy
+
+SEMTE IT Support
+General Questions: asksemte.it@asu.edu
+Student Service Request: semte.it@asu.edu
+
+Donley Hurd
+480-965-9104
+Albert Thompson
+480-965-0772
+SEMTE IT Service
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

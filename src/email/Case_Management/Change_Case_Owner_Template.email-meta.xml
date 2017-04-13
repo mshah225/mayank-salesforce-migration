@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>29.0</apiVersion>
+    <available>true</available>
+    <description>When the owner of a case is changed, this is the email template they will receive.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Change Case Owner Template</name>
+    <style>none</style>
+    <subject>New Case Assignment Notification</subject>
+    <type>visualforce</type>
+</EmailTemplate>

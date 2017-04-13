@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Basic description of readmission status with link</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Readmission requirements</name>
+    <style>freeForm</style>
+    <subject>Readmission requirements for attending ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+If you have previously attended ASU as a degree-seeking student, you will be classified as a readmission student. For readmission to ASU, we require a minimum 2.00 ASU GPA; however, some majors have higher requirements. If you do not meet the readmission requirements for your intended major, Admission Services will send an appeal on your behalf to the academic college that houses your major. The academic college will make the final admission decision. If you have concerns about your readmission appeal, please contact an academic advisor in the college of your major. For more information on readmission to ASU, please visit students.asu.edu/readmission.
+
+Please feel free to contact me with any questions.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

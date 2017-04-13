@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>How to change your major</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Major Change Request - Enrolled (all populations)</name>
+    <style>freeForm</style>
+    <subject>How to change your major</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for the email about changing your major.
+
+As an actively enrolled student, you should contact an advisor in the college of the major you are interested in at https://students.asu.edu/advising/directory. That advisor will help you determine your eligibility and complete the major change process. Please remember that some majors have additional requirements, which can be viewed through degree search at http://asu.edu/programs.
+
+Let me know if there is anything else I can assist with.
+
+Thank you,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

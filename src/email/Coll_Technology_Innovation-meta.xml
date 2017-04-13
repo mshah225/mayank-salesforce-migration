@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailFolder xmlns="http://soap.sforce.com/2006/04/metadata">
+    <accessType>Shared</accessType>
+    <name>Coll Technology &amp; Innovation</name>
+    <publicFolderAccess>ReadWrite</publicFolderAccess>
+    <sharedTo>
+        <group>AS_Manage_Email_Templates</group>
+        <role>ES_Enrollment_Services_Communication</role>
+    </sharedTo>
+</EmailFolder>

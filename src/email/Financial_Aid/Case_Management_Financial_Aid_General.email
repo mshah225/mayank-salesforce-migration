@@ -1,0 +1,50 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    
+             Dear {!Contact.FirstName}, <br /><br />
+
+If you have any questions you may respond to this email within 14 days and your case will be reopened and evaluated by Financial Aid and Scholarship Services. 
+<br><br>
+Please add permissions using <a href="https://students.asu.edu/parent-guest-access">My ASU Parent Guest Access</a> if you would like to authorize designated persons to discuss your financial aid.
+<br><br>Sincerely, <br />
+ {!User.FirstName} {!User.LastName}
+                    <br />
+                </div>
+
+             
+
+              <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               <p><b>Financial Aid and Scholarship Services</b><br />
+                    Arizona State University<br />
+                    PO Box 870412<br />
+                    Tempe, AZ 85287-0412<br />
+                     Phone: 855-278-5080
+</p>
+    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>
+
+</p>

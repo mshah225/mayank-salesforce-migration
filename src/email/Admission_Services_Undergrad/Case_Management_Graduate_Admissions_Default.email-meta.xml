@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Default Case Mgmt template for Graduate Admission Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management Graduate Admissions Default</name>
+    <style>none</style>
+    <subject>Communication on Case {!Case.CaseNumber}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+
+Graduate Admissions 
+Admission Services
+Arizona State University
+1151 S. Forest Avenue, SSV 112
+Tempe, AZ 85287-0112
+Office: 480-965-6113
+Fax: 480-965-5158
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

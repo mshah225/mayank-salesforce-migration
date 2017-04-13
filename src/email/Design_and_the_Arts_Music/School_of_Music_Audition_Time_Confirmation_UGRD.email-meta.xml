@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Herberger_Institute_for_Design_and_the_Arts</letterhead>
+    <name>School of Music Audition Time Confirmation - UGRD</name>
+    <style>freeForm</style>
+    <subject>ASU School of Music Audition Time confirmation</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for applying for admission to the Herberger Institute School of Music at Arizona State University. You have been scheduled for the following in the School of Music on the ASU Tempe Campus. Important: Please confirm your appointment(s) online within 24 hours of receipt of this email.
+
+Event Instrument Date Time Location
+
+Audition
+
+Music Education
+
+Interview
+
+Remember to confirm your audition(s) and interview(s) online within 24 hours of receipt of this email. Voice applicants who have requested an ASU accompanist for the audition are required to enter their audition repertoire information on the confirmation form. See below for further instructions.
+
+Audition Day Check-In
+Check-in begins at 8 a.m. in Cowley Lobby, the main lobby of the Music Building. You are kindly requested to check in at least 30-minutes prior to your earliest scheduled audition/interview. Practice rooms are available for you to warm up before your audition. Please be courteous and surrender the room after 20 minutes to allow other students to warm up for their auditions.
+
+Informational Sessions
+We encourage you to attend the informational sessions that are offered each audition day so that we may answer any questions that you may have about ASU and the Herberger Institute School of Music. The schedule of events for each audition day is available to you upon check-in the day of your audition.
+
+Voice Audition Preparation
+Voice applicants who have requested an ASU accompanist for the audition are required to bring piano scores of their pieces to the audition for the pianist. Scores should be double-sided and in a three-ring binder.
+
+Thank you for your interest in studying in the Herberger Institute School of Music. We look forward to meeting you soon.
+
+ASU School of Music in the Herberger Institute for Design and the Arts
+Office of Admissions
+480.965.5069 | musicadmin@asu.edu
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

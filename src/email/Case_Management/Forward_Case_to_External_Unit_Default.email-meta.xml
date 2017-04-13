@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Forward Case to External Unit Default</name>
+    <style>none</style>
+    <subject>Case Forwarded: {!Case.Subject}</subject>
+    <textOnly>Upon reviewing {!Case.Contact}&apos;s request, it was apparent that you or your unit would be best suited to meet their needs. This is being sent to you by:
+
+{!User.Name}, {!User.Department}
+{!Case.OwnerFullName}’s Note: {!Case.Forward_Case_Comments__c}
+
+The original request is below. Please reach out directly to {!Case.Contact} to resolve this issue.
+
+Customer Contact Information:
+{!Case.Contact}
+{!Case.Forward_Case_Contact_Email__c}
+{!Case.Forward_Case_Contact_Phone__c}
+
+Case Number: {!Case.CaseNumber}
+
+Case Subject: {!Case.Subject}
+
+Case Description:
+{!Case.Description}
+
+
+
+{!Case.Forward_To_Unit__c}
+{!Case.Forward_To_Email__c}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

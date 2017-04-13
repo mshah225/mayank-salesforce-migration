@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Havasu Director&apos;s Scholarship</name>
+    <style>freeForm</style>
+    <subject>Congratulations on your scholarship!</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+I am pleased to congratulate you on your exceptional high school achievement and your admission to Arizona State University. I am confident you will be an excellent addition to our community of scholars, and I look forward to welcoming you to ASU in the fall of 2016. In addition, it is a pleasure to offer you a scholarship as you pursue your studies.
+
+You are being awarded a ${xxxx} ASU Colleges at Lake Havasu City Director’s Scholarship based on your high school academic performance. This award can be renewed for an additional three years dependent upon funding and academic performance, and will be awarded only if you attend the ASU Colleges at Lake Havasu City. This award is granted in addition to any other financial aid you receive.
+
+In order for your award to be applied to your account, you will need to confirm your intent to attend ASU Colleges in Lake Havasu City by paying the enrollment deposit of $300.
+
+I commend your exemplary performance to date and would welcome your meaningful contributions to ASU’s tradition of excellence. If you have questions about this opportunity, I encourage you to contact your admissions counselor, Laura Shuffler, at ASULauraShuffler@asu.edu or at 928-854-9707 at your earliest opportunity.
+
+Welcome to ASU in Lake Havasu – Go Devils!
+
+Dr. David A. Young
+Director
+ASU Colleges in Lake Havasu
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

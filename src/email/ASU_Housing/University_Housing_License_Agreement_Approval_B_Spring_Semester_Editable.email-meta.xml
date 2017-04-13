@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>HTML templates for License Agreement - Approval B: Spring Semester that are editable.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Case_Management</letterhead>
+    <name>License Agreement - Approval B: Spring Semester (Editable)</name>
+    <style>freeForm</style>
+    <subject>Request for Housing License Agreement Release</subject>
+    <textOnly>{!TODAY()}
+
+Dear {!Contact.FirstName},
+
+This is an official, written response to your request for release from the University Housing License Agreement for the 2015-2016 academic year.  University Housing personnel have carefully reviewed your request, and you have been approved for release from the License Agreement.
+
+Prior to the Fall/Spring LAR deadline date, you will be charged for your residence hall room through the date you officially check out of your residence hall.  Please refer to the schedule of charges and deadlines for more information.  Official check out means you must check out with a staff member, sign the necessary paperwork, and return your room key and your mail box key to your campus mail services office within 48 hours of checkout.
+
+Room charges and meal plan charges are re-calculated based on the Housing License Agreement Contract term (or the date of assignment, whichever is later) until the date of official checkout. The semester Support Services and Residential College fees are non-refundable after official hall check-in. Students are still responsible for any applicable room damage charges, lock change charges, or fees associated with unreturned mailbox keys.
+
+No financial adjustments will be made and no refunds will be granted if the release is submitted and/or the student checks out after the Fall deadline, October 14, 2015 or Spring deadline, March 4, 2016.
+
+Please allow 15 calendar days processing time for any adjustments to your student account at Arizona State University.  Each account must be handled individually and is thoroughly evaluated before any adjustments are made.
+
+Even though we are no longer a direct part of your future educational goals students are always welcome within their residential college communities.  If we can be of service at some time in the future, please let us know.
+
+Sincerely,
+
+
+{!User.FirstName} {!User.LastName}
+University Housing
+Arizona State University</textOnly>
+    <type>html</type>
+</EmailTemplate>

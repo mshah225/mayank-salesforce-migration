@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Congratulations on receiving the Solutions Grant, take your next steps toward enrolling.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Solutions Grant Awarded</name>
+    <style>freeForm</style>
+    <subject>Congratulations on receiving the ASU Solutions Grant!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+I want to congratulate you on receiving the ASU Solutions Grant, which is an additional &lt;&lt;INSERT AMOUNT&gt;&gt; for your first year at ASU! You can view and accept this award in My ASU under the Finances tab at http://my.asu.edu/.
+
+Remember to keep checking your Priority Tasks in My ASU (http://my.asu.edu/) for any items you need to complete before enrolling.
+
+If you haven&apos;t done so already, your next step to becoming a Sun Devil is to pay your enrollment deposit (https://students.asu.edu/freshman/deposit) in My ASU at http://my.asu.edu/. Once you submit your enrollment deposit, you will be able to complete your next steps, such as signing up for housing and for orientation, where you will register for classes.
+
+If you have any questions about enrolling at ASU or this grant, you can contact me. I am happy to answer any questions you may have.
+
+We look forward to seeing you at ASU.
+
+Go Devils!
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

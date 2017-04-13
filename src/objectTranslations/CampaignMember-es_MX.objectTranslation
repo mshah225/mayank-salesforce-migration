@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><layouts>
+        <layout>Campaign Member Page Layout</layout>
+        <sections>
+            <label><!-- Associated Opportunity / Inbound Interaction Summary --></label>
+            <section>Associated Opportunity / Inbound Interaction Summary</section>
+        </sections>
+        <sections>
+            <label><!-- Event Information --></label>
+            <section>Event Information</section>
+        </sections>
+        <sections>
+            <label><!-- Member Information --></label>
+            <section>Member Information</section>
+        </sections>
+        <sections>
+            <label><!-- Partner Course Information --></label>
+            <section>Partner Course Information</section>
+        </sections>
+        <sections>
+            <label><!-- Scholarship --></label>
+            <section>Scholarship</section>
+        </sections>
+        <sections>
+            <label><!-- Sections --></label>
+            <section>Sections</section>
+        </sections>
+        <sections>
+            <label><!-- Source Information --></label>
+            <section>Source Information</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Corporate Relations Member Page Layout</layout>
+        <sections>
+            <label><!-- Member Information --></label>
+            <section>Member Information</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Subscription Center Campaign Member Page Layout</layout>
+        <sections>
+            <label><!-- Associated Opportunity / Inbound Interaction Summary --></label>
+            <section>Associated Opportunity / Inbound Interaction Summary</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Cloud Subscription Center --></label>
+            <section>Marketing Cloud Subscription Center</section>
+        </sections>
+        <sections>
+            <label><!-- Member Information --></label>
+            <section>Member Information</section>
+        </sections>
+        <sections>
+            <label><!-- Partner Course Information --></label>
+            <section>Partner Course Information</section>
+        </sections>
+        <sections>
+            <label><!-- Scholarship --></label>
+            <section>Scholarship</section>
+        </sections>
+        <sections>
+            <label><!-- Sections --></label>
+            <section>Sections</section>
+        </sections>
+        <sections>
+            <label><!-- Source Information --></label>
+            <section>Source Information</section>
+        </sections>
+    </layouts><recordTypes>
+        <label><!-- All Students --></label>
+        <name>All_Students</name>
+    </recordTypes><recordTypes>
+        <label><!-- Corporate Relations Member --></label>
+        <name>Corporate_Relations_Member</name>
+    </recordTypes><recordTypes>
+        <label><!-- Subscription Center Campaign Member --></label>
+        <name>Subscription_Center_Campaign_Member</name>
+    </recordTypes></CustomObjectTranslation>

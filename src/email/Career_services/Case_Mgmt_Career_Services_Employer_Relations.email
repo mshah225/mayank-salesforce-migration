@@ -1,0 +1,54 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    
+             Hi {!Contact.FirstName},  <br /><br />
+Thank you for contacting ASU Career Services' Employer Relations team! We have received your email and will respond to your question as soon as possible. In the meantime, we encourage you to visit the sites below for answers to many common recruiting questions:
+<br /><br/>
+<b>Posting Full-Time Jobs & Internships: </b>http://bit.ly/postjobsinterns<br/>
+<b>Posting Part-Time Jobs: </b>http://bit.ly/parttimejobsite<br/>
+<b>Internship Information: </b>http://bit.ly/interninfodet<br/>
+<b>Events & Recruiting Calendar: </b>http://bit.ly/eventsrec<br/>
+<b>Employer Recruiting Policy: </b>http://bit.ly/emprecpol<br/><br/>
+
+Thank you for choosing to recruit at ASU! <br/><br/>
+Employer Relations<br/>
+ASU Career Services<br/>
+asu.edu/career<br/><br/>
+<b>Case Number:</b> {!Case.CaseNumber}<br/>
+<b>Subject:</b> {!Case.Subject}<br/>
+<b>Description:</b> {!Case.Description}<br/>
+                </div>
+
+             
+
+               <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               <p>
+                    </p>
+                    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>
+
+</p>

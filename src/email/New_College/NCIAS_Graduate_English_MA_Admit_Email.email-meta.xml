@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>NCIAS | English MA | Admit Letter</name>
+    <style>freeForm</style>
+    <subject>Welcome to the Master of Arts in English at Arizona State University</subject>
+    <textOnly>{!Contact.FirstName},
+
+Greetings. It is my pleasure to inform you that after careful evaluation of our applicants, we are pleased to recommend your admission to the Master of Arts in English at Arizona State University. Although you should consider this an unofficial acceptance (to be followed by official acceptance via email from the ASU Graduate College), please accept my hearty congratulations on behalf of the Graduate Studies Committee.
+
+As Director of the M.A. in English, I welcome you to our program and invite you to contact me with any questions you may have concerning your admission. As Director, I will also serve as your primary advisor throughout your degree program. We will meet, at a minimum, once per semester, but you may well wish to consult with me more often than that. Prior to the start of the semester, we have scheduled a mandatory orientation meeting. At this gathering I will provide information to help you as you begin the process of earning your M.A and you&apos;ll be able to meet your fellow entering students.
+
+You likely have many questions about our program. Please take a look at the program handbook found here https://newcollege.asu.edu/sites/default/files/files/advising/documents/maeng_graduate_handbook_2015-16.pdf as it contains a great deal of information. If you have questions related to tuition, financial aid or housing, please view the next steps section https://newcollege.asu.edu/graduate/admission-next-steps for a number of University Offices available to assist you. If you have questions related to the program or registration please contact the Academic Success Coordinator, Jan Lacey at ncgradadvising@asu.edu.
+
+In the meantime, congratulations! I look forward to meeting you at our orientation and please find your next steps by clicking here. https://newcollege.asu.edu/graduate/admission-next-steps
+
+Please take a moment to complete the form to either accept or decline our offer of admission. https://newcollege.asu.edu/graduate/acceptance-form
+
+Cordially,
+
+Dr. Chris Hanlon
+Association Professor of U.S. Literature
+Provost Humanities Fellow
+Director, M.A. in English
+The New College of Interdisciplinary Arts &amp; Sciences
+Arizona State University
+PO Box 37100
+Phoenix, AZ 85069-7100
+Mobile: 217-549-0130
+christopher.hanlon@asu.edu
+
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

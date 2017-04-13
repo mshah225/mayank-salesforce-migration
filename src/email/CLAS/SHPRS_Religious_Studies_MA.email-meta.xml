@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>SHPRS - Religious Studies MA</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in the MA in religious studies at ASU!</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in Arizona State University&apos;s master&apos;s in religious studies program through the School of Historical, Philosophical and Religious Studies. We are excited that you are considering joining the ASU community. Here is some information to get your started on your journey:
+
+Program description and admission requirements:
+
+Basic admission and degree requirements at: https://webapp4.asu.edu/programs/t5/majorinfo/ASU00/LARELIGMA/graduate/false
+
+Religious studies program site: https://shprs.clas.asu.edu/graduate/religious-studies-ma
+
+Information regarding religious studies:
+
+Religious studies graduate faculty and research areas at: https://shprs.clas.asu.edu/graduate/religious-studies
+
+Please review these documents closely, and contact me at Roxanne.Shand@asu.edu with any additional questions you may have.
+
+Sincerely,
+
+Roxanne Shand
+Graduate Program Coordinator
+School of Historical, Philosophical and Religious Studies
+College of Liberal Arts and Sciences</textOnly>
+    <type>html</type>
+</EmailTemplate>

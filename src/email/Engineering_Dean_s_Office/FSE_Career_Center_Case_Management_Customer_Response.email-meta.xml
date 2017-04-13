@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for Fulton Engineering (Dean&apos;s Office - Career Center) agents to use for Cases originated via email. For ongoing communication or Case closure.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>FSE Career Center | Case Management Customer Response</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Fulton Schools Career Center
+Ira A. Fulton Schools of Engineering
+Arizona State University | PO Box 875811 |Tempe, AZ 85287-5811
+660 S. Mill Ave, Ste 107 | Centerpoint Building A | Tempe, AZ 85281
+p: 480.965.2966 | f: 480.965.2910 | e: engineering.careers@asu.edu | w: engineering.asu.edu/career
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

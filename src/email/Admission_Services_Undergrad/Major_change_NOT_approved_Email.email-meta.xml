@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Major change denied notification.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Major change NOT approved Email</name>
+    <style>freeForm</style>
+    <subject>We have received your request to switch your major.</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+We have received your request to switch your major.
+
+As you may be aware, some majors have admission standards beyond those for general admission to Arizona State University. Unfortunately, upon review of your admission credentials, you are not eligible for entry into this major at this point in time.
+
+You may view the admission standards for majors in Degree Search at https://asu.edu/degrees.
+If you would like to request changing to a different major, you may return to My ASU and submit a new request.
+
+If you have any questions, please contact me at {!Case.Opportunity_Owner_s_Recruiter_Email__c}. I am your personal contact for admissions-related questions, and I’ll be happy to help you through the admissions process.
+
+Sincerely,
+
+{!Case.Opportunity_Owner_s_Full_Name__c}
+{!Case.Opportunity_Owner_s_Title__c}
+Admission Services
+{!Case.Opportunity_Owner_s_Recruiter_Email__c}
+{!Case.Opportunity_Owner_s_Pone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

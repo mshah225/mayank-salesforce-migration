@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Sustainability CASS Cert Info</name>
+    <style>none</style>
+    <subject>Thank you for your interest in the School of Sustainability at ASU</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for your interest in the complex adaptive systems science (CASS) certificate offered through the School of Sustainability. This certificate is open to any admitted PhD student at ASU. We accept applications for fall or for spring.
+
+If you are not yet a PhD student at ASU, then we recommend you look into a program, apply and then meet with the CASS Faculty once you’re admitted to see if this certificate will help meet your educational objectives. At that point, we recommend you apply, if you are still interested.  
+
+We are happy to answer any additional questions you have. To schedule an in-person, phone or Skype appointment, please call our office at 480-727-6963 during our office hours, Monday through Friday, 9a.m. – 4p.m.  Regards,
+
+Katerina Kinast
+Graduate Academic Success Coordinator
+ASU School of Sustainability
+Katie.Kinast@asu.edu</textOnly>
+    <type>custom</type>
+</EmailTemplate>

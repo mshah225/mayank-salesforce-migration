@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>School of Earth and Space Exploration MNS degree information</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Gold_ASU_SESE_logo</letterhead>
+    <name>SESE MNS Degree Information v3</name>
+    <style>formalLetter</style>
+    <subject>ASU School of Earth and Space Exploration MNS degree information</subject>
+    <textOnly>{!Contact.FirstName}, 
+
+Thank you for your interest in our graduate program at the School of Earth and Space Exploration. If you meet the admission requirements for our program, we strongly encourage you to apply. Our website has details on our graduate programs, including: 
+Program descriptions  https://sese.asu.edu/degree-programs/graduate
+Admission application details https://sese.asu.edu/admission/graduate-admission
+Financial support https://sese.asu.edu/student-life/financial-support
+
+Our graduate program includes an MS in geological sciences and PhD degrees in astrophysics, geological sciences and exploration systems design. We also offer an MNS in geological sciences. It is very different from our other thesis-based degrees. It requires a faculty mentor who is willing to supervise an applied project rather than a thesis for a student to be admitted. If you would like to apply for the MNS, we highly recommend that you make contact with potential faculty mentors to receive an endorsement for your admission. The faculty member will help you determine the nature of the applied project and what classes you would take. Please see our research focus website for more information on our faculty and their research.
+
+Applicants are also encouraged to visit the FAQs for additional information. https://sese.asu.edu/admission/graduate-admission
+
+All application materials are submitted electronically, and applicants must produce all of the required materials in order to be considered for admission. The application and our admission website provide further explanation of the process.
+
+After you&apos;ve reviewed our website or made contact with prospective faculty advisors, please feel free to contact me if you have specific questions about our graduate program and the admission process. Note that we admit students for both spring and fall, but spring admissions are very limited. In order to be admitted for spring, you must have an arrangement with a faculty member who endorses your application and who has the funding to support you as a research assistant.
+
+I hope this information is helpful. Have wonderful day.
+
+Becca Dial
+Academic Support Specialist
+School of Earth and Space Exploration
+PO Box 876004
+Email: bdial@asu.edu
+Phone: (480) 965-2213 
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

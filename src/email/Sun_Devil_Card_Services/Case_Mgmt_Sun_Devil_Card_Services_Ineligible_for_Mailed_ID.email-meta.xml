@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>false</available>
+    <description>General Case Management Template for Sun Devil Card Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Sun Devil Card Services Ineligible for Mailed ID</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Due to security concerns, the Sun Card office does not mail cards for the Tempe Campus, Downtown Phoenix Campus, Polytechnic Campus, or West Campus.  If you are an incoming student and have an orientation scheduled, you will receive your ID at orientation. If you are not attending orientation you may go to the Sun Card office to obtain your ID. If you feel you have been assigned to the incorrect campus, you will need to contact admissions to have this error corrected.
+
+Please visit our website https://cfo.asu.edu/cardservices#Locations for our hours and locations.
+
+Regards,
+{!User.FirstName} {!User.LastName}
+
+Sun Devil Card Services
+Arizona State University
+Phone: 480-965-2273
+cardservices.asu.edu
+https://cfo.asu.edu/cardservices
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

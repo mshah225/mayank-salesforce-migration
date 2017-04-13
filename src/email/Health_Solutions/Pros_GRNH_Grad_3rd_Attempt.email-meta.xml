@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>HealthSolutions_letterhead</letterhead>
+    <name>Pros GRNH Grad 3rd Attempt</name>
+    <style>freeForm</style>
+    <subject>Questions about Health Solutions at ASU?</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+We hope you&apos;re still interested in pursuing one of the highly ranked and prestigious graduate degrees offered by the College of Health Solutions at Arizona State University.
+
+We&apos;re here to help you throughout the application process and can provide tips and advice on how to be a more competitive applicant. Please reach out if you would like to schedule a phone call or personal advising session.
+
+I look forward to hearing from you soon as you take the next step in your career and your life.
+
+Regards,
+
+{!User.Email}
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

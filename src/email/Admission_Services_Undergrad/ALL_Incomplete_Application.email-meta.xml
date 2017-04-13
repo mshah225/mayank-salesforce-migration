@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Missing items to complete your application file.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TRN Incomplete Application</name>
+    <style>freeForm</style>
+    <subject>You&apos;re missing items to complete your application.</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University. Your application is currently incomplete and we are missing the following information:
+
+(INSERT MISSING APPLICATION ITEMS)
+
+All college and university transcripts must be sent directly from your school to ASU Admission Services. ASU does require an official high school transcript if you do not have an associate degree or bachelor&apos;s degree. ASU accepts hand-delivered high school transcripts from the applicant, but only in sealed envelopes. However, ASU does not accept hand-delivered college transcripts or those sent by fax. Transcripts should be sent to this address:
+
+Admission Services
+Arizona State University
+PO Box 870112
+Tempe, AZ 85287-0112
+
+As a reminder, transcripts can take 10 – 14 business days to reach ASU. Please allow ASU this time to receive your transcripts and remove them from your Priority Tasks on My ASU at https://my.asu.edu.
+
+If you are no longer interested in attending ASU, please withdraw your application at https://students.asu.edu/canceladmissions.
+
+Please contact me with any other questions.
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

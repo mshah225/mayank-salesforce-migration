@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Sun Devil Card Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Sun Devil Card Services Old ID Card Photo</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Unfortunately, the photo we have on file is more than 2 years old. Before we can print a new card, we will require that a new photo be submitted using our Online Photo Upload Portal. Instructions for uploading your photo are below.
+
+Complete step 3 after your photo is approved.
+
+Submit your photo (This is for your ID card) and approved identification to Sun Devil Card Services. https://webapp4.asu.edu/cardservices/
+
+You will need to attach a valid, current photo ID as proof of identity. Acceptable forms of ID are US driver’s license or state issued ID card, US visa, or a passport.
+
+
+Wait for your photo submission approval email.
+
+
+Once approved, choose whether you want to pick up your card or have it mailed. Fill out the appropriate form.  
+
+A: Mail Request Form https://cfo.asu.edu/campus-id-card-request-form
+
+B: Pickup Request Form https://cfo.asu.edu/webform/basic-sun-card-office-pick-form
+
+
+
+Regards,
+{!User.FirstName} {!User.LastName}
+
+Sun Devil Card Services
+Arizona State University
+Phone: 480-965-2273
+cardservices.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

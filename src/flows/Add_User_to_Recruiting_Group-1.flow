@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <decisions>
+        <name>Lookup_Recruiting_Group_Result</name>
+        <label>Lookup Recruiting Group Result</label>
+        <locationX>139</locationX>
+        <locationY>109</locationY>
+        <defaultConnectorLabel>[Default Outcome]</defaultConnectorLabel>
+        <rules>
+            <name>Does_Not_Exist</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>RecruitingGroupMemberId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Add_User_to_RC_Group</targetReference>
+            </connector>
+            <label>Does Not Exist</label>
+        </rules>
+    </decisions>
+    <interviewLabel>Add User to Recruiting Group {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Add User to Recruiting Group</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Add_User_to_RC_Group</name>
+        <label>Add User to RC Group</label>
+        <locationX>141</locationX>
+        <locationY>231</locationY>
+        <inputAssignments>
+            <field>GroupId</field>
+            <value>
+                <stringValue>00Gd0000003bl8H</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>UserOrGroupId</field>
+            <value>
+                <elementReference>varNewRCuserId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>GroupMember</object>
+    </recordCreates>
+    <recordLookups>
+        <name>Check_User_Exist_in_Recruiting_Public_Group</name>
+        <label>Check User Exist in Recruiting Public Group</label>
+        <locationX>137</locationX>
+        <locationY>8</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Lookup_Recruiting_Group_Result</targetReference>
+        </connector>
+        <filters>
+            <field>GroupId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>00Gd0000003bl8H</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>UserOrGroupId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varNewRCuserId</elementReference>
+            </value>
+        </filters>
+        <object>GroupMember</object>
+        <outputAssignments>
+            <assignToReference>RecruitingGroupMemberId</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
+    </recordLookups>
+    <startElementReference>Check_User_Exist_in_Recruiting_Public_Group</startElementReference>
+    <variables>
+        <name>RecruitingGroupMemberId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <description>Variable to hold User Id</description>
+        <name>varNewRCuserId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <description>Holds the Recruiting (Role) Public Group Id</description>
+        <name>varRecruitingGroupId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <stringValue>00Gd0000003bl8H</stringValue>
+        </value>
+    </variables>
+</Flow>

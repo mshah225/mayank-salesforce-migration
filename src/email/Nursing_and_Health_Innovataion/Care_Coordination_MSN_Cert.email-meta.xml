@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Nursing</letterhead>
+    <name>Care Coordination MSN &amp; Cert</name>
+    <style>freeForm</style>
+    <subject>Thank you for contacting ASU College of Nursing and Health Innovation</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in Care Coordination offered by the College of Nursing and Health Innovation at Arizona State University. ASU is a nationally recognized leader in higher education. Our graduate programs rank in the top 4% for best graduate nursing programs (U.S. News &amp; World Report). We encourage you to consider joining one of our nationally ranked graduate programs.
+
+Our care coordination programs provide registered nurses with advanced preparation in nursing practice and the ability to provide effective patient-centered care through the application of care coordination services that improve health outcomes, enhance health care quality and reduce health care costs.
+
+Conveniently offered in a hybrid format, care coordination programs meet in-person twice per semester. This schedule provides flexibility for working nurse professionals. You can access more information, including the Plan of Study, application deadlines and admission requirements for these programs using the links below.
+
+MS Nursing (Care Coordination)
+Care Coordination (graduate certificate)
+
+Graduates are specialists able to synthesize innovation principles and best available evidence to lead interprofessional teams to design, deliver, and evaluate care coordination practices that are patient centered, improve health, safety and cost outcomes, and enhance quality and access to care across diverse populations.
+Both the master’s degree and certificate options support preparation for national certification as a case manager through the American Nurses Credentialing Center (ANCC) or through the Case Management Society of America (CMSA).
+Benefits of graduate study at ASU include:
+
+Growing your career and leading others
+Gaining broader perspectives on global health challenges
+Surrounding yourself with expert faculty and quality mentors
+Preparing to positively impact health outcomes
+Applying theory and research to advance practice
+
+We hope you continue to consider the College of Nursing and Health Innovation at ASU for your graduate education.
+
+Please let us know if you have any questions and we will be glad to help.
+
+Sincerely,
+
+Recruitment and Admissions
+College of Nursing and Health Innovation
+Phone: (602) 496-0937
+Office Hours: Monday - Friday, 8 a.m. - 5 p.m.
+gponursing@asu.edu
+nursingandhealth.asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

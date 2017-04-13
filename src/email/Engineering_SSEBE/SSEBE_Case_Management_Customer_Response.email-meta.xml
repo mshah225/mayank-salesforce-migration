@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for Fulton Engineering SSEBE agents to use for Cases originated via email. For ongoing communication or Case closure.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>SSEBE | Case Management Customer Response</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+School of Sustainable Engineering and the Built Environment - Undergraduate &amp; Graduate Advising
+Ira A. Fulton Schools of Engineering
+Arizona State University | P.O. Box 876106 | Tempe, AZ  85287- Mailing Address
+660 S. College, Room 437 Tempe AZ 85287 - Physical Address
+Phone:  4800-965-0595  | Fax:  480-965-0557 | Email: sebe.advising@asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

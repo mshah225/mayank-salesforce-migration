@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>ASU gold header on white bkgrnd with Public Programs logo</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>PublicPrograms_letterhead</letterhead>
+    <name>Public Programs template</name>
+    <style>formalLetter</style>
+    <subject>test</subject>
+    <textOnly>{First Name} Email content goes here. 
+
+
+
+To continue receiving important information from ASU, please add grad@umail.asu.edu to your address book or safe sender list.
+By providing your email address, you gave Arizona State University permission to send this email.
+Arizona State University | Graduate College | PO Box 871003 | Tempe, AZ 85287-1003</textOnly>
+    <type>html</type>
+</EmailTemplate>

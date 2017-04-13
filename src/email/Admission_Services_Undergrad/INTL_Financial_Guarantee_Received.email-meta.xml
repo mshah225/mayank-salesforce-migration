@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>We received your financial guarantee documents</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>INTL Financial Guarantee Received</name>
+    <style>freeForm</style>
+    <subject>We received your financial guarantee documents</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for submitting your financial guarantee to Admission Services. Your documents have been received and will soon be reviewed.
+
+Please allow three to five business days to see this task removed from your My ASU Priority Tasks list at http://my.asu.edu.
+
+If you have any questions, please feel free to contact me.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

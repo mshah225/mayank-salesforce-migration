@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Sun Devil Card Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Sun Devil Card Services Declined Photo</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Your photo was declined for the following reason:
+
+Insert reason here
+
+Please submit a new photo following the guidelines below. After your new photo is approved, you will need to resubmit the Mail Request form .  https://cfo.asu.edu/campus-id-card-request-form or the Pickup Request Form  https://cfo.asu.edu/webform/basic-sun-card-office-pick-form
+
+You will need to attach a valid, current photo ID as proof of identity.  Acceptable forms of ID are: US drivers license, state issued ID card, US passport or US Visa.
+
+Uploaded photos must meet the following criteria:
+
+
+Upload your photo NOW
+https://webapp4.asu.edu/cardservices/
+
+Regards,
+{!User.FirstName} {!User.LastName}
+
+Sun Devil Card Services
+Arizona State University
+Phone: 480-965-2273
+cardservices.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

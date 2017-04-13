@@ -10,6 +10,7 @@ public without sharing class TerritoryAssignmentHelper
 
     private static Map<String, List<PS_Country_Map__c>> psCountryMap;
     private static Boolean batchMode = false;
+    private static Boolean debug = false;
 
     /**
     * Account
@@ -24,9 +25,12 @@ public without sharing class TerritoryAssignmentHelper
         Map<String, String> KVMap = new Map<String, String>();
         Set<String> ZipsInTrigger = new Set<String>();
         List<Key_Value__c> KVList = new List<Key_Value__c>();
+        
         for (Account InsZip :(List<Account>)Trigger.New)
         {
-            ZipsInTrigger.add(InsZip.ShippingPostalCode);
+            //Ensures Zipcode is five digits or less
+            string shortZip = shortenZipCode(InsZip.ShippingPostalCode);
+            ZipsInTrigger.add(shortZip);
         }
 
         if(ZipsInTrigger.size() > 0)
@@ -45,7 +49,9 @@ public without sharing class TerritoryAssignmentHelper
 
             for (Account AccGeo :(List<Account>) Trigger.New)
             {
-                AccGeo.Geomarket_Code__c = KVMap.get(AccGeo.ShippingPostalCode);
+                //Ensures Zipcode is five digits or less
+                string shortZip = shortenZipCode(AccGeo.ShippingPostalCode);
+                AccGeo.Geomarket_Code__c = KVMap.get(shortZip);
             }
         }
 
@@ -72,6 +78,7 @@ public without sharing class TerritoryAssignmentHelper
         }
 
         accountTADone = true;
+        
     }
 
     /**
@@ -88,7 +95,8 @@ public without sharing class TerritoryAssignmentHelper
         {
             Set<Id> contactIdsWithTAChanges = new Set<Id>();
             Map<Id, Contact> oldContactMap = (Map<Id, Contact>)Trigger.oldMap;
-
+            List<Opportunity> oppList;
+		
             for (Contact c: (List<Contact>)Trigger.new)
             {
                 if (c.MailingState != oldContactMap.get(c.Id).MailingState)
@@ -96,22 +104,22 @@ public without sharing class TerritoryAssignmentHelper
                     contactIdsWithTAChanges.add(c.Id);
                 }
             }
-
-            List<Opportunity> oppList = new List<Opportunity>([
+            
+            oppList = new List<Opportunity>([
                 SELECT Id, Territory_Assignment_Required__c
                 FROM Opportunity
                 WHERE Contact__c IN :contactIdsWithTAChanges
             ]);
-
+            
             if (oppList.size() > 0)
             {
                 for (Opportunity o: oppList)
                 {
                     o.Territory_Assignment_Required__c = true;
                 }
-
-                update oppList;
-
+                
+                updateOpportunityList(oppList);
+                
                 contactTADone = true;
             }
         }
@@ -171,7 +179,7 @@ public without sharing class TerritoryAssignmentHelper
             Set<String> ContactZips = new Set<String>();
             Map<String, String> KVMap = new Map<String, String>();
             Set<Id> InstitutionIdSet = new Set<Id>();
-
+            
             //Load up the last HS and last College attended for all contacts
             //Also load up the Zip codes for all contacts
             for (Contact c : contactList )
@@ -180,15 +188,16 @@ public without sharing class TerritoryAssignmentHelper
                 {
                     InstitutionIdSet.add(c.Last_HS_Attended__c);
                 }
-
+                
                 if(!InstitutionIdSet.contains(c.Last_College_Attended__c))
                 {
                     InstitutionIdSet.add(c.Last_College_Attended__c);
                 }
-
-                ContactZips.add(c.MailingPostalCode);
+                //Ensures Zipcode is five digits or less
+                string shortZip = shortenZipCode(c.MailingPostalCode);
+                ContactZips.add(shortZip);
             }
-
+            
             if(ContactZips.size() > 0 && InstitutionIdSet.size() > 0)
             {
                 //Load all Accounts representing HSs or Colleges attended by Contacts on Opps
@@ -198,7 +207,7 @@ public without sharing class TerritoryAssignmentHelper
                     WHERE Id
                     IN :InstitutionIdSet
                 ]);
-
+                
                 List<Key_Value__c> KVList = [
                     SELECT Id, Geomarket_ZIP__c, Geomarket_Code__c
                     FROM Key_Value__c
@@ -206,30 +215,33 @@ public without sharing class TerritoryAssignmentHelper
                     AND Geomarket_ZIP__c
                     IN :ContactZips
                 ];
-
+                
                 for (Key_Value__c K :KVList)
                 {
                     KVMap.put(K.Geomarket_ZIP__c, K.Geomarket_Code__c);
                 }
-
+                
                 List<Contact> geoMarketChanged = new List<Contact>();
                 //For each contact
                 for (Contact Cons : contactList)
                 {
+                    //Ensures Zipcode is five digits or less
+                    string shortZip = shortenZipCode(Cons.MailingPostalCode);
+                    
                     //If the contact is a FTF and has a last HS attended
                     //Update the contact's geomarket code to reflect this
                     if(Cons.Last_HS_Attended__c != null && ContactIsFTF.contains(Cons.Id))
                     {
                         Account thisInstitution = InstMap.get(Cons.Last_HS_Attended__c);
                         if(thisInstitution.Geomarket_Code__c != null 
-                            && Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c)
+                           && Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c)
                         {
                             Cons.Geomarket_Code__c = thisInstitution.Geomarket_Code__c;
                             geoMarketChanged.add(Cons);
                         }
-                        else if(Cons.Geomarket_Code__c != KVMap.get(Cons.MailingPostalCode))
+                        else if(Cons.Geomarket_Code__c != KVMap.get(shortZip))
                         {
-                            Cons.Geomarket_Code__c = KVMap.get(Cons.MailingPostalCode);
+                            Cons.Geomarket_Code__c = KVMap.get(shortZip);
                             geoMarketChanged.add(Cons);
                         }
                     }
@@ -239,28 +251,28 @@ public without sharing class TerritoryAssignmentHelper
                     {
                         Account thisInstitution = InstMap.get(Cons.Last_College_Attended__c);
                         if(thisInstitution.Geomarket_Code__c != null 
-                            && Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c)
+                           && Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c)
                         {
                             Cons.Geomarket_Code__c = thisInstitution.Geomarket_Code__c;
                             geoMarketChanged.add(Cons);
                         }
-                        else if(Cons.Geomarket_Code__c != KVMap.get(Cons.MailingPostalCode))
+                        else if(Cons.Geomarket_Code__c != KVMap.get(shortZip))
                         {
-                            Cons.Geomarket_Code__c = KVMap.get(Cons.MailingPostalCode);
+                            Cons.Geomarket_Code__c = KVMap.get(shortZip);
                             geoMarketChanged.add(Cons);
                         }
                     }
                     //Else simply update the contact's geomarket code to reflect their postal code
-                    else if(Cons.Geomarket_Code__c != KVMap.get(Cons.MailingPostalCode))
+                    else if(Cons.Geomarket_Code__c != KVMap.get(shortZip))
                     {
-                        Cons.Geomarket_Code__c = KVMap.get(Cons.MailingPostalCode);
+                        Cons.Geomarket_Code__c = KVMap.get(shortZip);
                         geoMarketChanged.add(Cons);
                     }
                 }
-
+                
                 if(geoMarketChanged.size() > 0)
                 {
-                    update geoMarketChanged;
+                    updateContactList(geoMarketChanged);
                 }
             }
         }
@@ -785,7 +797,8 @@ public without sharing class TerritoryAssignmentHelper
         previousEducationTADone = true;
 
         List<Previous_Education__c> peTriggerList = new List<Previous_Education__c>();
-
+		Set<Id> contactIdSet = new Set<Id>();
+               
         if (Trigger.IsDelete)
         {
             peTriggerList = (List<Previous_Education__c>)Trigger.old;
@@ -794,14 +807,12 @@ public without sharing class TerritoryAssignmentHelper
         {
             peTriggerList = (List<Previous_Education__c>)Trigger.new;
         }
-
-        Set<Id> contactIdSet = new Set<Id>();
-
+        
         for (Previous_Education__c PE: peTriggerList)
         {
             contactIdSet.add(PE.Contact__c);
         }
-
+        
         if (contactIdSet.size() > 0 
             && (Trigger.IsInsert || Trigger.isUpdate || Trigger.isDelete))
         {
@@ -810,18 +821,18 @@ public without sharing class TerritoryAssignmentHelper
                 FROM Opportunity
                 WHERE Contact__c IN :contactIdSet
             ]);
-
+            
             List<Opportunity> oppToUpdate = new List<Opportunity>();
-
+            
             for (Opportunity o : opp)
             {
                 o.Territory_Assignment_Required__c = true;
                 oppToUpdate.add(o);
             }
-
+            
             if (oppToUpdate.size() > 0)
             {
-                update oppToUpdate;
+                updateOpportunityList(oppToUpdate);
             }
         }
     }
@@ -848,7 +859,9 @@ public without sharing class TerritoryAssignmentHelper
 
         for (Lead l: (List<Lead>)Trigger.new)
         {
-            ZipsInTrigger.add(l.PostalCode);
+            //Ensures Zipcode is five digits or less
+            string shortZip = shortenZipCode(l.postalCode);
+            ZipsInTrigger.add(shortZip);
             if (l.Last_Institution_Attended__c != null)
             {
                 leadInstitutionSet.add(l.Last_Institution_Attended__c);
@@ -879,15 +892,17 @@ public without sharing class TerritoryAssignmentHelper
 
         for (Lead leadGeo :(List<Lead>)Trigger.New)
         {
+            //Ensure zip code is five characters or less
+            String shortZip = shortenZipCode(leadGeo.PostalCode);
             // TODO: Also, is institution type relevant for the Lead type?  Need clarification on this condition
             if (leadGeo.Last_Institution_Attended__c != null 
                 && institutionMap.get(leadGeo.Last_Institution_Attended__c).Geomarket_Code__c != null)
             {
                 LeadGeo.Geomarket_Code__c = institutionMap.get(leadGeo.Last_Institution_Attended__c).Geomarket_Code__c;
             }
-            else if (leadGeo.PostalCode != null && KVMap.containsKey(leadGeo.PostalCode))
+            else if (shortZip != null && KVMap.containsKey(shortZip))
             {
-                leadGeo.Geomarket_Code__c = KVMap.get(leadGeo.PostalCode);
+                leadGeo.Geomarket_Code__c = KVMap.get(shortZip);
             }
         }
 
@@ -1155,7 +1170,29 @@ public without sharing class TerritoryAssignmentHelper
 
         territoryAssignmentRuleTADone = true;
     }
+    
+    public static void updateOpportunityList(List<Opportunity> oppList){
+        List<String> vars = new List<String>();
+        try{
+            update oppList;
+        }
+        catch(Exception e){
+            vars.add(ErrorLogger.convertListToJSON('oppList', oppList));
+            ErrorLogger.log(e, vars, debug);
+        }
+    }
 
+    public static void updateContactList(List<Contact> conList){
+        List<String> vars = new List<String>();
+        try{
+            update conList;
+        }
+        catch(Exception e){
+            vars.add(ErrorLogger.convertListToJSON('conList', conList));
+            ErrorLogger.log(e, vars, debug);
+        }
+    }
+    
     /**
     * Helper method to get the correct Country text
     */
@@ -1178,4 +1215,16 @@ public without sharing class TerritoryAssignmentHelper
             return '';
         }
     }
+    
+    /*
+     * Ensures zip code is five characters or less
+     * @param Zip code
+     * @return formatted Zip code
+     * */
+    private String shortenZipCode(String zip){
+        if(zip != null){
+            zip = zip.left(5);
+        }
+        return zip;
+    } 
 }

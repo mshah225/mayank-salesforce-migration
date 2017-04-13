@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <fullName>Chatter_Group_Name__c</fullName>
+        <description>The Chatter group to associate with the given Profile name</description>
+        <externalId>false</externalId>
+        <label>Chatter Group Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Profile__c</fullName>
+        <description>The Profile name to be added to the group.</description>
+        <externalId>false</externalId>
+        <label>Profile</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><customSettingsType>List</customSettingsType><description>The custom setting used to set which Chatter group new and updated users should be added to based on their profile.</description><enableFeeds>false</enableFeeds><label>Chatter Auto Add Users</label><visibility>Public</visibility></CustomObject>

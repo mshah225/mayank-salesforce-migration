@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Call Comments --></label>
+        <name>Call_Comments__c</name>
+    </fields><fields>
+        <label><!-- Call Origin --></label>
+        <name>Call_Origin__c</name>
+        <picklistValues>
+            <masterLabel>Inbound</masterLabel>
+            <translation><!-- Inbound --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Outbound</masterLabel>
+            <translation><!-- Outbound --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Call Result --></label>
+        <name>Call_Result__c</name>
+        <picklistValues>
+            <masterLabel>Disconnected</masterLabel>
+            <translation><!-- Disconnected --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Emailed</masterLabel>
+            <translation><!-- Emailed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Left Message on Voicemail</masterLabel>
+            <translation><!-- Left Message on Voicemail --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Left Message with Family Member</masterLabel>
+            <translation><!-- Left Message with Family Member --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No Answer</masterLabel>
+            <translation><!-- No Answer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Attempted</masterLabel>
+            <translation><!-- Not Attempted --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Spoke with Other Family Member</masterLabel>
+            <translation><!-- Spoke with Other Family Member --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Spoke with Parent/Guardian</masterLabel>
+            <translation><!-- Spoke with Parent/Guardian --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Spoke with Student</masterLabel>
+            <translation><!-- Spoke with Student --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Wrong Number</masterLabel>
+            <translation><!-- Wrong Number --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Call Success --></label>
+        <name>Call_Success__c</name>
+    </fields><fields>
+        <label><!-- Call Type --></label>
+        <name>Call_Type__c</name>
+        <picklistValues>
+            <masterLabel>Admit (College FA Package)</masterLabel>
+            <translation><!-- Admit (College FA Package) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (College New Admit)</masterLabel>
+            <translation><!-- Admit (College New Admit) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (College New Deposit)</masterLabel>
+            <translation><!-- Admit (College New Deposit) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (Conditional Admit)</masterLabel>
+            <translation><!-- Admit (Conditional Admit) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (EC FA Package)</masterLabel>
+            <translation><!-- Admit (EC FA Package) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (EC New Admit)</masterLabel>
+            <translation><!-- Admit (EC New Admit) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (EC New Deposit)</masterLabel>
+            <translation><!-- Admit (EC New Deposit) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (Enrollment Deposit Push)</masterLabel>
+            <translation><!-- Admit (Enrollment Deposit Push) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (FA Package)</masterLabel>
+            <translation><!-- Admit (FA Package) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (New Deposit/RSVP)</masterLabel>
+            <translation><!-- Admit (New Deposit/RSVP) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (New)</masterLabel>
+            <translation><!-- Admit (New) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (New) 20 Day Follow-up</masterLabel>
+            <translation><!-- Admit (New) 20 Day Follow-up --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (New) 7 Day Follow-up</masterLabel>
+            <translation><!-- Admit (New) 7 Day Follow-up --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (No FAFSA)</masterLabel>
+            <translation><!-- Admit (No FAFSA) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (Orientation Push)</masterLabel>
+            <translation><!-- Admit (Orientation Push) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (PAR New Admit)</masterLabel>
+            <translation><!-- Admit (PAR New Admit) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit (PAR New Deposit)</masterLabel>
+            <translation><!-- Admit (PAR New Deposit) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit Qualifier 1</masterLabel>
+            <translation><!-- Admit Qualifier 1 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admit Qualifier 2</masterLabel>
+            <translation><!-- Admit Qualifier 2 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Applicant (15 Day Incomplete)</masterLabel>
+            <translation><!-- Applicant (15 Day Incomplete) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Applicant (30 Day Incomplete)</masterLabel>
+            <translation><!-- Applicant (30 Day Incomplete) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Applicant (60 Day Incomplete)</masterLabel>
+            <translation><!-- Applicant (60 Day Incomplete) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Applicant (New)</masterLabel>
+            <translation><!-- Applicant (New) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Barrett Honors College</masterLabel>
+            <translation><!-- Barrett Honors College --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Campus Visit Attended (New)</masterLabel>
+            <translation><!-- Campus Visit Attended (New) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Campus or Major Mismatch Intervention</masterLabel>
+            <translation><!-- Campus or Major Mismatch Intervention --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Event Push</masterLabel>
+            <translation><!-- Event Push --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Event Reminder</masterLabel>
+            <translation><!-- Event Reminder --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Event Thank You</masterLabel>
+            <translation><!-- Event Thank You --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>I-20 Push</masterLabel>
+            <translation><!-- I-20 Push --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Incomplete Applicant Push</masterLabel>
+            <translation><!-- Incomplete Applicant Push --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Pathways</masterLabel>
+            <translation><!-- Pathways --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Post Enrollment (EC)</masterLabel>
+            <translation><!-- Post Enrollment (EC) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Post Enrollment (Final Needs)</masterLabel>
+            <translation><!-- Post Enrollment (Final Needs) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Prospect</masterLabel>
+            <translation><!-- Prospect --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Prospect Final Attempt</masterLabel>
+            <translation><!-- Prospect Final Attempt --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Prospect Second Attempt</masterLabel>
+            <translation><!-- Prospect Second Attempt --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Prospect Third Attempt</masterLabel>
+            <translation><!-- Prospect Third Attempt --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Campaign --></label>
+        <name>Campaign__c</name>
+        <relationshipLabel><!-- Recruitment Calls --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Created By Role --></label>
+        <name>Created_By_Role__c</name>
+    </fields><fields>
+        <label><!-- Opportunity --></label>
+        <name>Opportunity__c</name>
+        <relationshipLabel><!-- Recruitment Calls --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Recruitment Call</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Recruitment Calls</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Recruitment Call Layout</layout>
+        <sections>
+            <label><!-- Call Notes --></label>
+            <section>Call Notes</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts><recordTypes>
+        <label><!-- Recruitment Call --></label>
+        <name>Recruitment_Call</name>
+    </recordTypes><validationRules>
+        <errorMessage><!-- Please enter a reason why the call was not attempted. --></errorMessage>
+        <name>Call_Comment_Required_when_Not_Attempted</name>
+    </validationRules><validationRules>
+        <errorMessage><!-- You are not allowed to select &quot;Not Attempted&quot;, please select a different value or contact your supervisor. --></errorMessage>
+        <name>Call_Result_Not_Attempt_Supervisor_Only</name>
+    </validationRules></CustomObjectTranslation>

@@ -20,6 +20,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         HS.Name = 'Test High School';
         insert HS;
 
+        
         Contact con = new Contact();
         con.FirstName = 'TestFirstName';
         con.LastName = 'TestLastName';
@@ -730,7 +731,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         Insert Con;
 
         Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];
-
+		System.assertNotEquals(con.AccountId, NULL);
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'Location';
         aTar1.User__c = TestUser.Id;
@@ -1247,55 +1248,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         System.Assert(newLeadList[0].OwnerId == testUser.Id, 'Territory Assignment did not assign Owner correctly for Lead/Last Institution');
     }
 
-    @isTest public static void testLeadGeoMarket()
-    {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
-
-        Key_Value__c KVLead = new Key_Value__c();
-        KVLead.Geomarket_ZIP__c = '84108';
-        KVLead.Geomarket_Code__c = 'UT-01';
-        insert KVLead;
-
-        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
-        aTar1.Rule_Type__c = 'Geomarket';
-        aTar1.Geomarket__c = 'UT-01';
-        aTar1.Opportunity_Type__c = 'First Time Freshman';
-        aTar1.User__c = TestUser.Id;
-        insert aTar1;
-
-        List<Lead> leadList = new List<Lead>();
-
-        for (Integer i=0;i<1;i++)
-        {
-            Lead l = new Lead(
-                LastName='LName'+i,
-                FirstName='FName'+i,
-                Company='Company',
-                PostalCode='84108',
-                Email='test'+i+'@test.test',
-                LeadSource='Email',
-                Type__c='First Time Freshman'
-            );
-            leadList.add(l);
-        }
-
-
-        Test.startTest();
-        insert leadList;
-
-        Test.stopTest();
-
-        List<Lead> newLeadList = new List<Lead>([
-            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-            FROM Lead
-            WHERE Id = :leadList[0].Id
-            LIMIT 1
-        ]);
-
-        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Geomarket, Type ' +  newLeadList[0].Type__c,'Rule did not assign correctly by rule type Lead/GeoMarket');
-    }
-
-
     @isTest public static void testLeadState()
     {
         User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
@@ -1429,5 +1381,29 @@ public without sharing class Test_TerritoryAssignmentHelper
         updatedLead = [SELECT OwnerId FROM Lead WHERE Id = :updatedLead.Id];
 
         System.assertEquals(testUsers[1].Id, updatedLead.OwnerId,'Rule did not assign correctly when changing relevant fields');
+    }
+    
+    public testmethod static void testErrorLogger(){
+        Test.startTest();
+        TerritoryAssignmentHelper.updateContactList(NULL);
+        TerritoryAssignmentHelper.updateOpportunityList(NULL);
+        Test.stopTest();
+        
+        List<Case> errorList = [Select Id FROM Case];
+        
+        System.assertEquals(2, errorList.size());
+    }
+    
+    public testmethod static void testTerritoryAssignmentRule(){
+        Territory_Assignment_Rule__c testRule = new Territory_Assignment_Rule__c();
+        List<User> userList = [Select Id FROM User LIMIT 2];
+        testRule.User__c = userList[0].Id;
+        insert testRule;
+        
+        testRule.User__c = userList[1].Id;
+        update testRule;
+        List<Territory_Assignment_Rule__c> ruleList = [Select User__c FROM Territory_Assignment_Rule__c];
+        System.assertEquals(userList[1].Id, ruleList[0].User__c);
+        
     }
 }

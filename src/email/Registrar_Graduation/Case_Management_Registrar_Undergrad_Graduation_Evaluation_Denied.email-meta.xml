@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Default template for the Registrar - Undergrad Graduation Evaluation Denied</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management Registrar Undergrad Graduation Evaluation Denied</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Student ID: {!Contact.EMPLID__c}
+
+Thank you for submitting your application for graduation from Arizona State University. At this time, your application has been denied for the following reason(s):
+
+You have not completed the total hours required for your degree and you have not indicated an adequate number of potential transfer credits. The university requires a minimum of 120 total credit hours.
+
+
+You have not completed the total upper division hours required for your degree and you have not indicated an adequate number of potential upper division transfer credits. The university requires a minimum of 45 (51 for business degrees) total upper division credit hours.
+
+
+Please speak with your advisor if you have questions. If corrections need to be made to your record, or if you are transferring in hours from another institution, please contact the Graduation office at graduation@asu.edu or 480-965-3256. It is imperative that you contact the Graduation office to avoid your immediate withdrawal from the graduation process. If you will not meet the requirements in the original semester you requested, you will need to reapply, with no additional fee, for a future graduation date.
+
+
+Sincerely,
+{!Case.OwnerFullName}
+
+Graduation
+University Registrar Services
+Arizona State University
+Phone: (480) 965-3256
+www.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

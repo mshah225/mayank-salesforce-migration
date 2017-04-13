@@ -1,0 +1,8 @@
+<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
+<tr valign="top" height="400" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[Hello {!Contact.FirstName},<br><br>It was a pleasure speaking with you today. Please find a summary of our discussion below for your reference.&nbsp;<div><br></div><div><br></div><div>If you have any follow up questions please email <span class="caseEventBody"><span class="caseEventRow"><span class="feeditemtext cxfeeditemtext"><a href="mailto:ncprehealth@asu.edu">ncprehealth@asu.edu</a> </span></span></span>and we will get back to you as soon as possible. <br><br><br>Regards,<br><br><b><br></b><b>New College of Interdisciplinary Arts &amp; Sciences</b><br>
+Arizona State University<br>
+Pre-Health Professions Advising</div><div><a href="https://www.facebook.com/ASU.NCPreHealth?ref=hl" target="_blank">Visit our Facebook Page</a><br><a href="mailto:ncprehealth@asu.edu?Subject=NCIAS%20%Pre-Health%20%Four%20%Point%20%Advising" target="_top">ncprehealth@asu.edu</a><br><font color="#C0C0C0"><br>{!Case.Thread_Id}</font><br><br></div>]]></td>
+</tr>
+</table>

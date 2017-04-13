@@ -1,0 +1,391 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Committee --></label>
+        <name>Committee__c</name>
+    </fields><fields>
+        <label><!-- Owner Name --></label>
+        <name>Owner_Name__c</name>
+    </fields><fields>
+        <help><!-- This is used for Coach Assignment and Advisor Manager access. The Advisor Manager record should have one of these Plan Code values in the Success_Resource.Plan_Code__c field in order to have access to this POD&apos;s queue. --></help>
+        <label><!-- Plans --></label>
+        <name>Plans__c</name>
+        <picklistValues>
+            <masterLabel>ARPUPBSP</masterLabel>
+            <translation><!-- ARPUPBSP --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ASPGSBA</masterLabel>
+            <translation><!-- ASPGSBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ASPGSBS</masterLabel>
+            <translation><!-- ASPGSBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BABDABS</masterLabel>
+            <translation><!-- BABDABS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BABUSBABA</masterLabel>
+            <translation><!-- BABUSBABA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BABUSCBA</masterLabel>
+            <translation><!-- BABUSCBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BABUSFIMBA</masterLabel>
+            <translation><!-- BABUSFIMBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BABUSGBA</masterLabel>
+            <translation><!-- BABUSGBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BABUSGLBA</masterLabel>
+            <translation><!-- BABUSGLBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BABUSRBA</masterLabel>
+            <translation><!-- BABUSRBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BABUSSBA</masterLabel>
+            <translation><!-- BABUSSBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BABUSTBA</masterLabel>
+            <translation><!-- BABUSTBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BAFIMBS</masterLabel>
+            <translation><!-- BAFIMBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BAMGTBS</masterLabel>
+            <translation><!-- BAMGTBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BAMKTBS</masterLabel>
+            <translation><!-- BAMKTBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>CSMCMSTBA</masterLabel>
+            <translation><!-- CSMCMSTBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ECNTRCBS</masterLabel>
+            <translation><!-- ECNTRCBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ECNTRMBS</masterLabel>
+            <translation><!-- ECNTRMBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>EDSLSTBAE</masterLabel>
+            <translation><!-- EDSLSTBAE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ESEEEBSE</masterLabel>
+            <translation><!-- ESEEEBSE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ESEMGBSE</masterLabel>
+            <translation><!-- ESEMGBSE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>FAARTHBA</masterLabel>
+            <translation><!-- FAARTHBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAASBBA</masterLabel>
+            <translation><!-- LAASBBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LABLSBLS</masterLabel>
+            <translation><!-- LABLSBLS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LACOMBS</masterLabel>
+            <translation><!-- LACOMBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAENGBA</masterLabel>
+            <translation><!-- LAENGBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAFASBS</masterLabel>
+            <translation><!-- LAFASBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAFMSBA</masterLabel>
+            <translation><!-- LAFMSBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAGCUBA</masterLabel>
+            <translation><!-- LAGCUBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAGCUBS</masterLabel>
+            <translation><!-- LAGCUBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAHISBA</masterLabel>
+            <translation><!-- LAHISBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAJUSBS</masterLabel>
+            <translation><!-- LAJUSBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAPHIBA</masterLabel>
+            <translation><!-- LAPHIBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAPHIMPBA</masterLabel>
+            <translation><!-- LAPHIMPBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAPOSBA</masterLabel>
+            <translation><!-- LAPOSBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAPOSBS</masterLabel>
+            <translation><!-- LAPOSBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LARELBA</masterLabel>
+            <translation><!-- LARELBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LASOCBS</masterLabel>
+            <translation><!-- LASOCBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LASPABA</masterLabel>
+            <translation><!-- LASPABA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LASSHBA</masterLabel>
+            <translation><!-- LASSHBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LAWSTBA</masterLabel>
+            <translation><!-- LAWSTBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LSBISBIS</masterLabel>
+            <translation><!-- LSBISBIS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LSORGBIS</masterLabel>
+            <translation><!-- LSORGBIS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LSORGLBA</masterLabel>
+            <translation><!-- LSORGLBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LSTECBS</masterLabel>
+            <translation><!-- LSTECBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NHHEHPBS</masterLabel>
+            <translation><!-- NHHEHPBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NUCHLTBS</masterLabel>
+            <translation><!-- NUCHLTBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NUHCCOBS</masterLabel>
+            <translation><!-- NUHCCOBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NUHSCBAS</masterLabel>
+            <translation><!-- NUHSCBAS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NUHSCHLCBS</masterLabel>
+            <translation><!-- NUHSCHLCBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NUIHLTBS</masterLabel>
+            <translation><!-- NUIHLTBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NUNURDBSN</masterLabel>
+            <translation><!-- NUNURDBSN --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>PPCASPBA</masterLabel>
+            <translation><!-- PPCASPBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>PPCRIMJBS</masterLabel>
+            <translation><!-- PPCRIMJBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>PPPAFBS</masterLabel>
+            <translation><!-- PPPAFBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>PPPAFEHBS</masterLabel>
+            <translation><!-- PPPAFEHBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SUSUSTBA</masterLabel>
+            <translation><!-- SUSUSTBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SUSUSTBS</masterLabel>
+            <translation><!-- SUSUSTBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TSGITBS</masterLabel>
+            <translation><!-- TSGITBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TSIFTBS</masterLabel>
+            <translation><!-- TSIFTBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TSIMCOBAS</masterLabel>
+            <translation><!-- TSIMCOBAS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TSIWDBAS</masterLabel>
+            <translation><!-- TSIWDBAS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TSSERBS</masterLabel>
+            <translation><!-- TSSERBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TSTEMBS</masterLabel>
+            <translation><!-- TSTEMBS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UCEMTPEXPL</masterLabel>
+            <translation><!-- UCEMTPEXPL --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UCHSCIEXPL</masterLabel>
+            <translation><!-- UCHSCIEXPL --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UCHUFAEXPL</masterLabel>
+            <translation><!-- UCHUFAEXPL --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UCSBSEXPL</masterLabel>
+            <translation><!-- UCSBSEXPL --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unknown0</masterLabel>
+            <translation><!-- Unknown0 --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Primary Email --></label>
+        <name>Primary_Email__c</name>
+    </fields><fields>
+        <help><!-- This is used for Coach Assignment and Advisor Manager access. The Advisor Manager record should have one of these Program Code values in the Success_Resource_Program_Code__c field in order to have access to this POD&apos;s queue. --></help>
+        <label><!-- Programs --></label>
+        <name>Program__c</name>
+        <picklistValues>
+            <masterLabel>GRAD</masterLabel>
+            <translation><!-- GRAD --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGAS</masterLabel>
+            <translation><!-- UGAS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGBA</masterLabel>
+            <translation><!-- UGBA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGCS</masterLabel>
+            <translation><!-- UGCS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGES</masterLabel>
+            <translation><!-- UGES --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGHI</masterLabel>
+            <translation><!-- UGHI --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGLA</masterLabel>
+            <translation><!-- UGLA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGLS</masterLabel>
+            <translation><!-- UGLS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGNH</masterLabel>
+            <translation><!-- UGNH --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGNU</masterLabel>
+            <translation><!-- UGNU --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGPP</masterLabel>
+            <translation><!-- UGPP --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGSU</masterLabel>
+            <translation><!-- UGSU --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGTB</masterLabel>
+            <translation><!-- UGTB --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGTE</masterLabel>
+            <translation><!-- UGTE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UGUC</masterLabel>
+            <translation><!-- UGUC --></translation>
+        </picklistValues>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Success Pod</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Success Pods</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Success Pod Advisor Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Success Pod Coach Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Success Pod Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts><recordTypes>
+        <label><!-- Advisor --></label>
+        <name>Advisor</name>
+    </recordTypes><recordTypes>
+        <label><!-- Coach --></label>
+        <name>Coach</name>
+    </recordTypes><webLinks>
+        <label><!-- Assign_Coaches --></label>
+        <name>Assign_Coaches</name>
+    </webLinks></CustomObjectTranslation>

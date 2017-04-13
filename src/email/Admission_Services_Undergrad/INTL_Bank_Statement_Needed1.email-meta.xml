@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Send proof of funds for your financial guarantee</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>INTL Bank Statement Needed (no header)</name>
+    <style>none</style>
+    <subject>Additional financial document for your file</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for sending your financial guarantee form. However, you also need to send us a proof of funds for $45,533 in the form of a bank statement. Please email this document to fg@asu.edu.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

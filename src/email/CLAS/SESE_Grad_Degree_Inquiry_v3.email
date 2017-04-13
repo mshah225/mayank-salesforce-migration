@@ -1,0 +1,98 @@
+<table border="0" cellpadding="5" width="600" cellspacing="5" height="400" >
+<tr valign="top" height="50" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="1" >
+<![CDATA[{!Contact.FirstName},]]></td>
+</tr>
+<tr valign="top" height="300" >
+<td tEditID="c1r2" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r2" locked="0" >
+<![CDATA[Thank you for your interest in the graduate programs of the School of Earth and Space Exploration at Arizona State University! Our innovative, interdisciplinary school currently offers MS and PhD degrees in Astrophysics and Geological Sciences as well as a PhD in Exploration Systems Design.<br><br><u><b>Admission</b></u><br>Our website has details on our graduate programs, including <a href="https://sese.asu.edu/degree-programs/graduate">program descriptions</a>, <a href="https://sese.asu.edu/admission/graduate-admission">admission application details</a> and <a href="https://sese.asu.edu/student-life/financial-support">financial support.</a><br><br>Admission is possible for both spring and fall semesters, however spring admission is very limited. To be admitted to a spring semester, a student must have an arrangement with a faculty member who endorses her or his application and has the funding to support the student as a research assistant.<br><br>We strongly recommend that all applicants review our <a href="https://sese.asu.edu/research">research focus website</a> to identify faculty members who share similar research interests. We encourage you to contact these faculty members for more information regarding their research program. These connections can greatly enhance an applicant's visibility for admission and can help identify potential research project ideas should the applicant be admitted to our program. If you have any questions about how your background might relate to our degree programs this will be a good opportunity to get feedback.<br><br>Note: All of our application materials are submitted electronically. Applicants must provide all of the required materials to be considered for admission.<br><br><u><b>Additional Questions?</b></u><br>Please see our <a href="https://sese.asu.edu/admission/graduate-admission">FAQs</a> for additional information. After you have reviewed our site or contacted prospective faculty advisors, please feel free to contact me with specific questions about our graduate programs and the admission process.<br><br>I hope this information is helpful. Have a wonderful day.<br><br>Becca Dial<br>Academic Support Specialist<br>School of Earth and Space Exploration<br>PO Box 876004<br>Tempe, AZ 85287-6004<br>Email: bdial@asu.edu<br>Phone: (480) 965-2213<br>
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:0in;
+	line-height:115%;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:Calibri;
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:Calibri;
+	mso-fareast-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-noshow:yes;
+	mso-style-priority:99;
+	color:purple;
+	mso-themecolor:followedhyperlink;
+	text-decoration:underline;
+	text-underline:single;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	mso-default-props:yes;
+	font-size:11.0pt;
+	mso-ansi-font-size:11.0pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:Calibri;
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:Calibri;
+	mso-fareast-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+.MsoPapDefault
+	{mso-style-type:export-only;
+	margin-bottom:10.0pt;
+	line-height:115%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>]]></td>
+</tr>
+<tr valign="top" height="50" >
+<td tEditID="c1r3" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r3" locked="1" >
+<![CDATA[<font face="Arial,Sans-Serif" size="2"><font color="#CCCCCC" size="1">{!Case.Thread_Id}</font></font>]]></td>
+</tr>
+</table>

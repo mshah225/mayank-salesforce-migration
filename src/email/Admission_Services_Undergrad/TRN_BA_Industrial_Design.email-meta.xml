@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Details on earning a BA in Industrial Design as a transfer student (requirements)</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TRN BA Industrial Design</name>
+    <style>freeForm</style>
+    <subject>Interested in the BA in industrial design at ASU?</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University! The BA in industrial design is an eight-semester program requiring sequential completion of studio course work (or its approved equivalent) at any point of entry. Admission to the BSD professional programs is highly competitive and begins after completion of lower-division requirements, with milestone applications and portfolios submitted in the spring semester of the first year. For more details on the degree, please review the following site: https://webapp4.asu.edu/programs/t5/majorinfo/ASU00/ARINDBSD/undergrad/false
+
+Transfer students can apply directly to pass the milestones but must have all first-year course requirements satisfied (DSC 101, IND 120, 121 and 122) and previously received approval for the transfer courses equivalent to the first-year required courses, as well as submit a portfolio and be admitted to ASU for the fall semester by the deadline.
+
+View more information about applying to Herberger explore this site: http://herbergerinstitute.asu.edu/admissions/undergrad/applying/major.php
+Be sure to review the milestones listed here: http://herbergerinstitute.asu.edu/degrees/milestone.php
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

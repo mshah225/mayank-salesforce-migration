@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>HealthSolutions_letterhead</letterhead>
+    <name>Pros GRNH Grad 2nd Attempt</name>
+    <style>freeForm</style>
+    <subject>College of Health Solutions: Get started!</subject>
+    <textOnly>{!Contact.FirstName},
+
+You&apos;ve recently expressed interest in enrolling in one of ASU&apos;s College of Health Solutions’ graduate programs. The college anticipates and responds to demands for highly qualified health professionals as the health industry transforms. Classes are offered online, full-time and part-time, and in the evenings  to meet the needs of working professionals, students moving directly into a graduate program, or people who are making career changes.
+
+Are you considering starting a graduate program in the fall? If so, let’s work together to create a timeline to get your application submitted before the program begins. If the deadline has passed, I’d like us to connect and talk about the next start date.
+
+Please don’t hesitate to contact me with any other questions or if you’d like some application tips.
+
+Sincerely,
+
+{!User.Email}
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

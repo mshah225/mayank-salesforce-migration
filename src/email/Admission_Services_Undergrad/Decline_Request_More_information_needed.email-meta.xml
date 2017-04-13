@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Students whose email does not match our records for a decline request.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Decline Request - More information needed</name>
+    <style>freeForm</style>
+    <subject>Information needed to cancel application</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+We received your request to cancel your application to Arizona State University, however we’re unable to process your request because your email does not match our records.
+
+You may request to cancel your application by logging in to https://students.asu.edu/canceladmissions with your ASURITE UserID and password. If your forgot your ASURITE ID or password, you may call the Help Desk at 480-965-6500 to reset your password.
+
+If you are unable to access the form, you may also email your request to decline@asu.edu using your email of record with ASU (the one you put on your application) or your offical asu.edu email address. You must include either your ASU ID number or date of birth (mm/dd/yy). This information verifies that we are canceling the correct application.
+
+If you have any questions, please contact your personal admission representative at https://asu.edu/findmyrep. We wish you all the best.
+
+Sincerely,
+
+Admission Services
+asu.edu
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,17 @@
+<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
+<tr valign="top" height="400" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[<span id="docs-internal-guid-bd2217e5-43a9-3364-c8d3-15289a3e70a9"><p dir="ltr" style="color: rgb(0, 0, 0); font-family: arial; font-size: 12pt; line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;">Dear&nbsp;{!Contact.FirstName},</p><br><p dir="ltr" style="margin-top: 0pt; margin-bottom: 0pt;"><font face="Arial"><span style="font-size: 15px; line-height: 20.7px; white-space: pre-wrap;">I am pleased to offer you a ${xxxx} <b>First Generation Scholarship</b> from ASU Colleges at Lake Havasu City. A first-generation college student is one whose parent(s) or legal guardian(s) have not completed a bachelor’s degree at a four-year college or university. This one-time financial award recognizes you as the first in your family who will obtain a bachelor’s degree — a notable honor.
+
+ASU continues to honor its longstanding commitment to socioeconomic diversity and access to education with more than 42 percent of enrolled Arizona residents reporting they will be the first in their family to go to a four-year college.
+
+You will see your scholarship posted in <a href="http://my.asu.edu">My ASU</a> and may use the scholarship in addition to any other financial aid you might receive. If you have any questions, please contact Student Recruitment Coordinator Laura Shuffler at <a href="ASULauraShuffler@asu.edu">ASULauraShuffler@asu.edu</a> or 928-854-9707.
+
+Sincerely,
+
+David A. Young
+Director
+ASU Colleges at Lake Havasu City
+<font color="#ffffff">{!Case.Thread_Id}</font></span></font></p><div style="color: rgb(0, 0, 0); font-family: arial; font-size: 12pt;"><span style="font-size: 15px; font-family: Arial; vertical-align: baseline; white-space: pre-wrap;"><br></span></div></span>]]></td>
+</tr>
+</table>

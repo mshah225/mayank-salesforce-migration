@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>RFI | Social Justice and Human Rights MA</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in Social Justice and Human Rights at ASU!</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for expressing interest in the Master of Arts in Social Justice and Human Rights program at Arizona State University. The MA in Social Justice and Human Rights is a theoretically and methodologically rigorous program addressing the urgent social issues of our time. Training students for research and advocacy roles in both the governmental and nongovernmental sectors, the program explores solutions for real-world problems related to human security, labor, migration, children, family, education and the environment.  For more information about the program feel free to review the MASJHR Program Handbook.  https://newcollege.asu.edu/sites/default/files/general/sjhr_graduate_handbook_2015-2016v1.pdf
+
+Be sure to review our application checklist at this address: https://drive.google.com/file/d/0B44BICxe1BtdX003ZHhEWWhnazg/view?usp=sharing for more information about the application process in an easy to follow format, and peruse our sample schedule here: https://drive.google.com/open?id=0B91ycyfLEFl7ZTVOaHNjTkNrdUE to explore the flexible curriculum available for both full-time and part-time students. Also, please take a moment to check out our new e-magazine on our site and see all the exciting work being done by our faculty and students.
+
+It&apos;s important to find the right fit in graduate school. A great way to learn more about this degree is to register for one of our upcoming information sessions. You can view the dates on our site, then email me to RSVP for any date you plan to attend.
+
+Kindest regards,
+Graduate Studies
+
+New College of Interdisciplinary Arts and Sciences
+Arizona State University, West campus
+nc.gradstudies@asu.edu
+
+
+
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

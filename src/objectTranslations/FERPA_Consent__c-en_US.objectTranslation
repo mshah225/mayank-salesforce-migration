@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- FERPA Consent for Access --></relationshipLabel>
+    </fields><fields>
+        <label><!-- FERPA Comments --></label>
+        <name>FERPA_Comments__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>FERPA Consent for Access</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>FERPA Consent for Access</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

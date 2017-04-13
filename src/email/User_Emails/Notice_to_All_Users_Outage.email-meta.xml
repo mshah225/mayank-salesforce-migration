@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Used to alert users when SF will be down.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Notice to All Users - Outage</name>
+    <style>freeForm</style>
+    <subject>Salesforce Offline Notice</subject>
+    <textOnly>Salesforce will be unavailable (off-line) on Friday, July 18 from 11:00 pm to 11:05 pm for regular maintenance.
+
+
+How will this affect you?
+
+You will not be able to login to Salesforce during this time and will need to re-enter your login credentials once the maintenance has completed.
+
+
+
+This maintenance window is for the production instance of Salesforce only, not the sandbox instances.
+
+
+
+Salesforce is updating to the Summer &apos;14 release. You may notice small changes once back online.
+
+
+What about public facing sites?
+
+Public facing sites such as the public knowledge base accessible from MyASU and RFI forms will not be available during this time.
+
+
+How do I get help if something doesn’t work correctly?
+
+You can use the Chatter function to post a question or you can send a email to salesforce.support@asu.edu.</textOnly>
+    <type>html</type>
+</EmailTemplate>

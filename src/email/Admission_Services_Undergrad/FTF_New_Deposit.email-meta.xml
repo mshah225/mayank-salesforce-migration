@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Post-deposit, take your next steps: orientation, housing, devil2devil, FAFSA, scholarship portal</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>FTF New Deposit</name>
+    <style>freeForm</style>
+    <subject>Thanks for paying your deposit. Welcome to the Sun Devil family!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for paying your enrollment deposit. Here are your next steps toward becoming an official Sun Devil!
+
+Next steps in My ASU (https://my.asu.edu)
+
+- Register for orientation (https://eoss.asu.edu/orientation) as soon as possible to get your preferred class schedule. Program dates are based on the college of your major and fill up fast.
+- Confirm your housing preferences (https://housing.asu.edu/). All freshmen are expected to live in the Residential College of their major.
+- Join devil2devil (https://students.asu.edu/devil2devil), ASU’s admitted student network, to connect with your classmates.
+
+
+Next steps for scholarships and financial aid
+
+- Submit your FAFSA (Free Application for Federal Student Aid) to qualify for financial aid at https://fafsa.ed.gov/, if you haven’t already.
+- Apply for additional scholarships through our scholarship portal at https://scholarships.asu.edu/.
+
+
+If you have any questions, please feel free to let me know.
+
+Go Devils!
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

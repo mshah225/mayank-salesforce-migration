@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Email after a student has signed a Guaranteed Program for Admission agreement for ASU.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TSA Students: &quot;Thank you for signing a GPA pathway&quot;</name>
+    <style>freeForm</style>
+    <subject>Thank you for signing a GPA agreement</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for signing up for the Guaranteed Program for Admission to Arizona State University. The GPA offers students at participating California community colleges tools and guidance from ASU on which courses to take while attending community college. Please make sure to view the major map, an outline of the courses you will need to take for your desired ASU program, at asu.edu/degrees. You can also use ASU’s Transfer Credit Guide to see how your community college classes will transfer to ASU.
+ 
+If you have any questions about your GPA pathway or ASU, please contact your transfer specialist, {!User.Recruiter_Full_Name__c}, at {!User.Recruiter_Email__c}.
+ 
+Thank you,
+
+{!User.FirstName}
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

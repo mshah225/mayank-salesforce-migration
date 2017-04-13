@@ -1,0 +1,317 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Test Scores --></relationshipLabel>
+    </fields><fields>
+        <label><!-- SAT Pre-2016 Score --></label>
+        <name>SAT_Pre_2016_Score__c</name>
+    </fields><fields>
+        <label><!-- Percentile --></label>
+        <name>Test_Component_Percentile__c</name>
+    </fields><fields>
+        <label><!-- Score --></label>
+        <name>Test_Component_Score__c</name>
+    </fields><fields>
+        <label><!-- Test Component --></label>
+        <name>Test_Component__c</name>
+        <picklistValues>
+            <masterLabel>Analytical</masterLabel>
+            <translation><!-- Analytical --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Art History</masterLabel>
+            <translation><!-- Art History --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Art: Studio Art - 2-D Design</masterLabel>
+            <translation><!-- Art: Studio Art - 2-D Design --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Art: Studio Art - 3-D Design</masterLabel>
+            <translation><!-- Art: Studio Art - 3-D Design --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Art: Studio Art - Drawing</masterLabel>
+            <translation><!-- Art: Studio Art - Drawing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Aural Subscore</masterLabel>
+            <translation><!-- Aural Subscore --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Biochemistry</masterLabel>
+            <translation><!-- Biochemistry --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Biochemistry, Cell &amp; Molecular Biology</masterLabel>
+            <translation><!-- Biochemistry, Cell &amp; Molecular Biology --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Biology</masterLabel>
+            <translation><!-- Biology --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Calculus AB</masterLabel>
+            <translation><!-- Calculus AB --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Calculus AB Subscore</masterLabel>
+            <translation><!-- Calculus AB Subscore --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Calculus BC</masterLabel>
+            <translation><!-- Calculus BC --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cell Biology</masterLabel>
+            <translation><!-- Cell Biology --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cellular and Molecular</masterLabel>
+            <translation><!-- Cellular and Molecular --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Chemistry</masterLabel>
+            <translation><!-- Chemistry --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Chinese Language &amp; Culture</masterLabel>
+            <translation><!-- Chinese Language &amp; Culture --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Composite</masterLabel>
+            <translation><!-- Composite --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Computer Science</masterLabel>
+            <translation><!-- Computer Science --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Computer Science A</masterLabel>
+            <translation><!-- Computer Science A --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Computer Science AB</masterLabel>
+            <translation><!-- Computer Science AB --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Economics: Macroeconomics</masterLabel>
+            <translation><!-- Economics: Macroeconomics --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Economics: Microeconomics</masterLabel>
+            <translation><!-- Economics: Microeconomics --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>English</masterLabel>
+            <translation><!-- English --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>English Language &amp; Culture</masterLabel>
+            <translation><!-- English Language &amp; Culture --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>English Literature &amp; Composition</masterLabel>
+            <translation><!-- English Literature &amp; Composition --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Environmental Science</masterLabel>
+            <translation><!-- Environmental Science --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>European History</masterLabel>
+            <translation><!-- European History --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Experimental Psychology</masterLabel>
+            <translation><!-- Experimental Psychology --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>French Language</masterLabel>
+            <translation><!-- French Language --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>French Literature</masterLabel>
+            <translation><!-- French Literature --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>German Language</masterLabel>
+            <translation><!-- German Language --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Government &amp; Politics: Comparitive</masterLabel>
+            <translation><!-- Government &amp; Politics: Comparitive --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Government &amp; Politics: United States</masterLabel>
+            <translation><!-- Government &amp; Politics: United States --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Human Geography</masterLabel>
+            <translation><!-- Human Geography --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Integrated Reasoning</masterLabel>
+            <translation><!-- Integrated Reasoning --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Italian Language &amp; Culture</masterLabel>
+            <translation><!-- Italian Language &amp; Culture --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Japanese Language &amp; Culture</masterLabel>
+            <translation><!-- Japanese Language &amp; Culture --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Latin: Literature</masterLabel>
+            <translation><!-- Latin: Literature --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Latin: Vergil</masterLabel>
+            <translation><!-- Latin: Vergil --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Literature in English</masterLabel>
+            <translation><!-- Literature in English --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mathematics</masterLabel>
+            <translation><!-- Mathematics --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Music Theory</masterLabel>
+            <translation><!-- Music Theory --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Nonaural Subscore</masterLabel>
+            <translation><!-- Nonaural Subscore --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Organismal Biology</masterLabel>
+            <translation><!-- Organismal Biology --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Overall</masterLabel>
+            <translation><!-- Overall --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Physics</masterLabel>
+            <translation><!-- Physics --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Physics B</masterLabel>
+            <translation><!-- Physics B --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Physics C - Electricty &amp; Magnetism</masterLabel>
+            <translation><!-- Physics C - Electricty &amp; Magnetism --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Physics C - Mechanics</masterLabel>
+            <translation><!-- Physics C - Mechanics --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Psychology</masterLabel>
+            <translation><!-- Psychology --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Quantitative</masterLabel>
+            <translation><!-- Quantitative --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SPEAK</masterLabel>
+            <translation><!-- SPEAK --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Social Psychology</masterLabel>
+            <translation><!-- Social Psychology --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Spanish Language</masterLabel>
+            <translation><!-- Spanish Language --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Spanish Literature</masterLabel>
+            <translation><!-- Spanish Literature --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Statistics</masterLabel>
+            <translation><!-- Statistics --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TSE</masterLabel>
+            <translation><!-- TSE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>United States History</masterLabel>
+            <translation><!-- United States History --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Verbal</masterLabel>
+            <translation><!-- Verbal --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>World History</masterLabel>
+            <translation><!-- World History --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Test Date --></label>
+        <name>Test_Date__c</name>
+    </fields><fields>
+        <label><!-- Test Record Number --></label>
+        <name>Test_Record_Number__c</name>
+    </fields><fields>
+        <label><!-- Test Source --></label>
+        <name>Test_Source__c</name>
+        <picklistValues>
+            <masterLabel>Official</masterLabel>
+            <translation><!-- Official --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Self-Reported</masterLabel>
+            <translation><!-- Self-Reported --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Test Type --></label>
+        <name>Test_Type__c</name>
+        <picklistValues>
+            <masterLabel>ACT</masterLabel>
+            <translation><!-- ACT --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>AP</masterLabel>
+            <translation><!-- AP --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>GMAT</masterLabel>
+            <translation><!-- GMAT --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>GRE</masterLabel>
+            <translation><!-- GRE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>GRE Subject</masterLabel>
+            <translation><!-- GRE Subject --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SAT</masterLabel>
+            <translation><!-- SAT --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TOEFL</masterLabel>
+            <translation><!-- TOEFL --></translation>
+        </picklistValues>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Test Score</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Test Scores</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Test Score Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Academic Group --></label>
+        <name>Academic_Group__c</name>
+        <relationshipLabel><!-- Programs --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Campus --></label>
+        <name>Campus__c</name>
+        <relationshipLabel><!-- Programs --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Career --></label>
+        <name>Career__c</name>
+        <picklistValues>
+            <masterLabel>Graduate</masterLabel>
+            <translation><!-- Graduate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Law</masterLabel>
+            <translation><!-- Law --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Non-Credit</masterLabel>
+            <translation><!-- Non-Credit --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Undergraduate</masterLabel>
+            <translation><!-- Undergraduate --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Effective Date --></label>
+        <name>Effective_Date__c</name>
+    </fields><fields>
+        <label><!-- Program Code --></label>
+        <name>Program_Code__c</name>
+    </fields><fields>
+        <label><!-- Program Status --></label>
+        <name>Program_Status__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Program</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Programs</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Program Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

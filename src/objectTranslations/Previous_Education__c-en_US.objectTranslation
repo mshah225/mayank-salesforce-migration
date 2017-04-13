@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- ASU Geomarket --></label>
+        <name>ASU_Geomarket__c</name>
+    </fields><fields>
+        <help><!-- Represents the ATP or CEEB Code --></help>
+        <label><!-- ATP Code --></label>
+        <name>ATP_Code__c</name>
+    </fields><fields>
+        <label><!-- Institution --></label>
+        <name>Account__c</name>
+        <relationshipLabel><!-- Previous Education --></relationshipLabel>
+    </fields><fields>
+        <help><!-- This student&apos;s class rank, in percentile format (rounded to a whole number). Calculated from the Class Rank and Class Size stored on this Previous Education Record. --></help>
+        <label><!-- Class Rank Percentile --></label>
+        <name>Class_Rank_Percentile__c</name>
+    </fields><fields>
+        <help><!-- This student&apos;s class rank. Used along with Class Size to calculate Class Rank Percentile. --></help>
+        <label><!-- Class Rank --></label>
+        <name>Class_Rank__c</name>
+    </fields><fields>
+        <help><!-- The size of the graduating class at the institution referenced on this Previous Education record. Used along with Class Rank to calculate Class Rank Percentile. --></help>
+        <label><!-- Class Size --></label>
+        <name>Class_Size__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Previous Education --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Degree Type --></label>
+        <name>Degree_Type__c</name>
+        <picklistValues>
+            <masterLabel>Certificate</masterLabel>
+            <translation><!-- Certificate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>General Ed</masterLabel>
+            <translation><!-- General Ed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Graduate</masterLabel>
+            <translation><!-- Graduate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Undergraduate</masterLabel>
+            <translation><!-- Undergraduate --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Degree --></label>
+        <name>Degree__c</name>
+        <relationshipLabel><!-- Previous Education --></relationshipLabel>
+    </fields><fields>
+        <help><!-- GPA at listed institution --></help>
+        <label><!-- GPA --></label>
+        <name>GPA__c</name>
+    </fields><fields>
+        <label><!-- Graduation Date --></label>
+        <name>Graduation_Date__c</name>
+    </fields><fields>
+        <label><!-- Institution Type --></label>
+        <name>Institution_Type__c</name>
+    </fields><fields>
+        <label><!-- Is Last High School Attended --></label>
+        <name>Is_Last_High_School_Attended__c</name>
+    </fields><fields>
+        <help><!-- A connection to the Source (Campaign) record associated with the origin of the information on this Previous Education record. --></help>
+        <label><!-- Source --></label>
+        <name>Source__c</name>
+        <relationshipLabel><!-- Previous Education --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Previous Education</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Previous Education</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Previous Education Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

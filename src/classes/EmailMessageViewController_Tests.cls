@@ -75,8 +75,8 @@ private class EmailMessageViewController_Tests {
         case1.ASR_Comments__c = 'comments here';
         case1.ASR_Reasons__c = 'reasons here';
         case1.ASR_Actions__c = 'actions here';
-        case1.Recommended_Actions__c = 'address financial issues;adjust course balance;Other';
-        case1.Reasons_Not_Returning__c = 'Academic;Disqualified;Other';
+        case1.Recommended_Actions__c = 'address financial issues;adjust course balance';
+        case1.Reasons_Not_Returning__c = 'Academic;Disqualified';
         insert case1;
         
         //create email message

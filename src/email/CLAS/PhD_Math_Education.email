@@ -1,0 +1,26 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003SECS&oid=00Dd0000000hLoc&lastMod=1405969488000" 
+                     width="60%" style="padding-top:40px;max-width:600px;"/></center>
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <p>
+
+{!Contact.FirstName},<br /><br />
+Thank you for your interest in the doctoral program in mathematics education offered by the School of Mathematical and Statistical Sciences at Arizona State University.<br /><br />
+Please review the <a href=http://math.asu.edu/degree-programs/phd-mathematics-education>program description</a> for admission and degree requirements and for more details on <a href=http://math.asu.edu/degree-programs/how-apply>how to apply</a>. If you have any questions regarding the degree program after reviewing the information above, please contact any of the faculty advisors for mathematics education:<br /><br />
+<a href="mailto:marilyn.carlson@asu.edu?Subject=Math%20Education%20Request%20For%20Information"target="_top">Marilyn Carlson</a><br />
+<a href="mailto:khroh@asu.edu?Subject=Math%20Education%20Request%20For%20Information"target="_top">Kyeong Hah Roh</a><br />
+<a href="mailto:pat.thompson@asu.edu?Subject=Math%20Education%20Request%20For%20Information"target="_top">Pat Thompson</a><br /><br />
+Sincerely,<br /><br />
+
+Debbie Olson<br />
+Graduate Program Coordinator<br />
+ASU School of Mathematical and Statistical Sciences<br />
+<a href="mailto:grad.math@asu.edu?Subject=Request%20For%20Information"target="_top">grad.math@asu.edu</a><br /><br /><br />
+
+<img class="logo_top" src="https://asu--c.na14.content.force.com/servlet/servlet.ImageServer?id=015d0000004MQIM&oid=00Dd0000000hLoc&lastMod=1413391545000"
+                     width="60%" style="padding-top:20px;max-width:150px;" img align="right"/>

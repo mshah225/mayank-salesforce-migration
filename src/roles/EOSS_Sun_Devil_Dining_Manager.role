@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Read</contactAccessLevel>
+    <description>Sun Devil Dining Managers</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>EOSS Sun Devil Dining Manager</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>S_Service</parentRole>
+</Role>

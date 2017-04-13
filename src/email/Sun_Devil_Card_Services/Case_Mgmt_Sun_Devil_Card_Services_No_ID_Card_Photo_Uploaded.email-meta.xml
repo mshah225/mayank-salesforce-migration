@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Sun Devil Card Services</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Sun Devil Card Services No ID Card Photo Uploaded</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Unfortunately, you have not completed the directions required to receive an ID.  Please click the Submit link below to submit your ID card photo properly.
+
+
+After your photo is approved, please repeat step 3.
+
+1.  Submit  your photo (This is for your ID card) and approved identification to Sun Devil Card Services.https://webapp4.asu.edu/cardservices/
+
+You will need to attach a valid, current photo ID as proof of identity.
+Acceptable forms of ID are US drivers’ license or state issued ID
+card, US visa, or a passport.
+
+2.  Wait for your photo submission approval email.
+
+3.  Once approved, choose whether you want to pick up your card or have it mailed. Fill out the appropriate form. 
+A:  Mail Request Form  
+https://cfo.asu.edu/campus-id-card-request-form
+
+B:  Pickup Request Form
+https://cfo.asu.edu/webform/basic-sun-card-office-pick-form
+
+Regards,
+{!User.FirstName} {!User.LastName}
+
+Sun Devil Card Services
+Arizona State University
+Phone: 480-965-2273
+cardservices.asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

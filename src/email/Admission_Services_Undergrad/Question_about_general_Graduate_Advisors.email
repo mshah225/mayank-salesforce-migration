@@ -1,0 +1,6 @@
+<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
+<tr valign="top" height="400" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[Hello&nbsp;{!Contact.FirstName},<br><br>Thank you for contacting Graduate Admission Services. We do not have any general advisors in our office. To identify your personal academic advisor, you will need to contact the academic department directly. Telephone numbers and email addresses are listed for each degree program in the <a href="https://webapp4.asu.edu/programs/t5/graduate/false?init=false&amp;nopassive=true">academic catalog</a>. &nbsp; <br><div><br>Thank you,<br><br>Graduate Admission Services<br><br>If you have any additional questions related to this, please reply to this email.<br><br><font color="#C0C0C0">{!Case.Thread_Id}</font><br></div>]]></td>
+</tr>
+</table>

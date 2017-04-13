@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Financial Aid template for CAP Benefits Ineligible Enrolled</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management CAP Benefits Ineligible Enrolled</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Our records indicate that you are currently ineligible to participate in the Starbucks College Achievement Plan. To be eligible to participate, a student admitted to a major in ASU Online needs to meet all of the following criteria:
+
+Be employed in the U. S. by Starbucks or one of its U. S. subsidiaries, inclusive of Teavana, Evolution Fresh, La Boulange, Coffee House Holdings and Seattle’s Best Coffee.
+Be eligible for Starbucks benefits on the first day of the session in which the student is enrolled.
+Not have a bachelor’s degree from a nationally- or regionally-accredited college or university.
+Complete a Free Application for Federal Student Aid (FAFSA) for each new academic year.
+
+
+While you are still welcomed to pursue your academic goals at ASU, you will not be able to take advantage of the CAP Scholarship or CAP Reimbursement until you meet all of the above criteria.
+
+If you have questions about your eligibility for employer-provided benefits, please call the Starbucks College Achievement Plan team at 206-318-5860 or email them at starbuckscollegeplan@starbucks.com.
+
+To best understand your specific situation and how your individual aid package works, it’s important talk with a Financial Aid Counselor before acting on your aid. You can call 480-965-3200 or reply to this email.
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+Financial Aid and Scholarship Services
+Arizona State University
+PO Box 870412
+Tempe, AZ 85287-0412
+Phone: 1-844-278-6693
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

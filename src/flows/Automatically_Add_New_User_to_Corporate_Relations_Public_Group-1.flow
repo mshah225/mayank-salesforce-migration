@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <interviewLabel>Automatically Add New User to Corporate Relations Public Group {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Automatically Add New User to Corporate Relations Public Group</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Automatically_Add_New_User_to_Corporate_Relations_Public_Group</name>
+        <label>Automatically Add New User to Corporate Relations Public Group</label>
+        <locationX>33</locationX>
+        <locationY>15</locationY>
+        <inputAssignments>
+            <field>GroupId</field>
+            <value>
+                <elementReference>CorporatePublicGroupId_VarT</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>UserOrGroupId</field>
+            <value>
+                <elementReference>UserId_VarT</elementReference>
+            </value>
+        </inputAssignments>
+        <object>GroupMember</object>
+    </recordCreates>
+    <startElementReference>Automatically_Add_New_User_to_Corporate_Relations_Public_Group</startElementReference>
+    <variables>
+        <description>Unique Id for the Corporate Relations Public Group</description>
+        <name>CorporatePublicGroupId_VarT</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <stringValue>00Gd00000029O24</stringValue>
+        </value>
+    </variables>
+    <variables>
+        <description>User Account Unique Id</description>
+        <name>UserId_VarT</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <stringValue></stringValue>
+        </value>
+    </variables>
+</Flow>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Notice to All Users</name>
+    <style>freeForm</style>
+    <subject>Upcoming changes to Salesforce</subject>
+    <textOnly>Hello,
+
+
+ASU will enable the Case Management feature in Salesforce starting Friday, May 2nd.  Case management will allow ASU to track questions or issues that a student might have asked a student service group through his/her lifecycle at ASU in one place.  Along with this feature, ASU will load some basic bio-demo information about current students, applicants, admitted students, a limited set of alumni, and employees to Salesforce.  The process to enable the bio-demo import and the case management feature will start on Wednesday, April 30th at 6pm and end on Friday, May 2nd in the morning.
+
+
+How will this affect you?
+
+On Wednesday, April 30th at 6pm until Friday morning, May 2nd, your access to the Salesforce interface at https://salesforce.asu.edu will be restricted.  After Friday morning, May 2nd, you will notice some additional fields on the Contact page for a student.  You will also notice the additional contacts belonging to the population being loaded.  Leads will be converted to contacts as normal.
+
+
+
+Additionally, if you wish, you will also be able to login to Salesforce using your ASURITE id and password using the following URL: https://salesforce.asu.edu.
+
+
+What about public facing sites?
+
+Public facing sites such as the public knowledge base accessible from MyASU and RFI forms will still be available, and will still be able to interface with Salesforce to retrieve data (such as knowledge articles) and enter data (such as leads).
+
+
+How do I get help if something doesn’t work correctly?
+
+You can use the Chatter function to post a question or you can send a note to salesforce.support@asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

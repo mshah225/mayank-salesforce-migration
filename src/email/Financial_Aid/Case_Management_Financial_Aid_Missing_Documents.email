@@ -1,0 +1,53 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    
+             Dear {!Contact.FirstName}, <br /><br />
+
+In order to evaluate your financial aid eligibility for &lt;term&gt; there are outstanding documents that must be submitted to Financial Aid and Scholarship Services by &lt;date&gt;
+<br><br>
+In order to finalize your awards we need the documentation listed below:<br /><br />
+&lt;document&gt;<br /><br />
+Once we receive all required documentation, we will process your financial aid file. Submit this information today to ensure your funds are available and monitor your tasks on My ASU regularly for these and additional requests throughout the year.<br/><br/>
+If you have any questions, please cal us toll free at 855-278-5080, contact us through your My ASU Service Center, or visit one of our office locations.<br/><br/>
+
+ {!User.FirstName} {!User.LastName}
+                    <br />
+                </div>
+
+             
+
+              <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               <p><b>Financial Aid and Scholarship Services</b><br />
+                    Arizona State University<br />
+                    PO Box 870412<br />
+                    Tempe, AZ 85287-0412<br />
+                     Phone: 855-278-5080
+</p>
+    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>
+
+</p>

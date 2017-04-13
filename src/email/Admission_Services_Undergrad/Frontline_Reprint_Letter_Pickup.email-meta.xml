@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Letter reprint ready to pick up at SSV front window</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Frontline: Reprint Letter Pickup</name>
+    <style>freeForm</style>
+    <subject>Your letter reprint is ready for pickup.</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Your letter is ready for pickup. Please come to the Student Services Building, room 112, front window. Make sure you bring a picture ID with you (i.e., ASU ID, driver&apos;s license, passport).
+
+Thank you,
+
+Admission Services
+Arizona State University
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

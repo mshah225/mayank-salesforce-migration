@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Thank you for your interest in biomedial informatics - international students</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>HealthSolutions_letterhead</letterhead>
+    <name>BMI info request international</name>
+    <style>formalLetter</style>
+    <subject>Thank you for your interest in biomedical informatics</subject>
+    <textOnly>{!Contact.FirstName},
+Thank you for your interest in biomedical informatics at Arizona State University! I look forward to assisting you as you consider your options at ASU.
+
+About the Program
+The biomedical informatics program has concentrations in bioinformatics, imaging informatics, clinical informatics, population health informatics, and knowledge discovery. With strong synergies within our computer science department, we offer foci on cross-cutting areas such as software engineering, data and knowledge representation, data mining and predictive modeling.
+
+Located at the Mayo Clinic in Scottsdale, BMI is able to leverage its well-developed partnership with Mayo Clinic as well as with several other leading health care delivery organizations such as Banner Health, Phoenix Children’s Hospital and St. Joseph’s Hospital and Medical Center. Our partnerships with the Translational Genomics Research Institute, ASU’s Biodesign Institute and the Arizona Department of Public Health create an outstanding range of research opportunities for our students.
+
+About Admission
+We seek applicants with strong GRE scores on all portions of the exam. However, there are no minimum scores for the GRE examination, which is evaluated in the context of your entire application package. Lower performance in one aspect can be compensated for by better performance in other aspects (such as strong grades and outstanding recommendations).
+
+Learn more about our requirements and the application process along with our standards for TOEFL.
+
+We are accepting applications for fall 2014, and we encourage you to get started on an application today.
+
+
+Laura Kaufman
+Department of Biomedical Informatics, Arizona State University
+Samuel C. Johnson Research Building, Mayo Clinic Scottsdale
+480-884-0234
+laura.kaufman@asu.edu
+
+PS: Explore our FAQs.</textOnly>
+    <type>html</type>
+</EmailTemplate>

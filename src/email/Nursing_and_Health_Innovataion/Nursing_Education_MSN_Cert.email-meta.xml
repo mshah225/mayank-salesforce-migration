@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Nursing</letterhead>
+    <name>Nursing Education MSN &amp; Cert</name>
+    <style>freeForm</style>
+    <subject>Thank you for contacting ASU College of Nursing and Health Innovation</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in Nursing Education offered by the College of Nursing and Health Innovation at Arizona State University. ASU is a nationally recognized leader in higher education. Our graduate programs rank in the top 4% for best graduate nursing programs (U.S. News &amp; World Report). We encourage you to consider joining one of our nationally ranked graduate programs.
+Our nursing education programs are designed to foster scholarship, creativity and innovation which prepare the nurse educator for leadership roles in academic and practice settings. The MS degree offers advanced-level courses that can be used to provide a seamless transition to the PhD or the DNP program, depending on your career goals.
+
+Conveniently offered in a hybrid format, our nursing education programs meet in-person twice per semester. This schedule provides flexibility for working nurse professionals. You can access more information, including the Plan of Study, application deadlines and admission requirements, for our nurse education programs using the links below.
+
+MS Nursing (Nursing Education)
+Nurse Education in Academic and Practice Settings (graduate certificate)
+
+Graduates of these programs are specialists prepared to teach in academic or practice settings. Courses include curriculum development, teaching methods, design and delivery of mediated instruction, producing and evaluating educational programs and a teaching practicum.
+Both the master’s degree and certificate options support preparation for national certification as a Certified Nurse Educator (CNE) through the National League for Nursing (NLN).
+Benefits of graduate study at ASU include:
+
+Growing your career and leading others
+Gaining broader perspectives on global health challenges
+Surrounding yourself with expert faculty and quality mentors
+Preparing to positively impact health outcomes
+Applying theory and research to advance practice
+
+We hope you continue to consider the College of Nursing and Health Innovation at ASU for your graduate education.
+
+Please let us know if you have any questions and we will be glad to help.
+
+Sincerely,
+
+Recruitment and Admissions
+College of Nursing and Health Innovation
+Phone: 602-496-0937
+Office Hours: Monday - Friday, 8 a.m. - 5 p.m.
+gponursing@asu.edu
+nursingandhealth.asu.edu</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Graduate Education | Customer Services: auto-response email for case received.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>GE | GPS: Case Received Template Default</name>
+    <style>none</style>
+    <subject>Email Received Case Number {!Case.CaseNumber}</subject>
+    <textOnly>Dear {!Contact.FirstName} {!Contact.LastName},
+
+Thank you for contacting us. We have received your email and are working on responding to you as soon as possible.
+
+For security reasons, if you are a student and have requested information specific to your records at ASU, responses will be sent to your ASU email account. For instructions on how to access your ASU email, please visit asu.force.com/kb.
+
+If you have any additional information to add to this case, please reply to this email.
+
+Case Number: {!Case.CaseNumber}
+Subject: {!Case.Subject}
+
+
+
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

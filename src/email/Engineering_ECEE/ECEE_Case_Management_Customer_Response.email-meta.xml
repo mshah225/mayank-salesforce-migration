@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template for Fulton Engineering ECEE agents to use for Cases originated via email. For ongoing communication or Case closure.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>ECEE | Case Management Customer Response</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+School of Electrical, Computer &amp; Energy Engineering (ECEE) Advising
+Ira A. Fulton Schools of Engineering
+Arizona State University
+Goldwater Center (GWC) Room 209
+Phone: (480) 965-3424
+askee@asu.edu (Undergraduate and Graduate Students in Tempe based programs)
+askeeonline@asu.edu (Undergraduate Online Students)
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

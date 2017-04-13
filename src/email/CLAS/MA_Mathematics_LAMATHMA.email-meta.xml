@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>MA Mathematics LAMATHMA</name>
+    <style>none</style>
+    <subject>Thank you for your interest in the School of Mathematical and Statistical Sciences</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in the graduate programs offered by the School of Mathematical and Statistical Sciences at Arizona State University.
+
+Please review the program description for admission and degree requirements and for more details on how to apply.
+
+If you have any questions regarding the degree program after reviewing the information above, please contact any of the faculty advisors:
+
+Theoretical Math:
+Andrew Bremner
+John Jones
+John Quigg
+
+Applied Math:
+Steven Baer
+Zdzislaw Jackiewicz
+Eric Kostelich
+
+Mathematics Education:
+Marilyn Carlson
+Kyeong Hah Roh
+Pat Thompson
+
+Statistics:
+Jarrett Barber
+May Boggess
+Mark Reiser
+
+Sincerely,
+
+Debbie Olson
+Graduate Program Coordinator
+ASU School of Mathematical and Statistical Sciences
+grad.math@asu.edu</textOnly>
+    <type>custom</type>
+</EmailTemplate>

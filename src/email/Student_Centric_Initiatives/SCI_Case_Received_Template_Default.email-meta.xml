@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Student-Centric Initiatives: auto-response email for case received.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Management Case Received Template Default</name>
+    <style>none</style>
+    <subject>Email Received Case Number {!Case.CaseNumber}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for contacting us. We have received your email and are working on responding to you as soon as possible.
+
+Case Number: {!Case.CaseNumber}
+Subject: {!Case.Subject}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

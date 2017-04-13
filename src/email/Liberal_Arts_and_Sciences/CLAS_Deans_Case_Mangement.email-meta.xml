@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Case Management Template for CLAS Dean&apos;s Office</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>CLAS - Deans | Case Mangement</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+College of Liberal Arts and Sciences - Dean’s Office
+Office of Student and Academic Programs
+Fulton Foundation Building, Suite 110
+300 East University Drive
+Tempe, Arizona 85287
+clas@asu.edu
+(480) 965-6506
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

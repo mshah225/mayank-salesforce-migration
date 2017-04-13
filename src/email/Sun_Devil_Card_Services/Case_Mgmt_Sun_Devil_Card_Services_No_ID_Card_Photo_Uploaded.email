@@ -1,0 +1,67 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    
+             Dear {!Contact.FirstName},  <br /><br />
+Unfortunately, you have not completed the directions required to receive an ID.  Please click the Submit link below to submit your ID card photo properly.  <br /><br />
+<b><u><i>After</i></u> your photo is approved, please repeat step 3.</b><br /><br />
+<OL>
+<LI>
+<a href="https://webapp4.asu.edu/cardservices/">
+<b>Submit</b>
+</a>
+your photo (This is for your ID card) and approved identification to Sun Devil Card Services.<br /><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
+<I>You will need to attach a valid, current photo ID as proof of identity. <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Acceptable forms of ID are US drivers’ license or state issued ID <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;card,
+US visa, or a passport.</I><br/><br/>
+
+
+<LI><u><i><b>Wait</b></u></i> for your photo submission approval email.
+<LI>Once approved, choose whether you want to pick up your card or have it mailed. Fill out the appropriate form. &nbsp;&nbsp  A: <a href="https://cfo.asu.edu/campus-id-card-request-form" >
+<u>Mail Request Form  </u></b></a>   &nbsp;&nbsp  B: <a href="https://cfo.asu.edu/webform/basic-sun-card-office-pick-form" >
+<u>Pickup Request Form  </u></b></a> 
+</OL>
+
+Regards, <br />
+ {!User.FirstName} {!User.LastName}
+                </div>
+
+             
+
+               <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               <p><b>
+Sun Devil Card Services
+</b><br/>
+Arizona State University<br />
+Phone: 480-965-2273<br/>
+<a href="https://cfo.asu.edu/cardservices" target="_blank">
+cardservices.asu.edu
+</a><br />
+                    </p>
+                    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>
+
+</p>

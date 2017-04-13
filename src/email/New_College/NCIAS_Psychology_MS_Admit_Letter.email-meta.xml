@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Acceptance letter for Psychology MS students</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>New_College</letterhead>
+    <name>NCIAS | Psychology MS | Admit Letter</name>
+    <style>formalLetter</style>
+    <subject>Admission Information for Master of Science in Psychology</subject>
+    <textOnly>Dear {!Contact.FirstName},
+I hope this email finds you well.  After careful evaluation of our applicants, we are pleased to recommend your admission to Arizona State University’s M.S. Graduate Program in Psychology. Your faculty supervisor will be &lt;&lt;Faculty Supervisor Name&gt;&gt;. Please consider this notification unofficial.  You will receive an official notification from the Graduate College Office via email.
+
+You likely have many questions about our program. First, please look at the program handbook found here: https://newcollege.asu.edu/sites/default/files/files/advising/documents/msp_program_handbook_2015-16.pdf. It contains a great deal of information including tuition, financial aid, the program curriculum, and funding info. Then, if you have further questions about the academic aspects of the program, feel free to contact me or your faculty supervisor listed above. If you have questions related to tuition, financial aid, or housing please view the Next Steps section at https://newcollege.asu.edu/graduate/admission-next-steps for a number of University Offices available to assist you.  If you have questions related to the program or registration please contact the Academic Success Coordinator, Jan Lacey at ncgradadvising@asu.edu.
+
+Please visit https://newcollege.asu.edu/graduate/acceptance-form to complete a form to either accept or decline our admission offer.  We ask that you complete this form as soon as possible. We will hold your admission until April 30th, at which time we may offer your slot to another applicant. Additionally, please mark your calendar for our mandatory Graduate School Orientation and you will have the opportunity to hear from the Dean and Vice Provost, Graduate Studies Directors, and Graduate Studies Staff. Light refreshments will be served.
+
+Congratulations on your admission—it was a very competitive application pool this year.  I look forward to meeting you at our Fall orientation and in the meantime visit https://newcollege.asu.edu/graduate/admission-next-steps for next steps.
+
+Kristin D. Mickelson, Ph.D.
+Professor of Psychology &amp; Director of MS Psychology Program
+School of Social and Behavioral Sciences
+Phone: (602) 543-1632
+Fax: (602) 543-6004
+Email: Kristin.Mickelson@asu.edu
+Website: https://sites.google.com/site/kmickelsonsrhlab/
+
+
+
+
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Update your address and request a new admit letter.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Bad Address Admit Letter</name>
+    <style>freeForm</style>
+    <subject>Please update your mailing address in My ASU.</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Congratulations on your admission to Arizona State University! I am contacting you to let you know that the acceptance letter we sent to your mailing address has been returned by the post office due to an incorrect address. Please visit My ASU at https://my.asu.edu and click on Profile to verify that your address is correct. If the address needs to be updated, please do so directly on My ASU and email me the correct address if you would like your letter re-sent.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

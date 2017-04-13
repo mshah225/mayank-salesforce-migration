@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Ira_A_Fulton_Engineering</letterhead>
+    <name>MS - Construction Management</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in an MS in engineering at ASU!</subject>
+    <textOnly>{!Contact.FirstName},
+
+
+Thank you for your interest in our Master of Science program concentration in Construction Management. This program is offered by the Del E. Webb School of Construction within our Ira A. Fulton schools of engineering.  The construction management program at ASU began over 50 years ago to serve the construction industry of Arizona and the Southwest. In addition to being part of a well-regarded degree program, you will benefit from our established ties to industry and a strong alumni network.
+
+Academic and admission advisement for this program is provided by the School of Sustainable Engineering and the Built Environment. They may be contacted via sebe.advising@asu.edu or 480-965-0595. They will be able to assist you with questions regarding individual courses offered within this program. If you have any questions regarding our general online course structure, please do not hesitate to contact me.
+
+Sincerely,&lt;br&gt;
+
+Angela Harguess&lt;br&gt;&lt;br&gt;
+Global Outreach &amp; Extended Education&lt;br&gt;
+Ira A. Fulton Schools of Engineering
+&lt;br&gt;p: 480-965-1878 | f: 480-965-2929 | ASUEngineeringOnline.com
+
+If you have any additional information or questions related to this, please reply to this email.
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Herberger_Institute_for_Design_and_the_Arts</letterhead>
+    <name>School of Music - Recorded Audition Reminder</name>
+    <style>freeForm</style>
+    <subject>ASU School of Music - Recorded Audition Reminder</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for your interest in the ASU School of Music and for submitting your application. We noticed that you indicated that you will upload a recorded audition instead of performing an on-campus audition. The deadline to submit your recorded audition is February 1. Please follow the instructions below for submitting your recorded audition:
+
+1. Review and prepare the audition requirements for your voice/instrument listed here.
+
+2. Record each audition requirement in the acceptable digital format as separate files with clear labels. For example:Mozart_Concerto_Mvt_1
+Voice Applicants: all auditions must be in video format: MPEG, MPG, MP4, MOV , AVI, WMV, M4V, VOB
+Instrumental Applicants: auditions are acceptable in either video or audio format: MPEG, MPG, MP4, MOV, AVI, WMV, M4V, VOB, MP3, M4A, AIFF, WMA, WAV, AAC
+
+3. Email MusicAdmissions@asu.edu your recorded auditions files by February 1. If your files are too large to email, please use either Google Drive or Dropbox and send the link to Musicadmissions@asu.edu
+
+***Auditions submitted as CDs, DVDs, YouTube, or any other method not listed above will not be reviewed***
+
+Attention: Music Therapy and Music Education Applicants: If you selected Music Therapy or Music Education as your first choice degree program, you will need to complete an interview with the faculty via Skype or phone. A member from the faculty in Music Education or Music Therapy will be contacting you via email within the next two months to schedule an interview.
+
+If you have any questions about your recorded audition please contact: MusicAdmissions@asu.edu.
+
+
+Sincerely,
+
+
+Julie Stephens
+Coordinator, Academic Affairs + Admissions
+Arizona State University | School of Music
+Po Box 870405 | Tempe, AZ 85287-0405
+Phone: 480-965-5069
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

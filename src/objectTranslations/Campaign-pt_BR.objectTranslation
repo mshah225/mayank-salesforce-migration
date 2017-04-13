@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><layouts>
+        <layout>ADMIN Layout</layout>
+        <sections>
+            <label><!-- Event Details --></label>
+            <section>Event Details</section>
+        </sections>
+        <sections>
+            <label><!-- Interest Details --></label>
+            <section>Interest Details</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Cohort Layout</layout>
+        <sections>
+            <label><!-- Interest Details --></label>
+            <section>Interest Details</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Corporate Relations Layout</layout>
+        <sections>
+            <label><!-- Interest Details --></label>
+            <section>Interest Details</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Course Layout</layout>
+        <sections>
+            <label><!-- Interest Details --></label>
+            <section>Interest Details</section>
+        </sections>
+    </layouts><layouts>
+        <layout>EOSS Event Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- EOSS Information --></label>
+            <section>EOSS Information</section>
+        </sections>
+        <sections>
+            <label><!-- Event Description --></label>
+            <section>Event Description</section>
+        </sections>
+        <sections>
+            <label><!-- Event Information --></label>
+            <section>Event Information</section>
+        </sections>
+        <sections>
+            <label><!-- Event Location Details --></label>
+            <section>Event Location Details</section>
+        </sections>
+        <sections>
+            <label><!-- Event Metrics --></label>
+            <section>Event Metrics</section>
+        </sections>
+        <sections>
+            <label><!-- Event Start and End --></label>
+            <section>Event Start and End</section>
+        </sections>
+        <sections>
+            <label><!-- System Information --></label>
+            <section>System Information</section>
+        </sections>
+        <sections>
+            <label><!-- Waitlisted Full Text --></label>
+            <section>Waitlisted Full Text</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Event Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Event Description --></label>
+            <section>Event Description</section>
+        </sections>
+        <sections>
+            <label><!-- Event Information --></label>
+            <section>Event Information</section>
+        </sections>
+        <sections>
+            <label><!-- Event Location Details --></label>
+            <section>Event Location Details</section>
+        </sections>
+        <sections>
+            <label><!-- Event Metrics --></label>
+            <section>Event Metrics</section>
+        </sections>
+        <sections>
+            <label><!-- Event Start and End --></label>
+            <section>Event Start and End</section>
+        </sections>
+        <sections>
+            <label><!-- System Information --></label>
+            <section>System Information</section>
+        </sections>
+        <sections>
+            <label><!-- Waitlisted Full Text --></label>
+            <section>Waitlisted Full Text</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Interest Layout</layout>
+        <sections>
+            <label><!-- Interest Details --></label>
+            <section>Interest Details</section>
+        </sections>
+        <sections>
+            <label><!-- URLs --></label>
+            <section>URLs</section>
+        </sections>
+    </layouts><layouts>
+        <layout>Subscription Center Layout</layout>
+        <sections>
+            <label><!-- Marketing Cloud --></label>
+            <section>Marketing Cloud</section>
+        </sections>
+    </layouts><recordTypes>
+        <label><!-- Cohort --></label>
+        <name>Cohort</name>
+    </recordTypes><recordTypes>
+        <label><!-- Corporate Relations --></label>
+        <name>Corporate_Relations</name>
+    </recordTypes><recordTypes>
+        <label><!-- Course --></label>
+        <name>Course</name>
+    </recordTypes><recordTypes>
+        <label><!-- EOSS Event --></label>
+        <name>EOSS_Event</name>
+    </recordTypes><recordTypes>
+        <label><!-- Event --></label>
+        <name>Event</name>
+    </recordTypes><recordTypes>
+        <label><!-- Interest --></label>
+        <name>Interest</name>
+    </recordTypes><recordTypes>
+        <label><!-- Communication --></label>
+        <name>Marketing</name>
+    </recordTypes><recordTypes>
+        <label><!-- Other Source --></label>
+        <name>Other_Source</name>
+    </recordTypes><recordTypes>
+        <label><!-- Scholarship --></label>
+        <name>Scholarship</name>
+    </recordTypes><recordTypes>
+        <label><!-- Subscription Center --></label>
+        <name>Subscription_Center</name>
+    </recordTypes><validationRules>
+        <errorMessage><!-- This Event type is for Admission Services users only. Please select a different Campaign Event type. --></errorMessage>
+        <name>Admission_Services_Event_Types</name>
+    </validationRules><validationRules>
+        <errorMessage><!-- The Event Start Date must be before the event end date.  Please make necessary change and try again. --></errorMessage>
+        <name>EventStartMustBeBeforeEnd</name>
+    </validationRules><validationRules>
+        <errorMessage><!-- Use the ASU Communication Guide styles (e.g.  10 a.m. - noon - 1:30 p.m.), 5 minute increments only. https://commguide.asu.edu/standards/writing/days --></errorMessage>
+        <name>Event_End_Time_Format_is_Incorrect</name>
+    </validationRules><validationRules>
+        <errorMessage><!-- Use the ASU Communication Guide styles (e.g.  10 a.m. - noon - 1:30 p.m.), 5 minute increments only. https://commguide.asu.edu/standards/writing/days --></errorMessage>
+        <name>Event_Start_Time_Format_is_Incorrect</name>
+    </validationRules><validationRules>
+        <errorMessage><!-- Use the ASU Communication Guide styles (e.g 10 a.m, noon, 1:30 p.m.), 5 minute increments only. https://commguide.asu.edu/standards/writing/days --></errorMessage>
+        <name>Registration_Time_format_is_Incorrect</name>
+    </validationRules><validationRules>
+        <errorMessage><!-- Please enter in a Marketing Cloud Business Unit. --></errorMessage>
+        <name>Subscription_Center_MC_BU_is_not_blank</name>
+    </validationRules><validationRules>
+        <errorMessage><!-- You need to modify your campaign - it cannot be both private and visible on subscription center page at the same time. It should be private OR visible on subscription page. --></errorMessage>
+        <name>Subscription_Center_MC_VisibleOnSubPage</name>
+    </validationRules><webLinks>
+        <label><!-- Mass_Delete --></label>
+        <name>Mass_Delete</name>
+    </webLinks><webLinks>
+        <label><!-- ViewAllCampaignMembers --></label>
+        <name>ViewAllCampaignMembers</name>
+    </webLinks><webLinks>
+        <label><!-- ViewCampaignInfluenceReport --></label>
+        <name>ViewCampaignInfluenceReport</name>
+    </webLinks></CustomObjectTranslation>

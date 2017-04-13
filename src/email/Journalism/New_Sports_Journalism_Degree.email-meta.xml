@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>New Sports Journalism Degree Information</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>New Sports Journalism Degree</name>
+    <style>freeForm</style>
+    <subject>Experience Cronkite sports at ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thanks for your interest in Arizona State University’s Walter Cronkite School of Journalism and Mass Communication.
+
+We’re very excited to share more information about our new sports journalism degrees at http://sportsjournalism.jmc.asu.edu/.
+
+The Cronkite School has a robust sports journalism program at both the undergraduate and graduate levels. Our program’s foundation is founded in academic curriculum, professional experiences and location.
+
+We’re based in the heart of Phoenix, a major metropolitan city, with access to a number of professional sporting venues for our students to cover. Not only is Phoenix a hub for MLB Spring Training each year, but we are also one of a handful of U.S. cities that has five major sports teams: MLB, NBA, NFL, NHL and WNBA.
+
+The Cronkite School has established sports bureaus in both Phoenix (http://sportsjournalism.jmc.asu.edu/phoenix-sports-bureau.php) and Los Angeles (http://sportsjournalism.jmc.asu.edu/los-angeles-sports-bureau.php), offering students semester-long experiences covering professional teams for various partners like MLB.com and the Pac-12 Network.
+
+Learn more about the Cronkite School’s undergraduate admission requirements (https://cronkite.asu.edu/undergrad/admissions), and explore our 11 professional programs (https://cronkite.asu.edu/professional-programs).
+
+We also encourage you to check out Experience Cronkite Sports, a sports program featurette produced by our students at https://vimeo.com/121480315.
+
+For more information about the Cronkite School, please call me at {!User.Phone}.
+
+Sincerely,
+
+{!User.FirstName} {!User.LastName}
+{!User.Title}
+Walter Cronkite School of Journalism and Mass Communication
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

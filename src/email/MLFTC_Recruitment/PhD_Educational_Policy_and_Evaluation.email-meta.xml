@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>MLF_letterhead</letterhead>
+    <name>PhD Educational Policy and Evaluation</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in the PhD in Educational Policy and Evaluation</subject>
+    <textOnly>{!Contact.FirstName},
+
+
+Thank you for your interest in the PhD in Educational Policy and Evaluation at Arizona State University.
+
+
+Take some time and review the program information on our website, where you can gather the most current program information. Also, please feel free to review this comprehensive program guide (PDF) that describes the degree program in detail and includes an FAQ section.
+
+
+We are currently accepting applications for fall 2015. If you are ready to apply, I encourage you to start your application for admission. Priority deadline for applications is December 15 2014. Applications submitted after the deadline will only be considered if funding and space are available.
+
+
+Please take the time to register for an upcoming information session, as this is a prime opportunity for you to gather all the information you need to begin the application process, and learn more about the program offerings. You can register for our next information session here.
+
+
+If you have any additional questions, please feel free to contact me.
+
+
+Again, thank you for your interest in this exciting program. I look forward to hearing from you.
+
+
+Anita Youmara
+
+Administrative Secretary | Interim Student Support Specialist
+
+Division of Educational Leadership and Innovation
+
+Mary Lou Fulton Teachers College
+
+Phone: 480-727-6928</textOnly>
+    <type>html</type>
+</EmailTemplate>

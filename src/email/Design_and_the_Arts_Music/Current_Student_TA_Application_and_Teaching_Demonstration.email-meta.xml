@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Herberger_Institute_for_Design_and_the_Arts</letterhead>
+    <name>Current Student TA Application and Teaching Demonstration</name>
+    <style>freeForm</style>
+    <subject>TA Application and Teaching Demonstration</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for submitting  your Teaching Assistantship application. Please follow the steps below to complete your application:
+
+Spoken English Requirement (Applicants whose native language is not English): Please register for the ASU SPEAK test. Registration is online. There is a registration fee of $70 that is payable through the website.
+Teaching Demonstration: You must prepare a video recording:
+
+Video Recording: Please prepare and record your teaching demonstration using these guidelines: A video demonstration of piano teaching in English, including two lessons (no more than 20 – 30 minutes) of piano teaching in English, preferably of students at different levels. Individual or group lessons at any level are acceptable. After completing your lessons, please use GoogleDrive and share the link with MusicAdmissions@asu.edu.
+
+The deadline to submit all of your materials is February 15. Please note that you cannot be considered for an assistantship if you have not met the spoken English requirement. If you have any questions please contact MusicAdmissions@asu.edu.
+
+Sincerely,
+
+Julie Stephens
+Coordinator, Academic Affairs + Admissions
+Arizona State University | Herberger Institute for Design and the Arts
+P.O. Box 870405 | Tempe, Arizona 85287-0405
+Phone: 480-965-5069
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

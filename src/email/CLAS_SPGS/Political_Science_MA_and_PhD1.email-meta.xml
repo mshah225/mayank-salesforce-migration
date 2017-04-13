@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Info about MA and PhD in Political Science - signed by Magda Hinojosa</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>CLAS_letterhead</letterhead>
+    <name>Political Science MA and PhD</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in Arizona State University</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in our graduate programs. We are pleased to share information with you about our M.A. and Ph.D. programs in Political Science at Arizona State University.
+
+Our M.A. and Ph.D. programs are designed to provide a strong foundation in research methods and substantive content, but also allow our students to craft a program of study that meets their individual interests. Our diverse and distinguished faculty has strong commitments to excellence in research, teaching, and working with our graduate students. The program offers one of the best student to faculty ratios in the nation, approximately 2:1. We have particular strengths in campaigns and elections, ethnic and religious conflict, women and politics, and human rights. Our program also encourages students to study and work with faculty in other disciplines. Many of our faculty work at the juncture of politics with history, public policy, law, philosophy, and sociology.
+
+We invite you to check out our website for more information on our programs and the opportunities available to our graduate students. Please note that we have a fall-entry only admission cycle. The next application deadline is January 2, 2017 for a fall 2017 entry into either the M.A. or Ph.D. programs. Please review the information available on the ASU Graduate Admission’s website for information on how to apply.
+
+If you have any questions, please contact our Graduate Coordinator Leah Legg. Thank you again for your interest in our programs.
+
+Best,
+
+Magda Hinojosa
+Director of Graduate Studies
+Associate Professor
+School of Politics and Global Studies
+Arizona State University
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

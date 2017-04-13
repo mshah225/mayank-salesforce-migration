@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Standard template which explains how to obtain a SF user account with the recruiting role</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>ASU SFS | Recruiting | How to gain access</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+In order to gain access to Salesforce, you will need to complete two training courses: 1.) FERPA and 2.) Salesforce: Recruitment Training. They can be found on the UTO Training website by clicking UTO Training or by searching Blackboard on My ASU. Let me know if you have any difficulty finding the training courses.
+
+Once your training is complete, you will request the Salesforce Recruiting role. Instructions how to do this can be found at the following article: How to Request Access to Salesforce. Please let me know if you have any further questions about this request.
+
+Sincerely,
+{!User.Name}
+
+ASU Salesforce Support
+USB | University Technology Office
+1551 S. Rural Rd.
+Tempe, AZ 85281
+salesforce.support@asu.edu
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

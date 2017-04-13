@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Herberger_Institute_for_Design_and_the_Arts</letterhead>
+    <name>ASU School of Music Prescreening Result - PASS</name>
+    <style>freeForm</style>
+    <subject>School of Music Prescreening Result</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for application for admission to the Herberger Institute School of Music at Arizona State University. We are pleased to inform you that you have been invited for a live audition/interview as a result of your prescreening submission.
+
+This is to confirm that you will be scheduled for an audition/interview in the School of Music on the ASU Tempe Campus on Saturday, DATE. Your audition/interview time will be sent to you approximately 10 days before your audition/interview date. Please arrange your travel plans so that you can be here all day.
+
+Composition Theory and Aural Skills Exam (Composition Applicants Only)
+In addition to an interview with members of the composition faculty, an exam in theory and aural skills is scheduled at 9 a.m. for all composition applicants. Please check-in to Cowley Lobby by 8:45 a.m. for the exam at 9 a.m.
+
+Remember to confirm your audition(s) and interview(s) online within 24 hours of receipt of this email. Voice applicants who have requested an ASU accompanist for the audition are required to enter their audition repertoire information on the confirmation form. See below for further instructions.
+
+
+Audition Day Check-In
+
+Check-in begins at 8 a.m. in Cowley Lobby, the main lobby of the Music Building. You are kindly requested to check in at least 30-minutes prior to your earliest scheduled audition/interview. Practice rooms are available for you to warm up before your audition. Please be courteous and surrender the room after 20 minutes to allow other students to warm up for their auditions.
+
+
+
+Audition/Interview Weekend Events
+
+Attend a concert or production while you are on campus! A schedule of events taking place during audition and interview weekends is posted at music.asu.edu/admissions/auditions/events. We encourage you to attend the informational sessions that are offered each audition day so that we may answer any questions that you may have about ASU and the Herberger Institute School of Music.
+
+Voice Audition Preparation
+Voice applicants who have requested an ASU accompanist for the audition are required to bring piano scores of their pieces to the audition for the pianist. Scores should be double-sided and in a three-ring binder.
+
+Thank you for your interest in studying in the Herberger Institute School of Music. We look forward to meeting you soon.
+
+ASU School of Music in the Herberger Institute for Design and the Arts
+Office of Admissions
+480.965.5069 | musicadmin@asu.edu
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <help><!-- The Case number wil be used in the phone call for CTI integration. --></help>
+        <label><!-- Add Case Number --></label>
+        <name>Add_Case_Id__c</name>
+    </fields><fields>
+        <help><!-- This keywords will enable to build complex CTI integration --></help>
+        <label><!-- CTI configuration --></label>
+        <name>CTI_configuration__c</name>
+    </fields><fields>
+        <help><!-- Group name that should be displayed under the &quot;Narrow Search&quot; section of the PKB home page. The field named Root Category 1 must have a value that is a category in this group. --></help>
+        <label><!-- Category Group 1 --></label>
+        <name>Category_Group_1__c</name>
+    </fields><fields>
+        <help><!-- Group name that should be displayed under the &quot;Narrow Search&quot; section of the PKB home page. The field named Root Category 2 must have a value that is a category in this group. --></help>
+        <label><!-- Category Group 2 --></label>
+        <name>Category_Group_2__c</name>
+    </fields><fields>
+        <help><!-- Group name that should be displayed under the &quot;Narrow Search&quot; section of the PKB home page. The field named Root Category 3 must have a value that is a category in this group. --></help>
+        <label><!-- Category Group 3 --></label>
+        <name>Category_Group_3__c</name>
+    </fields><fields>
+        <help><!-- When checked,  the &quot;Contact Us&quot;  form will be available --></help>
+        <label><!-- Contact Us Available --></label>
+        <name>Contact_Us_Available__c</name>
+    </fields><fields>
+        <help><!-- When checked, will cause a Contact and an Account to be created when a user submits a question. (If email address is found on another Contact, it will use that Contact and account.) Unchecking this box will put all of the submitted data into the Case. --></help>
+        <label><!-- Create Contact and Account --></label>
+        <name>Create_Contact_and_Account__c</name>
+    </fields><fields>
+        <help><!-- When checked, the Article Summary will appear anywhere a list of articles is displayed, such as search results and most popular. --></help>
+        <label><!-- Display Article Summary? --></label>
+        <name>Display_Article_Summary__c</name>
+    </fields><fields>
+        <help><!-- If you are using public knowledge base embedded in facebook, you need to add the facebook application ID in the settings. --></help>
+        <label><!-- Facebook Application ID --></label>
+        <name>FBAppId__c</name>
+    </fields><fields>
+        <help><!-- Id for the corresponding Live Agent Chat Button --></help>
+        <label><!-- Live Agent ChatButtonId --></label>
+        <name>LiveAgent_ChatButtonId__c</name>
+    </fields><fields>
+        <help><!-- When checked, will display  Live Agent Chat buttons . Actual Chat wil also depend on live Agent availability --></help>
+        <label><!-- Live Agent Chat Enabled --></label>
+        <name>LiveAgent_ChatEnabled__c</name>
+    </fields><fields>
+        <help><!-- Url for the saleforce LiveAgent server --></help>
+        <label><!-- Live Agent Chat Server URL --></label>
+        <name>LiveAgent_ChatServerURL__c</name>
+    </fields><fields>
+        <help><!-- Id of the corresponding Live Agent deployment --></help>
+        <label><!-- Live Agent Deployment Id --></label>
+        <name>LiveAgent_DeploymentId__c</name>
+    </fields><fields>
+        <help><!-- Url for the saleforce LiveAgent deployment javascript library --></help>
+        <label><!-- Live Agent Deployment URL --></label>
+        <name>LiveAgent_DeploymentURL__c</name>
+    </fields><fields>
+        <help><!-- Name of the BusinessHours record, by leaving this field blank, business hours will be 24/7 --></help>
+        <label><!-- Business Hours Name --></label>
+        <name>MBusinessHours__c</name>
+    </fields><fields>
+        <help><!-- Number of articles to display  on the ContactUs search results. Should not be set to more than 10-15 to ensure a visually manageable number of results per page. --></help>
+        <label><!-- Contact Results Page Size --></label>
+        <name>MCResults_Page_Size__c</name>
+    </fields><fields>
+        <help><!-- Group name that should be displayed in filters section of the PKB mobile page. The field named Root Category 1 must have a value that is a category in this group. --></help>
+        <label><!-- Category Group 1 --></label>
+        <name>MCategory_Group_1__c</name>
+    </fields><fields>
+        <help><!-- Group name that should be displayed in filters section of the PKB mobile page. The field named Root Category 1 must have a value that is a category in this group. --></help>
+        <label><!-- Category Group 2 --></label>
+        <name>MCategory_Group_2__c</name>
+    </fields><fields>
+        <help><!-- Group name that should be displayed in filters section of the PKB mobile page. The field named Root Category 1 must have a value that is a category in this group. --></help>
+        <label><!-- Category Group 3 --></label>
+        <name>MCategory_Group_3__c</name>
+    </fields><fields>
+        <help><!-- Enable / Disable Call button in mobile site --></help>
+        <label><!-- Enable Call --></label>
+        <name>MEnableCall__c</name>
+    </fields><fields>
+        <help><!-- Phone Number --></help>
+        <label><!-- Phone Number --></label>
+        <name>MPhoneNumber__c</name>
+    </fields><fields>
+        <help><!-- Number of articles to display per page of search results. Should not be set to more than 10-15 to ensure a visually manageable number of results per page. --></help>
+        <label><!-- Results Page Size --></label>
+        <name>MResults_Page_Size__c</name>
+    </fields><fields>
+        <help><!-- Root Category name that will be used as the root category in the category group&apos;s displayed in filters menu of the PKB mobile page. The value for this field must be a category of the group named in the Category Group 1 field. --></help>
+        <label><!-- Root Category 1 --></label>
+        <name>MRoot_Category_1__c</name>
+    </fields><fields>
+        <help><!-- Root Category name that will be used as the root category in the category group&apos;s displayed in filters menu of the PKB mobile page. The value for this field must be a category of the group named in the Category Group 2 field. --></help>
+        <label><!-- Root Category 2 --></label>
+        <name>MRoot_Category_2__c</name>
+    </fields><fields>
+        <help><!-- Root Category name that will be used as the root category in the category group&apos;s displayed in filters menu of the PKB mobile page. The value for this field must be a category of the group named in the Category Group 3 field. --></help>
+        <label><!-- Root Category 3 --></label>
+        <name>MRoot_Category_3__c</name>
+    </fields><fields>
+        <label><!-- Max Cache Age --></label>
+        <name>Max_Cache_Age__c</name>
+    </fields><fields>
+        <help><!-- Maximun number of  attachments to upload for a single case. --></help>
+        <label><!-- Maximum attachment upload per case --></label>
+        <name>Maximum_Attachment_Upload_Per_Case__c</name>
+    </fields><fields>
+        <help><!-- This checkbox indicates whether the multi-language capability is enabled for this knowledge base. Among other things, this checkbox will affect how the Article URLs are constructed in the PKB. --></help>
+        <label><!-- Multi-Language Enabled? --></label>
+        <name>Multi_Language_Enabled__c</name>
+    </fields><fields>
+        <help><!-- The number of articles that will appear in the popular articles section. Should not be set to greater than 5 to maintain the page&apos;s structure. --></help>
+        <label><!-- Popular Articles Size --></label>
+        <name>Popular_Articles_Size__c</name>
+    </fields><fields>
+        <help><!-- Number of related articles that will display when viewing an article. Recommended maximum value is 5. --></help>
+        <label><!-- Related Articles Size --></label>
+        <name>Related_Articles_Size__c</name>
+    </fields><fields>
+        <help><!-- Number of articles to display per page of search results. Should not be set to more than 10-15 to ensure a visually manageable number of results per page. --></help>
+        <label><!-- Results Page Size --></label>
+        <name>Results_Page_Size__c</name>
+    </fields><fields>
+        <help><!-- Root Category name that will be used as the root category in the category group&apos;s picklist in the &quot;Narrow Search&quot; section of the PKB home page. The value for this field must be a category of the group named in the Category Group 1 field. --></help>
+        <label><!-- Root Category 1 --></label>
+        <name>Root_Category_1__c</name>
+    </fields><fields>
+        <help><!-- Root Category name that will be used as the root category in the category group&apos;s picklist in the &quot;Narrow Search&quot; section of the PKB home page. The value for this field must be a category of the group named in the Category Group 2 field. --></help>
+        <label><!-- Root Category 2 --></label>
+        <name>Root_Category_2__c</name>
+    </fields><fields>
+        <help><!-- Root Category name that will be used as the root category in the category group&apos;s picklist in the &quot;Narrow Search&quot; section of the PKB home page. The value for this field must be a category of the group named in the Category Group 3 field. --></help>
+        <label><!-- Root Category 3 --></label>
+        <name>Root_Category_3__c</name>
+    </fields><fields>
+        <help><!-- Contains a semi-colon delimited list of language keys that specify which languages the admin wants to be shown in the language picklist on the main PKB search page. This field should not be on a page layout; it is populated via the pkb_Settings page. --></help>
+        <label><!-- Selected Languages --></label>
+        <name>Selected_Languages__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>PKB</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>PKB</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

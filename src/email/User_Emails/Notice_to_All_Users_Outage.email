@@ -1,0 +1,15 @@
+<table height="400" width="550" cellpadding="5" border="0" cellspacing="5" >
+<tr height="400" valign="top" >
+<td style=" color:#000000; font-size:12pt; background-color:#FFFFFF; font-family:arial; bLabel:main; bEditID:r3st1;" tEditID="c1r1" locked="0" aEditID="c1r1" >
+<![CDATA[<p class="p1"><span style="font-size: 12pt;"><b>Salesforce will be unavailable (off-line) on Friday, July 18 from 11:00 pm to 11:05 pm for regular maintenance.</b></span></p><p class="p1"><span style="font-size: 12pt;"><b><br></b></span></p>
+<p class="p1">&nbsp;</p>
+<p class="p1"><span class="s2"><b>How will this affect you?</b></span></p>
+<p class="p1">You will not be able to login to Salesforce during this time and will need to re-enter your login credentials once the maintenance has completed.</p><p class="p1"><br></p><p class="p1">This maintenance window is for the production instance of Salesforce only, not the sandbox instances.&nbsp;</p><p class="p1"><br></p><p class="p1">Salesforce is updating to the Summer '14 release. You may notice small changes once back online.</p>
+<p class="p1">&nbsp;</p>
+<p class="p1"><span class="s2"><b>What about public facing sites?</b></span></p>
+<p class="p1">Public facing sites such as the public knowledge base accessible from MyASU and RFI forms will not be available during this time.&nbsp;</p>
+<p class="p1">&nbsp;</p>
+<p class="p1"><span class="s2"><b>How do I get help if something doesn’t work correctly?</b></span></p>
+<p class="p1">You can use the Chatter function to post a question or you can send a email to <span class="s3"><a href="mailto:Salesforce.support@asu.edu">salesforce.support@asu.edu</a>.</span></p>]]></td>
+</tr>
+</table>

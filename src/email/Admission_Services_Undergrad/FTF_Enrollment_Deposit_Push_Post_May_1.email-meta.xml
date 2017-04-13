@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Enrollment deposit, orientation, housing push.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>FTF Enrollment Deposit Push (Post-May 1)</name>
+    <style>freeForm</style>
+    <subject>Pay your enrollment deposit to secure your place at ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+I noticed that you haven&apos;t taken your next steps to enroll at Arizona State University, and I wanted to follow up to see if you still plan to attend.
+
+The May 1 priority deadline to pay the enrollment deposit has passed, but you can still submit your enrollment deposit at https://students.asu.edu/freshman/deposit. I encourage you to do so as soon as possible to secure your place in the incoming class. Once you pay the enrollment deposit, you can confirm your housing preferences and sign up for orientation to register for classes.
+
+If you are no longer considering Arizona State University, please decline your admission at https://students.asu.edu/canceladmissions.
+
+If you have any questions about the admission process or ASU in general, I&apos;d be happy to help!
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

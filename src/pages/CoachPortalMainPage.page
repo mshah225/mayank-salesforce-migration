@@ -1,0 +1,91 @@
+<apex:page controller="CoachPortalMainPageController"
+           standardStylesheets="false"
+           showHeader="false"
+           sidebar="false"
+           id="CoachPortalMainPage" >
+    <title>Coach Success Portal</title>
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.advisorCaseListContainerResources, 'advisorCaseListContainer.css')}"/>
+    <apex:variable var="SUCCESS_COACH_MANAGER" value="SC Success Coach Manager"/>
+    <apex:variable var="SUCCESS_COACH_LEAD" value="SC Success Coach Lead"/>
+    <apex:variable var="SYS_ADMIN" value="System Administrator"/>
+
+    <apex:pageMessages />
+
+    <c:ViewAsComponent selectOptions="{!viewAsOptions}"
+                       hasViewAs="{!hasViewAs}"
+                       mimicId="{!$User.Id}"
+                       id="viewAsComponent">
+
+        <!-- This bit is required in order to pass the mimic ID to the controller of the main page -->
+        <!-- VF Components do not have a built in way to pass data up -->
+        <apex:form >
+            <apex:actionFunction name="setOwnerId" reRender="rerenderMe" status="ASUAjaxStatus">
+                <apex:param name="ownerId" assignTo="{!ownerId}" value="{!mimicId}"/>
+            </apex:actionFunction>
+
+            <script>
+                setOwnerId();
+            </script>
+        </apex:form>
+
+        <apex:outputPanel id="rerenderMe">
+            <c:SummaryListComponent id="summaryList"
+                                    aggregateQuery="{!mySummaryListQuery}"
+                                    owner="{!mimicId}"
+                                    transferOptions="{!mySubordinateOptions}"
+                                    proactiveRTID="{!CoachCaseRTID}"
+                                    rerenderList="{!$Component.viewAsComponent.viewAsComponent.proactiveList}"
+                                    caseEmailRTID="{!CoachEmailRTID}"
+                                    suppressSummaryFollowupDate="true"
+                                    suppressProactiveCaseCount="true"
+                                    suppressReactiveCaseCount="true"/>
+
+            <apex:tabPanel styleClass="buffer" id="tabPanel">
+                <apex:tab label="My Students"
+                          switchType="client"
+                          styleClass="wsTabContent"
+                          id="studentsTab">
+                    <c:showMyCoachingStudents queryString="{!myStudentsQuery}"
+                                      proactiveRTID="{!CoachCaseRTID}"
+                                      emailRTID="{!CoachEmailRTID}"
+                                      suppressProactiveCases="true"
+                                      suppressReactiveCases="true"
+                                      suppressMassEmail="true"
+                                      mimicId="{!mimicId}"
+                                      suppressSelection="true"/>
+                </apex:tab>
+
+                <apex:tab label="My Proactive Cases"
+                          switchType="client"
+                          styleClass="wsTabContent"
+                          id="proactiveTab">
+                    <c:showMyCases id="proactiveList"
+                                   queryString="{!myProactiveQuery}"
+                                   transferOptions="{!mySubordinateOptions}"
+                                   proactiveRTID="{!CoachCaseRTID}"
+                                   emailRTID="{!CoachEmailRTID}"
+                                   suppressProactive="true"
+                                   suppressReactive="true"
+                                   suppressMassEmail="true"/>
+                </apex:tab>
+
+                <apex:tab label="Success Tools"
+                          switchType="client"
+                          styleClass="wsTabContent"
+                          id="toolsTab"
+                          rendered="{!$UserRole.Name == SUCCESS_COACH_MANAGER || $UserRole.Name == SUCCESS_COACH_LEAD || $Profile.Name == SYS_ADMIN}">
+                    <c:SuccessToolbelt />
+                </apex:tab>
+            </apex:tabPanel>
+        </apex:outputPanel>
+    </c:ViewAsComponent>
+
+    <div style="text-align:center;padding:25px;">
+        <c:DynamicFeedbackButton betaTag="true" carName="Coach Portal"/>
+    </div>
+
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="/support/console/38.0/integration.js"/>
+    <c:ASUAjaxStatus />
+</apex:page>

@@ -60,6 +60,7 @@ public class CommunicationHistoryController {
             FROM et4ae5__IndividualEmailResult__c
             WHERE et4ae5__Contact__c = :contactId
             ORDER BY et4ae5__DateSent__c DESC
+            LIMIT 750
         ];
         
         // Create a set of Send Definition IDs
@@ -80,6 +81,7 @@ public class CommunicationHistoryController {
             
             FROM et4ae5__SendDefinition__c
             WHERE Id IN :sendDefinitionIds
+            LIMIT 750
         ];
         
         // Create a map of ID to Send Definition
@@ -93,10 +95,12 @@ public class CommunicationHistoryController {
         // Iterate through all Individual Email Results to populate the data we need to display for each e-mail
         // message that was sent
         for (et4ae5__IndividualEmailResult__c r : individualEmailResults) {
-            for (et4ae5__SendJunction__c sj : sendDefinitionMap.get(r.et4ae5__SendDefinition__c).et4ae5__Campaigns__r) {
-                if (sj.Parent_Campaign_Private__c) {
-             		isPrivate = true;   
-                }
+        	if (sendDefinitionMap.containsKey(r.et4ae5__SendDefinition__c)) {
+	            for (et4ae5__SendJunction__c sj : sendDefinitionMap.get(r.et4ae5__SendDefinition__c).et4ae5__Campaigns__r) {
+	                if (sj.Parent_Campaign_Private__c) {
+	             		isPrivate = true;   
+	                }
+	            }
             }
             
             // Only create and display the message if it isn't private.

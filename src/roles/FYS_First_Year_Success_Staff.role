@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Read</contactAccessLevel>
+    <description>First Year Success Center Staff</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>FYS First Year Success Center Staff</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>FYS_First_Year_Success_Manager</parentRole>
+</Role>

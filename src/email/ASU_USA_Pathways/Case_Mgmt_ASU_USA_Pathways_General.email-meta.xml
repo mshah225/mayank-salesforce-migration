@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General email template for ASU-USA Pathways</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | ASU-USA Pathways General</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+ASU-USA Pathways
+Arizona State University
+Phone: (480) 727-3394
+https://usapathways.asu.edu/
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

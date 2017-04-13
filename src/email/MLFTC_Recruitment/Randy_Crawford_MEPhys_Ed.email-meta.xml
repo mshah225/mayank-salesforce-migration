@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>false</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Randy Crawford - MEPhys Ed</name>
+    <style>none</style>
+    <subject>Thank you for your interest in ASU Mary Lou Fulton Teachers College</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in the Master&apos;s Programs with Arizona teacher certification program options, particularly the (M.Ed.) Masters of Physical Education at ASU’s Mary Lou Fulton Teachers College.This program is designed to produce graduates who have current knowledge of curriculum, instructional practices, and administrative procedures in Physical Education and sports.
+
+My name is Randy Crawford and I am here to answer any questions you have about the program and to assist you during the application process. To get the most up-to-date program information, attend one of our upcoming information sessions. We offer both on-campus and online sessions for your convenience, some of which include faculty participation. Register now to reserve your spot for an information session as soon as possible. Please also take a look at the program guide for specifics on program requirements, the application process and funding information.
+
+My primary goal is to provide you with the support and resources you will need in pursuing  your graduate education. Here are a few more links I think will be helpful for you:
+
+Mary Lou Fulton Teachers College Programs: How to Apply
+Mary Lou Fulton Teachers College Scholarship Information
+ASU Graduate Admissions Services
+Applying to Graduate Studies
+Admission Standards
+Financing Your Graduate Education
+Tuition and Fees/Tuition Estimator
+
+If you have any questions regarding the application process, please contact me and I will be happy to work with you or connect you with other university resources.
+
+I hope to see or hear from you soon!
+Kindest regards,
+
+Randy Crawford
+Student Outreach Coordinator
+Arizona State University|Mary Lou Fulton Teachers College
+Randy.Crawford@asu.edu
+602-496-0124 Fax: 602-543-6199</textOnly>
+    <type>custom</type>
+</EmailTemplate>

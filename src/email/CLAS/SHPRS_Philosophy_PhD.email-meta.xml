@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>SHPRS - Philosophy PhD</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in the philosophy PhD at ASU!</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in Arizona State University&apos;s doctoral philosophy program through the School of Historical, Philosophical and Religious studies. We are excited that you are considering joining the ASU community. Here is some information to get you started on your journey:
+
+Program description and admission requirements:
+https://shprs.clas.asu.edu/graduate/philosophy-phd
+
+Philosophy graduate faculty:
+https://graduate.asu.edu/index.php?q=graduate-faculty/degree/LAPHILPHD
+
+Philosophy faculty research areas:
+https://shprs.asu.edu/content/philosophy-3
+
+Philosophy placement record:
+https://shprs.clas.asu.edu/graduate/placement-record
+
+Please review these sites closely, and contact me at Lindseyplaitjones@asu.edu with any additional questions you may have.
+
+Sincerely,
+
+Lindsey Plait Jones
+Graduate Program Coordinator
+School of Historical, Philosophical and Religious Studies
+College of Liberal Arts and Sciences</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>You could be eligible for a New American University Scholarship</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Scholarships (NAMU, Test Scores, Scholarship Estimator)</name>
+    <style>freeForm</style>
+    <subject>You could be eligible for a New American University Scholarship</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University.
+
+Students are automatically considered for our New American University Scholarships upon admission (https://students.asu.edu/scholarships). An ACT or SAT score is required for merit-based scholarship consideration. We accept scores listed on your official transcript or sent directly from the testing centers using the ASU school codes 4007 for SAT (http://collegeboard.org) or 0088 for ACT (http://actstudent.org).
+
+Use our scholarship estimator (http://scholarships.asu.edu/estimator) to see if you may be eligible for one of our merit-based scholarships. View more information on scholarships at https://students.asu.edu/scholarships.
+
+We don’t want you to miss out on this scholarship opportunity. Please let me know if you have any further questions. I am happy to assist you.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

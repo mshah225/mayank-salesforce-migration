@@ -830,8 +830,8 @@ private class SuccessPortal_MainPageController_Tests {
         caseCoach1.ASR_Comments__c = 'comments here';
         caseCoach1.ASR_Reasons__c = 'reasons here';
         caseCoach1.ASR_Actions__c = 'actions here';
-        caseCoach1.Recommended_Actions__c = 'address financial issues;adjust course balance;Other';
-        caseCoach1.Reasons_Not_Returning__c = 'Academic;Disqualified;Other';
+        caseCoach1.Recommended_Actions__c = 'address financial issues;adjust course balance';
+        caseCoach1.Reasons_Not_Returning__c = 'Academic;Disqualified';
         insert caseCoach1;
         proactiveCases.add(caseCoach1);
         
@@ -848,8 +848,8 @@ private class SuccessPortal_MainPageController_Tests {
         caseCoach2.ASR_Comments__c = 'comments here';
         caseCoach2.ASR_Reasons__c = 'reasons here';
         caseCoach2.ASR_Actions__c = 'actions here';
-        caseCoach2.Recommended_Actions__c = 'address financial issues;adjust course balance;Other';
-        caseCoach2.Reasons_Not_Returning__c = 'Academic;Disqualified;Other';
+        caseCoach2.Recommended_Actions__c = 'address financial issues;adjust course balance';
+        caseCoach2.Reasons_Not_Returning__c = 'Academic;Disqualified';
         insert caseCoach2;
         proactiveCases.add(caseCoach2);
         
@@ -866,8 +866,8 @@ private class SuccessPortal_MainPageController_Tests {
         caseCoach3.ASR_Comments__c = 'comments here';
         caseCoach3.ASR_Reasons__c = 'reasons here';
         caseCoach3.ASR_Actions__c = 'actions here';
-        caseCoach3.Recommended_Actions__c = 'address financial issues;adjust course balance;Other';
-        caseCoach3.Reasons_Not_Returning__c = 'Academic;Disqualified;Other';
+        caseCoach3.Recommended_Actions__c = 'address financial issues;adjust course balance';
+        caseCoach3.Reasons_Not_Returning__c = 'Academic;Disqualified';
         insert caseCoach3; 
         proactiveCases.add(caseCoach3);
 
@@ -1120,8 +1120,8 @@ private class SuccessPortal_MainPageController_Tests {
         caseAdvisor1.ASR_Comments__c = 'comments here';
         caseAdvisor1.ASR_Reasons__c = 'reasons here';
         caseAdvisor1.ASR_Actions__c = 'actions here';
-        caseAdvisor1.Recommended_Actions__c = 'address financial issues;adjust course balance;Other';
-        caseAdvisor1.Reasons_Not_Returning__c = 'Academic;Disqualified;Other';
+        caseAdvisor1.Recommended_Actions__c = 'address financial issues;adjust course balance';
+        caseAdvisor1.Reasons_Not_Returning__c = 'Academic;Disqualified';
         insert caseAdvisor1;
         
         //create coach case
@@ -1137,8 +1137,8 @@ private class SuccessPortal_MainPageController_Tests {
         caseAdvisor2.ASR_Comments__c = 'comments here';
         caseAdvisor2.ASR_Reasons__c = 'reasons here';
         caseAdvisor2.ASR_Actions__c = 'actions here';
-        caseAdvisor2.Recommended_Actions__c = 'address financial issues;adjust course balance;Other';
-        caseAdvisor2.Reasons_Not_Returning__c = 'Academic;Disqualified;Other';
+        caseAdvisor2.Recommended_Actions__c = 'address financial issues;adjust course balance';
+        caseAdvisor2.Reasons_Not_Returning__c = 'Academic;Disqualified';
         insert caseAdvisor2;
         
         //create coach case
@@ -1154,8 +1154,8 @@ private class SuccessPortal_MainPageController_Tests {
         caseAdvisor3.ASR_Comments__c = 'comments here';
         caseAdvisor3.ASR_Reasons__c = 'reasons here';
         caseAdvisor3.ASR_Actions__c = 'actions here';
-        caseAdvisor3.Recommended_Actions__c = 'address financial issues;adjust course balance;Other';
-        caseAdvisor3.Reasons_Not_Returning__c = 'Academic;Disqualified;Other';
+        caseAdvisor3.Recommended_Actions__c = 'address financial issues;adjust course balance';
+        caseAdvisor3.Reasons_Not_Returning__c = 'Academic;Disqualified';
         insert caseAdvisor3;
         
         //create engagement

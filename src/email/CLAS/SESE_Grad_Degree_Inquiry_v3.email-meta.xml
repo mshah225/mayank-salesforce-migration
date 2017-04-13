@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>Gold_ASU_SESE_logo</letterhead>
+    <name>SESE Grad Degree Inquiry v3</name>
+    <style>formalLetter</style>
+    <subject>ASU School of Earth and Space Exploration Program Inquiry</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in the graduate programs of the School of Earth and Space Exploration at Arizona State University! Our innovative, interdisciplinary school currently offers MS and PhD degrees in Astrophysics and Geological Sciences as well as a PhD in Exploration Systems Design.
+
+Admission
+Our website has details on our graduate programs, including:
+Program descriptions https://sese.asu.edu/degree-programs/graduate
+Admission application details https://sese.asu.edu/admission/graduate-admission
+Financial support https://sese.asu.edu/student-life/financial-support
+
+Admission is possible for both spring and fall semesters, however spring admission is very limited. To be admitted to a spring semester, a student must have an arrangement with a faculty member who endorses her or his application and has the funding to support the student as a research assistant.
+
+We strongly recommend that all applicants review our research focus website to identify faculty members who share similar research interests. We encourage you to contact these faculty members for more information regarding their research program. These connections can greatly enhance an applicant&apos;s visibility for admission and can help identify potential research project ideas should the applicant be admitted to our program. If you have any questions about how your background might relate to our degree programs this will be a good opportunity to get feedback.
+
+Note: All of our application materials are submitted electronically. Applicants must provide all of the required materials to be considered for admission.
+
+Additional Questions?
+Please see our FAQs for additional information. 
+https://sese.asu.edu/admission/graduate-admission
+
+After you have reviewed our site or contacted prospective faculty advisors, please feel free to contact me with specific questions about our graduate programs and the admission process.
+
+I hope this information is helpful. Have a wonderful day.
+
+Becca Dial
+Academic Support Specialist
+School of Earth and Space Exploration
+PO Box 876004
+Tempe, AZ 85287-6004
+Email: bdial@asu.edu
+Phone: (480) 965-2213
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

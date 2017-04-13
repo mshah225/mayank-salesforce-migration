@@ -1,0 +1,12 @@
+Dear Professor,
+
+{!Case.Contact} from [COURSE] indicated that you've authorized Herberger Online Support to reset and reopen [ASSIGNMENT] on their behalf. To protect the academic integrity of the course, we ask you to please confirm or deny this request. If you approve the reset, we will delete this student's attempt(s) at the assignment (if any exist), then schedule a 24-hour makeup to allow the student to resubmit.
+
+Please reply to this email to approve or deny {!Case.Contact}'s request to have [ASSIGNMENT NAME] reset and reopened. 
+
+Note: this correspondence is not private. Your reply will become part of this student's support case, and can be reviewed by any students, faculty, and staff who have access to the case.
+
+Sincerely,
+Josh
+Herberger Online Support
+P{!Case.CaseNumber}

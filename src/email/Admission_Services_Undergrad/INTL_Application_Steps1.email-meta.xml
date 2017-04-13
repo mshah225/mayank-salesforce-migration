@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Steps to apply to ASU for INTL students</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>INTL Application Steps (no header)</name>
+    <style>none</style>
+    <subject>Steps to apply to ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting Admission Services at Arizona State University. We are excited to have you join our campus! Below are the steps to apply to ASU.
+
+1. Complete the undergraduate admission application at https://webapp4.asu.edu/uga_admissionsapp/. Please review our admission requirements and application procedures at https://students.asu.edu/international/future/undergrad%20.
+
+2. Submit the non-refundable application fee with a credit card. The application fee is $85 (USD). Application fees cannot be waived or transferred to a future application.
+
+3. Submit official transcripts from the last three years of high school as well as any additional course work you completed after graduating. Please mail official transcripts to the following address. We cannot accept email or faxed copies of official transcripts or academic documents.
+
+Mail official transcripts to:
+Undergraduate Admission Services
+Student Services Building
+1151 S Forest Ave
+Tempe, AZ 85287-0112
+
+4. Provide proof of English proficiency. Request that your TOEFL or IELTS score be sent directly to ASU. You can also meet the English language proficiency by successfully completing the Advanced 2 Level of the  ASU Global Launch Intensive English program (formerly AECP) at http://esl.asu.edu/.
+
+Please note that some ASU colleges and schools have higher standards for admission into their programs. International applicants must meet the general university admission requirements as well as the appropriate freshman or transfer college or school requirements of their major (https://webapp4.asu.edu/programs/).
+
+I encourage you to log in to My ASU at https://my.asu.edu/ after you apply and to regularly check your Priority Tasks box to stay up to date with any items you need to complete in order to enroll at ASU. If you have any questions or need assistance, please feel free to contact me or anyone else on the International Admission Services team.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

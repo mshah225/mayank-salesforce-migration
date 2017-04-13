@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailFolder xmlns="http://soap.sforce.com/2006/04/metadata">
+    <accessType>Shared</accessType>
+    <name>Schl for the Future of Innov in Society</name>
+    <publicFolderAccess>ReadOnly</publicFolderAccess>
+    <sharedTo>
+        <group>Schl_Future_Innovation_in_Society_Case</group>
+        <group>UTO_Administration</group>
+        <group>UTO_Student_Workers</group>
+        <role>S_Service</role>
+    </sharedTo>
+</EmailFolder>

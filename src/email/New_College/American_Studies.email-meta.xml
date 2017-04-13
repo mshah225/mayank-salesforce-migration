@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>New_College</letterhead>
+    <name>American Studies</name>
+    <style>freeForm</style>
+    <subject>Thank you for your interest in American Studies at ASU</subject>
+    <textOnly>Dear Future Sun Devil,
+
+Thank you for expressing interest in the American Studies (BA) program at Arizona State University. Here is a link to view details of the degree: https://newcollege.asu.edu/american-studies-degree. The Bachelor of Arts in American Studies is the only American studies degree in the entire state. It is comprised of American culture, politics and history, exploring knowledge beyond disciplinary boundaries, bringing differing perspectives and understandings into dialogue with one another, and generating a unique level of intellectual rigor and excitement. Students usually look to work in American studies, Art History, English, History, and Journalism among others. By viewing the major map here: https://webapp4.asu.edu/programs/t5/roadmaps/ASU00/ASAMSBA/null/ALL/2016, you can see the degree requirements outlined for graduation.
+
+Be sure to review our admission and application requirements (https://students.asu.edu/freshman/requirements) for more information about the application process in an easy to follow format. For finding more ways to pay for college, please visit our scholarships page, found here: https://newcollege.asu.edu/college-scholarships.
+
+It&apos;s important to find the right fit for your undergraduate program. A great way to learn more about this degree is to register for one of our upcoming information sessions. You can visit ASU and register for a tour.
+
+We can’t wait to see you here at West campus! If you have any questions about New College, West campus, or one of our 35 programs, please contact our Recruitment Office through the information listed below. Thank you, and we’ll talk to you soon!
+
+Kindest Regards,
+
+New College Recruitment Team
+New College of Interdisciplinary Arts and Sciences
+Arizona State University, West campus
+asknewcollege@asu.edu
+602-543-2890</textOnly>
+    <type>html</type>
+</EmailTemplate>

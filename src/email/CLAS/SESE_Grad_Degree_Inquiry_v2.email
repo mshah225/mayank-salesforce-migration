@@ -1,0 +1,42 @@
+<table height="400" width="600" cellpadding="5" border="0" cellspacing="5" >
+<tr height="50" valign="top" >
+<td style=" color:#000000; font-size:12pt; background-color:#FFFFFF; font-family:arial; bLabel:main; bEditID:r3st1;" tEditID="c1r1" locked="1" aEditID="c1r1" >
+<![CDATA[{!Contact.FirstName},]]></td>
+</tr>
+<tr height="300" valign="top" >
+<td style=" color:#000000; font-size:12pt; background-color:#FFFFFF; font-family:arial; bLabel:main; bEditID:r3st1;" tEditID="c1r2" locked="0" aEditID="c1r2" >
+<![CDATA[<font face="Arial,Sans-Serif" size="3">Thank you for your interest in the graduate programs of the School of Earth and Space
+Exploration at Arizona State University! Our innovative, interdisciplinary school currently offers
+MS and PhD degrees in Astrophysics and Geological Sciences as well as a PhD in Exploration
+Systems Design.
+<br><br><u><b>Admission
+</b></u><br>For details on our graduate programs, including program descriptions, admission requirements,
+application deadlines and financial support, please visit our site </font><font face="Arial,Sans-Serif" size="3"><a href="http://sese.asu.edu/graduate_students" target="_blank" style="font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px;">here</a><span style="color: rgb(0, 0, 0); font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; display: inline ! important; float: none;"><span class="Apple-converted-space"></span></span>.
+<br><br>Admission is possible for both spring and fall semesters, however spring admission is <b>very
+limited</b>. To be admitted to a spring semester, a student must have an arrangement with a
+faculty member who endorses her or his application and has the funding to support the student
+as a research assistant.
+<br><br>We strongly recommend that all applicants review our </font><font face="Arial,Sans-Serif" size="3"><u><b><a href="http://sese.asu.edu/focus_areas" target="_blank" style="font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px;">research focus website</a></b></u> to identify faculty
+members who share similar research interests. We encourage you to contact these faculty
+members for more information regarding their research program. These connections can greatly
+enhance an applicant's visibility for admission and can help identify potential research project
+ideas should the applicant be admitted to our program.<br><br>Note: All of our application materials are submitted electronically. Applicants must provide all of
+the required materials to be considered for admission.
+<br><br><u><b>Additional Questions?</b></u>
+<br>Please visit our </font><font face="Arial,Sans-Serif" size="3"><a href="http://sese.asu.edu/gradstudentFAQ" target="_blank" style="font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px;">FAQ</a><span style="color: rgb(0, 0, 0); font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; display: inline ! important; float: none;"><span class="Apple-converted-space"></span></span> page for additional information. After you have reviewed our site or
+contacted prospective faculty advisors, please feel free to contact me with specific questions
+about our graduate programs and the admission process.
+<br><br>I hope this information is helpful. Have a great day!
+<br><br>Becca Dial
+<br>Academic Support Specialist
+<br>School of Earth and Space Exploration
+<br>PO Box 876004
+<br>Tempe, AZ 85287-6004
+<br>Email: bdial@asu.edu
+<br>Phone: (480) 965-2213<font color="#CCCCCC"><br></font></font>]]></td>
+</tr>
+<tr height="50" valign="top" >
+<td style=" color:#000000; font-size:12pt; background-color:#FFFFFF; font-family:arial; bLabel:main; bEditID:r3st1;" tEditID="c1r3" locked="1" aEditID="c1r3" >
+<![CDATA[<font face="Arial,Sans-Serif" size="2"><font color="#CCCCCC" size="1">{!Case.Thread_Id}</font></font>]]></td>
+</tr>
+</table>

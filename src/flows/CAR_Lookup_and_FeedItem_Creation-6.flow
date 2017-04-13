@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Using formula for Chatter post (Can&apos;t use HTML in feedItem yet)
+Reverting to basic formula.</description>
+    <label>CAR Lookup and FeedItem Creation</label>
+    <processType>AutoLaunchedFlow</processType>
+</Flow>

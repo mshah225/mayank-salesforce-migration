@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Sign up for orientation, check My ASU</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>FTF Orientation Push (Post-Enrollment Deposit)</name>
+    <style>freeForm</style>
+    <subject>It’s time to register for orientation at ASU!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Congratulations and welcome to the Sun Devil family!  By paying your enrollment deposit, you have taken the next step to becoming an official Sun Devil.
+
+Now that you’ve confirmed your housing preferences, you can sign up for orientation in My ASU at http://my.asu.edu/.
+
+All admitted first-time freshmen are expected to attend orientation (https://eoss.asu.edu/orientation). Reservations are taken on a first-come, first-served basis and program dates fill quickly. Once a program has filled, that program date is no longer available and will not appear for reservations.
+
+Keep checking your Priority Tasks in My ASU (http://my.asu.edu/) and complete items as soon as possible to enroll at ASU.
+
+If you have any questions about the admission process or ASU in general, I&apos;d be happy to help you in any way I can.
+
+We look forward to seeing you at ASU.
+
+Go Devils!
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

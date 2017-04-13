@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Thank you for your interest in the Master of Science in clinical exercise physiology</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>HealthSolutions_letterhead</letterhead>
+    <name>MS Clinical Exercise Physiology</name>
+    <style>formalLetter</style>
+    <subject>Thank you for your interest in ASU&apos;s Master of Science in Clinical Exercise Physiology</subject>
+    <textOnly>Thank you for your interest in the Master of Science in Clinical Exercise Physiology program. Students who have completed the following requirements are encouraged to apply:
+
+1.	Bachelor’s degree in exercise and wellness, exercise science, kinesiology, nursing, or a related field. 
+2.	GRE scores at or above the 50th percentile.
+3.	Minimum GPA of 3.0 (including a B or better in all science courses). 
+4.	Completion of the following undergraduate courses prior to beginning the application process.  These courses are offered at ASU each semester (fall, spring, and summer) in order to facilitate completion of requirements.
+
+Undergraduate Course Requirements
+Human Anatomy &amp; Physiology
+Physiological Foundations of Movement (Exercise Physiology)
+Human Nutrition
+Functional Anatomy/Kinesiology
+Introduction to Psychology
+Statistics
+Exercise Testing
+Exercise Prescription
+
+Fall applications are available on the website beginning in September. Review of applications will begin on January 15 and will continue as long as space is available. 
+
+Feel free to review some of our web pages as you explore this exciting, new degree within the College of Health Solutions. This page offers general information about the program:
+
+https://webapp4.asu.edu/programs/t5/majorinfo/ASU00/NHCEPMS/graduate/false
+
+You can estimate the cost of your attendance, based on current tuition/fees: 
+
+https://students.asu.edu/tuitionandfees
+
+Upon completion of the program and the required hours of clinical experience, you will be eligible to sit for the American College of Sports Medicine (ACSM) Registered Clinical Exercise Physiologist (RCEP) certification exam.  You can find out more about this exam at the ACSM website: 
+
+http://certification.acsm.org/acsm-registered-clinical-exercise-physiologist
+
+Again, thank you for your interest in the Master of Science in Clinical Exercise Physiology program at Arizona State University. Please contact me if you have any questions.  
+ 
+Thank you,
+
+Sue Callahan, MEd
+Program Coordinator Sr., Graduate Exercise and Wellness  
+Arizona State University
+School of Nutrition and Health Promotion
+550 North 3rd Street
+Phoenix, Arizona 85004
+Susan.Callahan@asu.edu
+Phone: 602-496-0869</textOnly>
+    <type>html</type>
+</EmailTemplate>

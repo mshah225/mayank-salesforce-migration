@@ -1,0 +1,442 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides><actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides><fields>
+        <fullName>Action_Reason__c</fullName>
+        <description>Data sourced from PROG_RSN_TBL.DESCR</description>
+        <externalId>false</externalId>
+        <label>Action Reason</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Application Withdrawn</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Applied to Graduate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Concurrent Approved Program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conversion</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Courtesy App - Cert Prog Only</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Division of Graduate Studies</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Grad POS Sub-Plan Chg</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Minor Added</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-degree to Degree</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Not Enrolled in Previous Term</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Requirement term changed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Student Request</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Voluntary Withdrawal (GRAD)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields><fields>
+        <fullName>Action__c</fullName>
+        <description>Data sourced from PS_ACAD_PROG.PROG_ACTION</description>
+        <externalId>false</externalId>
+        <label>Program Action</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Activate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Completion of Program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Data Change</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Discontinuation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Matriculation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Plan Change</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Program Change</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields><fields>
+        <fullName>Admit_Term__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Data sourced from PS_ACAD_PROG.ADMIT_TERM</description>
+        <externalId>false</externalId>
+        <label>Admit Term</label>
+        <referenceTo>Term__c</referenceTo>
+        <relationshipLabel>Student Program Plans</relationshipLabel>
+        <relationshipName>Student_Program_Plans</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields><fields>
+        <fullName>Application_Number__c</fullName>
+        <description>Data sourced from PS_ACAD_PROG.ADM_APPL_NBR</description>
+        <externalId>false</externalId>
+        <label>Application Number</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Campus__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <description>Data sourced from PS_ACAD_PROG.CAMPUS</description>
+        <externalId>false</externalId>
+        <label>Campus</label>
+        <referenceTo>Location__c</referenceTo>
+        <relationshipLabel>Student Program Plans</relationshipLabel>
+        <relationshipName>Student_Program_Plans</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields><fields>
+        <fullName>Career_Number__c</fullName>
+        <description>Data sourced from PS_ACAD_PROG.STDNT_CAR_NBR</description>
+        <externalId>false</externalId>
+        <label>Career Number</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Career__c</fullName>
+        <description>Data sourced from PS_ACAD_CAR_TBL.DESCR</description>
+        <externalId>false</externalId>
+        <label>Career</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Undergraduate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Graduate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Law</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields><fields>
+        <fullName>College_Diploma_Description__c</fullName>
+        <description>Data sourced from PS_ACAD_PLAN_TBL.DIPLOMA_DESCR</description>
+        <externalId>false</externalId>
+        <label>College Diploma Description</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Completion_Term__c</fullName>
+        <description>Data sourced from PS_TERM_TBL.DESCR</description>
+        <externalId>false</externalId>
+        <label>Completion Term</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Degree_Conferral_Date__c</fullName>
+        <description>Data sourced from PS_ACAD_DEGR.DEGR_CONFER_DT</description>
+        <externalId>false</externalId>
+        <label>Degree Conferral Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields><fields>
+        <fullName>Degree__c</fullName>
+        <description>Data sourced from PS_ACAD_PLAN_TBL.Degree</description>
+        <externalId>false</externalId>
+        <label>Degree</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Effective_Date__c</fullName>
+        <description>Data sourced from PS_ACAD_PROG.EFFDT</description>
+        <externalId>false</externalId>
+        <label>Effective Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields><fields>
+        <fullName>Plan_Code__c</fullName>
+        <description>Data sourced from ACAD_PLAN_TBL.ACAD_PLAN</description>
+        <externalId>false</externalId>
+        <label>Plan Code</label>
+        <length>25</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Plan_Description__c</fullName>
+        <description>Data sourced from ACAD_PLAN_TBL.DESCR</description>
+        <externalId>false</externalId>
+        <label>Plan Description</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Plan_Sequence__c</fullName>
+        <description>Data sourced from PS_ACAD_PLAN.PLAN_SEQUENCE</description>
+        <externalId>false</externalId>
+        <label>Plan Sequence</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Plan_Transcript_Description__c</fullName>
+        <description>Data sourced from PS_ACAD_PLAN_TBL.TRNSCR_DESCR</description>
+        <externalId>false</externalId>
+        <label>Plan Transcript Description</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Plan_Type_Text__c</fullName>
+        <description>Data sourced from ACAD_PLAN_TBL.ACAD_PLAN_TYPE</description>
+        <externalId>false</externalId>
+        <label>Plan Type</label>
+        <length>3</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Plan_URL__c</fullName>
+        <description>Student Plan URL in PeopleSoft. Data sourced from ASU_ACADP_EXTNS.URL_1</description>
+        <externalId>false</externalId>
+        <label>Plan URL</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields><fields>
+        <fullName>Primary_Flag__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Data sourced from PS_STDNT_PROFILE_MAJ_CURRENT.ASU_PRIME_REC_FLG</description>
+        <externalId>false</externalId>
+        <label>Primary Flag</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields><fields>
+        <fullName>Program_Code__c</fullName>
+        <description>Data sourced from ACAD_PROG_TBL.ACAD_PROG</description>
+        <externalId>false</externalId>
+        <label>Program Code</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Program_Description__c</fullName>
+        <description>Data sourced from ACAD_PROG_TBL.DESCR</description>
+        <externalId>false</externalId>
+        <label>Program Description</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Status__c</fullName>
+        <description>Data sourced from PS_ACAD_PROG.ASU_PROGSTATUS1</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Active in Program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Completed Program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Discontinued</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><description>Academic History of student's enrollment. Lists the related College (Program) and Major (Plan) with its current status.</description><enableActivities>false</enableActivities><enableBulkApi>true</enableBulkApi><enableFeeds>false</enableFeeds><enableHistory>true</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>Private</externalSharingModel><label>Student Program Plan</label><nameField>
+        <displayFormat>{000000}-{YYYY}-{MM}-{DD}</displayFormat>
+        <label>Details</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField><pluralLabel>Student Program Plans</pluralLabel><searchLayouts /><sharingModel>Read</sharingModel><listViews>
+        <fullName>AllGraduateProgramPlans</fullName>
+        <columns>Contact__c</columns>
+        <columns>Campus__c</columns>
+        <columns>Status__c</columns>
+        <columns>Action__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Career__c</field>
+            <operation>equals</operation>
+            <value>Graduate</value>
+        </filters>
+        <label>All Graduate Program Plans</label>
+    </listViews><listViews>
+        <fullName>AllLawProgramPlans</fullName>
+        <columns>Contact__c</columns>
+        <columns>Campus__c</columns>
+        <columns>Status__c</columns>
+        <columns>Action__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Career__c</field>
+            <operation>equals</operation>
+            <value>Law</value>
+        </filters>
+        <label>All Law Program Plans</label>
+    </listViews><listViews>
+        <fullName>AllStudentProgramPlans</fullName>
+        <columns>Contact__c</columns>
+        <columns>Career__c</columns>
+        <columns>Campus__c</columns>
+        <columns>Status__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Student Program Plans</label>
+    </listViews><listViews>
+        <fullName>AllUndergraduateProgramPlans</fullName>
+        <columns>Contact__c</columns>
+        <columns>Campus__c</columns>
+        <columns>Status__c</columns>
+        <columns>Action__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Career__c</field>
+            <operation>equals</operation>
+            <value>Undergraduate</value>
+        </filters>
+        <label>All Undergraduate Program Plans</label>
+    </listViews></CustomObject>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Hughes Scholarship Letter</name>
+    <style>freeForm</style>
+    <subject>Congratulations on your scholarship</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+I hope that you are enjoying your summer break and getting ready to begin the fall semester on Aug. 18, 2016. We are looking forward to seeing you at ASU Colleges at Lake Havasu City.
+
+Due to your exceptional college transfer GPA, you have been awarded a ${xxxx} John C. Hughes Scholarship. This scholarship is made possible through the generosity of Mr. John C. Hughes, who contributed funds specifically to support transfer students.
+
+You will see your scholarship posted in My ASU.
+
+Go Devils!
+
+David A. Young
+Director
+ASU Colleges at Lake Havasu City
+
+
+P.S. Mr. Hughes is an owner of the College Street Brewhouse &amp; Pub in Lake Havasu City (1940 College Dr., Lake Havasu City, AZ 86403). If you are inclined to do so, I encourage you to send Mr. Hughes a thank you note. I&apos;m sure he would appreciate knowing how his support will help you during your first year here at ASU in Lake Havasu.
+{!Case.Thread_Id}
+
+
+
+
+
+
+
+By providing your email address, you gave Arizona State University permission to send this email.
+ASU Colleges - Lake Havasu City | 100 University Way | Lake Havasu City, AZ 86403</textOnly>
+    <type>html</type>
+</EmailTemplate>

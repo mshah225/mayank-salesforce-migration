@@ -1,0 +1,58 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                   Dear {!Contact.FirstName}, <br /><br />
+
+<b>Student ID: {!Contact.EMPLID__c}</b><br /><br />
+
+Thank you for submitting your application for graduation from Arizona State University. At this time, <b>your application has been denied</b> for the following reason(s): <br /><br />
+
+<ul>
+	<li>You have not reached candidacy. Once you have reached candidacy you may reapply for graduation with no additional fee.</li> <br /><br />
+
+	<li>Your iPOS (Plan of Study) indicates that you have exceeded your graduation deadline. You must submit a petition requesting a time limit extension for a Graduate College decision. If this petition is approved you will need to reapply for graduation with no additional fee. </li><br /><br />
+
+       <li>Your iPOS (Plan of Study) GPA, Overall Graduate (500 level courses and above) GPA or Cumulative GPA is below 3.00. Graduate College requires that students maintain a minimum 3.00 GPA on all GPAs (iPOS, Overall Graduate and Cumulative) to graduate. Please contact your academic unit staff/advisor to review your options and create a plan of action. Once you have communicated with your academic unit, please e-mail the Graduation Office with an update on your status. To calculate your GPA please visit <a href="https://students.asu.edu/gpa-calculator">https://students.asu.edu/gpa-calculator</a>.</li> <br /><br />
+
+	<li>Your iPOS (Plan of Study) has not been approved by Graduate College. Your iPOS must be approved by Graduate College by the  <a href="https://students.asu.edu/academic-calendar">graduation conferral date.</a> Once your iPOS has been approved you can reapply for graduation with no additional fee.</li><br /><br />
+
+	<li>You are not registered for the semester in which you have applied for graduation. Graduate College requires that all graduate students be enrolled in <b><u>at least </b></u>one graduate level credit hour in the semester they are graduating. </li> <br /><br />
+</ul>
+
+For more information on ASU Graduate Policies and Procedures please visit <a href="https://graduate.asu.edu/policies-procedures">https://graduate.asu.edu/policies-procedures</a>.<br /><br />
+
+Please contact your department for guidance if you have questions. Your academic unit staff have been copied on this email for reference. <br /><br />
+
+
+Sincerely, <br />
+
+{!Case.OwnerFullName}<br /><br/>
+
+        <div style="color:#990033;font-family: Arial, Helvetica !important;">
+                        <b>Graduation<br />
+                        University Registrar Services</b><br />
+                        Arizona State University<br />
+                        Phone: (480) 965-3256<br />
+                        <a href="https://asu.edu" style="color:#990033 !important">www.asu.edu</a>
+    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>

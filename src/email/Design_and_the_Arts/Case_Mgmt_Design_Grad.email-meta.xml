@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General Case Management Template for Recruitment and Admissions</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Case Mgmt | Design Grad</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Sincerely,
+{!User.FirstName} {!User.LastName}
+
+The Design School 
+Arizona State University
+PO Box 871605
+Tempe, AZ 85287
+(P) 480-965-3536
+(F) 480-965-0968
+http://design.asu.edu 
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

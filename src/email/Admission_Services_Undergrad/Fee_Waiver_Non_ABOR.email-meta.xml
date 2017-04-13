@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Your application fee waiver request</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Fee Waiver: Non-ABOR</name>
+    <style>freeForm</style>
+    <subject>Your application fee waiver request</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting Admission Services at Arizona State University to request an application fee waiver.
+
+Application fee waivers are only available for Arizona residents who currently attending high school and will be first-time freshmen at ASU. The fee waiver can be requested from your high school guidance counselor. Application fee waivers are not available for nonresidents.
+
+Please let me know if I can assist with anything else.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

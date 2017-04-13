@@ -1,0 +1,21 @@
+<font face="Arial" size="3">
+
+
+Hello {!Contact.FirstName},
+
+<p>Thank you for your email. To defer your admission to the following semester, please complete the deferment form that will be emailed to you and email the completed form to <a href="mailto:DeferUGAdmissions@asu.edu">DeferUGAdmissions@asu.edu</a>.</p>
+
+<p>If you have already selected a housing option for the upcoming semester, you need to email <a href="mailto:housing@asu.edu">housing@asu.edu</a> to cancel it. Otherwise, you will be charged for your housing selection.</p>
+
+<p>Regards,</p>
+
+{!User.Recruiter_Full_Name__c}<BR>
+{!User.Recruiter_Title__c}<BR>
+Admission Services<BR>
+{!User.Recruiter_Email__c}<BR>
+{!User.Recruiter_Phone__c}<BR>
+</font>
+
+<font face="Arial" size="1" color="grey"><p>If you have any additional information or questions related to this, please reply to this email.</p>
+
+<p>{!Case.Thread_Id}</p></font>

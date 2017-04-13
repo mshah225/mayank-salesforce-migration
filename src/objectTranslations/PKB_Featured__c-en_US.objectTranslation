@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <help><!-- The article number of the article being linked to as a keyword or featured article. Not the same as the Article or Knowledge Article Version record ID. --></help>
+        <label><!-- Article Number --></label>
+        <name>Article_Number__c</name>
+    </fields><fields>
+        <help><!-- Date after which the article will no longer appear in the &quot;Featured&quot; section. A empty value means no expiration date. Does not apply to records with the &quot;Is Keyword Article&quot; checked. --></help>
+        <label><!-- Featured Expiration --></label>
+        <name>Expiration__c</name>
+    </fields><fields>
+        <help><!-- Check this field if this article is linked to a keyword. When checked, this article will not appear in the Featured Articles section of the PKB and will instead appear as a Recommended article whenever the keyword(s) specified on this record are searched --></help>
+        <label><!-- Is Keyword Article? --></label>
+        <name>Is_Keyword_Article__c</name>
+    </fields><fields>
+        <help><!-- Enter the keyword or keywords here so that, when those keywords are entered into a search on the PKB, this article will appear at the top of the search results as a recommended article. --></help>
+        <label><!-- Keyword --></label>
+        <name>Keyword__c</name>
+    </fields><fields>
+        <help><!-- Specifies the order that this article will appear when being displayed with other articles as part of the featured or recommended sections. Lower numbers appear towards the top. --></help>
+        <label><!-- Order --></label>
+        <name>Order__c</name>
+    </fields><fields>
+        <help><!-- This must match one of the API names of the Sites that are configured to use the PKB package. --></help>
+        <label><!-- PKB Name --></label>
+        <name>PKB_Name__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>PKB Featured</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>PKB Featured</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>PKB Featured Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Features on Keyword Search --></label>
+            <section>Features on Keyword Search</section>
+        </sections>
+    </layouts><validationRules>
+        <errorMessage><!-- Article Number should be 9 digits (eg: 00001000). --></errorMessage>
+        <name>Check_Article_Number_have_9_digits</name>
+    </validationRules></CustomObjectTranslation>

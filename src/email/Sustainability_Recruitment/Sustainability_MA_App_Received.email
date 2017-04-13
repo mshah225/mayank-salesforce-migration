@@ -1,0 +1,33 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003SECS&oid=00Dd0000000hLoc&lastMod=1405969488000" 
+                     width="60%" style="padding-top:40px;max-width:600px;"/></center>
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+{!Contact.FirstName},<br /><br />
+
+Thank you for your application to the <a href=https://schoolofsustainability.asu.edu/graduate/master-of-arts.php>MA program</a> in the School of Sustainability at Arizona State University for the fall 2015 semester.<br /><br />
+
+You should have received an automated email from ASU Graduate Admissions with instructions on setting up your <a href=https://webapp4.asu.edu/myasu/>My ASU account</a>. In My ASU, you can monitor the status of the following items: <br /><br />
+<ul>
+<li>Your <a href=https://students.asu.edu/graduate/apply#mailing>official transcripts</a><br />
+<li><a href=https://students.asu.edu/graduate/proficiency>English Proficiency</a> requirements (if applicable)<br />
+<li>Your letters of recommendation</li></ul><br />
+
+The “Manage Recommenders” feature allows you to view details on which letters are still missing. You can send an email reminder (once every seven days) to your recommenders.<br /><br />
+
+We must have all materials by <b>Dec. 15, 2014</b> to consider your application <b>including GRE scores</b> (if applicable). We will send you an email once your application file is complete. Then, we will notify you of our decision in early February.<br /><br />
+
+Please contact the Sustainability advising office at 480-727-6963 or SOSGradAdvising@asu.edu if you have any questions.<br /><br />
+
+Regards, <br /><br />
+
+Katerina Kinast <br />
+Graduate Academic Success Coordinator <br />
+P.O. Box 875502 | Tempe, Arizona | 85287-5502<br />
+PH: 480-965-5923 | Main: 480-727-6963
+<img class="logo_top" src="https://c.na14.content.force.com/servlet/servlet.ImageServer?id=015d0000001Ln45&oid=00Dd0000000hLoc"
+                     width="60%" style="padding-top:20px;max-width:200px;" img align="right"/>

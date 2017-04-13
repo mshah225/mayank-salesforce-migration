@@ -1,0 +1,62 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    
+             Dear {!Contact.FirstName},  <br /><br />
+
+Some of the information required to have your ASU ID mailed is missing. Please email <a href="mailto:sundevilcardinfo@asu.edu" target="_blank">
+ sundevilcardinfo@asu.edu</a> and include <b>ALL</b> of the following information in the email to have your card mailed.<br /><br />
+
+<ol>
+  <li>Use the word <i><u>“Orientation”</i></u> as the subject of your email.</li> 
+  <li>Include your <i><u>ASU ID number</i></u> in the body of the email.</li> 
+  <li>Include the <i><u>mailing address</i></u> you want your card mailed to in the body of the email. </li> 
+  <li>You will need to attach a valid, current <i><u>photo ID</i></u> as proof of identity.  <i>Acceptable forms of ID are: US drivers license, state issued ID card, US passport, or US Visa.</i></li> <br />
+</ol>
+
+After we have processed your request, we will send you a confirmation email. You should receive your ASU ID in the mail within 10 business days.<br /><br />
+    
+Regards, <br />
+
+ {!User.FirstName} {!User.LastName}
+                </div>
+
+             
+
+               <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               <p><b>
+Sun Devil Card Services
+</b><br/>
+Arizona State University<br />
+Phone: 480-965-2273<br/>
+<a href="https://cfo.asu.edu/cardservices" target="_blank">
+cardservices.asu.edu
+</a><br />
+                    </p>
+                    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>
+
+</p>

@@ -1,0 +1,51 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003SECS&oid=00Dd0000000hLoc&lastMod=1405969488000" 
+                     width="60%" style="padding-top:40px;max-width:600px;"/></center>
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+               
+                    <p>
+
+Dear {!Contact.FirstName}, <br /><br />
+
+Thank you for your interest in the <a href="https://webapp4.asu.edu/programs/t5/majorinfo/ASU00/LASCPMA/graduate/false">Master of Arts in social and cultural pedagogy</a> at Arizona State University's School of Social Transformation! I look forward to assisting you as you consider your options at ASU. <br /><br />
+
+<b> About the Program:</b><br />
+The MA in social and cultural pedagogy is an innovative degree that immerses students in the theory and practice of social pedagogy, and prepares them for working with diverse populations in a variety of organizational and community settings. The School of Social Transformation supports students, faculty and staff to develop tomorrow’s community leaders and shapers. We embody our commitment to social justice, access, impact and excellence in everything we do.<br /><br />
+
+<b> Admission:</b><br />
+We accept applications for both fall and spring admission: </br>
+<ul>
+<li>The priority application deadline for <b>spring</b> admission is Sept. 15.</li>
+<ul>
+<li>Applications will be accepted until Nov. 15 or until capacity is filled.</li>
+</ul>
+</li>
+<li>The priority application deadline for <b>fall</b> admission is Jan. 15.</li>
+<ul>
+<li>Applications will be accepted until May 15 or until capacity is filled.</li></ul></ul>
+
+In addition to the <a href="https://webapp4.asu.edu/dgsadmissions/Index.jsp">graduate admissions online application</a>, applicants will submit: <br />
+<ul>
+<li>two-to-three page application letter describing their background and explaining why they want to study in this program.</li>
+<li>resume describing prior educational history and relevant work/volunteer experience</li></ul>
+<b>Additional Questions?</b><br />
+Visit our very helpful <a href="https://sst.clas.asu.edu/ma-social-and-cultural-pedagogy-faqs">FAQ</a> page, which answers common questions we've received over the years from prospective students.<br /><br />
+
+Please let me know if you have any questions and thank you so much for your interest!<br /><br />
+
+All the best,<br /><br />
+
+Audra Horney<br />
+Academic Success Specialist<br />
+School of Social Transformation<br />
+College of Liberal Arts and Sciences<br />
+Arizona State University
+Wilson 125 |  480-965-7682 |  fax: 480-965-9199<br />
+<a href=mailto:audra.horney@asu.edu?Subject=MA%20School%20of%20Social%20Transformation%20Request%20for%20Information target="_top">Audra.Horney@asu.edu</a> |  <a href="sst.asu.edu">sst.asu.edu</a><br />
+  <img class="logo_top" src="https://asu--c.na14.content.force.com/servlet/servlet.ImageServer?id=015d0000004Ly1g&oid=00Dd0000000hLoc&lastMod=1412805482000"
+                     width="60%" style="padding-top:20px;max-width:200px;" img align="right"/>

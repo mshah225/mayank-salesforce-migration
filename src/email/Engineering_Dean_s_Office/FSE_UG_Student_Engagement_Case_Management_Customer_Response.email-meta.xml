@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Respond-to-customer template with merge fields for Fulton Engineering (Dean&apos;s Office - Undergrad Student Engagement) agents to use for Cases originated via email. For ongoing communication or Case closure.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>FSE UG Student Engagement | Case Management Customer Response</name>
+    <style>none</style>
+    <subject>RE: {!Case.Subject}</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+
+Sincerely,
+
+{!User.FirstName} {!User.LastName}
+
+{!User.Title} | {!User.Phone} | {!User.Email}
+
+Undergraduate Student Engagement
+Ira A. Fulton Schools of Engineering
+
+If you have any additional information or questions related to this, please reply to this email.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

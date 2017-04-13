@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- ASURITE --></label>
+        <name>ASURiteID__c</name>
+    </fields><fields>
+        <label><!-- Chat Enabled --></label>
+        <name>Chat_Enabled__c</name>
+    </fields><fields>
+        <help><!-- How coaching student prefers to be contacted --></help>
+        <label><!-- Contact Preference --></label>
+        <name>Coach_Contact_Preference__c</name>
+        <picklistValues>
+            <masterLabel>Email</masterLabel>
+            <translation><!-- Email --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Phone</masterLabel>
+            <translation><!-- Phone --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Pitch</masterLabel>
+            <translation><!-- Pitch --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SMS</masterLabel>
+            <translation><!-- SMS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unknown</masterLabel>
+            <translation><!-- Unknown --></translation>
+        </picklistValues>
+    </fields><fields>
+        <help><!-- Level of Engagement of Coaching Student --></help>
+        <label><!-- Engagement --></label>
+        <name>Coach_Engagement__c</name>
+        <picklistValues>
+            <masterLabel>Declined</masterLabel>
+            <translation><!-- Declined --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Engaged</masterLabel>
+            <translation><!-- Engaged --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Nonresponsive</masterLabel>
+            <translation><!-- Nonresponsive --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Transactional</masterLabel>
+            <translation><!-- Transactional --></translation>
+        </picklistValues>
+    </fields><fields>
+        <help><!-- New: New, first session
+Continuing: Enrolled 2+ consecutive sess
+Graduated: Completed program
+NDrop: No credit courses
+TDrop: No classes, will return
+PDrop: Never return
+Re-Entry: Out of class for 2-6 sess
+Re-Apply: Out 6+ sess, needs new adm ppwk --></help>
+        <label><!-- Enrollment Status --></label>
+        <name>Coach_Enrollment_Status__c</name>
+        <picklistValues>
+            <masterLabel>Continuing</masterLabel>
+            <translation><!-- Continuing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Graduated</masterLabel>
+            <translation><!-- Graduated --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NDrop</masterLabel>
+            <translation><!-- NDrop --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>New</masterLabel>
+            <translation><!-- New --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>PDrop</masterLabel>
+            <translation><!-- PDrop --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Re-Apply</masterLabel>
+            <translation><!-- Re-Apply --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Re-Entry</masterLabel>
+            <translation><!-- Re-Entry --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TDrop</masterLabel>
+            <translation><!-- TDrop --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Coaching Student --></label>
+        <name>Coaching_Student__c</name>
+    </fields><fields>
+        <label><!-- EMPLID --></label>
+        <name>EMPLID__c</name>
+    </fields><fields>
+        <label><!-- Is Active --></label>
+        <name>Is_Active__c</name>
+    </fields><fields>
+        <label><!-- Messaging Account Created --></label>
+        <name>Messaging_Account_Created__c</name>
+    </fields><fields>
+        <label><!-- Next Term Enrolled --></label>
+        <name>Next_Term_Enrolled__c</name>
+    </fields><fields>
+        <help><!-- Lookup to Plan, used for assign students to Coaches --></help>
+        <label><!-- Plan Code --></label>
+        <name>Plan_Code__c</name>
+        <relationshipLabel><!-- Success Students --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Pod Owner ID --></label>
+        <name>Pod_Owner_ID__c</name>
+    </fields><fields>
+        <label><!-- Program Code --></label>
+        <name>Program_Code__c</name>
+        <relationshipLabel><!-- Success Students --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Student Name --></label>
+        <name>Student_Name__c</name>
+    </fields><fields>
+        <label><!-- Student --></label>
+        <name>Student__c</name>
+        <relationshipLabel><!-- Success Students --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Success Coach Name --></label>
+        <name>Success_Coach_Name__c</name>
+    </fields><fields>
+        <help><!-- This determines which Advisors are assigned to this student. --></help>
+        <label><!-- Success Pod --></label>
+        <name>Success_Pod__c</name>
+        <relationshipLabel><!-- Success Students --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Success Resource ID --></label>
+        <name>Success_Resource_ID__c</name>
+    </fields><fields>
+        <label><!-- Success Resource --></label>
+        <name>Success_Resource__c</name>
+        <relationshipLabel><!-- Success Students --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Success Student</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Success Students</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Success Student Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Success Coach Info --></label>
+            <section>Success Coach Info</section>
+        </sections>
+    </layouts></CustomObjectTranslation>

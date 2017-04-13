@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Details about earning BAS Med Lab as a transfer from Phoenix College</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TRN BAS Med Lab PC</name>
+    <style>freeForm</style>
+    <subject>Earn your Applied Science Degree at ASU!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University. The BAS in medical laboratory sciences is offered through a partnership with Phoenix College in which the student completes 90 credits in an Associate in Applied Science degree at Phoenix College, then completes 30 credits through ASU.
+
+Only students who have been admitted through Phoenix College and been approved by the program director are accepted for admission to this program. For acceptance into the medical laboratory science program, please review the additional requirements at: webapp4.asu.edu/programs/t5/majorinfo/ASU00/NUMLSBAS/undergrad/false.
+
+Please see an advisor on the Phoenix College campus or ASU’s Downtown Phoenix campus to learn more about this program. You can also contact the ASU medical laboratory science program director, Jeff Wolz, directly at jwolz@asu.edu.
+
+View the pathway for this program by visiting this site: catalog.asu.edu//sites/default/files/imports/MDL%20Course%20Sequence%2012-13.pdf
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+Admission Services
+{!User.Recruiter_Title__c}
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

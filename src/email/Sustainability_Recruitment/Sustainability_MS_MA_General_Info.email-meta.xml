@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Sustainability MS-MA General Info</name>
+    <style>none</style>
+    <subject>Thank you for your interest in the School of Sustainability at ASU</subject>
+    <textOnly>{!Contact.FirstName},
+
+Thank you for your interest in our MA or MS program. Specific application requirements and top reasons students choose the ASU School of Sustainability are listed on our website. We also offer several concurrent degree options (with more in the works).
+
+The MA and MS curriculum are the same but specific classes chosen by students vary based on their research interests. The MA students usually have an interest in social sciences, humanities, planning and related fields. The MS students usually have an interest in natural sciences, engineering and technology, economics, and related fields.
+
+We encourage you to contact faculty prior to applying. Applicants are asked to identify potential faculty advisors in the application materials. Please take time to learn about our faculty and the current sustainability research projects underway at ASU.
+
+Please note that we also offer a non-thesis master’s degree, the Master of sustainable solutions (MSUS). MSUS students complete a capstone instead of a thesis. The capstone showcases the student’s applied knowledge in a chosen field within sustainability.
+
+We understand that it may be difficult to determine the best program for your long term goals. We are happy to discuss the differences and answer any additional questions you have. To schedule an in-person, phone or Skype appointment, please call our office at 480-727-6963 during our office hours, Monday through Friday, 9a.m. - 4p.m.
+
+Regards,
+
+Katerina Kinast
+Graduate Academic Success Coordinator
+ASU School of Sustainability
+Katie.Kinast@asu.edu</textOnly>
+    <type>custom</type>
+</EmailTemplate>

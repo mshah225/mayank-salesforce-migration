@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Mail your transcripts to ASU</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>INTL Mailing Address for Transcripts (no header)</name>
+    <style>none</style>
+    <subject>Please mail your transcripts to ASU</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for contacting Admission Services at Arizona State University. Please mail your official transcripts from the last three years of high school as well as any additional course work you completed after graduating to the following address. We cannot accept email or faxed copies of official transcripts or academic documents.
+
+Undergraduate Admission Services
+Student Services Building
+1151 S Forest Ave
+Tempe AZ 85287-0112
+
+In addition, TOEFL, IELTS, SAT and ACT scores must be received directly from the official testing service.
+
+Regards,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

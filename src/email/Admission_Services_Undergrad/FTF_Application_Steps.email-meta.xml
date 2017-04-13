@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Steps for applying to Arizona State University</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>FTF Application Steps</name>
+    <style>freeForm</style>
+    <subject>Steps for applying to Arizona State University</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Thank you for your interest in Arizona State University. I have included some information below to help you with the application process.
+
+Your first step is to review our freshman admission requirements online at https://students.asu.edu/freshman/requirements. Some majors have additional requirements, which can be viewed by searching for your major on degree search at https://asu.edu/degrees.
+
+Once you’re ready, follow the application steps below:
+
+1. Apply for admission
+2. Pay the application fee online
+3. Request to have your ACT or SAT scores sent directly to ASU from ACT or College Board
+4. Request official transcripts from each educational institution attended be sent directly to ASU Admission Services*
+
+Once we receive all materials, your file will be reviewed for admission. The review process may take four to six weeks.
+
+*If you self-report your grades, you do not need to submit an official transcript to receive your admission decision. An official transcript will be required once you graduate from high school.
+
+After you apply to ASU, you’ll receive an email and a letter containing your ASURITE UserID and activation code. Follow the instructions to activate your login for My ASU (https://my.asu.edu). You will be able to track your admission status and take care of any Priority Tasks needed to complete your application.
+
+If you have any questions, let me know and I will be happy to help.
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

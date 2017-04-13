@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>School_of_Molecular_Sciences</letterhead>
+    <name>SMS MS Programs</name>
+    <style>freeForm</style>
+    <subject>MS Programs in the School of Molecular Sciences at ASU</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for your interest in the graduate programs within the School of Molecular sciences at Arizona State University. We do not offer any MS degree programs at this time, but I encourage you to consider applying for one of our PhD programs if you are interested.
+
+The School of Molecular Sciences offers PhD degrees in both chemistry and biochemistry, and all admitted students are fully funded, including the cost of tuition, health insurance and a competitive stipend.
+
+Applications are accepted for study beginning in fall semesters only. The application will be available beginning September 1 for admission to the following fall and the application deadline is January 1. We do not admit students for the spring semester. The application is made up of two parts: a general graduate application through the graduate admissions office and a supplemental application to the School of Molecular Sciences.
+
+We are a growing program that is conducting cutting edge, interdisciplinary research to solve societal problems at the molecular level, and I encourage you to check out the research being conducted by our faculty. I hope you will consider joining us.
+
+If you have questions about the application process or graduate programs that are not included on our website, please email me and I will be happy to assist you.
+
+Good luck in your pursuit of graduate studies.
+
+David Nutt
+Graduate Programs Coordinator
+School of Molecular Sciences
+smsgrad@asu.edu
+480-965-4664
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

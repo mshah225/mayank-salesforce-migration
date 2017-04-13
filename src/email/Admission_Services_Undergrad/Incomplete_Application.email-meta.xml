@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Missing app fee, transcripts or both.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Incomplete Application</name>
+    <style>freeForm</style>
+    <subject>We’re missing items to complete your application</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+As your personal admission counselor at Arizona State University, I am here to help you through the admission process, and I noticed your application is still incomplete.
+
+If you haven&apos;t already done so, please activate your My ASU page at http://my.asu.edu/ so you can review your application status and take care of any Priority Tasks needed to complete your application.
+
+Currently, you are missing the following item to complete your application and receive an admission decision:
+
+&lt;&lt;CHOOSE ONE BULLET POINT OPTION FROM BELOW&gt;&gt;
+
+Pay your application fee. You can submit your application fee online through My ASU at http://my.asu.edu/ or by sending a check or money order to:
+
+Admission Services
+Arizona State University
+P.O. Box 870112
+Tempe, AZ 85287-0112
+
+
+Send us your official transcripts. Have your school send your official transcripts to:
+
+Admission Services
+Arizona State University
+P.O. Box 870112
+Tempe, AZ 85287-0112
+
+
+Pay your application fee and send us your official transcripts. You can submit your application fee online through My ASU at http://my.asu.edu/ or by sending a check or money order to Admission Services. Have your school send your official transcripts to Admission Services to the address below.
+
+Admission Services
+Arizona State University
+P.O. Box 870112
+Tempe, AZ 85287-0112
+
+If you have any questions about this process, or if there is anything I can do to help, please let me know.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+If you have any additional information or questions related to this, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Barrett admission, eligibility, facts</name>
+    <style>freeForm</style>
+    <subject>You may be eligible for Barrett, The Honors College at ASU!</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+ASU is home to Barrett, The Honors College, one of the top honors colleges in the nation. Once you have applied to ASU, you can apply to Barrett, The Honors College, but the application will not be processed until you have been admitted to ASU. You can view information on admission to Barrett at https://barretthonors.asu.edu/admissions. You can view a typical Barrett student profile at https://barretthonors.asu.edu/about/facts.
+
+Deadlines for Barrett vary based on whether a student is seeking lower-division or upper-division enrollment. There are specific times in a student’s academic career when these options are available, and it is important to confirm eligibility before starting the application process at https://barretthonors.asu.edu/admissions/admissions-eligibility.
+
+If you have questions regarding Barrett, The Honors College, please feel free to contact their office at 480-965-4033 or 480-965-2359.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

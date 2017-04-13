@@ -1,0 +1,88 @@
+<html>
+    <body style="font-family: Helvetica, Arial; margin: 0px;">
+            <center><img class="logo_top" src="https://asu.my.salesforce.com/servlet/servlet.ImageServer?id=015d0000003OMyc&oid=00Dd0000000hLoc&lastMod=1400609948000" 
+                     width="60%" style="padding-top:20px;max-width:200px;"/></center>
+                
+            
+                <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    <hr />
+ 
+                    <br />
+                </div>
+  
+     <div style="background: #fff;
+                    width: 90%;
+                    margin-right: auto;
+                    margin-left: auto;">
+                    Dear {!Contact.FirstName}, <br /><br />
+
+Your request to be classified as an Arizona resident for tuition purposes is being reviewed. The following documents are needed to complete this review:<br/><br/>
+
+<ul>
+<li><<'INSERT DOCUMENT NAME'>></li><br />
+<li><<'INSERT DOCUMENT NAME'>></li><br />
+<li><<'INSERT DOCUMENT NAME'>></li><br />
+</ul>
+
+<b>Please submit the requested documents by <<'INSERT DEADLINE DATE'>>.  </b><br /><br />
+
+Documents can be submitted in person, by mail or via email: <br /><br />
+
+<table border="0">
+  <tr>
+    <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+    <td>In Person:&nbsp&nbsp&nbsp</td>
+    <td>Student Services Building, Room 140 (Tempe campus)</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp</td>
+    <td style="vertical-align:top">Mail:</td>
+    <td>Arizona State University<br/>
+           University Registrar Services<br/>
+           Residency Classification<br/>
+           PO Box 870312<br/>
+           Tempe, AZ 85287-0312<br/></td>
+  </tr>
+
+  <tr>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp</td>
+    <td>E-mail:&nbsp&nbsp&nbsp</td>
+    <td><a href="mailto:residencydocs@asu.edu"> residencydocs@asu.edu</a></td>
+  </tr>
+</table><br /><br />
+     
+
+If you have any questions, please call our office at 480-965-7712. Our office hours are Monday – Friday, 8 am – 5 pm. <br /><br />
+
+Sincerely, <br />
+ {!User.FirstName} {!User.LastName}<br><br>
+                    
+
+        <div style="color:#990033;font-family: Arial, Helvetica !important;">
+                        <b>Residency Classification<br />
+                        University Registrar Services</b><br />
+                        Arizona State University<br />
+                        Phone: (480) 965-7712<br />
+                        <a href="www.asu.edu" style="color:#990033 !important">www.asu.edu</a>
+    <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;"><p><i>If you have any additional information or questions related to this, please reply to this email.</i></p></div>
+            <div style="font-size:9pt;color:#666666;font-family: Arial, Helvetica !important;">    {!Case.Thread_Id}     </div>
+                    <hr>
+                </div>
+    </body>
+</html>

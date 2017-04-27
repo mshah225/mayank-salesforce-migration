@@ -1,4 +1,225 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><layouts>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Amount --></label>
+        <name>Amount__c</name>
+    </fields><fields>
+        <help><!-- Date scholarship was awarded. --></help>
+        <label><!-- Award Date --></label>
+        <name>Award_Date__c</name>
+    </fields><fields>
+        <help><!-- If the Source is not implicit for this Campaign Member (e.g. load of purchased names), a Source should be identified here. --></help>
+        <label><!-- Campaign Member Explicit Source --></label>
+        <name>Campaign_Member_Explicit_Source__c</name>
+        <relationshipLabel><!-- Campaign Members (Source) --></relationshipLabel>
+    </fields><fields>
+        <help><!-- The ID of the Campaign Member Explicit Source or of the Campaign associated to this Campaign Member if that Campaign has a Source Type of Internal or External. --></help>
+        <label><!-- Campaign Member Source --></label>
+        <name>Campaign_Member_Source__c</name>
+    </fields><fields>
+        <help><!-- Set to the &lt;&lt;CampaignID&gt;&gt;.&lt;&lt;ContactID OR LeadID&gt;&gt; --></help>
+        <label><!-- Campaign Member Upsert ID --></label>
+        <name>Campaign_Member_Upsert_ID__c</name>
+    </fields><fields>
+        <label><!-- Campaign Record Type --></label>
+        <name>Campaign_Record_Type__c</name>
+    </fields><fields>
+        <label><!-- Campaign Type --></label>
+        <name>Campaign_Type__c</name>
+    </fields><fields>
+        <help><!-- Used for Subscription Center Campaign Member record types - Marketing Cloud de-dup = contactId+campaignId --></help>
+        <label><!-- MC De-dupe --></label>
+        <name>De_dupe__c</name>
+    </fields><fields>
+        <help><!-- Food allergy or religious restriction, e.g. peanut, dairy, egg, wheat, pork, gelatin --></help>
+        <label><!-- Dietary Restrictions --></label>
+        <name>Dietary_Restrictions__c</name>
+    </fields><fields>
+        <help><!-- Date the person was eligible for the award. --></help>
+        <label><!-- Eligible Date --></label>
+        <name>Eligible_Date__c</name>
+    </fields><fields>
+        <help><!-- The date and time this Campaign Member was first considered an Inbound Interaction. Set via Workflow. --></help>
+        <label><!-- Inbound Interaction Date --></label>
+        <name>Inbound_Interaction_Date__c</name>
+    </fields><fields>
+        <help><!-- The Stage of the associated Opportunity, at the time this Campaign member was first considered an Inbound Interaction. Set via Workflow. --></help>
+        <label><!-- Inbound Interaction Stage --></label>
+        <name>Inbound_Interaction_Stage__c</name>
+    </fields><fields>
+        <help><!-- The Term of the associated Opportunity, at the time this Campaign member was first considered an Inbound Interaction. Set via Workflow. --></help>
+        <label><!-- Inbound Interaction Term --></label>
+        <name>Inbound_Interaction_Term__c</name>
+    </fields><fields>
+        <help><!-- The Type of the associated Opportunity, at the time this Campaign member was first considered an Inbound Interaction. Set via Workflow. --></help>
+        <label><!-- Inbound Interaction Type --></label>
+        <name>Inbound_Interaction_Type__c</name>
+    </fields><fields>
+        <help><!-- Set to true if and when this Campaign Member is considered an Inbound Interaction. Dependent on the Campaign Type (e.g. set when an Event Campaign Member Status is &quot;Registered&quot;, or when a Source Campaign Member Status is &quot;Submitted&quot;) --></help>
+        <label><!-- Inbound Interaction --></label>
+        <name>Inbound_Interaction__c</name>
+    </fields><fields>
+        <help><!-- Used for Subscription Center Campaign Member record types - Indicates if the campaign Member subscribed to corresponding BU/list campaign. --></help>
+        <label><!-- MC IsSubscribed --></label>
+        <name>IsSubscribed__c</name>
+    </fields><fields>
+        <label><!-- Is Primary Interest --></label>
+        <name>Is_Primary_Interest__c</name>
+    </fields><fields>
+        <help><!-- The Date and Time this Campaign Member had a Status change. Updated via Workflow. --></help>
+        <label><!-- Last Member Status Change --></label>
+        <name>Last_Member_Status_Change__c</name>
+    </fields><fields>
+        <help><!-- Used for Subscription Center Campaign Member record types - Marketing Cloud Last Subscribed date/time --></help>
+        <label><!-- MC Last Subscribed --></label>
+        <name>Last_Subscribed__c</name>
+    </fields><fields>
+        <help><!-- Used for Subscription Center Campaign Member record types - Marketing Cloud Last Unsubscribe date/time --></help>
+        <label><!-- MC Last Unsubscribe --></label>
+        <name>Last_Unsubscribe__c</name>
+    </fields><fields>
+        <label><!-- LeadOrContactID --></label>
+        <name>LeadOrContactID__c</name>
+    </fields><fields>
+        <help><!-- Date the awarded letter was sent. --></help>
+        <label><!-- Letter Date --></label>
+        <name>Letter_Date__c</name>
+    </fields><fields>
+        <help><!-- Used for Subscription Center Campaign Member record types - The MC Business Unit the campaign is associated with. --></help>
+        <label><!-- MC Business Unit --></label>
+        <name>MC_Business_Unit__c</name>
+    </fields><fields>
+        <help><!-- Area segmentation, provided from the scholarship import. --></help>
+        <label><!-- Market --></label>
+        <name>Market__c</name>
+        <picklistValues>
+            <masterLabel>Arizona</masterLabel>
+            <translation><!-- Arizona --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>California</masterLabel>
+            <translation><!-- California --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>International</masterLabel>
+            <translation><!-- International --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Out-of-State</masterLabel>
+            <translation><!-- Out-of-State --></translation>
+        </picklistValues>
+    </fields><fields>
+        <help><!-- Displays last modified date of either the Campaign Member or Campaign --></help>
+        <label><!-- Max Modified Date --></label>
+        <name>Max_Modified_Date__c</name>
+    </fields><fields>
+        <help><!-- e.g. vegetarian, vegan, or non-vegetarian --></help>
+        <label><!-- Menu Preference --></label>
+        <name>Menu_Preference__c</name>
+    </fields><fields>
+        <help><!-- The Number of Guests plus 1. --></help>
+        <label><!-- Number of Attendees --></label>
+        <name>Number_of_Attendees__c</name>
+    </fields><fields>
+        <label><!-- Number of Guests --></label>
+        <name>Number_of_Guests__c</name>
+    </fields><fields>
+        <help><!-- Set to true if membership in this Campaign assocaited with this Campaign Member is listed on the Opportunity as the &quot;Prospect Campaign&quot; --></help>
+        <label><!-- Opportunity Created --></label>
+        <name>Opportunity_Created__c</name>
+    </fields><fields>
+        <label><!-- Opportunity Stage --></label>
+        <name>Opportunity_Stage__c</name>
+    </fields><fields>
+        <label><!-- Opportunity Term --></label>
+        <name>Opportunity_Term__c</name>
+    </fields><fields>
+        <label><!-- Opportunity Type --></label>
+        <name>Opportunity_Type__c</name>
+    </fields><fields>
+        <label><!-- Opportunity --></label>
+        <name>Opportunity__c</name>
+        <relationshipLabel><!-- Campaign Members --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Priority --></label>
+        <name>Priority__c</name>
+        <picklistValues>
+            <masterLabel>10</masterLabel>
+            <translation><!-- 10 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>20</masterLabel>
+            <translation><!-- 20 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>30</masterLabel>
+            <translation><!-- 30 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>40</masterLabel>
+            <translation><!-- 40 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>50</masterLabel>
+            <translation><!-- 50 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>60</masterLabel>
+            <translation><!-- 60 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>70</masterLabel>
+            <translation><!-- 70 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>80</masterLabel>
+            <translation><!-- 80 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>90</masterLabel>
+            <translation><!-- 90 --></translation>
+        </picklistValues>
+    </fields><fields>
+        <help><!-- Details from the Visit website. Can also be used for manual data entry. --></help>
+        <label><!-- Sessions --></label>
+        <name>Sessions__c</name>
+    </fields><fields>
+        <help><!-- List accommodations needed, e.g. wheelchair access, interpreter --></help>
+        <label><!-- Special Needs --></label>
+        <name>Special_Needs__c</name>
+    </fields><fields>
+        <help><!-- edX Active Enrollment --></help>
+        <label><!-- edX Campaign Member Active Enrollment --></label>
+        <name>edX_Active_Enrollment__c</name>
+    </fields><fields>
+        <help><!-- edX Course Grade --></help>
+        <label><!-- edX Campaign Member Course Grade --></label>
+        <name>edX_Course_Grade__c</name>
+    </fields><fields>
+        <help><!-- This checked box indicates that an edX student who has opted in for receiving marketing communications about ASU. Please do not contact any students who have opted out of communications (unchecked box). --></help>
+        <label><!-- edX Campaign Member Email Opt In --></label>
+        <name>edX_Email_Opt_In__c</name>
+    </fields><fields>
+        <help><!-- edX Enrollment Date --></help>
+        <label><!-- edX Campaign Member Enrollment Date --></label>
+        <name>edX_Enrollment_Date__c</name>
+    </fields><fields>
+        <help><!-- This is an edX related username and is only referenced in their database. --></help>
+        <label><!-- edX Campaign Member Username --></label>
+        <name>edX_Username__c</name>
+    </fields><fields>
+        <label><!-- Activity --></label>
+        <name>et4ae5__Activity__c</name>
+        <picklistValues>
+            <masterLabel>Sent</masterLabel>
+            <translation>Inviati</translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unsubscribed</masterLabel>
+            <translation>Iscrizione annullata</translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Silverpop Member Id --></label>
+        <name>silverpop__member_id__c</name>
+    </fields><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Campaign Member Page Layout</layout>
         <sections>
             <label><!-- Associated Opportunity / Inbound Interaction Summary --></label>
@@ -28,13 +249,13 @@
             <label><!-- Source Information --></label>
             <section>Source Information</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Corporate Relations Member Page Layout</layout>
         <sections>
             <label><!-- Member Information --></label>
             <section>Member Information</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Subscription Center Campaign Member Page Layout</layout>
         <sections>
             <label><!-- Associated Opportunity / Inbound Interaction Summary --></label>
@@ -64,13 +285,13 @@
             <label><!-- Source Information --></label>
             <section>Source Information</section>
         </sections>
-    </layouts><recordTypes>
+    </layouts><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- All Students --></label>
         <name>All_Students</name>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Corporate Relations Member --></label>
         <name>Corporate_Relations_Member</name>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Subscription Center Campaign Member --></label>
         <name>Subscription_Center_Campaign_Member</name>
     </recordTypes></CustomObjectTranslation>

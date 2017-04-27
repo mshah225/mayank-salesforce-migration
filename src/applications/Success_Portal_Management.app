@@ -8,7 +8,6 @@
     <tab>Success_Resource_Skill__c</tab>
     <tab>Success_Skill__c</tab>
     <tab>Success_Student__c</tab>
-    <tab>Case_Creation_Indicator__c</tab>
     <tab>Success_Resource_Plan__c</tab>
     <tab>Success_Coach_Case_Flag__c</tab>
     <tab>Success_Coach_Case_Flag_Rule__c</tab>

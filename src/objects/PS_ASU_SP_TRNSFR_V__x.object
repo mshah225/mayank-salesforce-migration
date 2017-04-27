@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_CAREER__c</fullName>
         <description>Data sourced from PS_TRNS_TEST_DTL.ACAD_CAREER</description>
         <externalDeveloperName>ACAD_CAREER</externalDeveloperName>
@@ -38,7 +38,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>COURSE_TITLE__c</fullName>
         <description>Data sourced from PS_CRSE_CAT_TC_VW.SUBJECT_SRCH, CATALOG_NBR_SRCH</description>
         <externalDeveloperName>COURSE_TITLE</externalDeveloperName>
@@ -51,7 +51,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SCORE__c</fullName>
         <description>Data sourced from PS_TRNS_TEST_DTL.SCORE</description>
         <externalDeveloperName>SCORE</externalDeveloperName>
@@ -65,7 +65,7 @@
         <scale>2</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>STRM__c</fullName>
         <description>Data sourced from PS_TRNS_TEST_DTL.ARTICULATION_TERM</description>
         <externalDeveloperName>STRM</externalDeveloperName>
@@ -80,7 +80,7 @@
         <relationshipLabel>Transfer Class By Exam (external)</relationshipLabel>
         <relationshipName>Transfer_Class_By_Exam_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>TITLE__c</fullName>
         <description>Data sourced from PS_CRSE_CAT_TC_VW.DESCR</description>
         <externalDeveloperName>TITLE</externalDeveloperName>
@@ -93,7 +93,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>UNT_TRNSFR__c</fullName>
         <description>Data sourced from PS_TRNS_TEST_DTL.UNT_TRNSFR</description>
         <externalDeveloperName>UNT_TRNSFR</externalDeveloperName>

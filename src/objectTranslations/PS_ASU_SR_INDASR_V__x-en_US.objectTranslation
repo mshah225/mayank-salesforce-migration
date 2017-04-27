@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Career --></label>
+        <name>ACAD_CAREER__c</name>
+    </fields><fields>
+        <label><!-- Class Count --></label>
+        <name>CLASSCOUNT__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>EMPLID__c</name>
+        <relationshipLabel><!-- Academic Status Report Indicator (ext) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Term --></label>
+        <name>STRM__c</name>
+        <relationshipLabel><!-- Academic Status Report Indicator (ext) --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Academic Status Report Indicator (ext)</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Academic Status Report Indicator (ext)</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

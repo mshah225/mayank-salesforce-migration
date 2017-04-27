@@ -2,6 +2,7 @@
 <Role xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseAccessLevel>Edit</caseAccessLevel>
     <contactAccessLevel>Read</contactAccessLevel>
+    <description>ENG Fulton Engineering SSEBE Manager</description>
     <mayForecastManagerShare>false</mayForecastManagerShare>
     <name>ENG Fulton Engineering SSEBE Manager</name>
     <opportunityAccessLevel>Edit</opportunityAccessLevel>

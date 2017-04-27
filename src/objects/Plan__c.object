@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_Online__c</fullName>
         <defaultValue>false</defaultValue>
         <description>This field is not being populated by the PeopleSoft import and will be removed.</description>
@@ -41,15 +41,6 @@
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
-        <fullName>Available_in_Degree_Search__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>[Peoplesoft] - If box is checked, then the degree is available to view in Degree Search.</description>
-        <externalId>false</externalId>
-        <label>Available in Degree Search</label>
-        
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields><fields>
         <fullName>Career__c</fullName>
         <description>[Peoplesoft] - Examples include: Graduate, Law, Undergraduate</description>
         <externalId>false</externalId>
@@ -73,7 +64,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Degree_Level__c</fullName>
         <description>[Peoplesoft] -  Degree level of respective academic plan.  Examples include: Masters, Doctoral, Juris Doctor, Certificate, Non-Degree</description>
         <externalId>false</externalId>
@@ -105,7 +96,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Degree_Search_Name__c</fullName>
         <description>[Peoplesoft] - PS table: ASU_ACADP_EXTNS, PS field: DESCR100</description>
         <externalId>false</externalId>
@@ -116,7 +107,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Degree__c</fullName>
         <description>[??] - Textbook for degree</description>
         <externalId>false</externalId>
@@ -127,7 +118,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Diploma_Description__c</fullName>
         <description>[Peoplesoft] - PS table: ACAD_PLAN_TBL,  PS field: DIPLOMA_DESCR</description>
         <externalId>false</externalId>
@@ -139,19 +130,6 @@
         <type>Text</type>
         <unique>false</unique>
     </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
-        <fullName>Organization__c</fullName>
-        <deleteConstraint>Restrict</deleteConstraint>
-        <description>[Peoplesoft] - Lookup to the Organization Object. PS table: ACAD_PLAN_OWNER, PS field: ACAD_ORG</description>
-        <externalId>false</externalId>
-        <label>Owner Organization</label>
-        <referenceTo>Organization__c</referenceTo>
-        <relationshipLabel>Plans</relationshipLabel>
-        <relationshipName>Plans</relationshipName>
-        <required>false</required>
-        
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields><fields>
         <fullName>Plan_Code__c</fullName>
         <caseSensitive>false</caseSensitive>
         <description>[Peoplesoft] - Code for the plan (major)</description>
@@ -163,7 +141,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>true</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Effective_Date__c</fullName>
         <description>[Peoplesoft] - Effective date for the plan</description>
         <externalId>false</externalId>
@@ -172,7 +150,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Location__c</fullName>
         <description>[Peoplesoft] - Location for the plan</description>
         <externalId>false</externalId>
@@ -210,15 +188,6 @@
         <type>MultiselectPicklist</type>
         <visibleLines>6</visibleLines>
     </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
-        <fullName>Plan_Status__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>[Peoplesoft] - Examples include: Active, Teach Out, Inactive</description>
-        <externalId>false</externalId>
-        <label>Plan Status</label>
-        
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields><fields>
         <fullName>Plan_Type__c</fullName>
         <description>[Peoplesoft] - Examples include: CER, MAJ, NDG, PBF</description>
         <externalId>false</externalId>
@@ -266,7 +235,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_URL__c</fullName>
         <description>[Peoplesoft] - URL for the plan (major)</description>
         <externalId>false</externalId>
@@ -285,19 +254,6 @@ LOWER(TEXT( Program__r.Career__c )))
         <type>Text</type>
         <unique>false</unique>
     </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
-        <fullName>Program__c</fullName>
-        <deleteConstraint>Restrict</deleteConstraint>
-        <description>[Peoplesoft] - Transcript Description textbox</description>
-        <externalId>false</externalId>
-        <label>Program</label>
-        <referenceTo>Program__c</referenceTo>
-        <relationshipLabel>Plans</relationshipLabel>
-        <relationshipName>Plans</relationshipName>
-        <required>false</required>
-        
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields><fields>
         <fullName>Transcript_Description__c</fullName>
         <externalId>false</externalId>
         <label>Transcript Description</label>
@@ -307,7 +263,51 @@ LOWER(TEXT( Program__r.Career__c )))
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+    </fields><fields>
+        <fullName>Available_in_Degree_Search__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>[Peoplesoft] - If box is checked, then the degree is available to view in Degree Search.</description>
+        <externalId>false</externalId>
+        <label>Available in Degree Search</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields><fields>
+        <fullName>Organization__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <description>[Peoplesoft] - Lookup to the Organization Object. PS table: ACAD_PLAN_OWNER, PS field: ACAD_ORG</description>
+        <externalId>false</externalId>
+        <label>Owner Organization</label>
+        <referenceTo>Organization__c</referenceTo>
+        <relationshipLabel>Plans</relationshipLabel>
+        <relationshipName>Plans</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields><fields>
+        <fullName>Plan_Status__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>[Peoplesoft] - Examples include: Active, Teach Out, Inactive</description>
+        <externalId>false</externalId>
+        <label>Plan Status</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields><fields>
+        <fullName>Program__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <description>[Peoplesoft] - Transcript Description textbox</description>
+        <externalId>false</externalId>
+        <label>Program</label>
+        <referenceTo>Program__c</referenceTo>
+        <relationshipLabel>Plans</relationshipLabel>
+        <relationshipName>Plans</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields><fields>
         <fullName>eAdvisor_Organization__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>[Peoplesoft] - Lookup to the Organization Object.  Eadvisor Oracle database. Table plancollege to get COLLEGE_ACAD_ORG. And then query PS_ACAD_ORG_TBL  to get the DESCRFORMAL using the value of the college_acad_org for ACAD_ORG in PS_ACAD_ORG_TBL.</description>
@@ -317,7 +317,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <relationshipLabel>Plans (eAdvisor Organization)</relationshipLabel>
         <relationshipName>Plans_eAdvisor_Org</relationshipName>
         <required>false</required>
-        
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><description>Listing of all Plans (majors)</description><enableActivities>false</enableActivities><enableBulkApi>true</enableBulkApi><enableFeeds>false</enableFeeds><enableHistory>true</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>Private</externalSharingModel><label>Plan</label><nameField>
@@ -360,7 +360,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <searchResultsAdditionalFields>Available_in_Degree_Search__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Organization__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Program__c</searchResultsAdditionalFields>
-    </searchLayouts><sharingModel>Read</sharingModel><listViews>
+    </searchLayouts><sharingModel>Read</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_Online_Plans</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -383,7 +383,7 @@ LOWER(TEXT( Program__r.Career__c )))
             <value>1</value>
         </filters>
         <label>ASU Online Managed</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_Plans</fullName>
         <columns>NAME</columns>
         <columns>Degree_Search_Name__c</columns>
@@ -408,7 +408,7 @@ LOWER(TEXT( Program__r.Career__c )))
             <role>ES_Enrollment_Services_Communication</role>
             <role>UTO_University_Technology_Office</role>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_PlansAvailbleInDS</fullName>
         <columns>NAME</columns>
         <columns>Degree_Search_Name__c</columns>
@@ -438,7 +438,7 @@ LOWER(TEXT( Program__r.Career__c )))
             <role>ES_Enrollment_Services_Communication</role>
             <role>UTO_University_Technology_Office</role>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_PlanswithDiplomaName</fullName>
         <columns>NAME</columns>
         <columns>Degree_Search_Name__c</columns>
@@ -468,7 +468,7 @@ LOWER(TEXT( Program__r.Career__c )))
             <role>ES_Enrollment_Services_Communication</role>
             <role>UTO_University_Technology_Office</role>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_Planswitheadvisorog</fullName>
         <columns>NAME</columns>
         <columns>Degree_Search_Name__c</columns>
@@ -498,7 +498,7 @@ LOWER(TEXT( Program__r.Career__c )))
             <role>ES_Enrollment_Services_Communication</role>
             <role>UTO_University_Technology_Office</role>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Certificate_Plans</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -518,7 +518,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <sharedTo>
             <role>GE_Graduate_Education_Manager</role>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Coll_Technology_Innovation</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -533,7 +533,7 @@ LOWER(TEXT( Program__r.Career__c )))
         </filters>
         <label>Coll Technology &amp; Innovation</label>
         <sharedTo />
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Doctoral_Programs</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -550,7 +550,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <sharedTo>
             <role>GE_Graduate_Education_Manager</role>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Graduate_College</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -565,7 +565,7 @@ LOWER(TEXT( Program__r.Career__c )))
         </filters>
         <label>Graduate College</label>
         <sharedTo />
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Health_Solutions</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -581,7 +581,7 @@ LOWER(TEXT( Program__r.Career__c )))
         </filters>
         <label>Health Solutions</label>
         <sharedTo />
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Herberger_Institute</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -596,7 +596,7 @@ LOWER(TEXT( Program__r.Career__c )))
         </filters>
         <label>Herberger Institute</label>
         <sharedTo />
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Ira_A_Fulton_Engineering</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -622,7 +622,7 @@ LOWER(TEXT( Program__r.Career__c )))
         </filters>
         <label>Ira A Fulton Engineering</label>
         <sharedTo />
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Liberal_Arts_Sciences</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -637,7 +637,7 @@ LOWER(TEXT( Program__r.Career__c )))
         </filters>
         <label>Liberal Arts &amp; Sciences</label>
         <sharedTo />
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Major_Plans</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -654,7 +654,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <sharedTo>
             <role>GE_Graduate_Education_Manager</role>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>New_Interdis_Arts_Sciences</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -669,7 +669,7 @@ LOWER(TEXT( Program__r.Career__c )))
         </filters>
         <label>New Interdis Arts &amp; Sciences</label>
         <sharedTo />
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Non_Degree_Plans</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -689,7 +689,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <sharedTo>
             <role>GE_Graduate_Education_Manager</role>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Online_Plans</fullName>
         <columns>Degree_Search_Name__c</columns>
         <columns>NAME</columns>
@@ -707,7 +707,7 @@ LOWER(TEXT( Program__r.Career__c )))
             <value>1</value>
         </filters>
         <label>Online Plans</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Type_nontraditional</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -727,7 +727,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <sharedTo>
             <group>QA_Testing_Group</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Public_Affairs</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>
@@ -742,7 +742,7 @@ LOWER(TEXT( Program__r.Career__c )))
         </filters>
         <label>Public Affairs</label>
         <sharedTo />
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Sustainability</fullName>
         <columns>NAME</columns>
         <columns>Degree_Search_Name__c</columns>
@@ -762,7 +762,7 @@ LOWER(TEXT( Program__r.Career__c )))
         </filters>
         <label>Sustainability</label>
         <sharedTo />
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>WP_Carey_School_of_Business</fullName>
         <columns>NAME</columns>
         <columns>Plan_Code__c</columns>

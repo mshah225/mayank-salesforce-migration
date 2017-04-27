@@ -1,22 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Academic Status Date --></label>
         <name>Academic_Status_Date__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Academic Status Report Actions --></label>
         <name>Academic_Status_Reasons_Actions__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Academic Status Reasons --></label>
         <name>Academic_Status_Reasons__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Academic Status Report Comments --></label>
         <name>Academic_Status_Report__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Case Number --></label>
         <name>Case_Number__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Case Status --></label>
         <name>Case_Status__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Case Type --></label>
         <name>Case_Type__c</name>
         <picklistValues>
@@ -27,27 +27,27 @@
             <masterLabel>Coach</masterLabel>
             <translation><!-- Coach --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Case --></label>
         <name>Case__c</name>
         <relationshipLabel><!-- Case Creation Indicators --></relationshipLabel>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Class Nbr --></label>
         <name>Class_Nbr__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Contact --></label>
         <name>Contact__c</name>
         <relationshipLabel><!-- Case Creation Indicators --></relationshipLabel>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Course Code --></label>
         <name>Course_Code__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Create Case --></label>
         <name>Create_Case__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- EMPLID --></label>
         <name>EMPLID__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Indicator Case Type --></label>
         <name>Indicator_Case_Type__c</name>
         <picklistValues>
@@ -62,7 +62,7 @@
             <masterLabel>Mass Email</masterLabel>
             <translation><!-- Mass Email --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Indicator Type --></label>
         <name>Indicator_Type__c</name>
         <picklistValues>
@@ -205,19 +205,19 @@
             <masterLabel>eAdvisor Off Track</masterLabel>
             <translation><!-- eAdvisor Off Track --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Term --></label>
         <name>STRM__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Session Code --></label>
         <name>Session_Code__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Session Decode --></label>
         <name>Session_Decode__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Session --></label>
         <name>Session__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Success Student --></label>
         <name>Success_Student__c</name>
         <relationshipLabel><!-- Case Creation Indicators --></relationshipLabel>
@@ -227,7 +227,7 @@
     </caseValues><caseValues>
         <plural>true</plural>
         <value>Case Creation Indicators</value>
-    </caseValues><startsWith>Consonant</startsWith><layouts>
+    </caseValues><startsWith>Consonant</startsWith><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Case Creation Indicator Layout</layout>
         <sections>
             <label><!-- Academic Status Report --></label>

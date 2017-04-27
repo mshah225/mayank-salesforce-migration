@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SI_Code__c</fullName>
         <description>[Peoplesoft] - Examples include: A10, A11, A12, A13, A14, A15, A16, AA1, AD1, AD2, AD3, AD4, AD5, AD6, AD7, AD8, AD9</description>
         <externalId>false</externalId>
@@ -41,7 +41,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SI_Description__c</fullName>
         <description>[Peoplesoft] - Examples include: Academic Administrative Hold, Admin Hold, Administrative Hold, Admissions Hold, Admissions Hold 1 Semester, Admissions VIP, Advising Applied Arts &amp; Sci, Advising Business, Advising Design, Advising Education</description>
         <externalId>false</externalId>
@@ -51,7 +51,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SI_End_Date__c</fullName>
         <description>[Peoplesoft] - End date of the term</description>
         <externalId>false</externalId>
@@ -59,7 +59,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SI_End_Term__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>[Salesforce] - Look up to Term object</description>
@@ -71,7 +71,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SI_Positive_Service_Indicator__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Within the import query based on the type of code that is listed, the field will be checked TRUE for those positive service indicators.</description>
@@ -79,7 +79,7 @@
         <label>Positive Service Indicator</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SI_Reason__c</fullName>
         <description>[Peoplesoft] - Admin hold by Student Affairs, Admin Hold Conversion, Admin hold due to med/comp wd, Billing Suspended, File is complete, Refunding Suspended, Registrar Admin Hold, Registrar Administrative Hold</description>
         <externalId>false</externalId>
@@ -89,7 +89,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SI_Start_Date__c</fullName>
         <description>[Peoplesoft] - Start date of the term</description>
         <externalId>false</externalId>
@@ -97,7 +97,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SI_Start_Term__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>[Salesforce] - Look up to Term object</description>

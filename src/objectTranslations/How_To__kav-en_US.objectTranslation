@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <name>ValidationStatus</name>
         <picklistValues>
             <masterLabel>Approved</masterLabel>
@@ -24,4 +24,163 @@
             <masterLabel>Rejected</masterLabel>
             <translation><!-- Rejected --></translation>
         </picklistValues>
-    </fields></CustomObjectTranslation>
+    </fields><fields>
+        <label><!-- Article Expiration Date --></label>
+        <name>Article_Expiration_Date__c</name>
+    </fields><fields>
+        <label><!-- Content --></label>
+        <name>Content__c</name>
+    </fields><fields>
+        <label><!-- Days until expires --></label>
+        <name>Days_until_expires__c</name>
+    </fields><fields>
+        <help><!-- Group which owns and maintains the article. --></help>
+        <label><!-- Functional Group --></label>
+        <name>Functional_Group__c</name>
+        <picklistValues>
+            <masterLabel>ASU Online</masterLabel>
+            <translation><!-- ASU Online --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Academic Technologies</masterLabel>
+            <translation><!-- Academic Technologies --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Admission Services</masterLabel>
+            <translation><!-- Admission Services --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Barrett Honors College</masterLabel>
+            <translation><!-- Barrett Honors College --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Career Services</masterLabel>
+            <translation><!-- Career Services --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>College of Health Solutions</masterLabel>
+            <translation><!-- College of Health Solutions --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>College of Liberal Arts and Sciences</masterLabel>
+            <translation><!-- College of Liberal Arts and Sciences --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>College of Nursing and Health Innovation</masterLabel>
+            <translation><!-- College of Nursing and Health Innovation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>College of Public Service and Community Solutions</masterLabel>
+            <translation><!-- College of Public Service and Community Solutions --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Financial Aid</masterLabel>
+            <translation><!-- Financial Aid --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fulton Schools of Engineering</masterLabel>
+            <translation><!-- Fulton Schools of Engineering --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Graduate Education</masterLabel>
+            <translation><!-- Graduate Education --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Health Services</masterLabel>
+            <translation><!-- Health Services --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Herberger Institute</masterLabel>
+            <translation><!-- Herberger Institute --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Housing</masterLabel>
+            <translation><!-- Housing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Int'l Students and Scholars Center</masterLabel>
+            <translation><!-- Int&apos;l Students and Scholars Center --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Library Resources</masterLabel>
+            <translation><!-- Library Resources --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mary Lou Fulton Teachers College</masterLabel>
+            <translation><!-- Mary Lou Fulton Teachers College --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>New College</masterLabel>
+            <translation><!-- New College --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Orientation and Family Programs</masterLabel>
+            <translation><!-- Orientation and Family Programs --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Parking and Transit Services</masterLabel>
+            <translation><!-- Parking and Transit Services --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Provost Office</masterLabel>
+            <translation><!-- Provost Office --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Registrar</masterLabel>
+            <translation><!-- Registrar --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>School of Letters and Sciences</masterLabel>
+            <translation><!-- School of Letters and Sciences --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>School of Sustainability</masterLabel>
+            <translation><!-- School of Sustainability --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Student Business Services</masterLabel>
+            <translation><!-- Student Business Services --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Study Abroad</masterLabel>
+            <translation><!-- Study Abroad --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sun Card Services</masterLabel>
+            <translation><!-- Sun Card Services --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sun Devil Athletics</masterLabel>
+            <translation><!-- Sun Devil Athletics --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sun Devil Dining</masterLabel>
+            <translation><!-- Sun Devil Dining --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sun Devil Fitness</masterLabel>
+            <translation><!-- Sun Devil Fitness --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Technical Resources</masterLabel>
+            <translation><!-- Technical Resources --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Transfer Systems Development</masterLabel>
+            <translation><!-- Transfer Systems Development --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>University Academic Success Programs</masterLabel>
+            <translation><!-- University Academic Success Programs --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>W.P. Carey School of Business</masterLabel>
+            <translation><!-- W.P. Carey School of Business --></translation>
+        </picklistValues>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>How To</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>How To</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

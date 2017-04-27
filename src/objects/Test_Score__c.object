@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SAT_Pre_2016_Score__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Field indicates if the designated test score record reflects the
@@ -41,7 +41,7 @@ pre-2016 SAT redesigned scoring structure.</description>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Test_Component_Percentile__c</fullName>
         <description>[Peoplesoft] - Percentile on test</description>
         <externalId>false</externalId>
@@ -52,7 +52,7 @@ pre-2016 SAT redesigned scoring structure.</description>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Test_Component_Score__c</fullName>
         <description>[Peoplesoft] - Score on the test</description>
         <externalId>false</externalId>
@@ -64,7 +64,7 @@ pre-2016 SAT redesigned scoring structure.</description>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Test_Component__c</fullName>
         <description>[Peoplesoft] - Examples include: Analytical, Composite, Integrated Reasoning, Quantitative, SPEAK, TSE, Verbal, Overall, Biochemistry, Cell &amp; Molecular Biology, Biochemistry, Biology, Cell Biology, Chemistry, Cellular and Molecular, Computer Science, Literature in English, Experimental Psychology, Mathematics, Organismal Biology, Physics, Psychology, Social Psychology, Art History, Art: Studio Art - 2-D Design, Art: Studio Art - 3-D Design, Art: Studio Art - Drawing, Aural Subscore, Calculus AB, Calculus AB Subscore, Calculus BC, Chinese Language &amp; Culture, Computer Science A, Computer Science AB, Economics: Macroeconomics, Economics: Microeconomics, English, English Language &amp; Culture, English Literature &amp; Composition, Environmental Science, European History, French Language, French Literature, German Language, Government &amp; Politics: Comparitive, Government &amp; Politics: United States, Human Geography, Italian Language &amp; Culture, Japanese Language &amp; Culture, Latin: Literature, Latin: Ve</description>
         <externalId>false</externalId>
@@ -390,7 +390,7 @@ pre-2016 SAT redesigned scoring structure.</description>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Test_Date__c</fullName>
         <description>[Peoplesoft] - Date of test</description>
         <externalId>false</externalId>
@@ -399,7 +399,7 @@ pre-2016 SAT redesigned scoring structure.</description>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Test_Record_Number__c</fullName>
         <description>[Peoplesoft] - Record number for the test</description>
         <externalId>false</externalId>
@@ -410,7 +410,7 @@ pre-2016 SAT redesigned scoring structure.</description>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Test_Source__c</fullName>
         <description>[Peoplesoft] - Examples include: Self-Reported, Official</description>
         <externalId>false</externalId>
@@ -430,7 +430,7 @@ pre-2016 SAT redesigned scoring structure.</description>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Test_Type__c</fullName>
         <description>[Peoplesoft] - Examples include: ACT, AP, GMAT, GRE, GRE Subject, SAT, TOEFL</description>
         <externalId>false</externalId>
@@ -474,7 +474,7 @@ pre-2016 SAT redesigned scoring structure.</description>
         <label>Test Score Key</label>
         <trackHistory>false</trackHistory>
         <type>Text</type>
-    </nameField><pluralLabel>Test Scores</pluralLabel><searchLayouts /><sharingModel>ControlledByParent</sharingModel><listViews>
+    </nameField><pluralLabel>Test Scores</pluralLabel><searchLayouts /><sharingModel>ControlledByParent</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_Test_Scores</fullName>
         <columns>Contact__c</columns>
         <columns>Test_Date__c</columns>

@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Associate_Case_to_Active_Opportunity__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Checkbox that indicates whether or not the case, when created, should be associated with an active Opportunity record.</description>
@@ -42,7 +42,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CTPColumn__c</fullName>
         <description>This picklist lists the columns from the Case Transfer page. It is used to tell where a CAR list will be placed on that page.</description>
         <externalId>false</externalId>
@@ -63,7 +63,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CTPGroup__c</fullName>
         <description>This picklist lists the Group names for the Case Transfer Page.</description>
         <externalId>false</externalId>
@@ -384,7 +384,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CTPVisible__c</fullName>
         <defaultValue>false</defaultValue>
         <description>This checkbox is used to display the CAR on the Case Transfer page.</description>
@@ -395,7 +395,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campus__c</fullName>
         <description>[??] - ASU Campuses</description>
         <externalId>false</externalId>
@@ -433,7 +433,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Feed_Email_Template_Id__c</fullName>
         <externalId>false</externalId>
         <label>Case Feed Email Template Id</label>
@@ -444,7 +444,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Feed_Email_Template_URL__c</fullName>
         <description>This is a URL created via a formula. Use this link to verify that the ID entered in the Case Feed Email Template ID field accurately identifies your desired Template.</description>
         <externalId>false</externalId>
@@ -465,7 +465,7 @@ HYPERLINK("/"&amp;Case_Feed_Email_Template_Id__c,"Click to View Associated Templ
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Record_Type_Id__c</fullName>
         <description>Id of the Case record type that the case should be created as.</description>
         <externalId>false</externalId>
@@ -478,7 +478,7 @@ HYPERLINK("/"&amp;Case_Feed_Email_Template_Id__c,"Click to View Associated Templ
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Category__c</fullName>
         <description>[??] - Category that is associated with this Case Assignment. Ensure that the value used here exists in Case "Category" Picklist, and that the spelling is identical.</description>
         <externalId>false</externalId>
@@ -491,7 +491,7 @@ HYPERLINK("/"&amp;Case_Feed_Email_Template_Id__c,"Click to View Associated Templ
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Chatter_Notification_Group__c</fullName>
         <externalId>false</externalId>
         <label>Chatter Notification Group</label>
@@ -502,7 +502,7 @@ HYPERLINK("/"&amp;Case_Feed_Email_Template_Id__c,"Click to View Associated Templ
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Customer_Notice_Email_From_Name__c</fullName>
         <description>[??] - The "Name" associated with the Email Address used  for the notice emailed to the customer that a Case has been created.</description>
         <externalId>false</externalId>
@@ -515,7 +515,7 @@ HYPERLINK("/"&amp;Case_Feed_Email_Template_Id__c,"Click to View Associated Templ
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Email_Address__c</fullName>
         <description>[??] - Case email address</description>
         <externalId>false</externalId>
@@ -529,7 +529,7 @@ HYPERLINK("/"&amp;Case_Feed_Email_Template_Id__c,"Click to View Associated Templ
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Email_Template_ID__c</fullName>
         <description>[??] - The 15 character (case sensitive) ID used to identify the Email Template used for the notice emailed to the customer that a Case has been created. You can view this ID immediatly after "...salesforce.com/" in the URL when viewing the desired Template.</description>
         <externalId>false</externalId>
@@ -542,7 +542,7 @@ HYPERLINK("/"&amp;Case_Feed_Email_Template_Id__c,"Click to View Associated Templ
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Email_Template_URL__c</fullName>
         <description>[??] - This is a URL created via a formula. Use this link to verify that the ID entered in the Email Template ID field accurately identifies your desired Template.</description>
         <externalId>false</externalId>
@@ -562,7 +562,7 @@ HYPERLINK("/"&amp;Email_Template_ID__c,"Click to View Associated Template")
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Fallback_Queue_Id__c</fullName>
         <description>Queue ID to fallback to if User ID is inactive</description>
         <externalId>false</externalId>
@@ -575,7 +575,7 @@ HYPERLINK("/"&amp;Email_Template_ID__c,"Click to View Associated Template")
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Functional_Group__c</fullName>
         <description>[??] - Functional Group that is associated with this Case Assignment. Ensure that the value used here exists in Case "Functional Group" Picklist, and that the spelling is identical.</description>
         <externalId>false</externalId>
@@ -588,7 +588,7 @@ HYPERLINK("/"&amp;Email_Template_ID__c,"Click to View Associated Template")
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Label__c</fullName>
         <description>This is the custom label used for the Case Assignment Rule</description>
         <externalId>false</externalId>
@@ -601,7 +601,7 @@ HYPERLINK("/"&amp;Email_Template_ID__c,"Click to View Associated Template")
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Origin__c</fullName>
         <description>[??] - Where was this Case was initiated</description>
         <externalId>false</externalId>
@@ -614,7 +614,7 @@ HYPERLINK("/"&amp;Email_Template_ID__c,"Click to View Associated Template")
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Priority__c</fullName>
         <description>[??] - The Priority for this Case Assignment Rule. It is not possible for two Rules to have the Same Priority.</description>
         <externalId>false</externalId>
@@ -628,7 +628,7 @@ HYPERLINK("/"&amp;Email_Template_ID__c,"Click to View Associated Template")
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>true</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Queue_ID__c</fullName>
         <description>[??] - The 15 character (case sensitive) ID of the Queue or User associated with this Assignment Rule.This ID  is shown immediatly after "....salesforce.com/p/own/Queue/d?id="  in the URL when viewing the Queue or  "...salesforce.com/" when viewing the User.</description>
         <externalId>false</externalId>
@@ -641,7 +641,7 @@ HYPERLINK("/"&amp;Email_Template_ID__c,"Click to View Associated Template")
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Queue_URL__c</fullName>
         <description>[??] - This is a URL created via a formula. Use this link to verify that the ID entered in the Queue or User ID field accurately identifies your desired Queue or User.</description>
         <externalId>false</externalId>
@@ -669,7 +669,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Receives_Chatter_Notifications__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -678,7 +678,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Reply_To_Email_Address__c</fullName>
         <description>[??] - This Email Address is used as the "Reply To" address for the email that is sent to the customer when a Case has been created. If not specified, the "Email Address" field is used.</description>
         <externalId>false</externalId>
@@ -690,7 +690,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Sub_Category__c</fullName>
         <description>[??] - Enter the Sub-Category that is associated with this Case Assignment. Ensure that the value used here exists in Case "Sub-Category" Picklist, and that the spelling is identical.</description>
         <externalId>false</externalId>
@@ -703,7 +703,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Type_of_Additional_Assignment_Needed__c</fullName>
         <description>Picklist field used to indicate what type of additional assignment is needed for the rule.</description>
         <externalId>false</externalId>
@@ -771,29 +771,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <searchResultsAdditionalFields>Campus__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Associate_Case_to_Active_Opportunity__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CTPVisible__c</searchResultsAdditionalFields>
-    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews>
-        <fullName>ALL_CARs</fullName>
-        <columns>Case_Record_Type_Id__c</columns>
-        <columns>NAME</columns>
-        <columns>Priority__c</columns>
-        <columns>CTPVisible__c</columns>
-        <columns>Email_Address__c</columns>
-        <columns>Customer_Notice_Email_From_Name__c</columns>
-        <columns>Functional_Group__c</columns>
-        <columns>Category__c</columns>
-        <columns>Sub_Category__c</columns>
-        <columns>Associate_Case_to_Active_Opportunity__c</columns>
-        <columns>Origin__c</columns>
-        <columns>Campus__c</columns>
-        <columns>Email_Template_ID__c</columns>
-        <columns>Queue_ID__c</columns>
-        <columns>Receives_Chatter_Notifications__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>ALL CARs</label>
-        <sharedTo>
-            <group>UTO_Administration</group>
-        </sharedTo>
-    </listViews><listViews>
+    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ALL_CARs_Chatter_Notification_Groups</fullName>
         <columns>Case_Record_Type_Id__c</columns>
         <columns>NAME</columns>
@@ -817,7 +795,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CAR_Case_Transfer_Page</fullName>
         <columns>Case_Record_Type_Id__c</columns>
         <columns>NAME</columns>
@@ -841,7 +819,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CAR_Marketing_Cloud_RMM_Email</fullName>
         <columns>Case_Record_Type_Id__c</columns>
         <columns>NAME</columns>
@@ -864,7 +842,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CAR_No_Email</fullName>
         <columns>Case_Record_Type_Id__c</columns>
         <columns>NAME</columns>
@@ -889,7 +867,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_AISSS</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -916,7 +894,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_ASU_Coach_Outreach</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -940,7 +918,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_ASU_Email</fullName>
         <columns>Case_Record_Type_Id__c</columns>
         <columns>NAME</columns>
@@ -966,7 +944,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_ASU_Email_Admission_Services</fullName>
         <columns>Case_Record_Type_Id__c</columns>
         <columns>NAME</columns>
@@ -996,7 +974,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_ASU_Online</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1023,7 +1001,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_ASU_Training</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1050,7 +1028,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_ASU_USA_Pathways</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1077,7 +1055,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_ASU_Wellness</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1104,7 +1082,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Academic_Partnerships</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1131,7 +1109,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Access_ASU_Outreach</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1158,7 +1136,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Admission_Services</fullName>
         <columns>Priority__c</columns>
         <columns>Case_Record_Type_Id__c</columns>
@@ -1185,7 +1163,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Applicant_Services</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1212,7 +1190,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Blackboard_UTO</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1239,7 +1217,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_CLS</fullName>
         <columns>Functional_Group__c</columns>
         <columns>Category__c</columns>
@@ -1266,7 +1244,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Canon_Print_Anywhere</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1293,7 +1271,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Career_Services</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1320,7 +1298,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Changemaker_Central</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1347,7 +1325,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Curricular_Activites_and_Actions</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1374,7 +1352,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Dean_of_Students</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1401,7 +1379,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Design_and_the_Arts_Herberger</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1428,7 +1406,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_EOSS</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1455,7 +1433,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Education</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1482,7 +1460,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Engineering</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1509,7 +1487,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Engineering_IT</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1531,7 +1509,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Enrollment_Analysis</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1558,7 +1536,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Enterprise_Marketing_Hub</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1585,7 +1563,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Environmental_Health_and_Safety</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1612,7 +1590,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_First_Year_Success</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1639,7 +1617,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_First_in_the_World_Grant</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1666,7 +1644,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Fraternity_and_Sorority_Life</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1693,7 +1671,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Global_Freshman_Academy</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1720,7 +1698,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Graduate_Admissions</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1746,7 +1724,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Graduate_Education</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1773,7 +1751,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Health_Solutions</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1799,7 +1777,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Help_Desk</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1824,7 +1802,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Honors</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1851,7 +1829,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_ITCSS_Library_Services</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1878,7 +1856,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Identity_Management</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1904,7 +1882,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_International_Initiatives_Grad_Ed</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1931,7 +1909,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_International_Student_Engagement</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1958,7 +1936,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_International_Students_and_Scholars</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -1985,7 +1963,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Journalism</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2012,7 +1990,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Liberal_Arts_and_Sciences</fullName>
         <booleanFilter>1 OR 2</booleanFilter>
         <columns>NAME</columns>
@@ -2045,7 +2023,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Library_Services</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2072,7 +2050,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_MU_Information_Desk</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2099,7 +2077,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_New_College</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2125,7 +2103,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_New_Student_and_Family_Programs</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2150,7 +2128,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Non_Asu_Edu</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2181,7 +2159,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Nursing_and_Health_Innovation</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2207,7 +2185,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Parking_and_Transit</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2234,7 +2212,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Pat_Tillman_Veteran_Center</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2261,7 +2239,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_ProMod</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2288,7 +2266,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Provost</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2315,7 +2293,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Public_Service</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2341,7 +2319,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Recruiters</fullName>
         <columns>Case_Record_Type_Id__c</columns>
         <columns>NAME</columns>
@@ -2372,7 +2350,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Recruiters_International</fullName>
         <columns>Case_Record_Type_Id__c</columns>
         <columns>NAME</columns>
@@ -2407,7 +2385,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Recruitment</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2434,7 +2412,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Recruitment_Events</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2465,7 +2443,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Registrar</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2492,7 +2470,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_SFIS</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2519,7 +2497,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Strategic_Initiatives</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2546,7 +2524,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Student_Business_Service</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2572,7 +2550,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Student_Centric_Initiatives</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2599,7 +2577,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Student_Engagement</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2626,7 +2604,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Student_Government</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2653,7 +2631,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Student_and_Cultural_Engagement</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2680,7 +2658,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Study_Abroad</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2707,7 +2685,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Sun_Devil_Athletics</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2734,7 +2712,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Sun_Devil_Card_Services</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2761,7 +2739,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Sun_Devil_Dining</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2788,7 +2766,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Sun_Devil_Fitness</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2815,7 +2793,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Sustainability</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2841,7 +2819,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_TRIO</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2868,7 +2846,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_TSD</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2895,7 +2873,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Tech_Studio</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2922,7 +2900,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Thunderbird</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2949,7 +2927,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_University_Academic_Success_Programs</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -2976,7 +2954,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_University_Housing</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -3003,7 +2981,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Using_Chatter_Notifications</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -3027,7 +3005,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_WPC_Business</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -3054,7 +3032,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_WPC_Tech_Services</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -3081,7 +3059,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CARs_Web_Form</fullName>
         <columns>NAME</columns>
         <columns>Priority__c</columns>
@@ -3102,7 +3080,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Financial_Aid_CARs</fullName>
         <columns>Case_Record_Type_Id__c</columns>
         <columns>NAME</columns>
@@ -3123,6 +3101,28 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
             <value>Financial Aid</value>
         </filters>
         <label>CARs - Financial Aid</label>
+        <sharedTo>
+            <group>UTO_Administration</group>
+        </sharedTo>
+    </listViews><listViews>
+        <fullName>ALL_CARs</fullName>
+        <columns>Case_Record_Type_Id__c</columns>
+        <columns>NAME</columns>
+        <columns>Priority__c</columns>
+        <columns>CTPVisible__c</columns>
+        <columns>Email_Address__c</columns>
+        <columns>Customer_Notice_Email_From_Name__c</columns>
+        <columns>Functional_Group__c</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>Associate_Case_to_Active_Opportunity__c</columns>
+        <columns>Origin__c</columns>
+        <columns>Campus__c</columns>
+        <columns>Email_Template_ID__c</columns>
+        <columns>Queue_ID__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>ALL CARs</label>
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>

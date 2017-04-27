@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Active_Relationship__c</fullName>
         <defaultValue>true</defaultValue>
         <description>If checked, indicates that this Relationship is Active.</description>
@@ -44,7 +44,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Reciprocal_Relationship__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Provides a direct connection between a Relationship and it's reciprocal record. Used for Contact to Contact and Account to Account Relationships.</description>
@@ -59,7 +59,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Relationship_End_Date__c</fullName>
         <description>Records the date this Relationship ended.</description>
         <externalId>false</externalId>
@@ -70,7 +70,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Relationship_Notes__c</fullName>
         <description>Used to record notes and information specific to this Relationship.</description>
         <externalId>false</externalId>
@@ -81,7 +81,7 @@
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Relationship_Start_Date__c</fullName>
         <defaultValue>TODAY()</defaultValue>
         <description>Records the date this Relationship began.</description>
@@ -93,7 +93,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Relationship_Type__c</fullName>
         <description>Defines the type or Relationship (e.g. Employee, Parent, Spouse).</description>
         <externalId>false</externalId>
@@ -174,7 +174,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Title__c</fullName>
         <description>The Contact's Title. Used in Contact to Account relationships.</description>
         <externalId>false</externalId>
@@ -203,11 +203,11 @@
         <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATEDBY_USER</customTabListAdditionalFields>
         <customTabListAdditionalFields>UPDATEDBY_USER</customTabListAdditionalFields>
-    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews>
+    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All</fullName>
         <filterScope>Everything</filterScope>
         <label>All</label>
-    </listViews><recordTypes>
+    </listViews><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Account_to_Account</fullName>
         <active>true</active>
         <description>Defines a Relationship between a Organization and an Organization (e.g. Competitor, Partner)</description>
@@ -231,7 +231,7 @@
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Account_to_Account_Reciprocal</fullName>
         <active>true</active>
         <description>The reciprocal record of a Relationship between a Person and Organization (e.g. Employee, Member)</description>
@@ -267,7 +267,7 @@
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Account_to_Contact</fullName>
         <active>true</active>
         <label>Account to Contact</label>
@@ -290,7 +290,7 @@
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Contact_to_Account</fullName>
         <active>true</active>
         <description>Defines a relationship between a Person and Organization (e.g. Employee, Member)</description>
@@ -314,7 +314,7 @@
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Contact_to_Contact</fullName>
         <active>true</active>
         <description>Defines a Relationship from a Person to a Person (e.g. Spouse, Parent)</description>
@@ -338,7 +338,7 @@
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Contact_to_Contact_Reciprocal</fullName>
         <active>true</active>
         <description>The reciprocal record of a Relationship from a Person to a Person (e.g. Spouse, Parent)</description>
@@ -374,7 +374,7 @@
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><webLinks>
+    </recordTypes><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>New_Account_to_Account</fullName>
         <availability>online</availability>
         <description>Create a new account to account relationship</description>
@@ -386,7 +386,7 @@
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
         <url>/a15/e?CF00Nd0000007v9eP={!Account.Name}&amp;CF00Nd0000007v9eP_lkid={!Account.Id}&amp;retURL={!Account.Id}&amp;RecordType=012d0000000x7bF</url>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>New_Account_to_Contact</fullName>
         <availability>online</availability>
         <description>Create a new Account to Contact relationship</description>
@@ -398,7 +398,7 @@
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
         <url>/a15/e?CF00Nd0000007v9eP={!Account.Name}&amp;CF00Nd0000007v9eP_lkid={!Account.Id}&amp;retURL={!Account.Id}&amp;RecordType=012170000004mIr</url>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>New_Contact_to_Account</fullName>
         <availability>online</availability>
         <description>Create a new contact to account relationship</description>
@@ -410,7 +410,7 @@
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
         <url>/a15/e?CF00Nd0000007v9eR={!Contact.FirstName} {!Contact.LastName}&amp;CF00Nd0000007v9eR_lkid={!Contact.Id}&amp;retURL={!Contact.Id}&amp;RecordType=012d0000000x7bH</url>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>New_Contact_to_Contact</fullName>
         <availability>online</availability>
         <description>Create a new contact to contact relationship</description>

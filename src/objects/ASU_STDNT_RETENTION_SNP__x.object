@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASR_INDICATOR__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.ASR_INDICATOR</description>
         <externalDeveloperName>ASR_INDICATOR</externalDeveloperName>
@@ -39,7 +39,7 @@
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AVG_MYASU_COHORT__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.AVG_MYASU_COHORT</description>
         <externalDeveloperName>AVG_MYASU_COHORT</externalDeveloperName>
@@ -53,7 +53,7 @@
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CI_INDEX_INDICATOR__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.CI_INDEX_INDICATOR</description>
         <externalDeveloperName>CI_INDEX_INDICATOR</externalDeveloperName>
@@ -67,7 +67,7 @@
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CREATED_EW_DTTM__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.CREATED_EW_DTTM</description>
         <externalDeveloperName>CREATED_EW_DTTM</externalDeveloperName>
@@ -78,7 +78,7 @@
         <label>Created Date</label>
         <required>false</required>
         <type>DateTime</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CUM_GPA_INDICATOR__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.CUM_GPA_INDICATOR</description>
         <externalDeveloperName>CUM_GPA_INDICATOR</externalDeveloperName>
@@ -92,7 +92,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EADVISOR_INDICATOR__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.EADVISOR_INDICATOR</description>
         <externalDeveloperName>EADVISOR_INDICATOR</externalDeveloperName>
@@ -105,7 +105,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ENRL_HOLD_COUNT__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.ENRL_HOLD_COUNT</description>
         <externalDeveloperName>ENRL_HOLD_COUNT</externalDeveloperName>
@@ -119,7 +119,7 @@
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FA_INDICATOR__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.FA_INDICATOR</description>
         <externalDeveloperName>FA_INDICATOR</externalDeveloperName>
@@ -132,7 +132,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FINANCIAL_HOLD__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.FINANCIAL_HOLD</description>
         <externalDeveloperName>FINANCIAL_HOLD</externalDeveloperName>
@@ -145,7 +145,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>NEXT_TERM_ENROLLED__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.NEXT_TERM_ENROLLED</description>
         <externalDeveloperName>NEXT_TERM_ENROLLED</externalDeveloperName>
@@ -158,7 +158,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>PAST_DUE_TIP__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.PAST_DUE_TIP</description>
         <externalDeveloperName>PAST_DUE_TIP</externalDeveloperName>
@@ -172,7 +172,7 @@
         <scale>2</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>PROBATION_INDICATOR__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.PROBATION_INDICATOR</description>
         <externalDeveloperName>PROBATION_INDICATOR</externalDeveloperName>
@@ -185,7 +185,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SNP_WEEK__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.SNP_WEEK</description>
         <externalDeveloperName>SNP_WEEK</externalDeveloperName>
@@ -199,7 +199,7 @@
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>STRM__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.STRM</description>
         <externalDeveloperName>STRM</externalDeveloperName>
@@ -214,7 +214,7 @@
         <relationshipLabel>Student Retention Snapshot (external)</relationshipLabel>
         <relationshipName>Student_Retention_Snapshot_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>TERM_MYASU_USAGE__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.TERM_MYASU_USAGE</description>
         <externalDeveloperName>TERM_MYASU_USAGE</externalDeveloperName>
@@ -228,7 +228,7 @@
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>TRANSCRIPTS_SENT_COUNT__c</fullName>
         <description>Data sourced from ASUDW.ASU_STDNT_RETENTION_SNP.TRANSCRIPTS_SENT_COUNT</description>
         <externalDeveloperName>TRANSCRIPTS_SENT_COUNT</externalDeveloperName>

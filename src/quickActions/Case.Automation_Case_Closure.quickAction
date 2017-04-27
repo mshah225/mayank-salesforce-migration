@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Used to update a record as Closed: Resolved and populate the following fields: Contact Name, Subject, Description, Functional Group, Category, Sub-Category.</description>
     <fieldOverrides>
         <field>Status</field>
         <literalValue>Closed: Resolved</literalValue>

@@ -1,4 +1,204 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><layouts>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- ASURITE Id --></label>
+        <name>ASURITE_Id__c</name>
+    </fields><fields>
+        <help><!-- This User&apos;s ASURITE. If different from the Federation ID, it will be set that that value via workflow. Used for Upserting User records. Any Upsert should map the ASURITE to this field as the &quot;External ID&quot;, and ALSO map the ASURITE to the Federation ID. --></help>
+        <label><!-- ASURITE for External ID --></label>
+        <name>ASURITE_for_External_ID__c</name>
+    </fields><fields>
+        <label><!-- Admin Notes --></label>
+        <name>Admin_Notes__c</name>
+    </fields><fields>
+        <label><!-- Contact First Name --></label>
+        <name>Contact_First_Name__c</name>
+    </fields><fields>
+        <label><!-- Contact Last Name --></label>
+        <name>Contact_Last_Name__c</name>
+    </fields><fields>
+        <label><!-- EMPLID --></label>
+        <name>EmplId__c</name>
+    </fields><fields>
+        <help><!-- These are MC Business Units the user can interact with for the subscription center. --></help>
+        <label><!-- MC Business Unit User --></label>
+        <name>MC_Business_Unit_User__c</name>
+    </fields><fields>
+        <help><!-- Used by the error logger to determine who should receive backup emails. --></help>
+        <label><!-- Receive Apex Errors --></label>
+        <name>Receive_Apex_Errors__c</name>
+    </fields><fields>
+        <label><!-- Recruiter Email --></label>
+        <name>Recruiter_Email__c</name>
+    </fields><fields>
+        <label><!-- Recruiter Full Name --></label>
+        <name>Recruiter_Full_Name__c</name>
+    </fields><fields>
+        <label><!-- Recruiter Phone --></label>
+        <name>Recruiter_Phone__c</name>
+    </fields><fields>
+        <label><!-- Recruiter Title --></label>
+        <name>Recruiter_Title__c</name>
+    </fields><fields>
+        <help><!-- Indicates user has access to Academic Advisor Portal. Users will be assigned the permission set Role: Academic Advisor Portal (Service Users). --></help>
+        <label><!-- Academic Advisor Portal --></label>
+        <name>Role_Academic_Advisor_Portal__c</name>
+    </fields><fields>
+        <label><!-- Administrator / Developer --></label>
+        <name>Role_Administrator_Developer__c</name>
+    </fields><fields>
+        <help><!-- Users will receive the ASU Service profile for their department. Service Cloud User checkbox needs to be checked. --></help>
+        <label><!-- Case Management --></label>
+        <name>Role_Case_Management__c</name>
+    </fields><fields>
+        <help><!-- Users will receive the ASU Chatter profile. --></help>
+        <label><!-- Chatter --></label>
+        <name>Role_Chatter__c</name>
+    </fields><fields>
+        <help><!-- This user has been approved to have access in the Connected Marketing Cloud instance as a business unit administrator. This MC instance is connected to Salesforce through Data Stream. --></help>
+        <label><!-- Connected Marketing Cloud Adm --></label>
+        <name>Role_Connected_MC_Adm__c</name>
+    </fields><fields>
+        <help><!-- This user has been approved to have access in the Connected Marketing Cloud instance as a regular user. This MC instance is connected to Salesforce through Data Stream. --></help>
+        <label><!-- Connected Marketing Cloud User --></label>
+        <name>Role_Connected_MC_User__c</name>
+    </fields><fields>
+        <help><!-- Users will receive the ASU Corporate Relations profile or the Corporate Relations permission set if they have a Service or Recruiting profile. Marketing User checkbox will need to be checked and the user added to the Corporate Relations public group. --></help>
+        <label><!-- Corporate Relations --></label>
+        <name>Role_Corporate_Relations__c</name>
+    </fields><fields>
+        <help><!-- Indicates user has access to the EdPlus Coach Portal. Users will be assigned the ASU Success Coach profile. --></help>
+        <label><!-- EdPlus Coach Portal --></label>
+        <name>Role_EdPlus_Coach_Portal__c</name>
+    </fields><fields>
+        <help><!-- Users will receive the Export Reports permission set. --></help>
+        <label><!-- Export Reports --></label>
+        <name>Role_Export_Reports__c</name>
+    </fields><fields>
+        <help><!-- User also needs Knowledge license checkbox, permission set Knowledge Editor (if not a Service profile) and public group (for content approver) or queue (for format approver). --></help>
+        <label><!-- Knowledge --></label>
+        <name>Role_Knowledge__c</name>
+    </fields><fields>
+        <help><!-- This user has been approved to have access in the Unconnected Marketing Cloud instance (also known as the legacy instance). This MC instance is not connected to Salesforce. Access only to the ASU Marketing Cloud chatter group in Salesforce. --></help>
+        <label><!-- Unconnected Marketing Cloud --></label>
+        <name>Role_Marketing_Cloud__c</name>
+    </fields><fields>
+        <label><!-- Quick Text Manager --></label>
+        <name>Role_Quick_Text_Manager__c</name>
+    </fields><fields>
+        <help><!-- Users could be either part of Admissions Services (with corresponding ASU Recruitment profile) or part of a College (with corresponding ASU Service profile). Marketing User checkbox will need to be checked. --></help>
+        <label><!-- Recruiting (Case + Recruitment) --></label>
+        <name>Role_Recruiting__c</name>
+    </fields><fields>
+        <help><!-- Users will receive the ASU Marketing User profile for this role. --></help>
+        <label><!-- Recruitment Communications --></label>
+        <name>Role_Recruitment_Communications__c</name>
+    </fields><fields>
+        <label><!-- (DO NOT USE) Recruitment Graduate --></label>
+        <name>Role_Recruitment_Graduate__c</name>
+    </fields><fields>
+        <label><!-- (DO NOT USE) Recruitment Undergraduate --></label>
+        <name>Role_Recruitment_Undergraduate__c</name>
+    </fields><fields>
+        <help><!-- Users are approved to view the Student Profile page. Add Permission Set = Student Profile: View External Objects to the User record. --></help>
+        <label><!-- (DO NOT USE) Standard Student Pages --></label>
+        <name>Role_Standard_Student_Pages__c</name>
+    </fields><fields>
+        <help><!-- Permission Set = Student Profile: View External Objects --></help>
+        <label><!-- Student Profile --></label>
+        <name>Role_Student_Profile__c</name>
+    </fields><fields>
+        <help><!-- Users will receive the ASU Read Only profile for this role. --></help>
+        <label><!-- View Only --></label>
+        <name>Role_View_Only__c</name>
+    </fields><fields>
+        <help><!-- Add Call Center on User account. Add license by navigating to Setup | Build | Installed Packaged | InContact Agent Console | Manage Licenses. --></help>
+        <label><!-- inContact User License --></label>
+        <name>Role_inContact_User_License__c</name>
+    </fields><fields>
+        <help><!-- In DEV, set UTO team as admin, Recruitment with Leads profile, with specific users as delegated admin. --></help>
+        <label><!-- DEV --></label>
+        <name>Sandbox_DEV__c</name>
+    </fields><fields>
+        <help><!-- Indicates if user has a corresponding Delegated Administrator permission set in a sandbox. --></help>
+        <label><!-- Delagated Administrator --></label>
+        <name>Sandbox_Delagated_Administrator__c</name>
+    </fields><fields>
+        <help><!-- In QA, set UTO team as admin, Recruitment with Leads profile, with specific users as delegated admin. Add QA team to QA profile. --></help>
+        <label><!-- QA --></label>
+        <name>Sandbox_QA__c</name>
+    </fields><fields>
+        <help><!-- In UAT, set UTO team as admin, Trainers as delegated admin, Reporting team as admin. --></help>
+        <label><!-- UAT --></label>
+        <name>Sandbox_UAT__c</name>
+    </fields><fields>
+        <help><!-- Can be used in Reports to give an admin the ability to View, Edit or Login as the User. --></help>
+        <label><!-- View  |  Edit  |  Login --></label>
+        <name>View_Edit_Login__c</name>
+    </fields><fields>
+        <label><!-- (DO NOT USE) ASU User Type --></label>
+        <name>asu_user_type__c</name>
+        <picklistValues>
+            <masterLabel>App ID</masterLabel>
+            <translation><!-- App ID --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Duplicate</masterLabel>
+            <translation><!-- Duplicate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Knowledge</masterLabel>
+            <translation><!-- Knowledge --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Knowledge/Marketing</masterLabel>
+            <translation><!-- Knowledge/Marketing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Marketing</masterLabel>
+            <translation><!-- Marketing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Service</masterLabel>
+            <translation><!-- Service --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Service/Knowledge</masterLabel>
+            <translation><!-- Service/Knowledge --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>User</masterLabel>
+            <translation><!-- User --></translation>
+        </picklistValues>
+    </fields><fields>
+        <label><!-- Bomgar Username --></label>
+        <name>bomgar__Bomgar_Username__c</name>
+    </fields><fields>
+        <label><!-- Default Marketing Cloud Page --></label>
+        <name>et4ae5__Default_ET_Page__c</name>
+    </fields><fields>
+        <label><!-- @deprecated --></label>
+        <name>et4ae5__Default_MID__c</name>
+    </fields><fields>
+        <label><!-- Marketing Cloud for AppExchange Admin --></label>
+        <name>et4ae5__ExactTargetForAppExchangeAdmin__c</name>
+    </fields><fields>
+        <label><!-- Marketing Cloud for AppExchange User --></label>
+        <name>et4ae5__ExactTargetForAppExchangeUser__c</name>
+    </fields><fields>
+        <label><!-- Marketing Cloud Username --></label>
+        <name>et4ae5__ExactTargetUsername__c</name>
+    </fields><fields>
+        <label><!-- @deprecated --></label>
+        <name>et4ae5__ExactTarget_OAuth_Token__c</name>
+    </fields><fields>
+        <label><!-- Valid Marketing Cloud Admin --></label>
+        <name>et4ae5__ValidExactTargetAdmin__c</name>
+    </fields><fields>
+        <label><!-- Valid Marketing Cloud User --></label>
+        <name>et4ae5__ValidExactTargetUser__c</name>
+    </fields><fields>
+        <label><!-- inContact Custom Screenpop --></label>
+        <name>icAgentConsole__incCustomScreenpop__c</name>
+    </fields><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>User Layout</layout>
         <sections>
             <label><!-- ASU System Administration --></label>
@@ -24,7 +224,7 @@
             <label><!-- Salesforce PeopleSoft Roles --></label>
             <section>Salesforce PeopleSoft Roles</section>
         </sections>
-    </layouts><validationRules>
+    </layouts><validationRules xmlns="http://soap.sforce.com/2006/04/metadata">
         <errorMessage><!-- Only System Administrators can edit your email address. Please contact salesforce.support@asu.edu if you need to change your email address. --></errorMessage>
         <name>Only_System_Admins_Create_Edit_Users</name>
     </validationRules></CustomObjectTranslation>

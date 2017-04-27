@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Contact --></label>
+        <name>EMPLID__c</name>
+        <relationshipLabel><!-- Enrollment Hold Indicator (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Enrollment Hold Instructions --></label>
+        <name>INFO_INSTRUCT1__c</name>
+    </fields><fields>
+        <label><!-- Enrollment Hold Reason --></label>
+        <name>REASON__c</name>
+    </fields><fields>
+        <label><!-- Service Indicator Code --></label>
+        <name>SRVC_IND_CD__c</name>
+    </fields><fields>
+        <label><!-- Term --></label>
+        <name>STRM__c</name>
+        <relationshipLabel><!-- Enrollment Hold Indicator (external) --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Enrollment Hold Indicator (external)</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Enrollment Hold Indicator (external)</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

@@ -1,48 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
-        <fullName>AgentID__c</fullName>
-        <description>inContact Agent Id</description>
-        <externalId>false</externalId>
-        <label>AgentID</label>
-        <length>50</length>
-        <required>false</required>
-        
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields><fields>
         <fullName>Committee_Code__c</fullName>
         <externalId>false</externalId>
         <formula>Success_Pod__r.Committee__c</formula>
@@ -53,7 +42,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>IsActive__c</fullName>
         <defaultValue>true</defaultValue>
         <description>Person is available to be assigned Success Students</description>
@@ -62,7 +51,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Messaging_Account_Created__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -70,7 +59,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Military_Coach__c</fullName>
         <defaultValue>false</defaultValue>
         <description>this field identifies the Success Resource assigned to Coaching Military Students</description>
@@ -80,6 +69,87 @@
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <fullName>Primary_Phone__c</fullName>
+        <externalId>false</externalId>
+        <label>Primary Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <fullName>Secondary_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Secondary Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <fullName>Secondary_Phone__c</fullName>
+        <externalId>false</externalId>
+        <label>Secondary Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields><fields>
+        <fullName>ASURiteID__c</fullName>
+        <description>Formula field that displays the Alias field on the User object</description>
+        <externalId>false</externalId>
+        <formula>Resource__r.Alias</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ASURITE</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>AgentID__c</fullName>
+        <description>inContact Agent Id</description>
+        <externalId>false</externalId>
+        <label>AgentID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Delegated_Resource__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Delegated Resource</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Success_Resources1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields><fields>
+        <fullName>Delegated_UserId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Delegated_Resource__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Delegated UserId</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>EMPLID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Resource__r.EmployeeNumber</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>EMPLID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
         <fullName>Plan_Code__c</fullName>
         <externalId>false</externalId>
         <label>Plan Code</label>
@@ -683,28 +753,20 @@
             <sorted>false</sorted>
         </picklist>
         <required>false</required>
-        
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>4</visibleLines>
-    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+    </fields><fields>
         <fullName>Primary_Email__c</fullName>
         <externalId>false</externalId>
         <label>Primary Email</label>
         <required>false</required>
-        
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
     </fields><fields>
-        <fullName>Primary_Phone__c</fullName>
-        <externalId>false</externalId>
-        <label>Primary Phone</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Phone</type>
-    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Program_Code__c</fullName>
         <description>Used to tie an Advisor Manager to multiple PODs (Queues) for viewing as access. One of these values must match a value in a POD's Program__c field.</description>
         <externalId>false</externalId>
@@ -766,11 +828,33 @@
             <sorted>false</sorted>
         </picklist>
         <required>false</required>
-        
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>4</visibleLines>
-    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+    </fields><fields>
+        <fullName>Resource_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Resource__r.FirstName &amp; ' ' &amp; Resource__r.LastName</formula>
+        <label>Resource Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Resource__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This is the Coach's Name. Probable future use for other Portal Users.</description>
+        <externalId>false</externalId>
+        <label>Resource</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Success_Resources</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields><fields>
         <fullName>Role__c</fullName>
         <externalId>false</externalId>
         <label>Resource Role</label>
@@ -807,27 +891,10 @@
             <sorted>false</sorted>
         </picklist>
         <required>false</required>
-        
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields><fields>
-        <fullName>Secondary_Email__c</fullName>
-        <externalId>false</externalId>
-        <label>Secondary Email</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Email</type>
-        <unique>false</unique>
-    </fields><fields>
-        <fullName>Secondary_Phone__c</fullName>
-        <externalId>false</externalId>
-        <label>Secondary Phone</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Phone</type>
-    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Pod__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Child object to Success Pod</description>
@@ -837,9 +904,20 @@
         <relationshipLabel>Success Resources</relationshipLabel>
         <relationshipName>Success_Resources</relationshipName>
         <required>false</required>
-        
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields><fields>
+        <fullName>UserId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Resource__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>UserId</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><enableActivities>false</enableActivities><enableBulkApi>true</enableBulkApi><enableEnhancedLookup>true</enableEnhancedLookup><enableFeeds>false</enableFeeds><enableHistory>true</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>ReadWrite</externalSharingModel><label>Success Resource</label><nameField>
         <displayFormat>SR-{0}</displayFormat>
         <label>Success Resource ID</label>
@@ -871,7 +949,7 @@
         <searchResultsAdditionalFields>Role__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Success_Pod__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>IsActive__c</searchResultsAdditionalFields>
-    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews>
+    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>IsActive__c</columns>
@@ -889,7 +967,7 @@
         <columns>UserId__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_Resources_with_Details</fullName>
         <columns>NAME</columns>
         <columns>Success_Pod__c</columns>
@@ -900,7 +978,7 @@
         <columns>RECORDTYPE</columns>
         <filterScope>Everything</filterScope>
         <label>All Resources with Details</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Resources_Active_Advisors</fullName>
         <booleanFilter>(1 AND 2) OR 3</booleanFilter>
         <columns>NAME</columns>
@@ -928,7 +1006,7 @@
             <operation>equals</operation>
         </filters>
         <label>Success Resources - Active Advisors</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Resources_Advisors</fullName>
         <columns>NAME</columns>
         <columns>IsActive__c</columns>
@@ -938,7 +1016,7 @@
         <columns>Success_Pod__c</columns>
         <filterScope>Everything</filterScope>
         <label>Success Resources - Advisors</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Resources_Coaches</fullName>
         <columns>NAME</columns>
         <columns>IsActive__c</columns>
@@ -960,7 +1038,7 @@
             <value>Success_Resource__c.Coach</value>
         </filters>
         <label>Success Resources - Coaches</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Resources_DelegatedCoaches</fullName>
         <columns>NAME</columns>
         <columns>Resource__c</columns>

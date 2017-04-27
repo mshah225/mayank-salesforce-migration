@@ -184,6 +184,7 @@
     <members>Record_Type_ids__c</members>
     <members>Suncard_Photo__c</members>
     <members>Academic_Interest__c</members>
+    <members>JBT_RET_TRANSCRIPT_SENT_VW__x</members>
     <name>CustomObject</name>
   </types>
   <types>
@@ -368,6 +369,8 @@
     <members>PS_ASU_SP_AC_STNDV__x-Academic Standing %28external%29 Layout</members>
     <members>Contact-Feed - SF Mastered Contact Layout for ADMIN</members>
     <members>Opportunity-Feed - Opportunity Layout</members>
+    <members>FlowInterview-Flow Interview Layout</members>
+    <members>JBT_RET_TRANSCRIPT_SENT_VW__x-Transcript Sent Layout</members>
     <name>Layout</name>
   </types>
   <types>
@@ -468,6 +471,7 @@
     <members>New_Corporate_Relations_Contact</members>
     <members>PKB_Article_Feedback_Deflection__c</members>
     <members>PKB_Featured__c</members>
+    <members>et4ae5__Automated_Send__c</members>
     <name>CustomTab</name>
   </types>
   <types>
@@ -1112,6 +1116,10 @@
     <members>UGUC04</members>
     <members>UGHIGD</members>
     <members>UGTICS</members>
+    <members>UGTE16</members>
+    <members>UGTE15</members>
+    <members>KB_Financial_Aid_Format</members>
+    <members>KB_Financial_Aid_Approve</members>
     <name>Queue</name>
   </types>
   <types>
@@ -2020,6 +2028,7 @@
     <members>CFO_Office_Reports</members>
     <members>Knowledge_Study_Abroad</members>
     <members>Knowledge_College_of_Health_Solutions</members>
+    <members>Recruitment_Leads_Edit_Dashboards</members>
     <name>Group</name>
   </types>
   <types>
@@ -3027,6 +3036,9 @@
     <members>Student_Centric_Initiatives</members>
     <members>CLAS_SPGS</members>
     <members>CLAS_STS</members>
+    <members>Admission_Services_Undergrad/Is_Math_Placement_Test_Required_AP_Dual_Enrollment</members>
+    <members>Admission_Services_Undergrad/Verify_FAFSA_General_Instructions</members>
+    <members>Academic_Partnerships/TRN_Ambassador_MAPP_needs_help</members>
     <name>EmailTemplate</name>
   </types>
   <types>
@@ -3570,6 +3582,159 @@
     <members>Campaign-es</members>
     <members>Lead-en_US</members>
     <members>Program__c-en_US</members>
+    <members>et4ae5__Automated_Send__c-it</members>
+    <members>et4ae5__SendJunction__c-fr</members>
+    <members>et4ae5__Email_Linkage__c-it</members>
+    <members>et4ae5__Configuration__c-en_US</members>
+    <members>et4ae5__SendDefinition__c-pt_BR</members>
+    <members>Field_Trip__Object_Analysis__c-en_US</members>
+    <members>et4ae5__Automated_Send__c-es_MX</members>
+    <members>et4ae5__Email_Linkage__c-ja</members>
+    <members>et4ae5__Triggered_Send_Execution__c-fr</members>
+    <members>et4ae5__SMSDefinition__c-de</members>
+    <members>et4ae5__Email_Linkage__c-en_US</members>
+    <members>et4ae5__SendJunction__c-es</members>
+    <members>et4ae5__IndividualEmailResult__c-de</members>
+    <members>et4ae5__SMSDefinition__c-es</members>
+    <members>bomgar__Bomgar_Representative__c-en_US</members>
+    <members>et4ae5__Triggered_Send_Execution__c-es</members>
+    <members>et4ae5__SMSDefinition__c-es_MX</members>
+    <members>silverpop__Silverpop_Settings__c-en_US</members>
+    <members>et4ae5__SMSJunction__c-en_US</members>
+    <members>et4ae5__Automated_Send__c-ja</members>
+    <members>bedrock__LghtIdeasCategories__c-en_US</members>
+    <members>et4ae5__SupportRequest__c-fr</members>
+    <members>et4ae5__SMSDefinition__c-fr</members>
+    <members>et4ae5__SendJunction__c-en_US</members>
+    <members>et4ae5__SendJunction__c-de</members>
+    <members>et4ae5__IndividualEmailResult__c-es_MX</members>
+    <members>et4ae5__SupportRequest__c-pt_BR</members>
+    <members>AAKCS__Campaign_Status_Default_Value__c-en_US</members>
+    <members>et4ae5__Campaign_Member_Configuration__c-es</members>
+    <members>et4ae5__SMSJunction__c-pt_BR</members>
+    <members>et4ae5__SendDefinition__c-es</members>
+    <members>et4ae5__abTest__c-es_MX</members>
+    <members>et4ae5__SupportRequest__c-es</members>
+    <members>et4ae5__SendDefinition__c-de</members>
+    <members>et4ae5__Business_Unit__c-es_MX</members>
+    <members>et4ae5__Campaign_Member_Configuration__c-fr</members>
+    <members>bomgar__BomgarSession__c-en_US</members>
+    <members>bomgar__SurveyData__c-en_US</members>
+    <members>et4ae5__Campaign_Member_Configuration__c-de</members>
+    <members>et4ae5__Email_Linkage__c-es</members>
+    <members>et4ae5__SMSJunction__c-de</members>
+    <members>et4ae5__SendJunction__c-ja</members>
+    <members>et4ae5__Email_Linkage__c-de</members>
+    <members>et4ae5__SMSDefinition__c-it</members>
+    <members>et4ae5__Campaign_Member_Configuration__c-es_MX</members>
+    <members>et4ae5__Triggered_Send_Execution__c-en_US</members>
+    <members>et4ae5__SMSJunction__c-es_MX</members>
+    <members>et4ae5__SupportRequest__c-en_US</members>
+    <members>bomgar__BomgarWebEvent__c-en_US</members>
+    <members>et4ae5__SMSJunction__c-es</members>
+    <members>silverpop__Silverpop_Email_Campaign_Activity__c-en_US</members>
+    <members>silverpop__Silverpop_Email_Activity__c-en_US</members>
+    <members>et4ae5__AggregateLink__c-pt_BR</members>
+    <members>et4ae5__Configuration__c-de</members>
+    <members>bomgar__Participant__c-en_US</members>
+    <members>et4ae5__SMSJunction__c-fr</members>
+    <members>et4ae5__Configuration__c-pt_BR</members>
+    <members>et4ae5__SMSDefinition__c-ja</members>
+    <members>et4ae5__Triggered_Send_Execution__c-de</members>
+    <members>et4ae5__IndividualLink__c-en_US</members>
+    <members>et4ae5__UEBU__c-ja</members>
+    <members>et4ae5__SendJunction__c-it</members>
+    <members>bomgar__ShellRecording__c-en_US</members>
+    <members>et4ae5__SupportRequest__c-ja</members>
+    <members>et4ae5__SupportRequest__c-it</members>
+    <members>et4ae5__Email_Linkage__c-fr</members>
+    <members>et4ae5__AggregateLink__c-es_MX</members>
+    <members>et4ae5__UEBU__c-en_US</members>
+    <members>et4ae5__Configuration__c-es_MX</members>
+    <members>et4ae5__Campaign_Member_Configuration__c-pt_BR</members>
+    <members>bomgar__SessionTeam__c-en_US</members>
+    <members>et4ae5__Configuration__c-es</members>
+    <members>et4ae5__Business_Unit__c-pt_BR</members>
+    <members>et4ae5__abTest__c-en_US</members>
+    <members>et4ae5__IndividualLink__c-ja</members>
+    <members>et4ae5__SMSDefinition__c-pt_BR</members>
+    <members>bomgar__Event__c-en_US</members>
+    <members>et4ae5__Automated_Send__c-pt_BR</members>
+    <members>et4ae5__abTest__c-ja</members>
+    <members>et4ae5__SendDefinition__c-ja</members>
+    <members>et4ae5__abTest__c-pt_BR</members>
+    <members>et4ae5__SendDefinition__c-es_MX</members>
+    <members>et4ae5__SMSDefinition__c-en_US</members>
+    <members>et4ae5__SMSJunction__c-it</members>
+    <members>et4ae5__Email_Linkage__c-es_MX</members>
+    <members>et4ae5__Automated_Send__c-en_US</members>
+    <members>et4ae5__Business_Unit__c-ja</members>
+    <members>et4ae5__IndividualEmailResult__c-pt_BR</members>
+    <members>et4ae5__SMSJunction__c-ja</members>
+    <members>silverpop__Email_Link__c-en_US</members>
+    <members>silverpop__Silverpop_Email_Campaign_Link__c-en_US</members>
+    <members>et4ae5__abTest__c-it</members>
+    <members>bomgar__Logging__c-en_US</members>
+    <members>et4ae5__Business_Unit__c-it</members>
+    <members>bomgar__SystemInfo__c-en_US</members>
+    <members>et4ae5__SendJunction__c-es_MX</members>
+    <members>bedrock__LghtIdeasSettings__c-en_US</members>
+    <members>et4ae5__IndividualEmailResult__c-ja</members>
+    <members>et4ae5__UEBU__c-fr</members>
+    <members>Field_Trip__Field_Analysis__c-en_US</members>
+    <members>et4ae5__Business_Unit__c-en_US</members>
+    <members>AAKCS__Campaign_Status_Default__c-en_US</members>
+    <members>bomgar__Bomgar_Session_Detail__c-en_US</members>
+    <members>et4ae5__IndividualLink__c-it</members>
+    <members>et4ae5__Configuration__c-fr</members>
+    <members>et4ae5__AggregateLink__c-ja</members>
+    <members>et4ae5__IndividualEmailResult__c-it</members>
+    <members>et4ae5__IndividualEmailResult__c-en_US</members>
+    <members>et4ae5__AggregateLink__c-it</members>
+    <members>et4ae5__Automated_Send__c-es</members>
+    <members>et4ae5__IndividualLink__c-fr</members>
+    <members>et4ae5__Triggered_Send_Execution__c-pt_BR</members>
+    <members>et4ae5__IndividualEmailResult__c-fr</members>
+    <members>et4ae5__Configuration__c-ja</members>
+    <members>et4ae5__ET4AEConfig__c-en_US</members>
+    <members>et4ae5__SendJunction__c-pt_BR</members>
+    <members>et4ae5__Automated_Send__c-fr</members>
+    <members>et4ae5__AggregateLink__c-de</members>
+    <members>et4ae5__Triggered_Send_Execution__c-ja</members>
+    <members>et4ae5__IndividualLink__c-es_MX</members>
+    <members>et4ae5__Configuration__c-it</members>
+    <members>et4ae5__abTest__c-fr</members>
+    <members>et4ae5__Business_Unit__c-fr</members>
+    <members>et4ae5__Triggered_Send_Execution__c-it</members>
+    <members>et4ae5__SupportRequest__c-es_MX</members>
+    <members>silverpop__Silverpop_PH__c-en_US</members>
+    <members>et4ae5__SendDefinition__c-fr</members>
+    <members>bomgar__EventData__c-en_US</members>
+    <members>et4ae5__SupportRequest__c-de</members>
+    <members>et4ae5__Triggered_Send_Execution__c-es_MX</members>
+    <members>et4ae5__Campaign_Member_Configuration__c-ja</members>
+    <members>et4ae5__Campaign_Member_Configuration__c-en_US</members>
+    <members>et4ae5__abTest__c-es</members>
+    <members>et4ae5__IndividualLink__c-de</members>
+    <members>et4ae5__SendDefinition__c-en_US</members>
+    <members>et4ae5__Business_Unit__c-es</members>
+    <members>et4ae5__SendDefinition__c-it</members>
+    <members>JBT_RET_TRANSCRIPT_SENT_VW__x-en_US</members>
+    <members>et4ae5__Campaign_Member_Configuration__c-it</members>
+    <members>et4ae5__AggregateLink__c-fr</members>
+    <members>bomgar__Survey__c-en_US</members>
+    <members>et4ae5__Email_Linkage__c-pt_BR</members>
+    <members>et4ae5__IndividualLink__c-es</members>
+    <members>et4ae5__abTest__c-de</members>
+    <members>bomgar__BomgarIssue__c-en_US</members>
+    <members>et4ae5__AggregateLink__c-en_US</members>
+    <members>bomgar__Email_Template__c-en_US</members>
+    <members>et4ae5__IndividualEmailResult__c-es</members>
+    <members>et4ae5__IndividualLink__c-pt_BR</members>
+    <members>bomgar__Case_Bomgar_Link__c-en_US</members>
+    <members>et4ae5__Automated_Send__c-de</members>
+    <members>et4ae5__AggregateLink__c-es</members>
+    <members>et4ae5__Business_Unit__c-de</members>
     <name>CustomObjectTranslation</name>
   </types>
   <types>

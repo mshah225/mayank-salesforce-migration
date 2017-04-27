@@ -2,6 +2,7 @@
 <Role xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseAccessLevel>Edit</caseAccessLevel>
     <contactAccessLevel>Read</contactAccessLevel>
+    <description>ES Information Systems Development</description>
     <mayForecastManagerShare>false</mayForecastManagerShare>
     <name>ES Information Systems Development</name>
     <opportunityAccessLevel>Edit</opportunityAccessLevel>

@@ -3,28 +3,32 @@
     <active>true</active>
     <dataCategory>
         <dataCategory>
-            <label>Marketing</label>
-            <name>Marketing</name>
+            <label>Case Management</label>
+            <name>Case_Management</name>
         </dataCategory>
         <dataCategory>
             <label>Corporate Relations</label>
             <name>Corporate_Relations</name>
         </dataCategory>
         <dataCategory>
-            <label>Case Management</label>
-            <name>Case_Management</name>
+            <label>Finances</label>
+            <name>Finances</name>
         </dataCategory>
         <dataCategory>
-            <label>Recruitment Management</label>
-            <name>Recruitment_Management</name>
+            <label>General Salesforce</label>
+            <name>Salesforce</name>
         </dataCategory>
         <dataCategory>
             <label>Knowledge Management</label>
             <name>Knowledge_Management</name>
         </dataCategory>
         <dataCategory>
-            <label>General Salesforce</label>
-            <name>Salesforce</name>
+            <label>Marketing</label>
+            <name>Marketing</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Recruitment Management</label>
+            <name>Recruitment_Management</name>
         </dataCategory>
         <label>All</label>
         <name>All</name>

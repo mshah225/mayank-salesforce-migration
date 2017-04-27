@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SG_Description__c</fullName>
         <description>[Peoplesoft] - Examples include: All Arizona Academic Team, CI reqs alt Sun Devil Success, CI requires Sun Devil Success, Denied Pathway Eligible Student, Eastern AZ College, HONORS GD STND LOW DIV &lt; 2107, HONORS GD, STND LOW DIV &gt;= 2107, HONORS GD STND UPP DIV &lt; 2107, HONORS GD STND UPP DIV &gt;= 2107, HONORS, PROV-LOWER DIVISION, HONORS, PROV-UPPER DIVISION, Huazhong Unv Sci&amp;Tech students (HUST), Lake Havasu, MLFTC ESP provisional admits, National Achievement Semifinalist, National Hispanic Scholar Finalist, National Merit Semifinalist, New College GAIN, Not Admissible recvd CC invite, Provisional Admt - NR students, RHHE, SDS 2013 - 11 credit hour option, SDS 2013 - 4 credit hour option, SDS 2013 Exceptions (Veteran, Athlete, Tribal Scholar), SDS 2013 Overall group, Sichun University, Sponsored International App, TA Prospect-Signed Agreement, W.P. Carey Provisional, WUE Western Undergrad Exchange</description>
         <externalId>false</externalId>
@@ -162,7 +162,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SG_Effective_Date__c</fullName>
         <description>[Peoplesoft] - Date of Student group assignment</description>
         <externalId>false</externalId>
@@ -170,7 +170,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SG_PeopleSoft_Code__c</fullName>
         <description>[Peoplesoft] - Peoplesoft code</description>
         <externalId>false</externalId>
@@ -180,7 +180,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SG_Status__c</fullName>
         <defaultValue>false</defaultValue>
         <description>[Peoplesoft] - Checkbox that shows if the student group is active</description>

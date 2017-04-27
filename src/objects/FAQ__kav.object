@@ -1,28 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><fields xmlns="http://soap.sforce.com/2006/04/metadata">
-        <fullName>Answer__c</fullName>
-        <description>Article Answer Content</description>
-        <externalId>false</externalId>
-        <label>Information</label>
-        <length>32768</length>
-        
-        <type>Html</type>
-        <visibleLines>25</visibleLines>
-    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
-        <fullName>Article_Expiration_Date__c</fullName>
-        <description>Date in which article will expire and content needs to be reviewed.</description>
-        <externalId>false</externalId>
-        <label>Article Expiration Date</label>
-        <required>false</required>
-        
-        <type>Date</type>
-    </fields><fields>
         <fullName>Date_Last_Updated__c</fullName>
         <externalId>false</externalId>
         <label>Date Last Updated</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Days_until_expires__c</fullName>
         <externalId>false</externalId>
         <formula>Article_Expiration_Date__c - Today()</formula>
@@ -34,7 +17,24 @@
         <trackHistory>false</trackHistory>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+    </fields><fields>
+        <fullName>Answer__c</fullName>
+        <description>Article Answer Content</description>
+        <externalId>false</externalId>
+        <label>Information</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields><fields>
+        <fullName>Article_Expiration_Date__c</fullName>
+        <description>Date in which article will expire and content needs to be reviewed.</description>
+        <externalId>false</externalId>
+        <label>Article Expiration Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Date</type>
+    </fields><fields>
         <fullName>Functional_Group__c</fullName>
         <description>Group which owns and maintains the article.</description>
         <externalId>false</externalId>
@@ -272,7 +272,7 @@
             <sorted>false</sorted>
         </picklist>
         <required>false</required>
-        
+        <trackHistory>true</trackHistory>
         <type>Picklist</type>
     </fields><articleTypeChannelDisplay>
         <articleTypeTemplates>

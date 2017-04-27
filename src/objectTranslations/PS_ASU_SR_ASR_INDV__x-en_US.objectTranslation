@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Career --></label>
+        <name>ACAD_CAREER__c</name>
+    </fields><fields>
+        <label><!-- Grade Instructions --></label>
+        <name>ASU_GRADE_INST_LST__c</name>
+    </fields><fields>
+        <label><!-- Grade Reason --></label>
+        <name>ASU_GRADE_RSN_LIST__c</name>
+    </fields><fields>
+        <label><!-- Course Id --></label>
+        <name>CLASS_NBR__c</name>
+    </fields><fields>
+        <label><!-- Comments --></label>
+        <name>COMMENT1__c</name>
+    </fields><fields>
+        <label><!-- Course --></label>
+        <name>COURSE_SQC__c</name>
+    </fields><fields>
+        <label><!-- Title --></label>
+        <name>COURSE_TITLE__c</name>
+    </fields><fields>
+        <label><!-- Grade --></label>
+        <name>CRSE_GRADE_INPUT__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>EMPLID__c</name>
+        <relationshipLabel><!-- Academic Status Report Info (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Enrolled --></label>
+        <name>ENROLLED__c</name>
+    </fields><fields>
+        <label><!-- Institution --></label>
+        <name>INSTITUTION__c</name>
+    </fields><fields>
+        <label><!-- Sequence Number --></label>
+        <name>SEQNUM__c</name>
+    </fields><fields>
+        <label><!-- Session --></label>
+        <name>SESSION_CODE__c</name>
+    </fields><fields>
+        <label><!-- Term --></label>
+        <name>STRM__c</name>
+        <relationshipLabel><!-- Academic Status Report Info (external) --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Academic Status Report Info (external)</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Academic Status Report Info (external)</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

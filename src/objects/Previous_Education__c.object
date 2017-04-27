@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_Geomarket__c</fullName>
         <externalId>false</externalId>
         <formula>Account__r.ASU_Geomarket_Code__c</formula>
@@ -42,7 +42,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ATP_Code__c</fullName>
         <description>The American Testing Program (ATP) Code or College Entrance Examination Board (CEEB) Code is a 6-digit number that is used by standardized tests such as SAT and ACT. The first 2 digits indicate the state. The ATP Code is a 4-digit number for higher education institutions.</description>
         <externalId>false</externalId>
@@ -55,7 +55,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Class_Rank_Percentile__c</fullName>
         <externalId>false</externalId>
         <formula>IF(Class_Rank__c &gt; 0 &amp;&amp; Class_Size__c &gt; 0,1-Class_Rank__c /Class_Size__c,null)</formula>
@@ -68,7 +68,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Class_Rank__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>This student's class rank. Used along with Class Size to calculate Class Rank Percentile.</inlineHelpText>
@@ -80,7 +80,7 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Class_Size__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The size of the graduating class at the institution referenced on this Previous Education record. Used along with Class Rank to calculate Class Rank Percentile.</inlineHelpText>
@@ -92,7 +92,7 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Degree_Type__c</fullName>
         <description>[??] - Examples include: Undergraduate, Graduate, Certificate, General Ed, Other</description>
         <externalId>false</externalId>
@@ -124,7 +124,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Degree__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>[??] - Shows the name of the previous degree</description>
@@ -137,7 +137,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>GPA__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>GPA at listed institution</inlineHelpText>
@@ -149,7 +149,7 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Graduation_Date__c</fullName>
         <description>[??] - Graduation date tied to previous education</description>
         <externalId>false</externalId>
@@ -158,7 +158,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Institution_Type__c</fullName>
         <externalId>false</externalId>
         <formula>TEXT(Account__r.Institution_Type__c)</formula>
@@ -168,7 +168,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Is_Last_High_School_Attended__c</fullName>
         <externalId>false</externalId>
         <formula>Account__c =  Contact__r.Last_HS_Attended__c</formula>
@@ -182,7 +182,7 @@
         <label>Previous Education Name</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
-    </nameField><pluralLabel>Previous Education</pluralLabel><searchLayouts /><sharingModel>ControlledByParent</sharingModel><listViews>
+    </nameField><pluralLabel>Previous Education</pluralLabel><searchLayouts /><sharingModel>ControlledByParent</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_Previous_Education</fullName>
         <columns>Contact__c</columns>
         <columns>Degree_Type__c</columns>

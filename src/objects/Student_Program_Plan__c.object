@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Action_Reason__c</fullName>
         <description>Data sourced from PROG_RSN_TBL.DESCR</description>
         <externalId>false</externalId>
@@ -95,7 +95,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Action__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.PROG_ACTION</description>
         <externalId>false</externalId>
@@ -135,7 +135,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Admit_Term__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Data sourced from PS_ACAD_PROG.ADMIT_TERM</description>
@@ -148,7 +148,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Application_Number__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.ADM_APPL_NBR</description>
         <externalId>false</externalId>
@@ -159,7 +159,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campus__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>Data sourced from PS_ACAD_PROG.CAMPUS</description>
@@ -172,7 +172,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Career_Number__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.STDNT_CAR_NBR</description>
         <externalId>false</externalId>
@@ -184,7 +184,7 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Career__c</fullName>
         <description>Data sourced from PS_ACAD_CAR_TBL.DESCR</description>
         <externalId>false</externalId>
@@ -208,7 +208,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>College_Diploma_Description__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL.DIPLOMA_DESCR</description>
         <externalId>false</externalId>
@@ -219,7 +219,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Completion_Term__c</fullName>
         <description>Data sourced from PS_TERM_TBL.DESCR</description>
         <externalId>false</externalId>
@@ -230,7 +230,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Degree_Conferral_Date__c</fullName>
         <description>Data sourced from PS_ACAD_DEGR.DEGR_CONFER_DT</description>
         <externalId>false</externalId>
@@ -239,7 +239,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Degree__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL.Degree</description>
         <externalId>false</externalId>
@@ -250,7 +250,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Effective_Date__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.EFFDT</description>
         <externalId>false</externalId>
@@ -259,7 +259,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Code__c</fullName>
         <description>Data sourced from ACAD_PLAN_TBL.ACAD_PLAN</description>
         <externalId>false</externalId>
@@ -270,7 +270,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Description__c</fullName>
         <description>Data sourced from ACAD_PLAN_TBL.DESCR</description>
         <externalId>false</externalId>
@@ -281,7 +281,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Sequence__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN.PLAN_SEQUENCE</description>
         <externalId>false</externalId>
@@ -293,7 +293,7 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Transcript_Description__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL.TRNSCR_DESCR</description>
         <externalId>false</externalId>
@@ -304,7 +304,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Type_Text__c</fullName>
         <description>Data sourced from ACAD_PLAN_TBL.ACAD_PLAN_TYPE</description>
         <externalId>false</externalId>
@@ -315,7 +315,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_URL__c</fullName>
         <description>Student Plan URL in PeopleSoft. Data sourced from ASU_ACADP_EXTNS.URL_1</description>
         <externalId>false</externalId>
@@ -324,7 +324,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Url</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Primary_Flag__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Data sourced from PS_STDNT_PROFILE_MAJ_CURRENT.ASU_PRIME_REC_FLG</description>
@@ -333,7 +333,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Program_Code__c</fullName>
         <description>Data sourced from ACAD_PROG_TBL.ACAD_PROG</description>
         <externalId>false</externalId>
@@ -344,7 +344,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Program_Description__c</fullName>
         <description>Data sourced from ACAD_PROG_TBL.DESCR</description>
         <externalId>false</externalId>
@@ -355,7 +355,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Status__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.ASU_PROGSTATUS1</description>
         <externalId>false</externalId>
@@ -384,7 +384,7 @@
         <label>Details</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
-    </nameField><pluralLabel>Student Program Plans</pluralLabel><searchLayouts /><sharingModel>Read</sharingModel><listViews>
+    </nameField><pluralLabel>Student Program Plans</pluralLabel><searchLayouts /><sharingModel>Read</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AllGraduateProgramPlans</fullName>
         <columns>Contact__c</columns>
         <columns>Campus__c</columns>
@@ -399,7 +399,7 @@
             <value>Graduate</value>
         </filters>
         <label>All Graduate Program Plans</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AllLawProgramPlans</fullName>
         <columns>Contact__c</columns>
         <columns>Campus__c</columns>
@@ -414,7 +414,7 @@
             <value>Law</value>
         </filters>
         <label>All Law Program Plans</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AllStudentProgramPlans</fullName>
         <columns>Contact__c</columns>
         <columns>Career__c</columns>
@@ -424,7 +424,7 @@
         <columns>LAST_UPDATE</columns>
         <filterScope>Everything</filterScope>
         <label>All Student Program Plans</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AllUndergraduateProgramPlans</fullName>
         <columns>Contact__c</columns>
         <columns>Campus__c</columns>

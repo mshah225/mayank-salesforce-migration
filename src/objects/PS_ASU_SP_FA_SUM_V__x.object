@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_CAREER__c</fullName>
         <description>Data sourced from PS_STDNT_AWARDS.ACAD_CAREER</description>
         <externalDeveloperName>ACAD_CAREER</externalDeveloperName>
@@ -38,7 +38,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACCEPT_AMOUNT__c</fullName>
         <description>Data sourced from PS_STDNT_AWARDS.ACCEPT_AMOUNT</description>
         <externalDeveloperName>ACCEPT_AMOUNT</externalDeveloperName>
@@ -52,7 +52,7 @@
         <scale>2</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AID_YEAR__c</fullName>
         <description>Data sourced from PS_STDNT_AWARDS.AID_YEAR</description>
         <externalDeveloperName>AID_YEAR</externalDeveloperName>
@@ -65,7 +65,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DESCR_CATEGORY__c</fullName>
         <description>Data sourced from PSXLATITEM.XLATLONGNAME</description>
         <externalDeveloperName>DESCR_CATEGORY</externalDeveloperName>
@@ -78,7 +78,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DESCR__c</fullName>
         <description>Data sourced from PS_AID_YEAR_TBL.DESCR</description>
         <externalDeveloperName>DESCR</externalDeveloperName>
@@ -91,7 +91,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DISBURSED_AMOUNT__c</fullName>
         <description>Data sourced from PS_STDNT_AWARDS.DISBURSED_AMOUNT</description>
         <externalDeveloperName>DISBURSED_AMOUNT</externalDeveloperName>
@@ -105,7 +105,7 @@
         <scale>2</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>OFFER_AMOUNT__c</fullName>
         <description>Data sourced from PS_STDNT_AWARDS.OFFER_AMOUNT</description>
         <externalDeveloperName>OFFER_AMOUNT</externalDeveloperName>
@@ -119,7 +119,7 @@
         <scale>2</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SFA_CR_AWARD_TYPE__c</fullName>
         <description>Data sourced from PS_ASU_FA_ITEM_VW.DESCR</description>
         <externalDeveloperName>SFA_CR_AWARD_TYPE</externalDeveloperName>

@@ -10,7 +10,7 @@
 
 Thank you for contacting the ASU Salesforce Support Team.  We have received your email and are working on responding to you as soon as possible.
 
-You can also view the status of your Case, add further information, and follow your Support Case within Salesforce.
+If you are current Salesforce user with access to Case records, you can also view the status of your Case, add further information, and follow your Support Case.
 
 Case Number: {!Case.CaseNumber}
 Subject: {!Case.Subject}

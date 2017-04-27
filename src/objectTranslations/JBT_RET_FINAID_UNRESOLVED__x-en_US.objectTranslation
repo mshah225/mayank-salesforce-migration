@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Action --></label>
+        <name>ACTION__c</name>
+    </fields><fields>
+        <label><!-- Aid Year --></label>
+        <name>AID_YEAR__c</name>
+    </fields><fields>
+        <label><!-- Checklist Code --></label>
+        <name>CHECKLIST_CD__c</name>
+    </fields><fields>
+        <label><!-- Checklist Item Code --></label>
+        <name>CHKLST_ITEM_CD__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>EMPLID__c</name>
+        <relationshipLabel><!-- Financial Aid Indicator (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Status Date --></label>
+        <name>STATUS_DT__c</name>
+    </fields><fields>
+        <label><!-- Status --></label>
+        <name>STATUS__c</name>
+    </fields><fields>
+        <label><!-- Term --></label>
+        <name>STRM__c</name>
+        <relationshipLabel><!-- Financial Aid Indicator (external) --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Financial Aid Unresolved Item (external)</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Financial Aid Unresolved Item (external)</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

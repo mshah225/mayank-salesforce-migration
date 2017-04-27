@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_CAREER__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_STATUS.ACAD_CAREER</description>
         <externalDeveloperName>ACAD_CAREER</externalDeveloperName>
@@ -38,7 +38,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_GRADE_INST_LST__c</fullName>
         <description>Data sourced from PS_ASU_ACADSTAT_AC.GRADE_ACTION_DESC</description>
         <externalDeveloperName>ASU_GRADE_INST_LST</externalDeveloperName>
@@ -49,7 +49,7 @@
         <label>Grade Instructions</label>
         <required>false</required>
         <type>TextArea</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_GRADE_RSN_LIST__c</fullName>
         <description>Data sourced from PS_ASU_ACADSTAT_RE.GRADE_REASON_DESC</description>
         <externalDeveloperName>ASU_GRADE_RSN_LIST</externalDeveloperName>
@@ -60,7 +60,7 @@
         <label>Grade Reason</label>
         <required>false</required>
         <type>TextArea</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CLASS_NBR__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_STATUS.CLASS_NBR</description>
         <externalDeveloperName>CLASS_NBR</externalDeveloperName>
@@ -73,7 +73,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>COMMENT1__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_STATUS.DESCR_254_MIXED</description>
         <externalDeveloperName>COMMENT1</externalDeveloperName>
@@ -86,7 +86,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>COURSE_SQC__c</fullName>
         <description>Data sourced from PS_ASU_A_CLASS.SUBJECT, CATALOG_NBR</description>
         <externalDeveloperName>COURSE_SQC</externalDeveloperName>
@@ -99,7 +99,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>COURSE_TITLE__c</fullName>
         <description>Data sourced from PS_ASU_A_CLASS.DESCR</description>
         <externalDeveloperName>COURSE_TITLE</externalDeveloperName>
@@ -112,7 +112,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CRSE_GRADE_INPUT__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_STATUS.CRSE_GRADE_INPUT</description>
         <externalDeveloperName>CRSE_GRADE_INPUT</externalDeveloperName>
@@ -125,7 +125,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ENROLLED__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_STATUS.STDNT_ENRL_STATUS</description>
         <externalDeveloperName>ENROLLED</externalDeveloperName>
@@ -138,7 +138,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>INSTITUTION__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_STATUS.INSTITUTION</description>
         <externalDeveloperName>INSTITUTION</externalDeveloperName>
@@ -151,7 +151,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SEQNUM__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_STATUS.SEQNUM</description>
         <externalId>false</externalId>
@@ -163,7 +163,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SESSION_CODE__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_STATUS.SESSION_CODE</description>
         <externalDeveloperName>SESSION_CODE</externalDeveloperName>
@@ -176,7 +176,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>STRM__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_STATUS.STRM</description>
         <externalDeveloperName>STRM</externalDeveloperName>

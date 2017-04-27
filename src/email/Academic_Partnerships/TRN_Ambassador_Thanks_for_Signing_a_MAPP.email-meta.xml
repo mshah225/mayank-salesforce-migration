@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
     <available>true</available>
-    <description>Template for TRN ambassadors to use when they have left a voicemail.</description>
+    <description>Template for TRN ambassadors to send when a student has signed a MAPP agreement.</description>
     <encodingKey>ISO-8859-1</encodingKey>
     <letterhead>ASU_Gold</letterhead>
-    <name>TRN Ambassador Thanks for Signing a MAPP</name>
+    <name>TRN Ambassador – MAPP</name>
     <style>freeForm</style>
     <subject>Thank you for signing a MAPP agreement</subject>
     <textOnly>Dear {!Contact.FirstName},
 
-Thank you for signing a Maricopa to ASU Pathways Program agreement — your path to becoming a Sun Devil. Now that you are on a MAPP, you will know exactly which classes you need to complete to make your transition to your desired major at Arizona State University a seamless one.
+Thank you for signing a Maricopa to ASU Pathways Program agreement — your path to becoming a Sun Devil. Now that you are on a MAPP, you will know exactly which classes you need to complete to make a smooth transition to your desired major at Arizona State University.
+ 
+As a MAPP student, you have access to My ASU (https://my.asu.edu/) and ASU’s pathway tracker so you can track the progress of your transfer courses. You can access My ASU directly by using your ASURITE UserID and password, or through My Maricopa (https://my.maricopa.edu/) by clicking on ASU Alliance. Once there, you can use the pathway tracker to review the classes you have left to complete your MAPP and transfer to ASU.
+ 
+If you have any questions about your MAPP, My ASU or transferring to ASU, please contact your transfer specialist (https://transfer.asu.edu/contact). You can also schedule an appointment with your transfer specialist at your community college (https://transfer.asu.edu/repallcalendar-node-field-avail-app-date/week) or at an ASU campus during Transfer Fridays (https://transfer.asu.edu/friday/week).
 
-As a MAPP student, you have access to ASU’s pathway tracker tool. This tool shows how the classes you have taken will transfer and which classes you still need to take in order to complete the MAPP.
-
-The pathway tracker can be found on My ASU under the View My Progress section. You should have access to My ASU (https://my.asu.edu) through My Maricopa (https://my.maricopa.edu/). Please click on the ASU Alliance link on My Maricopa to access My ASU. You can also access My ASU through http://www.asu.edu/ by using your ASURITE UserID and password.
-
-If you have any questions about your MAPP or the pathway tracker, please contact your transfer specialist, {!User.Recruiter_Full_Name__c}, at {!User.Recruiter_Email__c}.
 Thank you,
+
 {!User.FirstName}
 Student Transfer Ambassador
 transferambassadors@asu.edu

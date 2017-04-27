@@ -1,460 +1,879 @@
-﻿<?xml version="1.0" encoding="utf-8"?><PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata"><description>View objects with the JitterBit connection. Users will have access to the objects and the query test page.</description><label>External Objects: View JBT Objects</label><userLicense>Salesforce</userLicense><pageAccesses>
+﻿<?xml version="1.0" encoding="utf-8"?><PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata"><description>View objects with the JitterBit connection. Users will have access to the objects and the query test page.</description><label>External Objects: View JBT Objects</label><userLicense>Salesforce</userLicense><pageAccesses xmlns="http://soap.sforce.com/2006/04/metadata">
         <apexPage>ExternalObjectQuery</apexPage>
         <enabled>true</enabled>
-    </pageAccesses><applicationVisibilities>
+    </pageAccesses><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>ASU_Chatter</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>ASU_Corporate_Relations</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>ASU_Organizational_Relationships</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>ASU_QA</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>ASU_Read_Only</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>ASU_Service</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>Administrator</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>Knowledge</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>PKB_2</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>Success_Engagement_Management</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>Success_Portal_Management</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__AppLauncher</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__Chatter</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__Community</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__DataAssessment</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__Insights</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__LightningSalesConsole</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__LightningService</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__Marketing</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__Platform</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__Sales</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__Service</application>
         <visible>false</visible>
-    </applicationVisibilities><applicationVisibilities>
+    </applicationVisibilities><applicationVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <application>standard__ServiceConsole</application>
         <visible>false</visible>
-    </applicationVisibilities><externalDataSourceAccesses>
+    </applicationVisibilities><externalDataSourceAccesses xmlns="http://soap.sforce.com/2006/04/metadata">
         <enabled>false</enabled>
         <externalDataSource>asu_ps_lightning</externalDataSource>
-    </externalDataSourceAccesses><recordTypeVisibilities>
+    </externalDataSourceAccesses><fieldPermissions>
+        <editable>false</editable>
+        <field>Financial_Aid_Status__x.Aid_Year__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>Financial_Aid_Status__x.Contact__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>Financial_Aid_Status__x.Financial_Aid_Phase__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>Financial_Aid_Status__x.Financial_Aid_Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.ACAD_CAREER__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.AID_YEAR__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.COLLEGE__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.CUM_GPA__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.EMPLID__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.FND_TERM_REMAINA__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.MAJOR__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.SCHOLARSHIP_NAME__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.STATUS__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.STRM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_ACAD_SUMMARY_VW__x.TOT_CUMULATIVE__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.COURSE__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.ECREDIT__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.EMPLID__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.GPAHRS__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.GPAPTS__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.GRADE__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.INSTITUTION__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.RCREDIT__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.TERM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.TITLE__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_CLASS_XFER__x.TOPIC__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_INDICATORS__x.EMPLID__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_INDICATORS__x.FA_IND__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_UNRESOLVED__x.ACTION__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_UNRESOLVED__x.AID_YEAR__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_UNRESOLVED__x.CHECKLIST_CD__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_UNRESOLVED__x.CHKLST_ITEM_CD__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_UNRESOLVED__x.EMPLID__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_UNRESOLVED__x.STATUS_DT__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_UNRESOLVED__x.STATUS__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_FINAID_UNRESOLVED__x.STRM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_LEFT__x.AGE_YEARS__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_LEFT__x.EMPLID__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_LEFT__x.ETHNICITY__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_LEFT__x.FIRST_GEN_FLG__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ACAD_CAREER__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ADMIT_TERM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ADMIT_TYPE__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ADM_APPL_DT__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ADM_APPL_PROG__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.APPT_DT_PENDING__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.APPT_DT__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ASU_CITZN_COUNTRY__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.CAMPUS__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.CURR_ADMIT_TYPE__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.CURR_PLAN__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.CURR_PROG__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.EMPLID__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ENRL_DEPOSIT__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ENRL_HRS_PENDING__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ENRL_HRS__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ENRL_PENDING__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ENROLLED__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ENROLL_OPEN_DT__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.EXP_GRAD_TERM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.FERPA_LVL__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.FINANCIAL_NEED_LVL__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.ORIENT_DT__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.PROG_STATUS__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.RESIDENCY__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.STRM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.SUB_PLAN__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_GENERAL_RIGHT__x.WUE__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_MYASU_ACCESS_CNT_VW__x.ACAD_CAREER__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_MYASU_ACCESS_CNT_VW__x.EMPLID__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_MYASU_ACCESS_CNT_VW__x.SEM_ACCESS_COUNT__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_MYASU_ACCESS_CNT_VW__x.STRM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_OTH_IND1_VW__x.ACAD_CAREER__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_OTH_IND1_VW__x.CI_INDEX__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_OTH_IND1_VW__x.CUM_GPA__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_OTH_IND1_VW__x.EADVISOR__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_OTH_IND1_VW__x.EMPLID__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_OTH_IND1_VW__x.ENROLLED_NEXT_TERM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_OTH_IND1_VW__x.NEXT_TERM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_OTH_IND1_VW__x.STRM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_TERMS_VW__x.CURR_TERM_INCLUDE_SUMMER__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_TERMS_VW__x.CURR_TERM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_TERMS_VW__x.NEXT_TERM_INCLUDE_SUMMER__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_TERMS_VW__x.NEXT_TERM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_TERMS_VW__x.PREV_PREV_TERM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><fieldPermissions>
+        <editable>false</editable>
+        <field>JBT_RET_TERMS_VW__x.PREV_TERM__c</field>
+        <readable>true</readable>
+    </fieldPermissions><objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>JBT_RET_ACAD_SUMMARY_VW__x</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions><objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>JBT_RET_CLASS_XFER__x</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions><objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>JBT_RET_FINAID_INDICATORS__x</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions><objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>JBT_RET_FINAID_UNRESOLVED__x</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions><objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>JBT_RET_GENERAL_LEFT__x</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions><objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>JBT_RET_GENERAL_RIGHT__x</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions><objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>JBT_RET_MYASU_ACCESS_CNT_VW__x</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions><objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>JBT_RET_OTH_IND1_VW__x</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions><objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>JBT_RET_TERMS_VW__x</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Account.External_Mastered_Contact</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Account.External_Mastered_Org</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Account.SF_Mastered_Contact</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Account.SF_Mastered_Org</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.Cohort</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.Corporate_Relations</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.Course</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.EOSS_Event</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.Event</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.Interest</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.Marketing</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.Other_Source</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.Scholarship</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Campaign.Subscription_Center</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>CampaignMember.All_Students</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>CampaignMember.Corporate_Relations_Member</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>CampaignMember.Subscription_Center_Campaign_Member</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Case.ASU_Admission_Services</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Case.ASU_Advisor_Outreach</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Case.ASU_Coach_Outreach</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Case.ASU_Retention_Outreach</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Case.ASU_Service</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Case.ASU_Student_Outreach</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Contact.External_Mastered</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Contact.SF_Mastered</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Engagement__c.ASU_Advisor_Outreach</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Engagement__c.ASU_Coach_Outreach</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Engagement__c.None</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Idea.InternalIdeasIdeaRecordType</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Idea.Record_type_for_community_09ad00000019KjrAAE_entity_Idea</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Key_Value__c.Geomarket_Code_Map</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Lead.Processing</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Lead.Prospective_Student</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Lead_Interest__c.User</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Opportunity.Corporate_Relations_Opportunity</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Opportunity.Graduate_Application</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Opportunity.Graduate_Prospect</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Opportunity.Undergraduate_Application</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Opportunity.Undergraduate_Prospect</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Portal_Email__c.Advisor</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Portal_Email__c.Coach</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Recruitment_Call__c.Recruitment_Call</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Relationship__c.Account_to_Account</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Relationship__c.Account_to_Account_Reciprocal</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Relationship__c.Account_to_Contact</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Relationship__c.Contact_to_Account</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Relationship__c.Contact_to_Contact</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Relationship__c.Contact_to_Contact_Reciprocal</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Success_Pod__c.Advisor</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Success_Pod__c.Coach</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Success_Resource__c.Advisor</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Success_Resource__c.Coach</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Task.Admin_Task_Layout</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><recordTypeVisibilities>
+    </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Task.User_Task_Layout</recordType>
         <visible>false</visible>
-    </recordTypeVisibilities><tabSettings>
+    </recordTypeVisibilities><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>AKB_Article_Feedback__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Academic_Group__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Academic_Interest__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Advisor_Portal</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Case_Assignment_Rule__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Case_Creation_Indicator__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Coach_Portal</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Degree_Name__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Engagement_Contact__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Engagement_Message__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Engagement_Planned_Message__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Engagement__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>External_Object_Query</tab>
         <visibility>Available</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Financial_Aid_Package__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Getting_Started_reg</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Getting_Started_social</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Key_Value__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Lead_Interest__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Location__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>LostEmail__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Marketing_Cloud_Business_Unit__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Match_Email_Exclusion__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>New_Corporate_Relations_Contact</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>New_Prospect</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>New_Prospective_Student</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>New_Undergrad_Prospect</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Organization__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>PKB_2_Settings</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>PKB_Article_Feedback_Deflection__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>PKB_Featured__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>PS_Country_Map__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Plan__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Portal_Email__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Previous_Education__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Profile_Explorer</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Program__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Recruitment_Call__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Search_Users</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Service_Center</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Success_Coach_Case_Flag_Rule__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Success_Coach_Case_Flag__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Success_Pod__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Success_Portal</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Success_Resource_Plan__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Success_Resource_Skill__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Success_Resource__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Success_Skill__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Success_Student__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Term__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Territory_Assignment_Rule__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Test_Engagement_Contacts__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>Test_Score__c</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Account</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Asset</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Campaign</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Case</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-CollaborationGroup</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Contact</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Contract</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Dashboard</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Document</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-DuplicateRecordSet</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Idea</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Lead</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Macro</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Opportunity</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Pricebook2</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Product2</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-SocialPersona</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-SocialPost</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Solution</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-StreamingChannel</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-UserProfile</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-UserProvisioningRequest</tab>
+        <visibility>None</visibility>
+    </tabSettings><tabSettings>
+        <tab>et4ae5__Automated_Send__c</tab>
         <visibility>None</visibility>
     </tabSettings></PermissionSet>

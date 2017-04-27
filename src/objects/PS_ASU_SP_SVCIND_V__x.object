@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_CAREER__c</fullName>
         <description>Data sourced from PS_ADM_MC_VW.ACAD_CAREER</description>
         <externalDeveloperName>ACAD_CAREER</externalDeveloperName>
@@ -38,7 +38,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ADMIT_TERM__c</fullName>
         <description>Data sourced from PS_ADM_MC_VW.ADMIT_TERM</description>
         <externalDeveloperName>ADMIT_TERM</externalDeveloperName>
@@ -53,7 +53,7 @@
         <relationshipLabel>Service Indicator (external)</relationshipLabel>
         <relationshipName>Service_Indicator_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DESCR__c</fullName>
         <description>Data sourced from PS_SRVC_IND_CD_TBL.DESCR</description>
         <externalDeveloperName>DESCR</externalDeveloperName>
@@ -66,7 +66,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>POS_SRVC_INDICATOR__c</fullName>
         <description>Data sourced from PS_SRVC_IND_DATA.POS_SRVC_INDICATOR</description>
         <externalDeveloperName>POS_SRVC_INDICATOR</externalDeveloperName>
@@ -79,7 +79,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>REASON_DESCR__c</fullName>
         <description>Data sourced from PS_SRVC_IN_RSN_TBL.DESCR</description>
         <externalDeveloperName>REASON_DESCR</externalDeveloperName>
@@ -92,7 +92,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SCC_SI_END_DT__c</fullName>
         <description>Data sourced from PS_SRVC_IND_DATA.SCC_SI_END_DT</description>
         <externalDeveloperName>SCC_SI_END_DT</externalDeveloperName>
@@ -103,7 +103,7 @@
         <label>End Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SCC_SI_END_TERM__c</fullName>
         <description>Data sourced from PS_SRVC_IND_DATA.SCC_SI_END_TERM</description>
         <externalDeveloperName>SCC_SI_END_TERM</externalDeveloperName>
@@ -118,7 +118,7 @@
         <relationshipLabel>Service Indicator (external)</relationshipLabel>
         <relationshipName>Service_Indicator_external2</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SRVC_IND_ACTIVE_DT__c</fullName>
         <description>Data sourced from PS_SRVC_IND_DATA.SRVC_IND_ACTIVE_DT</description>
         <externalDeveloperName>SRVC_IND_ACTIVE_DT</externalDeveloperName>
@@ -129,7 +129,7 @@
         <label>Start Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SRVC_IND_ACT_TERM__c</fullName>
         <description>Data sourced from PS_SRVC_IND_DATA.SRVC_IND_ACT_TERM</description>
         <externalDeveloperName>SRVC_IND_ACT_TERM</externalDeveloperName>
@@ -144,7 +144,7 @@
         <relationshipLabel>Service Indicator (external)</relationshipLabel>
         <relationshipName>Service_Indicator_external1</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SRVC_IND_CD__c</fullName>
         <description>Data sourced from PS_SRVC_IND_DATA.SRVC_IND_CD</description>
         <externalDeveloperName>SRVC_IND_CD</externalDeveloperName>
@@ -157,7 +157,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SRVC_IND_DTTM__c</fullName>
         <description>Data sourced from PS_SRVC_IND_DATA.SRVC_IND_DTTM</description>
         <externalDeveloperName>SRVC_IND_DTTM</externalDeveloperName>

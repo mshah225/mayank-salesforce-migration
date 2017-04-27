@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><layouts>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>External Mastered Contact Layout</layout>
         <sections>
             <label><!-- This Account record is associated with Contact record below --></label>
             <section>This Account record is associated with Contact record below</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>External Mastered Contact Layout ADMIN</layout>
         <sections>
             <label><!-- MDM Registry --></label>
@@ -14,7 +14,7 @@
             <label><!-- This Account record is associated with Contact record below --></label>
             <section>This Account record is associated with Contact record below</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>External Mastered Org Layout</layout>
         <sections>
             <label><!-- Address Information --></label>
@@ -24,7 +24,7 @@
             <label><!-- Institution Details --></label>
             <section>Institution Details</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>External Mastered Org Layout ADMIN</layout>
         <sections>
             <label><!-- Address Information --></label>
@@ -34,13 +34,13 @@
             <label><!-- Institution Details --></label>
             <section>Institution Details</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>SF Mastered Contact Layout</layout>
         <sections>
             <label><!-- This Account record is associated with Contact record below --></label>
             <section>This Account record is associated with Contact record below</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>SF Mastered Contact Layout ADMIN</layout>
         <sections>
             <label><!-- MDM Registry --></label>
@@ -50,7 +50,7 @@
             <label><!-- This Account record is associated with Contact record below --></label>
             <section>This Account record is associated with Contact record below</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>SF Mastered Org Layout</layout>
         <sections>
             <label><!-- Corporate Relationship Details --></label>
@@ -60,7 +60,7 @@
             <label><!-- Institution Details --></label>
             <section>Institution Details</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>SF Mastered Org Layout ADMIN</layout>
         <sections>
             <label><!-- Corporate Relationship Details --></label>
@@ -70,52 +70,64 @@
             <label><!-- Institution Details --></label>
             <section>Institution Details</section>
         </sections>
-    </layouts><quickActions>
+    </layouts><quickActions xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Account to Account --></label>
         <name>Account_to_Account</name>
-    </quickActions><quickActions>
+    </quickActions><quickActions xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Account to Contact --></label>
         <name>Account_to_Contact</name>
-    </quickActions><quickActions>
+    </quickActions><quickActions xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Contact --></label>
         <name>Contact</name>
-    </quickActions><quickActions>
+    </quickActions><quickActions xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Account --></label>
         <name>New_Account_to_Account</name>
-    </quickActions><recordTypes>
+    </quickActions><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- External Mastered Contact --></label>
         <name>External_Mastered_Contact</name>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- External Mastered Org --></label>
         <name>External_Mastered_Org</name>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- SF Mastered Contact --></label>
         <name>SF_Mastered_Contact</name>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- SF Mastered Org --></label>
         <name>SF_Mastered_Org</name>
-    </recordTypes><validationRules>
+    </recordTypes><validationRules xmlns="http://soap.sforce.com/2006/04/metadata">
         <errorMessage><!-- Please ensure this account has a billing city and website. --></errorMessage>
         <name>Billing_City_and_Website_Required_on_Acc</name>
-    </validationRules><webLinks>
+    </validationRules><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- AltavistaNews --></label>
         <name>AltavistaNews</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- GoogleMaps --></label>
         <name>GoogleMaps</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- GoogleNews --></label>
         <name>GoogleNews</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- GoogleSearch --></label>
         <name>GoogleSearch</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- HooversProfile --></label>
         <name>HooversProfile</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Mass_Delete --></label>
         <name>Mass_Delete</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- YahooMaps --></label>
         <name>YahooMaps</name>
+    </webLinks><webLinks>
+        <label><!-- ExactTarget_Resubscribe --></label>
+        <name>et4ae5__ExactTarget_Resubscribe</name>
+    </webLinks><webLinks>
+        <label><!-- ExactTarget_Unsubscribe --></label>
+        <name>et4ae5__ExactTarget_Unsubscribe</name>
+    </webLinks><webLinks>
+        <label><!-- Send_ExactTarget_Email --></label>
+        <name>et4ae5__Send_ExactTarget_Email</name>
+    </webLinks><webLinks>
+        <label><!-- View_ExactTarget_Analytics --></label>
+        <name>et4ae5__View_ExactTarget_Analytics</name>
     </webLinks></CustomObjectTranslation>

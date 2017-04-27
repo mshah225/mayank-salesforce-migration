@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_CAREER__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.ACAD_CAREER</description>
         <externalDeveloperName>ACAD_CAREER</externalDeveloperName>
@@ -38,7 +38,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ADMIT_TERM__c</fullName>
         <description>Data sourced from ASU_A_ADM_ARCH.LAST_AD_ADMIT_TERM</description>
         <externalDeveloperName>ADMIT_TERM</externalDeveloperName>
@@ -53,7 +53,7 @@
         <relationshipLabel>Student Program Data (external)</relationshipLabel>
         <relationshipName>Student_Program_Data_external2</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ADMIT_TYPE__c</fullName>
         <description>Data sourced from ASU_A_ADM_ARCH.ADMIT_TYPE</description>
         <externalDeveloperName>ADMIT_TYPE</externalDeveloperName>
@@ -66,7 +66,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ADM_APPL_DT__c</fullName>
         <description>Data sourced from ASU_A_ADM_ARCH.ADM_APPL_DT</description>
         <externalDeveloperName>ADM_APPL_DT</externalDeveloperName>
@@ -77,7 +77,7 @@
         <label>Application Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ADM_APPL_PROG__c</fullName>
         <description>Data sourced from ASU_A_ADM_ARCH.ADM_APPL_PROG</description>
         <externalDeveloperName>ADM_APPL_PROG</externalDeveloperName>
@@ -90,7 +90,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>APPT_DT_PENDING__c</fullName>
         <description>Data sourced from PS_APPOINTMENT_TBL.APPT_START_DATE &amp; APPT_START_TIME</description>
         <externalDeveloperName>APPT_DT_PENDING</externalDeveloperName>
@@ -101,7 +101,7 @@
         <label>Pending Appointment Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>APPT_DT__c</fullName>
         <description>Data sourced from PS_APPOINTMENT_TBL.APPT_START_DATE &amp; APPT_START_TIME</description>
         <externalDeveloperName>APPT_DT</externalDeveloperName>
@@ -112,7 +112,7 @@
         <label>Appointment Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_CITZN_COUNTRY__c</fullName>
         <description>Data sourced from PS_ASU_D_PERSON_VW.ASU_CITZN_COUNTRY</description>
         <externalDeveloperName>ASU_CITZN_COUNTRY</externalDeveloperName>
@@ -125,7 +125,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CAMPUS__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_CURRENT.CAMPUS</description>
         <externalDeveloperName>CAMPUS</externalDeveloperName>
@@ -138,7 +138,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CURR_ADMIT_TYPE__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_CURRENT.ADMIT_TYPE</description>
         <externalDeveloperName>CURR_ADMIT_TYPE</externalDeveloperName>
@@ -151,7 +151,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CURR_PLAN__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_CURRENT.TRNSCR_DESCR</description>
         <externalDeveloperName>CURR_PLAN</externalDeveloperName>
@@ -164,7 +164,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CURR_PROG__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_CURRENT.ACAD_PROG_DESCR</description>
         <externalDeveloperName>CURR_PROG</externalDeveloperName>
@@ -177,7 +177,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ENRL_DEPOSIT__c</fullName>
         <description>Data sourced from PS_ASU_AD0107_STAT.Derived Enrollment</description>
         <externalDeveloperName>ENRL_DEPOSIT</externalDeveloperName>
@@ -190,7 +190,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ENRL_HRS_PENDING__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_TERM.ASU_STATE_UNT_TAK + ASU_NSTATE_UNT_TAK</description>
         <externalDeveloperName>ENRL_HRS_PENDING</externalDeveloperName>
@@ -204,7 +204,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ENRL_HRS__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_TERM.ASU_STATE_UNT_TAK + ASU_NSTATE_UNT_TAK</description>
         <externalDeveloperName>ENRL_HRS</externalDeveloperName>
@@ -218,7 +218,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ENRL_PENDING__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.ASU_ENROLL_STAT</description>
         <externalDeveloperName>ENRL_PENDING</externalDeveloperName>
@@ -231,7 +231,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ENROLLED__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.ASU_ENROLL_STAT</description>
         <externalDeveloperName>ENROLLED</externalDeveloperName>
@@ -244,7 +244,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ENROLL_OPEN_DT__c</fullName>
         <description>Data sourced from PS_SESSION_TBL.ENROLL_OPEN_DT</description>
         <externalDeveloperName>ENROLL_OPEN_DT</externalDeveloperName>
@@ -255,7 +255,7 @@
         <label>Enrollment Open Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EXP_GRAD_TERM__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.EXP_GRAD_TERM</description>
         <externalDeveloperName>EXP_GRAD_TERM</externalDeveloperName>
@@ -270,7 +270,7 @@
         <relationshipLabel>Student Program Data (external)</relationshipLabel>
         <relationshipName>Student_Program_Data_external1</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FERPA_LVL__c</fullName>
         <description>Data sourced from PS_ASU_D_PERSON_VW.ASU_SIS_DIR_RL_FLG</description>
         <externalDeveloperName>FERPA_LVL</externalDeveloperName>
@@ -283,7 +283,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FINANCIAL_NEED_LVL__c</fullName>
         <description>Data sourced from PS_ASU_FA_P_YR_VW.Derived FA Need Level</description>
         <externalDeveloperName>FINANCIAL_NEED_LVL</externalDeveloperName>
@@ -296,7 +296,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ORIENT_DT__c</fullName>
         <description>Data sourced from OR_RESERVATIONS_VW.CREATEDDATETIME</description>
         <externalDeveloperName>ORIENT_DT</externalDeveloperName>
@@ -307,7 +307,7 @@
         <label>Orientation Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>PROG_STATUS__c</fullName>
         <description>Data sourced from ASU_A_ADM_ARCH.LAST_PROG_STATUS</description>
         <externalDeveloperName>PROG_STATUS</externalDeveloperName>
@@ -320,7 +320,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>RESIDENCY__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.RESIDENCY</description>
         <externalDeveloperName>RESIDENCY</externalDeveloperName>
@@ -333,7 +333,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>STRM__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.STRM</description>
         <externalDeveloperName>STRM</externalDeveloperName>
@@ -348,7 +348,7 @@
         <relationshipLabel>Student Program Data (external)</relationshipLabel>
         <relationshipName>Student_Program_Data_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SUB_PLAN__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_CURRENT.ASU_ACD_SPLAN_DESC</description>
         <externalDeveloperName>SUB_PLAN</externalDeveloperName>
@@ -361,7 +361,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>WUE__c</fullName>
         <description>WUE</description>
         <externalDeveloperName>WUE</externalDeveloperName>

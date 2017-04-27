@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_CAREER__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.ACAD_CAREER</description>
         <externalDeveloperName>ACAD_CAREER</externalDeveloperName>
@@ -38,7 +38,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_PLAN__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.ACAD_PLAN</description>
         <externalDeveloperName>ACAD_PLAN</externalDeveloperName>
@@ -53,7 +53,7 @@
         <relationshipLabel>Academic Milestone (external)</relationshipLabel>
         <relationshipName>Academic_Milestone_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_PROG__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.ACAD_PROG</description>
         <externalDeveloperName>ACAD_PROG</externalDeveloperName>
@@ -68,7 +68,7 @@
         <relationshipLabel>Academic Milestone (external)</relationshipLabel>
         <relationshipName>Academic_Milestone_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ANTICIPATED_TERM__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.ANTICIPATED_TERM</description>
         <externalDeveloperName>ANTICIPATED_TERM</externalDeveloperName>
@@ -83,7 +83,7 @@
         <relationshipLabel>Academic Milestone (external)</relationshipLabel>
         <relationshipName>Academic_Milestone_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DATE_COMPLETED__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.DATE_COMPLETED</description>
         <externalDeveloperName>DATE_COMPLETED</externalDeveloperName>
@@ -94,7 +94,7 @@
         <label>Date Completed</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DESCRFORMAL__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.DESCRFORMAL</description>
         <externalDeveloperName>DESCRFORMAL</externalDeveloperName>
@@ -107,7 +107,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DESCR__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.DESCR</description>
         <externalDeveloperName>DESCR</externalDeveloperName>
@@ -120,7 +120,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EFFDT__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.EFFDT</description>
         <externalDeveloperName>EFFDT</externalDeveloperName>
@@ -131,7 +131,7 @@
         <label>Effective Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MILESTONE_COMPLETE__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.MILESTONE_COMPLETE</description>
         <externalDeveloperName>MILESTONE_COMPLETE</externalDeveloperName>
@@ -144,7 +144,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MILESTONE_LEVEL__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.MILESTONE_LEVEL</description>
         <externalDeveloperName>MILESTONE_LEVEL</externalDeveloperName>
@@ -157,7 +157,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MILESTONE_NBR__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.MILESTONE_NBR</description>
         <externalDeveloperName>MILESTONE_NBR</externalDeveloperName>
@@ -170,7 +170,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MILESTONE_TITLE__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.MILESTONE_TITLE</description>
         <externalDeveloperName>MILESTONE_TITLE</externalDeveloperName>
@@ -183,7 +183,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MILESTONE__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.MILESTONE</description>
         <externalDeveloperName>MILESTONE</externalDeveloperName>
@@ -196,7 +196,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>TERM_REQUIRED__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_MLSTN.TERM_REQUIRED</description>
         <externalDeveloperName>TERM_REQUIRED</externalDeveloperName>

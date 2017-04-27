@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_CAREER__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.ACAD_CAREER</description>
         <externalDeveloperName>ACAD_CAREER</externalDeveloperName>
@@ -38,7 +38,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_ORG__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_OWNER.ACAD_ORG</description>
         <externalDeveloperName>ACAD_ORG</externalDeveloperName>
@@ -51,7 +51,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_PLAN_TYPE__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL.ACAD_PLAN_TPE</description>
         <externalDeveloperName>ACAD_PLAN_TYPE</externalDeveloperName>
@@ -64,7 +64,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_PLAN__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN (B).ACAD_PLAN</description>
         <externalDeveloperName>ACAD_PLAN</externalDeveloperName>
@@ -79,7 +79,7 @@
         <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
         <relationshipName>Student_Graduate_Plan_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_PROG__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.ACAD_PROG</description>
         <externalDeveloperName>ACAD_PROG</externalDeveloperName>
@@ -94,7 +94,7 @@
         <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
         <relationshipName>Student_Graduate_Plan_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ADMIT_TERM__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.ADMIT_TERM</description>
         <externalDeveloperName>ADMIT_TERM</externalDeveloperName>
@@ -109,7 +109,7 @@
         <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
         <relationshipName>Student_Graduate_Plan_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ADMIT_TYPE__c</fullName>
         <description>Data sourced from PS_ADM_APPL_DATA.ADMIT_TYPE</description>
         <externalDeveloperName>ADMIT_TYPE</externalDeveloperName>
@@ -122,7 +122,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>APPLIED_TERM__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_TERM.STRM</description>
         <externalDeveloperName>APPLIED_TERM</externalDeveloperName>
@@ -137,7 +137,7 @@
         <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
         <relationshipName>Student_Graduate_Plan_external4</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_AA_DEFENSE_DT__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_DFNS.ASU_AA_DEFENSE_DT</description>
         <externalDeveloperName>ASU_AA_DEFENSE_DT</externalDeveloperName>
@@ -148,7 +148,7 @@
         <label>Defense Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_AA_DEFENSE_TM__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_DFNS.ASU_AA_DEFENSE_TM</description>
         <externalDeveloperName>ASU_AA_DEFENSE_TM</externalDeveloperName>
@@ -161,7 +161,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_AA_DFNS_LCTN__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_DFNS.ASU_AA_DFNS_LCTN</description>
         <externalDeveloperName>ASU_AA_DFNS_LCTN</externalDeveloperName>
@@ -174,7 +174,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_AA_GRD_STRM__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS.ASU_AA_GRD_STRM</description>
         <externalDeveloperName>ASU_AA_GRD_STRM</externalDeveloperName>
@@ -189,7 +189,7 @@
         <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
         <relationshipName>Student_Graduate_Plan_external6</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_AA_OVRL_GPA__c</fullName>
         <description>Data sourced from PS_ASU_POS_BTCH.ASU_AA_OVRL_GPA</description>
         <externalDeveloperName>ASU_AA_OVRL_GPA</externalDeveloperName>
@@ -203,7 +203,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_AA_POS_GPA__c</fullName>
         <description>Data sourced from PS_ASU_POS_BTCH (APB).ASU_AA_POS_GPA</description>
         <externalDeveloperName>ASU_AA_POS_GPA</externalDeveloperName>
@@ -217,7 +217,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_ADV_TO_CANDCY__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS.Dervied</description>
         <externalDeveloperName>ASU_ADV_TO_CANDCY</externalDeveloperName>
@@ -230,7 +230,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_CANDCY_LET_GEN__c</fullName>
         <description>Data sourced from PS_VAR_DATA_SPRG.Derived</description>
         <externalDeveloperName>ASU_CANDCY_LET_GEN</externalDeveloperName>
@@ -243,7 +243,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_CAPSTONE_STAT__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_PETN.MILESTONE_LEVEL</description>
         <externalDeveloperName>ASU_CAPSTONE_STAT</externalDeveloperName>
@@ -256,7 +256,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_CHECKOUTSTATUS__c</fullName>
         <description>Data sourced from PSXLATITEM.XLATSHORTNAME</description>
         <externalDeveloperName>ASU_CHECKOUTSTATUS</externalDeveloperName>
@@ -269,7 +269,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_CMTEE_CHG_STAT__c</fullName>
         <description>Data sourced from PS_MLSTN_LVL_TBL.DESCRFORMAL</description>
         <externalDeveloperName>ASU_CMTEE_CHG_STAT</externalDeveloperName>
@@ -282,7 +282,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_COLLEGE_URL__c</fullName>
         <description>Data sourced from PS_ASU_ACAD_ORG_CO.ASU_COLLEGE_URL</description>
         <externalDeveloperName>ASU_COLLEGE_URL</externalDeveloperName>
@@ -293,7 +293,7 @@
         <label>College Website</label>
         <required>false</required>
         <type>Url</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_CRSE_CHG_STAT__c</fullName>
         <description>Data sourced from PS_MLSTN_LVL_TBL.DESCRFORMAL</description>
         <externalDeveloperName>ASU_CRSE_CHG_STAT</externalDeveloperName>
@@ -306,7 +306,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_DEFENSE_REQD__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_PETN.Derived</description>
         <externalDeveloperName>ASU_DEFENSE_REQD</externalDeveloperName>
@@ -319,7 +319,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_FORMAT_STATUS__c</fullName>
         <description>Data sourced from PS_MLSTN_LVL_TBL.DESCRFORMAL</description>
         <externalDeveloperName>ASU_FORMAT_STATUS</externalDeveloperName>
@@ -332,7 +332,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_IPOS_CRSE_CHG__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_CRS.Derived</description>
         <externalDeveloperName>ASU_IPOS_CRSE_CHG</externalDeveloperName>
@@ -345,7 +345,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_IPOS_GRAD_DT__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS (AAP).ASU_AA_TIME_LIMIT</description>
         <externalDeveloperName>ASU_IPOS_GRAD_DT</externalDeveloperName>
@@ -360,7 +360,7 @@
         <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
         <relationshipName>Student_Graduate_Plan_external3</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_IPOS_STATUS__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_PETN (AAPP).MILESTONE_LEVEL</description>
         <externalDeveloperName>ASU_IPOS_STATUS</externalDeveloperName>
@@ -373,7 +373,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_IPOS_STAT_DESC__c</fullName>
         <description>Data sourced from PS_MLSTN_LVL_TBL.DESCRFORMAL</description>
         <externalDeveloperName>ASU_IPOS_STAT_DESC</externalDeveloperName>
@@ -386,7 +386,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_MANAGED_IGAP__c</fullName>
         <description>Data sourced from PS_ASU_DARS_DPROGS.Derived</description>
         <externalDeveloperName>ASU_MANAGED_IGAP</externalDeveloperName>
@@ -399,7 +399,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_ORD_PLAN_TYPE__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL.Derived</description>
         <externalDeveloperName>ASU_ORD_PLAN_TYPE</externalDeveloperName>
@@ -412,7 +412,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_PARENT_ORG__c</fullName>
         <description>Data sourced from PSTREENODE.TREE_NODE or PS_ACAD_PLAN_OWNER.Acad_Org</description>
         <externalDeveloperName>ASU_PARENT_ORG</externalDeveloperName>
@@ -425,7 +425,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_PROG_DEPT_NAME__c</fullName>
         <description>Data sourced from PS_ACAD_ORG_TBL.DESCRFORMAL</description>
         <externalDeveloperName>ASU_PROG_DEPT_NAME</externalDeveloperName>
@@ -438,7 +438,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SHOW_ADV_SCHED__c</fullName>
         <description>Data sourced from PS_ASU_ORG_PAR_TBL.Derived</description>
         <externalDeveloperName>ASU_SHOW_ADV_SCHED</externalDeveloperName>
@@ -451,7 +451,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SHOW_RQST_CHG__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.Derived</description>
         <externalDeveloperName>ASU_SHOW_RQST_CHG</externalDeveloperName>
@@ -464,7 +464,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SP_DEGREE_NAME__c</fullName>
         <description>Data sourced from PS_DEGREE_TBL.DESCRSHORT</description>
         <externalDeveloperName>ASU_SP_DEGREE_NAME</externalDeveloperName>
@@ -477,7 +477,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SP_DEGR_FORMAL__c</fullName>
         <description>Data sourced from PS_DEGREE_TBL.DESCRFORMAL</description>
         <externalDeveloperName>ASU_SP_DEGR_FORMAL</externalDeveloperName>
@@ -490,7 +490,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SP_IPOS_LNK__c</fullName>
         <description>Data sourced from PS_TERM_TBL.Derived</description>
         <externalDeveloperName>ASU_SP_IPOS_LNK</externalDeveloperName>
@@ -503,7 +503,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SP_MAJOR1__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL.TRNSCR_DESCR</description>
         <externalDeveloperName>ASU_SP_MAJOR1</externalDeveloperName>
@@ -516,7 +516,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SP_MAJOR2__c</fullName>
         <description>Data sourced from PS_ASU_ACADP_EXTNS (AAE).DESCR100</description>
         <externalDeveloperName>ASU_SP_MAJOR2</externalDeveloperName>
@@ -529,7 +529,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SP_MAJOR3__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL.DESCR</description>
         <externalDeveloperName>ASU_SP_MAJOR3</externalDeveloperName>
@@ -542,7 +542,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SP_PRG_COLLEGE__c</fullName>
         <description>Data sourced from PS_ACAD_ORG_TBL.DESCRFORMAL</description>
         <externalDeveloperName>ASU_SP_PRG_COLLEGE</externalDeveloperName>
@@ -555,7 +555,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_TRACK_STATUS__c</fullName>
         <description>Data sourced from PS_ASU_AI0008_V1.ASU_TRACK_STATUS</description>
         <externalDeveloperName>ASU_TRACK_STATUS</externalDeveloperName>
@@ -568,7 +568,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>BUILDING__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_DFNS.BUILDING</description>
         <externalDeveloperName>BUILDING</externalDeveloperName>
@@ -581,7 +581,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CAMPUS__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.CAMPUS</description>
         <externalDeveloperName>CAMPUS</externalDeveloperName>
@@ -594,7 +594,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>COMPLETION_TERM__c</fullName>
         <description>Data sourced from PS_ACAD_DEGR.COMPLETION_TERM</description>
         <externalDeveloperName>COMPLETION_TERM</externalDeveloperName>
@@ -609,7 +609,7 @@
         <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
         <relationshipName>Student_Graduate_Plan_external2</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CUM_GPA__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_TERM (SCT).CUM_GPA</description>
         <externalDeveloperName>CUM_GPA</externalDeveloperName>
@@ -623,7 +623,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DEGREE__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL (C).DEGREE</description>
         <externalDeveloperName>DEGREE</externalDeveloperName>
@@ -636,7 +636,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DEGR_CHKOUT_STAT__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.DEGR_CHKOUT_STAT</description>
         <externalDeveloperName>DEGR_CHKOUT_STAT</externalDeveloperName>
@@ -649,7 +649,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DEGR_CONFER_DT__c</fullName>
         <description>Data sourced from PS_ACAD_DEGR (AD).DEGR_CONFER_DT</description>
         <externalDeveloperName>DEGR_CONFER_DT</externalDeveloperName>
@@ -660,7 +660,7 @@
         <label>Degree Conferral Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DIPLOMA_DESCR__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL.DIPLOMA_DESCR</description>
         <externalDeveloperName>DIPLOMA_DESCR</externalDeveloperName>
@@ -673,7 +673,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EDUCATION_LVL__c</fullName>
         <description>Data sourced from PS_DEGREE_TBL.EDUCATION_LVL</description>
         <externalDeveloperName>EDUCATION_LVL</externalDeveloperName>
@@ -686,7 +686,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EMAIL_ADDR__c</fullName>
         <description>Data sourced from PS_ASU_ACADP_EXTNS.EMAIL_ADDR</description>
         <externalDeveloperName>EMAIL_ADDR</externalDeveloperName>
@@ -698,7 +698,7 @@
         <required>false</required>
         <type>Email</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EXP_GRAD_TERM__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.EXP_GRAD_TERM</description>
         <externalDeveloperName>EXP_GRAD_TERM</externalDeveloperName>
@@ -713,7 +713,7 @@
         <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
         <relationshipName>Student_Graduate_Plan_external1</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>INSTITUTION__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_TBL.INSTITUTION</description>
         <externalDeveloperName>INSTITUTION</externalDeveloperName>
@@ -726,7 +726,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MILESTONE_LEVEL__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_DFNS (AAPD).MILESTONE_LEVEL</description>
         <externalDeveloperName>MILESTONE_LEVEL</externalDeveloperName>
@@ -739,7 +739,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>PERCENT_OWNED__c</fullName>
         <description>Data sourced from PS_ACAD_PLAN_OWNER.PERCENT_OWNED</description>
         <externalDeveloperName>PERCENT_OWNED</externalDeveloperName>
@@ -753,7 +753,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>PHONE__c</fullName>
         <description>Data sourced from PS_ASU_ACADP_EXTNS.PHONE</description>
         <externalDeveloperName>PHONE</externalDeveloperName>
@@ -764,7 +764,7 @@
         <label>Plan Owner Phone Number</label>
         <required>false</required>
         <type>Phone</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>PROG_STATUS__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.PROG_STATUS</description>
         <externalDeveloperName>PROG_STATUS</externalDeveloperName>
@@ -777,7 +777,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>REQ_TERM__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.REQ_TERM</description>
         <externalDeveloperName>REQ_TERM</externalDeveloperName>
@@ -792,7 +792,7 @@
         <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
         <relationshipName>Student_Graduate_Plan_external5</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ROOM__c</fullName>
         <description>Data sourced from PS_ASU_AA_POS_DFNS.ROOM</description>
         <externalDeveloperName>ROOM</externalDeveloperName>
@@ -805,7 +805,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>RPT_DATE__c</fullName>
         <description>Data sourced from PS_ASU_POS_BTCH.RPT_DATE</description>
         <externalDeveloperName>RPT_DATE</externalDeveloperName>
@@ -816,7 +816,7 @@
         <label>IPOS Batch Report Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>STDNT_CAR_NBR__c</fullName>
         <description>Data sourced from PS_ACAD_PROG.STDNT_CAR_NBR</description>
         <externalDeveloperName>STDNT_CAR_NBR</externalDeveloperName>
@@ -829,7 +829,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>TERM_BEGIN_DT__c</fullName>
         <description>Data sourced from PS_TERM_TBL.TERM_BEGIN_DT</description>
         <externalDeveloperName>TERM_BEGIN_DT</externalDeveloperName>
@@ -840,7 +840,7 @@
         <label>Term Begin Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>TERM_END_DT__c</fullName>
         <description>Data sourced from PS_TERM_TBL.TERM_END_DT</description>
         <externalDeveloperName>TERM_END_DT</externalDeveloperName>

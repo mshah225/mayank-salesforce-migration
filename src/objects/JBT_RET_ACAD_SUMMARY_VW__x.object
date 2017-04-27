@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_CAREER__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.ACAD_CAREER</description>
         <externalDeveloperName>ACAD_CAREER</externalDeveloperName>
@@ -38,7 +38,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AID_YEAR__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.AID_YEAR</description>
         <externalDeveloperName>AID_YEAR</externalDeveloperName>
@@ -51,7 +51,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>COLLEGE__c</fullName>
         <description>Data sourced from PS_ASU_SPRF_CURR.DERIVED (COLLEGE)</description>
         <externalDeveloperName>COLLEGE</externalDeveloperName>
@@ -64,7 +64,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CUM_GPA__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.CUM_GPA</description>
         <externalDeveloperName>CUM_GPA</externalDeveloperName>
@@ -78,7 +78,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FND_TERM_REMAINA__c</fullName>
         <description>Data sourced from ASU_STDNT_RETENTION.FND_TERM_REMAIN</description>
         <externalDeveloperName>FND_TERM_REMAINA</externalDeveloperName>
@@ -91,7 +91,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MAJOR__c</fullName>
         <description>Data sourced from PS_ASU_SPRF_CURR.DERIVED (MAJOR)</description>
         <externalDeveloperName>MAJOR</externalDeveloperName>
@@ -104,7 +104,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SCHOLARSHIP_NAME__c</fullName>
         <description>Data sourced from PS_ASU_FA_P_AWD_P.SCHOLARSHIP_NAME</description>
         <externalDeveloperName>SCHOLARSHIP_NAME</externalDeveloperName>
@@ -115,7 +115,7 @@
         <label>Awarded Scholarships</label>
         <required>false</required>
         <type>TextArea</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>STATUS__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.DERIVED (STATUS)</description>
         <externalDeveloperName>STATUS</externalDeveloperName>
@@ -128,7 +128,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>STRM__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.STRM</description>
         <externalDeveloperName>STRM</externalDeveloperName>
@@ -143,7 +143,7 @@
         <relationshipLabel>Academic Summary (external)</relationshipLabel>
         <relationshipName>Academic_Summary_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>TOT_CUMULATIVE__c</fullName>
         <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.TOT_CUMULATIVE</description>
         <externalDeveloperName>TOT_CUMULATIVE</externalDeveloperName>

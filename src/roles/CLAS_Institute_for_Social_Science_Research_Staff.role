@@ -2,6 +2,7 @@
 <Role xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseAccessLevel>Edit</caseAccessLevel>
     <contactAccessLevel>Read</contactAccessLevel>
+    <description>CLAS Institute for Social Science Research Staff</description>
     <mayForecastManagerShare>false</mayForecastManagerShare>
     <name>CLAS Institute for Social Science Research Staff</name>
     <opportunityAccessLevel>Edit</opportunityAccessLevel>

@@ -131,17 +131,6 @@
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
-        <fields>NAME</fields>
-        <fields>Indicator_Type__c</fields>
-        <fields>STRM__c</fields>
-        <fields>Session__c</fields>
-        <fields>Session_Decode__c</fields>
-        <fields>Session_Code__c</fields>
-        <fields>Course_Code__c</fields>
-        <fields>Class_Nbr__c</fields>
-        <relatedList>Case_Creation_Indicator__c.Success_Student__c</relatedList>
-    </relatedLists>
-    <relatedLists>
         <relatedList>RelatedEntityHistoryList</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>

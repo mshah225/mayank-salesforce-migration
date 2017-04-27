@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ACAD_CAREER__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.ACAD_CAREER</description>
         <externalDeveloperName>ACAD_CAREER</externalDeveloperName>
@@ -38,7 +38,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_SCH_DATES__c</fullName>
         <description>Data sourced from PS_CLASS_MTG_PAT.START_DT, END_DT</description>
         <externalDeveloperName>ASU_SCH_DATES</externalDeveloperName>
@@ -49,7 +49,7 @@
         <label>Dates</label>
         <required>false</required>
         <type>TextArea</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CATALOG_NBR__c</fullName>
         <description>Data sourced from PS_CLASS_TBL.CATALOG_NBR</description>
         <externalDeveloperName>CATALOG_NBR</externalDeveloperName>
@@ -62,7 +62,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CLASS_DESCR__c</fullName>
         <description>Data sourced from PS_CLASS_TBL.DESCR</description>
         <externalDeveloperName>CLASS_DESCR</externalDeveloperName>
@@ -75,7 +75,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CLASS_NBR__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.CLASS_NBR</description>
         <externalDeveloperName>CLASS_NBR</externalDeveloperName>
@@ -88,7 +88,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CRSE_GRADE_OFF__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.CRSE_GRADE_OFF</description>
         <externalDeveloperName>CRSE_GRADE_OFF</externalDeveloperName>
@@ -101,7 +101,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CRSE_ID__c</fullName>
         <description>Data sourced from PS_CLASS_TBL.CRSE_ID</description>
         <externalDeveloperName>CRSE_ID</externalDeveloperName>
@@ -114,7 +114,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CUM_GPA__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_TERM.CUM_GPA</description>
         <externalDeveloperName>CUM_GPA</externalDeveloperName>
@@ -128,7 +128,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CUR_GPA__c</fullName>
         <description>Data sourced from PS_STDNT_CAR_TERM.CUR_GPA</description>
         <externalDeveloperName>CUR_GPA</externalDeveloperName>
@@ -142,7 +142,7 @@
         <scale>3</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EARN_CREDIT__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.EARN_CREDIT</description>
         <externalDeveloperName>EARN_CREDIT</externalDeveloperName>
@@ -155,7 +155,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ENRL_STATUS_REASON__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.ENRL_STATUS_REASON</description>
         <externalDeveloperName>ENRL_STATUS_REASON</externalDeveloperName>
@@ -168,7 +168,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FT_FULL_NAME__c</fullName>
         <description>Data sourced from PS_NAMES_VW.NAME</description>
         <externalDeveloperName>FT_FULL_NAME</externalDeveloperName>
@@ -179,7 +179,7 @@
         <label>Instructor</label>
         <required>false</required>
         <type>TextArea</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SCH_DAILY_TIME__c</fullName>
         <description>Data sourced from PS_CLASS_MTG_PAT.MEETING_TIME_START, MEETING_TIME_END</description>
         <externalDeveloperName>SCH_DAILY_TIME</externalDeveloperName>
@@ -190,7 +190,7 @@
         <label>Class Time</label>
         <required>false</required>
         <type>TextArea</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SCH_HTML_DAY1__c</fullName>
         <description>Data sourced from PS_CLASS_MTG_PAT.SUN,MON,TUES,WED,THURS,FRI,SAT</description>
         <externalDeveloperName>SCH_HTML_DAY1</externalDeveloperName>
@@ -203,7 +203,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SESSION_CODE__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.SESSION_CODE</description>
         <externalDeveloperName>SESSION_CODE</externalDeveloperName>
@@ -216,7 +216,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SSR_CLSTOPIC_DESCR__c</fullName>
         <description>Data sourced from PS_CRSE_TOPICS.DESCRFORMAL</description>
         <externalDeveloperName>SSR_CLSTOPIC_DESCR</externalDeveloperName>
@@ -229,7 +229,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SSR_MTG_LOC_LONG__c</fullName>
         <description>Data sourced from PS_CLASS_TBL, PS_FACILITY_TBL.LOCATION</description>
         <externalDeveloperName>SSR_MTG_LOC_LONG</externalDeveloperName>
@@ -242,7 +242,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>STDNT_ENRL_STATUS__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.STDNT_ENRL_STATUS</description>
         <externalDeveloperName>STDNT_ENRL_STATUS</externalDeveloperName>
@@ -255,7 +255,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>STRM__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.STRM</description>
         <externalDeveloperName>STRM</externalDeveloperName>
@@ -270,7 +270,7 @@
         <relationshipLabel>Class (external)</relationshipLabel>
         <relationshipName>Class_external</relationshipName>
         <type>IndirectLookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>SUBJECT__c</fullName>
         <description>Data sourced from PS_CLASS_TBL.SUBJECT</description>
         <externalDeveloperName>SUBJECT</externalDeveloperName>
@@ -283,7 +283,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>TERM_DESCR30__c</fullName>
         <description>Data sourced from PS_TERM_TBL.DESCRSHORT</description>
         <externalDeveloperName>TERM_DESCR30</externalDeveloperName>
@@ -296,7 +296,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>UNT_TAKEN__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.UNT_TAKEN</description>
         <externalDeveloperName>UNT_TAKEN</externalDeveloperName>
@@ -310,7 +310,7 @@
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>VALID_ATTEMPT__c</fullName>
         <description>Data sourced from PS_STDNT_ENRL.VALID_ATTEMPT</description>
         <externalDeveloperName>VALID_ATTEMPT</externalDeveloperName>

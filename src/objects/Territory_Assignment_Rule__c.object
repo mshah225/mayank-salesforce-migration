@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Assignment_By_State__c</fullName>
         <externalId>false</externalId>
         <label>Assignment By State</label>
@@ -281,7 +281,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Assignment_by_Country__c</fullName>
         <description>For International Territory Assignment</description>
         <externalId>false</externalId>
@@ -1184,7 +1184,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campus__c</fullName>
         <externalId>false</externalId>
         <label>Campus</label>
@@ -1218,14 +1218,14 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Defer_Territory_Assignment__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Defer Territory Assignment</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Geomarket__c</fullName>
         <externalId>false</externalId>
         <label>Geomarket</label>
@@ -1234,14 +1234,14 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>International__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>International</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Location__c</fullName>
         <externalId>false</externalId>
         <label>Location</label>
@@ -1255,7 +1255,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>National_Scholarship__c</fullName>
         <externalId>false</externalId>
         <label>National Scholarship</label>
@@ -1301,7 +1301,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Opportunity_Type__c</fullName>
         <externalId>false</externalId>
         <label>Opportunity Type</label>
@@ -1335,7 +1335,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Previous_User_ID__c</fullName>
         <externalId>false</externalId>
         <label>Previous User ID</label>
@@ -1344,7 +1344,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Range_End__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Based on opportunities numbered 1-100, opportunities will be assigned ending at this number (MAX = 100)</inlineHelpText>
@@ -1355,7 +1355,7 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Range_Start__c</fullName>
         <description>Based on opportunities numbered 1-100, opportunities in countries that are split will be assigned starting at this number.</description>
         <externalId>false</externalId>
@@ -1366,7 +1366,7 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Rule_Key__c</fullName>
         <externalId>false</externalId>
         <formula>If (TEXT(Rule_Type__c) = 'Freshman Scholar',TEXT(Rule_Type__c), 
@@ -1382,7 +1382,7 @@ If (TEXT(Rule_Type__c) = 'Default User',TEXT(Rule_Type__c)+'|'+TEXT(Opportunity_
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Rule_Type__c</fullName>
         <externalId>false</externalId>
         <label>Rule Type</label>
@@ -1420,6 +1420,26 @@ If (TEXT(Rule_Type__c) = 'Default User',TEXT(Rule_Type__c)+'|'+TEXT(Opportunity_
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields><fields>
+        <fullName>User_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>User__r.FirstName + " " + User__r.LastName</formula>
+        <label>User Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Assign to?</inlineHelpText>
+        <label>User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Auto_Territory_Assignment_Rules</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><description>This object is used to define the rules for recruitment auto territory assignment.</description><enableActivities>false</enableActivities><enableBulkApi>true</enableBulkApi><enableFeeds>false</enableFeeds><enableHistory>false</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>ReadWrite</externalSharingModel><label>Territory Assignment Rule</label><nameField>
         <displayFormat>Rule-{0000}</displayFormat>
         <label>Auto Territory Assignment Rule Name</label>
@@ -1473,7 +1493,7 @@ If (TEXT(Rule_Type__c) = 'Default User',TEXT(Rule_Type__c)+'|'+TEXT(Opportunity_
         <searchResultsAdditionalFields>International__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Location__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>National_Scholarship__c</searchResultsAdditionalFields>
-    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews>
+    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>Opportunity_Type__c</columns>

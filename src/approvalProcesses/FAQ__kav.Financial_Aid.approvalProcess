@@ -6,7 +6,7 @@
         <type>creator</type>
     </allowedSubmitters>
     <allowedSubmitters>
-        <submitter>Knowledge_Financial_Aid</submitter>
+        <submitter>KB_Financial_Aid_Create</submitter>
         <type>group</type>
     </allowedSubmitters>
     <allowedSubmitters>
@@ -29,7 +29,7 @@
         </approvalActions>
         <assignedApprover>
             <approver>
-                <name>Knowledge_Financial_Aid</name>
+                <name>KB_Financial_Aid_Approve</name>
                 <type>queue</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
@@ -48,7 +48,7 @@
         </approvalActions>
         <assignedApprover>
             <approver>
-                <name>Knowledge_Format_Approval</name>
+                <name>KB_Financial_Aid_Format</name>
                 <type>queue</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>

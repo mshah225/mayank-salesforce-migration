@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>How to use pathway tracker / we are updating your pathway tracker</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>TRN Ambassador – MAPP needs help</name>
+    <style>freeForm</style>
+    <subject>Thank you for signing a MAPP agreement</subject>
+    <textOnly>Dear {!Contact.FirstName},
+
+Thank you for signing a Maricopa to ASU Pathways Program agreement — your path to becoming a Sun Devil. Now that you are on a MAPP, you will know exactly which classes you need to complete to make a smooth transition to your desired major at Arizona State University.
+
+As a MAPP student, you have access to My ASU (https://my.asu.edu/) and ASU’s pathway tracker so you can track the progress of your transfer courses. You can access My ASU directly by using your ASURITE UserID and password, or through My Maricopa (https://my.maricopa.edu/) by clicking on ASU Alliance.
+
+We are currently working behind the scenes to get your pathway tracker updated. In the meantime, double-check the courses you should be taking at your community college by searching for your MAPP major on the transfer website (https://transfer.asu.edu/maricopa/maricopa-county-community-college-district/mapp%2Brn---bsn).
+
+If you have any questions about your MAPP, My ASU or transferring to ASU, please contact your transfer specialist (https://transfer.asu.edu/contact). You can also schedule an appointment with your transfer specialist at your community college (https://transfer.asu.edu/repallcalendar-node-field-avail-app-date/week) or at an ASU campus during Transfer Fridays (https://transfer.asu.edu/friday/week).
+
+Thank you,
+
+{!User.FirstName}
+Student Transfer Ambassador
+transferambassadors@asu.edu
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

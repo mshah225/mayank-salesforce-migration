@@ -143,7 +143,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                             }
                         }
 
-                        if (this.theCase.Status.startsWith('Closed'))
+                        // Get a list of closed cases that we want to re-open
+                        List<Case> closedCases = [SELECT Id, IsClosed FROM Case WHERE Id = :theCase.Id];
+
+                        if (closedCases[0].IsClosed)
                         {
                             this.theCase.Status = 'Re-Opened';
                             update this.theCase;
@@ -409,7 +412,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 try
                 {
                     recentCase = [
-                        SELECT Id, Description, OwnerId
+                        SELECT Id, Description, Subject, OwnerId
                         FROM Case
                         WHERE ContactId = :emailContact.Id
                         ORDER BY CreatedDate desc
@@ -424,8 +427,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     String currentCaseDescription = theCase.Description;
                     currentCaseDescription = currentCaseDescription.trim();
 
+                    String currentCaseSubject = theCase.Subject;
+                    currentCaseSubject = currentCaseSubject.trim();
+                    
                     // If we catch an auto reply loop, do not create the case and discard this email
-                    if (recentCase.Description.equals(currentCaseDescription) && recentCase.OwnerId == theCase.OwnerID)
+                    if (recentCase.Description.equals(currentCaseDescription) && recentCase.OwnerId == theCase.OwnerID
+                        && recentCase.Subject.equals(currentCaseSubject))
                     {
                         return result;
                     }
@@ -1140,7 +1147,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         lostEmail.Sender__c = email.fromAddress;
         lostEmail.Subject__c = email.subject;
         lostEmail.PlainTextBody__c = email.plainTextBody;
-        lostEmail.HtmlTextBody__c = email.htmlBody;
+		lostEmail.HtmlTextBody__c = email.htmlBody;
         lostEmail.Cause__c = error;
 
         // Convert the List into a concatenated string
@@ -1173,7 +1180,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         lostEmail.RejectedAttachments__c = !attachSuccess;
 
         update lostEmail;
-
+		
         return lostEmail;
     }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>General instructions for students who ask about FAFSA verification</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Verify FAFSA General Instructions</name>
+    <style>freeForm</style>
+    <subject>How to complete FAFSA verification</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+FAFSA verification is required of approximately 50 percent of students who submit a FAFSA. We just need some additional information and documentation from you in order to verify what was submitted with your FAFSA.
+ 
+Go to the Finances tab on My ASU and look at your Priority Tasks box. You will see an item there that says Verify FAFSA (2017–2018). When you click on that link, you will then select Review the detailed instructions. You will be taken to the Verify FAFSA website, where you will create an account. After you create your account, you will see the specific documentation we are requesting from you, and you will be able to submit this documentation to us through this website. 
+
+Once we have received all requested documentation from you, we will create your financial aid package.
+
+Let me know if you have any other questions.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Career --></label>
+        <name>ACAD_CAREER__c</name>
+    </fields><fields>
+        <label><!-- Academic Standing Code --></label>
+        <name>ACAD_STNDNG_ACTN__c</name>
+    </fields><fields>
+        <label><!-- Academic Standing --></label>
+        <name>DESCR__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>EMPLID__c</name>
+        <relationshipLabel><!-- Academic Standing (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Term --></label>
+        <name>STRM__c</name>
+        <relationshipLabel><!-- Academic Standing (external) --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Academic Standing (external)</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Academic Standing (external)</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

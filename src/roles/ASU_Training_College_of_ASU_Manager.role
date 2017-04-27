@@ -2,6 +2,7 @@
 <Role xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseAccessLevel>Edit</caseAccessLevel>
     <contactAccessLevel>Read</contactAccessLevel>
+    <description>ASU Training - College of ASU Manager</description>
     <mayForecastManagerShare>false</mayForecastManagerShare>
     <name>ASU Training - College of ASU Manager</name>
     <opportunityAccessLevel>Edit</opportunityAccessLevel>

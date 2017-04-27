@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Career --></label>
+        <name>ACAD_CAREER__c</name>
+    </fields><fields>
+        <label><!-- Owner Organization --></label>
+        <name>ACAD_ORG__c</name>
+    </fields><fields>
+        <label><!-- Academic Plan Type --></label>
+        <name>ACAD_PLAN_TYPE__c</name>
+    </fields><fields>
+        <label><!-- Academic Plan --></label>
+        <name>ACAD_PLAN__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Program --></label>
+        <name>ACAD_PROG__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Admitted Term --></label>
+        <name>ADMIT_TERM__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Admitted Type --></label>
+        <name>ADMIT_TYPE__c</name>
+    </fields><fields>
+        <label><!-- Applied Term --></label>
+        <name>APPLIED_TERM__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Defense Date --></label>
+        <name>ASU_AA_DEFENSE_DT__c</name>
+    </fields><fields>
+        <label><!-- Defense Time --></label>
+        <name>ASU_AA_DEFENSE_TM__c</name>
+    </fields><fields>
+        <label><!-- Defense Location --></label>
+        <name>ASU_AA_DFNS_LCTN__c</name>
+    </fields><fields>
+        <label><!-- Graduating Term --></label>
+        <name>ASU_AA_GRD_STRM__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Overall GPA --></label>
+        <name>ASU_AA_OVRL_GPA__c</name>
+    </fields><fields>
+        <label><!-- Plan of Study GPA --></label>
+        <name>ASU_AA_POS_GPA__c</name>
+    </fields><fields>
+        <label><!-- Advanced to Candidacy Link Available --></label>
+        <name>ASU_ADV_TO_CANDCY__c</name>
+    </fields><fields>
+        <label><!-- Candidacy Letter Generated --></label>
+        <name>ASU_CANDCY_LET_GEN__c</name>
+    </fields><fields>
+        <label><!-- Capstone Status --></label>
+        <name>ASU_CAPSTONE_STAT__c</name>
+    </fields><fields>
+        <label><!-- IPOS Degree Checkout Status Description --></label>
+        <name>ASU_CHECKOUTSTATUS__c</name>
+    </fields><fields>
+        <label><!-- IPOS Committee Change Status --></label>
+        <name>ASU_CMTEE_CHG_STAT__c</name>
+    </fields><fields>
+        <label><!-- College Website --></label>
+        <name>ASU_COLLEGE_URL__c</name>
+    </fields><fields>
+        <label><!-- IPOS Course Change Status --></label>
+        <name>ASU_CRSE_CHG_STAT__c</name>
+    </fields><fields>
+        <label><!-- Defense Required --></label>
+        <name>ASU_DEFENSE_REQD__c</name>
+    </fields><fields>
+        <label><!-- Format Status --></label>
+        <name>ASU_FORMAT_STATUS__c</name>
+    </fields><fields>
+        <label><!-- IPOS Course Change Needed --></label>
+        <name>ASU_IPOS_CRSE_CHG__c</name>
+    </fields><fields>
+        <label><!-- IPOS Graduation Term --></label>
+        <name>ASU_IPOS_GRAD_DT__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- IPOS Status --></label>
+        <name>ASU_IPOS_STATUS__c</name>
+    </fields><fields>
+        <label><!-- IPOS Status Description --></label>
+        <name>ASU_IPOS_STAT_DESC__c</name>
+    </fields><fields>
+        <label><!-- Managed IGAP --></label>
+        <name>ASU_MANAGED_IGAP__c</name>
+    </fields><fields>
+        <label><!-- Numbered Plan Type --></label>
+        <name>ASU_ORD_PLAN_TYPE__c</name>
+    </fields><fields>
+        <label><!-- Parent Organization --></label>
+        <name>ASU_PARENT_ORG__c</name>
+    </fields><fields>
+        <label><!-- Department Name --></label>
+        <name>ASU_PROG_DEPT_NAME__c</name>
+    </fields><fields>
+        <label><!-- Graduate Advisor Schedule Link Available --></label>
+        <name>ASU_SHOW_ADV_SCHED__c</name>
+    </fields><fields>
+        <label><!-- Graduate Request Change Available --></label>
+        <name>ASU_SHOW_RQST_CHG__c</name>
+    </fields><fields>
+        <label><!-- Degree Abbreviation --></label>
+        <name>ASU_SP_DEGREE_NAME__c</name>
+    </fields><fields>
+        <label><!-- Degree Name --></label>
+        <name>ASU_SP_DEGR_FORMAL__c</name>
+    </fields><fields>
+        <label><!-- IPOS Link Available --></label>
+        <name>ASU_SP_IPOS_LNK__c</name>
+    </fields><fields>
+        <label><!-- Transcript Description --></label>
+        <name>ASU_SP_MAJOR1__c</name>
+    </fields><fields>
+        <label><!-- Major Description --></label>
+        <name>ASU_SP_MAJOR2__c</name>
+    </fields><fields>
+        <label><!-- Plan Description --></label>
+        <name>ASU_SP_MAJOR3__c</name>
+    </fields><fields>
+        <label><!-- Program Name --></label>
+        <name>ASU_SP_PRG_COLLEGE__c</name>
+    </fields><fields>
+        <label><!-- IPOS Track Status --></label>
+        <name>ASU_TRACK_STATUS__c</name>
+    </fields><fields>
+        <label><!-- Building --></label>
+        <name>BUILDING__c</name>
+    </fields><fields>
+        <label><!-- Campus --></label>
+        <name>CAMPUS__c</name>
+    </fields><fields>
+        <label><!-- Completion Term --></label>
+        <name>COMPLETION_TERM__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Cumulative GPA --></label>
+        <name>CUM_GPA__c</name>
+    </fields><fields>
+        <label><!-- Degree --></label>
+        <name>DEGREE__c</name>
+    </fields><fields>
+        <label><!-- IPOS Degree Checkout Status Code --></label>
+        <name>DEGR_CHKOUT_STAT__c</name>
+    </fields><fields>
+        <label><!-- Degree Conferral Date --></label>
+        <name>DEGR_CONFER_DT__c</name>
+    </fields><fields>
+        <label><!-- College Diploma Name --></label>
+        <name>DIPLOMA_DESCR__c</name>
+    </fields><fields>
+        <label><!-- Education Level --></label>
+        <name>EDUCATION_LVL__c</name>
+    </fields><fields>
+        <label><!-- Plan Owner Email Address --></label>
+        <name>EMAIL_ADDR__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>EMPLID__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Expected Graduation Term --></label>
+        <name>EXP_GRAD_TERM__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Institution --></label>
+        <name>INSTITUTION__c</name>
+    </fields><fields>
+        <label><!-- Milestone Level --></label>
+        <name>MILESTONE_LEVEL__c</name>
+    </fields><fields>
+        <label><!-- Ownership Percentage --></label>
+        <name>PERCENT_OWNED__c</name>
+    </fields><fields>
+        <label><!-- Plan Owner Phone Number --></label>
+        <name>PHONE__c</name>
+    </fields><fields>
+        <label><!-- Program Status --></label>
+        <name>PROG_STATUS__c</name>
+    </fields><fields>
+        <label><!-- Program Requirement Term --></label>
+        <name>REQ_TERM__c</name>
+        <relationshipLabel><!-- Student Graduate Plan (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Room --></label>
+        <name>ROOM__c</name>
+    </fields><fields>
+        <label><!-- IPOS Batch Report Date --></label>
+        <name>RPT_DATE__c</name>
+    </fields><fields>
+        <label><!-- Student Career Number --></label>
+        <name>STDNT_CAR_NBR__c</name>
+    </fields><fields>
+        <label><!-- Term Begin Date --></label>
+        <name>TERM_BEGIN_DT__c</name>
+    </fields><fields>
+        <label><!-- Term End Date --></label>
+        <name>TERM_END_DT__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Student Graduate Plan (external)</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Student Graduate Plan (external)</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

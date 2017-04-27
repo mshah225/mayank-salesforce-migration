@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Academic_Interest__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>[manual import] - Relation to the Acadmeic Intrest</description>
@@ -45,7 +45,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>College__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>[manual import] - Relation to the college</description>
@@ -59,7 +59,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Eligibility__c</fullName>
         <description>[manual import] - Examples include: Qualified, Unqualified, No Longer Interested Field used for recruiting to determine if the Lead meets the requirements of the program.</description>
         <externalId>false</externalId>
@@ -85,7 +85,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>External_Application_Number__c</fullName>
         <description>[manual import] - Sybase external application number. Used to match Lead Interest with partial application</description>
         <externalId>true</externalId>
@@ -97,7 +97,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>[manual import] -  Look up to the Plan</description>
@@ -111,7 +111,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Primary_Source__c</fullName>
         <description>[manual import] - Examples include: Advertisement, ASU UG, College Fair - Int, College Fair - US, Email, Employee Referral, Event, Partial App, Phone Call, Purchased List, Test Scores, Walk-in, Web Form</description>
         <externalId>false</externalId>
@@ -176,7 +176,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Qualifying__c</fullName>
         <description>[manual import] - Examples include: Interested, Undecided, No Longer Interested.  Prospective student's level of interest</description>
         <externalId>false</externalId>
@@ -202,7 +202,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Secondary_Source__c</fullName>
         <description>[manual import] - Examples include: Coll Technology &amp; Innovation, College of Public Programs, Cronkite School-Journ/MassComm, Graduate Education, Health Solutions, Herberger Institute, Ira A Fulton Engineering, Liberal Arts &amp; Sciences, MaryLouFulton Teachers College, New Interdis Arts &amp; Sciences, Nursing &amp; Health Innovation, School of Letters &amp; Sciences, School of Sustainability, W.P. Carey School of Business, O'Connor College of Law, Degree Search, ASU Online, USA Today, EGSS Applying, EGSS Financing, EGSS GRE Prep, EGSS Personal Statement, Info Session - Online, Info Session - Campus, GRE, GRE Subject, TOEFL, CA Diversity, Idealist, NNE, Graduate College, Sun Devil Days, Saudi Arabiav</description>
         <externalId>false</externalId>
@@ -398,7 +398,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Status__c</fullName>
         <description>[manual import] - Examples include: Active, Applied, Opt Out, Closed, Converted</description>
         <externalId>false</externalId>
@@ -431,7 +431,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Term__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>[manual import] - Relationship to the term</description>
@@ -445,7 +445,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Test_Record__c</fullName>
         <defaultValue>false</defaultValue>
         <description>[manual import] - Used to flag records as tests so they will not appear in reports.</description>
@@ -455,7 +455,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Type__c</fullName>
         <description>[manual import] - Examples include: Lead, Contact</description>
         <externalId>false</externalId>
@@ -518,7 +518,7 @@
         <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>College__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Plan__c</searchResultsAdditionalFields>
-    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews>
+    </searchLayouts><sharingModel>ReadWrite</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Applied_This_Month</fullName>
         <columns>Type__c</columns>
         <columns>NAME</columns>
@@ -541,7 +541,7 @@
         </filters>
         <label>Applied This Month</label>
         <sharedTo />
-    </listViews><recordTypes>
+    </listViews><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>User</fullName>
         <active>true</active>
         <description>Viewable to non-administrators</description>
@@ -756,7 +756,7 @@
                 <default>true</default>
             </values>
         </picklistValues>
-    </recordTypes><webLinks>
+    </recordTypes><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Mass_Delete</fullName>
         <availability>online</availability>
         <description>Used to delete multiple records</description>
@@ -799,7 +799,7 @@ alert("Number of records deleted: " + numSucceeded);
 }
 window.location.reload();
 }</url>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Send_Email</fullName>
         <availability>online</availability>
         <description>Custom action to send an email to either the Lead or Contact depending on which field is populated</description>

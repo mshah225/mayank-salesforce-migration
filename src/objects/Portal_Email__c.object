@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Additional_Message_Text__c</fullName>
         <externalId>false</externalId>
         <label>Additional Message Text</label>
@@ -39,7 +39,7 @@
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>25</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Most_Recent_Queue__c</fullName>
         <description>The queue the case was most recently assigned to.</description>
         <externalId>false</externalId>
@@ -50,7 +50,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Thread_Id__c</fullName>
         <externalId>false</externalId>
         <formula>Case__r.Thread_Id__c</formula>
@@ -60,7 +60,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Email_Message_Id__c</fullName>
         <externalId>false</externalId>
         <label>Email Message Id</label>
@@ -69,7 +69,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Email_Template_Name__c</fullName>
         <externalId>false</externalId>
         <label>Email Template Name</label>
@@ -84,7 +84,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>From_Address__c</fullName>
         <description>The email address that is sending the email.</description>
         <externalId>false</externalId>
@@ -94,7 +94,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Primary_Owner_Id__c</fullName>
         <description>Displays the OwnerId to be used in determining the desired from address.</description>
         <externalId>false</externalId>
@@ -108,7 +108,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Record_id__c</fullName>
         <externalId>false</externalId>
         <formula>Id</formula>
@@ -118,7 +118,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Status__c</fullName>
         <externalId>false</externalId>
         <label>Status</label>
@@ -156,7 +156,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Student__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -167,11 +167,100 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields><fields>
+        <fullName>Case_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>Case__r.CaseNumber</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Case Number</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Case_Owner_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Case__r.Owner:Queue.QueueEmail),  Case__r.Owner:User.Email ,Case__r.Owner:Queue.QueueEmail)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Case Owner Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Case_Owner_Id__c</fullName>
+        <description>Displays the related cases owner's Id, prioritizes queue</description>
+        <externalId>false</externalId>
+        <formula>IF(
+ ISBLANK( Case__r.Owner:Queue.Id ),
+ Case__r.Owner:User.Id,
+ Case__r.Owner:Queue.Id
+)</formula>
+        <label>Case Owner Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Case__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Case</label>
+        <referenceTo>Case</referenceTo>
+        <relationshipLabel>Portal Emails</relationshipLabel>
+        <relationshipName>Portal_Emails</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields><fields>
+        <fullName>Created_By_Full_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>CreatedBy.FirstName &amp; ' ' &amp;  CreatedBy.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Created By Full Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>From_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>CreatedBy.FirstName &amp; ' ' &amp;  CreatedBy.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>From Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Student_Owner_Id__c</fullName>
+        <description>Displays the Success_Student__c owner's Id, prioritizes queue</description>
+        <externalId>false</externalId>
+        <formula>IF(
+ ISBLANK( Success_Student__r.Owner:Queue.Id ),
+ Success_Student__r.Owner:User.Id,
+ Success_Student__r.Owner:Queue.Id
+)</formula>
+        <label>Student Owner Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Success_Student_Owner_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Success_Student__r.Success_Pod__r.Owner:Queue.QueueEmail),   Success_Student__r.Success_Pod__r.Owner:User.Email, Success_Student__r.Success_Pod__r.Owner:Queue.QueueEmail)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Success Student Owner Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><description>Object containing all of the information required to send emails from within the portal through the marketing cloud integration.</description><enableActivities>false</enableActivities><enableBulkApi>true</enableBulkApi><enableFeeds>false</enableFeeds><enableHistory>false</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>ReadWrite</externalSharingModel><label>Portal Email</label><nameField>
         <displayFormat>PE-{0000000000}</displayFormat>
         <label>Portal Email Number</label>
         <type>AutoNumber</type>
-    </nameField><pluralLabel>Portal Emails</pluralLabel><searchLayouts /><sharingModel>ReadWrite</sharingModel><listViews>
+    </nameField><pluralLabel>Portal Emails</pluralLabel><searchLayouts /><sharingModel>ReadWrite</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_with_Details</fullName>
         <columns>NAME</columns>
         <columns>CREATED_DATE</columns>
@@ -183,7 +272,7 @@
         <columns>From_Address__c</columns>
         <filterScope>Everything</filterScope>
         <label>All with Details</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Test_Messages</fullName>
         <booleanFilter>1</booleanFilter>
         <columns>CREATED_DATE</columns>
@@ -204,7 +293,7 @@
             <value>Dawn Scott</value>
         </filters>
         <label>Test Messages</label>
-    </listViews><recordTypes>
+    </listViews><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Advisor</fullName>
         <active>true</active>
         <label>Advisor</label>
@@ -246,7 +335,7 @@
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Coach</fullName>
         <active>true</active>
         <label>Coach</label>

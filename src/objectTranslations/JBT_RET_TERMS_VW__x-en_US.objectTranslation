@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <help><!-- This will show the current summer term if between spring and summer terms. --></help>
+        <label><!-- Current Term including Summer --></label>
+        <name>CURR_TERM_INCLUDE_SUMMER__c</name>
+    </fields><fields>
+        <label><!-- Current Term --></label>
+        <name>CURR_TERM__c</name>
+        <relationshipLabel><!-- Relative Term (external) --></relationshipLabel>
+    </fields><fields>
+        <help><!-- Displays the following academic term, and will include summer during spring term. --></help>
+        <label><!-- Next Term including Summer --></label>
+        <name>NEXT_TERM_INCLUDE_SUMMER__c</name>
+    </fields><fields>
+        <label><!-- Next Term --></label>
+        <name>NEXT_TERM__c</name>
+        <relationshipLabel><!-- Relative Term (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Prior Previous Term --></label>
+        <name>PREV_PREV_TERM__c</name>
+        <relationshipLabel><!-- Relative Term (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Previous Term --></label>
+        <name>PREV_TERM__c</name>
+        <relationshipLabel><!-- Relative Term (external) --></relationshipLabel>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Relative Term (external)</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Relative Term (external)</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

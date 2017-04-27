@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Call_Comments__c</fullName>
         <description>Open rich text area that allows users to enter notes or comments about their phone call with the prospect or applicant.</description>
         <externalId>false</externalId>
@@ -41,7 +41,7 @@
         <trackTrending>false</trackTrending>
         <type>Html</type>
         <visibleLines>10</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Call_Origin__c</fullName>
         <description>Picklist field to indicate whether the phone call was originated as an inbound call or as an outbound call.</description>
         <externalId>false</externalId>
@@ -61,7 +61,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Call_Result__c</fullName>
         <description>Picklist field that allows users to select the call result.</description>
         <externalId>false</externalId>
@@ -113,7 +113,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Call_Success__c</fullName>
         <description>Formula field to display whether or not the call result was successful.</description>
         <externalId>false</externalId>
@@ -135,7 +135,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Call_Type__c</fullName>
         <description>Picklist field that allows users to select the type of phone call made.</description>
         <externalId>false</externalId>
@@ -299,6 +299,17 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields><fields>
+        <fullName>Created_By_Role__c</fullName>
+        <description>Formula field that displays the role of the user who created the recruitment call record.</description>
+        <externalId>false</externalId>
+        <formula>CreatedBy.UserRole.Name</formula>
+        <label>Created By Role</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><description>Custom object to manage the recruitment calling campaign efforts.</description><enableActivities>true</enableActivities><enableBulkApi>true</enableBulkApi><enableFeeds>false</enableFeeds><enableHistory>true</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>ControlledByParent</externalSharingModel><label>Recruitment Call</label><nameField>
         <displayFormat>CALL{0000000}</displayFormat>
         <label>Call Number</label>
@@ -338,7 +349,7 @@
         <searchResultsAdditionalFields>Call_Success__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Call_Result__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Opportunity__c</searchResultsAdditionalFields>
-    </searchLayouts><sharingModel>ControlledByParent</sharingModel><listViews>
+    </searchLayouts><sharingModel>ControlledByParent</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>Call_Origin__c</columns>
@@ -352,7 +363,7 @@
         <columns>Created_By_Role__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_Event_Staff</fullName>
         <columns>NAME</columns>
         <columns>Call_Origin__c</columns>
@@ -371,7 +382,7 @@
             <value>EV Event Staff</value>
         </filters>
         <label>All - Event Staff</label>
-    </listViews><recordTypes>
+    </listViews><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Recruitment_Call</fullName>
         <active>true</active>
         <description>Record type used to manage recruitment calls.</description>
@@ -585,7 +596,7 @@
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><validationRules>
+    </recordTypes><validationRules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Call_Comment_Required_when_Not_Attempted</fullName>
         <active>true</active>
         <description>Validation rule that makes the Call Comment field required if the Call Result = "Not Attempted"</description>
@@ -593,7 +604,7 @@
 (LEN( Call_Comments__c ) &lt; 1)</errorConditionFormula>
         <errorDisplayField>Call_Comments__c</errorDisplayField>
         <errorMessage>Please enter a reason why the call was not attempted.</errorMessage>
-    </validationRules><validationRules>
+    </validationRules><validationRules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Call_Result_Not_Attempt_Supervisor_Only</fullName>
         <active>true</active>
         <description>Validation rule that allows the Call Result value of "Not Attempted (Supervisor Only)" to not be chosen by a user with the role of AS Peer Admissions Representative.</description>

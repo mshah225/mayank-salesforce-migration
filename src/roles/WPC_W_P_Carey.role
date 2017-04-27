@@ -2,6 +2,7 @@
 <Role xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseAccessLevel>Edit</caseAccessLevel>
     <contactAccessLevel>Read</contactAccessLevel>
+    <description>WPC W. P. Carey</description>
     <mayForecastManagerShare>false</mayForecastManagerShare>
     <name>WPC W. P. Carey</name>
     <opportunityAccessLevel>Edit</opportunityAccessLevel>

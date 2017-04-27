@@ -1,1 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><enableFeeds>false</enableFeeds></CustomObject>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides><fields>
+        <fullName>Description</fullName>
+        <trackHistory>false</trackHistory>
+    </fields><fields>
+        <fullName>FileType</fullName>
+    </fields><fields>
+        <fullName>Language</fullName>
+        <trackHistory>false</trackHistory>
+    </fields><fields>
+        <fullName>OwnerId</fullName>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <fullName>SharingOption</fullName>
+        
+    </fields><fields>
+        <fullName>TagCsv</fullName>
+    </fields><fields>
+        <fullName>Title</fullName>
+        <trackHistory>false</trackHistory>
+    </fields><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><enableFeeds>false</enableFeeds></CustomObject>

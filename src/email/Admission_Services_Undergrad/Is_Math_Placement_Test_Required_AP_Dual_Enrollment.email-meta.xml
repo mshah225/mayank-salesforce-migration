@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Response to “Do I have to take the math placement test even if I have AP or Dual Enrollment credits?</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>ASU_Gold</letterhead>
+    <name>Is Math Placement Test Required (AP/Dual Enrollment)</name>
+    <style>freeForm</style>
+    <subject>The Math Placement Assessment requirement</subject>
+    <textOnly>Hello {!Contact.FirstName},
+
+Great question! The Math Placement Assessment must be taken by every student, regardless of AP or Dual Enrollment credit. It can be taken online and must be done at least 72 hours before you attend orientation. If we do not have your Math Placement Assessment scores when you come to orientation, you will not be able to register for any classes, so it is very important to make sure it’s completed in time.
+
+You shouldn’t be concerned about taking the Math Placement Assessment. It is not technically a test, so it is impossible to fail. It is designed to determine what you know and what you need to work on so you will be placed in the math class where you will be the most successful. If you take the test and feel you could do better, you have three tries total to be placed into a higher class. Read more about the Math Placement Assessment at https://students.asu.edu/math.
+
+Let me know if you have any other questions.
+
+Sincerely,
+
+{!User.Recruiter_Full_Name__c}
+{!User.Recruiter_Title__c}
+Admission Services
+{!User.Recruiter_Email__c}
+{!User.Recruiter_Phone__c}
+
+
+If you would like any additional information or have questions related to this subject, please reply to this email.
+
+{!Case.Thread_Id}</textOnly>
+    <type>html</type>
+</EmailTemplate>

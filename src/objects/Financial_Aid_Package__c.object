@@ -1,37 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Accept</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>List</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>New</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Tab</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Aid_Year__c</fullName>
         <description>[Peoplesoft] - Aid year options are 2000-2050, this is the year that the financial aid is for</description>
         <externalId>false</externalId>
@@ -247,7 +247,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EFC_Range__c</fullName>
         <description>[Peoplesoft] - Financial Aid EFC Range. Examples include: Very High, High, Moderate, Low, Very Low</description>
         <externalId>false</externalId>
@@ -279,7 +279,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FAFSA_Date_Received__c</fullName>
         <description>[Peoplesoft] - Date the FASFA was received</description>
         <externalId>false</externalId>
@@ -288,7 +288,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FA_Status_Time_Stamp__c</fullName>
         <description>[Salesforce] - shows the day and time the financial aid status field was updated.</description>
         <externalId>false</externalId>
@@ -296,7 +296,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Fin_Aid_Package_Date__c</fullName>
         <description>[Peoplesoft] - Date of Financial aid package</description>
         <externalId>false</externalId>
@@ -305,7 +305,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Financial_Aid_Status__c</fullName>
         <description>[Peoplesoft] - Status of student’s financial aid file and progress toward completion.</description>
         <externalId>false</externalId>
@@ -344,7 +344,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Pell_Eligibility__c</fullName>
         <defaultValue>false</defaultValue>
         <description>[Peoplesoft] - Checkbox that shows if the student is Pell Eligability</description>
@@ -353,7 +353,7 @@
         <label>Pell Eligibility</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Promise_Cohort__c</fullName>
         <description>[Peoplesoft] - Financial Aid Promise Cohort. Examples include: Advantage, CAG, Obama</description>
         <externalId>false</externalId>
@@ -380,7 +380,7 @@
     </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><description>Information received from the FAFSA and when the financial aid package is awarded. It includes fields needed for admitted student communication.</description><enableActivities>false</enableActivities><enableBulkApi>true</enableBulkApi><enableFeeds>false</enableFeeds><enableHistory>false</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>ControlledByParent</externalSharingModel><label>Financial Aid Package</label><nameField>
         <label>Financial Aid Package Name</label>
         <type>Text</type>
-    </nameField><pluralLabel>Financial Aid Packages</pluralLabel><searchLayouts /><sharingModel>ControlledByParent</sharingModel><listViews>
+    </nameField><pluralLabel>Financial Aid Packages</pluralLabel><searchLayouts /><sharingModel>ControlledByParent</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All</fullName>
         <filterScope>Everything</filterScope>
         <label>All</label>

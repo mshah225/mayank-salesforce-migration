@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Career --></label>
+        <name>ACAD_CAREER__c</name>
+    </fields><fields>
+        <label><!-- Dates --></label>
+        <name>ASU_SCH_DATES__c</name>
+    </fields><fields>
+        <label><!-- Catalog Number --></label>
+        <name>CATALOG_NBR__c</name>
+    </fields><fields>
+        <label><!-- Title --></label>
+        <name>CLASS_DESCR__c</name>
+    </fields><fields>
+        <label><!-- Class Number --></label>
+        <name>CLASS_NBR__c</name>
+    </fields><fields>
+        <label><!-- Official Course Grade --></label>
+        <name>CRSE_GRADE_OFF__c</name>
+    </fields><fields>
+        <label><!-- Course Id --></label>
+        <name>CRSE_ID__c</name>
+    </fields><fields>
+        <label><!-- Cumulative GPA --></label>
+        <name>CUM_GPA__c</name>
+    </fields><fields>
+        <label><!-- Current GPA --></label>
+        <name>CUR_GPA__c</name>
+    </fields><fields>
+        <label><!-- Earned Credit --></label>
+        <name>EARN_CREDIT__c</name>
+    </fields><fields>
+        <label><!-- Contact --></label>
+        <name>EMPLID__c</name>
+        <relationshipLabel><!-- Class (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Status Reason --></label>
+        <name>ENRL_STATUS_REASON__c</name>
+    </fields><fields>
+        <label><!-- Instructor --></label>
+        <name>FT_FULL_NAME__c</name>
+    </fields><fields>
+        <label><!-- Class Time --></label>
+        <name>SCH_DAILY_TIME__c</name>
+    </fields><fields>
+        <label><!-- Class Day --></label>
+        <name>SCH_HTML_DAY1__c</name>
+    </fields><fields>
+        <label><!-- Session --></label>
+        <name>SESSION_CODE__c</name>
+    </fields><fields>
+        <label><!-- Course Description --></label>
+        <name>SSR_CLSTOPIC_DESCR__c</name>
+    </fields><fields>
+        <label><!-- Campus --></label>
+        <name>SSR_MTG_LOC_LONG__c</name>
+    </fields><fields>
+        <label><!-- Enrollment Status --></label>
+        <name>STDNT_ENRL_STATUS__c</name>
+    </fields><fields>
+        <label><!-- Term --></label>
+        <name>STRM__c</name>
+        <relationshipLabel><!-- Class (external) --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Subject --></label>
+        <name>SUBJECT__c</name>
+    </fields><fields>
+        <label><!-- Term Name --></label>
+        <name>TERM_DESCR30__c</name>
+    </fields><fields>
+        <label><!-- Unit Taken --></label>
+        <name>UNT_TAKEN__c</name>
+    </fields><fields>
+        <label><!-- Valid Attempt --></label>
+        <name>VALID_ATTEMPT__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Class (external)</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Class (external)</value>
+    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>

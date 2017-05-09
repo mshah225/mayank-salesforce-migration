@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>A simple link back to the ASU Service Center. For use with Communities.</description>
-    <label>Service Center</label>
-    <mobileReady>false</mobileReady>
-    <motif>Custom100: TV Widescreen</motif>
-    <page>Return_to_Service_Center</page>
-</CustomTab>

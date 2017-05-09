@@ -1,6 +1,0 @@
-<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
-<tr valign="top" height="400" >
-<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
-<![CDATA[Dear&nbsp;{!Contact.FirstName},<div><br></div><div><br></div><div>Sincerely,</div><div><br></div><div>{!User.FirstName} {!User.LastName}</div><div><br></div><div><b>School of Music Office of Admissions</b></div><div><span style="font-family: Helvetica, Arial; font-size: medium; background-color: rgb(255, 255, 255);">Arizona State University</span><br style="font-family: Helvetica, Arial; font-size: medium; background-color: rgb(255, 255, 255);"><span style="font-family: Helvetica, Arial; font-size: medium; background-color: rgb(255, 255, 255);">50 E Gammage Parkway | Tempe, AZ 85287</span><br style="font-family: Helvetica, Arial; font-size: medium; background-color: rgb(255, 255, 255);"><span style="font-family: Helvetica, Arial; font-size: medium; background-color: rgb(255, 255, 255);">480.965.5069</span></div><div><span style="font-family: Helvetica, Arial; font-size: medium; background-color: rgb(255, 255, 255);"><a href="https://music.asu.edu/">music.asu.edu</a></span></div><div><br></div><div><br></div>]]></td>
-</tr>
-</table>

@@ -1,8 +1,0 @@
-Hi {!Contact.FirstName},
-
-I'm following up on your {!Case.Origin__c} to Herberger Online Support regarding . Thanks for reaching out.
-
-
-Sincerely,
-{!User.FirstName}
-Herberger Online Support

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<FlowDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
-    <activeVersionNumber>1</activeVersionNumber>
-    <description>Adds a new or updated user to the Corporate Relations (Role) public group to activate Campaign sharing rules</description>
-    <masterLabel>Add User to Corporate Relations Group</masterLabel>
-</FlowDefinition>

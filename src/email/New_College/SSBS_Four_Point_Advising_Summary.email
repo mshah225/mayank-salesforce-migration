@@ -1,6 +1,0 @@
-<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
-<tr valign="top" height="400" >
-<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
-<![CDATA[Hello {!Contact.FirstName},<br><br>It was a pleasure speaking with you today. Please find a summary of our discussion below for your reference. If you have any follow up questions please email <a href="mailto:sbsadvising@asu.edu">sbsadvising@asu.edu</a> and we will get back to you as soon as possible. <br><br>Purpose of appointment:<br><br><br>What was discussed:<br><br><br>Resolution achieved:<br><br><br>Summary of next steps:<br><br><br>Additional items and/or student feedback:<br><br><br>Regards,<br><br><b><br>New College of Interdisciplinary Arts &amp; Sciences</b><br>Arizona State University<br>School of Social and Behavioral Sciences<br>602-543-3000<br><a href="mailto:sbsadvising@asu.edu">sbsadvising@asu.edu</a><br><font color="#C0C0C0"><br>{!Case.Thread_Id}</font><br><br>]]></td>
-</tr>
-</table>

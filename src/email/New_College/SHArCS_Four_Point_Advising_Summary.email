@@ -1,6 +1,0 @@
-<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
-<tr valign="top" height="400" >
-<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
-<![CDATA[Hello {!Contact.FirstName},<br><br>It was good speaking with you during your academic advising appointment. Please find a summary of our discussion below for your reference. If you have any follow up questions please email <a href="mailto:harcsadvising@asu.edu">harcsadvising@asu.edu</a> or contact the SHArCS' front desk at 602-543-3000 and we will get back to you as soon as possible. <br><br>Purpose of appointment:<br><br><br>What was discussed:<br><br><br>Resolution achieved:<br><br><br>Summary of student's next steps:<br><br><br>Additional items and/or Student Feedback:<br><br><br>Regards,<br><br><br><br><b>New College of Interdisciplinary Arts &amp; Sciences</b><br>Arizona State University<br>School of Humanities, Arts and Cultural Studies<br>602-543-3000<br><a href="mailto:harcsadvising@asu.edu">harcsadvising@asu.edu</a><br><br><font color="#C0C0C0">{!Case.Thread_Id}</font><br><br>]]></td>
-</tr>
-</table>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Workflow xmlns="http://soap.sforce.com/2006/04/metadata"><fieldUpdates>
+﻿<?xml version="1.0" encoding="utf-8"?><Workflow xmlns="http://soap.sforce.com/2006/04/metadata"><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campaign_Member_Subscribe_Date_Time</fullName>
         <description>Update MC Last Subscribe Date when MC IsSubscribed is changed to true.</description>
         <field>Last_Subscribed__c</field>
@@ -7,7 +7,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campaign_Member_Unsubscribe_Date_Time</fullName>
         <description>Update MC Last Unsubscribe when MC IsSubscribed is changed to false.</description>
         <field>Last_Unsubscribe__c</field>
@@ -16,7 +16,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Inbound_Interaction_Set_to_True</fullName>
         <field>Inbound_Interaction__c</field>
         <literalValue>1</literalValue>
@@ -25,7 +25,7 @@
         <operation>Literal</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Last_Member_Status_Change_Set_to_NOW</fullName>
         <field>Last_Member_Status_Change__c</field>
         <formula>NOW()</formula>
@@ -33,7 +33,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Inbound_Interaction_Date</fullName>
         <field>Inbound_Interaction_Date__c</field>
         <formula>NOW()</formula>
@@ -41,7 +41,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Inbound_Interaction_Term</fullName>
         <field>Inbound_Interaction_Term__c</field>
         <formula>Opportunity__r.Term__r.Name</formula>
@@ -49,7 +49,25 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
-    </fieldUpdates><rules>
+    </fieldUpdates><fieldUpdates>
+        <fullName>Campaign_Member_Member_Status_Subscribe</fullName>
+        <description>Update campaign member status to Subscribe</description>
+        <field>Status</field>
+        <literalValue>Subscribe</literalValue>
+        <name>Campaign Member: Member Status Subscribe</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates><fieldUpdates>
+        <fullName>Campaign_Member_Member_Status_Unsub</fullName>
+        <description>Update campaign member status to Unsubscribe</description>
+        <field>Status</field>
+        <literalValue>Unsubscribe</literalValue>
+        <name>Campaign Member: Member Status Unsub</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campaign Member%3A Set Oppty Inbound Interaction Indicators</fullName>
         <actions>
             <name>Set_Inbound_Interaction_Date</name>
@@ -71,7 +89,7 @@
         <description>When an Opportunity is first assocaited to a Campaign Member that is set as an Inbound Interaction, or when a Campaign Member with an associated Opportunity is set as a Inbound Interaction, set the Type, Term and Stage.</description>
         <formula>NOT(ISBLANK(Opportunity__c)) &amp;&amp; Inbound_Interaction__c &amp;&amp; ( ISNEW() || ISCHANGED(Opportunity__c) || ISCHANGED(Inbound_Interaction__c) )</formula>
         <triggerType>onAllChanges</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campaign Member%3A Set as Inbound Interaction</fullName>
         <actions>
             <name>Inbound_Interaction_Set_to_True</name>
@@ -89,7 +107,7 @@
         </criteriaItems>
         <description>For any Campaign Member associated with a Campaign with a Source Type listed, ensure that Campaign Member is set as an Inbound Interaction.</description>
         <triggerType>onAllChanges</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campaign Member%3A Subscribe</fullName>
         <actions>
             <name>Campaign_Member_Member_Status_Subscribe</name>
@@ -112,7 +130,7 @@
         </criteriaItems>
         <description>Update MC Last Subscribe field when MC IsSubscribed is true.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campaign Member%3A Unsubscribe</fullName>
         <actions>
             <name>Campaign_Member_Member_Status_Unsub</name>
@@ -135,7 +153,7 @@
         </criteriaItems>
         <description>Update MC Last Unsubscribe field when MC IsSubscribed is false.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campaign Member%3A Update Status Change Time-Date</fullName>
         <actions>
             <name>Last_Member_Status_Change_Set_to_NOW</name>

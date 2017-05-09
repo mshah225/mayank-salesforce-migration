@@ -111,6 +111,16 @@
     </layoutSections>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>Success_Pod__c.Committee__c</fields>
+        <fields>Success_Pod__c.Program__c</fields>
+        <fields>Success_Pod__c.CUST_RECORDTYPE</fields>
+        <fields>Success_Pod__c.NAME</fields>
+        <fields>CREATED_DATE</fields>
+        <fields>CREATEDBY_USER</fields>
+        <relatedList>Success_Resource_Pod_Association__c.Success_Resource__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
         <fields>Success_Skill__c</fields>
         <relatedList>Success_Resource_Skill__c.Success_Resource__c</relatedList>
     </relatedLists>

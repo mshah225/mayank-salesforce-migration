@@ -185,6 +185,8 @@
     <members>Suncard_Photo__c</members>
     <members>Academic_Interest__c</members>
     <members>JBT_RET_TRANSCRIPT_SENT_VW__x</members>
+    <members>Profile_Ids__c</members>
+    <members>Success_Resource_Pod_Association__c</members>
     <name>CustomObject</name>
   </types>
   <types>
@@ -371,6 +373,7 @@
     <members>Opportunity-Feed - Opportunity Layout</members>
     <members>FlowInterview-Flow Interview Layout</members>
     <members>JBT_RET_TRANSCRIPT_SENT_VW__x-Transcript Sent Layout</members>
+    <members>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</members>
     <name>Layout</name>
   </types>
   <types>
@@ -472,6 +475,8 @@
     <members>PKB_Article_Feedback_Deflection__c</members>
     <members>PKB_Featured__c</members>
     <members>et4ae5__Automated_Send__c</members>
+    <members>Success_Resource_Pod_Association__c</members>
+    <members>IDHelper</members>
     <name>CustomTab</name>
   </types>
   <types>
@@ -1120,6 +1125,13 @@
     <members>UGTE15</members>
     <members>KB_Financial_Aid_Format</members>
     <members>KB_Financial_Aid_Approve</members>
+    <members>UGBA52</members>
+    <members>UGBA53</members>
+    <members>UGBACA</members>
+    <members>UGNHDA</members>
+    <members>UGNHDB</members>
+    <members>UGNHTC</members>
+    <members>KB_Finances_Approve_Publish</members>
     <name>Queue</name>
   </types>
   <types>
@@ -2029,6 +2041,10 @@
     <members>Knowledge_Study_Abroad</members>
     <members>Knowledge_College_of_Health_Solutions</members>
     <members>Recruitment_Leads_Edit_Dashboards</members>
+    <members>Additional_AS_Intl_Recruiter_Case_Access</members>
+    <members>Enrollment_Services_Comm_Reports_Edit</members>
+    <members>Additional_Engineering_ECEE_Case_Access</members>
+    <members>KB_Finances_Create</members>
     <name>Group</name>
   </types>
   <types>
@@ -3039,6 +3055,8 @@
     <members>Admission_Services_Undergrad/Is_Math_Placement_Test_Required_AP_Dual_Enrollment</members>
     <members>Admission_Services_Undergrad/Verify_FAFSA_General_Instructions</members>
     <members>Academic_Partnerships/TRN_Ambassador_MAPP_needs_help</members>
+    <members>Design_and_the_Arts_Music/Music_Minor</members>
+    <members>New_College/RFI_Psychology_and_Law_PHD</members>
     <name>EmailTemplate</name>
   </types>
   <types>
@@ -3302,6 +3320,7 @@
     <members>FAQ__kav.Career_Services</members>
     <members>FAQ__kav.Sexual_Violence_Awareness</members>
     <members>How_To__kav.Sun_Devil_Athletics</members>
+    <members>FAQ__kav.Internal_Knowledge_Finances</members>
     <name>ApprovalProcess</name>
   </types>
   <types>
@@ -3735,6 +3754,8 @@
     <members>et4ae5__Automated_Send__c-de</members>
     <members>et4ae5__AggregateLink__c-es</members>
     <members>et4ae5__Business_Unit__c-de</members>
+    <members>Profile_Ids__c-en_US</members>
+    <members>Success_Resource_Pod_Association__c-en_US</members>
     <name>CustomObjectTranslation</name>
   </types>
   <types>
@@ -3947,6 +3968,9 @@
     <members>Knowledge_Manager_New</members>
     <members>Data_com_Prospector_License</members>
     <members>User_Setup_and_Configure</members>
+    <members>Reporting_edX_Lead_to_Contact_Matching</members>
+    <members>Success_Portal_Management_Advisor</members>
+    <members>Case_Coach_Outreach_Fields_Read_Access</members>
     <name>PermissionSet</name>
   </types>
   <types>

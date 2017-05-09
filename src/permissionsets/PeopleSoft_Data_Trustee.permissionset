@@ -70,103 +70,103 @@
     </applicationVisibilities><externalDataSourceAccesses xmlns="http://soap.sforce.com/2006/04/metadata">
         <enabled>false</enabled>
         <externalDataSource>asu_ps_lightning</externalDataSource>
-    </externalDataSourceAccesses><fieldPermissions>
+    </externalDataSourceAccesses><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Admin_Notes__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.MC_Business_Unit_User__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Academic_Advisor_Portal__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Administrator_Developer__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Case_Management__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Chatter__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Connected_MC_Adm__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Connected_MC_User__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Corporate_Relations__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_EdPlus_Coach_Portal__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Export_Reports__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Knowledge__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Marketing_Cloud__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Quick_Text_Manager__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Recruiting__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Recruitment_Communications__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Student_Profile__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_View_Only__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_inContact_User_License__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Sandbox_DEV__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Sandbox_Delagated_Administrator__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Sandbox_QA__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Sandbox_UAT__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.et4ae5__ExactTargetForAppExchangeAdmin__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.et4ae5__ExactTargetForAppExchangeUser__c</field>
         <readable>true</readable>
@@ -331,6 +331,9 @@
         <visible>false</visible>
     </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Task.User_Task_Layout</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities><recordTypeVisibilities>
+        <recordType>Success_Resource_Pod_Association__c.Advisor</recordType>
         <visible>false</visible>
     </recordTypeVisibilities><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>AKB_Article_Feedback__c</tab>
@@ -509,7 +512,13 @@
     </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Solution</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>et4ae5__Automated_Send__c</tab>
+        <visibility>None</visibility>
+    </tabSettings><tabSettings>
+        <tab>IDHelper</tab>
+        <visibility>None</visibility>
+    </tabSettings><tabSettings>
+        <tab>Success_Resource_Pod_Association__c</tab>
         <visibility>None</visibility>
     </tabSettings></PermissionSet>

@@ -251,87 +251,87 @@
         <editable>false</editable>
         <field>Test_Score__c.SAT_Pre_2016_Score__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>CampaignMember.Campaign_Record_Type__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>CampaignMember.Is_Primary_Interest__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>CampaignMember.LeadOrContactID__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Created_By_Name__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.CurrentStudent__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Does_the_student_plan_to_return_to_ASU__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Feedback_Link__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Functional_Group__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Open_Security_Case__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Origin__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Reply_Count__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Running_User_Is_Contact__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Web_Submission__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.reason_the_student_will_not_return_this__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>FAQ__kav.Answer__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>FAQ__kav.Functional_Group__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>How_To__kav.Content__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>How_To__kav.Functional_Group__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Informational__kav.Functional_Group__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Informational__kav.Information__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>User.icAgentConsole__incCustomScreenpop__c</field>
         <readable>true</readable>
@@ -761,10 +761,18 @@
         <layout>me3_Career__c-me3 Career Layout</layout>
     </layoutAssignments><layoutAssignments xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>me3__c-me3 Layout</layout>
-    </layoutAssignments><layoutAssignments>
+    </layoutAssignments><layoutAssignments xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>FlowInterview-Flow Interview Layout</layout>
-    </layoutAssignments><layoutAssignments>
+    </layoutAssignments><layoutAssignments xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>JBT_RET_TRANSCRIPT_SENT_VW__x-Transcript Sent Layout</layout>
+    </layoutAssignments><layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+    </layoutAssignments><layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+        <recordType>Success_Resource_Pod_Association__c.Advisor</recordType>
+    </layoutAssignments><layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+        <recordType>Success_Resource_Pod_Association__c.Coach</recordType>
     </layoutAssignments><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>true</allowCreate>
         <allowDelete>false</allowDelete>
@@ -781,7 +789,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>Term__c</object>
         <viewAllRecords>true</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>true</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>true</allowEdit>
@@ -789,7 +797,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>Case</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -797,7 +805,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>FAQ__kav</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -805,7 +813,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>How_To__kav</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1033,6 +1041,10 @@
         <default>true</default>
         <recordType>Task.User_Task_Layout</recordType>
         <visible>true</visible>
+    </recordTypeVisibilities><recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource_Pod_Association__c.Advisor</recordType>
+        <visible>false</visible>
     </recordTypeVisibilities><tabVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>AKB_Article_Feedback__c</tab>
         <visibility>Hidden</visibility>
@@ -1249,8 +1261,14 @@
     </tabVisibilities><tabVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-UserProvisioningRequest</tab>
         <visibility>Hidden</visibility>
-    </tabVisibilities><tabVisibilities>
+    </tabVisibilities><tabVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>et4ae5__Automated_Send__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities><tabVisibilities>
+        <tab>IDHelper</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities><tabVisibilities>
+        <tab>Success_Resource_Pod_Association__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities><userPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <enabled>true</enabled>

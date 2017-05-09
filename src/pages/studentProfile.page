@@ -86,14 +86,6 @@
                 margin-bottom:24px !important;
                 max-width:50% !important;
             }
-
-            li.transcriptAddress {
-                list-style: none;
-            }
-            
-            th.transcriptHeader {
-                width: 165px;
-            }
             
             @media screen and (max-width:767px) {
                 .browser {
@@ -174,7 +166,7 @@
 
                                 </div>
 
-                                <div class="col-sm-8" style="margin-top:15px;">
+                                <div class="col-sm-8" style="margin-top:5px;">
                                     <div style="display:inline;float:left;">
                                     <span style="color:#6e7d83;font-weight:200">
                                         <h2 style=";margin-top:0px;" class="intro">
@@ -213,7 +205,12 @@
                                                 <span style="color:#353535;">Plan, Degree:</span>
                                                 &nbsp;{!primaryProgramPlan.Plan_Description__c + IF(ISBLANK(primaryProgramPlan.Degree__c),'', ', ' + primaryProgramPlan.Degree__c)}
                                             </h4>
-
+                                            
+											<h4 class="intro">
+                                                <span style="color:#353535;">Sub-Plan:</span>
+                                                &nbsp;{!IF(ISBLANK(subProgramPlan.Subplan_description__c), '--', subProgramPlan.Subplan_description__c)}
+                                            </h4>
+                                            
                                             <h4 class="intro">
                                                 <span style="color:#353535;">Campus:</span>
                                                 &nbsp;{!primaryProgramPlan.Campus__r.Name}
@@ -413,7 +410,9 @@
 
                                                         <tr>
                                                             <th>Age</th>
-                                                            <td id="studentAge">--</td>
+                                                            <td>{!IF(ISBLANK(studentDemographic.AGE_YEARS__c), '--', 
+                                                                 FLOOR(VALUE(studentDemographic.AGE_YEARS__c)))}</td>
+                                                            <!--td>{!FLOOR((TODAY() - theContact.BirthDate)/365.2425)}</td-->
                                                         </tr>
 
                                                         <tr>
@@ -429,7 +428,8 @@
                                                             <!--Opportunity Object
                                                             First_Generation__c-->
                                                             <th>First Generation</th>
-                                                            <td id="firstGen">--</td>
+                                                            <td>{!IF(ISBLANK(studentDemographic.FIRST_GEN_FLG__c), '--', 
+                                                                 studentDemographic.FIRST_GEN_FLG__c)}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -438,29 +438,35 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>WUE</th>
-                                                            <td id="WUE">--</td>
+                                                            <td>{!IF(ISBLANK(studentProgram.WUE__c), '--', 
+                                                                 studentProgram.WUE__c)}</td>
                                                         </tr>
 
                                                         <tr>
                                                             <th>Residency</th>
-                                                            <td id="residency">--</td>
+                                                            <td>{!IF(ISBLANK(studentProgram.RESIDENCY__c), '--', 
+                                                                 studentProgram.RESIDENCY__c)}</td>
                                                         </tr>
 
                                                         <tr>
                                                             <th>Country of Citizenship</th>
-                                                            <td id="countryOfCitizenship">--</td>
+                                                            <td>{!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__c)}
+                                                            </td>
                                                         </tr>
 
                                                         <tr>
                                                             <th>FERPA Level</th>
-                                                            <td id="ferpaLevel">--</td>
+                                                            <td>
+                                                                {!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--', theContact.FERPA_Directory_Hold__c)}
+                                                            </td>
                                                         </tr>
 
                                                         <tr>
                                                             <!--Financial Aid Package Object
                                                             EFC_Range__c-->
                                                             <th>Financial Need Level</th>
-                                                            <td id="financialNeed">--</td>
+                                                            <td>{!IF(ISBLANK(studentProgram.FINANCIAL_NEED_LVL__c), '--', 
+                                                                 studentProgram.FINANCIAL_NEED_LVL__c)}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -480,17 +486,20 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Current Academic Level</th>
-                                                            <td id="cohort">--</td>
+                                                            <td>{!IF(ISBLANK(profileHeader.COHORT__c), '--', 
+                                                                 profileHeader.COHORT__c)}</td>
                                                         </tr>
 
                                                         <tr>
-                                                            <th id="currentEnrolledHoursLabel">{!currentTermName} Term Enrolled Hours</th>
-                                                            <td id="currentEnrolledHours">--</td>
+                                                            <th>{!currentTermName} Term Enrolled Hours</th>
+                                                            <td>{!IF(ISBLANK(studentProgram.ENRL_HRS__c), '--', 
+                                                                 FLOOR(studentProgram.ENRL_HRS__c))}</td>
                                                         </tr>
 
                                                         <tr>
-                                                            <th id="nextEnrolledHoursLabel">{!nextTermName} Term Enrolled Hours</th>
-                                                            <td id="nextEnrolledHours">--</td>
+                                                            <th>{!nextTermName} Term Enrolled Hours</th>
+                                                            <td>{!IF(ISBLANK(studentProgram.ENRL_HRS_PENDING__c), '--', 
+                                                                 FLOOR(studentProgram.ENRL_HRS_PENDING__c))}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -499,17 +508,35 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Expected Graduation Date</th>
-                                                            <td id="expGradDate">--</td>
+                                                            <td>{!IF(ISBLANK(studentProgram.EXP_GRAD_TERM__c), '--', 
+                                                                 StudentProgram.EXP_GRAD_TERM__r.Name)}
+                                                            </td>
                                                         </tr>
 
                                                         <tr>
-                                                            <th id="currentTermEnrollLabel">{!currentTermName} Enrollment Appointment</th>
-                                                            <td id="currentTermEnrollAppt">--</td>
+                                                            <th>{!currentTermName} Enrollment Appointment</th>
+                                                            <td>
+                                                                <!--
+                                                                <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
+                                                                -->
+                                                                <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
+                                                                    <apex:param value="{!studentProgram.APPT_DT__c}"/>
+                                                                </apex:outputText>
+                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT__c)}">--</apex:outputText>
+                                                            </td>
                                                         </tr>
 
                                                         <tr>
-                                                            <th id="nextTermEnrollLabel">{!nextTermName} Enrollment Appointment</th>
-                                                            <td id="nextTermEnrollAppt">--</td>
+                                                            <th>{!nextTermName} Enrollment Appointment</th>
+                                                            <td>
+                                                                <!--
+                                                                <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT_PENDING__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
+                                                                -->
+                                                                <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
+                                                                    <apex:param value="{!studentProgram.APPT_DT_PENDING__c}"/>
+                                                                </apex:outputText>
+                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT_PENDING__c)}">--</apex:outputText>
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -533,7 +560,7 @@
                                                                 value="{!ugProgramPlans}"
                                                                 var="app"
                                                                 rendered="{!IF(ugProgramPlans.size
-                                                                        > 0, true, false)}">
+                                                                        > 0,true,false)}">
                                                     <apex:column headerValue="Status"
                                                                  value="{!app.Status__c}"/>
                                                     <apex:column headerValue="Program"
@@ -543,6 +570,12 @@
                                                                          target="_blank">
                                                             <apex:outputField value="{!app.Plan_Description__c}"/>
                                                         </apex:outputLink>
+                                                    </apex:column>
+                                                    <apex:column headerValue="Sub-Plan">
+                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),false,true)}"
+                                                                         value="{!subProgramPlan.Subplan_Description__c}"/>
+                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),true,false)}"
+                                                                         value="--"/>
                                                     </apex:column>
                                                     <apex:column headerValue="Plan Type"
                                                                  value="{!app.Plan_Type_Text__c}"/>
@@ -636,19 +669,24 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Application Admit Type</th>
-                                                            <td id="admitType">--</td>
+                                                            <td>{!IF(ISBLANK(ugStudentProgram.ADMIT_TYPE__c), '--', ugStudentProgram.ADMIT_TYPE__c)}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>Applied Program</th>
-                                                            <td id="appliedProgram">--</td>
+                                                            <td>{!IF(ISBLANK(ugStudentProgram.ADM_APPL_PROG__c), '--', ugStudentProgram.ADM_APPL_PROG__c)}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>Applied Date</th>
-                                                            <td id="admAppliedDate">--</td>
+                                                            <td>
+                                                                <apex:outputText value="{0, date, MMMM d','  yyyy}" rendered="{!(!ISBLANK(ugStudentProgram.ADM_APPL_DT__c))}">
+                                                                    <apex:param value="{!ugStudentProgram.ADM_APPL_DT__c}"/>
+                                                                </apex:outputText>
+                                                                <apex:outputText rendered="{!ISBLANK(ugStudentProgram.ADM_APPL_DT__c)}">--</apex:outputText>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Admit Term</th>
-                                                            <td id="admitTerm">--</td>
+                                                            <td>{!IF(ISBLANK(ugStudentProgram.ADMIT_TERM__c), '--', ugStudentProgram.ADMIT_TERM__c)}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -656,11 +694,17 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Enroll Deposit</th>
-                                                            <td id="enrollDeposit">--</td>
+                                                            <td>{!IF(ISBLANK(ugStudentProgram.ENRL_DEPOSIT__c), '--', ugStudentProgram.ENRL_DEPOSIT__c)}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>Orientation Date</th>
-                                                            <td id="orientationDate">--</td>
+                                                            <td>
+                                                                <apex:outputText value="{0, date, MMMM d','  yyyy}" rendered="{!(!ISBLANK(ugStudentProgram.ORIENT_DT__c))}">
+                                                                    <apex:param value="{!ugStudentProgram.ORIENT_DT__c}"/>
+                                                                </apex:outputText>
+                                                                <apex:outputText rendered="{!ISBLANK(ugStudentProgram.ORIENT_DT__c)}">--</apex:outputText>
+
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -694,6 +738,12 @@
                                                                      target="_blank">
                                                         <apex:outputField value="{!app.Plan_Description__c}"/>
                                                     </apex:outputLink>
+                                                </apex:column>
+                                                <apex:column headerValue="Sub-Plan">
+                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),false,true)}"
+                                                                         value="{!subProgramPlan.Subplan_Description__c}"/>
+                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),true,false)}"
+                                                                         value="--"/>
                                                 </apex:column>
                                                 <apex:column headerValue="Plan Type"
                                                              value="{!app.Plan_Type_Text__c}"/>
@@ -781,40 +831,56 @@
                                                 &nbsp;Admission Information
                                             </h4>
                                         </div>
-										<div class="row">
+
+                                            <div class="row">
                                                 <apex:outputPanel id="gradAdmissionInformation">
-                                                <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Application Admit Type</th>
-                                                            <td id="gradAdmitType">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Applied Program</th>
-                                                            <td id="gradAppliedProgram">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Applied Date</th>
-                                                            <td id="gradAdmAppliedDate">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Admit Term</th>
-                                                            <td id="gradAdmitTerm">--</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Enroll Deposit</th>
-                                                            <td id="gradEnrollDeposit">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Orientation Date</th>
-                                                            <td id="gradOrientationDate">--</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
+                                                    <div class="col-sm-6">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Application Admit Type</th>
+                                                                <td>{!IF(ISBLANK(gradStudentProgram.ADMIT_TYPE__c), '--', gradStudentProgram.ADMIT_TYPE__c)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Applied Program</th>
+                                                                <td>{!IF(ISBLANK(gradStudentProgram.ADM_APPL_PROG__c), '--', gradStudentProgram.ADM_APPL_PROG__c)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Applied Date</th>
+                                                                <td>
+                                                                    <apex:outputText value="{0, date, MMMM d','  yyyy}" rendered="{!(!ISBLANK(gradStudentProgram.ADM_APPL_DT__c))}">
+                                                                        <apex:param value="{!gradStudentProgram.ADM_APPL_DT__c}"/>
+                                                                    </apex:outputText>
+                                                                    <apex:outputText rendered="{!ISBLANK(gradStudentProgram.ADM_APPL_DT__c)}">--</apex:outputText>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Admit Term</th>
+                                                                <td>{!IF(ISBLANK(gradStudentProgram.ADMIT_TERM__c), '--', gradStudentProgram.ADMIT_TERM__c)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Admit Type</th>
+                                                                <td>{!IF(ISBLANK(gradStudentProgram.ADMIT_TYPE__c), '--', gradStudentProgram.ADMIT_TYPE__c)}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Enroll Deposit</th>
+                                                                <td>{!IF(ISBLANK(gradStudentProgram.ENRL_DEPOSIT__c), '--', gradStudentProgram.ENRL_DEPOSIT__c)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Orientation Date</th>
+                                                                <td>
+                                                                    <apex:outputText value="{0, date, MMMM d','  yyyy}" rendered="{!(!ISBLANK(gradStudentProgram.ADM_APPL_DT__c))}">
+                                                                        <apex:param value="{!gradStudentProgram.ADM_APPL_DT__c}"/>
+                                                                    </apex:outputText>
+                                                                    <apex:outputText rendered="{!ISBLANK(gradStudentProgram.ADM_APPL_DT__c)}">--</apex:outputText>
+
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
                                                 </apex:outputPanel>
                                             </div>
                                     </apex:pageBlock>
@@ -1070,23 +1136,6 @@
                                             </div>
                                         </div>
 -->
-
-                                        <div class="page-header-smaller">
-                                            <h4>
-                                                <i class="fa fa-caret-down"></i>
-                                                &nbsp;Transcripts Sent
-                                            </h4>
-                                        </div>
-                                        
-                                        <!-- Transcripts Sent -->
-                                        <div style="overflow:auto;max-height:400px;">                                                                                    
-                                            <div id="ps_transcript"
-                                                 style="display:none;">
-                                            </div>
-
-                                            <div id="psTranscriptErrors"></div>
-                                        </div>
-
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1395,7 +1444,6 @@
                                         </a>
                                     </div>
                                 </div>
-
                                 <apex:outputPanel id="serviceIndicatorsPanel" layout="none">
                                     <apex:dataTable rendered="{!sIList.size > 0}"
                                                     styleClass="table"
@@ -1435,6 +1483,7 @@
                                         </h3>
                                     </div>
                                     <div class="col-sm-4">
+                                        <!--a href="/a0N?rlid=00Nd0000007tI9X&id={!theContact.Id}" -->
                                         <a href="#" onclick="openNewSubtab('/a0N?rlid=00Nd0000007tI9X\&id={!theContact.Id}','Student Groups');return false"
                                            class="pull-right sideBoxMoreLink">
                                             see all {!sGroupList.size}...
@@ -1499,11 +1548,7 @@
             });
         
         	$j(document).ready(function() {
-        		getTermInfo();
-                getStudentDemographicData();
-                getStudentProgramData();
-                getProfileHeader();
-                // getServiceIndicators();
+                // $j('.fa-caret-down').hide();    
             });
 
         	// Arrow Functionality
@@ -1577,12 +1622,6 @@
             var accountBalanceLoaded = false;
             var indicatorHistoryLoaded = false;
             var careerDevelopmentTabLoaded = false;
-            var serviceIndicatorsLoaded = false;
-            var transcriptsLoaded = false;
-        	var studentProgramDataLoaded = false;
-        	var studentDemographicDataLoaded = false;
-        	var profileHeaderLoaded = false;
-        	var termInfoLoaded = false;
     
             var classesData;
             var financialAidData;
@@ -1614,7 +1653,7 @@
             function loadUGIndicatorTab() {
                 getStudentRetention();
                 getGeneralIndicators();
-                // getTranscripts();
+                // getRetentionSNPs();
             }
     
             function loadCommentsTab() {
@@ -1627,6 +1666,7 @@
                 getMe3Results();
             }
 
+    
             // Method to replace all undefined/missing fields after callout
             function cleanUpUndefined(elementId) {
                 var element = document.getElementById(elementId);
@@ -1635,27 +1675,6 @@
                     element.innerHTML = element.innerHTML.replace(/undefined/g, '--');
                     element.innerHTML = element.innerHTML.replace(/NaN/g, '--');
                 }
-            }
-
-            // Method to get information about Current Term and Next Term
-            function getTermInfo() {
-            	if (!termInfoLoaded) {
-            		Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getTermInfo}',
-                        function (result, event) {
-                            if (event.status) {
-                            	$j('#currentEnrolledHoursLabel').text(result[0] + ' Enrolled Hours');
-                            	$j('#currentTermEnrollLabel').text(result[0] + ' Enrollment Appointment');
-                         
-                            	$j('#nextEnrolledHoursLabel').text(result[1] + ' Enrolled Hours');
-                            	$j('#nextTermEnrollLabel').text(result[1] + ' Enrollment Appointment');
-
-                            	termInfoLoaded = true;
-                            }
-                        },
-                        {escape: true}
-                    );
-            	}
             }
     
             // Method to load the Undergraduate Indicators tab
@@ -1681,11 +1700,14 @@
                                         result.FA_INDICATOR__c;
                                     document.getElementById('sr_asr').innerHTML =
                                         result.ASR_INDICATOR__c;
+                                    console.log(result.ENRL_HOLD_COUNT__c);
                                     if (result.ENRL_HOLD_COUNT__c > 0) {
                                         document.getElementById('sr_en_holds').innerHTML =
                                             "<span style='color:red'>" +
                                             result.ENRL_HOLD_COUNT__c +
                                             "</span>";
+                                        console.log(result.ENRL_HOLD_COUNT__c);
+                                        console.log(document.getElementById('sr_en_holds').innerHTML);
                                     } else {
                                         document.getElementById('sr_en_holds').innerHTML =
                                             result.ENRL_HOLD_COUNT__c;
@@ -1977,7 +1999,7 @@
                                             "</thead>" +
                                         "</table>" +
                                         "<tbody style='font-weight:normal;'>";
-    
+    								console.log(result)
                                     for (var i = 0; i < result.length; i++) {
     
                                         html += 
@@ -1990,7 +2012,7 @@
                                     }
     
                                     html += "</tbody>";
-    
+    								console.log(html);
                                     document.getElementById("sr_en_holds_info_table").innerHTML = html;
                                     document.getElementById("sr_en_holds_info_tr").style.display =
                                         "table-row";
@@ -2013,6 +2035,9 @@
     
                 }
             }
+    
+    
+    
     
             // Method to load test scores.
             function getStdntTestComps() {
@@ -2360,127 +2385,6 @@
                         {escape: true}
                     );
                 }
-            }
-        
-        	// Method to load Student Profile Header
-        	function getProfileHeader() { 
-                if (!profileHeaderLoaded) {
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getProfileHeader}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                $j('#cohort').text(result[0].COHORT__c);
-                            } else {
-                                console.log(event.message);
-                            }
-                        },
-                        {escape: true}
-                    );
-                }
-            }
-
-        
-        	// Method to get general Student Demographic Data
-        	function getStudentDemographicData() { 
-                if (!studentDemographicDataLoaded) {
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getStudentDemographicData}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                $j('#studentAge').text(Math.floor(result[0].AGE_YEARS__c));
-                                $j('#firstGen').text(result[0].FIRST_GEN_FLG__c);
-                            } else {
-                                console.log(event.message);
-                            }
-                        },
-                        {escape: true}
-                    );
-                }
-            }
-        
-        	// Method to get general Student Program Data
-        	function getStudentProgramData() { 
-                if (!studentProgramDataLoaded) {
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getStudentProgramData}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                $j('#WUE').text(result[0].WUE__c);
-                                $j('#residency').text(result[0].RESIDENCY__c);
-                                $j('#countryOfCitizenship').text(result[0].ASU_CITZN_COUNTRY__c);
-                                $j('#ferpaLevel').text(result[0].FERPA_LVL__c);
-                                $j('#financialNeed').text(result[0].FINANCIAL_NEED_LVL__c);
-                                $j('#currentEnrolledHours').text(result[0].ENRL_HRS__c);
-                                $j('#nextEnrolledHours').text(result[0].ENRL_HRS_PENDING__c);
-
-                                if (result[0].EXP_GRAD_TERM__c != '-') {
-                                	$j('#expGradDate').text(result[0].EXP_GRAD_TERM__r.Name);
-                                } else {
-                                	$j('#expGradDate').text('--');
-                                }
-                                
-                                if (result[0].APPT_DT__c) {
-                                	currentTermEnrollmentDate = convertUTCSecondsToDate(result[0].APPT_DT__c);
-                                	$j('#currentTermEnrollAppt').text(currentTermEnrollmentDate);
-                                }
-                                
-                                if (result[0].APPT_DT_PENDING__c) {
-                                	nextTermEnrollmentDate = convertUTCSecondsToDate(result[0].APPT_DT_PENDING__c);
-                                	$j('#nextTermEnrollAppt').text(nextTermEnrollmentDate);
-                                }
-
-								if (result[0].ACAD_CAREER__c == 'UGRD') {
-	                                if (result[0].ADM_APPL_DT__c) {
-	                                	appliedDate = convertUTCSecondsToDate(result[0].ADM_APPL_DT__c);
-	                                	$j('#admAppliedDate').text(appliedDate);
-	                                }
-	                                
-	                                if (result[0].ORIENT_DT__c) {
-	                                	orientationDate = convertUTCSecondsToDate(result[0].ORIENT_DT__c);
-	                                	$j('#orientationDate').text(orientationDate);
-	                                }
-
-	                                $j('#admitType').text(result[0].ADMIT_TYPE__c);
-	                                $j('#appliedProgram').text(result[0].ADM_APPL_PROG__c);
-	                                $j('#admitTerm').text(result[0].ADMIT_TERM__c);
-	                                $j('#enrollDeposit').text(result[0].ENRL_DEPOSIT__c);
-                                } else if (result[0].ACAD_CAREER__c == 'GRAD') {
-	                                if (result[0].ADM_APPL_DT__c) {
-	                                	appliedDate = convertUTCSecondsToDate(result[0].ADM_APPL_DT__c);
-	                                	$j('#gradAdmAppliedDate').text(appliedDate);
-	                                }
-	                                
-	                                if (result[0].ORIENT_DT__c) {
-	                                	orientationDate = convertUTCSecondsToDate(result[0].ORIENT_DT__c);
-	                                	$j('#gradOrientationDate').text(orientationDate);
-	                                }
-
-	                                $j('#gradAdmitType').text(result[0].ADMIT_TYPE__c);
-	                                $j('#gradAppliedProgram').text(result[0].ADM_APPL_PROG__c);
-	                                $j('#gradAdmitTerm').text(result[0].ADMIT_TERM__c);
-	                                $j('#gradEnrollDeposit').text(result[0].ENRL_DEPOSIT__c);
-                                }
-                            } else {
-                                console.log(event.message);
-                            }
-                        },
-                        {escape: true}
-                    );
-                }
-            }
-
-            // Method to get transcripts
-        
-        	function convertUTCSecondsToDate(timestamp) {
-                var dateString = new Date(timestamp);
-                dateString = (dateString.getUTCMonth() + 1) + '/' +
-                    dateString.getUTCDate() + '/' +
-                    dateString.getUTCFullYear();
-                
-                return dateString;
             }
     
             // Method to retention snps.
@@ -3356,15 +3260,15 @@
                                         "initial";
                                     document.getElementById("psAccountBalanceErrors").style.display =
                                         "none";
-                                    
+                                    console.log(result.pastDueTIP);
                                     if (result.pastDueTIP) {
                                     	document.getElementById('account_balance_past_due_tip').innerHTML =
                                         	result.pastDueTIP.toLocaleString(o,s);          
                                     } else {
                                         document.getElementById('account_balance_past_due_tip').innerHTML = '--'
                                     }
-                                    
-                                    if (result.faBalance.DUE_AMT__C) {
+                                    console.log(result.faBalance.DUE_AMT__c);
+                                    if (result.faBalance.DUE_AMT__c) {
                                     	document.getElementById('account_balance_outstanding').innerHTML =
                                         	result.faBalance.DUE_AMT__c.toLocaleString(o,s);
                                     } else {

@@ -85,287 +85,287 @@
         <editable>false</editable>
         <field>Case_Assignment_Rule__c.Label__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Additional_Assignment_Completed__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Affiliation__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Assign_Case_to_Opp_Owner__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Associate_Case_to_Active_Opportunity__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.CAP__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Call_Back_Completed__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Call_Back_Requested__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Call_Result__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Campus__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Case_Owner__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Case_Recruitment_Status__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Category_Display__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Category__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Created_By_Name__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Created_By_Role__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.CurrentStudent__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Deep_Links__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Does_the_student_plan_to_return_to_ASU__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Escalated_From__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Forward_Case_Comments__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Forward_To_Email__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Forward_To_Unit__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Functional_Group__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Home_Phone__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Inbound_Interaction_Date__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Inbound_Interaction_Stage__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Inbound_Interaction_Term__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Inbound_Interaction_Type__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Inbound_Interaction__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Initial_Request_Sent_To_Addresses__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Mobile_Phone__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Most_Recent_Functional_Group__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Most_Recent_Queue__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Needs_Attention__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Number_of_Files__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Opportunity_Created__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Opportunity_Stage__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Opportunity_TA_Last_Rule_Type__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Opportunity_Term__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Opportunity_Type__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Opportunity__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Origin__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Original_Category__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Original_Functional_Group__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Possible_Recruitment_Related__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Private_Note_Financial_Aid__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Private_Note_Graduate_Admissions__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Private_Note_Registrar__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Private_Note_Student_Business_Services__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Processing_Status__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Recruiter_Follow_Up__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Recruiter__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Running_User_Is_Contact__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.SEED__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Student_Visa__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Sub_Category_Display__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Sub_Category__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Thunderbird__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Visible_by_Contact__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.Web_Submission__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.What_term_is_the_student_planning_to_ret__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.X1_Please_rate_the_speed_with_which_we__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.X1_speed_Number_Value__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.X2_knowledge_Number_Value__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.X2_knowledge__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.X3_attitude_Number_Value__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.X3_attitude__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.X4_overall_satisfaction_Number_Value__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.X4_overall_satisfaction__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>Case.X5_additional_feedback__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.reason_the_student_will_not_return_this__c</field>
         <readable>true</readable>
@@ -377,7 +377,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>Case_Assignment_Rule__c</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>
         <allowEdit>true</allowEdit>
@@ -546,6 +546,9 @@
         <visible>false</visible>
     </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Task.User_Task_Layout</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities><recordTypeVisibilities>
+        <recordType>Success_Resource_Pod_Association__c.Advisor</recordType>
         <visible>false</visible>
     </recordTypeVisibilities><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>AKB_Article_Feedback__c</tab>
@@ -724,8 +727,14 @@
     </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-Solution</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>et4ae5__Automated_Send__c</tab>
+        <visibility>None</visibility>
+    </tabSettings><tabSettings>
+        <tab>IDHelper</tab>
+        <visibility>None</visibility>
+    </tabSettings><tabSettings>
+        <tab>Success_Resource_Pod_Association__c</tab>
         <visibility>None</visibility>
     </tabSettings><userPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <enabled>true</enabled>

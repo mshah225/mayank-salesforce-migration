@@ -1,32 +1,32 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- ASURITE --></label>
         <name>ASURiteID__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- AgentID --></label>
         <name>AgentID__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Committee Code --></label>
         <name>Committee_Code__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Delegated Resource --></label>
         <name>Delegated_Resource__c</name>
         <relationshipLabel><!-- Success Resources (Delegated Resource) --></relationshipLabel>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Delegated UserId --></label>
         <name>Delegated_UserId__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- EMPLID --></label>
         <name>EMPLID__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Active Resource --></label>
         <name>IsActive__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Messaging Account Created --></label>
         <name>Messaging_Account_Created__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Military Coach --></label>
         <name>Military_Coach__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Plan Code --></label>
         <name>Plan_Code__c</name>
         <picklistValues>
@@ -625,13 +625,13 @@
             <masterLabel>Unknown0</masterLabel>
             <translation><!-- Unknown0 --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Primary Email --></label>
         <name>Primary_Email__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Primary Phone --></label>
         <name>Primary_Phone__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <help><!-- Used to tie an Advisor Manager to multiple PODs (Queues) for viewing as access. One of these values must match a value in a POD&apos;s Program__c field. --></help>
         <label><!-- Program Code --></label>
         <name>Program_Code__c</name>
@@ -687,13 +687,26 @@
             <masterLabel>UGTE</masterLabel>
             <translation><!-- UGTE --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Resource Name --></label>
         <name>Resource_Name__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Resource --></label>
         <name>Resource__c</name>
         <relationshipLabel><!-- Success Resources (Resource) --></relationshipLabel>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <label><!-- Secondary Email --></label>
+        <name>Secondary_Email__c</name>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <label><!-- Secondary Phone --></label>
+        <name>Secondary_Phone__c</name>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <label><!-- Success Pod --></label>
+        <name>Success_Pod__c</name>
+        <relationshipLabel><!-- Success Resources --></relationshipLabel>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <label><!-- UserId --></label>
+        <name>UserId__c</name>
     </fields><fields>
         <label><!-- Resource Role --></label>
         <name>Role__c</name>
@@ -702,12 +715,20 @@
             <translation><!-- Admin --></translation>
         </picklistValues>
         <picklistValues>
+            <masterLabel>College Manager</masterLabel>
+            <translation><!-- College Manager --></translation>
+        </picklistValues>
+        <picklistValues>
             <masterLabel>College Outreach</masterLabel>
             <translation><!-- College Outreach --></translation>
         </picklistValues>
         <picklistValues>
             <masterLabel>Dean</masterLabel>
             <translation><!-- Dean --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Department Manager</masterLabel>
+            <translation><!-- Department Manager --></translation>
         </picklistValues>
         <picklistValues>
             <masterLabel>Lead</masterLabel>
@@ -726,25 +747,10 @@
             <translation><!-- User --></translation>
         </picklistValues>
     </fields><fields>
-        <label><!-- Secondary Email --></label>
-        <name>Secondary_Email__c</name>
-    </fields><fields>
-        <label><!-- Secondary Phone --></label>
-        <name>Secondary_Phone__c</name>
-    </fields><fields>
-        <label><!-- Success Pod --></label>
-        <name>Success_Pod__c</name>
-        <relationshipLabel><!-- Success Resources --></relationshipLabel>
-    </fields><fields>
-        <label><!-- UserId --></label>
-        <name>UserId__c</name>
-    </fields><caseValues>
-        <plural>false</plural>
-        <value>Success Resource</value>
-    </caseValues><caseValues>
-        <plural>true</plural>
-        <value>Success Resources</value>
-    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <help><!-- Number of Success Resource Pod Association records this Resource has. --></help>
+        <label><!-- Success Resource Pod Association Count --></label>
+        <name>Success_Resource_Pod_Association_Count__c</name>
+    </fields><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Success Resource Admin Layout</layout>
         <sections>
             <label><!-- Advisor Fields --></label>
@@ -762,13 +768,13 @@
             <label><!-- Used for matching Students --></label>
             <section>Used for matching Students</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Success Resource Advisor Layout</layout>
         <sections>
             <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Success Resource Coach Layout</layout>
         <sections>
             <label><!-- Custom Links --></label>
@@ -778,7 +784,7 @@
             <label><!-- Delegated Resource --></label>
             <section>Delegated Resource</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Success Resource Layout</layout>
         <sections>
             <label><!-- Custom Links --></label>
@@ -788,10 +794,10 @@
             <label><!-- Delegated Resource --></label>
             <section>Delegated Resource</section>
         </sections>
-    </layouts><recordTypes>
+    </layouts><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Advisor --></label>
         <name>Advisor</name>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Coach --></label>
         <name>Coach</name>
     </recordTypes></CustomObjectTranslation>

@@ -123,30 +123,14 @@
         <field>Case_Creation_Indicator__c.Academic_Status_Report__c</field>
         <readable>true</readable>
     </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
-    <editable>false</editable>
-    <readable>false</readable>
-    <field>Case_Creation_Indicator__c.Case_Number__c</field>
-</fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
-    <editable>false</editable>
-    <readable>false</readable>
-    <field>Case_Creation_Indicator__c.Case_Status__c</field>
-</fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case_Creation_Indicator__c.Case_Type__c</field>
         <readable>true</readable>
     </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
-    <editable>false</editable>
-    <readable>false</readable>
-    <field>Case_Creation_Indicator__c.Case__c</field>
-</fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case_Creation_Indicator__c.Class_Nbr__c</field>
         <readable>true</readable>
     </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
-    <editable>false</editable>
-    <readable>false</readable>
-    <field>Case_Creation_Indicator__c.Contact__c</field>
-</fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case_Creation_Indicator__c.Course_Code__c</field>
         <readable>true</readable>
@@ -542,155 +526,155 @@
         <editable>true</editable>
         <field>Success_Student__c.Success_Resource__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>Case.Visible_by_Contact__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.ASURITE_Id__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.ASURITE_for_External_ID__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Admin_Notes__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Contact_First_Name__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Contact_Last_Name__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.EmplId__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.MC_Business_Unit_User__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Recruiter_Email__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Recruiter_Full_Name__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Recruiter_Phone__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Recruiter_Title__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Academic_Advisor_Portal__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Administrator_Developer__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Case_Management__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Chatter__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Corporate_Relations__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_EdPlus_Coach_Portal__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Export_Reports__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Knowledge__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Marketing_Cloud__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Quick_Text_Manager__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Recruiting__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Recruitment_Communications__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_Standard_Student_Pages__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Role_inContact_User_License__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Sandbox_DEV__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Sandbox_Delagated_Administrator__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Sandbox_QA__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.Sandbox_UAT__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.bomgar__Bomgar_Username__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.et4ae5__Default_ET_Page__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.et4ae5__ExactTargetForAppExchangeAdmin__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.et4ae5__ExactTargetForAppExchangeUser__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.et4ae5__ExactTargetUsername__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.et4ae5__ValidExactTargetAdmin__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.et4ae5__ValidExactTargetUser__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>false</editable>
         <field>User.icAgentConsole__incCustomScreenpop__c</field>
         <readable>true</readable>
@@ -733,14 +717,6 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>Case_Assignment_Rule__c</object>
-        <viewAllRecords>true</viewAllRecords>
-    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
-        <object>Case_Creation_Indicator__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
@@ -1086,7 +1062,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>Test_Score__c</object>
         <viewAllRecords>true</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1094,7 +1070,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>ASU_STDNT_RETENTION_SNP__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1102,7 +1078,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>ASU_STDNT_RETENTION__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>
         <allowEdit>true</allowEdit>
@@ -1110,7 +1086,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>Case</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1118,7 +1094,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>DuplicateRecordSet</object>
         <viewAllRecords>true</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1126,7 +1102,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>FAQ__kav</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1134,7 +1110,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>How_To__kav</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1142,7 +1118,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>Informational__kav</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1150,7 +1126,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>JBT_RET_CLASS_XFER__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1158,7 +1134,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>JBT_RET_GENERAL_RIGHT__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1166,7 +1142,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>JBT_RET_PROFILE_HEADER_VW__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1174,7 +1150,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>Macro</object>
         <viewAllRecords>true</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1182,7 +1158,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>PS_ASU_SP_SUBPLANV__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1190,7 +1166,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>PS_ASU_SP_TRNSFR_V__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1198,7 +1174,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>PS_ASU_SR_COL_PLAN__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1206,7 +1182,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>PS_ASU_SR_INDASR_V__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1214,7 +1190,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>PS_STDNT_TEST_COMP__x</object>
         <viewAllRecords>false</viewAllRecords>
-    </objectPermissions><objectPermissions>
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
@@ -1222,7 +1198,15 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>StreamingChannel</object>
         <viewAllRecords>true</viewAllRecords>
-    </objectPermissions><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
+    </objectPermissions><objectPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
+    <object>Case_Creation_Indicator__c</object>
+    <allowCreate>false</allowCreate>
+    <allowDelete>false</allowDelete>
+    <allowEdit>false</allowEdit>
+    <allowRead>false</allowRead>
+    <modifyAllRecords>false</modifyAllRecords>
+    <viewAllRecords>false</viewAllRecords>
+</objectPermissions><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Account.External_Mastered_Contact</recordType>
         <visible>false</visible>
     </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
@@ -1383,6 +1367,9 @@
         <visible>false</visible>
     </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <recordType>Task.User_Task_Layout</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities><recordTypeVisibilities>
+        <recordType>Success_Resource_Pod_Association__c.Advisor</recordType>
         <visible>false</visible>
     </recordTypeVisibilities><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>AKB_Article_Feedback__c</tab>
@@ -1606,8 +1593,14 @@
     </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-UserProvisioningRequest</tab>
         <visibility>None</visibility>
-    </tabSettings><tabSettings>
+    </tabSettings><tabSettings xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>et4ae5__Automated_Send__c</tab>
+        <visibility>None</visibility>
+    </tabSettings><tabSettings>
+        <tab>IDHelper</tab>
+        <visibility>None</visibility>
+    </tabSettings><tabSettings>
+        <tab>Success_Resource_Pod_Association__c</tab>
         <visibility>None</visibility>
     </tabSettings><userPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <enabled>true</enabled>
@@ -1624,10 +1617,10 @@
     </userPermissions><userPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <enabled>true</enabled>
         <name>ViewSetup</name>
-    </userPermissions><userPermissions>
+    </userPermissions><userPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <enabled>true</enabled>
         <name>ManageCases</name>
-    </userPermissions><userPermissions>
+    </userPermissions><userPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <enabled>true</enabled>
         <name>TransferAnyCase</name>
     </userPermissions></PermissionSet>

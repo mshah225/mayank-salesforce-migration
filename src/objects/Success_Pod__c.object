@@ -51,7 +51,7 @@
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Committee__c</fullName>
         <description>for import of Advising Committee</description>
         <externalId>false</externalId>
@@ -62,7 +62,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plans__c</fullName>
         <description>This is used for Coach Assignment and Advisor Manager access. The Advisor Manager record should have one of these Plan Code values in the Success_Resource.Plan_Code__c field in order to have access to this POD's queue.</description>
         <externalId>false</externalId>
@@ -353,7 +353,7 @@
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>4</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Program__c</fullName>
         <description>This is used for Coach Assignment and Advisor Manager access. The Advisor Manager record should have one of these Program Code values in the Success_Resource_Program_Code__c field in order to have access to this POD's queue.</description>
         <externalId>false</externalId>
@@ -427,6 +427,28 @@
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>5</visibleLines>
+    </fields><fields>
+        <fullName>Email_Template__c</fullName>
+        <description>The name of the email template for this pod in MC</description>
+        <externalId>false</externalId>
+        <label>Email Template</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Success_Resource_Pod_Association_Count__c</fullName>
+        <description>Counts the number of Success Resource Pod Association records this Pod has.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of Success Resource Pod Association record for this pod.</inlineHelpText>
+        <label>Success Resource Pod Association Count</label>
+        <summaryForeignKey>Success_Resource_Pod_Association__c.Success_Pod__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
     </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><description>Used to allow grouping of Success Resources.</description><enableActivities>false</enableActivities><enableBulkApi>true</enableBulkApi><enableEnhancedLookup>true</enableEnhancedLookup><enableFeeds>false</enableFeeds><enableHistory>true</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>ReadWrite</externalSharingModel><label>Success Pod</label><nameField>
         <label>Success Pod ID</label>
         <trackHistory>false</trackHistory>
@@ -3303,7 +3325,7 @@
         <sharedTo>
             <allInternalUsers></allInternalUsers>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>UGTE15_Success_Pod</fullName>
         <filterScope>Queue</filterScope>
         <label>UGTE15</label>
@@ -3311,11 +3333,59 @@
         <sharedTo>
             <allInternalUsers></allInternalUsers>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>UGTE16_Success_Pod</fullName>
         <filterScope>Queue</filterScope>
         <label>UGTE16</label>
         <queue>UGTE16</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews><listViews>
+        <fullName>UGBA52_Success_Pod</fullName>
+        <filterScope>Queue</filterScope>
+        <label>UGBA52</label>
+        <queue>UGBA52</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews><listViews>
+        <fullName>UGBA53_Success_Pod</fullName>
+        <filterScope>Queue</filterScope>
+        <label>UGBA53</label>
+        <queue>UGBA53</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews><listViews>
+        <fullName>UGBACA_Success_Pod</fullName>
+        <filterScope>Queue</filterScope>
+        <label>UGBACA</label>
+        <queue>UGBACA</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews><listViews>
+        <fullName>UGNHDA_Success_Pod</fullName>
+        <filterScope>Queue</filterScope>
+        <label>UGNHDA</label>
+        <queue>UGNHDA</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews><listViews>
+        <fullName>UGNHDB_Success_Pod</fullName>
+        <filterScope>Queue</filterScope>
+        <label>UGNHDB</label>
+        <queue>UGNHDB</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews><listViews>
+        <fullName>UGNHTC_Success_Pod</fullName>
+        <filterScope>Queue</filterScope>
+        <label>UGNHTC</label>
+        <queue>UGNHTC</queue>
         <sharedTo>
             <allInternalUsers></allInternalUsers>
         </sharedTo>

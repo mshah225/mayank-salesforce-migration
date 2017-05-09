@@ -20,4 +20,5 @@
     <tab>Success_Resource__c</tab>
     <tab>Success_Resource_Plan__c</tab>
     <tab>Test_Engagement_Contacts__c</tab>
+    <tab>Success_Resource_Pod_Association__c</tab>
 </CustomApplication>

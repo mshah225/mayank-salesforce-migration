@@ -49,7 +49,12 @@ public class AdvisorPortalMainPageController {
 				// Insert The committees for which I am a manager
                 if (mySubordinateCommittees.size() > 0) {
                     viewAsOptions.add(new selectOption('', '', true));
-                    viewAsOptions.add(new selectOption('', '--College Committees--', true));
+                    
+                    if (myRole == 'Department Manager') {
+                        viewAsOptions.add(new selectOption('', '--Department Committees--', true));
+                    } else if (myRole == 'College Manager') {
+                        viewAsOptions.add(new selectOption('', '--College Committees--', true));
+                    }
                     
                     for (Id i : mySubordinateCommittees.keySet()) {
                         viewAsOptions.add(new selectOption(i, mySubordinateCommittees.get(i)));
@@ -59,7 +64,12 @@ public class AdvisorPortalMainPageController {
 				// Insert all of the users for all of the comittees for which I am a manager
                 if (mySubordinates.size() > 0) {
                     viewAsOptions.add(new selectOption('', '', true));
-                    viewAsOptions.add(new selectOption('', '--College Advisors--', true));
+                    
+                    if (myRole == 'Department Manager') {
+                        viewAsOptions.add(new selectOption('', '--Department Advisors--', true));
+                    } else if (myRole == 'College Manager') {
+                        viewAsOptions.add(new selectOption('', '--College Advisors--', true));
+                    }
                     
                     for (Id i : mySubordinates.keySet()) {
                         viewAsOptions.add(new selectOption(i, mySubordinates.get(i)));
@@ -84,23 +94,18 @@ public class AdvisorPortalMainPageController {
                 Set<Id> myPodIds = new Set<Id>();
             	myCommittees = new Map<Id, String>();
                 
-                system.debug('myResources: ' + string.valueOf(myResources));
-                
                 for (Success_Resource__c sr : myResources) {
-                    myPodIds.add(sr.Success_Pod__c);
-                }
-                
-                for (Success_Pod__c sp : [SELECT Name, OwnerId, Committee__c
-                    FROM Success_Pod__c
-                    WHERE Id IN :myPodIds
-                    ORDER BY Name ASC]) {
-                    committeeDisplayName = sp.Name;
-                    
-                    if (sp.Committee__c != null && sp.Committee__c != '') {
-                        committeeDisplayName = committeeDisplayName + ' - ' + sp.Committee__c;
+                    if (sr.Role__c == 'User') {
+                        for (Success_Resource_Pod_Association__c srpa : sr.Success_Resource_Pod_Associations__r) {
+                            committeeDisplayName = srpa.Success_Pod__r.Name;
+                            
+                            if (srpa.Success_Pod__r.Committee__c != null && srpa.Success_Pod__r.Committee__c != '') {
+                                committeeDisplayName = committeeDisplayName + ' - ' + srpa.Success_Pod__r.Committee__c;
+                            }
+                            
+                            myCommittees.put(srpa.Success_Pod__r.OwnerId, committeeDisplayName);
+                        }
                     }
-                        
-                    myCommittees.put(sp.OwnerId, committeeDisplayName);
                 }
             }
             
@@ -113,21 +118,21 @@ public class AdvisorPortalMainPageController {
     /*
      * List of the committees for which I am a manager/admin
      */
-    private Map<Id, String> mySubordinateCommittees {
+    public Map<Id, String> mySubordinateCommittees {
         get {
             String committeeDisplayName;
             
             if (mySubordinateCommittees == null) {
                 mySubordinateCommittees = new Map<Id, String>();
                 
-                for (Success_Pod__c sp : mySubordinatePods) {
-                    committeeDisplayName = sp.Name;
+                for (Success_Resource_Pod_Association__c srpa : mySubordinatePods.values()) {
+                    committeeDisplayName = srpa.Success_Pod__r.Name;
                     
-                    if (sp.Committee__c != '' && sp.Committee__c != null) {
-                    	committeeDisplayName = committeeDisplayName + ' - ' + sp.Committee__c;
+                    if (srpa.Success_Pod__r.Committee__c != '' && srpa.Success_Pod__r.Committee__c != null) {
+                    	committeeDisplayName = committeeDisplayName + ' - ' + srpa.Success_Pod__r.Committee__c;
                     }
                     
-                    mySubordinateCommittees.put(sp.OwnerId, committeeDisplayName);
+                    mySubordinateCommittees.put(srpa.Success_Pod__r.OwnerId, committeeDisplayName);
                 }
             }
             
@@ -140,30 +145,16 @@ public class AdvisorPortalMainPageController {
     /*
      * List of my subordinate pods. To be converted into comittees and resources.
      */
-    private List<Success_Pod__c> mySubordinatePods {
+    public Map<Id, Success_Resource_Pod_Association__c> mySubordinatePods {
         get {
             if (mySubordinatePods == null) {
-                mySubordinatePods = new List<Success_Pod__c>();
+                mySubordinatePods = new Map<Id, Success_Resource_Pod_Association__c>();
                 
-                if (myAdminProgramCodes.size() > 0) {
-                    String query = ''; // The completed query
-                    String queryFront = 'SELECT OwnerId, Name, Committee__c ' +
-                        'FROM Success_Pod__c ' +
-                        'WHERE Program__c INCLUDES ('; // The beginning of the query
-                    String queryBack = ') ORDER BY Name ASC'; // The end of the query
-                    
-                    query = queryFront;
-                    
-                    for (String s : myAdminProgramCodes) {
-                        query += '\'' + s + '\',';
-                    }
-                    
-                    query = query.left(query.length()-1);
-                    
-                    query += queryBack;
-                    
-                    for (Success_Pod__c sp : database.query(query)) {
-                        mySubordinatePods.add(sp);
+                for (Success_Resource__c sr : myResources) {
+                    if (sr.Role__c == 'College Manager' || sr.Role__c == 'Department Manager') {
+                        for (Success_Resource_Pod_Association__c srpa : sr.Success_Resource_Pod_Associations__r) {
+                            mySubordinatePods.put(srpa.Id, srpa);
+                        }
                     }
                 }
             }
@@ -177,7 +168,7 @@ public class AdvisorPortalMainPageController {
     /*
      * List of my subordinates
      */
-    private Map<Id, String> mySubordinates {
+    public Map<Id, String> mySubordinates {
         get {
             String subordinateDisplayName;
             
@@ -185,20 +176,23 @@ public class AdvisorPortalMainPageController {
                 Set<Id> podIds = new Set<Id>();
                 mySubordinates = new Map<Id, String>();
                 
-                for (Success_Pod__c sp : mySubordinatePods) {
-                    podIds.add(sp.Id);
+                for (Success_Resource_Pod_Association__c srpa : mySubordinatePods.values()) {
+                    podIds.add(srpa.Success_Pod__c);
                 }
                 
-                for (Success_Resource__c sr : [SELECT Resource__c, Resource_Name__c, Resource__r.Alias
-                    FROM Success_Resource__c
+                for (Success_Resource_Pod_Association__c srpa : [
+                    SELECT Success_Resource__r.Resource__c, Success_Resource__r.Resource__r.Name, Success_Resource__r.Resource__r.Alias
+                    FROM Success_Resource_Pod_Association__c
                     WHERE Success_Pod__c IN :podIds
-                    ORDER BY Resource_Name__c ASC]) {
-                    subordinateDisplayName = sr.Resource_Name__c;
+                    ORDER BY Success_Resource__r.Resource__r.Name ASC
+                ]) {
+                    subordinateDisplayName = srpa.Success_Resource__r.Resource__r.Name;
                         
-                    if (sr.Resource__r.Alias != null && sr.Resource__r.Alias != '') {
-                        subordinateDisplayName = subordinateDisplayName + ' - ' + sr.Resource__r.Alias;
+                    if (srpa.Success_Resource__r.Resource__r.Alias != null && srpa.Success_Resource__r.Resource__r.Alias != '') {
+                        subordinateDisplayName = subordinateDisplayName + ' - ' + srpa.Success_Resource__r.Resource__r.Alias;
                     }
-                    mySubordinates.put(sr.Resource__c, subordinateDisplayName);
+                    
+                    mySubordinates.put(srpa.Success_Resource__r.Resource__c, subordinateDisplayName);
                 }
             }
             
@@ -211,10 +205,15 @@ public class AdvisorPortalMainPageController {
     /*
      * List of my resources
      */
-    private List<Success_Resource__c> myResources {
+    public List<Success_Resource__c> myResources {
         get {
             if (myResources == null) {
-                myResources = [SELECT Success_Pod__c, Success_Pod__r.OwnerId, Program_Code__c, Role__c 
+                myResources = [
+                    SELECT Role__c,
+                    (
+                        SELECT Success_Pod__c, Success_Pod__r.OwnerId, Success_Pod__r.Name, Success_Pod__r.Committee__c
+                        FROM Success_Resource_Pod_Associations__r
+                    )
                 	FROM Success_Resource__c
                 	WHERE Resource__c = :UserInfo.getUserId()
                 	AND IsActive__c = true
@@ -228,27 +227,25 @@ public class AdvisorPortalMainPageController {
     }
     
     /*
-     * Generates a list of all program codes that the user is an admin/manager for
+     * Returns the highest level of access granted by this users resources
      */
-    private List<String> myAdminProgramCodes {
+    public String myRole {
         get {
-            if (myAdminProgramCodes == null) {
-                string tempCode; // temporarily stores program code field for splitting
+            if (myRole == null) {
+                Map<String, Integer> roleMap = new Map<String, Integer>();
+            	roleMap.put('College Manager', 3);
+                roleMap.put('Department Manager', 2);
+                roleMap.put('User', 1);
                 
-                myAdminProgramCodes = new List<String>();
-                
+                myRole = 'User';
                 for (Success_Resource__c sr : myResources) {
-                    if (sr.Role__c == 'Admin' || sr.Role__c == 'Manager') {
-                        tempCode = sr.Program_Code__c;
-                        
-                        for (String s : tempCode.split(';')) {
-                            myAdminProgramCodes.add(s);
-                        }
+                    if (roleMap.get(myRole) < roleMap.get(sr.Role__c)) {
+                        myRole = sr.Role__c;
                     }
                 }
             }
             
-            return myAdminProgramCodes;
+            return myRole;
         }
         
         set;
@@ -272,7 +269,7 @@ public class AdvisorPortalMainPageController {
     public Id AdvisorProactiveCaseRTID {
         get {
             if (AdvisorProactiveCaseRTID == null) {
-                AdvisorProactiveCaseRTID = RTIDHelper.getRTID('Case', 'ASU Advisor Outreach');
+                AdvisorProactiveCaseRTID = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach');
             }
             
             return AdvisorProactiveCaseRTID;
@@ -284,7 +281,7 @@ public class AdvisorPortalMainPageController {
     public Id advisorEmailRTID {
         get {
             if (advisorEmailRTID == null) {
-                advisorEmailRTID = RTIDHelper.getRTID('Portal_Email__c', 'Advisor');
+                advisorEmailRTID = IDHelper.getRTID('Portal_Email__c', 'Advisor');
             }
             
             return advisorEmailRTID;
@@ -296,7 +293,7 @@ public class AdvisorPortalMainPageController {
     public Id AdvisorReactiveCaseRTID {
         get {
             if (AdvisorReactiveCaseRTID == null) {
-                AdvisorReactiveCaseRTID = RTIDHelper.getRTID('Case', 'ASU Service');
+                AdvisorReactiveCaseRTID = IDHelper.getRTID('Case', 'ASU_Service');
             }
             
             return AdvisorReactiveCaseRTID;
@@ -314,7 +311,7 @@ public class AdvisorPortalMainPageController {
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
-                    'AND isClosed = false';
+                    'AND isClosed = false ORDER BY Contact.LastName ASC';
             }
             
             return myProactiveQuery;
@@ -334,7 +331,7 @@ public class AdvisorPortalMainPageController {
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
                     'AND Category__c = \'Watchlist\'' +
-                    'AND isClosed = false';
+                    'AND isClosed = false ORDER BY Contact.LastName ASC';
             }
             
             return myWatchlistQuery;
@@ -352,7 +349,7 @@ public class AdvisorPortalMainPageController {
                 myStudentsQuery = 'SELECT Student_Name__c, EMPLID__c, Student__c, Student__r.FirstName, Student__r.LastName ' +
                     'FROM Success_Student__c ' +
                     'WHERE Success_Pod__r.OwnerId = \'' + ownerId + '\' ' +
-                        'AND Is_Active__c = true';
+                        'AND Is_Active__c = true ORDER BY Student_Name__c ASC';
             }
             
             return myStudentsQuery;

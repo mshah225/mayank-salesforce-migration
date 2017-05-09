@@ -1,6 +1,6 @@
 global with sharing class StudentProfileController
 {
-    // Error Logger Variables
+    // Error Logger Variables 
     private static boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
     
@@ -11,12 +11,17 @@ global with sharing class StudentProfileController
 
     public Contact theContact { get; set; }
     public List<Case> openCases { get; set; }
+    // public List<Financial_Aid_Package__c> fapList { get; set; }
+    // public List<Service_Indicator__c> sIList { get; set; }
     public List<PS_ASU_SP_SVCIND_V__x> sIList { get; set; }
+    // public List<Student_Account__c> saList { get; set; }
     public List<Student_Group__c> sGroupList { get; set; }
     public List<Student_Program_Plan__c> allProgramPlans { get; set; }
     public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
     public List<Student_Program_Plan__c> gradProgramPlans { get; set; }
     public Student_Program_Plan__c primaryProgramPlan { get; set; }
+    public Student_Program_Subplan__c subProgramPlan {get; set;}
+    // public List<Test_Score__c> testScoreList { get; set; }
     public Student_Program_Plan__c programPlan { get; set; }
     public JBT_RET_GENERAL_RIGHT__x studentProgram { get; set; }
     public JBT_RET_GENERAL_RIGHT__x ugStudentProgram { get; set; }
@@ -63,12 +68,6 @@ global with sharing class StudentProfileController
         } else {
             URLParamsExistAndAreValid = false;
         }
-        
-        try {
-            // profileHeader = getProfileHeader(contactId);
-        } catch (Exception e) {
-            System.debug(e.getMessage());
-        }  
     }
     
     /**
@@ -84,7 +83,7 @@ global with sharing class StudentProfileController
      */
     public pageReference init() {
         vars = new List<String>(); // Used to pass variable values to the error logger
-
+        
         try {
             if (URLParamsExistAndAreValid) {
                 if (isContactId) {
@@ -102,15 +101,23 @@ global with sharing class StudentProfileController
                 // Initialize the lists 
                 openCases = new List<Case>();
                 sGroupList = new List<Student_Group__c>();
+                // saList = new List<Student_Account__c>();
+                // fapList = new List<Financial_Aid_Package__c>();
+                // testScoreList = new List<Test_Score__c>();
+                sIList = new List<PS_ASU_SP_SVCIND_V__x>();
                 allProgramPlans = new List<Student_Program_Plan__c>();
                 deceased = '';
                 
                 // Start populating the lists
                 openCases = CaseService.getAllOpenCases(theContact.Id);
                 sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
-                getServiceIndicators();
-                System.debug(sIList);
+                // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
+                // testScoreList = TestScoreService.getTestScores(theContact.Id);
+                // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
+        
+                // TODO: Find out about this list. It may just be a single object.
+                // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
         
                 /*
                 * Handling for nulls. Get the Objects as Lists from the different services first.
@@ -131,8 +138,7 @@ global with sharing class StudentProfileController
                         }
                     }                   
                 }
-
-                // getTermInfo();
+                
                 ugProgramPlans = new List<Student_Program_Plan__c>();
                 gradProgramPlans = new List<Student_Program_Plan__c>();
                 primaryProgramPlan =  new Student_Program_Plan__c();
@@ -149,7 +155,16 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-
+                
+                List<Student_Program_Subplan__c> tmpSubPlanList = [
+                    			  Select Subplan_description__c
+                                  FROM Student_Program_Subplan__c
+                                  WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
+                ];
+                if(tmpSubPlanList.size() > 0){
+                    subProgramPlan = tmpSubPlanList[0];  
+                }
+                
                 // Temporary solution for beta release; setting currentTerm to a hard-coded value
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
@@ -196,18 +211,8 @@ global with sharing class StudentProfileController
         return suncardPhotoURL;
     }
 
-    @RemoteAction
-    // Method to get Current Term and Next Term infos
-    global static List<String> getTermInfo()
+    private void getTermInfo()
     {
-    	String currentTerm;
-    	String nextTerm;
-    	String currentTermName;
-    	String nextTermName;
-    	List<String> termNames = new List<String>();
-    	termNames.add('');
-    	termNames.add('');
-
         vars = new List<String>();
         List<JBT_RET_TERMS_VW__x> termInfoList;
        
@@ -249,18 +254,13 @@ global with sharing class StudentProfileController
                     currentTermName = term.Name;
                 else if (term.PeopleSoft_Code__c == nextTerm)
                     nextTermName = term.Name;    
-            }  
-
-            termNames[0] = currentTermName;
-            termNames[1] = nextTermName;
-    	}
-
-    	return termNames;
+            }            
+        }
     }
 
     @RemoteAction
     // Get JBT_RET_PROFILE_HEADER_VW__x data
-    global static List<JBT_RET_PROFILE_HEADER_VW__x> getProfileHeader(String emplId)
+    global static JBT_RET_PROFILE_HEADER_VW__x getProfileHeader(String emplId)
     {
         vars = new List<String>();
         List<JBT_RET_PROFILE_HEADER_VW__x> headerlist;
@@ -283,7 +283,14 @@ global with sharing class StudentProfileController
             ErrorLogger.log(e, vars, debug);
         }
 
-        return headerList.size() > 0 ? headerList : new List<JBT_RET_PROFILE_HEADER_VW__x>(); 
+        if (headerList.size() > 0)
+        {
+            return headerList[0];
+        }
+        else
+        {
+            return new JBT_RET_PROFILE_HEADER_VW__x();
+        }  
     }
 
     @RemoteAction
@@ -715,6 +722,9 @@ global with sharing class StudentProfileController
     {
         vars = new List<String>();
         List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList;
+        
+        // Temporary while database issues are investigated
+        //return new List<JBT_RET_GENERAL_RIGHT__x>();
             
         // Build out list to avoid de-reference null object errors.
         try {
@@ -740,12 +750,13 @@ global with sharing class StudentProfileController
             ErrorLogger.log(e, vars, debug);
         }
         
-        return (studentProgramDataList.size() > 0 ? studentProgramDataList : new List<JBT_RET_GENERAL_RIGHT__x>());
-    }
+        return (studentProgramDataList.size()>0 ? studentProgramDataList : new List<JBT_RET_GENERAL_RIGHT__x>());
+    }    
 
+   
     @RemoteAction
     // Get JBT_RET_GENERAL_LEFT__x data 
-    global static List<JBT_RET_GENERAL_LEFT__x> getStudentDemographicData(String emplId)
+    global static JBT_RET_GENERAL_LEFT__x getStudentDemographicData(String emplId)
     {
         vars = new List<String>();
         List<JBT_RET_GENERAL_LEFT__x> studentDemographicDataList;
@@ -771,7 +782,7 @@ global with sharing class StudentProfileController
             ErrorLogger.log(e, vars, debug);
         }
 
-        return (studentDemographicDataList.size() > 0 ? studentDemographicDataList : new List<JBT_RET_GENERAL_LEFT__x>());
+        return (studentDemographicDataList.size()>0 ? studentDemographicDataList[0] : new JBT_RET_GENERAL_LEFT__x());
     }       
 
 
@@ -1136,6 +1147,7 @@ global with sharing class StudentProfileController
             wrapper.faBalance = balanceList[0];
 
         List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
+        System.debug('Balance: ' + wrapper.faBalance.BALANCE_AMT__c);
         if (!snpRecords.isEmpty())
         {
             wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;
@@ -1172,23 +1184,28 @@ global with sharing class StudentProfileController
         return (financesPackageList.size() > 0? financesPackageList : new List<Financial_Aid_Package__c>());
     } 
 
-    global void getServiceIndicators()
+    @RemoteAction
+    // Get Service Indicators as a list
+    global static List<PS_ASU_SP_SVCIND_V__x> getServiceIndicators(String emplId)
     {
+        //Temporary
+        //return new List<PS_ASU_SP_SVCIND_V__x>();
 
-        List<PS_ASU_SP_SVCIND_V__x> serviceIndicatorList = new List<PS_ASU_SP_SVCIND_V__x>();
+        List<PS_ASU_SP_SVCIND_V__x> serviceIndicatorList;
         
-        try {            
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
             serviceIndicatorList =
             (
                 Test.isRunningTest() ? new List<PS_ASU_SP_SVCIND_V__x>() :
                 [
                     SELECT ACAD_CAREER__c, ADMIT_TERM__c, DESCR__c, DisplayUrl, EMPLID__c, ExternalId, 
-                    	Id, POS_SRVC_INDICATOR__c, REASON_DESCR__c, SCC_SI_END_DT__c, SCC_SI_END_TERM__c, 
-                    	SRVC_IND_ACT_TERM__c, SRVC_IND_ACTIVE_DT__c, SRVC_IND_CD__c, SRVC_IND_DTTM__c 
+                           Id, POS_SRVC_INDICATOR__c, REASON_DESCR__c, SCC_SI_END_DT__c, SCC_SI_END_TERM__c, 
+                           SRVC_IND_ACT_TERM__c, SRVC_IND_ACTIVE_DT__c, SRVC_IND_CD__c, SRVC_IND_DTTM__c 
                     FROM PS_ASU_SP_SVCIND_V__x
-                    WHERE EMPLID__c = :contactId
-                    AND POS_SRVC_INDICATOR__c = 'N'
-                    AND ACAD_CAREER__c != 'NOCR'
+                    WHERE EMPLID__c = :emplId
+                      AND POS_SRVC_INDICATOR__c = 'N'
                     ORDER BY SRVC_IND_ACTIVE_DT__c ASC, SRVC_IND_CD__c ASC
                 ]
             );
@@ -1196,7 +1213,7 @@ global with sharing class StudentProfileController
             ErrorLogger.log(e, vars, debug);
         }
 
-        sIList = serviceIndicatorList;
+        return (serviceIndicatorList.size() > 0? serviceIndicatorList : new List<PS_ASU_SP_SVCIND_V__x>());
     }    
 
     // Wrapper for financial aid data
@@ -1372,7 +1389,7 @@ global with sharing class StudentProfileController
                 [SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c
                  FROM   PS_ASU_SP_ENRHLD_V__x
                  WHERE  EMPLID__c = :emplid
-                   AND  STRM__c = :currentTerm 
+                 AND  STRM__c = :currentTerm 
                 ]
             );
         } catch (Exception e) {

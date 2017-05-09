@@ -42,7 +42,7 @@
                 <apex:tab label="My Students" switchType="client"
                           styleClass="wsTabContent" id="studentsTab">
                     <c:showMyStudents queryString="{!myStudentsQuery}"  proactiveRTID="{!AdvisorProactiveCaseRTID}"
-                                      emailRTID="{!advisorEmailRTID}" />
+                                      emailRTID="{!advisorEmailRTID}"/>
                 </apex:tab>
             </apex:tabPanel>
         </apex:outputPanel>
@@ -50,5 +50,5 @@
     
     <apex:includeScript value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"/>
     <apex:includeScript value="/support/console/38.0/integration.js"/>
-    <c:ASUAjaxStatus />
+    <c:ASUAjaxStatus suppressStop="true" />
 </apex:page>

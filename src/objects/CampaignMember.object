@@ -1,31 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>AddCampaign</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Clone</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>ConvertLead</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Create_Opportunity</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Delete</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Edit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>View</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Amount__c</fullName>
         <externalId>false</externalId>
         <label>Amount</label>
@@ -33,7 +33,7 @@
         <required>false</required>
         <scale>2</scale>
         <type>Currency</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Award_Date__c</fullName>
         <description>Date scholarship was awarded.</description>
         <externalId>false</externalId>
@@ -41,10 +41,10 @@
         <label>Award Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CampaignId</fullName>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campaign_Member_Source__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISBLANK(Campaign_Member_Explicit_Source__c),
@@ -55,7 +55,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Campaign_Member_Upsert_ID__c</fullName>
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
@@ -65,16 +65,16 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>true</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>City</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>CompanyOrAccount</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ContactId</fullName>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Country</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>De_dupe__c</fullName>
         <description>Used for Subscription Center Campaign Member record types - Marketing Cloud de-dup = contactId+campaignId</description>
         <externalId>false</externalId>
@@ -85,9 +85,9 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Description</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Dietary_Restrictions__c</fullName>
         <description>Notes attendee's special diet needs</description>
         <externalId>false</externalId>
@@ -97,9 +97,9 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DoNotCall</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Eligible_Date__c</fullName>
         <description>Date the person was eligible for the award.</description>
         <externalId>false</externalId>
@@ -107,28 +107,28 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <label>Eligible Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Email</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Fax</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FirstName</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>FirstRespondedDate</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>HasOptedOutOfEmail</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>HasOptedOutOfFax</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>HasResponded</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Inbound_Interaction_Date__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The date and time this Campaign Member was first considered an Inbound Interaction. Set via Workflow.</inlineHelpText>
         <label>Inbound Interaction Date</label>
         <required>false</required>
         <type>DateTime</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Inbound_Interaction_Stage__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The Stage of the associated Opportunity, at the time this Campaign member was first considered an Inbound Interaction. Set via Workflow.</inlineHelpText>
@@ -137,7 +137,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Inbound_Interaction_Term__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The Term of the associated Opportunity, at the time this Campaign member was first considered an Inbound Interaction. Set via Workflow.</inlineHelpText>
@@ -146,7 +146,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Inbound_Interaction_Type__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The Type of the associated Opportunity, at the time this Campaign member was first considered an Inbound Interaction. Set via Workflow.</inlineHelpText>
@@ -155,14 +155,14 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Inbound_Interaction__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <inlineHelpText>Set to true if and when this Campaign Member is considered an Inbound Interaction. Dependent on the Campaign Type (e.g. set when an Event Campaign Member Status is "Registered", or when a Source Campaign Member Status is "Submitted")</inlineHelpText>
         <label>Inbound Interaction</label>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>IsSubscribed__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Used for Subscription Center Campaign Member record types - Indicates if the campaign Member subscribed to corresponding BU/list campaign.</description>
@@ -170,16 +170,16 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <inlineHelpText>Used for Subscription Center Campaign Member record types - Indicates if the campaign Member subscribed to corresponding BU/list campaign.</inlineHelpText>
         <label>MC IsSubscribed</label>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Is_Primary_Interest__c</fullName>
         <defaultValue>false</defaultValue>
         <description>If box is checked, then it is considered the primary interest. Populated through code.</description>
         <externalId>false</externalId>
         <label>Is Primary Interest</label>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>LastName</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Last_Member_Status_Change__c</fullName>
         <defaultValue>NOW()</defaultValue>
         <externalId>false</externalId>
@@ -187,7 +187,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <label>Last Member Status Change</label>
         <required>false</required>
         <type>DateTime</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Last_Subscribed__c</fullName>
         <description>Used for Subscription Center Campaign Member record types - Marketing Cloud Last Subscribed date/time</description>
         <externalId>false</externalId>
@@ -195,7 +195,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <label>MC Last Subscribed</label>
         <required>false</required>
         <type>DateTime</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Last_Unsubscribe__c</fullName>
         <description>Used for Subscription Center Campaign Member record types - Marketing Cloud Last Unsubscribe date/time</description>
         <externalId>false</externalId>
@@ -203,10 +203,10 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <label>MC Last Unsubscribe</label>
         <required>false</required>
         <type>DateTime</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>LeadId</fullName>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>LeadOrContactID__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISBLANK(ContactId),CASESAFEID(LeadId),CASESAFEID(ContactId))</formula>
@@ -215,7 +215,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>LeadSource</fullName>
         <picklist>
             <picklistValues>
@@ -273,7 +273,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
             <sorted>false</sorted>
         </picklist>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Letter_Date__c</fullName>
         <description>Date the awarded letter was sent.</description>
         <externalId>false</externalId>
@@ -281,7 +281,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <label>Letter Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MC_Business_Unit__c</fullName>
         <description>Used for Subscription Center Campaign Member record types - The MC Business Unit the campaign is associated with.</description>
         <externalId>false</externalId>
@@ -292,7 +292,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Market__c</fullName>
         <description>Area segmentation, provided from the scholarship import.</description>
         <externalId>false</externalId>
@@ -319,16 +319,16 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         </picklist>
         <required>false</required>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Menu_Preference__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>e.g. vegetarian, vegan, or non-vegetarian</inlineHelpText>
         <label>Menu Preference</label>
         <required>false</required>
         <type>TextArea</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MobilePhone</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Number_of_Attendees__c</fullName>
         <description>The Number of Guests plus 1.</description>
         <externalId>false</externalId>
@@ -341,7 +341,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Number_of_Guests__c</fullName>
         <description>Number of guests attendee will be bringing besides themselves</description>
         <externalId>false</externalId>
@@ -351,7 +351,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <scale>0</scale>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Opportunity_Created__c</fullName>
         <externalId>false</externalId>
         <formula>CampaignId = Opportunity__r.Prospect_Campaign__c</formula>
@@ -359,7 +359,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <inlineHelpText>Set to true if membership in this Campaign assocaited with this Campaign Member is listed on the Opportunity as the "Prospect Campaign"</inlineHelpText>
         <label>Opportunity Created</label>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Opportunity_Term__c</fullName>
         <externalId>false</externalId>
         <formula>Opportunity__r.Term__r.Name</formula>
@@ -368,11 +368,11 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Phone</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>PostalCode</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Priority__c</fullName>
         <description>This is used in scholarship processing, to determine hierarchy of scholarship award (i.e "provost" vs "president")</description>
         <externalId>false</externalId>
@@ -418,7 +418,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         </picklist>
         <required>false</required>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Salutation</fullName>
         <picklist>
             <picklistValues>
@@ -444,7 +444,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
             <sorted>false</sorted>
         </picklist>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Sessions__c</fullName>
         <description>This information is populated by the Visits Import</description>
         <externalId>false</externalId>
@@ -453,7 +453,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <length>32768</length>
         <type>LongTextArea</type>
         <visibleLines>4</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Special_Needs__c</fullName>
         <description>Notes if the attendee has special needs</description>
         <externalId>false</externalId>
@@ -461,9 +461,9 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <label>Special Needs</label>
         <required>false</required>
         <type>TextArea</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>State</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Status</fullName>
         <picklist>
             <picklistValues>
@@ -617,11 +617,11 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
             <sorted>true</sorted>
         </picklist>
         <type>Picklist</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Street</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Title</fullName>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>edX_Active_Enrollment__c</fullName>
         <defaultValue>false</defaultValue>
         <description>edX Active Enrollment</description>
@@ -629,7 +629,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <inlineHelpText>edX Active Enrollment</inlineHelpText>
         <label>edX Campaign Member Active Enrollment</label>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>edX_Course_Grade__c</fullName>
         <description>edX Course Grade</description>
         <externalId>false</externalId>
@@ -639,14 +639,14 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>edX_Email_Opt_In__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <inlineHelpText>This checked box indicates that an edX student who has opted in for receiving marketing communications about ASU. Please do not contact any students who have opted out of communications (unchecked box).</inlineHelpText>
         <label>edX Campaign Member Email Opt In</label>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>edX_Enrollment_Date__c</fullName>
         <description>edX Enrollment Date</description>
         <externalId>false</externalId>
@@ -654,7 +654,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <label>edX Campaign Member Enrollment Date</label>
         <required>false</required>
         <type>Date</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>edX_Username__c</fullName>
         <description>Unique login user creates for the edX system.</description>
         <externalId>false</externalId>
@@ -664,7 +664,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><enableFeeds>false</enableFeeds><recordTypes>
+    </fields><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><enableFeeds>false</enableFeeds><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_Students</fullName>
         <active>true</active>
         <description>Record type for all Leads and Contacts. (Recruitment)</description>
@@ -727,7 +727,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Corporate_Relations_Member</fullName>
         <active>true</active>
         <description>Record type used for managing corporate relationships</description>
@@ -790,7 +790,7 @@ CampaignId,"NO SOURCE"),Campaign_Member_Explicit_Source__c)</formula>
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Subscription_Center_Campaign_Member</fullName>
         <active>true</active>
         <label>Subscription Center Campaign Member</label>

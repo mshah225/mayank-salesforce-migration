@@ -24,16 +24,16 @@
             <masterLabel>Rejected</masterLabel>
             <translation><!-- Rejected --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Information --></label>
         <name>Answer__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Article Expiration Date --></label>
         <name>Article_Expiration_Date__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Date Last Updated --></label>
         <name>Date_Last_Updated__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Days until expires --></label>
         <name>Days_until_expires__c</name>
     </fields><fields>
@@ -147,6 +147,10 @@
         <picklistValues>
             <masterLabel>Internal Knowledge</masterLabel>
             <translation><!-- Internal Knowledge --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Internal Knowledge (Finances)</masterLabel>
+            <translation><!-- Internal Knowledge (Finances) --></translation>
         </picklistValues>
         <picklistValues>
             <masterLabel>Library Resources</masterLabel>
@@ -268,10 +272,4 @@
             <masterLabel>Wellness</masterLabel>
             <translation><!-- Wellness --></translation>
         </picklistValues>
-    </fields><caseValues>
-        <plural>false</plural>
-        <value>FAQ</value>
-    </caseValues><caseValues>
-        <plural>true</plural>
-        <value>FAQ</value>
-    </caseValues><startsWith>Consonant</startsWith></CustomObjectTranslation>
+    </fields></CustomObjectTranslation>

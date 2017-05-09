@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Workflow xmlns="http://soap.sforce.com/2006/04/metadata"><alerts>
+﻿<?xml version="1.0" encoding="utf-8"?><Workflow xmlns="http://soap.sforce.com/2006/04/metadata"><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AS_Processing_Fee_Waiver_Approved</fullName>
         <description>AS Processing - Fee Waiver Approved</description>
         <protected>false</protected>
@@ -8,7 +8,7 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Admission_Services_Undergrad/Fee_Waiver_Approved_Posted</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AS_Processing_Fee_Waiver_Incomplete_Waiver_Submitted</fullName>
         <description>AS Processing - Fee Waiver: Incomplete Waiver Submitted</description>
         <protected>false</protected>
@@ -18,7 +18,7 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Admission_Services_Undergrad/Fee_Waiver_Incomplete_Waiver_Submitted1</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AS_Processing_Fee_Waiver_No_Application_on_File</fullName>
         <description>AS Processing - Fee Waiver: No Application on File</description>
         <protected>false</protected>
@@ -28,7 +28,7 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Admission_Services_Undergrad/Fee_Waiver_No_Application_on_File</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AS_Processing_Fee_Waiver_Not_Applicable</fullName>
         <description>AS Processing - Fee Waiver Not Applicable</description>
         <protected>false</protected>
@@ -38,7 +38,7 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Admission_Services_Undergrad/Fee_Waiver_Not_Applicable_Not_Approved</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AS_Processing_Major_Change_Applicant_Approved_Email_Notification_to_Student</fullName>
         <description>AS Processing - Major Change: Applicant Approved Email Notification to Student</description>
         <protected>false</protected>
@@ -48,7 +48,7 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Admission_Services_Undergrad/Major_Change_Applicant_Approved_Email_Notification_to_Student</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AS_Processing_Major_change_NOT_approved_Email</fullName>
         <description>AS Processing - Major change NOT approved Email</description>
         <protected>false</protected>
@@ -58,7 +58,7 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Admission_Services_Undergrad/Major_change_NOT_approved_Email</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AS_Processing_Major_change_NOT_approved_Online</fullName>
         <description>AS Processing - Major change NOT approved - Online</description>
         <protected>false</protected>
@@ -68,7 +68,7 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Admission_Services_Undergrad/Major_change_NOT_approved_Email_ONLINE</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AS_Processing_Major_change_approved_Online</fullName>
         <description>AS Processing - Major change approved - Online</description>
         <protected>false</protected>
@@ -78,7 +78,7 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Admission_Services_Undergrad/Major_Change_Approved_Email_ONLINE</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AS_Processing_Non_FTF_Major_Change_Approved_Email_Notification_to_Student</fullName>
         <description>AS Processing - Non FTF Major Change Approved Email Notification to Student</description>
         <protected>false</protected>
@@ -88,7 +88,7 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Admission_Services_Undergrad/Major_Change_Non_FTF_Major_Change_Approved_Email_Notification_to_Student</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Email_Contact_Case_Creation_Verification</fullName>
         <description>Email Contact Case Creation Verification</description>
         <protected>false</protected>
@@ -99,7 +99,7 @@
         <senderAddress>customerservice@asu.edu</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
         <template>Case_Management/Case_Received_Template_Default</template>
-    </alerts><alerts>
+    </alerts><alerts xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Send_GetFeedback_Survey</fullName>
         <description>Send GetFeedback Survey</description>
         <protected>false</protected>
@@ -110,7 +110,7 @@
         <senderAddress>service@asu.edu</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
         <template>Case_Management/Case_Management_Survey</template>
-    </alerts><fieldUpdates>
+    </alerts><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Copy_Original_Category</fullName>
         <description>Grab the original category when the case was created.</description>
         <field>Original_Category__c</field>
@@ -119,7 +119,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Copy_Original_Functional_Group</fullName>
         <description>Update original functional group field.</description>
         <field>Original_Functional_Group__c</field>
@@ -128,7 +128,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Record_Type_to_ASU_Admission_Servi</fullName>
         <description>If the Record Type is currently "ASU Service" and the Functional Group or Category indicates a connection to the Admissions Services group, set the Record Type to "ASU Admission Services".</description>
         <field>RecordTypeId</field>
@@ -139,7 +139,7 @@
         <operation>LookupValue</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Record_Type_to_ASU_Service</fullName>
         <description>If the Record Type is currently "ASU Admission Services" and the Functional Group or Category does not indicate a connection to the Admissions Services group, set the Record Type to "ASU Service"</description>
         <field>RecordTypeId</field>
@@ -150,7 +150,7 @@
         <operation>LookupValue</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Security_Checkbox_to_False</fullName>
         <field>Open_Security_Case__c</field>
         <literalValue>0</literalValue>
@@ -159,7 +159,7 @@
         <operation>Literal</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Survey_Sent_Date_Set_to_Now</fullName>
         <field>Case_Survey_Sent_Date__c</field>
         <formula>NOW()</formula>
@@ -168,7 +168,7 @@
         <operation>Formula</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Case_Origin_to_My_ASU</fullName>
         <field>Origin__c</field>
         <literalValue>My ASU</literalValue>
@@ -176,7 +176,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Category_to_Applicant_Services</fullName>
         <description>Updates the Case Category field to Applicant Services - Undergraduate</description>
         <field>Category__c</field>
@@ -185,7 +185,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Category_to_Applicant_Services_GR</fullName>
         <field>Category__c</field>
         <literalValue>Applicant Services - Graduate</literalValue>
@@ -194,7 +194,7 @@
         <operation>Literal</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Category_to_Freshman_Recruitment</fullName>
         <description>Updates the Case Category field to Freshman Recruitment</description>
         <field>Category__c</field>
@@ -203,7 +203,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Category_to_General_Help_Desk</fullName>
         <field>Category__c</field>
         <literalValue>General Help Desk</literalValue>
@@ -211,7 +211,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Category_to_Recruitment_Operations</fullName>
         <description>Updates the Case Category field to Recruitment Operations</description>
         <field>Category__c</field>
@@ -220,7 +220,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Category_to_Transfer_Recruitment</fullName>
         <description>Updates the Case Category field to Transfer Recruitment</description>
         <field>Category__c</field>
@@ -229,7 +229,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Forward_Case_To_Email</fullName>
         <field>Forward_To_Email__c</field>
         <formula>Forward_To_Email_Calculation__c</formula>
@@ -238,7 +238,7 @@
         <operation>Formula</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Forward_to_Unit_to_Other_Unit</fullName>
         <field>Forward_To_Unit__c</field>
         <literalValue>Other Unit</literalValue>
@@ -246,7 +246,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Functional_Group_to_Help_Desk</fullName>
         <field>Functional_Group__c</field>
         <literalValue>Help Desk</literalValue>
@@ -255,7 +255,7 @@
         <operation>Literal</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Inbound_Interaction_Date</fullName>
         <field>Inbound_Interaction_Date__c</field>
         <formula>NOW()</formula>
@@ -263,7 +263,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Inbound_Interaction_Term</fullName>
         <field>Inbound_Interaction_Term__c</field>
         <formula>Opportunity__r.Term__r.Name</formula>
@@ -271,7 +271,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Inbound_Interaction_to_True</fullName>
         <description>Will indicate that a Case record was created through an inbound interaction.</description>
         <field>Inbound_Interaction__c</field>
@@ -280,7 +280,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set_Origin_to_My_ASU</fullName>
         <field>Origin__c</field>
         <literalValue>My ASU</literalValue>
@@ -288,7 +288,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><fieldUpdates>
+    </fieldUpdates><fieldUpdates xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Update_Case_Origin</fullName>
         <field>Origin__c</field>
         <literalValue>Error Logger</literalValue>
@@ -296,7 +296,26 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
-    </fieldUpdates><rules>
+    </fieldUpdates><fieldUpdates>
+        <fullName>Set_Owner_to_Admission_Services_UG</fullName>
+        <description>Update case owner to the Admission Services queue</description>
+        <field>OwnerId</field>
+        <lookupValue>Admission_Services_Undergrad_Case</lookupValue>
+        <lookupValueType>Queue</lookupValueType>
+        <name>Set Owner to Admission Services</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+    </fieldUpdates><fieldUpdates>
+        <fullName>Set_Owner_to_Help_Desk_Queue</fullName>
+        <field>OwnerId</field>
+        <lookupValue>Help_Desk_Case</lookupValue>
+        <lookupValueType>Queue</lookupValueType>
+        <name>Set Owner to Help Desk Queue</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+    </fieldUpdates><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case Security Checkbox to False</fullName>
         <actions>
             <name>Case_Security_Checkbox_to_False</name>
@@ -305,7 +324,7 @@
         <active>false</active>
         <formula>Owner:Queue.DeveloperName = "CLAS_Air_Force_ROTC_Case"</formula>
         <triggerType>onAllChanges</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A AS NAS Applicant Services - Graduate</fullName>
         <actions>
             <name>Set_Category_to_Applicant_Services_GR</name>
@@ -333,7 +352,7 @@
         </criteriaItems>
         <description>Route cases to the Applicant Services - Graduate team where the subcategory is defined and the Needs Attention checkbox = TRUE</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A AS NAS Applicant Services - UG</fullName>
         <actions>
             <name>Set_Category_to_Applicant_Services</name>
@@ -382,7 +401,7 @@
         </criteriaItems>
         <description>Workflow rule used when a "Needs Attention" case should be routed to the Applicant Services Team.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A AS NAS Freshman Recruitment</fullName>
         <actions>
             <name>Set_Category_to_Freshman_Recruitment</name>
@@ -405,7 +424,7 @@
         </criteriaItems>
         <description>Workflow rule used when a "Needs Attention" case should be routed to the Freshman Recruiter Team</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A AS NAS Recruitment Operations</fullName>
         <actions>
             <name>Set_Category_to_Recruitment_Operations</name>
@@ -433,7 +452,7 @@
         </criteriaItems>
         <description>Workflow rule used when a Case should be routed to the Admission Services Recruitment Operations Team</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A AS NAS Transfer Recruitment</fullName>
         <actions>
             <name>Set_Category_to_Transfer_Recruitment</name>
@@ -456,7 +475,7 @@
         </criteriaItems>
         <description>Workflow rule used when a "Needs Attention" case should be routed to the Transfer Recruiter Team</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A My ASU Submission</fullName>
         <actions>
             <name>Email_Contact_Case_Creation_Verification</name>
@@ -491,7 +510,7 @@ Functional Group: Help Desk
 Category: General Help Desk
 Owner: Help Desk Queue</description>
         <triggerType>onCreateOnly</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A Record Type to ASU Admission Services</fullName>
         <actions>
             <name>Case_Record_Type_to_ASU_Admission_Servi</name>
@@ -526,7 +545,7 @@ Owner: Help Desk Queue</description>
         </criteriaItems>
         <description>If the Record Type is currently "ASU Service" and the Functional Group or Category indicates a connection to the Admissions Services group, set the Record Type to "ASU Admission Services".</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A Record Type to ASU Service</fullName>
         <actions>
             <name>Case_Record_Type_to_ASU_Service</name>
@@ -556,7 +575,7 @@ Owner: Help Desk Queue</description>
         </criteriaItems>
         <description>If the Record Type is currently "ASU Admission Services" and the Functional Group or Category does not indicate a connection to the Admissions Services group, set the Record Type to "ASU Service"</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A Send GetFeedback survey</fullName>
         <actions>
             <name>Send_GetFeedback_Survey</name>
@@ -578,7 +597,7 @@ OR(ISBLANK( Contact.Last_Case_Survey_Sent_Date__c),( TODAY() -30) &gt; DATEVALUE
 /*Check to ensure that the email that was used to open the Case is not associated with teams that do not want to participate in surveys.*/ 
 OR( NOT(CONTAINS(Initial_Request_Sent_To_Addresses__c,"gograd@asu.edu")), ISBLANK(Initial_Request_Sent_To_Addresses__c))</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A Set Forward Case To Email</fullName>
         <actions>
             <name>Set_Forward_Case_To_Email</name>
@@ -594,7 +613,7 @@ OR( NOT(CONTAINS(Initial_Request_Sent_To_Addresses__c,"gograd@asu.edu")), ISBLAN
             <operation>equals</operation>
         </criteriaItems>
         <triggerType>onAllChanges</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A Set Forward to Unit to Other Unit</fullName>
         <actions>
             <name>Set_Forward_to_Unit_to_Other_Unit</name>
@@ -611,7 +630,7 @@ OR( NOT(CONTAINS(Initial_Request_Sent_To_Addresses__c,"gograd@asu.edu")), ISBLAN
         </criteriaItems>
         <description>If the Forward to Unit is left blank, but a Forward to Email is Provided, set the Forward to Unit to "Other Unit".</description>
         <triggerType>onAllChanges</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A Set Opportunity Indicators</fullName>
         <actions>
             <name>Set_Inbound_Interaction_Date</name>
@@ -637,7 +656,7 @@ OR( NOT(CONTAINS(Initial_Request_Sent_To_Addresses__c,"gograd@asu.edu")), ISBLAN
         <description>When an Opportunity is first associated to a Case Contact that is set as a Source, or when a Case Contact with an Associated Opportunity is set as a Source, set the Type, Term and Stage.</description>
         <formula>RecordType.DeveloperName = "ASU_Admission_Services" &amp;&amp; NOT(ISBLANK(Opportunity__c)) &amp;&amp; ( ISNEW() || NOT(Inbound_Interaction__c) || ISCHANGED(Opportunity__c))</formula>
         <triggerType>onAllChanges</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case%3A Update original functional group and category</fullName>
         <actions>
             <name>Case_Copy_Original_Category</name>
@@ -654,7 +673,7 @@ OR( NOT(CONTAINS(Initial_Request_Sent_To_Addresses__c,"gograd@asu.edu")), ISBLAN
         </criteriaItems>
         <description>When a case is created get the original functional group and category.</description>
         <triggerType>onCreateOnly</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Set Fields for My ASU Submission</fullName>
         <actions>
             <name>Set_Category_to_General_Help_Desk</name>
@@ -685,7 +704,7 @@ Functional Group: Help Desk
 Category: General Help Desk
 Owner: Help Desk Queue</description>
         <triggerType>onCreateOnly</triggerType>
-    </rules><rules>
+    </rules><rules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Update Origin To Error Logger</fullName>
         <actions>
             <name>Update_Case_Origin</name>

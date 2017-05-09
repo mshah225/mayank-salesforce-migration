@@ -27,6 +27,10 @@
                 <behavior>Edit</behavior>
                 <field>Primary_Email__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Email_Template__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -69,6 +73,13 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>Success_Resource__c.CUST_RECORDTYPE</fields>
+        <fields>Success_Resource__c.Resource__c</fields>
+        <fields>Success_Resource__c.Resource_Name__c</fields>
+        <relatedList>Success_Resource_Pod_Association__c.Success_Pod__c</relatedList>
+    </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
         <fields>Resource__c</fields>

@@ -1,4 +1,5 @@
 public class SummaryListController {
+    private boolean debug = false;
     public Id proactiveCaseRTID {get; set;} // Stores the ID of the case record type to be summarized
     public String query {get; set;} // Stores the aggregate query that is used to generate the list
     public String Subject {get;set;} // Stores the subject to filter by in the dynamic query
@@ -11,11 +12,18 @@ public class SummaryListController {
      */
     public List<AggregateResult> summaryResult {
         get {
-            oldQuery = query; // Store new query
-            
-            summaryResult = Database.query(query);
-            
-            return summaryResult;
+            List<String> vars = new List<String>();
+            try{
+                oldQuery = query; // Store new query               
+                summaryResult = Database.query(query);
+                return summaryResult;
+            }
+            catch(Exception e){
+                vars.add(ErrorLogger.convertStringToJSON('query', query));
+                vars.add(ErrorLogger.convertListToJSON('summaryResult', summaryResult));
+                ErrorLogger.log(e, vars, debug);
+                return summaryResult;
+            }
         }
         
         set;
@@ -77,6 +85,7 @@ public class SummaryListController {
                 }
             }
             
+            dynamicQuery += ' ORDER BY Contact.LastName ASC';
             return dynamicQuery;
         }
         

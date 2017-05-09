@@ -1,36 +1,36 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Case Subject Name --></label>
         <name>Case_Subject_Name__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Category --></label>
         <name>Category__c</name>
         <picklistValues>
             <masterLabel>Ad Hoc</masterLabel>
             <translation><!-- Ad Hoc --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <help><!-- Used to set Case creation on or off. --></help>
         <label><!-- CreateCase --></label>
         <name>CreateCase__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- FunctionalGroup --></label>
         <name>FunctionalGroup__c</name>
         <picklistValues>
             <masterLabel>ASU Coach Outreach</masterLabel>
             <translation><!-- ASU Coach Outreach --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <help><!-- Used to determine if this Case flag is still in use. --></help>
         <label><!-- IsActive --></label>
         <name>IsActive__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Origin --></label>
         <name>Origin__c</name>
         <picklistValues>
             <masterLabel>Resource</masterLabel>
             <translation><!-- Resource --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <help><!-- Used to set the Case priority upon creation. --></help>
         <label><!-- Priority --></label>
         <name>Priority__c</name>
@@ -62,17 +62,17 @@
             <masterLabel>Urgent</masterLabel>
             <translation><!-- Urgent --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- SendEmail --></label>
         <name>SendEmail__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Status --></label>
         <name>Status__c</name>
         <picklistValues>
             <masterLabel>New</masterLabel>
             <translation><!-- New --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- StoredProcedureName --></label>
         <name>StoredProcedureName__c</name>
     </fields><fields>
@@ -82,13 +82,11 @@
             <masterLabel>Coach Initiated</masterLabel>
             <translation><!-- Coach Initiated --></translation>
         </picklistValues>
-    </fields><caseValues>
-        <plural>false</plural>
-        <value>Success Coach Case Flag</value>
-    </caseValues><caseValues>
-        <plural>true</plural>
-        <value>Success Coach Case Flags</value>
-    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <picklistValues>
+            <masterLabel>System Generated</masterLabel>
+            <translation><!-- System Generated --></translation>
+        </picklistValues>
+    </fields><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Success Coach Case Flag Layout</layout>
         <sections>
             <label><!-- Custom Links --></label>

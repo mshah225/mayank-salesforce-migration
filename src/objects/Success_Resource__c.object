@@ -93,7 +93,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Phone</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASURiteID__c</fullName>
         <description>Formula field that displays the Alias field on the User object</description>
         <externalId>false</externalId>
@@ -105,7 +105,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AgentID__c</fullName>
         <description>inContact Agent Id</description>
         <externalId>false</externalId>
@@ -116,7 +116,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Delegated_Resource__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -127,7 +127,7 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Delegated_UserId__c</fullName>
         <externalId>false</externalId>
         <formula>Delegated_Resource__r.Id</formula>
@@ -138,7 +138,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EMPLID__c</fullName>
         <externalId>false</externalId>
         <formula>Resource__r.EmployeeNumber</formula>
@@ -149,7 +149,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Code__c</fullName>
         <externalId>false</externalId>
         <label>Plan Code</label>
@@ -757,7 +757,7 @@
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>4</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Primary_Email__c</fullName>
         <externalId>false</externalId>
         <label>Primary Email</label>
@@ -766,7 +766,7 @@
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Program_Code__c</fullName>
         <description>Used to tie an Advisor Manager to multiple PODs (Queues) for viewing as access. One of these values must match a value in a POD's Program__c field.</description>
         <externalId>false</externalId>
@@ -832,7 +832,7 @@
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>4</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Resource_Name__c</fullName>
         <externalId>false</externalId>
         <formula>Resource__r.FirstName &amp; ' ' &amp; Resource__r.LastName</formula>
@@ -842,7 +842,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Resource__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>This is the Coach's Name. Probable future use for other Portal Users.</description>
@@ -854,6 +854,30 @@
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <fullName>Success_Pod__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Child object to Success Pod</description>
+        <externalId>false</externalId>
+        <label>Success Pod</label>
+        <referenceTo>Success_Pod__c</referenceTo>
+        <relationshipLabel>Success Resources</relationshipLabel>
+        <relationshipName>Success_Resources</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
+        <fullName>UserId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Resource__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>UserId</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields><fields>
         <fullName>Role__c</fullName>
         <externalId>false</externalId>
@@ -887,6 +911,14 @@
                 <fullName>Provost</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Department Manager</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>College Manager</fullName>
+                <default>false</default>
+            </picklistValues>
             <restrictedPicklist>true</restrictedPicklist>
             <sorted>false</sorted>
         </picklist>
@@ -895,29 +927,16 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields><fields>
-        <fullName>Success_Pod__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <description>Child object to Success Pod</description>
+        <fullName>Success_Resource_Pod_Association_Count__c</fullName>
+        <description>Counts the number of Success Resource Pod Association records this Resource has.</description>
         <externalId>false</externalId>
-        <label>Success Pod</label>
-        <referenceTo>Success_Pod__c</referenceTo>
-        <relationshipLabel>Success Resources</relationshipLabel>
-        <relationshipName>Success_Resources</relationshipName>
-        <required>false</required>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields><fields>
-        <fullName>UserId__c</fullName>
-        <externalId>false</externalId>
-        <formula>Resource__r.Id</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>UserId</label>
-        <required>false</required>
+        <inlineHelpText>Number of Success Resource Pod Association records this Resource has.</inlineHelpText>
+        <label>Success Resource Pod Association Count</label>
+        <summaryForeignKey>Success_Resource_Pod_Association__c.Success_Resource__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
+        <type>Summary</type>
     </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><enableActivities>false</enableActivities><enableBulkApi>true</enableBulkApi><enableEnhancedLookup>true</enableEnhancedLookup><enableFeeds>false</enableFeeds><enableHistory>true</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>ReadWrite</externalSharingModel><label>Success Resource</label><nameField>
         <displayFormat>SR-{0}</displayFormat>
         <label>Success Resource ID</label>
@@ -1077,11 +1096,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>College Outreach</fullName>
+                <fullName>College Manager</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Dean</fullName>
+                <fullName>Department Manager</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1090,10 +1109,6 @@
             </values>
             <values>
                 <fullName>Manager</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Provost</fullName>
                 <default>false</default>
             </values>
             <values>

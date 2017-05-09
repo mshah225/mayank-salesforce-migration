@@ -227,7 +227,7 @@ Re-Apply: Out 6+ sess, needs new adm ppwk</inlineHelpText>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Chat_Enabled__c</fullName>
         <defaultValue>false</defaultValue>
         <description>This field is for the beta testing of Rocket Chat, it will be manually checked for the first cohort of students in the test group</description>
@@ -236,7 +236,7 @@ Re-Apply: Out 6+ sess, needs new adm ppwk</inlineHelpText>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Coaching_Student__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Used to identify which students will be part of Success Student Coaching. Info will be imported from the lists of new students for the initial cohort and each subsequent cohort as they transition from ITK to ASU. This field can be replaced with a lookup to campus once all online students are coached by ASU.</description>
@@ -245,7 +245,7 @@ Re-Apply: Out 6+ sess, needs new adm ppwk</inlineHelpText>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Is_Active__c</fullName>
         <defaultValue>true</defaultValue>
         <description>Indicates that this student is an active Success Student</description>
@@ -254,7 +254,7 @@ Re-Apply: Out 6+ sess, needs new adm ppwk</inlineHelpText>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Messaging_Account_Created__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -262,7 +262,7 @@ Re-Apply: Out 6+ sess, needs new adm ppwk</inlineHelpText>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Coach_Name__c</fullName>
         <externalId>false</externalId>
         <formula>Success_Resource__r.Resource__r.FirstName + ' ' + Success_Resource__r.Resource__r.LastName</formula>
@@ -273,7 +273,7 @@ Re-Apply: Out 6+ sess, needs new adm ppwk</inlineHelpText>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Pod__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>This determines which Advisors are assigned to this student.</description>
@@ -287,7 +287,7 @@ Re-Apply: Out 6+ sess, needs new adm ppwk</inlineHelpText>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Resource__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>links the Success Student to their Assigned Success Resource</description>
@@ -300,6 +300,51 @@ Re-Apply: Out 6+ sess, needs new adm ppwk</inlineHelpText>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields><fields>
+        <fullName>Time_Zone__c</fullName>
+        <description>Coach: Time Zone</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Time Zone of Student (Limited to U.S. and one International)</inlineHelpText>
+        <label>Time Zone</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Hawaii-Hilo (HI)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Alaska (AK)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pacific (PST)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Arizona (AZ)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mountain (MST)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Central (CST)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Eastern (EST)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>International (INT)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
     </fields><allowInChatterGroups>false</allowInChatterGroups><compactLayoutAssignment>SYSTEM</compactLayoutAssignment><deploymentStatus>Deployed</deploymentStatus><enableActivities>false</enableActivities><enableBulkApi>true</enableBulkApi><enableEnhancedLookup>true</enableEnhancedLookup><enableFeeds>false</enableFeeds><enableHistory>true</enableHistory><enableReports>true</enableReports><enableSearch>true</enableSearch><enableSharing>true</enableSharing><enableStreamingApi>true</enableStreamingApi><externalSharingModel>ReadWrite</externalSharingModel><label>Success Student</label><nameField>
         <displayFormat>SS-{0}</displayFormat>
         <label>Success Student ID</label>

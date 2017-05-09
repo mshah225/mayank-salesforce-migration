@@ -51,16 +51,6 @@
         <type>Text</type>
         <unique>false</unique>
     </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
-        <fullName>Case_Thread_Id__c</fullName>
-        <externalId>false</externalId>
-        <formula>Case__r.Thread_Id__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Case Thread Id</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Email_Message_Id__c</fullName>
         <externalId>false</externalId>
         <label>Email Message Id</label>
@@ -69,21 +59,6 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
-        <fullName>Email_Template_Name__c</fullName>
-        <externalId>false</externalId>
-        <label>Email Template Name</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Advisor Ad-hoc template</fullName>
-                <default>true</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
     </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>From_Address__c</fullName>
         <description>The email address that is sending the email.</description>
@@ -167,7 +142,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Number__c</fullName>
         <externalId>false</externalId>
         <formula>Case__r.CaseNumber</formula>
@@ -177,7 +152,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Owner_Email__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISBLANK(Case__r.Owner:Queue.QueueEmail),  Case__r.Owner:User.Email ,Case__r.Owner:Queue.QueueEmail)</formula>
@@ -187,7 +162,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Owner_Id__c</fullName>
         <description>Displays the related cases owner's Id, prioritizes queue</description>
         <externalId>false</externalId>
@@ -201,7 +176,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -212,7 +187,7 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Created_By_Full_Name__c</fullName>
         <externalId>false</externalId>
         <formula>CreatedBy.FirstName &amp; ' ' &amp;  CreatedBy.LastName</formula>
@@ -222,7 +197,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>From_Name__c</fullName>
         <externalId>false</externalId>
         <formula>CreatedBy.FirstName &amp; ' ' &amp;  CreatedBy.LastName</formula>
@@ -232,7 +207,7 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Student_Owner_Id__c</fullName>
         <description>Displays the Success_Student__c owner's Id, prioritizes queue</description>
         <externalId>false</externalId>
@@ -246,12 +221,51 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Success_Student_Owner_Email__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISBLANK(Success_Student__r.Success_Pod__r.Owner:Queue.QueueEmail),   Success_Student__r.Success_Pod__r.Owner:User.Email, Success_Student__r.Success_Pod__r.Owner:Queue.QueueEmail)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Success Student Owner Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Case_Thread_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(  Case_Number__c = '' ,'', Case__r.Thread_Id__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Case Thread Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields><fields>
+        <fullName>Email_Template_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Email Template Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Default</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Advisor Ad-hoc template</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields><fields>
+        <fullName>Subject__c</fullName>
+        <defaultValue>"A Message from your College and Department"</defaultValue>
+        <description>The subject for the email</description>
+        <externalId>false</externalId>
+        <label>Subject</label>
+        <length>100</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>

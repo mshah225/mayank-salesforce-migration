@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+        <label><!-- Success Pod --></label>
+        <name>Success_Pod__c</name>
+        <relationshipLabel><!-- Success Resource Pod Associations --></relationshipLabel>
+    </fields><fields>
+        <label><!-- Success Resource --></label>
+        <name>Success_Resource__c</name>
+        <relationshipLabel><!-- Success Resource Pod Associations --></relationshipLabel>
+    </fields><fields>
+        <label><!-- User&apos;s Alias --></label>
+        <name>User_Alias__c</name>
+    </fields><fields>
+        <label><!-- User&apos;s Name --></label>
+        <name>User_Name__c</name>
+    </fields><caseValues>
+        <plural>false</plural>
+        <value>Success Resource Pod Association</value>
+    </caseValues><caseValues>
+        <plural>true</plural>
+        <value>Success Resource Pod Associations</value>
+    </caseValues><startsWith>Consonant</startsWith><layouts>
+        <layout>Success Resource Pod Association Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts><recordTypes>
+        <label><!-- Advisor --></label>
+        <name>Advisor</name>
+    </recordTypes><recordTypes>
+        <label><!-- Coach --></label>
+        <name>Coach</name>
+    </recordTypes></CustomObjectTranslation>

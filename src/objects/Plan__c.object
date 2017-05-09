@@ -263,7 +263,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Available_in_Degree_Search__c</fullName>
         <defaultValue>false</defaultValue>
         <description>[Peoplesoft] - If box is checked, then the degree is available to view in Degree Search.</description>
@@ -272,7 +272,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Organization__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>[Peoplesoft] - Lookup to the Organization Object. PS table: ACAD_PLAN_OWNER, PS field: ACAD_ORG</description>
@@ -285,7 +285,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Plan_Status__c</fullName>
         <defaultValue>false</defaultValue>
         <description>[Peoplesoft] - Examples include: Active, Teach Out, Inactive</description>
@@ -294,7 +294,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Program__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>[Peoplesoft] - Transcript Description textbox</description>
@@ -307,7 +307,7 @@ LOWER(TEXT( Program__r.Career__c )))
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>eAdvisor_Organization__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>[Peoplesoft] - Lookup to the Organization Object.  Eadvisor Oracle database. Table plancollege to get COLLEGE_ACAD_ORG. And then query PS_ACAD_ORG_TBL  to get the DESCRFORMAL using the value of the college_acad_org for ACAD_ORG in PS_ACAD_ORG_TBL.</description>

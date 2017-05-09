@@ -1,64 +1,39 @@
 <apex:component >
-    <style>
-    .loader {
-        border: 10px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 10px solid #990033;
-        width: 80px;
-        height: 80px;
-        position:fixed;
-        top:calc(50% - 40px);
-        left:calc(50% - 40px);
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 1.5s linear infinite;
-        z-index:1041; /* Specifically set to display over any bootstrap modals */
-        }
-        
-        @-webkit-keyframes spin {
-        0% {
-        -webkit-transform: rotate(0deg);
-        }
-        
-        50% {
-        border-top:10px solid #FFB310;
-        }
-        
-        100% {
-        -webkit-transform: rotate(360deg);
-        border-top:10px solid #990033;
-        }
-        }
-        
-        @keyframes spin {
-        0% { 
-        transform: rotate(0deg);
-        }
-        
-        50.0% {
-        border-top:10px solid #FFB310;
-        }
-        
-        100% {
-        transform: rotate(360deg);
-        border-top:10px solid #990033;
-        }
-        }
-        
-        .modalCover {
-        position:fixed;
-        background-color:rgba(144, 144, 144, .5);
-        top:0px;
-        left:0px;
-        width:100%;
-        height:100%;
-        z-index: 1041;
-        }
-    </style>
-    <apex:actionStatus id="ASUAjaxStatus" layout="none">
+    <apex:stylesheet value="{! URLFOR($Resource.ASUAjaxStatusCSS, 'ASUAjaxStatus.css') }"/>
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
+    <apex:includeScript value="{! $Resource.jQuery_3_1_1}"/>
+    
+    <apex:attribute name="suppressStop" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressStart" type="boolean" description="" default="false" />
+    
+    <apex:actionStatus id="ASUAjaxStatus" layout="none" onstop="onStop()">
         <apex:facet name="start">
-            <div class="modalCover">
-                <div class="loader"></div>
-            </div>
+            <apex:outputPanel rendered="true" layout="none">
+                <div class="modalCover">
+                    <div class="loader"></div>
+                </div>
+            </apex:outputPanel>
+        </apex:facet>
+        <!-- Note, this is not rendered due to some undesired behavior, may never be fixed...-->
+        <apex:facet name="stop">
+            <apex:outputPanel rendered="false" layout="none">
+            	<div class="modalCover modalComplete">
+                    <div class="complete">
+                        <i class="fa fa-check"></i>
+                    </div>
+                </div>
+            </apex:outputPanel>
         </apex:facet>
     </apex:actionStatus>
+    
+    <script>
+    jQuery.noConflict();
+    function onStop() {
+    	jQuery('.modalComplete').delay(100).fadeOut(1000);
+        // I honestly don't know why this is needed or even why it works.
+        // I noticed a problem where the fadeout worked once and the onstop was never shown again
+        // I added this for no logical reason and it fixed the issue.
+        jQuery('.modalComplete').show();
+    }
+    </script>
 </apex:component>

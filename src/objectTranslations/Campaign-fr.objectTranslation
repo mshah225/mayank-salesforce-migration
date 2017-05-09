@@ -174,13 +174,13 @@
     </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- ViewCampaignInfluenceReport --></label>
         <name>ViewCampaignInfluenceReport</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Send_ExactTarget_Email --></label>
         <name>et4ae5__Send_ExactTarget_Email</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- ViewCampaignInfluenceReport --></label>
         <name>et4ae5__ViewCampaignInfluenceReport</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Send_Silverpop_Email --></label>
         <name>silverpop__Send_Silverpop_Email</name>
     </webLinks></CustomObjectTranslation>

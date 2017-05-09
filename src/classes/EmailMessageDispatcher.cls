@@ -10,13 +10,16 @@ public with sharing class EmailMessageDispatcher implements IDispatch {
     
     public void afterInsert() {
         casesToUpdate = EmailMessageService.getCasesFromEmailMessages(newEmails);
+        system.debug('getCasesFromEmailMessages: ' + string.valueOf(casesToUpdate));
         
         if (casesToUpdate != null && casesToUpdate.size() > 0) {
             casesToUpdate = EmailMessageService.setAdvisorCaseStatus(casesToUpdate);
-        }
-        
-        if (casesToUpdate.size() > 0) {
-            update casesToUpdate.values();
+            
+            system.debug('setAdvisorCaseStatus: ' + string.valueOf(casesToUpdate));
+            
+            if (casesToUpdate.size() > 0) {
+                update casesToUpdate.values();
+            }
         }
     }
     

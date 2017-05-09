@@ -118,16 +118,16 @@
     </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- YahooMaps --></label>
         <name>YahooMaps</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- ExactTarget_Resubscribe --></label>
         <name>et4ae5__ExactTarget_Resubscribe</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- ExactTarget_Unsubscribe --></label>
         <name>et4ae5__ExactTarget_Unsubscribe</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Send_ExactTarget_Email --></label>
         <name>et4ae5__Send_ExactTarget_Email</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- View_ExactTarget_Analytics --></label>
         <name>et4ae5__View_ExactTarget_Analytics</name>
     </webLinks></CustomObjectTranslation>

@@ -1,46 +1,46 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CallHighlightAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>CancelEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>DeleteBannerPhotoAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>EditUserAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>EmailHighlightAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>Follow</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>FreezeUserAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>LinkToSetupUserDetailAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>ManagePermSetsAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>PasswordUnlockAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>ResetPasswordAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>SaveEdit</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>UpdateBannerPhotoAction</actionName>
         <type>Default</type>
-    </actionOverrides><actionOverrides>
+    </actionOverrides><actionOverrides xmlns="http://soap.sforce.com/2006/04/metadata">
         <actionName>UserActivationAction</actionName>
         <type>Default</type>
-    </actionOverrides><fields>
+    </actionOverrides><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASURITE_Id__c</fullName>
         <description>[??] - ASURITE ID</description>
         <externalId>false</externalId>
@@ -49,7 +49,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASURITE_for_External_ID__c</fullName>
         <caseSensitive>false</caseSensitive>
         <description>[??] - This User's ASURITE. If different from the Federation ID, it will be set that that value via workflow. Used for Upserting User records. Any Upsert should map the ASURITE to this field as the "External ID", and ALSO map the ASURITE to the Federation ID.</description>
@@ -61,7 +61,7 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>true</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Admin_Notes__c</fullName>
         <description>User object field for capturing notes and collaboration by the ASU Admins, regarding said user account.</description>
         <externalId>false</externalId>
@@ -70,7 +70,7 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>Html</type>
         <visibleLines>10</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>EmplId__c</fullName>
         <description>[PeopleSoft] - EMPLID</description>
         <externalId>false</externalId>
@@ -79,7 +79,7 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>MC_Business_Unit_User__c</fullName>
         <description>These are MC Business Units the user can interact with for the subscription center.</description>
         <externalId>false</externalId>
@@ -90,11 +90,11 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>MultiselectPicklist</type>
         <visibleLines>10</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ManagerId</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Hierarchy</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Receive_Apex_Errors__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Used by the error logger to determine who should receive backup emails.</description>
@@ -103,7 +103,7 @@
         <label>Receive Apex Errors</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Recruiter_Email__c</fullName>
         <description>[??] - Recruiter Email</description>
         <externalId>false</externalId>
@@ -112,7 +112,7 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>Email</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Recruiter_Full_Name__c</fullName>
         <description>[??] - Full name of Recruiter</description>
         <externalId>false</externalId>
@@ -122,7 +122,7 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Recruiter_Phone__c</fullName>
         <description>[??] - Recruiter phone</description>
         <externalId>false</externalId>
@@ -130,7 +130,7 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Phone</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Recruiter_Title__c</fullName>
         <description>[??] - Recruiter Title</description>
         <externalId>false</externalId>
@@ -140,7 +140,7 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Academic_Advisor_Portal__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Indicates user has access to Academic Advisor Portal. PeopleSoft security role = ASU_FC_SF AP Advisor Portal</description>
@@ -149,7 +149,7 @@
         <label>Academic Advisor Portal</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Administrator_Developer__c</fullName>
         <defaultValue>false</defaultValue>
         <description>PeopleSoft security role = ASU_FC_SF AD Admin and Develop</description>
@@ -157,7 +157,7 @@
         <label>Administrator / Developer</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Case_Management__c</fullName>
         <defaultValue>false</defaultValue>
         <description>PeopleSoft security role = ASU_FC_SF MG Case Management</description>
@@ -166,7 +166,7 @@
         <label>Case Management</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Chatter__c</fullName>
         <defaultValue>false</defaultValue>
         <description>PeopleSoft security role = ASU_FC_SF CH Salesforce Chat</description>
@@ -175,7 +175,7 @@
         <label>Chatter</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Connected_MC_Adm__c</fullName>
         <defaultValue>false</defaultValue>
         <description>This checkbox is associated to the PeopleSoft security request for 'Connected Marketing Cloud Adm' described as " 	Admin access in a business unit in Marketing Cloud that is connected to Enterprise Salesforce." (ASU_FC_MC BA Connected MC Adm).</description>
@@ -184,7 +184,7 @@
         <label>Connected Marketing Cloud Adm</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Connected_MC_User__c</fullName>
         <defaultValue>false</defaultValue>
         <description>This checkbox is associated to the PeopleSoft security request for 'Connected Marketing Cloud User' described as "Basic user access in a business unit in Marketing Cloud that is connected to Enterprise Salesforce." (ASU_FC_MC BU Connected MC User).</description>
@@ -193,7 +193,7 @@
         <label>Connected Marketing Cloud User</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Corporate_Relations__c</fullName>
         <defaultValue>false</defaultValue>
         <description>PeopleSoft security role = ASU_FC_SF CR Corporate</description>
@@ -202,7 +202,7 @@
         <label>Corporate Relations</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_EdPlus_Coach_Portal__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Indicates user has access to the EdPlus Coach Portal. PeopleSoft security role = ASU_FC_SF CP Coach Portal</description>
@@ -211,7 +211,7 @@
         <label>EdPlus Coach Portal</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Export_Reports__c</fullName>
         <defaultValue>false</defaultValue>
         <description>PeopleSoft security role = ASU_FC_SF RP Export Reports</description>
@@ -220,7 +220,7 @@
         <label>Export Reports</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Knowledge__c</fullName>
         <defaultValue>false</defaultValue>
         <description>PeopleSoft security role = ASU_FC_SF KB Knowledge User</description>
@@ -229,7 +229,7 @@
         <label>Knowledge</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Marketing_Cloud__c</fullName>
         <defaultValue>false</defaultValue>
         <description>This checkbox is associated to the PeopleSoft security request for 'Salesforce Marketing Cloud' described as "Access to ExactTarget Marketing Cloud". (ASU_FC_SF MK Marketing Cloud). The user will be automatically added to the ASU Marketing Cloud chatter group.</description>
@@ -238,7 +238,7 @@
         <label>Unconnected Marketing Cloud</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Quick_Text_Manager__c</fullName>
         <defaultValue>false</defaultValue>
         <description>User object field for capturing users that have an approved and completed PeopleSoft Role for Quick Text Manager.</description>
@@ -246,7 +246,7 @@
         <label>Quick Text Manager</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Recruiting__c</fullName>
         <defaultValue>false</defaultValue>
         <description>User object field for capturing users that have an approved and completed PeopleSoft Role for Recruitment. PeopleSoft security role = ASU_FC_SF RC Recruiting</description>
@@ -255,7 +255,7 @@
         <label>Recruiting (Case + Recruitment)</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Recruitment_Communications__c</fullName>
         <defaultValue>false</defaultValue>
         <description>PeopleSoft security role = ASU_FC_SF CO Recruit Comm</description>
@@ -264,21 +264,21 @@
         <label>Recruitment Communications</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Recruitment_Graduate__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>(DO NOT USE) Recruitment Graduate</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Recruitment_Undergraduate__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>(DO NOT USE) Recruitment Undergraduate</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Standard_Student_Pages__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Users are approved with the PeopleSoft role SR Standard Student Pages View This role provides faculty and staff with view access to student information. This information includes name and address data in Campus Community, student records data in the Student Services Center, the ability to print an unofficial transcript and the ability to view holds on the student's record. This is the basic, default role for access to student records. ASU_SA_SR Standard Stdnt Pages</description>
@@ -287,7 +287,7 @@
         <label>(DO NOT USE) Standard Student Pages</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Student_Profile__c</fullName>
         <defaultValue>false</defaultValue>
         <description>PeopleSoft security role = ASU_FC_SF SP Student Profile</description>
@@ -296,7 +296,7 @@
         <label>Student Profile</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_View_Only__c</fullName>
         <defaultValue>false</defaultValue>
         <description>PeopleSoft security role = ASU_FC_SF AD View Only</description>
@@ -305,7 +305,7 @@
         <label>View Only</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_inContact_User_License__c</fullName>
         <defaultValue>false</defaultValue>
         <description>For users in the Help Desk and EdPlus who need to use the integrated phone application. Data Trustees are Michael Lund (mlund4), Chris Tyler (ctyler), Brandon Tolbert (btolber2), Brian Frost (bjfrost). PS security role = ASU_FC_SF IC Salesforce inCont</description>
@@ -314,7 +314,7 @@
         <label>inContact User License</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Sandbox_DEV__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -322,7 +322,7 @@
         <label>DEV</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Sandbox_Delagated_Administrator__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Indicates if user has a corresponding Delegated Administrator permission set in a sandbox.</description>
@@ -331,7 +331,7 @@
         <label>Delagated Administrator</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Sandbox_QA__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -339,7 +339,7 @@
         <label>QA</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Sandbox_UAT__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -347,7 +347,7 @@
         <label>UAT</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>View_Edit_Login__c</fullName>
         <description>[??] - Can be used in Reports to give an admin the ability to View, Edit or Login as the User.</description>
         <externalId>false</externalId>
@@ -362,7 +362,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>asu_user_type__c</fullName>
         <description>Referenced in the Search User VF page and within the test code testNoSOSLResults and testUListResults</description>
         <externalId>false</externalId>
@@ -428,7 +428,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <searchResultsAdditionalFields>CORE.USERS.TITLE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.PHONE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.EMAIL</searchResultsAdditionalFields>
-    </searchLayouts><sharingModel>Read</sharingModel><listViews>
+    </searchLayouts><sharingModel>Read</sharingModel><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_Recruitment_Users_with_Manager_Role</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -450,7 +450,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>Manager</value>
         </filters>
         <label>Role: Manager Recruitment</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_Service_Users_with_Manager_Role</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -472,7 +472,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>Manager</value>
         </filters>
         <label>Role: Manager Service</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ASU_Success_Coaches</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -505,7 +505,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ActiveAPIs</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.EMAIL</columns>
@@ -523,7 +523,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>API</value>
         </filters>
         <label>Active APIs</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ActiveAdmins</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.USERNAME</columns>
@@ -548,7 +548,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>System Administrator,System Admin (PW Not Expired)</value>
         </filters>
         <label>Profile: System Admin</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ActiveUsers</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -573,7 +573,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>community</value>
         </filters>
         <label>Active Users</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>ActiveUsersNoAdmins</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.SAML_SUBJECT</columns>
@@ -598,7 +598,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>System Administrator,System Admin (PW Not Expired)</value>
         </filters>
         <label>Active Users (No Admins)</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Active_APIs_DEV_Email</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.EMAIL</columns>
@@ -616,7 +616,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>salesforce.development@asu.edu</value>
         </filters>
         <label>Active APIs - DEV Email</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Active_Users_No_Admins_or_Community</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.SAML_SUBJECT</columns>
@@ -647,7 +647,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>ASU Community</value>
         </filters>
         <label>Active Users (No Admins or Community)</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Admin_User_Deprovisioning</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -670,7 +670,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <group>Identity_Management_Case</group>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Admin_User_Provisioning_Chatter_Only</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -713,7 +713,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <group>Identity_Management_Case</group>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AllUsers</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -726,7 +726,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <columns>CORE.USERS.ACTIVE</columns>
         <filterScope>Everything</filterScope>
         <label>All Users</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>AllUsers_nochatter</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -744,7 +744,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>Chatter</value>
         </filters>
         <label>All Users (No Chatter)</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>All_Users_No_Admins_or_Community</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.SAML_SUBJECT</columns>
@@ -771,7 +771,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>ASU Community</value>
         </filters>
         <label>All Users (No Admins or Community)</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Case_Management_Users</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -793,7 +793,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Role: Case Management</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Community_Users</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -810,7 +810,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>Partner,Customer Portal Manager,Customer Portal User,Guest,High Volume Porta</value>
         </filters>
         <label>Community Users</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Corporate_Relations</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -831,7 +831,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Role: Corporate Relations</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>DEV_Sandbox_Access</fullName>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>FULL_NAME</columns>
@@ -852,7 +852,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Sandbox: DEV Access</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Frozen_Users</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -872,7 +872,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>InactiveUsers</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -892,7 +892,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>chatter</value>
         </filters>
         <label>Inactive Users</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Inactive_Users_No_Community</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -919,7 +919,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>Community</value>
         </filters>
         <label>Inactive Users (No Community)</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Knowledge_Users</fullName>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>FULL_NAME</columns>
@@ -938,7 +938,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Role: Knowledge Users</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Manager_Role_Case_Transfer_Perm_Set</fullName>
         <booleanFilter>1 AND 2 AND (3 OR 4)</booleanFilter>
         <columns>FULL_NAME</columns>
@@ -973,7 +973,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Marketing_Cloud_Users</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -993,7 +993,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Role: Unconnected Marketing Cloud</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Marketing_Marketing_Cloud_Users</fullName>
         <booleanFilter>(1 and 2) or (1 and 3) or (1 and 4)</booleanFilter>
         <columns>CORE.USERS.ACTIVE</columns>
@@ -1029,7 +1029,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <sharedTo>
             <role>UTO_University_Technology_Office</role>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Profile_ASU_Chatter_User</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.SAML_SUBJECT</columns>
@@ -1059,7 +1059,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Profile: ASU Chatter User</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Profile_ASU_Corporate_Relations</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1079,7 +1079,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>ASU Corporate Relations</value>
         </filters>
         <label>Profile: ASU Corporate Relations</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Profile_ASU_Help_Desk</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.SAML_SUBJECT</columns>
@@ -1094,7 +1094,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>ASU Service - Help Desk</value>
         </filters>
         <label>Profile: ASU Help Desk</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Profile_ASU_Marketing_User</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.SAML_SUBJECT</columns>
@@ -1120,7 +1120,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>Chatter Expert</value>
         </filters>
         <label>Profile: ASU Marketing User</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Profile_ASU_Read_Only</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.SAML_SUBJECT</columns>
@@ -1137,7 +1137,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>ASU Read Only</value>
         </filters>
         <label>Profile: ASU Read Only</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Profile_ESISD_Leads</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.SAML_SUBJECT</columns>
@@ -1156,7 +1156,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>ASU Recruitment - Leads (ESISD)</value>
         </filters>
         <label>Profile: ESISD Leads</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Profile_Graduate_College</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.SAML_SUBJECT</columns>
@@ -1173,7 +1173,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>ASU Service - Graduate College</value>
         </filters>
         <label>Profile: Graduate College</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Profile_Identity_Management</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1193,7 +1193,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>ASU Service - Identity Management</value>
         </filters>
         <label>Profile: Identity Management</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Profile_Success_Coaches</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1212,28 +1212,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>Success Coach</value>
         </filters>
         <label>Profile: Success Coaches</label>
-    </listViews><listViews>
-        <fullName>QA_Sandbox_Access</fullName>
-        <columns>CORE.USERS.ACTIVE</columns>
-        <columns>FULL_NAME</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>CORE.USERS.USERNAME</columns>
-        <columns>CORE.USERS.LAST_LOGIN</columns>
-        <columns>CORE.USER_ROLE.NAME</columns>
-        <columns>CORE.PROFILE.NAME</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Sandbox_QA__c</field>
-            <operation>equals</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>CORE.USERS.ACTIVE</field>
-            <operation>equals</operation>
-            <value>1</value>
-        </filters>
-        <label>Sandbox: QA Access</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Connected_Marketing_Cloud</fullName>
         <booleanFilter>(1 or 2) AND 3</booleanFilter>
         <columns>FULL_NAME</columns>
@@ -1259,7 +1238,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Role: Connected Marketing Cloud</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Export_Reports</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1280,7 +1259,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Role: Export Reports</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Role_Quick_Text</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1301,7 +1280,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Role: Quick Text</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Sandboxes_Delegated_Admins</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1326,7 +1305,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Student_Workers</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1349,7 +1328,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Student Workers</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>TODAY</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.USERNAME</columns>
@@ -1377,7 +1356,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>UAT_Sandbox_Access</fullName>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>FULL_NAME</columns>
@@ -1399,7 +1378,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>Sandbox: UAT Access</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>UTO_Users</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1422,7 +1401,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>1</value>
         </filters>
         <label>UTO Users</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Users_with_MC_Permissions</fullName>
         <booleanFilter>1 OR 2</booleanFilter>
         <columns>FULL_NAME</columns>
@@ -1449,7 +1428,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>View_All_Data</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1473,7 +1452,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>YESTERDAY</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1498,7 +1477,7 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>community</value>
         </filters>
         <label>YESTERDAY</label>
-    </listViews><listViews>
+    </listViews><listViews xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>zzDuplicates</fullName>
         <booleanFilter>(1 or 2) AND 3</booleanFilter>
         <columns>FULL_NAME</columns>
@@ -1527,7 +1506,29 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
             <value>ASU Community</value>
         </filters>
         <label>zzDuplicates</label>
-    </listViews><validationRules>
+    </listViews><listViews>
+        <fullName>QA_Sandbox_Access</fullName>
+        <columns>CORE.USERS.ACTIVE</columns>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>CORE.USERS.EMAIL</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Sandbox_QA__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Sandbox: QA Access</label>
+    </listViews><validationRules xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Only_System_Admins_Create_Edit_Users</fullName>
         <active>true</active>
         <description>Prevents delegated administrators from creating or editing users in sandboxes.</description>

@@ -143,7 +143,7 @@
         <editable>true</editable>
         <field>Success_Student__c.Success_Pod__c</field>
         <readable>true</readable>
-    </fieldPermissions><fieldPermissions>
+    </fieldPermissions><fieldPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <editable>true</editable>
         <field>CampaignMember.IsSubscribed__c</field>
         <readable>true</readable>
@@ -573,10 +573,18 @@
         <layout>me3_Career__c-me3 Career Layout</layout>
     </layoutAssignments><layoutAssignments xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>me3__c-me3 Layout</layout>
-    </layoutAssignments><layoutAssignments>
+    </layoutAssignments><layoutAssignments xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>FlowInterview-Flow Interview Layout</layout>
-    </layoutAssignments><layoutAssignments>
+    </layoutAssignments><layoutAssignments xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>JBT_RET_TRANSCRIPT_SENT_VW__x-Transcript Sent Layout</layout>
+    </layoutAssignments><layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+    </layoutAssignments><layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+        <recordType>Success_Resource_Pod_Association__c.Advisor</recordType>
+    </layoutAssignments><layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+        <recordType>Success_Resource_Pod_Association__c.Coach</recordType>
     </layoutAssignments><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <default>false</default>
         <recordType>Account.External_Mastered_Contact</recordType>
@@ -792,6 +800,10 @@
     </recordTypeVisibilities><recordTypeVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <default>false</default>
         <recordType>Task.User_Task_Layout</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities><recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource_Pod_Association__c.Advisor</recordType>
         <visible>false</visible>
     </recordTypeVisibilities><tabVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>AKB_Article_Feedback__c</tab>
@@ -1009,8 +1021,14 @@
     </tabVisibilities><tabVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>standard-UserProvisioningRequest</tab>
         <visibility>Hidden</visibility>
-    </tabVisibilities><tabVisibilities>
+    </tabVisibilities><tabVisibilities xmlns="http://soap.sforce.com/2006/04/metadata">
         <tab>et4ae5__Automated_Send__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities><tabVisibilities>
+        <tab>IDHelper</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities><tabVisibilities>
+        <tab>Success_Resource_Pod_Association__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities><userPermissions xmlns="http://soap.sforce.com/2006/04/metadata">
         <enabled>true</enabled>

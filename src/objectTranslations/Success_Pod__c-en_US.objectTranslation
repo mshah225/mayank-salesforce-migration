@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields>
+﻿<?xml version="1.0" encoding="utf-8"?><CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata"><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Committee --></label>
         <name>Committee__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Owner Name --></label>
         <name>Owner_Name__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <help><!-- This is used for Coach Assignment and Advisor Manager access. The Advisor Manager record should have one of these Plan Code values in the Success_Resource.Plan_Code__c field in order to have access to this POD&apos;s queue. --></help>
         <label><!-- Plans --></label>
         <name>Plans__c</name>
@@ -284,10 +284,10 @@
             <masterLabel>Unknown0</masterLabel>
             <translation><!-- Unknown0 --></translation>
         </picklistValues>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Primary Email --></label>
         <name>Primary_Email__c</name>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <help><!-- This is used for Coach Assignment and Advisor Manager access. The Advisor Manager record should have one of these Program Code values in the Success_Resource_Program_Code__c field in order to have access to this POD&apos;s queue. --></help>
         <label><!-- Programs --></label>
         <name>Program__c</name>
@@ -351,19 +351,20 @@
             <masterLabel>UGUC</masterLabel>
             <translation><!-- UGUC --></translation>
         </picklistValues>
-    </fields><caseValues>
-        <plural>false</plural>
-        <value>Success Pod</value>
-    </caseValues><caseValues>
-        <plural>true</plural>
-        <value>Success Pods</value>
-    </caseValues><startsWith>Consonant</startsWith><layouts>
+    </fields><fields>
+        <label><!-- Email Template --></label>
+        <name>Email_Template__c</name>
+    </fields><fields>
+        <help><!-- Number of Success Resource Pod Association record for this pod. --></help>
+        <label><!-- Success Resource Pod Association Count --></label>
+        <name>Success_Resource_Pod_Association_Count__c</name>
+    </fields><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Success Pod Advisor Layout</layout>
         <sections>
             <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Success Pod Coach Layout</layout>
         <sections>
             <label><!-- Custom Links --></label>
@@ -373,19 +374,19 @@
             <label><!-- Fields --></label>
             <section>Fields</section>
         </sections>
-    </layouts><layouts>
+    </layouts><layouts xmlns="http://soap.sforce.com/2006/04/metadata">
         <layout>Success Pod Layout</layout>
         <sections>
             <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
-    </layouts><recordTypes>
+    </layouts><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Advisor --></label>
         <name>Advisor</name>
-    </recordTypes><recordTypes>
+    </recordTypes><recordTypes xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Coach --></label>
         <name>Coach</name>
-    </recordTypes><webLinks>
+    </recordTypes><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Assign_Coaches --></label>
         <name>Assign_Coaches</name>
     </webLinks></CustomObjectTranslation>

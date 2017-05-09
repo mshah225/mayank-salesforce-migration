@@ -1,4 +1,6 @@
 public class showMyCasesController {
+    
+    private boolean debug = false;
     // Constants
     private final Integer cookieExpiration = 22592000; // 30 days in seconds (30 Days * 24 hours * 60 minutes * 60 seconds)
     private final Integer defaultPageSize = 25; // The default page size to use if no cookie exists
@@ -11,7 +13,10 @@ public class showMyCasesController {
     public List<caseWrapper> caseList {get; set;} // List of Case Wrappers (cases) to display on the page
     public Id ownerId {get; set;} // Stores the Id of the new owner of the selected cases
     public Id portalEmailRTID {get; set;} // The record type of the portal email object
-
+    private string originalQuery {get; set;} // Justin is this still required?
+    public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
+    public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
+    
     // Transient properties (cookies cannot be stored in the view state)
     private transient Map<String, Cookie> cookieMap; // Stores the pages cookies
     private transient Cookie pageSizeCookie; // Stores the cookie containing the desired page size
@@ -32,7 +37,6 @@ public class showMyCasesController {
         
         set {
             queryAttr = value;
-            
             if (queryAttr != oldQuery || query == null) {
                 query = queryAttr;
                 oldQuery = queryAttr;
@@ -48,9 +52,15 @@ public class showMyCasesController {
     	get;
         
         set {
-            system.debug('query set');
-            query = value;
-            setCon = new ApexPages.StandardSetController(Database.getQueryLocator(query));
+            List<String> vars = new List<String>();
+            try{
+                query = value;
+                setCon = new ApexPages.StandardSetController(Database.getQueryLocator(query));
+            } catch(Exception e){
+                vars.add(ErrorLogger.convertStringToJSON('query', query));
+                vars.add(string.valueOf(setCon));
+                ErrorLogger.log(e, vars, debug);
+            }
         }
     }
     
@@ -62,7 +72,6 @@ public class showMyCasesController {
         get;
         
         set {
-            system.debug('setCon Set');
             setCon = value;
             setCon.setPageSize(pageSize);
             resetCaseList();
@@ -79,14 +88,13 @@ public class showMyCasesController {
      */
     public Integer pageSize {
         get {
-            pageSize = integer.valueOf(getPageSizeCookie().getValue());
-            
+            pageSize = integer.valueOf(getPageSizeCookie().getValue());    
             return pageSize;
         }
         
         set {
-            pageSize = value;
-            pageSizeCookie = new Cookie('pageSize', string.valueOf(pageSize), null, cookieExpiration, false);
+            pageSize = value;               
+            pageSizeCookie = new Cookie('pageSize', string.valueOf(pageSize), null, cookieExpiration, false);            
             getCookieMap().put('pageSize', pageSizeCookie);
             ApexPages.currentPage().setCookies(cookieMap.values());
             setConPageSize(pageSize);
@@ -126,15 +134,21 @@ public class showMyCasesController {
      * A String to keep track of the Case list sort direction
      */
     public String sortDir {
-        get;
-        
-        set {
-            if (sortDir == 'DESC') {
-                sortDir = 'ASC';
+        get{
+            if(sortDir == NULL) {
+                if(query != null && query.indexOf('ASC') >= 0){
+                    return 'ASC';
+                } else if (query != null && query.indexOf('DESC') >= 0){
+                    return 'DESC';
+                } else {
+                    return NULL;
+                }
             } else {
-                sortDir = 'DESC';
+                return sortDir;
             }
         }
+        
+        set;
     }
 
     /*
@@ -142,25 +156,44 @@ public class showMyCasesController {
      * Setting this variable updates the query with the proper "ORDER BY" clause.
      */
     public String sortField {
-        get;
+        get{
+            if (sortfield == null) {
+                Integer locStart = query.indexOf('ORDER BY');
+                if(locStart >= 0) {
+                    String queryEnd = query.substring(locStart+9);
+                    Integer locEnd = queryEnd.indexOf(' '); 
+                    if(locEnd > 0) {
+                        return queryEnd.substring(0, locEnd);
+                    }
+                }
+            }
+            
+            return sortfield;
+        }
         
         set {
             String tempQuery;
             Integer loc;
             
-            sortField = value;
-            
-            if (!String.isEmpty(sortField)) {
-                sortDir = sortDir;
-                tempQuery = query;
+            if (!String.isEmpty(value)) {
+                if (value == sortField) { // Field has not changed
+                    if (sortDir == 'ASC') {
+                        sortDir = 'DESC';
+                    } else {
+                        sortDir = 'ASC';
+                    }
+                } else { // The value has changed
+                    sortDir = 'ASC';
+                }
                 
-                loc = tempQuery.indexOf('ORDER BY');
+                sortField = value;
                 
+                tempQuery = query;              
+                loc = tempQuery.indexOf('ORDER BY');              
                 if (loc > 0) {
                     tempQuery = tempQuery.left(loc);
                     tempQuery = tempQuery.trim();
-                }
-                
+                }               
                 tempQuery = tempQuery + ' ORDER BY ' + sortField + ' ' + sortDir + ' NULLS LAST';
                 query = tempQuery;
             }
@@ -180,7 +213,6 @@ public class showMyCasesController {
         get;
         
         set {
-            system.debug('refreshList: ' + value);
             refreshList = value;
             
             if (refreshList == true) {
@@ -197,7 +229,8 @@ public class showMyCasesController {
         get {
             if (tempEmail == null) {
                 tempEmail = new Portal_Email__c(
-                	RecordTypeId = portalEmailRTID
+                	RecordTypeId = portalEmailRTID,
+                    Subject__c = 'A Message from your College and Department'
                 );
             }
             
@@ -212,6 +245,7 @@ public class showMyCasesController {
     /*
      * Gets the pages current cookies
      */
+    @TestVisible
     private Map<String, Cookie> getCookieMap() {
         cookieMap = ApexPages.currentPage().getCookies();
         
@@ -251,87 +285,96 @@ public class showMyCasesController {
      * </p>
      */
     public void resetCaseList() {
-        system.debug('caseList rebuilt');
         Case tempCase;
         
-        caseList = new List<CaseWrapper>();
-        
+        caseList = new List<CaseWrapper>(); 
         for (SObject so : setCon.getRecords()) {
             tempCase = (Case) so;
             caseList.add(new CaseWrapper(tempCase));
         }
         
         resetCaseCounts();
+        
     }
     
     /*
-     * Resets the caseCounts map
-     */
-    public void resetCaseCounts() {
-        system.debug('caseCount rebuilt');
+	* Resets the caseCounts map
+	*/
+    public void resetCaseCounts() {       
         caseCounts = new Map<Id, relatedCases>();
         Set<Id> contactIds = new Set<Id>();
         
         if (caseList != null) {
             for (caseWrapper cw : caseList) {
-                contactIds.add(cw.obj.contactid);
+                contactIds.add(cw.obj.contactid);    
             }
-        
+            
             for (Contact c : [SELECT id,
-                (SELECT RecordTypeId
-                    FROM Cases
-                    WHERE isClosed = false)
-                FROM Contact
-                WHERE Id IN :ContactIds]) {
-                caseCounts.put(c.id, new relatedCases());
-                        
-                for (Case cc : c.cases) {
-                    if (cc.recordTypeId == proactiveCaseRTID) {
-                        caseCounts.get(c.Id).proactiveCount++;
-                    } else {
-                        caseCounts.get(c.Id).reactiveCount++;
-                    }
-                }
-            }
+                              (SELECT RecordTypeId
+                               FROM Cases
+                               WHERE isClosed = false)
+                              FROM Contact
+                              WHERE Id IN :ContactIds]) {
+                                  caseCounts.put(c.id, new relatedCases());
+                                  for (Case cc : c.cases) {
+                                      if (cc.recordTypeId == proactiveCaseRTID) {
+                                          caseCounts.get(c.Id).proactiveCount++;
+                                      } else {
+                                          caseCounts.get(c.Id).reactiveCount++;
+                                      }
+                                  }
+                              }
         }
+        
     }
     
     /*
      * Transfer Cases
      */
     public void transferCases() {
+        
         for (case c : selectedCases) {
             c.ownerId = ownerId;
-        }
+        }  
         
-        update selectedCases;
-        
+        update selectedCases;  
         selectedCases = null;
         refreshList = true;
     }
     
-    /*
+    /* 
      * Create portal email records for sending emails through marketing cloud
      */
     public void massEmail() {
         List<Portal_Email__c> emails = new List<Portal_Email__c>();
         
         for (case c : selectedCases) {
-           emails.add(new Portal_Email__c(
-            	Case__c = c.Id,
+            emails.add(new Portal_Email__c(
+                Case__c = c.Id,
                 Contact__c = c.contactId,
+                Subject__c = tempEmail.Subject__c,
                 Additional_Message_Text__c = tempEmail.Additional_Message_Text__c,
                 RecordTypeId = portalEmailRTID,
                 Email_Template_Name__c = tempEmail.Email_Template_Name__c
             ));
         }
-        
         if (emails.size() > 0) {
-            insert emails;
+            emailInsertResults = Database.insert(emails);
         }
         
-        // Reset the tempEmail
         tempEmail = null;
+        emailPreviewMode = false;
+    }
+    
+    /*
+     * The page can't pass a null value to the setter so we have to use
+     * an action call instead.
+     */
+    public void clearSaveResults() {
+        emailInsertResults = null;
+        // Had to move this to the end of the execution order (was in mass email)
+        // because the page wasn't rerendering after mass email and the selections
+        // were being re-submitted.
         selectedCases = null;
     }
     
@@ -339,7 +382,6 @@ public class showMyCasesController {
      * Override the default next() method of setCon
      */
     public void setConNext() {
-        system.debug('setConNext');
         setCon.next();
         resetCaseList();
     }
@@ -348,7 +390,6 @@ public class showMyCasesController {
      * Override the default prev() method of setCon
      */
     public void setConPrev() {
-        system.debug('setConPrevious');
         setCon.previous();
         resetCaseList();
     }
@@ -357,7 +398,6 @@ public class showMyCasesController {
      * Override the default setpageSize() method of setCon
      */
     public void setConPageSize(integer newSize) {
-        system.debug('setConPageSize');
         setCon.setPageSize(newSize);
         resetCaseList();
     }
@@ -388,5 +428,73 @@ public class showMyCasesController {
             selected = false;
             obj = wrappedCase;
         }
+    }
+    
+    /*
+     * Indicates whether the string has been previously searched
+     */ 
+    public boolean searched{
+        get{
+            if(query == NULL || !query.contains('LIKE')){
+                searched = false;
+            }
+            else{
+                searched = true;
+            }
+            return searched;
+        }
+        set;
+    }
+    
+    /**
+	*Used to modify the query based on search parameter inputted by user
+	*
+	*/
+    public string searchString{
+        get{
+            return searchString;
+        }
+        set{
+            searchString = value;
+            if(searchString != NULL){
+                String tempQuery = removeSearchString();  
+                Integer loc = tempQuery.indexOf('WHERE');
+                String tempQueryLeft = tempQuery.substring(0, loc + 5);
+                tempQueryLeft = tempQueryLeft.trim();
+                String tempQueryRight = tempQuery.subString(loc + 6);
+                tempQueryRight = tempQueryRight.trim();
+                
+                String searchCon = value.trim(); 
+                String tmp = tempQueryLeft +' (' +
+                    'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                    'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                ') AND ' + tempQueryRight;
+                
+                query = tmp;
+            }
+        }  
+    }
+    
+    /*
+     * Used to refresh the list to it's orignal state
+     */
+    public void resetSearch(){
+        searchString = NULL;
+        query = removeSearchString();
+    }
+    
+    /*
+     * Trims the query to remove any specific searches
+     */
+    @TestVisible
+    private string removeSearchString(){
+        String tmpQuery = query;
+        if(searched){
+            Integer loc = tmpQuery.indexOf('AND');
+            String left = tmpQuery.substring(0, tmpQuery.indexOf('WHERE')+6);
+            String right = tmpQuery.substring(loc+3);
+            tmpQuery = left + right;
+        }
+        return tmpQuery;
     }
 }

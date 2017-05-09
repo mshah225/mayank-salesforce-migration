@@ -1,5 +1,6 @@
 <apex:component controller="showMyCoachingStudentsController" allowDML="true">
     <apex:includeScript value="{!URLFOR($Resource.showMyStudentsResources, 'showMyStudents.js')}"/>
+    <apex:stylesheet value="{! URLFOR($Resource.showMyStudentsResources, 'showMyStudents.css') }"/>
     <apex:stylesheet value="{!URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
 
     <apex:attribute name="queryString" type="String" description="" assignTo="{!queryAttr}" />
@@ -13,14 +14,17 @@
     <apex:attribute name="suppressMassEmail" type="boolean" description="" default="false" />
     <apex:attribute name="suppressProactiveCases" type="boolean" description="" default="false" />
     <apex:attribute name="suppressReactiveCases" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressSearch" type="boolean" description="" default="false" />
 
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
         <apex:form >
             <div class="headerFooter">
                 <div class="toolbar">
-                    <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;"
-                                     onclick="toggleEmailModal(this)" rendered="{! NOT(suppressMassEmail)}">Mass Email</apex:outputLink>
-                    <div class="input-group" style="width:100%;max-width:350px;">
+                    <apex:outputPanel layout="inline" styleClass="button-group"> 
+                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px"
+                                         onclick="toggleEmailModal(this)" rendered="{! NOT(suppressMassEmail)}">Mass Email</apex:outputLink>
+                    </apex:outputPanel>    
+                    <apex:outputPanel styleClass="input-group" style="width:100%;max-width:250px; margin-top: 5px;" rendered="{! NOT(suppressSearch)}">
                         <apex:inputText id="myStudentsInput"
                                         value="{!searchString}"
                                         html-placeholder="Filter Students"
@@ -70,26 +74,28 @@
                                 <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                             </apex:commandLink>
                         </span>
-                    </div>
+                    </apex:outputPanel>
                 </div>
 
-                <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}"
-                                  style="float:left;" styleClass="standardLink" reRender="rerenderMe"
-                                  status="ASUAjaxStatus" />
-                <apex:outputText value="Page Size " />
-                <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                    <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)"
-                                        status="ASUAjaxStatus" />
-                    <apex:selectOption itemValue="25" itemLabel="25" />
-                    <apex:selectOption itemValue="50" itemLabel="50" />
-                    <apex:selectOption itemValue="100" itemLabel="100" />
-                </apex:selectList>
-                <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
-                <apex:outputText value="{!setCon.ResultSize} Records" />
-                <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}"
-                                  style="float:right;" styleClass="standardLink" reRender="rerenderMe"
-                                  status="ASUAjaxStatus" />
+                <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
+                    <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}"
+                                      style="float:left;" styleClass="standardLink" reRender="rerenderMe"
+                                      status="ASUAjaxStatus" />
+                    <apex:outputText value="Page Size " />
+                    <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
+                        <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)"
+                                            status="ASUAjaxStatus" />
+                        <apex:selectOption itemValue="25" itemLabel="25" />
+                        <apex:selectOption itemValue="50" itemLabel="50" />
+                        <apex:selectOption itemValue="100" itemLabel="100" />
+                    </apex:selectList>
+                    <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
+                    <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
+                    <apex:outputText value="{!setCon.ResultSize} Records" />
+                    <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}"
+                                      style="float:right;" styleClass="standardLink" reRender="rerenderMe"
+                                      status="ASUAjaxStatus" />
+                </apex:outputPanel>
             </div>
         </apex:form>
         <apex:form id="tableForm">
@@ -179,11 +185,14 @@
                     {!caseCountMap[c.obj.Student__c].reactiveCount}
                 </apex:column>
                 <apex:column headerValue="Action" headerClass="ASUColumnHead" styleClass="ASUColumn">
-                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Case')">
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Case')" title="New Case">
                         <apex:image value="{!$Resource.RedCase}" style="width:20px;height:20px;"/>
                     </apex:outputLink>&nbsp;&nbsp;
-                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Chat')">
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Chat')" title="Direct Pitch Chat">
                         <apex:image value="{!$Resource.RedChat}" style="width:20px;height:20px;"/>
+                    </apex:outputLink>&nbsp;&nbsp;
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'All Cases')" title="All Cases">
+                        <apex:image value="{!$Resource.RedCaseMulti}" style="width:20px;height:20px;"/>
                     </apex:outputLink>
                 </apex:column>
             </apex:dataTable>
@@ -261,6 +270,8 @@
                             sforce.console.openSubtab(result.id, 'https://pitch.asuonline.asu.edu/direct/' + asurite, true, 'Pitch Chat - ' + contactName, null);
                         } else if (type == 'Profile') {
                             sforce.console.openSubtab(result.id, '/apex/studentProfile?id=' + contactId, true, contactName + ' Student Profile', null);
+                        } else if (type == 'All Cases') {
+                            sforce.console.openSubtab(result.id, '003?rlid=RelatedCaseList&id=' + contactId, true, contactName + ' All Cases', null);
                         }
                     } else {
                         sforce.console.getPrimaryTabIds(function (primaryTabResult) {
@@ -279,6 +290,8 @@
                                                 sforce.console.openSubtab(parentTabId, 'https://pitch.asuonline.asu.edu/direct/' + asurite, true, 'Pitch Chat - ' + contactName, null);
                                             } else if (type == 'Profile') {
                                                 sforce.console.openSubtab(parentTabId, '/apex/studentProfile?id=' + contactId, true, contactName + ' Student Profile', null);
+                                            } else if (type == 'All Cases') {
+                                                sforce.console.openSubtab(result.id, '003?rlid=RelatedCaseList&id=' + contactId, true, contactName + ' All Cases', null);
                                             }
                                         }
                                     }

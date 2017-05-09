@@ -23,6 +23,7 @@
     <apex:attribute name="suppressCaseMassEmail" type="boolean" description="" default="false" />
     <apex:attribute name="suppressProactiveCaseCount" type="boolean" description="" default="false" />
     <apex:attribute name="suppressReactiveCaseCount" type="boolean" description="" default="false" />
+    <apex:attribute name="suppressSearch" type="boolean" description="" default="false" />
     
     <apex:attribute name="rerenderList" type="String" description="" />
     
@@ -117,7 +118,8 @@
                                 suppressStatus="{!suppressCaseListStatus}" suppressFollowupDate="{!suppressCaseListFollowupDate}"
                                 suppressTransfer="{!suppressCaseListTransfer}" proactiveRTID="{!proactiveRTID}"
                                 emailRTID="{!caseEmailRTID}" suppressProactive="{!suppressProactiveCaseCount}"
-                                suppressReactive="{!suppressReactiveCaseCount}" suppressMassEmail="{!suppressCaseMassEmail}"/>
+                                suppressReactive="{!suppressReactiveCaseCount}" suppressMassEmail="{!suppressCaseMassEmail}"
+                                suppressSearch="{!suppressSearch}"           />
                         </div>
                         
                         <div class="modal-footer">

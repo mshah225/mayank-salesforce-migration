@@ -17,7 +17,7 @@
         <trackHistory>false</trackHistory>
         <type>Number</type>
         <unique>false</unique>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Answer__c</fullName>
         <description>Article Answer Content</description>
         <externalId>false</externalId>
@@ -26,7 +26,7 @@
         <trackHistory>true</trackHistory>
         <type>Html</type>
         <visibleLines>25</visibleLines>
-    </fields><fields>
+    </fields><fields xmlns="http://soap.sforce.com/2006/04/metadata">
         <fullName>Article_Expiration_Date__c</fullName>
         <description>Date in which article will expire and content needs to be reviewed.</description>
         <externalId>false</externalId>
@@ -147,6 +147,10 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Internal Knowledge</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Internal Knowledge (Finances)</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>

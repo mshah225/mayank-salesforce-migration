@@ -19,10 +19,11 @@ public class Test_ShowMyCases {
             Query = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Subject, Description, Status, FollowUp_Date__c ' +
                 'FROM Case ' +
                 'WHERE OwnerId = \'' + pod[0].ownerId + '\' ' +
-                'AND recordTypeId = \'' + RTIDHelper.getRTID('Case', 'ASU Advisor Outreach') + '\' ' +
-                'AND isClosed = false';
+                'AND recordTypeId = \'' + IDHelper.getRTID('Case', 'ASU_Advisor_Outreach') + '\' ' +
+                'AND isClosed = false ' +
+                'ORDER BY Contact.LastName ASC';
             
-            smsc.query = query;
+            smsc.queryAttr = query;
         }
     }
     
@@ -34,14 +35,14 @@ public class Test_ShowMyCases {
     /*
      * Tests caseList's getter
      */
-    public static testMethod void Test_getStudentList() {
-        // note, the number of students in the list will either be equal to pageSize
-        // Or numberOfStudentsToCreate if this value is fewer than pageSize.
+    public static testMethod void Test_getCaseList() {
+        // note, the number of cases in the list will either be equal to pageSize
+        // Or numberOfCasesToCreate if this value is fewer than pageSize.
         // This is because the standard set controller will only get the number of records
         // set in setCon.setPageSize().
-         
-        if (numberOfStudents < smsc.pageSize) {
-            system.assertEquals(numberOfStudents, smsc.caseList.size());
+        
+        if (numberOfCases*2 < smsc.pageSize) {
+            system.assertEquals(numberOfCases*2, smsc.caseList.size());
         } else {
             system.assertEquals(smsc.pageSize, smsc.caseList.size());
         }
@@ -124,7 +125,7 @@ public class Test_ShowMyCases {
      */
     public static testmethod void Test_getSort() {
         smsc.sortDir = null; // Set to null
-        system.assertEquals('DESC', smsc.sortDir); // Make sure the sortDir is set to default DESC
+        system.assertEquals('ASC', smsc.sortDir); // Make sure the sortDir is set to default ASC
     }
     
     /*
@@ -152,7 +153,7 @@ public class Test_ShowMyCases {
         smsc.tempEmail.Email_Template_Name__c = 'Advisor Ad-hoc template';
         smsc.tempEmail.Additional_Message_Text__c = 'Test mass email';
         
-        smsc.portalEmailRTID = RTIDHelper.getRTID('Portal_Email__c', 'Advisor');
+        smsc.portalEmailRTID = IDHelper.getRTID('Portal_Email__c', 'Advisor');
         
         // Insert Portal Emails
         smsc.massEmail();
@@ -160,5 +161,21 @@ public class Test_ShowMyCases {
         system.debug('assert called below me');
         system.assertEquals(smsc.caseList.size(), [SELECT Id FROM Portal_Email__c].size());
         system.debug('assert Called above me');
+    }
+    
+    /**
+     * Test Search Methods
+     */ 
+    public static testmethod void Test_Search(){
+        smsc.searchString = '';
+        System.assert(smsc.query.contains('LIKE'));
+        smsc.resetSearch();
+        System.assert(!smsc.query.contains('LIKE'));
+    }
+    
+    public static testmethod void Test_nullQuery(){
+        smsc.query = NULL;
+        List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
+        System.assertEquals(errorList.size(), 1);
     }
 }

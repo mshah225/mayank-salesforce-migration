@@ -279,13 +279,13 @@
     </validationRules><validationRules xmlns="http://soap.sforce.com/2006/04/metadata">
         <errorMessage><!-- SMS Phone must only contain 10 or 15 numbers. Please check the length and remove any symbols () + - / or letters. --></errorMessage>
         <name>SMS_Phone_Contains_Only_Numbers</name>
-    </validationRules><validationRules>
+    </validationRules><validationRules xmlns="http://soap.sforce.com/2006/04/metadata">
         <errorMessage><!-- Sync to Silverpop selection cannot be changed. Once the box is checked, it cannot be unchecked. --></errorMessage>
         <name>silverpop__Disable_Changing_Enable_Sync</name>
-    </validationRules><validationRules>
+    </validationRules><validationRules xmlns="http://soap.sforce.com/2006/04/metadata">
         <errorMessage><!-- Sync to Silverpop selection cannot be changed. Once set to &quot;Yes, Always Sync&quot; or &quot;No, Don&apos;t Sync&quot; it cannot be changed back to &quot;-None-.” --></errorMessage>
         <name>silverpop__Disable_Changing_To_None</name>
-    </validationRules><validationRules>
+    </validationRules><validationRules xmlns="http://soap.sforce.com/2006/04/metadata">
         <errorMessage><!-- Engage contact could not sync to Salesforce because the matching lead or contact in Salesforce has been set to not sync. You will need to change the &quot;Sync to Silverpop&quot; setting for the lead or contact in Salesforce. --></errorMessage>
         <name>silverpop__Prevent_Change_From_Engage</name>
     </validationRules><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
@@ -309,22 +309,22 @@
     </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- YahooWeather --></label>
         <name>YahooWeather</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- ExactTarget_Resubscribe --></label>
         <name>et4ae5__ExactTarget_Resubscribe</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- ExactTarget_Unsubscribe --></label>
         <name>et4ae5__ExactTarget_Unsubscribe</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Send_ExactTarget_Email --></label>
         <name>et4ae5__Send_ExactTarget_Email</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Send_ExactTarget_SMS --></label>
         <name>et4ae5__Send_ExactTarget_SMS</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- View_ExactTarget_Analytics --></label>
         <name>et4ae5__View_ExactTarget_Analytics</name>
-    </webLinks><webLinks>
+    </webLinks><webLinks xmlns="http://soap.sforce.com/2006/04/metadata">
         <label><!-- Send_Silverpop_Email --></label>
         <name>silverpop__Send_Silverpop_Email</name>
     </webLinks></CustomObjectTranslation>

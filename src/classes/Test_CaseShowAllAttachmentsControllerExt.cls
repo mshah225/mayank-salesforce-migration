@@ -2,6 +2,7 @@
 private class Test_CaseShowAllAttachmentsControllerExt {
 	
 	private static Case testCase;
+	private static String testContactName;
 
 	private static void setUp(){
 		testCase = new Case();
@@ -73,7 +74,7 @@ private class Test_CaseShowAllAttachmentsControllerExt {
 		Test.startTest();
 		CaseShowAllAttachmentsControllerExt testControllerExt = new CaseShowAllAttachmentsControllerExt(stanController);
 		String result = testControllerExt.getContactName();
-		System.assertEquals('Test Guy', result);
+		System.assertEquals(testContactName, result);
 		Test.stopTest();
 	}
 }

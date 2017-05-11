@@ -13,6 +13,7 @@ public class showMyCoachingStudentsController {
     public String searchString { get; set; }
     public List<studentWrapper> studentList { get; set; }
     public Map<Id, caseWrapper> caseCountMap { get; set; }
+    private boolean sameField;
 
     // Transient properties (cookies cannot be stored in the view state)
     private transient Map<String, Cookie> cookieMap; // Stores the pages cookies
@@ -125,49 +126,58 @@ public class showMyCoachingStudentsController {
 
         return pageSizeCookie;
     }
-
+    
     /*
      * A String to keep track of the Case list sort direction
      */
     public String sortDir {
         get;
-
+        
         set {
-            if (sortDir == 'DESC') {
+            //If first sort is on Name
+            if(sortDIR == NULL && sortField == 'Student_Name__c'){
+                sortDir = 'DESC';
+            }
+            //If previous sort was a different field or the same field with a DESC value
+            else if (sortDir == 'DESC' || sortDIR == NULL) {
                 sortDir = 'ASC';
-            } else {
+            }
+            //If previous sort was same field with ASC value
+            else {
                 sortDir = 'DESC';
             }
         }
     }
 
-    /*
-     * Stores the API name of the field that the user wants to sort the list by.
-     * Setting this variable updates the query with the proper "ORDER BY" clause.
-     */
-    public String sortField {
-        get;
 
+    public String sortField{
+        get;
+        
         set {
             String tempQuery;
-            Integer loc;
-
+            Integer loc; 
+            string oldSort = sortField;            
             sortField = value;
-
-            if (!String.isEmpty(sortField)) {
-                sortDir = sortDir;
-                tempQuery = query;
-
-                loc = tempQuery.indexOf('ORDER BY');
-
+            
+            if (!String.isEmpty(sortField)) {               
+                if(oldSort == NULL || sortField == oldSort){
+                    sortDir = sortDir;
+                }
+                //Ensures that each column starts ASC
+                else if(sortField != oldSort){
+                    if(sortDir != 'ASC'){
+                        sortDir = sortDir;
+                    }
+                }
+                tempQuery = query;              
+                loc = tempQuery.indexOf('ORDER BY');              
                 if (loc > 0) {
                     tempQuery = tempQuery.left(loc);
                     tempQuery = tempQuery.trim();
-                }
-
+                }               
                 tempQuery = tempQuery + ' ORDER BY ' + sortField + ' ' + sortDir + ' NULLS LAST';
                 query = tempQuery;
-            }
+            }          
         }
     }
 

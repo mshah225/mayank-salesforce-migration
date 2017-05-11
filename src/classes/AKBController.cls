@@ -1,4 +1,4 @@
-public without sharing class AKBController 
+public with sharing class AKBController 
 {    
     private ServiceCenter sc;
     public AKB_Article_Feedback__c feedbackHelpful { get; set; }
@@ -23,7 +23,7 @@ public without sharing class AKBController
         this.sc = sc;
         userContact = sc.userContact;
         article = [
-            SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId, CreatedBy.Name
+            SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId, CreatedBy.FirstName, CreatedBy.LastName
             FROM KnowledgeArticleVersion
             WHERE KnowledgeArticleId = :ApexPages.currentPage().getParameters().get('id')
             AND PublishStatus = 'Online'
@@ -84,7 +84,7 @@ public without sharing class AKBController
         feedbackHelpful.Contact__c = userContact.Id;
         feedbackHelpful.Helpful__c = true;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
-        feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
+        feedbackHelpful.Article_Author__c = article.CreatedBy.FirstName + ' ' + article.CreatedBy.LastName;
         
         if (article.ArticleType.equals('FAQ__kav'))
         {

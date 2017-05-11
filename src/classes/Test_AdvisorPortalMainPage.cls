@@ -102,4 +102,8 @@ public class Test_AdvisorPortalMainPage {
         system.assert(apmpc.mySummaryListQuery.contains((String) apmpc.OwnerId));
         system.assert(apmpc.myStudentsQuery.contains((String) apmpc.OwnerId));
     }
+    
+    public static testMethod void Test_getRole(){
+        system.assertEquals('User', apmpc.myRole);
+    }
 }

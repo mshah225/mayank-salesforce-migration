@@ -9,7 +9,7 @@ public without sharing class DynamicFeedbackController {
     public String caseDescription {get; set;} // The comments provided by the end user saved as the case description
     public String carName {get; set;} // The name of the custom setting entry that references the required car
     public AlertHandler alertHandler {get; set;} // Use the custom alerting component
-    
+    public Contact loggedInContact;
     public DynamicFeedbackController() {}
     
     /**
@@ -110,29 +110,15 @@ public without sharing class DynamicFeedbackController {
         	}
         
         	if (proceed) {
-            	car = [SELECT Id, Queue_Id__c, Origin__c, Functional_Group__c, Category__c,
+                car = [SELECT Id, Queue_Id__c, Origin__c, Functional_Group__c, Category__c,
                         Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c, Campus__c
 	                FROM Case_Assignment_Rule__c 
 	                WHERE Id = :settings.CAR_Id__c];
 	            
                 if (useLoggedInContact) {
-                    // Try Community User
-                    caseContactId = [SELECT ContactId 
-                        FROM User 
-                        WHERE Id = :userInfo.getUserId()].contactId;
-                    
-                    // Try emplId
-                    if (caseContactId == null) {
-                        EMPLId = [SELECT EmployeeNumber FROM User WHERE Id = :userInfo.getUserId()].EmployeeNumber;
-                        
-                        system.debug(EMPLId);
-                        
-                        if (EMPLId != null) {
-                            // Use a for loop incase no contacts are returned
-                            for (Contact c : [SELECT Id FROM Contact WHERE EmplId__c = :EMPLId LIMIT 1]) {
-                                caseContactId = c.Id;
-                            }
-                        }
+                    loggedInContact=ContactService.getLoggedInContact();
+                    if(loggedInContact!=null){
+                        caseContactId=loggedInContact.Id;
                     }
                 }
                 

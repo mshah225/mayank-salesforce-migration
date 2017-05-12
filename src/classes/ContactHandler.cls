@@ -94,8 +94,10 @@ public without sharing class ContactHandler implements ITrigger
 
                 // If we are inserting a new Contact...
                 if (Trigger.IsInsert) {
+                    System.debug('Trigger fired...');
                     // If the Contact was created using the VisionE/Scan application...
                     if (c.eContacts__Created_By_eContacts__c) {
+                        System.debug('Account ID: ' + c.AccountId);
                         // Store the Contact's Account lookup as the Business Card Account
                         c.Bizcard_Account__c = c.AccountId;    
                         c.AccountId = null;
@@ -103,6 +105,8 @@ public without sharing class ContactHandler implements ITrigger
                         // Populate the Corporate Relations Account Owner
                         Id userId = UserInfo.getUserId();
                         List<User> userList = [SELECT Id, Name FROM User WHERE Id = :userId];
+                        System.debug('USER LIST: ' + userList);
+                        System.debug('CRCO: ' + c.Corporate_Relations_Contact_Owner__c);
                         c.Corporate_Relations_Contact_Owner__c = userList[0].Id;
                     } else {
                         // Otherwise, create an Account from the Contact and store it in our map
@@ -232,7 +236,9 @@ public without sharing class ContactHandler implements ITrigger
                 // If the triggering contact was created by the VisionE/Scan application, add the
                 // Contact's ID to our list of Business Card Contact IDs.
                 if (c.eContacts__Created_By_eContacts__c) {
+                    System.debug('Contact ID added to list...');
                     bizcardContactIds.add(c.Id);
+                    System.debug('Contact IDs: ' + bizcardContactIds);
                 }
             
             }
@@ -247,6 +253,8 @@ public without sharing class ContactHandler implements ITrigger
 
                 // For each Contact that was created by the VisionE/Scan application...
                 for (Contact c : contacts) {
+                    System.debug('Contact ' + c);
+                    
                     // Create a Relationship between the Contact and its Account, and add it to our
                     // list of Business Card Relationships.
                     if (c.Bizcard_Account__c != null) {
@@ -256,10 +264,16 @@ public without sharing class ContactHandler implements ITrigger
                             )
                         );
                     }
+
+                    System.debug('Business Card Relationships: ' + bizcardRelationships);
+
                     // Create a Campaign Member object and assign it the ID of the Contact
                     CampaignMember cm = new CampaignMember(
                         ContactId = c.Id
                     );
+
+                    System.debug('CREATED BY: ' + c.CreatedBy);
+
                     // If the map of Business Card Campaign Members is empty, add the Name of the User
                     // who created the Contact to the map, and map it to an empty list of Campaign Members.
                     if (bizcardCampaignMembers.get(c.CreatedBy.UserRole.Name) == null) {
@@ -286,6 +300,9 @@ public without sharing class ContactHandler implements ITrigger
 
         // If there are any Business Card Campaign Members...
         if (bizcardCampaignMembers.size() > 0) {
+
+            System.debug('Bizcard Campaign Members: ' + bizcardCampaignMembers);
+            
             // Create a set of roles from the map
             Set<String> roleNames = bizcardCampaignMembers.keySet();
 

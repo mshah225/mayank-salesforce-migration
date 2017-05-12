@@ -7,6 +7,7 @@
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.advisorCaseListContainerResources, 'advisorCaseListContainer.css')}"/>
     <apex:variable var="SUCCESS_COACH_MANAGER" value="SC Success Coach Manager"/>
+    <apex:variable var="SUCCESS_COACH_LEAD" value="SC Success Coach Lead"/>
     <apex:variable var="SYS_ADMIN" value="System Administrator"/>
 
     <apex:pageMessages />
@@ -73,7 +74,7 @@
                           switchType="client"
                           styleClass="wsTabContent"
                           id="toolsTab"
-                          rendered="{!$UserRole.Name == SUCCESS_COACH_MANAGER || $Profile.Name == SYS_ADMIN}">
+                          rendered="{!$UserRole.Name == SUCCESS_COACH_MANAGER || $UserRole.Name == SUCCESS_COACH_LEAD || $Profile.Name == SYS_ADMIN}">
                     <c:SuccessToolbelt />
                 </apex:tab>
             </apex:tabPanel>
@@ -86,5 +87,5 @@
 
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>
     <apex:includeScript value="/support/console/38.0/integration.js"/>
-    <c:ASUAjaxStatus suppressStop="true" />
+    <c:ASUAjaxStatus />
 </apex:page>

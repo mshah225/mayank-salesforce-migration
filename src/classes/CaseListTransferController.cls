@@ -78,10 +78,9 @@ public class CaseListTransferController {
 	        }
         }
         
-        this.cs = [SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c
+        this.cs = [SELECT Subject, Description, Sub_Category__c, Category__c, Functional_Group__c
             FROM Case WHERE Id IN :CaseIds];
 
-        
         for (Case c : this.cs) {
             if (String.isBlank(c.Subject) || String.isBlank(c.Description)) {
                 ApexPages.addmessage(
@@ -322,31 +321,6 @@ public class CaseListTransferController {
         }
         
         if (allSubsAndDescsValidated) {
-            Case_Assignment_Rule__c selectedCAR;
-            Id functionalGroup;
-            Id category;
-            Id subCategory;
-            if(!toUser){
-            	selectedCAR = CARService.getCAR(selectedId);
-               
-                String rtNames = [Select Name 
-                                  FROM RecordType
-                                  WHERE Id =: selectedCAR.Case_Record_Type_Id__c
-                                  LIMIT 1
-                                 ].Name;
-                functionalGroup = [SELECT Id
-                                   FROM Case_Classification__c
-                                   WHERE Record_Types__c INCLUDES (:rtNames)
-                                  ].Id;
-                category =  [Select Id 
-                             FROM Case_Classification__c 
-                             WHERE Parent__c =: functionalGroup
-                            ].Id;
-                subCategory = [Select Id 
-                               FROM Case_Classification__c 
-                               WHERE Parent__c =: category
-                              ].Id;
-            }
             for (Case c : this.cs) {
                 /*
                 * Transfer to a department by setting the case information
@@ -355,11 +329,11 @@ public class CaseListTransferController {
                 if (toUser) {
                     c.OwnerId = selectedId;
                 } else {
-                    
+                    Case_Assignment_Rule__c selectedCAR = CARService.getCAR(selectedId);
                     c.OwnerId = selectedCAR.Queue_ID__c;
-                    c.CC_Functional_Group__c = functionalGroup;
-                    c.CC_Category__c = category;
-                    c.CC_Sub_Category__c = subCategory;
+                    c.Functional_Group__c = selectedCAR.Functional_Group__c;
+                    c.Category__c = selectedCAR.Category__c;
+                    c.Sub_Category__c = selectedCAR.Sub_Category__c;
                     c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
                     c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
                     c.Campus__c = selectedCAR.Campus__c;
@@ -409,15 +383,15 @@ public class CaseListTransferController {
                 allCasesSameGroup = true;
                 
                 // Get Car info
-                fGroup = this.cs[0].CC_functional_Group__c;
-                String groupName = [SELECT Name FROM Case_Classification__c where id =: fGroup].Name;
+                fGroup = this.cs[0].functional_Group__c;
+                
                 // Verify that all cases have descriptions and subjects
                 for (Case c : this.cs) {
                     if (String.isBlank(c.Description) || string.isBlank(c.Subject)) {
                         allSubsAndDescsValidated = false;
                     }
                     
-                    if (c.CC_functional_Group__c != fGroup) {
+                    if (c.functional_Group__c != fGroup) {
                         allCasesSameGroup = false;
                     }
                 }
@@ -425,7 +399,7 @@ public class CaseListTransferController {
                 if (allSubsAndDescsValidated && allCasesSameGroup) {
                     selectedCar = new List<Case_Assignment_Rule__c>([SELECT Queue_ID__c 
                         FROM Case_Assignment_Rule__c
-                        WHERE Functional_Group__c = :groupName
+                        WHERE Functional_Group__c = :fGroup
                         ORDER BY Priority__c ASC
                         LIMIT 1]);
                     

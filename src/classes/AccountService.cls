@@ -1,6 +1,5 @@
 public class AccountService 
 {
-// Test commit
     /**
     * Creates a test account with the SF Mastered Org RecordType. Usually for unit testing.
     * @return A test account with required fields.

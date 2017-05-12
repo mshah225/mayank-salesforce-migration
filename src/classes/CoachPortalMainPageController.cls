@@ -160,7 +160,7 @@ public with sharing class CoachPortalMainPageController {
     private Id CoachResourceRTID {
         get {
             if (CoachResourceRTID == null) {
-                CoachResourceRTID = IDHelper.getRTID('Success_Resource__c', 'Coach');
+                CoachResourceRTID = RTIDHelper.getRTID('Success_Resource__c', 'Coach');
             }
 
             return CoachResourceRTID;
@@ -175,7 +175,7 @@ public with sharing class CoachPortalMainPageController {
     public Id CoachCaseRTID {
         get {
             if (CoachCaseRTID == null) {
-                CoachCaseRTID = IDHelper.getRTID('Case', 'ASU_Coach_Outreach');
+                CoachCaseRTID = RTIDHelper.getRTID('Case', 'ASU Coach Outreach');
             }
 
             return CoachCaseRTID;
@@ -190,7 +190,7 @@ public with sharing class CoachPortalMainPageController {
     public Id CoachEmailRTID {
         get {
             if (CoachEmailRTID == null) {
-                CoachEmailRTID = IDHelper.getRTID('Portal_Email__c', 'Coach');
+                CoachEmailRTID = RTIDHelper.getRTID('Portal_Email__c', 'Coach');
             }
 
             return CoachEmailRTID;
@@ -206,13 +206,13 @@ public with sharing class CoachPortalMainPageController {
         get {
             if (ownerId != null) {
                 myProactiveQuery = '' +
-                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, ' +
+                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.firstName, Contact.lastName, Contact.EMPLID__c, ' +
                         'Subject, Description, Status, FollowUp_Date__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND Category__c != \'Watchlist\' ' +
                     'AND recordTypeId = \'' + CoachCaseRTID + '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC';
+                    'AND isClosed = false';
             }
 
             return myProactiveQuery;
@@ -228,13 +228,13 @@ public with sharing class CoachPortalMainPageController {
         get {
             if (ownerId != null) {
                 myWatchlistQuery = '' +
-                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Contact.FirstName, Contact.LastName, ' +
-                    'Subject, Description, Status, FollowUp_Date__c ' +
+                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.firstName, Contact.lastName, Contact.EMPLID__c, Contact.LastName, ' +
+                        'Subject, Description, Status, FollowUp_Date__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND Category__c = \'Watchlist\' ' +
                     'AND recordTypeId = \'' + CoachCaseRTID + '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC';
+                    'AND isClosed = false';
             }
 
             return myWatchlistQuery;
@@ -250,12 +250,11 @@ public with sharing class CoachPortalMainPageController {
         get {
             if (ownerId != null) {
                 myStudentsQuery = '' +
-                    'SELECT Student_Name__c, EMPLID__c, Student__c, Success_Resource__r.Resource__c, ' +
-                    'ASURiteID__c,Student__r.FirstName, Student__r.LastName ' +
+                    'SELECT Student_Name__c, EMPLID__c, Student__c, Success_Resource__r.Resource__c, ASURiteID__c ' +
                     'FROM Success_Student__c ' +
                     'WHERE Success_Resource__r.Resource__c = \'' + ownerId + '\' ' +
                     'AND Is_Active__c = true ' +
-                    'AND Coaching_Student__c = true ORDER BY Student_Name__c ASC';
+                    'AND Coaching_Student__c = true';
             }
 
             return myStudentsQuery;

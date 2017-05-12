@@ -244,10 +244,10 @@ public class Test_DynamicFeedbackController {
         
         cases = [SELECT Id, OwnerId, Origin__c, Functional_Group__c, Category__c,
                     Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
-                    Campus__c, contactId
+                    Campus__c, contactId, Description
                     FROM Case];
         
-        system.assertEquals(1, cases.size());
+        system.assertEquals(2, cases.size());
         system.assertEquals('Error Logger', cases[0].Origin__c);
         
         delete cases;

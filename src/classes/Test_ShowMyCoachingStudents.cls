@@ -172,7 +172,7 @@ private class Test_ShowMyCoachingStudents {
         smcsc.tempEmail.Email_Template_Name__c = 'Advisor Ad-hoc template';
         smcsc.tempEmail.Additional_Message_Text__c = 'Test mass email';
 
-        smcsc.portalEmailRTID = IDHelper.getRTID('Portal_Email__c', 'Advisor');
+        smcsc.portalEmailRTID = RTIDHelper.getRTID('Portal_Email__c', 'Advisor');
 
         // Insert Portal Emails
         smcsc.massEmail();

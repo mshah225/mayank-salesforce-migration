@@ -43,7 +43,7 @@ public class PortalEmailService {
             }
             
             if (pe.Additional_Message_Text__c == null || pe.Additional_Message_Text__c == '') {
-                pe.Additional_Message_Text__c = 'A Message from your College and Department';
+                pe.status = 'Cancelled';
             }
         }
     }

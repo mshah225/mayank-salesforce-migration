@@ -85,7 +85,6 @@ public class IDHelper {
     public static Id getRecordTypeId (String SObjectType, String Name) {
         for (Record_Type_ids__c RTID : RecordTypeIds) {
             if (RTID.Name__c == Name && RTID.SObject_Type__c == SObjectType) {
-                System.debug(RTID.Id__C);
                 return RTID.Id__c;
             }
         }

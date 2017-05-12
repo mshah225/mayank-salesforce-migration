@@ -61,7 +61,6 @@ public class LeadCommunicationHistoryController {
                 FROM et4ae5__IndividualEmailResult__c
                 WHERE et4ae5__Lead__c = :leadId
                 ORDER BY et4ae5__DateSent__c DESC
-                LIMIT 750
             ];
                     
             // Create a set of Send Definition IDs
@@ -95,11 +94,9 @@ public class LeadCommunicationHistoryController {
             // Iterate through all Individual Email Results to populate the data we need to display for each e-mail
             // message that was sent
             for (et4ae5__IndividualEmailResult__c r : individualEmailResults) {
-                if (sendDefinitionMap.containsKey(r.et4ae5__SendDefinition__c)) {
-                	for (et4ae5__SendJunction__c sj : sendDefinitionMap.get(r.et4ae5__SendDefinition__c).et4ae5__Campaigns__r) {
-                    	if (sj.Parent_Campaign_Private__c) {
-                        	isPrivate = true;   
-                    	}
+                for (et4ae5__SendJunction__c sj : sendDefinitionMap.get(r.et4ae5__SendDefinition__c).et4ae5__Campaigns__r) {
+                    if (sj.Parent_Campaign_Private__c) {
+                        isPrivate = true;   
                     }
                 }            
             

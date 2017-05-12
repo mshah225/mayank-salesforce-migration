@@ -20,8 +20,7 @@ public class Test_ShowMyCases {
                 'FROM Case ' +
                 'WHERE OwnerId = \'' + pod[0].ownerId + '\' ' +
                 'AND recordTypeId = \'' + IDHelper.getRTID('Case', 'ASU_Advisor_Outreach') + '\' ' +
-                'AND isClosed = false ' +
-                'ORDER BY Contact.LastName ASC';
+                'AND isClosed = false';
             
             smsc.queryAttr = query;
         }
@@ -177,5 +176,19 @@ public class Test_ShowMyCases {
         smsc.query = NULL;
         List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
         System.assertEquals(errorList.size(), 1);
+    }
+    
+    public static testmethod void Test_setSortDir() {
+        system.debug(smsc.sortDir); // Should be null
+        smsc.sortDir = smsc.sortDir;
+        system.assertEquals('ASC', smsc.sortDir);
+        smsc.sortDir = smsc.sortDir;
+        system.assertEquals('DESC', smsc.sortDir);
+        smsc.sortDir = smsc.sortDir;
+        system.assertEquals('ASC', smsc.sortDir);
+        smsc.sortDir = 'DESC';
+        system.assertEquals('DESC', smsc.sortDir);
+        smsc.sortDir = 'ASC';
+        system.assertEquals('ASC', smsc.sortDir);
     }
 }

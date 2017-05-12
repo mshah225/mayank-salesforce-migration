@@ -1,7 +1,8 @@
 @isTest
 private class Test_HelpDeskController
 {
-    private static void setUpTest()
+    
+    @testSetup private static void setUpTest()
     {
         List<Contact> testContacts = ContactService.createTestContacts(2);
 
@@ -12,11 +13,11 @@ private class Test_HelpDeskController
         testContacts[1].LastName = 'Caller';
 
         insert testContacts;
+        TestDataFactory.createFunctionalGroupWithCategory('Help Desk');
     }
 
-    @isTest static void testCreateContactCreateCaseSaveCase()
+    @isTest(SeeAllData=false) static void testCreateContactCreateCaseSaveCase()
     {
-        setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
@@ -84,9 +85,8 @@ private class Test_HelpDeskController
         System.assertEquals(control.getUrl(), hdc.saveCase().getUrl());
     }
 
-    @isTest static void testCreateCaseSaveAndClose()
+    @isTest(SeeAllData=false) static void testCreateCaseSaveAndClose()
     {
-        setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
@@ -230,7 +230,6 @@ private class Test_HelpDeskController
 
     @isTest static void testSetAsCaseForArticlePop()
     {
-        setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
@@ -310,7 +309,6 @@ private class Test_HelpDeskController
 
     @isTest static void testKnowledgeSearchAttachAndRemove()
     {
-        setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 

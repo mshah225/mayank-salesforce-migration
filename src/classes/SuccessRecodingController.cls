@@ -129,6 +129,7 @@ public class SuccessRecodingController {
             FROM Success_Student__c
             WHERE Student__r.Id = :selectedContactId
             AND Is_Active__c = true
+            AND Coaching_Student__c = true
         ]);
 
         studentsResults.add(new StudentWrapper(tempStudents[0]));
@@ -150,6 +151,7 @@ public class SuccessRecodingController {
             FROM Success_Student__c
             WHERE Success_Resource__r.Resource__r.Id = :selectedCoachId
             AND Is_Active__c = true
+            AND Coaching_Student__c = true
         ]);
 
         for (Success_Student__c ss : tempStudents) {

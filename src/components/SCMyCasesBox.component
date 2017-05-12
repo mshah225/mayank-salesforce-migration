@@ -1,6 +1,6 @@
 <apex:component controller="SCMyCasesBoxController" allowDML="true">
     <!-- This component renders the My Cases Box on the Service Center -->
-    <apex:outputPanel >
+    <apex:outputPanel rendered="{!MyCasesBox}">
         <div class="box">
             <div class="header">
                 <h6><b>My Cases</b></h6>

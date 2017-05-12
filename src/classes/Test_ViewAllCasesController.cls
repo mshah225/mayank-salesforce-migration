@@ -1,70 +1,69 @@
 @isTest
 private class Test_ViewAllCasesController
 {
-    @testSetup static void setup()
-    {
-        Term__c termAC = new Term__c();
-        Date dTac = Date.today().adddays(365);
-        Date dTb = Date.today().adddays(405);
-        termAC.Session_A_C_Start_Date__c = date.newinstance(dTac.year(), dTac.month(), dTac.day());
-        String ACYear = String.valueOf(dTac.year());
-        termAC.Year__c = ACYear;
-        insert termAC;
+	@testSetup static void setup()
+	{
+		Term__c termAC = new Term__c();
+		Date dTac = Date.today().adddays(365);
+		Date dTb = Date.today().adddays(405);
+		termAC.Session_A_C_Start_Date__c = date.newinstance(dTac.year(), dTac.month(), dTac.day());
+		String ACYear = String.valueOf(dTac.year());
+		termAC.Year__c = ACYear;
+		insert termAC;
 
-        Term__c termB = new Term__c();
-        termB.Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day());
-        String BYear = String.valueOf(dTb.year());
-        termB.Year__c = BYear;
-        insert termB;
+		Term__c termB = new Term__c();
+		termB.Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day());
+		String BYear = String.valueOf(dTb.year());
+		termB.Year__c = BYear;
+		insert termB;
 
-        Contact testContact = ContactService.createTestContact();
-        insert testContact;
+		Contact testContact = ContactService.createTestContact();
+		insert testContact;
 
-        User testUser = UserService.createTestUser();
-        testUser.ProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-        testUser.ContactId = testContact.Id;
-        insert testUser;
+		User testUser = UserService.createTestUser();
+		testUser.ProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+		testUser.ContactId = testContact.Id;
+		insert testUser;
 
-        List<Case> testCases = CaseService.createTestCases(10, testContact);
+		List<Case> testCases = CaseService.createTestCases(10, testContact);
 
-        // Set the first three testCases to closed
-        Integer i = 0;
-        for (Case c : testCases)
-        {
-            if (i < 3)
-            {
-                c.Status = 'New';
-                i++;
-            }
-            else
-            {
-                c.Status = 'Closed: Resolved';
-            }
-        }
+		// Set the first three testCases to closed
+		Integer i = 0;
+		for (Case c : testCases)
+		{
+			if (i < 3)
+			{
+				c.Status = 'New';
+				i++;
+			}
+			else
+			{
+				c.Status = 'Closed: Resolved';
+			}
+		}
 
-        insert testCases;
-    }
+		insert testCases;
+	}
 
-    @isTest static void testGetAllClosedCases()
-    {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+	@isTest static void testGetAllClosedCases()
+	{
+		User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
 
-        PageReference viewAllCasesPage = Page.viewAllCases;
-        Test.setCurrentPage(viewAllCasesPage);
-        ServiceCenter sc;
-        ViewAllCasesController vac;
-        List<Case> closedCases = null;
+		PageReference viewAllCasesPage = Page.viewAllCases;
+		Test.setCurrentPage(viewAllCasesPage);
+		ServiceCenter sc;
+		ViewAllCasesController vac;
+		List<Case> closedCases = null;
 
-        Test.startTest();
-        System.runAs(testUser)
-        {
-            sc = new ServiceCenter();
-            vac = new ViewAllCasesController();
+		Test.startTest();
+		System.runAs(testUser)
+		{
+			vac = new ViewAllCasesController();
 
-            closedCases = vac.getAllClosedCases();
-        }
-        Test.stopTest();
+			closedCases = vac.getAllClosedCases();
+		}
+		Test.stopTest();
 
-        System.assertEquals(7, closedCases.size());
-    }
+		System.assertEquals(7, closedCases.size());
+	}
 }

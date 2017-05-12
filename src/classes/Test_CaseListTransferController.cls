@@ -26,7 +26,6 @@ private class Test_CaseListTransferController {
             CTPColumn__c = 'Colleges',
             CTPGroup__c = 'Engineering',
             CTPVisible__c = true,
-            Case_Record_Type_Id__c = '012d0000000x2VT',
             Email_Address__c = 'default@email.com',
             Functional_Group__c = 'Engineering',
             Label__c = 'Engineering (Default)',
@@ -39,9 +38,8 @@ private class Test_CaseListTransferController {
             CTPColumn__c = 'Colleges',
             CTPGroup__c = 'Engineering',
             CTPVisible__c = true,
-            Case_Record_Type_Id__c = '012d0000000x2VT',
             Email_Address__c = 'default@email.com',
-            Functional_Group__c = 'EngineeringTwo',
+            Functional_Group__c = 'Engineering',
             Label__c = 'School of blah blah'
         );
 
@@ -49,7 +47,6 @@ private class Test_CaseListTransferController {
             CTPColumn__c = 'Service Departments',
             CTPGroup__c = 'University Registrar Services',
             CTPVisible__c = true,
-            Case_Record_Type_Id__c = '012d0000000x2VT',
             Email_Address__c = 'default@email.com',
             Functional_Group__c = 'University Registrar Services',
             Label__c = 'University Registrar Services (Default)'
@@ -59,7 +56,6 @@ private class Test_CaseListTransferController {
             CTPColumn__c = 'Service Departments',
             CTPGroup__c = 'University Registrar Services',
             CTPVisible__c = true,
-            Case_Record_Type_Id__c = '012d0000000x2VT',
             Email_Address__c = 'default@email.com',
             Functional_Group__c = 'University Registrar Services',
             Label__c = 'School of blah blah'
@@ -77,7 +73,6 @@ private class Test_CaseListTransferController {
         
         for (Case c : TestDataFactory.createCases(5)) {
             c.description = 'desc';
-            
             testCases.add(c);
         }
 
@@ -95,8 +90,6 @@ private class Test_CaseListTransferController {
         testUser.ProfileId = pId;
 
         insert testUser;
-        
-        TestDataFactory.createFunctionalGroupWithCategory('Engineering');
     }
 
     @isTest static void testTransferToDept() {
@@ -124,7 +117,7 @@ private class Test_CaseListTransferController {
         Test.stopTest();
 
         Case caseToAssert = [
-            SELECT Id, Functional_Group__c, OwnerId, CC_Functional_Group__c
+            SELECT Id, Functional_Group__c, OwnerId
             FROM Case
             WHERE Id = :caseToTest.Id
         ];
@@ -135,7 +128,7 @@ private class Test_CaseListTransferController {
             WHERE Name = 'Test Group Name'
         ];
 
-        System.assertEquals([SELECT Id FROM Case_Classification__c WHERE Name = 'Engineering'].Id, caseToAssert.CC_Functional_Group__c);
+        System.assertEquals('Engineering', caseToAssert.Functional_Group__c);
         System.assertEquals(groupToAssert.Id, caseToAssert.OwnerId);
     }
 

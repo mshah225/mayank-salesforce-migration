@@ -41,13 +41,8 @@ public class AdvisorPortalMainPageController {
                     viewAsOptions.add(new selectOption('', '', true));
                     viewAsOptions.add(new selectOption('', '--My Committees--', true));
                     
-                    List<selectOption> sortableCommittee = new List<selectOption>();
                 	for (Id i : myCommittees.keySet()) {
-                        sortableCommittee.add(new selectOption(i, myCommittees.get(i)));
-                    }
-                    sortableCommittee = sortSelectOptionList(sortableCommittee);
-                    for(Integer i = 0; i < sortableCommittee.size(); i++){
-                        viewAsOptions.add(sortableCommittee[i]);
+                        viewAsOptions.add(new selectOption(i, myCommittees.get(i)));
                     }
             	}
                 
@@ -61,15 +56,10 @@ public class AdvisorPortalMainPageController {
                         viewAsOptions.add(new selectOption('', '--College Committees--', true));
                     }
                     
-                    List<selectOption> sortableCommittee = new List<selectOption>();
                     for (Id i : mySubordinateCommittees.keySet()) {
-                        sortableCommittee.add(new selectOption(i, mySubordinateCommittees.get(i)));
+                        viewAsOptions.add(new selectOption(i, mySubordinateCommittees.get(i)));
                     }
-                    sortableCommittee = sortSelectOptionList(sortableCommittee);
-                    for(Integer i = 0; i < sortableCommittee.size(); i++){
-                        viewAsOptions.add(sortableCommittee[i]);
-                    }
-                } 
+                }
                 
 				// Insert all of the users for all of the comittees for which I am a manager
                 if (mySubordinates.size() > 0) {
@@ -81,13 +71,8 @@ public class AdvisorPortalMainPageController {
                         viewAsOptions.add(new selectOption('', '--College Advisors--', true));
                     }
                     
-                    List<selectOption> sortableAdvisor = new List<selectOption>();
                     for (Id i : mySubordinates.keySet()) {
-                        sortableAdvisor.add(new selectOption(i, mySubordinates.get(i)));
-                    }
-                    sortableAdvisor = sortSelectOptionList(sortableAdvisor);
-                    for(Integer i = 0; i < sortableAdvisor.size(); i++){
-                        viewAsOptions.add(sortableAdvisor[i]);
+                        viewAsOptions.add(new selectOption(i, mySubordinates.get(i)));
                     }
                 }
             }
@@ -99,7 +84,7 @@ public class AdvisorPortalMainPageController {
     }
     
     /*
-     * List of My Committeess
+     * List of My Committees
      */
     public Map<Id, String> myCommittees {
         get {
@@ -228,15 +213,13 @@ public class AdvisorPortalMainPageController {
                     (
                         SELECT Success_Pod__c, Success_Pod__r.OwnerId, Success_Pod__r.Name, Success_Pod__r.Committee__c
                         FROM Success_Resource_Pod_Associations__r
-                        ORDER BY Success_Pod__r.Name
                     )
                 	FROM Success_Resource__c
                 	WHERE Resource__c = :UserInfo.getUserId()
                 	AND IsActive__c = true
                 	AND RecordTypeId = :AdvisorResourceRTID];
-                	
-            System.debug(myResources);
             }
+            
             return myResources;
         }
         
@@ -409,25 +392,5 @@ public class AdvisorPortalMainPageController {
         }
         
         set;
-    }
-    
-    public List<SelectOption> sortSelectOptionList(List<SelectOption> source)
-    {
-        List<string> sortable = new  List<string>();
-        for(SelectOption so: source)
-        {
-            // replace blank with '_!' so we know the final split will have two components
-            sortable.Add((string.isblank(so.getLabel())?'_!':so.getLabel()) + '@!@' + (string.isblank(so.getValue())?'_!':so.getValue()));
-        }
-        // sort the list
-        sortable.sort();
-        List<SelectOption> targetList = new  List<SelectOption>();
-        // split the value/name components and re create the list
-        for(string s: sortable)
-        {
-                targetList.Add(new  SelectOption(s.split('@!@')[1].replace('_!',''), s.split('@!@')[0].replace('_!','')));
-         
-        }
-        return targetList;
     }
 }

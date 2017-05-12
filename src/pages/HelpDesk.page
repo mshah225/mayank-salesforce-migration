@@ -14,17 +14,13 @@
         }
 
         // Close the current tab in the Console
-        function closeTab(boolSaved) {
-            if(boolSaved=='false')
-                return false;
-            else{
-                //First find the ID of the current tab to close it
-                if (sforce.console.isInConsole()) {
-                    sforce.console.getEnclosingTabId(closeSubtab);
-                }
-                else {
-                    window.location.href = '/500?fcf=00Bd0000005TDlX';
-                }
+        function closeTab() {
+            //First find the ID of the current tab to close it
+            if (sforce.console.isInConsole()) {
+                sforce.console.getEnclosingTabId(closeSubtab);
+            }
+            else {
+                window.location.href = '/500?fcf=00Bd0000005TDlX';
             }
         }
 
@@ -152,18 +148,16 @@
             color: #546990 !important;
         }
     </style>
+
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
             'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
-    <!--<c:asu_responsive_header_section />
-    <div id="bgWrapper">
-           <c:customAlerts alerts="{!alerts.alerts}" />
-    </div>-->
+
     <apex:outputPanel id="wrapper"
                       layout="block"
                       style="margin-top:10px;min-width:1300px;overflow:auto;padding:10px;">
-        <apex:form id="myform" html-novalidate="novalidate">        
-            <apex:actionFunction name="reRenderMessagePanel" reRender="messages" />
+        <apex:form id="myform" html-novalidate="novalidate">
             <apex:pageMessages id="messages"/>
+
             <div id="first">
                 <apex:outputPanel id="innerfirst" layout="block">
                     <apex:outputPanel id="innerfirstSearchContact"
@@ -295,7 +289,7 @@
                                 </apex:pageBlockSection>
                                 
                                 <i>Note: Due to platform limitations on date searches, searching
-                                Birthdate may take longer than usual.</i>
+                               	Birthdate may take longer than usual.</i>
                             </div>
                             
                             <div style="text-align:center;border-top:1px solid #dbdbdb;padding-top:10px;margin-top:10px;">
@@ -382,7 +376,7 @@
                                 <apex:commandButton action="{!cancelNewContact}"
                                                     immediate="true"
                                                     value="Cancel"
-                                                    reRender="innerfirst,innersecond,results,messages"
+                                                    reRender="innerfirst,innersecond,results"
                                                     status="loadingStatus2"
                                                     styleClass="customBtn"
                                                     onComplete="disableCaseFields();"/>
@@ -435,9 +429,9 @@
 
                                     <apex:column value="{!case.Ca.Status}"/>
 
-                                    <apex:column value="{!case.Ca.CC_Functional_Group__c}"/>
+                                    <apex:column value="{!case.Ca.Functional_Group__c}"/>
 
-                                    <apex:column value="{!case.Ca.CC_Category__c}"/>
+                                    <apex:column value="{!case.Ca.Category__c}"/>
 
                                     <apex:column value="{!case.Ca.Subject}"/>
 
@@ -486,11 +480,11 @@
 
                                         <apex:inputField value="{!mycase.Affiliation__c}"/>
 
-                                        <apex:inputField value="{!mycase.CC_Functional_Group__c}"/>
+                                        <apex:inputField value="{!mycase.Functional_Group__c}"/>
 
-                                        <apex:inputField value="{!mycase.CC_Category__c}"/>
+                                        <apex:inputField value="{!mycase.Category__c}"/>
 
-                                        <apex:inputField value="{!mycase.CC_Sub_Category__c}"/>
+                                        <apex:inputField value="{!mycase.Sub_Category__c}"/>
                                         
                                         <apex:pageBlockSectionItem />
                                         
@@ -529,7 +523,7 @@
                                 <apex:commandButton id="saveCaseButton"
                                                     action="{!saveCase}"
                                                     value="Save"
-                                                     reRender="messages"
+                                                    reRender="messages"
                                                     styleClass="customBtn"
                                                     status="loadingStatus4"/>
 
@@ -542,16 +536,16 @@
                                 <apex:commandButton id="saveAndCloseCaseButton"
                                                     action="{!saveAndCloseCase}"
                                                     value="Save & Close"
-                                                    rerender="innersecond,messages"
+                                                    rerender="innersecond"
                                                     styleClass="customBtn"
                                                     status="loadingStatus4"
-                                                    oncomplete="closeTab('{!savedAndClosed}');"/>
+                                                    oncomplete="closeTab();"/>
 
                                 <apex:commandButton id="cancelCaseButton"
                                                     action="{!cancelCase}"
                                                     value="Cancel"
                                                     immediate="true"
-                                                    reRender="innersecond,results,messages"
+                                                    reRender="innersecond,results"
                                                     styleClass="customBtn"
                                                     status="loadingStatus4"/>
 

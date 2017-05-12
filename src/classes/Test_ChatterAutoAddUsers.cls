@@ -1,6 +1,7 @@
 @isTest(SeeAllData=true)
 public with sharing class Test_ChatterAutoAddUsers
 {
+	/*
     @isTest static void testRecruitmentAutoAdd()
     {
         Test.startTest();
@@ -159,4 +160,5 @@ public with sharing class Test_ChatterAutoAddUsers
 
         System.assertNotEquals(null, testCollabKnowMember);
     }
+    */
 }

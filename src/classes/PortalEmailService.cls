@@ -31,6 +31,7 @@ public class PortalEmailService {
     @future @TestVisible
     private static void enqueueAdvisor(Set<Id> emailIds) {
         Map<Id, String> studentPrimaryEmailMap = new Map<Id, String>();
+        Map<Id, String> studentPrimaryEmailTemplateMap = new Map<Id, String>();
         Map<Id, String> ownedByQueueEmailMap = new Map<Id, String>();
         Map<String, String> mostRecentQueueEmailMap = new Map<String, String>();
         Map<Id, String> ownedByQueueEmailTemplateMap = new Map<Id, String>();
@@ -68,14 +69,17 @@ public class PortalEmailService {
             
             // For students, they should have a look up to the pod that can be abused
             if (studentPrimaryEmailMap.size() > 0) {
-                for (Success_Student__c ss : [SELECT Success_Pod__r.Primary_Email__c
+                for (Success_Student__c ss : [SELECT Success_Pod__r.Primary_Email__c, Success_Pod__r.Email_Template__c
                     FROM Success_Student__c
                     WHERE Id IN :studentPrimaryEmailMap.keySet()]) {
                     studentPrimaryEmailMap.put(ss.Id, ss.Success_Pod__r.Primary_Email__c);
+                    studentPrimaryEmailTemplateMap.put(ss.Id, ss.Success_Pod__r.Email_Template__c);
                 }
                 
                 for (Portal_Email__c pe : emailsToUpdate.values()) {
                     pe.From_Address__c = studentPrimaryEmailMap.get(pe.Success_Student__c);
+                    pe.Email_Template_Name__c = studentPrimaryEmailTemplateMap.get(pe.Success_Student__c);
+                    system.debug(pe.Email_Template_Name__c);
                 }
             }
             

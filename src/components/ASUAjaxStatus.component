@@ -8,14 +8,15 @@
     
     <apex:actionStatus id="ASUAjaxStatus" layout="none" onstop="onStop()">
         <apex:facet name="start">
-            <apex:outputPanel rendered="{!NOT(suppressStart)}" layout="none">
+            <apex:outputPanel rendered="true" layout="none">
                 <div class="modalCover">
                     <div class="loader"></div>
                 </div>
             </apex:outputPanel>
         </apex:facet>
+        <!-- Note, this is not rendered due to some undesired behavior, may never be fixed...-->
         <apex:facet name="stop">
-            <apex:outputPanel rendered="{!NOT(suppressStop)}" layout="none">
+            <apex:outputPanel rendered="false" layout="none">
             	<div class="modalCover modalComplete">
                     <div class="complete">
                         <i class="fa fa-check"></i>

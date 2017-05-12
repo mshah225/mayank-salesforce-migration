@@ -161,7 +161,7 @@ public without sharing class  ErrorLogger {
                 for(User emailUser : [
                     SELECT id, Email
                     FROM User
-                    WHERE Recieve_Apex_Errors__c = true
+                    WHERE Receive_Apex_Errors__c = true
                     AND ProfileId = :adminProfileId
                 ]){
                     newEmail = new Messaging.SingleEmailMessage();

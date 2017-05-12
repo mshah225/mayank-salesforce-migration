@@ -7,8 +7,7 @@ public with sharing class FullCaseCommentsController {
     private Case theCase;
     private Contact theContact;
     public List<CaseComment> comments { get; set; }
-    public List<String> border { get; set; }
-    
+
     public FullCaseCommentsController(ApexPages.StandardController stdController) {
         comments = new List<CaseComment>();
 
@@ -19,7 +18,7 @@ public with sharing class FullCaseCommentsController {
                 SELECT Id
                 FROM Case
                 WHERE ContactId = :theContact.Id
-                AND RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Coach_Outreach')
+                AND RecordTypeId = :RTIDHelper.getRTID('Case', 'ASU Coach Outreach')
             ]);
 
             if (coachCaseMap.size() > 0) {

@@ -35,7 +35,6 @@ public class StudentProgramPlanService
         planList.sort();
         
         sPPList = new List<Student_Program_Plan__c>();
-        
         for (PlanWrapper w : planList) {
             sPPList.add(w.plan);
         }

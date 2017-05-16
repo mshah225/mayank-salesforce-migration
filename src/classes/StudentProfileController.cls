@@ -21,6 +21,7 @@ global with sharing class StudentProfileController
     public List<Student_Program_Plan__c> gradProgramPlans { get; set; }
     public Student_Program_Plan__c primaryProgramPlan { get; set; }
     public Student_Program_Subplan__c subProgramPlan {get; set;}
+    public String subPlanList = '';
     // public List<Test_Score__c> testScoreList { get; set; }
     public Student_Program_Plan__c programPlan { get; set; }
     public JBT_RET_GENERAL_RIGHT__x studentProgram { get; set; }
@@ -161,9 +162,11 @@ global with sharing class StudentProfileController
                                   FROM Student_Program_Subplan__c
                                   WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
                 ];
-                if(tmpSubPlanList.size() > 0){
-                    subProgramPlan = tmpSubPlanList[0];  
+                
+                for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
+                    subPlanList += tmpSubPlanList[0].Subplan_description__c + ', '
                 }
+                subPlanList += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
                 
                 // Temporary solution for beta release; setting currentTerm to a hard-coded value
                 // so we have value to work with while the term populates asynchronously; ultimate 

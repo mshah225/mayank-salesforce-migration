@@ -216,7 +216,7 @@
                                             
                                             <h4 class="intro">
                                                 <span style="color:#353535;">Sub-Plan:</span>
-                                                &nbsp;{!IF(ISBLANK(subProgramPlan.Subplan_description__c), '--', subProgramPlan.Subplan_description__c)}
+                                                &nbsp;{!IF(ISBLANK(subPlanList), '--', subPlanList)}
                                             </h4>
                                             
                                             <h4 class="intro">
@@ -580,9 +580,9 @@
                                                         </apex:outputLink>
                                                     </apex:column>
                                                     <apex:column headerValue="Sub-Plan">
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),false,true)}"
-                                                                         value="{!subProgramPlan.Subplan_Description__c}"/>
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),true,false)}"
+                                                        <apex:outputText rendered="{!IF(ISBLANK(subPlanList),false,true)}"
+                                                                         value="{!subPlanList}"/>
+                                                        <apex:outputText rendered="{!IF(ISBLANK(subPlanList),true,false)}"
                                                                          value="--"/>
                                                     </apex:column>
                                                     <apex:column headerValue="Plan Type"

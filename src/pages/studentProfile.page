@@ -2008,6 +2008,10 @@
                         '{!currentTerm}',
                         function (result, event) {
                             if (event.status) {
+                                document.getElementById('sr_en_holds').innerHTML =
+                                        "<span style='color:black'>" +
+                                        result.length
+                                        "</span>";
                                 if (result.length > 0) {
                                     document.getElementById('sr_en_holds').innerHTML =
                                         "<span style='color:red'>" +

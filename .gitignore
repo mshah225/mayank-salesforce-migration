@@ -37,3 +37,4 @@ salesforce.schema
 .ssh/
 README.md
 workspace/
+/src/package.xml

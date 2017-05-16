@@ -21,7 +21,6 @@ global with sharing class StudentProfileController
     public List<Student_Program_Plan__c> gradProgramPlans { get; set; }
     public Student_Program_Plan__c primaryProgramPlan { get; set; }
     public Student_Program_Subplan__c subProgramPlan {get; set;}
-    public String subPlanList = '';
     // public List<Test_Score__c> testScoreList { get; set; }
     public Student_Program_Plan__c programPlan { get; set; }
     public JBT_RET_GENERAL_RIGHT__x studentProgram { get; set; }
@@ -164,7 +163,7 @@ global with sharing class StudentProfileController
                 ];
                 
                 for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
-                    subPlanList += tmpSubPlanList[0].Subplan_description__c + ', '
+                    subPlanList += tmpSubPlanList[0].Subplan_description__c + ', ';
                 }
                 subPlanList += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
                 
@@ -1587,5 +1586,16 @@ global with sharing class StudentProfileController
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
 
+    public String subPlanList {
+        get{
+            if(subPlanList == null){
+                return '';
+            }
+            else{
+                return subPlanList;
+            }
+        }
+        set;
+    }
     private class StudentProfileException extends Exception {}
 }

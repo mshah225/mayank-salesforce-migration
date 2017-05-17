@@ -268,11 +268,11 @@
                                     <p style="font-size:.75em;" id="subjectCharLimit">
                                         100 Character Limit
                                     </p>
-                                    <apex:inputField required="true" id="subjectField" value="{!tempEmail.Subject__c}" style="width:100%;"/>
+                                    <apex:inputField id="subjectField" value="{!tempEmail.Subject__c}" style="width:100%;"/>
                                     <p style="margin-top:10px;">
                                         Dear StudentFirstName,
                                     </p>
-                                    <apex:inputField required="true" value="{!tempEmail.Additional_Message_Text__c}" styleClass="emailTextBox" style="width:100%; height: 200px; resize: none;" />
+                                    <apex:inputField value="{!tempEmail.Additional_Message_Text__c}" styleClass="emailTextBox" style="width:100%; height: 200px; resize: none;" />
                                     <p style="margin-top:10px;">
                                         Sincerely,<br />
                                         {!$User.FirstName} {!$User.LastName}

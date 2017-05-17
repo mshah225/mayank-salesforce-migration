@@ -51,7 +51,9 @@ public class StudentProgramPlanService
         Id contactId
     )
     {
-        String sPPFields = sPPFieldsToString();
+        String sPPFields = 
+            'Status__c, Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, ' +
+            'Plan_Description__c, Career__c, Program_Description__c, Degree__c, Campus__r';
         
         List<Student_Program_Plan__c> programPlans = new List<Student_Program_Plan__c>();
 

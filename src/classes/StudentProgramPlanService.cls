@@ -12,8 +12,12 @@ public class StudentProgramPlanService
     {
         String sPPFields = 
             'Status__c, Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, ' +
+<<<<<<< HEAD
             'Plan_Description__c, Career__c, Program_Description__c, Degree__c, Campus__r';
         
+=======
+            'Plan_Description__c, Career__c, Program_Description__c, Degree__c';
+>>>>>>> Remove false field
                     
         String selectStudentPP = 'SELECT ' + sPPFields + ' ' +
                 ', Campus__r.Name ' +
@@ -53,7 +57,7 @@ public class StudentProgramPlanService
     {
         String sPPFields = 
             'Status__c, Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, ' +
-            'Plan_Description__c, Career__c, Program_Description__c, Degree__c, Campus__r';
+            'Plan_Description__c, Career__c, Program_Description__c, Degree__c';
         
         List<Student_Program_Plan__c> programPlans = new List<Student_Program_Plan__c>();
 

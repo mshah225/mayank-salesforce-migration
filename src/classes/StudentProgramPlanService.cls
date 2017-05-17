@@ -12,12 +12,12 @@ public class StudentProgramPlanService
     {
         String sPPFields = 
             'Status__c, Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, ' +
-            'Plan_Description__c, Career__c, Program_Description__c, Degree__c, Campus__r';
+            'Plan_Description__c, Career__c, Program_Description__c, Degree__c';
                     
         String selectStudentPP = 'SELECT ' + sPPFields + ' ' +
                 ', Campus__r.Name ' +
             'FROM Student_Program_Plan__c ' +
-            'WHERE Contact__c = :contactId ' +
+            'WHERE Contact__c = :contactId AND Status__c <>\'Discontinued\'' +
             'ORDER BY Status__c, Primary_Flag__c DESC, Completion_Term__c DESC, Plan_Type_Text__c, Plan_Description__c';
         
         List<Student_Program_Plan__c> sPPList = Database.query(selectStudentPP);
@@ -52,7 +52,7 @@ public class StudentProgramPlanService
     {
         String sPPFields = 
             'Status__c, Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, ' +
-            'Plan_Description__c, Career__c, Program_Description__c, Degree__c, Campus__r';
+            'Plan_Description__c, Career__c, Program_Description__c, Degree__c';
         
         List<Student_Program_Plan__c> programPlans = new List<Student_Program_Plan__c>();
 

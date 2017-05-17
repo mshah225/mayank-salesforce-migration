@@ -11,10 +11,13 @@ public class PortalEmailDispatcher implements IDispatch {
         PortalEmailService.setFromAddress(newPortalEmails);
     }
     
+    public void beforeInsert() {
+        PortalEmailService.verifySubjectAndMessageText(Trigger.New);
+    }
+    
     //Required by Dispatcher Interface
     public void beforeUpdate() { }
     public void beforeDelete() { }
-    public void beforeInsert() { }
     public void afterUpdate() { }
     public void afterDelete() { }
     public void afterUndelete() { }

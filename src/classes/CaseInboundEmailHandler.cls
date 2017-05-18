@@ -427,11 +427,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     currentCaseDescription = currentCaseDescription.trim();
 
                     String currentCaseSubject = theCase.Subject;
-                    if(currentCaseSubject == null){
+                    if(currentCaseSubject == null || currentCaseSubject == '') {
                         currentCaseSubject = '--';
 					}
                     currentCaseSubject = currentCaseSubject.trim();
-                    
+                    theCase.Subject = currentCaseSubject;
                     // If we catch an auto reply loop, do not create the case and discard this email
                     if (recentCase.Description.equals(currentCaseDescription) && recentCase.OwnerId == theCase.OwnerID
                         && recentCase.Subject.equals(currentCaseSubject))
@@ -1160,8 +1160,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         // Set the fields
         lostEmail.Sender__c = limitLength(email.fromAddress, 255);
         lostEmail.Subject__c = limitLength(email.subject, 255);
-        lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 32768);
-    	lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 32786);
+        lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 32000);
+        System.debug('PlainTextSize: ' + lostEmail.PlainTextBody__c.length());
+    	lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 32000);
+    	System.debug('HTMLTextSize: ' + lostEmail.HTMLTextBody__c.length());
 		lostEmail.Cause__c = limitLength(error, 255);
         
         // Convert the List into a concatenated string

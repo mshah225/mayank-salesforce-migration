@@ -85,7 +85,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 caseId = extractIdRefNew(email.subject);
             }
 
-            System.debug('caseId:' + caseId);
             if (caseId != null)
             {
                 Case caseSearch = CaseService.getCaseInformation(caseId);
@@ -471,7 +470,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 if (hasAttachments) {
                     this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong(); 
                 } else {
-                    System.debug('Not Entered?');
                     this.theCase.Description += ' Email received at ' + Datetime.now().formatLong() + ' without email body or attachment.';
                 }
 
@@ -667,7 +665,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         theEmail.CcAddress = limitLength(value,EmailMessage.CcAddress.getDescribe().getLength());
 		
-        System.debug('theEmail: ' + theEmail);
         insert theEmail;
     }
 
@@ -1144,7 +1141,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     // Make this public for unit test access
     public LostEmail__C generateLostEmail(Messaging.InboundEmail email, Case theCase, String error)
     {
-        System.debug('FAILLLL**********' + error);
         loadConfigurationSettings();
 
         LostEmail__c lostEmail = new LostEmail__c();

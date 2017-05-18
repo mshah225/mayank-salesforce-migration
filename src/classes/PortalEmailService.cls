@@ -28,6 +28,27 @@ public class PortalEmailService {
         }
     }
     
+    /*
+     * Verifies that the email has a subject and some additional text.
+     * 
+     * Note: Can't do this by setting the field as required on the VF
+     * page as the email modal and transfer modal must share an action region with
+     * the list of cases so that the page will pass the selected cases back
+     * to the controller.
+     */
+    public static void verifySubjectAndMessageText(List<Portal_Email__c> emailsToVerify) {
+        for (Portal_Email__c pe : emailsToVerify) {
+            if (pe.Subject__c == null || pe.Subject__c == '') {
+                pe.Subject__c = 'A Message from your College and Department';
+            }
+            
+            if (pe.Additional_Message_Text__c == null || pe.Additional_Message_Text__c == '') {
+                pe.Status__c = 'Cancelled';
+            }
+        }
+    }
+    
+    
     @future @TestVisible
     private static void enqueueAdvisor(Set<Id> emailIds) {
         Map<Id, String> studentPrimaryEmailMap = new Map<Id, String>();
@@ -133,6 +154,22 @@ public class PortalEmailService {
         }
     }
     
+    public static void verifiySubject (List<Portal_Email__c> emailsToValidate) {
+        for (Portal_Email__c pe : emailsToValidate) {
+            if (pe.Subject__c == '' || pe.Subject__c == null) {
+                pe.Subject__c = 'A Message from your College and Department';
+            }
+        }
+    }
+    
+    public static void verifyMessageText(List<Portal_Email__c> emailsToValidate) {
+        for (Portal_Email__c pe : emailsToValidate) {
+            if (pe.Additional_Message_Text__c == '' || pe.Additional_Message_Text__c == null) {
+                pe.Status__c = 'Cancelled';
+            }
+        }
+    }
+    
     @future @TestVisible
     private static void enqueueCoach(Set<Id> emailIds) {
         Map<Id, Portal_Email__c> emailsToUpdate;
@@ -170,7 +207,7 @@ public class PortalEmailService {
                 Email_Template_Name__c, Contact__r.FirstName, CreatedBy.Name
             FROM Portal_Email__c
             WHERE Id IN :emailIds]) {
-            if (pe.Case__c != null) {
+            if (pe.Case__c != null && pe.Status__c != 'Cancelled') {
                 newMessages.add(new EmailMessage(
                     FromAddress = pe.From_Address__c,
                     FromName = pe.From_Name__c,

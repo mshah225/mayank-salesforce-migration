@@ -12,7 +12,8 @@ public class PortalEmailDispatcher implements IDispatch {
     }
     
     public void beforeInsert() {
-        PortalEmailService.verifySubjectAndMessageText(Trigger.New);
+        PortalEmailService.verifiySubject(Trigger.New);
+        PortalEmailService.verifyMessageText(Trigger.New);
     }
     
     //Required by Dispatcher Interface

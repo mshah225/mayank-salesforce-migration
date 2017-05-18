@@ -1158,9 +1158,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         lostEmail.Sender__c = limitLength(email.fromAddress, 255);
         lostEmail.Subject__c = limitLength(email.subject, 255);
         lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 32000);
-        System.debug('PlainTextSize: ' + lostEmail.PlainTextBody__c.length());
     	lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 32000);
-    	System.debug('HTMLTextSize: ' + lostEmail.HTMLTextBody__c.length());
 		lostEmail.Cause__c = limitLength(error, 255);
         
         // Convert the List into a concatenated string

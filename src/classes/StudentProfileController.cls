@@ -1545,7 +1545,7 @@ global with sharing class StudentProfileController
                 [SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c
                  FROM   PS_ASU_SP_ENRHLD_V__x
                  WHERE  EMPLID__c = :emplid
-                   AND  (STRM__c = :currentTerm OR STRM__c = '0000')
+                   AND  (STRM__c >= :currentTerm OR STRM__c = '0000')
                  ORDER BY STRM__c ASC, SRVC_IND_CD__c ASC 
                 ]
             );

@@ -206,14 +206,10 @@
                                         <apex:outputField value="{!caseDetails.Subject}"/>
 
                                         <apex:outputField value="{!caseDetails.description}"/>
-                                        
-                                        <apex:outputText value="{!caseFunctionalGroup}"
-                                                         label="Department"
-                                                         />
 
-                                       <!-- <apex:outputText value="{!caseDetails.Functional_Group__c}"
+                                        <apex:outputText value="{!caseDetails.Functional_Group__c}"
                                                          label="Department"
-                                                         rendered="{!IF(caseDetails.Functional_Group__c != null,true,false)}"/>-->
+                                                         rendered="{!IF(caseDetails.Functional_Group__c != null,true,false)}"/>
 
                                         <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}"
                                                          label="Date Opened">

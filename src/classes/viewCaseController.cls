@@ -1,15 +1,15 @@
 public class viewCaseController{
 
-private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
-private Date today;
-private Decimal origPin;
-private Term__c termcAC;
+	private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
+	private Date today;
+	private Decimal origPin;
+	private Term__c termcAC;
     private Term__c termcB;
     private Map<String, String> viewAsMap;
     public Id caseId {get;set;}
 
-public Decimal newPin { get; set; }
-public String firstName { get; set; }
+	public Decimal newPin { get; set; }
+	public String firstName { get; set; }
     public String lastName { get; set; }
     public String emplId { get; set; }
     public String asurite { get; set; }
@@ -19,19 +19,18 @@ public String firstName { get; set; }
     public String userAsurite;
     public Contact userContact;
     public String viewAsUrl { get; set; }
-    public String caseFunctionalGroup { get; set; }
     public List<Opportunity> oppList;
    
-public viewCaseController(){
-viewingAs = false;
-   checkForViewAs();
+	public viewCaseController(){
+		viewingAs = false;
+	    checkForViewAs();
         popUserContact();
         popTerms();
         setCaseId();
 
-}
+	}
 
-public void checkForViewAs(){
+	public void checkForViewAs(){
         if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null){
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
 
@@ -89,36 +88,23 @@ public void checkForViewAs(){
 
 
     public void setCaseId(){
-caseId=ApexPages.currentPage().getParameters().get('id');
+		caseId=ApexPages.currentPage().getParameters().get('id');
 
-}
-
-    public Case getCaseDetails(){
+	}
+	
+     public Case getCaseDetails(){
         if (viewingAs){
             return MyASUViewAs.getViewAsCaseDetails(
                 ApexPages.currentPage().getParameters().get('Id')
             );
         }
         else{
-            Case returnCase=[
-                SELECT Id, CaseNumber, RecordType.Name, Functional_Group__c, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
+            return [
+                SELECT Id, CaseNumber, Functional_Group__c, Subject, Description,
                     Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
                 FROM Case
                 WHERE Id = :ApexPages.currentPage().getParameters().get('Id')
-                LIMIT 1
             ];
-            
-            //String recordTypeText = '%' + returnCase.RecordType.Name + '%';
-            List<Case_Classification__c> lstCaseClassification=[
-                SELECT id,Name 
-                FROM Case_Classification__c 
-                WHERE Id=:returnCase.CC_Functional_Group__c AND Active__c=true AND Visible__c=true AND Record_Types_String__c LIKE :('%' + returnCase.RecordType.Name + '%')
-                LIMIT 1];
-            
-            if(lstCaseClassification!=null && lstCaseClassification.size()>0)
-                caseFunctionalGroup = lstCaseClassification[0].Name;
-            
-            return returnCase;
         }
     }
 
@@ -163,9 +149,9 @@ caseId=ApexPages.currentPage().getParameters().get('id');
     public List<bomgar__Event__c> getChatMessages() {
         return [
             SELECT bomgar__DestinationValue__c, bomgar__EventDateTime__c, bomgar__EventType__c, bomgar__PerformedByType__c, 
-            bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId 
+            	bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId 
             FROM bomgar__Event__c 
-WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c =  :ApexPages.currentPage().getParameters().get('Id')
+			WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c =  :ApexPages.currentPage().getParameters().get('Id')
             AND (bomgar__PerformedByType__c = 'representative' OR bomgar__PerformedByType__c  = 'customer') 
             AND bomgar__DestinationValue__c = 'everyone' order by bomgar__EventDateTime__c asc
         ];

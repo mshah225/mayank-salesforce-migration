@@ -251,17 +251,17 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     theCase.Origin__c = 'Email';
                 }
 
-                theCase.Subject = email.Subject;
+                theCase.Subject = limitLength(email.Subject, 255);
                 theCase.Description = '';
 
                 if(email.plainTextBody != null)
                 {
-                    theCase.Description = email.plainTextBody;
+                    theCase.Description = limitLength(email.plainTextBody, 32000);
                 }
                 else if(email.htmlBody != null)
                 {
                     theCase.Description = 'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\n'
-                        + email.htmlBody.replaceAll('<[^>]+>', ''); 
+                        + limitLength(email.htmlBody.replaceAll('<[^>]+>', ''), 32000); 
                 }
 
                 String toAddressConcat = '';
@@ -457,14 +457,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
 
             createEmailMessage(theCase, email);
-            System.debug('******');
             Boolean success = handleAttachments(theCase, emailContact, email);
             Boolean hasAttachments = (email.textAttachments != null                                
                                       && email.textAttachments.size() >0) 
                                       || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
 
-            System.debug('***' + success);
-            System.debug('***' + email.HtmlBody);
             if (success && (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) && String.isBlank(email.plainTextBody)) {
                 
                 if(this.theCase.Description == null) {

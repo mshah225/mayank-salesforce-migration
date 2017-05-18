@@ -46,10 +46,10 @@
             function setTabTitle() {
                 //Set the current tab's title
                 try {
-                	sforce.console.setTabTitle('{!theContact.FirstName}\'s Student Profile');
-                	inConsole = true;
+                    sforce.console.setTabTitle('{!theContact.FirstName}\'s Student Profile');
+                    inConsole = true;
                 } catch (e) {
-					console.log('Notice: Tab title can only be set when the Student Profile is opened inside of a Service Console tab! ' + e.message);
+                    console.log('Notice: Tab title can only be set when the Student Profile is opened inside of a Service Console tab! ' + e.message);
                 }
             }
             var pageLoad = window.onload;
@@ -87,6 +87,14 @@
                 max-width:50% !important;
             }
             
+            li.transcriptAddress {
+                list-style: none;
+            }
+            
+            th.transcriptHeader {
+                width: 165px;
+            }
+            
             @media screen and (max-width:767px) {
                 .browser {
                     display:none;
@@ -110,7 +118,7 @@
             }
             
             .hide {
-            	display: none;
+                display: none;
             }
         </style>
     </head>
@@ -206,7 +214,7 @@
                                                 &nbsp;{!primaryProgramPlan.Plan_Description__c + IF(ISBLANK(primaryProgramPlan.Degree__c),'', ', ' + primaryProgramPlan.Degree__c)}
                                             </h4>
                                             
-											<h4 class="intro">
+                                            <h4 class="intro">
                                                 <span style="color:#353535;">Sub-Plan:</span>
                                                 &nbsp;{!IF(ISBLANK(subProgramPlan.Subplan_description__c), '--', subProgramPlan.Subplan_description__c)}
                                             </h4>
@@ -1121,8 +1129,7 @@
 
                                         <div id="stdtRetentionResponseErrors"></div>
 
-<!-- 
-                                        <div class="page-header-smaller">
+                                        <!-- <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
                                                 &nbsp;Graph Indicators
@@ -1134,8 +1141,23 @@
                                                 Graph indicator info
                                                 goes here.
                                             </div>
+                                        </div> -->
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;Transcripts Sent
+                                            </h4>
                                         </div>
--->
+                                        
+                                        <!-- Transcripts Sent -->
+                                        <div style="overflow:auto;max-height:400px;">                                                                                    
+                                            <div id="ps_transcript"
+                                                 style="display:none;"></div>
+
+                                            <div id="psTranscriptErrors"></div>
+                                        </div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1547,11 +1569,11 @@
                 $j(this).attr("src", "{!$Resource.blankAvatar}");
             });
         
-        	$j(document).ready(function() {
+            $j(document).ready(function() {
                 // $j('.fa-caret-down').hide();    
             });
 
-        	// Arrow Functionality
+            // Arrow Functionality
             $j(".page-header-smaller").click(function() {                                    
                 var container = $j(this);
                 var arrow = $j(this).find('.fa');
@@ -1622,6 +1644,7 @@
             var accountBalanceLoaded = false;
             var indicatorHistoryLoaded = false;
             var careerDevelopmentTabLoaded = false;
+            var transcriptsLoaded = false;
     
             var classesData;
             var financialAidData;
@@ -1653,6 +1676,7 @@
             function loadUGIndicatorTab() {
                 getStudentRetention();
                 getGeneralIndicators();
+                getTranscripts();
                 // getRetentionSNPs();
             }
     
@@ -1999,7 +2023,7 @@
                                             "</thead>" +
                                         "</table>" +
                                         "<tbody style='font-weight:normal;'>";
-    								console.log(result)
+                                    console.log(result)
                                     for (var i = 0; i < result.length; i++) {
     
                                         html += 
@@ -2012,7 +2036,7 @@
                                     }
     
                                     html += "</tbody>";
-    								console.log(html);
+                                    console.log(html);
                                     document.getElementById("sr_en_holds_info_table").innerHTML = html;
                                     document.getElementById("sr_en_holds_info_tr").style.display =
                                         "table-row";
@@ -2379,6 +2403,102 @@
                                     event.message + "<br/>\n<pre>" + event.where + "</pre>";
                             } else {
                                 document.getElementById("psMilestoneErrorsGrad").innerHTML =
+                                    event.message;
+                            }
+                        },
+                        {escape: true}
+                    );
+                }
+            }
+            
+            // Method to get transcripts
+            function getTranscripts() {
+                if (!transcriptsLoaded) {
+                    document.getElementById("psTranscriptErrors").innerHTML =
+                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+            
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.StudentProfileController.getTranscripts}',
+                        '{!theContact.EMPLID__c}',
+                        function (result, event) {
+                            if (event.status) {
+                                document.getElementById("psTranscriptErrors").innerHTML =
+                                    "";
+                                
+                                if (!Object.getOwnPropertyNames(result).length == 0) {
+                                    document.getElementById("ps_transcript").style.display =
+                                        "initial";
+            
+                                    var html = "" +
+                                        "<div class='table-responsive'>" +
+                                            "<table id='transcript_table' class='table table-striped table-bordered'> " +
+                                                "<thead>" +
+                                                    "<tr>" +
+                                                        "<th>Sent On</th>" +
+                                                        "<th>Status</th>" +
+                                                        "<th>Recipient</th>" +
+                                                    "</tr>" +
+                                                "</thead>" +
+                                                "<tbody>";
+                                                
+                                    for (var i = 0; i < result.length; i++) {
+                                        var utcSeconds = result[i].REQUEST_OR_SENT_DATE__c;
+                                        var sentDate = new Date(utcSeconds);
+                                        sentDate = (sentDate.getUTCMonth() + 1) + '/' +
+                                            sentDate.getUTCDate() + '/' +
+                                            sentDate.getUTCFullYear();
+                                    
+                                        var status = result[i].STATUS__c;
+                                        var recipient = new Array(
+                                            result[i].SEND_TO_NAME__c,
+                                            result[i].ADDRESS1__c,
+                                            result[i].ADDRESS2__c,
+                                            result[i].ADDRESS3__c,
+                                            result[i].ADDRESS4__c
+                                        );
+
+                                        html += "" +
+                                            "<tr>" +
+                                                "<td>" + sentDate + "</td>" +
+                                                "<td>" + status + "</td>" +
+                                                "<td>" +
+                                                    "<li class='transcriptAddress'>" + recipient[0] + "</li>";
+                                        
+                                                    for (var j = 1; j < recipient.length; j++) {
+                                                        if (recipient[j] != null && recipient[j] != '-') {
+                                                            html += "<li class='transcriptAddress'> " + recipient[j] + "</li>";
+                                                        }
+                                                    }
+                                    
+                                                    html += "<li class='transcriptAddress'>" +
+                                                        result[i].CITY__c + ", " + 
+                                                        result[i].STATE__c + " " +
+                                                        result[i].POSTAL__c + "</li>" + 
+                                                        "<li class='transcriptAddress'> " + result[i].COUNTRY__c +
+                                                    "</li>" +
+                                                "</td>" +
+                                            "</tr>";
+                                    }
+                                    
+                                    html += "" + 
+                                            "</tbody>" +
+                                        "</table>" +
+                                    "</div>";
+                                    
+                                    document.getElementById('ps_transcript').innerHTML = html;
+                                    cleanUpUndefined("ps_transcript");
+                                    transcriptsLoaded = true;
+            
+                                } else {
+                                    document.getElementById("ps_transcript").innerHTML =
+                                        'No transcripts found.';
+                                    transcriptsLoaded = true;
+                                }
+                            } else if (event.type === 'exception') {
+                                document.getElementById("psTranscriptErrors").innerHTML =
+                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                            } else {
+                                document.getElementById("psTranscriptErrors").innerHTML =
                                     event.message;
                             }
                         },
@@ -3262,24 +3382,24 @@
                                         "none";
                                     console.log(result.pastDueTIP);
                                     if (result.pastDueTIP) {
-                                    	document.getElementById('account_balance_past_due_tip').innerHTML =
-                                        	result.pastDueTIP.toLocaleString(o,s);          
+                                        document.getElementById('account_balance_past_due_tip').innerHTML =
+                                            result.pastDueTIP.toLocaleString(o,s);          
                                     } else {
                                         document.getElementById('account_balance_past_due_tip').innerHTML = '--'
                                     }
                                     console.log(result.faBalance.DUE_AMT__c);
                                     if (result.faBalance.DUE_AMT__c) {
-                                    	document.getElementById('account_balance_outstanding').innerHTML =
-                                        	result.faBalance.DUE_AMT__c.toLocaleString(o,s);
+                                        document.getElementById('account_balance_outstanding').innerHTML =
+                                            result.faBalance.DUE_AMT__c.toLocaleString(o,s);
                                     } else {
-                                    	document.getElementById('account_balance_outstanding').innerHTML = '--';
+                                        document.getElementById('account_balance_outstanding').innerHTML = '--';
                                     }
                                     
                                     if (result.faBalance.BALANCE_AMT__c) {
-                                    	document.getElementById('account_balance_total').innerHTML =
-                                        	result.faBalance.BALANCE_AMT__c.toLocaleString(o,s);
+                                        document.getElementById('account_balance_total').innerHTML =
+                                            result.faBalance.BALANCE_AMT__c.toLocaleString(o,s);
                                     } else {
-                                    	document.getElementById('account_balance_total').innerHTML = '--';   
+                                        document.getElementById('account_balance_total').innerHTML = '--';   
                                     }
     
                                     cleanUpUndefined("account_balance_table");
@@ -3507,10 +3627,10 @@
         </script>
         
         <!-- Script to mask Phone Numbers -->
-		<apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.min.js" />
+        <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.min.js" />
         <script>
-        	// Mask each phone number in (XXX) XXX-XXXX format
-        	function maskPhoneNumbers() {
+            // Mask each phone number in (XXX) XXX-XXXX format
+            function maskPhoneNumbers() {
                 $j('.phone').each(function() {                
                     if ($j(this).text() != '--') {
                         $j(this).mask('(000) 000-0000');    
@@ -3518,8 +3638,8 @@
                 });
             }
         
-        	$j(document).ready(function() {
-            	maskPhoneNumbers();    
+            $j(document).ready(function() {
+                maskPhoneNumbers();    
             });
         </script>
     </body>

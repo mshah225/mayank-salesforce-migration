@@ -507,6 +507,41 @@ global with sharing class StudentProfileController
             return new List<PS_STDNT_CAR_MLSTN__x>();
         }
     }
+    
+    @RemoteAction
+    // Get student transcript information
+    global static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
+        vars = new List<String>();
+        List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts;
+        
+        // Build out the list to avoid 'null de-reference' errors
+        // TODO : Limit only to transcripts less than 365 days old
+        // NOTE: This external object was incorrectly mapped. Even though
+        // we are filtering by Contact__c, we need to pass it an EMPLID,
+        // not a Contact ID, in order for this query to work.
+        try {
+            transcripts = (
+                Test.isRunningTest() ? new List<JBT_RET_TRANSCRIPT_SENT_VW__x>() : [
+                    SELECT
+                        EMPLID__c, ADDRESS1__c, ADDRESS2__c, ADDRESS3__c,
+                        ADDRESS4__c, CITY__c, COUNTRY__c, SEND_TO_NAME__c,
+                        POSTAL__c, STATE__c, STATUS__c, REQUEST_OR_SENT_DATE__c,
+                        DisplayURL, ExternalId, Id
+                    FROM JBT_RET_TRANSCRIPT_SENT_VW__x
+                    WHERE EMPLID__c = :emplId
+                    ORDER BY REQUEST_OR_SENT_DATE__c DESC, SEND_TO_NAME__c DESC
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        if (transcripts.size() > 0) {
+            return transcripts;
+        } else {
+            return new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
+        }
+    }
 
     @RemoteAction
     // Get ASU_STDNT_RETENTION_SNP__x retention info as a list

@@ -204,7 +204,7 @@ public class PortalEmailService {
     private static void createEmailMessage(Set<Id> emailIds) {
         List<EmailMessage> newMessages = new List<EmailMessage>();
         for (Portal_Email__c pe : [SELECT From_Address__c, Contact_Email__c, Subject__c, Additional_Message_Text__c, Case__c, From_Name__c,
-                Email_Template_Name__c, Contact__r.FirstName, CreatedBy.Name
+                Email_Template_Name__c, Contact__r.FirstName, CreatedBy.Name, Status__c
             FROM Portal_Email__c
             WHERE Id IN :emailIds]) {
             if (pe.Case__c != null && pe.Status__c != 'Cancelled') {

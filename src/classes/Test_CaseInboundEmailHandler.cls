@@ -346,7 +346,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env );  
         email.subject = 'Test 2';
+        Test.startTest();
         emailServiceObj.handleInboundEmail(email, env );  
+        Test.stopTest();
                             
     }
 
@@ -370,7 +372,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         String testError = 'Test error';
         Test.startTest();
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.generateLostEmail(email, testError);
+        emailServiceObj.generateLostEmail(email, new Case(), testError);
         Test.stopTest();
 
         LostEmail__c expectedLostEmail = new LostEmail__c();
@@ -430,7 +432,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         String testError = 'Test error';
         Test.startTest();
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        emailServiceObj.generateLostEmail(email, testError);
+        emailServiceObj.generateLostEmail(email, new Case(), testError);
         Test.stopTest();
 
         LostEmail__c expectedLostEmail = new LostEmail__c();
@@ -714,7 +716,8 @@ public with sharing class Test_CaseInboundEmailHandler {
             WHERE ContactId = :c.Id
             LIMIT 1
         ];
-
+       
+		System.assert(createdCase.Description != null);
         System.assert(createdCase.Description.contains('without email body or attachment'));
    }
 
@@ -928,4 +931,5 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assert(createdCase.Intended_Recipient__c == null);
    }
+   
 }

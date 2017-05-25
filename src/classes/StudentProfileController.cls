@@ -161,10 +161,13 @@ global with sharing class StudentProfileController
                                   FROM Student_Program_Subplan__c
                                   WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
                 ];
-                if(tmpSubPlanList.size() > 0){
-                    subProgramPlan = tmpSubPlanList[0];  
-                }
                 
+                if(tmpSubPlanList.size() > 0){
+                    for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
+                        subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
+                    }
+                    subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
+                }
                 // Temporary solution for beta release; setting currentTerm to a hard-coded value
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
@@ -502,6 +505,41 @@ global with sharing class StudentProfileController
         else
         {
             return new List<PS_STDNT_CAR_MLSTN__x>();
+        }
+    }
+    
+    @RemoteAction
+    // Get student transcript information
+    global static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
+        vars = new List<String>();
+        List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts;
+        
+        // Build out the list to avoid 'null de-reference' errors
+        // TODO : Limit only to transcripts less than 365 days old
+        // NOTE: This external object was incorrectly mapped. Even though
+        // we are filtering by Contact__c, we need to pass it an EMPLID,
+        // not a Contact ID, in order for this query to work.
+        try {
+            transcripts = (
+                Test.isRunningTest() ? new List<JBT_RET_TRANSCRIPT_SENT_VW__x>() : [
+                    SELECT
+                        EMPLID__c, ADDRESS1__c, ADDRESS2__c, ADDRESS3__c,
+                        ADDRESS4__c, CITY__c, COUNTRY__c, SEND_TO_NAME__c,
+                        POSTAL__c, STATE__c, STATUS__c, REQUEST_OR_SENT_DATE__c,
+                        DisplayURL, ExternalId, Id
+                    FROM JBT_RET_TRANSCRIPT_SENT_VW__x
+                    WHERE EMPLID__c = :emplId
+                    ORDER BY REQUEST_OR_SENT_DATE__c DESC, SEND_TO_NAME__c DESC
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        if (transcripts.size() > 0) {
+            return transcripts;
+        } else {
+            return new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
         }
     }
 
@@ -1542,7 +1580,7 @@ global with sharing class StudentProfileController
                 [SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c
                  FROM   PS_ASU_SP_ENRHLD_V__x
                  WHERE  EMPLID__c = :emplid
-                   AND  (STRM__c = :currentTerm OR STRM__c = '0000')
+                   AND  (STRM__c >= :currentTerm OR STRM__c = '0000')
                  ORDER BY STRM__c ASC, SRVC_IND_CD__c ASC 
                 ]
             );
@@ -1584,5 +1622,16 @@ global with sharing class StudentProfileController
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
 
+    public String subPlanString {
+        get{
+            if(subPlanString == null){
+                return '';
+            }
+            else{
+                return subPlanString;
+            }
+        }
+        set;
+    }
     private class StudentProfileException extends Exception {}
 }

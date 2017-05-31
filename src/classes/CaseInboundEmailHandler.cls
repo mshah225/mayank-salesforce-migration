@@ -427,7 +427,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                     String currentCaseSubject = theCase.Subject;
                     if(currentCaseSubject == null || currentCaseSubject == '') {
+<<<<<<< HEAD
                         currentCaseSubject = '--';
+=======
+                        currentCaseSubject = 'Email Received From: ' + email.fromAddress;
+>>>>>>> Change empty subject to email
 					}
                     currentCaseSubject = currentCaseSubject.trim();
                     theCase.Subject = currentCaseSubject;

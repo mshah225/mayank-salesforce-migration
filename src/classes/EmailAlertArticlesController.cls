@@ -14,15 +14,8 @@ global class EmailAlertArticlesController implements Schedulable {
             'FROM FAQ__kav ' +
             'WHERE PublishStatus=\'Online\' ' +
             'AND Language=\'en_US\' ' + 
-            'AND Article_Expiration_Date__c< '+ String.valueOf(System.Today());
+            'AND (Article_Expiration_Date__c< '+ String.valueOf(System.Today()) + ' OR Article_Expiration_Date__c= ' + String.valueOf(System.Today().addDays(-30)) + ')';
         SendEmail(expiredQuery,false, true);
-        
-        String beforeExpiryQuery= 'SELECT Id,ArticleNumber,Article_Expiration_Date__c,Title,PublishStatus, Functional_Group__c, ValidationStatus ' +
-            'FROM FAQ__kav ' +
-            'WHERE PublishStatus=\'Online\' ' +
-            'AND Language=\'en_US\' ' + 
-            'AND Article_Expiration_Date__c= ' + String.valueOf(System.Today().addDays(-30));
-        SendEmail(beforeExpiryQuery,false, true);
     }
     
     
@@ -32,7 +25,6 @@ global class EmailAlertArticlesController implements Schedulable {
         for(Group objGrp: lstGrp) {
             if(objGrp.Name.contains(strFuncGroup)) {
                 retUserId.addAll(getUserIdsFromQueue(objGrp.Id));
-                //retGroup.add(objGrp);
             }
         }
         return retUserId;
@@ -147,39 +139,11 @@ global class EmailAlertArticlesController implements Schedulable {
             }
         }
         
-        
-        
-        /*
-        String subject = emailTemplate.Subject;
-        subject = subject.replace('{!Contact.FirstName}', c.FirstName);
-
-        String htmlBody = emailTemplate.HtmlValue;
-        htmlBody = htmlBody.replace('{!Contact.FirstName}', c.FirstName);
-        htmlBody = htmlBody.replace('{!myCustomString}', myCustomString);
-
-        String plainBody = emailTemplate.Body;
-        plainBody = plainBody.replace('{!Contact.FirstName}', c.FirstName);
-        plainBody = plainBody.replace('{!myCustomString}', myCustomString);
-        */
-        
-        //Messaging.sendEmail(new Messaging.MassEmailMessage[] { mail });
-        
-        
-        /*
-        email.setReplyTo(fromaddress);
-        email.setSenderDisplayName(fromaddress);
-        email.setTargetObjectId(objId);
-        email.setSaveAsActivity(true);
-
-        email.setSubject(subject);
-        email.setHtmlBody(htmlBody);
-        email.setPlainTextBody(plainBody);
-        */
         if(boolStagnant && lstArticleUpdate!=null && lstArticleUpdate.size()>0) 
             update lstArticleUpdate;
         
-        
-        Messaging.sendEmail(lstMassEmailMsg);
+        if(lstMassEmailMsg!=null && lstMassEmailMsg.size()>0)
+            Messaging.sendEmail(lstMassEmailMsg);
         
         
     }

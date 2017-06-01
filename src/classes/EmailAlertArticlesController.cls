@@ -1,15 +1,36 @@
 global class EmailAlertArticlesController implements Schedulable {
     
     global void execute(SchedulableContext sc) {
-        SendEmail();
+        
+        String stagnantQuery='SELECT Id,ArticleNumber, Title, PublishStatus,Functional_Group__c, ValidationStatus ' + 
+            'FROM FAQ__kav ' + 
+            'WHERE PublishStatus=\'Draft\' ' +
+                'AND Language=\'en_US\' ' + 
+                'AND (ValidationStatus=\'Draft\' OR ValidationStatus=\'Format Review\' OR ValidationStatus=\'Content Review\')';
+            //    + 'LastModifiedDate<=:(System.Today()-10)';
+        SendEmail(stagnantQuery, true, false);
+        
+        String expiredQuery= 'SELECT Id,ArticleNumber,Title,PublishStatus, Functional_Group__c, ValidationStatus ' +
+            'FROM FAQ__kav ' +
+            'WHERE PublishStatus=\'Online\' ' +
+            'AND Language=\'en_US\' ' + 
+            'AND Article_Expiration_Date__c< '+ String.valueOf(System.Today());
+        SendEmail(expiredQuery,false, true);
+        
+        String beforeExpiryQuery= 'SELECT Id,ArticleNumber,Article_Expiration_Date__c,Title,PublishStatus, Functional_Group__c, ValidationStatus ' +
+            'FROM FAQ__kav ' +
+            'WHERE PublishStatus=\'Online\' ' +
+            'AND Language=\'en_US\' ' + 
+            'AND Article_Expiration_Date__c= ' + String.valueOf(System.Today().addDays(-30));
+        SendEmail(beforeExpiryQuery,false, true);
     }
     
     
     public Set<Id> returnUserIds(String strFuncGroup, List<Group> lstGrp) {
         List<Group> retGroup = new List<Group>();
         Set<Id> retUserId = new Set<Id>();
-        for(Group objGrp: lstGrp){
-            if(objGrp.Name.contains(strFuncGroup)){
+        for(Group objGrp: lstGrp) {
+            if(objGrp.Name.contains(strFuncGroup)) {
                 retUserId.addAll(getUserIdsFromQueue(objGrp.Id));
                 //retGroup.add(objGrp);
             }
@@ -43,26 +64,40 @@ global class EmailAlertArticlesController implements Schedulable {
     }
 
     
-    public void SendEmail() {
-        List<FAQ__kav> lstArticles = [
-            SELECT Id,ArticleNumber, PublishStatus,Functional_Group__c
+    public void SendEmail(String articleQuery, Boolean boolStagnant, Boolean boolExpiry) {
+        String subject;
+        String htmlBody;
+        String plainBody;
+        Set<String> setStrQueryFuncGroup = new Set<String>();
+        Set<String> setExcludeFuncGroup = new Set<String>();
+        Set<String> setStrFuncGroup = new Set<String>();
+        Map<String,List<FAQ__kav>> mapFuncGrouptoArticles = new Map<String,List<FAQ__kav>>(); 
+        List<FAQ__kav> lstForMap = new List<FAQ__kav>();
+        List<FAQ__kav> lstArticleUpdate = new List<FAQ__kav>();
+        List<Id> lstEmailUserId;
+        List<Messaging.SingleEmailMessage> lstMassEmailMsg = new List<Messaging.SingleEmailMessage>();
+        Map<String, Set<Id>> mapFuncGroupsToUsers = new Map<String,Set<Id>>();
+        List<Group> lstGrp;
+        
+        for(Knowledge_Functional_Group__c objKnowFuncGroup: [SELECT Name,Functional_Group_Name__c FROM Knowledge_Functional_Group__c]) {
+            setExcludeFuncGroup.add(objKnowFuncGroup.Functional_Group_Name__c);
+        }        
+        
+        
+        /*List<FAQ__kav> lstArticles = [
+            SELECT Id,ArticleNumber, Title, PublishStatus,Functional_Group__c, ValidationStatus
             FROM FAQ__kav 
             WHERE PublishStatus='Draft' 
-                AND Language='en_US' 
-                AND (LastModifiedDate>:(System.Today()-10) 
-                AND LastModifiedDate<=:System.Today()-11) 
-        ];
+                AND Language='en_US'
+                AND (ValidationStatus='Draft' OR ValidationStatus='Format Review' OR ValidationStatus='Content Review')
+        ];*/
         
-        Set<String> setStrQueryFuncGroup = new Set<String>();
+        //LastModifiedDate<=:(System.Today()-10)
+        /*AND (LastModifiedDate>:(System.Today()-10) 
+                AND LastModifiedDate<=:System.Today()-11)*/ 
         
-        Set<String> setStrFuncGroup = new Set<String>();
-        
-        Map<String,List<FAQ__kav>> mapFuncGrouptoArticles = new Map<String,List<FAQ__kav>>(); 
-        
-        List<FAQ__kav> lstForMap = new List<FAQ__kav>();
-        
-        for(FAQ__kav objFaqKav: lstArticles) {
-            if(objFaqKav.Functional_Group__c!=null && objFaqKav.Functional_Group__c!='') {
+        for(FAQ__kav objFaqKav: Database.query(articleQuery)) {
+            if(objFaqKav.Functional_Group__c!=null && objFaqKav.Functional_Group__c!='' && !setExcludeFuncGroup.contains(objFaqKav.Functional_Group__c)) {
                 setStrQueryFuncGroup.add('%' + objFaqKav.Functional_Group__c + '%');
                 setStrFuncGroup.add(objFaqKav.Functional_Group__c);
                 lstForMap = new List<FAQ__kav>();
@@ -75,40 +110,43 @@ global class EmailAlertArticlesController implements Schedulable {
                 mapFuncGrouptoArticles.put(objFaqKav.Functional_Group__c, lstForMap);
             }
         }
-        List<Group> lstGrp = [
+        
+        lstGrp = [
             SELECT Id,Name
             FROM Group 
             WHERE Type='Queue' 
                 AND Name LIKE :setStrQueryFuncGroup
         ];
-        Map<String, Set<Id>> mapFuncGroupsToUsers = new Map<String,Set<Id>>();
         
         for(String strFuncGroup: setStrFuncGroup) {
             mapFuncGroupsToUsers.put(strFuncGroup, returnUserIds(strFuncGroup, lstGrp));
         }
         
-        EmailTemplate et=[Select id from EmailTemplate where name = 'EmailTemplatename' limit 1];
-        
-        List<Id> lstEmailUserId;
-        List<Messaging.MassEmailMessage> lstMassEmailMsg = new List<Messaging.MassEmailMessage>();
-        Messaging.MassEmailMessage mail;
+        EmailTemplate et=[SELECT Id,Subject,htmlValue,Body FROM EmailTemplate WHERE Name = 'Knowledge Article Expired' LIMIT 1];
+       
+        Messaging.SingleEmailMessage mail;
         
         for(String strFuncGroup: setStrFuncGroup) {
             if(mapFuncGroupsToUsers.containsKey(strFuncGroup) && mapFuncGroupToArticles.containsKey(strFuncGroup)) {
                 lstEmailUserId=new List<Id>();
                 lstEmailUserId.addAll(mapFuncGroupsToUsers.get(strFuncGroup));
                 for(FAQ__kav objFaqKav: mapFuncGroupToArticles.get(strFuncGroup)) {
-                    mail = new Messaging.MassEmailMessage();
-                    mail.setTargetObjectIds(lstEmailUserId);
-                    //mail.setSenderDisplayName('System Admin');
-                    mail.setTemplateId(et.Id);            
-                    //mail.setWhatId(objFaqKav.Id);
+                    lstArticleUpdate.add(objFaqKav);
+                    subject = et.subject;
+                    htmlBody = et.htmlValue;
+                    htmlBody=htmlBody.replace('{!FAQ__kav.Title}',objFaqKav.Title);
+                    htmlBody=htmlBody.replace('{!FAQ__kav.ArticleNumber}',objFaqKav.ArticleNumber);
+                    htmlBody=htmlBody.replace('{!FAQ__kav.Link}', System.URL.getSalesforceBaseURL().toExternalForm() + '/' + objFaqKav.Id);
+                    mail = new Messaging.SingleEmailMessage();
+                    mail.setToAddresses(lstEmailUserId);
+                    mail.setTemplateId(et.Id);     
+                    mail.setSubject(subject);
+                    mail.setHtmlBody(htmlBody);
                     lstMassEmailMsg.add(mail);
                 }
             }
         }
         
-        //List<GroupMember> lstGroupMember = [SELECT UserOrGroupId FROM GroupMember WHERE GroupId IN: lstGrp];
         
         
         /*
@@ -126,7 +164,25 @@ global class EmailAlertArticlesController implements Schedulable {
         
         //Messaging.sendEmail(new Messaging.MassEmailMessage[] { mail });
         
-        Messaging.sendEmail(lstMassEmailMsg);
-    }
+        
+        /*
+        email.setReplyTo(fromaddress);
+        email.setSenderDisplayName(fromaddress);
+        email.setTargetObjectId(objId);
+        email.setSaveAsActivity(true);
 
+        email.setSubject(subject);
+        email.setHtmlBody(htmlBody);
+        email.setPlainTextBody(plainBody);
+        */
+        if(boolStagnant && lstArticleUpdate!=null && lstArticleUpdate.size()>0) 
+            update lstArticleUpdate;
+        
+        
+        Messaging.sendEmail(lstMassEmailMsg);
+        
+        
+    }
+    
+    
 }

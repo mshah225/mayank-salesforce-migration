@@ -1,0 +1,188 @@
+<apex:component id="CivitasPersistenceData">
+    <!-- Google JavaScript API -->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <!-- Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <!-- Gradient Styles -->
+    <style>
+        html, body, #chart_div {
+            height:100%;
+            margin:0;
+            padding:0;
+        }
+
+        #chart_div svg > g > rect {
+            fill: url(#fx) !important;
+            fill-opacity: 1 !important;
+        }
+
+        /* Lightest color (top of gradient) */
+        #fx stop:nth-child(1) {
+            stop-color: rgb(255, 219, 117);
+        }
+
+        #fx stop:nth-child(2) {
+            stop-color: rgb(249,183,125);
+        }
+
+        #fx stop:nth-child(3) {
+            stop-color: rgb(226, 154, 130);
+        }
+
+        /* Darkest color (bottom of gradient) */
+        #fx stop:nth-child(4) {
+            stop-color: rgb(181, 107, 131);
+        }
+
+        .left {
+            float: left;
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+
+    <script>
+        google.charts.load('current', {packages: ['corechart', 'line']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var container = document.getElementById('chart_div');
+            var data = new google.visualization.DataTable();
+            var pointStyle = 'point {size: 5; stroke-color: black; visible: true;}';
+
+            data.addColumn('number', 'Snap Date');
+            data.addColumn('number', 'Dummy');
+            data.addColumn('number', 'Outlook');
+            data.addColumn({type: 'string', role: 'style'});
+
+            data.addRows([
+                [0, null, 3, pointStyle],   [4, null, 3, null],
+                [4, null, 10, null], [9, null, 10, null],  [9, null, 9, null],
+                [13, null, 9, null], [13, null, 8, null], [18, null, 8, null],
+                [19, null, 6, null],  [26, null, 6, null],
+                [27, null, 8, pointStyle]
+            ]);
+
+            var options = {
+                backgroundColor: {
+                    fill: 'white'
+                },
+
+                chartArea: {
+                    backgroundColor: {
+                        fill: 'dddddd'
+                    }
+                },
+
+                colors: ['#000'],
+
+                hAxis: {
+                    baselineColor: 'white',
+                    gridlines: {
+                        color: '#eee'
+                    },
+                    showTextEvery: 1,
+                    ticks: [
+                        {v:0.0, f:'Feb 2017'},
+                        {v:10.0, f:'Mar 2017'},
+                        {v:20.0, f:'Apr 2017'}
+                    ],
+                    title: 'Current Term',
+                    titleTextStyle: {
+                        bold: true,
+                        italic: false
+                    }
+                },
+
+                legend: {
+                    position: 'none'
+                },
+
+                series: {
+                    0: {
+                        targetAxisIndex: 0,
+                        visibleInLegend: false,
+                        pointSize: 0,
+                        lineWidth: 0
+
+                    },
+                    1: {targetAxisIndex: 1}
+                },
+
+                vAxes: {
+                    0: {textPosition: 'none'},
+                },
+
+                vAxis: {
+                    baselineColor: '#ccc',
+                    gridlines: {
+                        color: '#eee'
+                    },
+                    maxValue: 11.5,
+                    ticks: [
+                        {v:0.0, f:'Very Low'},
+                        {v:1.25, f:''},
+                        {v:2.5, f:'Low'},
+                        {v:3.75, f:''},
+                        {v:5.0, f:'Moderate'},
+                        {v:6.25, f:''},
+                        {v:7.5, f:'High'},
+                        {v:8.75, f:''},
+                        {v:10.0, f:'Very High'},
+                    ],
+                },
+
+                width: 400
+            };
+
+            var chart = new google.visualization.LineChart(
+                    document.getElementById('chart_div')
+            );
+
+            var createSVG = function(n, a, b) {
+                var xmlns = "http://www.w3.org/2000/svg",
+                        e = document.createElementNS (xmlns, n);
+
+                for (var k in a) {
+                    e.setAttributeNS (null, k, a[k]);
+                }
+
+                for (var k in b) {
+                    e.setAttribute (k, b[k]);
+                }
+
+                return e;
+            };
+
+            google.visualization.events.addListener(chart, 'ready', function() {
+                var gradient = createSVG('linearGradient', {
+                    x1:0, y1:0, x2:0, y2:1
+                }, {
+                    id:'fx'
+                });
+
+                document.getElementById('chart_div')
+                        .querySelector('svg > defs').appendChild(gradient);
+
+                gradient.appendChild(createSVG('stop',{offset:'0%'}));
+                gradient.appendChild(createSVG('stop',{offset:'33%'}));
+                gradient.appendChild(createSVG('stop',{offset:'67%'}));
+                gradient.appendChild(createSVG('stop',{offset:'100%'}));
+            });
+
+            chart.draw(data, options);
+        }
+    </script>
+
+    <div class="left" id="meter_div">
+        <p>Here is some additional information about Persistance Outlook.</p>
+        <p style="font-weight: bold;">Some Label: </p>
+        <p>More data...</p>
+        <p>Even more data...</p>
+    </div>
+    <div id="chart_div"></div>
+</apex:component>

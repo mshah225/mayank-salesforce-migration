@@ -216,7 +216,8 @@
                                             
                                             <h4 class="intro">
                                                 <span style="color:#353535;">Sub-Plan:</span>
-                                                &nbsp;{!IF(ISBLANK(subProgramPlan.Subplan_description__c), '--', subProgramPlan.Subplan_description__c)}
+                                                &nbsp;{!IF(subPlanString==null, '--', subPlanString)}
+
                                             </h4>
                                             
                                             <h4 class="intro">
@@ -580,9 +581,11 @@
                                                         </apex:outputLink>
                                                     </apex:column>
                                                     <apex:column headerValue="Sub-Plan">
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),false,true)}"
-                                                                         value="{!subProgramPlan.Subplan_Description__c}"/>
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),true,false)}"
+
+                                                        <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
+                                                                         value="{!subPlanString}"/>
+                                                        <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
+
                                                                          value="--"/>
                                                     </apex:column>
                                                     <apex:column headerValue="Plan Type"
@@ -748,9 +751,9 @@
                                                     </apex:outputLink>
                                                 </apex:column>
                                                 <apex:column headerValue="Sub-Plan">
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),false,true)}"
-                                                                         value="{!subProgramPlan.Subplan_Description__c}"/>
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),true,false)}"
+                                                        <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
+                                                                         value="{!subPlanString}"/>
+                                                        <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
                                                                          value="--"/>
                                                 </apex:column>
                                                 <apex:column headerValue="Plan Type"
@@ -2008,6 +2011,10 @@
                         '{!currentTerm}',
                         function (result, event) {
                             if (event.status) {
+                                document.getElementById('sr_en_holds').innerHTML =
+                                        "<span style='color:black'>" +
+                                        result.length
+                                        "</span>";
                                 if (result.length > 0) {
                                     document.getElementById('sr_en_holds').innerHTML =
                                         "<span style='color:red'>" +

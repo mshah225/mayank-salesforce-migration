@@ -161,10 +161,14 @@ global with sharing class StudentProfileController
                                   FROM Student_Program_Subplan__c
                                   WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
                 ];
-                if(tmpSubPlanList.size() > 0){
-                    subProgramPlan = tmpSubPlanList[0];  
-                }
                 
+                if(tmpSubPlanList.size() > 0){
+                    for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
+                        subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
+                    }
+                    subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
+                }
+
                 // Temporary solution for beta release; setting currentTerm to a hard-coded value
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
@@ -1577,7 +1581,7 @@ global with sharing class StudentProfileController
                 [SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c
                  FROM   PS_ASU_SP_ENRHLD_V__x
                  WHERE  EMPLID__c = :emplid
-                   AND  (STRM__c = :currentTerm OR STRM__c = '0000')
+                   AND  (STRM__c >= :currentTerm OR STRM__c = '0000')
                  ORDER BY STRM__c ASC, SRVC_IND_CD__c ASC 
                 ]
             );
@@ -1619,5 +1623,17 @@ global with sharing class StudentProfileController
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
 
+    public String subPlanString {
+        get{
+            if(subPlanString == null){
+                return '';
+            }
+            else{
+                return subPlanString;
+
+            }
+        }
+        set;
+    }
     private class StudentProfileException extends Exception {}
 }

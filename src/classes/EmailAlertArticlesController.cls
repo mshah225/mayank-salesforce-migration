@@ -1,21 +1,23 @@
 global class EmailAlertArticlesController implements Schedulable {
-    
+
     global void execute(SchedulableContext sc) {
-        
-        String stagnantQuery='SELECT Id,ArticleNumber, Title, PublishStatus,Functional_Group__c, ValidationStatus ' + 
+        Integer intAddDays=10;
+        String stagnantQuery='SELECT Id,ArticleNumber, Title, PublishStatus,Functional_Group__c, ValidationStatus,Article_Expiration_Date__c ' + 
             'FROM FAQ__kav ' + 
             'WHERE PublishStatus=\'Draft\' ' +
                 'AND Language=\'en_US\' ' + 
-                'AND (ValidationStatus=\'Draft\' OR ValidationStatus=\'Format Review\' OR ValidationStatus=\'Content Review\')';
-            //    + 'LastModifiedDate<=:(System.Today()-10)';
+                'AND (ValidationStatus=\'Draft\' OR ValidationStatus=\'Format Review\' OR ValidationStatus=\'Content Review\') ' + 
+                'AND LastModifiedDate<LAST_N_DAYS:'+ intAddDays;
+                
         SendEmail(stagnantQuery, true, false);
         
-        String expiredQuery= 'SELECT Id,ArticleNumber,Title,PublishStatus, Functional_Group__c, ValidationStatus ' +
+        String expiredQuery= 'SELECT Id,ArticleNumber,Title,PublishStatus, Functional_Group__c, ValidationStatus, Article_Expiration_Date__c ' +
             'FROM FAQ__kav ' +
             'WHERE PublishStatus=\'Online\' ' +
-            'AND Language=\'en_US\' ' + 
-            'AND (Article_Expiration_Date__c< '+ String.valueOf(System.Today()) + ' OR Article_Expiration_Date__c= ' + String.valueOf(System.Today().addDays(-30)) + ')';
-        SendEmail(expiredQuery,false, true);
+                'AND Language=\'en_US\' ' + 
+                'AND (Article_Expiration_Date__c< '+ String.valueOf(System.Today()) + ' OR Article_Expiration_Date__c= ' + String.valueOf(System.Today().addDays(-30)) + ')';
+        
+        SendEmail(expiredQuery, false, true);
     }
     
     
@@ -30,7 +32,11 @@ global class EmailAlertArticlesController implements Schedulable {
         return retUserId;
     }
     
-    public static Set<Id> getUserIdsFromQueue(Id queueId) {
+    /*
+    A method to get the Users from the queue. If the queue contains a group then users of the group are added.
+    */
+    
+    public Set<Id> getUserIdsFromQueue(Id queueId) {
         // store the results in a set so we don't get duplicates
         Set<Id> result=new Set<Id>();
     
@@ -56,6 +62,12 @@ global class EmailAlertArticlesController implements Schedulable {
     }
 
     
+    /*
+    Method to send an email based on the article query. 
+    If the email is for stagnant articles then a dummy update to the article is done so that it fires again 10 days .
+    For expired articles no such dummy updates is needed.
+    */
+    
     public void SendEmail(String articleQuery, Boolean boolStagnant, Boolean boolExpiry) {
         String subject;
         String htmlBody;
@@ -74,19 +86,6 @@ global class EmailAlertArticlesController implements Schedulable {
         for(Knowledge_Functional_Group__c objKnowFuncGroup: [SELECT Name,Functional_Group_Name__c FROM Knowledge_Functional_Group__c]) {
             setExcludeFuncGroup.add(objKnowFuncGroup.Functional_Group_Name__c);
         }        
-        
-        
-        /*List<FAQ__kav> lstArticles = [
-            SELECT Id,ArticleNumber, Title, PublishStatus,Functional_Group__c, ValidationStatus
-            FROM FAQ__kav 
-            WHERE PublishStatus='Draft' 
-                AND Language='en_US'
-                AND (ValidationStatus='Draft' OR ValidationStatus='Format Review' OR ValidationStatus='Content Review')
-        ];*/
-        
-        //LastModifiedDate<=:(System.Today()-10)
-        /*AND (LastModifiedDate>:(System.Today()-10) 
-                AND LastModifiedDate<=:System.Today()-11)*/ 
         
         for(FAQ__kav objFaqKav: Database.query(articleQuery)) {
             if(objFaqKav.Functional_Group__c!=null && objFaqKav.Functional_Group__c!='' && !setExcludeFuncGroup.contains(objFaqKav.Functional_Group__c)) {

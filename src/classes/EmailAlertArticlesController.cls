@@ -15,7 +15,7 @@ global class EmailAlertArticlesController implements Schedulable {
             'FROM FAQ__kav ' +
             'WHERE PublishStatus=\'Online\' ' +
                 'AND Language=\'en_US\' ' + 
-                'AND (Article_Expiration_Date__c< '+ String.valueOf(System.Today()) + ' OR Article_Expiration_Date__c= ' + String.valueOf(System.Today().addDays(-30)) + ')';
+                'AND (Article_Expiration_Date__c< '+ String.valueOf(System.Today()) + ' OR Article_Expiration_Date__c= ' + String.valueOf(System.Today().addDays(30)) + ')';
         
         SendEmail(expiredQuery, false, true);
     }
@@ -72,6 +72,10 @@ global class EmailAlertArticlesController implements Schedulable {
         String subject;
         String htmlBody;
         String plainBody;
+        EmailTemplate objET;
+        List<EmailTemplate> lstEmailTemplate;
+        Messaging.SingleEmailMessage mail;
+        Map<String, EmailTemplate> mapNameToET = new Map<String, EmailTemplate>();
         Set<String> setStrQueryFuncGroup = new Set<String>();
         Set<String> setExcludeFuncGroup = new Set<String>();
         Set<String> setStrFuncGroup = new Set<String>();
@@ -113,24 +117,47 @@ global class EmailAlertArticlesController implements Schedulable {
             mapFuncGroupsToUsers.put(strFuncGroup, returnUserIds(strFuncGroup, lstGrp));
         }
         
-        EmailTemplate et=[SELECT Id,Subject,htmlValue,Body FROM EmailTemplate WHERE Name = 'Knowledge Article Expired' LIMIT 1];
-       
-        Messaging.SingleEmailMessage mail;
+        lstEmailTemplate = [
+            SELECT Id,Name,Subject,htmlValue,Body 
+            FROM EmailTemplate 
+            WHERE Name = 'Knowledge Article Expired' 
+                OR Name = 'Knowledge Article Stagnant'
+                OR Name = 'Knowledge Article 30 Day Expiration'
+        ];
         
+        for(EmailTemplate objEachET: lstEmailTemplate){
+            mapNameToET.put(objEachET.Name, objEachET);
+        }
+       
         for(String strFuncGroup: setStrFuncGroup) {
             if(mapFuncGroupsToUsers.containsKey(strFuncGroup) && mapFuncGroupToArticles.containsKey(strFuncGroup)) {
                 lstEmailUserId=new List<Id>();
                 lstEmailUserId.addAll(mapFuncGroupsToUsers.get(strFuncGroup));
                 for(FAQ__kav objFaqKav: mapFuncGroupToArticles.get(strFuncGroup)) {
-                    lstArticleUpdate.add(objFaqKav);
-                    subject = et.subject;
-                    htmlBody = et.htmlValue;
+                    if(boolStagnant) {
+                        lstArticleUpdate.add(objFaqKav);
+                        if(mapNameToET.containsKey('Knowledge Article Stagnant')) {
+                            objET=mapNameToET.get('Knowledge Article Stagnant');
+                        }                        
+                    }
+                    else if(objFaqKav.Article_Expiration_Date__c<System.today()) {
+                            if(mapNameToET.containsKey('Knowledge Article Expired')) {
+                                objET=mapNameToET.get('Knowledge Article Expired');
+                            }
+                    }
+                    else {
+                        if(mapNameToET.containsKey('Knowledge Article 30 Day Expiration')){
+                            objET=mapNameToET.get('Knowledge Article 30 Day Expiration');
+                        }
+                    }
+                    subject = objET.subject;
+                    htmlBody = objET.htmlValue;
                     htmlBody=htmlBody.replace('{!FAQ__kav.Title}',objFaqKav.Title);
                     htmlBody=htmlBody.replace('{!FAQ__kav.ArticleNumber}',objFaqKav.ArticleNumber);
                     htmlBody=htmlBody.replace('{!FAQ__kav.Link}', System.URL.getSalesforceBaseURL().toExternalForm() + '/' + objFaqKav.Id);
                     mail = new Messaging.SingleEmailMessage();
                     mail.setToAddresses(lstEmailUserId);
-                    mail.setTemplateId(et.Id);     
+                    mail.setTemplateId(objET.Id);     
                     mail.setSubject(subject);
                     mail.setHtmlBody(htmlBody);
                     lstMassEmailMsg.add(mail);

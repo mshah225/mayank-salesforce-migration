@@ -320,11 +320,25 @@ public class CaseListTransferController {
     }
 
     // Transfer the case and redirect
-    public void transferCase() {
+    public PageReference transferCase() {
         PageReference nextPage;
         boolean allSubsAndDescsValidated = true;
+        Id securedCaseRTID15 = (Id) String.valueOf(IDHelper.getRTID('Case', 'ASU_Secured_Service')).left(15);
+        
+        // Note: While we could put this into the loop
+        // since the loop already has to check for toUser,
+        // That would effectively put a SOQL query into a loop.
+        // We can't fix this with a null check in the selectedCar
+        // getter since selectedCar is used in more then 1 place
+        // and the query logic is different in each place.
+        if (!toUser) {
+            selectedCAR = CARService.getCAR(selectedId);
+        }
         
         // Verify that all cases have descriptions and subjects
+        // Note: While it would be possible to combine these loops,
+        // that would change the business logic in a manner that does
+        // not adhere to functional requirements.
         for (Case c : this.cs) {
             if (String.isBlank(c.Description) || string.isBlank(c.Subject)) {
                 allSubsAndDescsValidated = false;
@@ -340,7 +354,6 @@ public class CaseListTransferController {
                 if (toUser) {
                     c.OwnerId = selectedId;
                 } else {
-                    selectedCAR = CARService.getCAR(selectedId);
                     c.OwnerId = selectedCAR.Queue_ID__c;
                     c.Functional_Group__c = selectedCAR.Functional_Group__c;
                     c.Category__c = selectedCAR.Category__c;
@@ -364,7 +377,24 @@ public class CaseListTransferController {
             );
         }
 
-        page = 5;
+        // If the selected car is a secured record type, show success message
+        if (selectedCar.Case_Record_Type_Id__c == securedCaseRTID15) {
+            page = 5;
+            return null;
+        } else if (this.cs.size() == 1) { // else, if this is only 1 case, return to the desired case
+            nextPage = new PageReference('/' + this.cs[0].Id);
+            nextPage.setRedirect(true);
+            return nextPage;
+        } else if (this.cs.size() > 1) { // else, if there is more than 1 case, return to the desired list view
+            return new ApexPages.action('{!list}').invoke();
+        }
+        
+        return null;
+        // What if transferring to a user of a secured group?
+        // What if transferring multiple cases to a user of a secured group?
+        // What if transferring to a user of a non-secured group?
+        // What if transferring multiple cases to a user of a non-secured group?
+        // What logic do we use to determine if users are in secured groups or not?
     }
     
     /**

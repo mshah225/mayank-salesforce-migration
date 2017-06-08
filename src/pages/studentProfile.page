@@ -217,7 +217,6 @@
                                             <h4 class="intro">
                                                 <span style="color:#353535;">Sub-Plan:</span>
                                                 &nbsp;{!IF(subPlanString==null, '--', subPlanString)}
-
                                             </h4>
                                             
                                             <h4 class="intro">
@@ -585,7 +584,6 @@
                                                         <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
                                                                          value="{!subPlanString}"/>
                                                         <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
-
                                                                          value="--"/>
                                                     </apex:column>
                                                     <apex:column headerValue="Plan Type"

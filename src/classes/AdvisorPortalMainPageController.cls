@@ -419,7 +419,6 @@ public class AdvisorPortalMainPageController {
             // replace blank with '_!' so we know the final split will have two components
             String stringSpliter = (string.isblank(so.getLabel())?'_!':so.getLabel()) + '@!@' + (string.isblank(so.getValue())?'_!':so.getValue());
             stringSpliter = stringSpliter.toUpperCase() + stringSpliter;
-            System.debug(stringSpliter);
             sortable.Add(stringSpliter);
         }
         // sort the list

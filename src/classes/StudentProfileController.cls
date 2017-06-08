@@ -115,7 +115,8 @@ global with sharing class StudentProfileController
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-        
+                studentDemographic = getStudentDemographicData(theContact.emplId__c);
+                
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
         

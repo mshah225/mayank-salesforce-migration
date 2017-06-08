@@ -115,7 +115,8 @@ global with sharing class StudentProfileController
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-        
+                studentDemographic = getStudentDemographicData(theContact.emplId__c);
+                
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
         
@@ -168,6 +169,7 @@ global with sharing class StudentProfileController
                     }
                     subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
                 }
+
                 // Temporary solution for beta release; setting currentTerm to a hard-coded value
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
@@ -1629,6 +1631,7 @@ global with sharing class StudentProfileController
             }
             else{
                 return subPlanString;
+
             }
         }
         set;

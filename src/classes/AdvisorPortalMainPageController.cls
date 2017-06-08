@@ -417,16 +417,22 @@ public class AdvisorPortalMainPageController {
         for(SelectOption so: source)
         {
             // replace blank with '_!' so we know the final split will have two components
-            sortable.Add((string.isblank(so.getLabel())?'_!':so.getLabel()) + '@!@' + (string.isblank(so.getValue())?'_!':so.getValue()));
+            String stringSpliter = (string.isblank(so.getLabel())?'_!':so.getLabel()) + '@!@' + (string.isblank(so.getValue())?'_!':so.getValue());
+            stringSpliter = stringSpliter.toUpperCase() + stringSpliter;
+            System.debug(stringSpliter);
+            sortable.Add(stringSpliter);
         }
         // sort the list
         sortable.sort();
+        //Remove Capital Prefix
+        for(Integer i = 0; i < sortable.size(); i++){
+            sortable[i] = sortable[i].substring(sortable[i].length()/2);
+        }
         List<SelectOption> targetList = new  List<SelectOption>();
         // split the value/name components and re create the list
         for(string s: sortable)
         {
-                targetList.Add(new  SelectOption(s.split('@!@')[1].replace('_!',''), s.split('@!@')[0].replace('_!','')));
-         
+            targetList.Add(new  SelectOption(s.split('@!@')[1].replace('_!',''), s.split('@!@')[0].replace('_!','')));
         }
         return targetList;
     }

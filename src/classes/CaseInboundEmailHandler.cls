@@ -1190,6 +1190,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
                 attachmentInfo += 'FileName: ' + bAttachment.fileName +' File Size: ' + bAttachment.body.size()/1000.00  +' kB\n';
             }
+            for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
+                attachmentInfo += 'FileName: ' + tAttachment.fileName +' File Size: ' + tAttachment.body.length()/1000.00  +' kB\n';
+            }
             lostEmail.PlainTextBody__c += attachmentInfo;
         }
         update lostEmail;

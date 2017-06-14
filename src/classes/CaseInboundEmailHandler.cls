@@ -427,7 +427,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
                     String currentCaseSubject = theCase.Subject;
                     if(currentCaseSubject == null || currentCaseSubject == '') {
-                        currentCaseSubject = '--';
+                        currentCaseSubject = 'Email Received From: ' + email.fromAddress;
+
 					}
                     currentCaseSubject = currentCaseSubject.trim();
                     theCase.Subject = currentCaseSubject;

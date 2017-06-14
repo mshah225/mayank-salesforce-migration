@@ -131,7 +131,6 @@ public class SuccessRecodingController {
             FROM Success_Student__c
             WHERE Student__r.Id = :selectedContactId
             AND Is_Active__c = true
-//Add Coaching Student to query
             AND Coaching_Student__c = true
         ]);
 
@@ -154,7 +153,6 @@ public class SuccessRecodingController {
             FROM Success_Student__c
             WHERE Success_Resource__r.Resource__r.Id = :selectedCoachId
             AND Is_Active__c = true
-//Add Coaching Student to query
             AND Coaching_Student__c = true
         ]);
 

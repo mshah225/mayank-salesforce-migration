@@ -169,7 +169,6 @@ global with sharing class StudentProfileController
                     }
                     subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
                 }
-
                 // Temporary solution for beta release; setting currentTerm to a hard-coded value
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
@@ -1623,7 +1622,6 @@ global with sharing class StudentProfileController
 
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
-
     public String subPlanString {
         get{
             if(subPlanString == null){
@@ -1631,7 +1629,6 @@ global with sharing class StudentProfileController
             }
             else{
                 return subPlanString;
-
             }
         }
         set;

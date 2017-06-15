@@ -81,6 +81,6 @@ public class Test_IDHelper {
     private static testmethod void testName(){
         RecordType rt = [SELECT Id FROM RecordType WHERE DeveloperName = 'Interest' LIMIT 1];
         String objectName = IDHelper.getName('Case', IDHelper.getRTID('Case', 'ASU_Service'));
-        System.assertEquals(objectName, 'ASU Service');
+        System.assertEquals(objectName, 'ASU_Service');
     }
 }

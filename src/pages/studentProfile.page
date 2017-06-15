@@ -580,7 +580,6 @@
                                                         </apex:outputLink>
                                                     </apex:column>
                                                     <apex:column headerValue="Sub-Plan">
-
                                                         <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
                                                                          value="{!subPlanString}"/>
                                                         <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"

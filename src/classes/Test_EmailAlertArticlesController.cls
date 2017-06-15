@@ -1,7 +1,9 @@
 @isTest
 public class Test_EmailAlertArticlesController {
     
-    public static FAQ__kav testFAQ;
+    public static FAQ__kav testFAQ1;
+    public static FAQ__kav testFAQ2;
+    public static FAQ__kav testFAQ3;
     public static List<User> lstUser;
     public static List<Group> lstGroup;
     public static List<GroupMember> lstGroupMember;
@@ -58,7 +60,7 @@ public class Test_EmailAlertArticlesController {
             Test.stopTest();
     }
     
-    /* Test Method to check whether the userIds returned for a queue is correct*/
+    /* Test Method to check whether the userIds returned for a queue is correct */
     @isTest static void testUsersinQueue() {
             testSetup();
             
@@ -77,13 +79,13 @@ public class Test_EmailAlertArticlesController {
                 
     }
     
-    /*Test Method to check whether an Email is sent via Apex for a stagnant Article */
-    @isTest static void testSendEmail() {
+    /* Test Method to check whether an Email is sent via Apex for a stagnant Article */
+    @isTest static void testStagnantSendEmail() {
             Integer noOfEmailsSent;
             
-            testFAQ= new FAQ__kav(Language='en_US', Title = 'Test Article', UrlName='TestArticle');
-            testFAQ.Functional_Group__c='Academic Technologies';
-            insert testFAQ;
+            testFAQ1= new FAQ__kav(Language='en_US', Title = 'Test Article', UrlName='TestArticle');
+            testFAQ1.Functional_Group__c='Academic Technologies';
+            insert testFAQ1;
             
             EmailAlertArticlesController testCont = new EmailAlertArticlesController();
             
@@ -101,6 +103,42 @@ public class Test_EmailAlertArticlesController {
             
     }
     
-    
-    
+    /* Test Method to check whether an Email is sent via Apex for Expired Article */
+    @isTest static void testExpiredSendEmail() {
+            Integer noOfEmailsSent;
+            List<Id> lstArtId = new List<Id>();
+            
+            testFAQ2= new FAQ__kav(Language='en_US', Title = 'Test Article 2', UrlName='TestArticle2');
+            testFAQ2.Functional_Group__c='Academic Technologies';
+            testFAQ2.Article_Expiration_Date__c=System.Today().addDays(-1);
+            insert testFAQ2;
+            
+            testFAQ3= new FAQ__kav(Language='en_US', Title = 'Test Article 3', UrlName='TestArticle3');
+            testFAQ3.Functional_Group__c='Academic Technologies';
+            testFAQ3.Article_Expiration_Date__c=System.Today().addDays(30);
+            insert testFAQ3;
+            
+            lstArtId.add(testFAQ2.Id);
+            lstArtId.add(testFAQ3.Id);
+            
+            List<FAQ__kav> lstArtFAQ = [SELECT Id, KnowledgeArticleId FROM FAQ__kav WHERE Id IN: lstArtId];
+            KbManagement.PublishingService.publishArticle(lstArtFAQ[0].KnowledgeArticleId, true);
+            KbManagement.PublishingService.publishArticle(lstArtFAQ[1].KnowledgeArticleId, true);
+            EmailAlertArticlesController testCont = new EmailAlertArticlesController();
+            
+            String query = 'SELECT Id,ArticleNumber,Title,PublishStatus, Functional_Group__c, ValidationStatus, Article_Expiration_Date__c ' +
+            'FROM FAQ__kav ' +
+            'WHERE PublishStatus=\'Online\' ' +
+                'AND Language=\'en_US\' ' + 
+                'AND (Article_Expiration_Date__c< '+ String.valueOf(System.Today()) + ' OR Article_Expiration_Date__c= ' + String.valueOf(System.Today().addDays(30)) + ')';
+            
+            Test.startTest();
+            testCont.SendEmail(query, false, true);
+            noOfEmailsSent = Limits.getEmailInvocations();
+            Test.stopTest();
+            
+            System.assertEquals(noOfEmailsSent, 1);
+        
+    }
+
 }

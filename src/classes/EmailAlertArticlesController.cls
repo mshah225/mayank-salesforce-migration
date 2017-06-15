@@ -146,7 +146,7 @@ global class EmailAlertArticlesController implements Schedulable {
                             }
                     }
                     else {
-                        if(mapNameToET.containsKey('Knowledge Article 30 Day Expiration')){
+                        if(mapNameToET.containsKey('Knowledge Article 30 Day Expiration')) {
                             objET=mapNameToET.get('Knowledge Article 30 Day Expiration');
                         }
                     }
@@ -171,8 +171,6 @@ global class EmailAlertArticlesController implements Schedulable {
         if(lstMassEmailMsg!=null && lstMassEmailMsg.size()>0)
             Messaging.sendEmail(lstMassEmailMsg);
         
-        
     }
-    
     
 }

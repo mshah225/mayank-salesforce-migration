@@ -52,9 +52,8 @@ global class EmailAlertArticlesController implements Schedulable {
                 result.add(m.UserOrGroupId);
             }
             // If the user or group id is a group
-            // Note: there may be a problem with governor limits if this is called too many times
             else if (((String)m.UserOrGroupId).startsWith(groupType)) {
-                // Call this function again but pass in the group found within this group
+                // Call this function again but pass in the group found
                 result.addAll(getUserIdsFromQueue(m.UserOrGroupId));
             }
         }
@@ -87,10 +86,12 @@ global class EmailAlertArticlesController implements Schedulable {
         Map<String, Set<Id>> mapFuncGroupsToUsers = new Map<String,Set<Id>>();
         List<Group> lstGrp;
         
+        //Retrieve List of Functional Groups for which Notification must not be sent.
         for(Knowledge_Functional_Group__c objKnowFuncGroup: [SELECT Name,Functional_Group_Name__c FROM Knowledge_Functional_Group__c]) {
             setExcludeFuncGroup.add(objKnowFuncGroup.Functional_Group_Name__c);
         }        
         
+        //Iterate through the list of articles and create a map with key as article functional group and value as List of Articles Corresponding to the Functional Group.
         for(FAQ__kav objFaqKav: Database.query(articleQuery)) {
             if(objFaqKav.Functional_Group__c!=null && objFaqKav.Functional_Group__c!='' && !setExcludeFuncGroup.contains(objFaqKav.Functional_Group__c)) {
                 setStrQueryFuncGroup.add('%' + objFaqKav.Functional_Group__c + '%');
@@ -113,6 +114,7 @@ global class EmailAlertArticlesController implements Schedulable {
                 AND Name LIKE :setStrQueryFuncGroup
         ];
         
+        //Map Functional Group to the corrsponding users who need to be notified.
         for(String strFuncGroup: setStrFuncGroup) {
             mapFuncGroupsToUsers.put(strFuncGroup, returnUserIds(strFuncGroup, lstGrp));
         }
@@ -134,13 +136,14 @@ global class EmailAlertArticlesController implements Schedulable {
                 lstEmailUserId=new List<Id>();
                 lstEmailUserId.addAll(mapFuncGroupsToUsers.get(strFuncGroup));
                 for(FAQ__kav objFaqKav: mapFuncGroupToArticles.get(strFuncGroup)) {
+                    //Assign Email Template based on the Article(Expired or Stagnant)
                     if(boolStagnant) {
                         lstArticleUpdate.add(objFaqKav);
                         if(mapNameToET.containsKey('Knowledge Article Stagnant')) {
                             objET=mapNameToET.get('Knowledge Article Stagnant');
                         }                        
                     }
-                    else if(objFaqKav.Article_Expiration_Date__c<System.today()) {
+                    else if(objFaqKav.Article_Expiration_Date__c<System.Today()) {
                             if(mapNameToET.containsKey('Knowledge Article Expired')) {
                                 objET=mapNameToET.get('Knowledge Article Expired');
                             }
@@ -164,7 +167,7 @@ global class EmailAlertArticlesController implements Schedulable {
                 }
             }
         }
-        
+        // Dummy update Stagnant Articles so that Notification is fired again in 10 days.
         if(boolStagnant && lstArticleUpdate!=null && lstArticleUpdate.size()>0) 
             update lstArticleUpdate;
         

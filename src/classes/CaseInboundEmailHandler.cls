@@ -1187,11 +1187,15 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         lostEmail.RejectedAttachments__c = !attachSuccess;
         if(!attachSuccess) {
             String attachmentInfo = '\n**********\nCase ID: '+ theCase.Id +'\n\n*****List of Attachments*****\n';     
-            for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
-                attachmentInfo += 'FileName: ' + bAttachment.fileName +' File Size: ' + bAttachment.body.size()/1000.00  +' kB\n';
+            if(email.binaryAttachments != null){
+                for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
+                    attachmentInfo += 'FileName: ' + bAttachment.fileName +' File Size: ' + bAttachment.body.size()/1000.00  +' kB\n';
+                }
             }
-            for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
-                attachmentInfo += 'FileName: ' + tAttachment.fileName +' File Size: ' + tAttachment.body.length()/1000.00  +' kB\n';
+            if(email.textAttachments != null){
+                for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
+                    attachmentInfo += 'FileName: ' + tAttachment.fileName +' File Size: ' + tAttachment.body.length()/1000.00  +' kB\n';
+                }
             }
             lostEmail.PlainTextBody__c += attachmentInfo;
         }

@@ -177,12 +177,5 @@
             chart.draw(data, options);
         }
     </script>
-
-    <div class="left" id="meter_div">
-        <p>Here is some additional information about Persistance Outlook.</p>
-        <p style="font-weight: bold;">Some Label: </p>
-        <p>More data...</p>
-        <p>Even more data...</p>
-    </div>
     <div id="chart_div"></div>
 </apex:component>

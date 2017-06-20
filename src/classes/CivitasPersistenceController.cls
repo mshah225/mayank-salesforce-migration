@@ -70,6 +70,7 @@ public class CivitasPersistenceController{
                              FROM Term__c 
                              WHERE PeopleSoft_Code__c =: currentTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
+                startDate = startDate.addDays(21);
             }
             return startDate;
         }
@@ -80,12 +81,12 @@ public class CivitasPersistenceController{
         
         get{
             if(endDate == null){
-                endDate = [Select Session_A_C_Close_Date__c 
+                endDate = [Select Session_A_C_Start_Date__c 
                              FROM Term__c 
                              WHERE PeopleSoft_Code__c =: nextTerm
-                             LIMIT 1].Session_A_C_Close_Date__c;
+                             LIMIT 1].Session_A_C_Start_Date__c;
+                endDate = endDate.addDays(21);
             }
-            System.debug(endDate.addDays(21));
             return endDate;
         }
     }
@@ -94,19 +95,17 @@ public class CivitasPersistenceController{
         set;
         
         get{
-            dateList = new List<CV_ASU_STDNT_TERM__x>();
-            for(CV_ASU_STDNT_TERM__x trm : [Select SNAP_DATE__c 
-                                            FROM CV_ASU_STDNT_TERM__x 
-                                            WHERE Contact__c =: emplid 
-                                            LIMIT 200]) {
-                dateList.add(trm);
+            if(dateList == null){
+                dateList = new List<CV_ASU_STDNT_TERM__x>();
+                for(CV_ASU_STDNT_TERM__x trm : [Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c	
+                                                FROM CV_ASU_STDNT_TERM__x 
+                                                WHERE Contact__c =: emplid
+                                                ORDER BY SNAP_DATE__c ASC]) {
+                    if(trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate){
+                          dateList.add(trm);                              
+                    }                  
+                }
             }
-            /*dateList = 
-                [Select SNAP_DATE__c 
-                 FROM CV_ASU_STDNT_TERM__x 
-                 WHERE SNAP_DATE__c <= :endDate && SNAP_DATE__c >= :startDate
-            ];*/
-            //dateList = Database.query('Select SNAP_DATE__c FROM CV_ASU_STDNT_TERM__x WHERE SNAP_DATE__c <= :endDate && SNAP_DATE__c >= :startDate');
             return dateList;
             
         }

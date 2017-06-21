@@ -1,15 +1,17 @@
 public class CivitasPersistenceController{
 
-    public string emplid{
+    public static List<civitasWrapper> dataList {set; get;}
+    
+    /*public string emplid{
         set;
         
         get{
             emplid = '1206104779'; 
             return emplid;
         }
-    }
+    }*/
     
-    public string currentTerm{
+    public static string currentTerm{
         set;
         
         get{
@@ -35,7 +37,7 @@ public class CivitasPersistenceController{
         }
     }
     
-    public string nextTerm{
+    public static string nextTerm{
         set;
         
         get{
@@ -61,7 +63,7 @@ public class CivitasPersistenceController{
         }
     }
     
-    public Date startDate{
+    public static Date startDate{
         set;
         
         get{
@@ -76,7 +78,7 @@ public class CivitasPersistenceController{
         }
     }
     
-    public Date endDate{
+    public static Date endDate{
         set;
         
         get{
@@ -91,7 +93,7 @@ public class CivitasPersistenceController{
         }
     }
     
-    public List<CV_ASU_STDNT_TERM__x> dateList{
+    /*public List<CV_ASU_STDNT_TERM__x> dateList{
         set;
         
         get{
@@ -107,7 +109,40 @@ public class CivitasPersistenceController{
                 }
             }
             return dateList;
-            
+        }
+    }
+    public static getData(){
+        for(CV_ASU_STDNT_TERM__x trm : [Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c	
+                                        FROM CV_ASU_STDNT_TERM__x 
+                                        WHERE Contact__c =: emplid
+                                        ORDER BY SNAP_DATE__c ASC]) {
+            if(trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate){
+                  dataList.add(new civitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c));                              
+            }                  
+        }
+    }*/
+    
+    public static void getData(String emplid){
+        dataList = new List<civitasWrapper>();
+        for(CV_ASU_STDNT_TERM__x trm : [
+            Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c	
+            FROM CV_ASU_STDNT_TERM__x 
+            WHERE Contact__c =: emplid
+            ORDER BY SNAP_DATE__c ASC
+        ]) {
+            if(trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate){
+                  dataList.add(new civitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c));                              
+            }                  
+        }
+    }
+    
+    public class civitasWrapper{
+        public Date snapDate;
+        public Decimal outlookLevel;
+        
+        public civitasWrapper(Date sDate, Decimal oLevel){
+            snapDate = sDate;
+            outlookLevel = oLevel;
         }
     }
 }

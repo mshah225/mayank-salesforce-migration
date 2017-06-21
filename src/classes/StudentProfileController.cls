@@ -114,9 +114,13 @@ global with sharing class StudentProfileController
                 // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
+                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
                 
+                if(studentProgramDataList.size() > 0){
+                    ugStudentProgram = studentProgramDataList[0];
+                }
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
         
@@ -156,7 +160,6 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-                
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
                     			  Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
@@ -1186,7 +1189,6 @@ global with sharing class StudentProfileController
             wrapper.faBalance = balanceList[0];
 
         List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
-        System.debug('Balance: ' + wrapper.faBalance.BALANCE_AMT__c);
         if (!snpRecords.isEmpty())
         {
             wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;

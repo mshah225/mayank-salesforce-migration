@@ -28,7 +28,7 @@ public class Test_IDHelper {
     }
     
     public static testmethod void Test_getRecordTypeId() {
-        system.assertEquals(rtid, IDHelper.getRTID('Case', 'ASU Service'));
+        system.assertEquals(rtid, IDHelper.getRTID('Case', 'ASU_Service'));
     }
     
     public static testmethod void Test_getProfileId() {
@@ -47,7 +47,7 @@ public class Test_IDHelper {
     
     public static testmethod void Test_getUncachedRecordType() {
 		IDHelper.clearRecordTypeIdCache();
-        system.assertEquals(rtid, IDHelper.getRTID('Case', 'ASU Service'));
+        system.assertEquals(rtid, IDHelper.getRTID('Case', 'ASU_Service'));
     }
     
     public static testmethod void Test_getFakeProfile() {
@@ -80,7 +80,7 @@ public class Test_IDHelper {
     
     private static testmethod void testName(){
         RecordType rt = [SELECT Id FROM RecordType WHERE DeveloperName = 'Interest' LIMIT 1];
-        String objectName = IDHelper.getName('Case', IDHelper.getRTID('Case', 'ASU Service'));
-        System.assertEquals(objectName, 'ASU Service');
+        String objectName = IDHelper.getName('Case', IDHelper.getRTID('Case', 'ASU_Service'));
+        System.assertEquals(objectName, 'ASU_Service');
     }
 }

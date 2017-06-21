@@ -115,6 +115,8 @@ global with sharing class StudentProfileController
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
                 studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
+
+                sIList = getServiceIndicators(theContact.emplId__c);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
                 
@@ -1255,6 +1257,14 @@ global with sharing class StudentProfileController
                     ORDER BY SRVC_IND_ACTIVE_DT__c ASC, SRVC_IND_CD__c ASC
                 ]
             );
+            Date currentDate = date.today();
+            
+            for(Integer i = serviceIndicatorList.size()-1; i >= 0; i--){
+                Date tempDate = serviceIndicatorList[i].SCC_SI_END_DT__c;
+                if (tempDate < currentDate) {
+                    serviceIndicatorList.remove(i);
+                }
+            }
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }

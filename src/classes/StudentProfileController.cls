@@ -118,8 +118,13 @@ global with sharing class StudentProfileController
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
                 
-                if(studentProgramDataList.size() > 0){
-                    ugStudentProgram = studentProgramDataList[0];
+                for(JBT_RET_GENERAL_RIGHT__x prg : studentProgramDataList){
+                    if(prg.ACAD_CAREER__c.equals('UGRD')){
+                        ugStudentProgram = prg;
+                    }
+                    else if (prg.ACAD_CAREER__c.equals('GRAD')){
+                        gradStudentProgram = prg;
+                    }
                 }
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);

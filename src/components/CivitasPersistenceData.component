@@ -1,10 +1,15 @@
-<apex:component id="CivitasPersistenceData">
+<apex:component id="CivitasPersistenceData" controller="CivitasPersistenceController">
     <!-- Google JavaScript API -->
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
+    
+	<apex:includeScript value="{!URLFOR($Resource.bootstrap_303,
+                '/dist/js/jquery-1.10.2.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
+            'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
+    
     <!-- Gradient Styles -->
     <style>
         html, body, #chart_div {
@@ -48,97 +53,148 @@
     <script>
         google.charts.load('current', {packages: ['corechart', 'line']});
         google.charts.setOnLoadCallback(drawChart);
-
+    	
+    	jQuery(document).ready(function(){
+        	document.getElementById("chart_div").innerHTML =
+                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+            document.getElementById("meter").innerHTML =
+                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+        });
+    
         function drawChart() {
+            Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.CivitasPersistenceController.getData}',
+                        '1206104779',
+                        function (result, event) {
+                            
+            document.getElementById("level").innerHTML += result[result.length-1].levelDesc;
+            document.getElementById("lastUpdated").innerHTML += result[result.length-1].fullDate;
+            
+            var loopCount = result.length;
+            var found = false;
+            while(loopCount > 0 && !found){
+            	loopCount--;
+                console.log(loopCount + ' ' + result[loopCount].flag);
+                if(result[loopCount].flag == 'Y'){
+                	found = true;    
+                }
+            }
+            if(loopCount > 0){
+				if(result[loopCount].outlookLevel > result[loopCount-1].outlookLevel){
+                    document.getElementById("change").innerHTML += 'UP';
+                }
+                else{
+                    document.getElementById("change").innerHTML += 'DOWN';
+                }
+            	document.getElementById("levelChangeDate").innerHTML += result[loopCount].fullDate;
+            }
+            else{
+                document.getElementById("change").innerHTML += 'N/A';
+                document.getElementById("levelChangeDate").innerHTML += 'N/A';
+            }
             var container = document.getElementById('chart_div');
             var data = new google.visualization.DataTable();
             var pointStyle = 'point {size: 5; stroke-color: black; visible: true;}';
-
+			console.log(result);
             data.addColumn('number', 'Snap Date');
             data.addColumn('number', 'Dummy');
             data.addColumn('number', 'Outlook');
             data.addColumn({type: 'string', role: 'style'});
-
+            data.addColumn({type: 'string', role: 'tooltip'});
+                            
             data.addRows([
-                [0, null, 3, pointStyle],   [4, null, 3, null],
-                [4, null, 10, null], [9, null, 10, null],  [9, null, 9, null],
-                [13, null, 9, null], [13, null, 8, null], [18, null, 8, null],
-                [19, null, 6, null],  [26, null, 6, null],
-                [27, null, 8, pointStyle]
+                [result[0].day, null, result[0].outlookLevel, pointStyle, result[0].dayDate + '\nOutlook: ' + result[0].outlookLevel]
             ]);
-
-            var options = {
-                backgroundColor: {
-                    fill: 'white'
-                },
-
-                chartArea: {
+            
+            for(var i = 1; i < result.length; i ++){
+                data.addRows([
+                    [result[i].day, null, result[i].outlookLevel, null, result[i].dayDate + '\nOutlook: ' + result[i].outlookLevel]
+                ]);
+            }
+                            
+            data.addRows([
+                [result[result.length-1].day, null, result[result.length-1].outlookLevel, pointStyle, result[result.length-1].dayDate  + '\nOutlook: ' + result[result.length-1].outlookLevel]
+            ]);
+            
+			
+            
+                var options = {
                     backgroundColor: {
-                        fill: 'dddddd'
-                    }
-                },
-
-                colors: ['#000'],
-
-                hAxis: {
-                    baselineColor: 'white',
-                    gridlines: {
-                        color: '#eee'
+                        fill: 'white'
                     },
-                    showTextEvery: 1,
-                    ticks: [
-                        {v:0.0, f:'Feb 2017'},
-                        {v:10.0, f:'Mar 2017'},
-                        {v:20.0, f:'Apr 2017'}
-                    ],
-                    title: 'Current Term',
-                    titleTextStyle: {
-                        bold: true,
-                        italic: false
-                    }
-                },
-
-                legend: {
-                    position: 'none'
-                },
-
-                series: {
-                    0: {
-                        targetAxisIndex: 0,
-                        visibleInLegend: false,
-                        pointSize: 0,
-                        lineWidth: 0
-
+    
+                    chartArea: {
+                        backgroundColor: {
+                            fill: 'dddddd'
+                        }
                     },
-                    1: {targetAxisIndex: 1}
-                },
-
-                vAxes: {
-                    0: {textPosition: 'none'},
-                },
-
-                vAxis: {
-                    baselineColor: '#ccc',
-                    gridlines: {
-                        color: '#eee'
+    
+                    colors: ['#000'],
+    
+                    hAxis: {
+                        baselineColor: 'white',
+                        gridlines: {
+                            color: '#eee'
+                        },
+                        showTextEvery: 1,
+                        title: 'Current Term ' + result[0].year,
+                        titleTextStyle: {
+                            bold: true,
+                            italic: false
+                        }
                     },
-                    maxValue: 11.5,
-                    ticks: [
-                        {v:0.0, f:'Very Low'},
-                        {v:1.25, f:''},
-                        {v:2.5, f:'Low'},
-                        {v:3.75, f:''},
-                        {v:5.0, f:'Moderate'},
-                        {v:6.25, f:''},
-                        {v:7.5, f:'High'},
-                        {v:8.75, f:''},
-                        {v:10.0, f:'Very High'},
-                    ],
-                },
-
-                width: 400
-            };
-
+    
+                    legend: {
+                        position: 'none'
+                    },
+    
+                    series: {
+                        0: {
+                            targetAxisIndex: 0,
+                            visibleInLegend: false,
+                            pointSize: 0,
+                            lineWidth: 0
+    
+                        },
+                        1: {targetAxisIndex: 1}
+                    },
+    
+                    vAxes: {
+                        0: {textPosition: 'none'},
+                    },
+    
+                    vAxis: {
+                        baselineColor: '#ccc',
+                        gridlines: {
+                            color: '#eee'
+                        },
+                        maxValue: 11.5,
+                        ticks: [
+                            {v:0.0, f:'Very Low'},
+                            {v:1.25, f:''},
+                            {v:2.5, f:'Low'},
+                            {v:3.75, f:''},
+                            {v:5.0, f:'Moderate'},
+                            {v:6.25, f:''},
+                            {v:7.5, f:'High'},
+                            {v:8.75, f:''},
+                            {v:10.0, f:'Very High'},
+                        ],
+                    },
+    
+                    width: 400
+                };
+            
+            var months = [];
+            for(var i = 0; i < result[0].allMonths.length; i++){
+                months.push({v:(i*30), f: result[0].allMonths[i]});        
+            }
+            options['hAxis']['ticks'] = months;
+            
+            if(result[0].year != result[result.length-1].year){
+            	options['hAxis']['title'] += '-' + result[result.length-1].year;   
+            }
+                            
             var chart = new google.visualization.LineChart(
                     document.getElementById('chart_div')
             );
@@ -175,7 +231,55 @@
             });
 
             chart.draw(data, options);
+                            
+            var latestOutlook = result[result.length-1].outlookLevel;
+            console.log(latestOutlook);
+            switch(latestOutlook){
+                case 1:
+                case 2:
+                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-1.png')}";
+                    break;
+               case 3:
+               case 4:
+                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-2.png')}";
+                    break; 
+               case 5:
+               case 6:
+                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-3.png')}";
+                    break;
+               case 7:
+               case 8:
+                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-4.png')}";
+                    break;
+               case 9:
+               case 10:
+                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-5.png')}";
+                    break;
+            }
+            });
         }
     </script>
-    <div id="chart_div"></div>
+    
+    <div class="left" style="float: left;">
+        <!-- Meter goes here -->
+        <img id="meter" />
+        <p id ="level">
+            <b>Level: </b>
+        </p>
+        <p id="lastUpdated">
+            <b>Last Updated: </b> 
+        </p>
+        <p id="change">
+            <b>Change: </b>
+        </p>
+        <p id="levelChangeDate">
+            <b>Level Change Date: </b>
+        </p>
+    </div>
+ 	<div class="right" style="float: left;">
+        <!-- Chart goes here -->
+        <div id="chart_div" style="height: 250px; width: 500px"></div>
+    </div>
+    <div style="clear: both" />
+    
 </apex:component>

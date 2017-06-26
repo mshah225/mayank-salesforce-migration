@@ -67,8 +67,8 @@
                         '1206104779',
                         function (result, event) {
                             
-            document.getElementById("level").innerHTML += result[result.length-1].levelDesc;
-            document.getElementById("lastUpdated").innerHTML += result[result.length-1].fullDate;
+            document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
+            document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate;
             
             var loopCount = result.length;
             var found = false;
@@ -81,15 +81,15 @@
             }
             if(loopCount > 0){
 				if(result[loopCount].outlookLevel > result[loopCount-1].outlookLevel){
-                    document.getElementById("change").innerHTML += 'UP';
+                    document.getElementById("change").innerHTML = '<b>Change: </b> UP';
                 }
                 else{
-                    document.getElementById("change").innerHTML += 'DOWN';
+                    document.getElementById("change").innerHTML = '<b>Change: </b> DOWN';
                 }
-            	document.getElementById("levelChangeDate").innerHTML += result[loopCount].fullDate;
+            	document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
             }
             else{
-                document.getElementById("change").innerHTML += 'N/A';
+                document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
                 document.getElementById("levelChangeDate").innerHTML += 'N/A';
             }
             var container = document.getElementById('chart_div');
@@ -181,8 +181,8 @@
                             {v:10.0, f:'Very High'},
                         ],
                     },
-    
-                    width: 400
+                    width: 460,
+                    height: 200
                 };
             
             var months = [];
@@ -260,25 +260,27 @@
         }
     </script>
     
-    <div class="left" style="float: left;">
+    <div class="left" style="float: left; height: 350px;">
         <!-- Meter goes here -->
-        <img id="meter" />
-        <p id ="level">
-            <b>Level: </b>
-        </p>
-        <p id="lastUpdated">
-            <b>Last Updated: </b> 
-        </p>
-        <p id="change">
-            <b>Change: </b>
-        </p>
-        <p id="levelChangeDate">
-            <b>Level Change Date: </b>
-        </p>
+        <style>
+        	#level, #lastUpdated, #change, #levelChangeDate {
+            	display: block;
+            	line-height: 18px;
+            }
+        </style>
+        <img id="meter" style="margin-bottom: 15px"/>
+        <span id ="level">
+        </span>
+        <span id="lastUpdated">
+        </span>
+        <span id="change">
+        </span>
+        <span id="levelChangeDate">
+        </span>
     </div>
- 	<div class="right" style="float: left;">
+ 	<div class="right" style="float: left; margin-top: -50px">
         <!-- Chart goes here -->
-        <div id="chart_div" style="height: 250px; width: 500px"></div>
+        <div id="chart_div" style="height: 250px; width: 400px"></div>
     </div>
     <div style="clear: both" />
     

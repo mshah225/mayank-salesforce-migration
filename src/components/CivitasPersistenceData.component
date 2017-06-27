@@ -59,12 +59,27 @@
                 "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
         });
     
+    	var getUrlParameter = function getUrlParameter(sParam) {
+    		var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        		sURLVariables = sPageURL.split('&'),
+        		sParameterName,
+        		i;
+
+    		for (i = 0; i < sURLVariables.length; i++) {
+        		sParameterName = sURLVariables[i].split('=');
+
+        		if (sParameterName[0] === sParam) {
+            		return sParameterName[1] === undefined ? true : sParameterName[1];
+        		}
+    		}
+		};
+    
         function drawChart() {
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.CivitasPersistenceController.getData}',
-                '1206104779',
+                getUrlParameter('id'),
                 function (result, event) {
-                
+                console.log(result);
                 if (result.length > 0) {            
                     document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
                     document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate;
@@ -88,7 +103,7 @@
                     	document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
                     } else {
                         document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
-                        document.getElementById("levelChangeDate").innerHTML += 'N/A';
+                        document.getElementById("levelChangeDate").innerHTML += '<b>Level Change Date: </b> N/A';
                     }
                         
                     var container = document.getElementById('chart_div');
@@ -263,7 +278,7 @@
         }
     </script>
     
-    <div class="left" style="float: left; height: 350px;">
+    <div class="left" style="float: left; height: 350px; margin-left: 20px; margin-top: 50px;">
         <style>
         	#level, #lastUpdated, #change, #levelChangeDate {
             	display: block;
@@ -278,7 +293,7 @@
         <span id="levelChangeDate"></span>
     </div>
  	<div class="right" style="float: left;">
-        <div id="chart_div" style="height: 250px; width: 400px"></div>
+        <div id="chart_div" style="height: 200px; width: 400px"></div>
     </div>
     <div style="clear: both" />
     

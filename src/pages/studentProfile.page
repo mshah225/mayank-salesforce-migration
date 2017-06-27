@@ -1016,13 +1016,34 @@
                                     </apex:pageBlock>
                                 </div>
 
+                                
+                                
                                 <div role="tabpanel" class="tab-pane" id="UGindicators">
-                                    <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlock mode="maindetail">  
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;Persistence Outlook
+                                            </h4>
+                                        </div>
+                                        
+                                        <!-- Transcripts Sent -->
+                                        <div style="overflow:auto;max-height:200px;">                                                                                    
+                                            <c:CivitasPersistenceData/>
+                                        </div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
                                                 &nbsp;General Indicators
                                             </h4>
+                                            <div style="float:right;">
+                                        		<c:DynamicFeedbackButton carName="Student Profile"
+                                            	miscInformation="{!theContact.FirstName} {!theContact.lastName} Id:{!theContact.EMPLID__c}"
+                                            	classes="mobile"
+                                            	betaTag="true"/>
+                                   			 </div>
                                         </div>
 
                                         <div id="UGgeneralIndicators"
@@ -1129,20 +1150,6 @@
 
                                         <div id="stdtRetentionResponseErrors"></div>
 
-                                        <!-- <div class="page-header-smaller">
-                                            <h4>
-                                                <i class="fa fa-caret-down"></i>
-                                                &nbsp;Graph Indicators
-                                            </h4>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                Graph indicator info
-                                                goes here.
-                                            </div>
-                                        </div> -->
-                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>

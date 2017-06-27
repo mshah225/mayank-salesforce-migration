@@ -3,6 +3,7 @@ public class CivitasPersistenceController{
     public static List<String> months = new List<String>();
 	public static Integer dayValue = 0;
     public static List<CivitasWrapper> dataList {get; set;}
+    public static String emplId {get; set;}
     
     public static string currentTerm{
         get{
@@ -83,13 +84,13 @@ public class CivitasPersistenceController{
         }
     
     @RemoteAction
-    public static List<CivitasWrapper> getData(String emplid){
+    public static List<CivitasWrapper> getData(String emplidIn){
         dataList = new List<CivitasWrapper>();
-        
+        System.debug(emplId);
         for (CV_ASU_STDNT_TERM__x trm : [
             Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c  
             FROM CV_ASU_STDNT_TERM__x 
-            WHERE Contact__c =: emplid
+            WHERE Contact__c =: emplIdIn
             ORDER BY SNAP_DATE__c ASC
         ]) {
             if (trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate) {

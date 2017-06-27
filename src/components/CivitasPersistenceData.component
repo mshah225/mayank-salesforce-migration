@@ -54,7 +54,7 @@
         google.charts.load('current', {packages: ['corechart', 'line']});
         google.charts.setOnLoadCallback(drawChart);
     	
-    	jQuery(document).ready(function(){
+    	jQuery(document).ready(function() {
         	document.getElementById("chart_div").innerHTML =
                         "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
         });
@@ -70,24 +70,22 @@
             
             var loopCount = result.length;
             var found = false;
-            while(loopCount > 0 && !found){
+            while (loopCount > 0 && !found) {
             	loopCount--;
-                if(result[loopCount].flag == 'Y'){
+                if (result[loopCount].flag == 'Y') {
                 	found = true;    
                 }
             }
                 
-            if(loopCount > 0){
+            if(loopCount > 0) {
 				if(result[loopCount].outlookLevel > result[loopCount-1].outlookLevel){
                     document.getElementById("change").innerHTML = '<b>Change: </b> UP';
-                }
-                else{
+                } else{
                     document.getElementById("change").innerHTML = '<b>Change: </b> DOWN';
                 }
-            	document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
-            }
                 
-            else{
+            	document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
+            } else{
                 document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
                 document.getElementById("levelChangeDate").innerHTML += 'N/A';
             }
@@ -106,7 +104,7 @@
                 [result[0].day, null, result[0].outlookLevel, pointStyle, result[0].dayDate + '\nOutlook: ' + result[0].outlookLevel]
             ]);
             
-            for(var i = 1; i < result.length; i ++){
+            for (var i = 1; i < result.length; i ++) {
                 data.addRows([
                     [result[i].day, null, result[i].outlookLevel, null, result[i].dayDate + '\nOutlook: ' + result[i].outlookLevel]
                 ]);
@@ -116,80 +114,80 @@
                 [result[result.length-1].day, null, result[result.length-1].outlookLevel, pointStyle, result[result.length-1].dayDate  + '\nOutlook: ' + result[result.length-1].outlookLevel]
             ]);
             
-                var options = {
+            var options = {
+                backgroundColor: {
+                    fill: 'white'
+                },
+
+                chartArea: {
                     backgroundColor: {
-                        fill: 'white'
+                        fill: 'dddddd'
+                    }
+                },
+
+                colors: ['#000'],
+
+                hAxis: {
+                    baselineColor: 'white',
+                    gridlines: {
+                        color: '#eee'
                     },
-    
-                    chartArea: {
-                        backgroundColor: {
-                            fill: 'dddddd'
-                        }
+                    showTextEvery: 1,
+                    title: 'Current Term ' + result[0].year,
+                    titleTextStyle: {
+                        bold: true,
+                        italic: false
+                    }
+                },
+
+                legend: {
+                    position: 'none'
+                },
+
+                series: {
+                    0: {
+                        targetAxisIndex: 0,
+                        visibleInLegend: false,
+                        pointSize: 0,
+                        lineWidth: 0
+
                     },
-    
-                    colors: ['#000'],
-    
-                    hAxis: {
-                        baselineColor: 'white',
-                        gridlines: {
-                            color: '#eee'
-                        },
-                        showTextEvery: 1,
-                        title: 'Current Term ' + result[0].year,
-                        titleTextStyle: {
-                            bold: true,
-                            italic: false
-                        }
+                    1: {targetAxisIndex: 1}
+                },
+
+                vAxes: {
+                    0: {textPosition: 'none'},
+                },
+
+                vAxis: {
+                    baselineColor: '#ccc',
+                    gridlines: {
+                        color: '#eee'
                     },
-    
-                    legend: {
-                        position: 'none'
-                    },
-    
-                    series: {
-                        0: {
-                            targetAxisIndex: 0,
-                            visibleInLegend: false,
-                            pointSize: 0,
-                            lineWidth: 0
-    
-                        },
-                        1: {targetAxisIndex: 1}
-                    },
-    
-                    vAxes: {
-                        0: {textPosition: 'none'},
-                    },
-    
-                    vAxis: {
-                        baselineColor: '#ccc',
-                        gridlines: {
-                            color: '#eee'
-                        },
-                        maxValue: 11.5,
-                        ticks: [
-                            {v:0.0, f:'Very Low'},
-                            {v:1.25, f:''},
-                            {v:2.5, f:'Low'},
-                            {v:3.75, f:''},
-                            {v:5.0, f:'Moderate'},
-                            {v:6.25, f:''},
-                            {v:7.5, f:'High'},
-                            {v:8.75, f:''},
-                            {v:10.0, f:'Very High'},
-                        ],
-                    },
-                    width: 460,
-                    height: 200
-                };
-            
+                    maxValue: 11.5,
+                    ticks: [
+                        {v:0.0, f:'Very Low'},
+                        {v:1.25, f:''},
+                        {v:2.5, f:'Low'},
+                        {v:3.75, f:''},
+                        {v:5.0, f:'Moderate'},
+                        {v:6.25, f:''},
+                        {v:7.5, f:'High'},
+                        {v:8.75, f:''},
+                        {v:10.0, f:'Very High'},
+                    ],
+                },
+                width: 460,
+                height: 200
+            };
+        
             var months = [];
-            for(var i = 0; i < result[0].allMonths.length; i++){
+            for (var i = 0; i < result[0].allMonths.length; i++) {
                 months.push({v:(i*30), f: result[0].allMonths[i]});        
             }
             options['hAxis']['ticks'] = months;
             
-            if(result[0].year != result[result.length-1].year){
+            if (result[0].year != result[result.length-1].year) {
             	options['hAxis']['title'] += '-' + result[result.length-1].year;   
             }
                             

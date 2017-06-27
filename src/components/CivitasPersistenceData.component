@@ -178,6 +178,7 @@
                                 {v:10.0, f:'Very High'},
                             ],
                         },
+                        
                         width: 460,
                         height: 200
                     };
@@ -271,14 +272,10 @@
         </style>
         <div id='Spinner'></div>
         <img id="meter" style="margin-bottom: 15px"/>
-        <span id ="level">
-        </span>
-        <span id="lastUpdated">
-        </span>
-        <span id="change">
-        </span>
-        <span id="levelChangeDate">
-        </span>
+        <span id ="level"></span>
+        <span id="lastUpdated"></span>
+        <span id="change"></span>
+        <span id="levelChangeDate"></span>
     </div>
  	<div class="right" style="float: left;">
         <div id="chart_div" style="height: 250px; width: 400px"></div>

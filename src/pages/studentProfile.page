@@ -1029,7 +1029,7 @@
                                         </div>
                                         
                                         <!-- Transcripts Sent -->
-                                        <div style="overflow:auto;max-height:200px;">                                                                                    
+                                        <div style="overflow:hidden;max-height:200px; height: 200px">                                                                                    
                                             <c:CivitasPersistenceData/>
                                         </div>
                                         

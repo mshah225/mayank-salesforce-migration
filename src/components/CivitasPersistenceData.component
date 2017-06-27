@@ -6,9 +6,9 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     
 	<apex:includeScript value="{!URLFOR($Resource.bootstrap_303,
-                '/dist/js/jquery-1.10.2.min.js')}"/>
+        '/dist/js/jquery-1.10.2.min.js')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
-            'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
+        'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
     
     <!-- Gradient Styles -->
     <style>
@@ -57,8 +57,6 @@
     	jQuery(document).ready(function(){
         	document.getElementById("chart_div").innerHTML =
                         "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-            document.getElementById("meter").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
         });
     
         function drawChart() {
@@ -74,11 +72,11 @@
             var found = false;
             while(loopCount > 0 && !found){
             	loopCount--;
-                console.log(loopCount + ' ' + result[loopCount].flag);
                 if(result[loopCount].flag == 'Y'){
                 	found = true;    
                 }
             }
+                
             if(loopCount > 0){
 				if(result[loopCount].outlookLevel > result[loopCount-1].outlookLevel){
                     document.getElementById("change").innerHTML = '<b>Change: </b> UP';
@@ -88,14 +86,16 @@
                 }
             	document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
             }
+                
             else{
                 document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
                 document.getElementById("levelChangeDate").innerHTML += 'N/A';
             }
+                
             var container = document.getElementById('chart_div');
             var data = new google.visualization.DataTable();
             var pointStyle = 'point {size: 5; stroke-color: black; visible: true;}';
-			console.log(result);
+                
             data.addColumn('number', 'Snap Date');
             data.addColumn('number', 'Dummy');
             data.addColumn('number', 'Outlook');
@@ -115,8 +115,6 @@
             data.addRows([
                 [result[result.length-1].day, null, result[result.length-1].outlookLevel, pointStyle, result[result.length-1].dayDate  + '\nOutlook: ' + result[result.length-1].outlookLevel]
             ]);
-            
-			
             
                 var options = {
                     backgroundColor: {
@@ -233,7 +231,6 @@
             chart.draw(data, options);
                             
             var latestOutlook = result[result.length-1].outlookLevel;
-            console.log(latestOutlook);
             switch(latestOutlook){
                 case 1:
                 case 2:
@@ -261,13 +258,13 @@
     </script>
     
     <div class="left" style="float: left; height: 350px;">
-        <!-- Meter goes here -->
         <style>
         	#level, #lastUpdated, #change, #levelChangeDate {
             	display: block;
             	line-height: 18px;
             }
         </style>
+        <div id='Spinner'></div>
         <img id="meter" style="margin-bottom: 15px"/>
         <span id ="level">
         </span>
@@ -279,7 +276,6 @@
         </span>
     </div>
  	<div class="right" style="float: left; margin-top: -50px">
-        <!-- Chart goes here -->
         <div id="chart_div" style="height: 250px; width: 400px"></div>
     </div>
     <div style="clear: both" />

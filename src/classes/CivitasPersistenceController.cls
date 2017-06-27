@@ -2,23 +2,11 @@ public class CivitasPersistenceController{
 
     public static List<String> months = new List<String>();
 	public static Integer dayValue = 0;
-    
-    public static List<civitasWrapper> dataList {set; get;}
-    
-    /*public string emplid{
-        set;
-        
-        get{
-            emplid = '1206104779'; 
-            return emplid;
-        }
-    }*/
+    public static List<CivitasWrapper> dataList {get; set;}
     
     public static string currentTerm{
-        set;
-        
         get{
-            if(currentTerm == null){
+            if (currentTerm == null) {
                 JBT_RET_TERMS_VW__x currentTermInfo = 
                 [
                             SELECT CURR_TERM__c,
@@ -32,19 +20,20 @@ public class CivitasPersistenceController{
                             LIMIT 1
                 ];
                 currentTerm = currentTermInfo.CURR_TERM__c;
-                if(currentTerm.length() > 4){
+                
+                if (currentTerm.length() > 4) {
                     currentTerm = currentTerm.subString(1, 5);
                 }
             }
             return currentTerm;
         }
-    }
     
-    public static string nextTerm{
         set;
+    }
         
+    public static string nextTerm{
         get{
-            if(nextTerm == null){
+            if (nextTerm == null) {
                 JBT_RET_TERMS_VW__x currentTermInfo = 
                 [
                             SELECT CURR_TERM__c,
@@ -58,19 +47,18 @@ public class CivitasPersistenceController{
                             LIMIT 1
                 ];
                 nextTerm = currentTermInfo.NEXT_TERM_INCLUDE_SUMMER__c;
-                if(nextTerm.length() > 4){
+                if (nextTerm.length() > 4) {
                     nextTerm = nextTerm.subString(1, 5);
                 }
             }
             return nextTerm;
         }
+        set;
     }
     
     public static Date startDate{
-        set;
-        
         get{
-            if(startDate == null){
+            if (startDate == null) {
                 startDate = [Select Session_A_C_Start_Date__c 
                              FROM Term__c 
                              WHERE PeopleSoft_Code__c =: currentTerm
@@ -79,13 +67,13 @@ public class CivitasPersistenceController{
             }
             return startDate;
         }
-    }
     
-    public static Date endDate{
         set;
+    }
         
+    public static Date endDate{
         get{
-            if(endDate == null){
+            if (endDate == null) {
                 endDate = [Select Session_A_C_Start_Date__c 
                              FROM Term__c 
                              WHERE PeopleSoft_Code__c =: nextTerm
@@ -94,51 +82,22 @@ public class CivitasPersistenceController{
             }
             return endDate;
         }
-    }
-    
-    /*public List<CV_ASU_STDNT_TERM__x> dateList{
         set;
-        
-        get{
-            if(dateList == null){
-                dateList = new List<CV_ASU_STDNT_TERM__x>();
-                for(CV_ASU_STDNT_TERM__x trm : [Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c	
-                                                FROM CV_ASU_STDNT_TERM__x 
-                                                WHERE Contact__c =: emplid
-                                                ORDER BY SNAP_DATE__c ASC]) {
-                    if(trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate){
-                          dateList.add(trm);                              
-                    }                  
-                }
-            }
-            return dateList;
         }
-    }
-    public static getData(){
-        for(CV_ASU_STDNT_TERM__x trm : [Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c	
-                                        FROM CV_ASU_STDNT_TERM__x 
-                                        WHERE Contact__c =: emplid
-                                        ORDER BY SNAP_DATE__c ASC]) {
-            if(trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate){
-                  dataList.add(new civitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c));                              
-            }                  
-        }
-    }*/
     
     @RemoteAction
-    public static List<civitasWrapper> getData(String emplid){
-        dataList = new List<civitasWrapper>();
-        Date newYear = Date.today();
-        newYear = newYear.addDays(-(newYear.day() + (newYear.month()-1) * 30));
+    public static List<CivitasWrapper> getData(String emplid){
+        dataList = new List<CivitasWrapper>();
         
-        for(CV_ASU_STDNT_TERM__x trm : [
+        for (CV_ASU_STDNT_TERM__x trm : [
             Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c  
             FROM CV_ASU_STDNT_TERM__x 
             WHERE Contact__c =: emplid
             ORDER BY SNAP_DATE__c ASC
         ]) {
-            if(trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate){
-                  dataList.add(new civitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c, trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c ));                              
+            if (trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate) {
+                dataList.add(new CivitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
+                                                trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c ));                              
             }                  
         }
         
@@ -149,7 +108,7 @@ public class CivitasPersistenceController{
         return dataList;
     }
     
-    public class civitasWrapper{
+    public class CivitasWrapper{
         public Date snapDate;
         public Decimal outlookLevel;
         public Integer day;
@@ -167,9 +126,7 @@ public class CivitasPersistenceController{
             
             if(months == null){
                 months.add(currMonth);
-            }
-            
-            else{
+            } else{
                 Boolean found = false;
                 
                 for(String m : months){

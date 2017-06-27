@@ -61,196 +61,204 @@
     
         function drawChart() {
             Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.CivitasPersistenceController.getData}',
-                        '1206104779',
-                        function (result, event) {
-                            
-            document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
-            document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate;
-            
-            var loopCount = result.length;
-            var found = false;
-            while (loopCount > 0 && !found) {
-            	loopCount--;
-                if (result[loopCount].flag == 'Y') {
-                	found = true;    
-                }
-            }
+                '{!$RemoteAction.CivitasPersistenceController.getData}',
+                '1206104779',
+                function (result, event) {
                 
-            if(loopCount > 0) {
-				if(result[loopCount].outlookLevel > result[loopCount-1].outlookLevel){
-                    document.getElementById("change").innerHTML = '<b>Change: </b> UP';
-                } else{
-                    document.getElementById("change").innerHTML = '<b>Change: </b> DOWN';
-                }
-                
-            	document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
-            } else{
-                document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
-                document.getElementById("levelChangeDate").innerHTML += 'N/A';
-            }
-                
-            var container = document.getElementById('chart_div');
-            var data = new google.visualization.DataTable();
-            var pointStyle = 'point {size: 5; stroke-color: black; visible: true;}';
-                
-            data.addColumn('number', 'Snap Date');
-            data.addColumn('number', 'Dummy');
-            data.addColumn('number', 'Outlook');
-            data.addColumn({type: 'string', role: 'style'});
-            data.addColumn({type: 'string', role: 'tooltip'});
-                            
-            data.addRows([
-                [result[0].day, null, result[0].outlookLevel, pointStyle, result[0].dayDate + '\nOutlook: ' + result[0].outlookLevel]
-            ]);
-            
-            for (var i = 1; i < result.length; i ++) {
-                data.addRows([
-                    [result[i].day, null, result[i].outlookLevel, null, result[i].dayDate + '\nOutlook: ' + result[i].outlookLevel]
-                ]);
-            }
-                            
-            data.addRows([
-                [result[result.length-1].day, null, result[result.length-1].outlookLevel, pointStyle, result[result.length-1].dayDate  + '\nOutlook: ' + result[result.length-1].outlookLevel]
-            ]);
-            
-            var options = {
-                backgroundColor: {
-                    fill: 'white'
-                },
-
-                chartArea: {
-                    backgroundColor: {
-                        fill: 'dddddd'
+                if (result.length > 0) {            
+                    document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
+                    document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate;
+                    
+                    var loopCount = result.length;
+                    var found = false;
+                    while (loopCount > 0 && !found) {
+                    	loopCount--;
+                        if (result[loopCount].flag == 'Y') {
+                        	found = true;    
+                        }
                     }
-                },
-
-                colors: ['#000'],
-
-                hAxis: {
-                    baselineColor: 'white',
-                    gridlines: {
-                        color: '#eee'
-                    },
-                    showTextEvery: 1,
-                    title: 'Current Term ' + result[0].year,
-                    titleTextStyle: {
-                        bold: true,
-                        italic: false
+                        
+                    if(loopCount > 0) {
+        				if(result[loopCount].outlookLevel > result[loopCount-1].outlookLevel){
+                            document.getElementById("change").innerHTML = '<b>Change: </b> UP';
+                        } else{
+                            document.getElementById("change").innerHTML = '<b>Change: </b> DOWN';
+                        }
+                        
+                    	document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
+                    } else{
+                        document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
+                        document.getElementById("levelChangeDate").innerHTML += 'N/A';
                     }
-                },
-
-                legend: {
-                    position: 'none'
-                },
-
-                series: {
-                    0: {
-                        targetAxisIndex: 0,
-                        visibleInLegend: false,
-                        pointSize: 0,
-                        lineWidth: 0
-
-                    },
-                    1: {targetAxisIndex: 1}
-                },
-
-                vAxes: {
-                    0: {textPosition: 'none'},
-                },
-
-                vAxis: {
-                    baselineColor: '#ccc',
-                    gridlines: {
-                        color: '#eee'
-                    },
-                    maxValue: 11.5,
-                    ticks: [
-                        {v:0.0, f:'Very Low'},
-                        {v:1.25, f:''},
-                        {v:2.5, f:'Low'},
-                        {v:3.75, f:''},
-                        {v:5.0, f:'Moderate'},
-                        {v:6.25, f:''},
-                        {v:7.5, f:'High'},
-                        {v:8.75, f:''},
-                        {v:10.0, f:'Very High'},
-                    ],
-                },
-                width: 460,
-                height: 200
-            };
+                        
+                    var container = document.getElementById('chart_div');
+                    var data = new google.visualization.DataTable();
+                    var pointStyle = 'point {size: 5; stroke-color: black; visible: true;}';
+                        
+                    data.addColumn('number', 'Snap Date');
+                    data.addColumn('number', 'Dummy');
+                    data.addColumn('number', 'Outlook');
+                    data.addColumn({type: 'string', role: 'style'});
+                    data.addColumn({type: 'string', role: 'tooltip'});
+                                    
+                    data.addRows([
+                        [result[0].day, null, result[0].outlookLevel, pointStyle, result[0].dayDate + '\nOutlook: ' + result[0].outlookLevel]
+                    ]);
+                    
+                    for (var i = 1; i < result.length; i ++) {
+                        data.addRows([
+                            [result[i].day, null, result[i].outlookLevel, null, result[i].dayDate + '\nOutlook: ' + result[i].outlookLevel]
+                        ]);
+                    }
+                                    
+                    data.addRows([
+                        [result[result.length-1].day, null, result[result.length-1].outlookLevel, pointStyle, result[result.length-1].dayDate  + '\nOutlook: ' + result[result.length-1].outlookLevel]
+                    ]);
+                    
+                    var options = {
+                        backgroundColor: {
+                            fill: 'white'
+                        },
         
-            var months = [];
-            for (var i = 0; i < result[0].allMonths.length; i++) {
-                months.push({v:(i*30), f: result[0].allMonths[i]});        
-            }
-            options['hAxis']['ticks'] = months;
-            
-            if (result[0].year != result[result.length-1].year) {
-            	options['hAxis']['title'] += '-' + result[result.length-1].year;   
-            }
-                            
-            var chart = new google.visualization.LineChart(
-                    document.getElementById('chart_div')
-            );
-
-            var createSVG = function(n, a, b) {
-                var xmlns = "http://www.w3.org/2000/svg",
-                        e = document.createElementNS (xmlns, n);
-
-                for (var k in a) {
-                    e.setAttributeNS (null, k, a[k]);
+                        chartArea: {
+                            backgroundColor: {
+                                fill: 'dddddd'
+                            }
+                        },
+        
+                        colors: ['#000'],
+        
+                        hAxis: {
+                            baselineColor: 'white',
+                            gridlines: {
+                                color: '#eee'
+                            },
+                            showTextEvery: 1,
+                            title: 'Current Term ' + result[0].year,
+                            titleTextStyle: {
+                                bold: true,
+                                italic: false
+                            }
+                        },
+        
+                        legend: {
+                            position: 'none'
+                        },
+        
+                        series: {
+                            0: {
+                                targetAxisIndex: 0,
+                                visibleInLegend: false,
+                                pointSize: 0,
+                                lineWidth: 0
+        
+                            },
+                            1: {targetAxisIndex: 1}
+                        },
+        
+                        vAxes: {
+                            0: {textPosition: 'none'},
+                        },
+        
+                        vAxis: {
+                            baselineColor: '#ccc',
+                            gridlines: {
+                                color: '#eee'
+                            },
+                            maxValue: 11.5,
+                            ticks: [
+                                {v:0.0, f:'Very Low'},
+                                {v:1.25, f:''},
+                                {v:2.5, f:'Low'},
+                                {v:3.75, f:''},
+                                {v:5.0, f:'Moderate'},
+                                {v:6.25, f:''},
+                                {v:7.5, f:'High'},
+                                {v:8.75, f:''},
+                                {v:10.0, f:'Very High'},
+                            ],
+                        },
+                        width: 460,
+                        height: 200
+                    };
+                
+                    var months = [];
+                    for (var i = 0; i < result[0].allMonths.length; i++) {
+                        months.push({v:(i*30), f: result[0].allMonths[i]});        
+                    }
+                    options['hAxis']['ticks'] = months;
+                    
+                    if (result[0].year != result[result.length-1].year) {
+                    	options['hAxis']['title'] += '-' + result[result.length-1].year;   
+                    }
+                                    
+                    var chart = new google.visualization.LineChart(
+                            document.getElementById('chart_div')
+                    );
+        
+                    var createSVG = function(n, a, b) {
+                        var xmlns = "http://www.w3.org/2000/svg",
+                                e = document.createElementNS (xmlns, n);
+        
+                        for (var k in a) {
+                            e.setAttributeNS (null, k, a[k]);
+                        }
+        
+                        for (var k in b) {
+                            e.setAttribute (k, b[k]);
+                        }
+        
+                        return e;
+                    };
+        
+                    google.visualization.events.addListener(chart, 'ready', function() {
+                        var gradient = createSVG('linearGradient', {
+                            x1:0, y1:0, x2:0, y2:1
+                        }, {
+                            id:'fx'
+                        });
+        
+                        document.getElementById('chart_div')
+                                .querySelector('svg > defs').appendChild(gradient);
+        
+                        gradient.appendChild(createSVG('stop',{offset:'0%'}));
+                        gradient.appendChild(createSVG('stop',{offset:'33%'}));
+                        gradient.appendChild(createSVG('stop',{offset:'67%'}));
+                        gradient.appendChild(createSVG('stop',{offset:'100%'}));
+                    });
+        
+                    chart.draw(data, options);
+                                    
+                    var latestOutlook = result[result.length-1].outlookLevel;
+                    switch(latestOutlook){
+                        case 1:
+                        case 2:
+                            document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-1.png')}";
+                            break;
+                       case 3:
+                       case 4:
+                            document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-2.png')}";
+                            break; 
+                       case 5:
+                       case 6:
+                            document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-3.png')}";
+                            break;
+                       case 7:
+                       case 8:
+                            document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-4.png')}";
+                            break;
+                       case 9:
+                       case 10:
+                            document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-5.png')}";
+                            break;
+                    }
+                } else if (event.type === 'exception') {
+                    document.getElementById("chart_div").innerHTML =
+                        event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                } else{
+                    document.getElementById("chart_div").innerHTML =
+                        "<b>Error: </b>" + event.message;
                 }
-
-                for (var k in b) {
-                    e.setAttribute (k, b[k]);
-                }
-
-                return e;
-            };
-
-            google.visualization.events.addListener(chart, 'ready', function() {
-                var gradient = createSVG('linearGradient', {
-                    x1:0, y1:0, x2:0, y2:1
-                }, {
-                    id:'fx'
-                });
-
-                document.getElementById('chart_div')
-                        .querySelector('svg > defs').appendChild(gradient);
-
-                gradient.appendChild(createSVG('stop',{offset:'0%'}));
-                gradient.appendChild(createSVG('stop',{offset:'33%'}));
-                gradient.appendChild(createSVG('stop',{offset:'67%'}));
-                gradient.appendChild(createSVG('stop',{offset:'100%'}));
-            });
-
-            chart.draw(data, options);
-                            
-            var latestOutlook = result[result.length-1].outlookLevel;
-            switch(latestOutlook){
-                case 1:
-                case 2:
-                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-1.png')}";
-                    break;
-               case 3:
-               case 4:
-                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-2.png')}";
-                    break; 
-               case 5:
-               case 6:
-                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-3.png')}";
-                    break;
-               case 7:
-               case 8:
-                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-4.png')}";
-                    break;
-               case 9:
-               case 10:
-                    document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-5.png')}";
-                    break;
-            }
             });
         }
     </script>
@@ -273,7 +281,7 @@
         <span id="levelChangeDate">
         </span>
     </div>
- 	<div class="right" style="float: left; margin-top: -50px">
+ 	<div class="right" style="float: left;">
         <div id="chart_div" style="height: 250px; width: 400px"></div>
     </div>
     <div style="clear: both" />

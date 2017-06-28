@@ -277,24 +277,33 @@
             });
         }
     </script>
-    
-    <div class="left" style="float: left; height: 350px; margin-left: 20px; margin-top: 50px;">
-        <style>
-        	#level, #lastUpdated, #change, #levelChangeDate {
-            	display: block;
-            	line-height: 18px;
-            }
-        </style>
-        <div id='Spinner'></div>
-        <img id="meter" style="margin-bottom: 15px"/>
-        <span id ="level"></span>
-        <span id="lastUpdated"></span>
-        <span id="change"></span>
-        <span id="levelChangeDate"></span>
+    <div>     
+        <table class="table table-striped">
+            <tr>
+                <th width="275px;">Persistence Outlook Level </th>
+                <th>Persistence Outlook Level
+                    <i class="fa fa-question-circle" aria-hidden="true" title="testing" style="float: right"></i>
+                </th>
+            </tr>
+        </table>
+        <div class="left" style="float: left; height: 350px; margin-left: 20px; margin-top: 30px;">
+            <style>
+                #level, #lastUpdated, #change, #levelChangeDate {
+                display: block;
+                line-height: 18px;
+                }
+            </style>
+            <div id='Spinner'></div>
+            <img id="meter" style="margin-bottom: 15px"/>
+            <span id ="level"></span>
+            <span id="lastUpdated"></span>
+            <span id="change"></span>
+            <span id="levelChangeDate"></span>
+        </div>
+        <div class="right" style="float: left; z-index: -1; margin-top: -20px">
+            <div id="chart_div" style="height: 200px; width: 400px"></div>
+        </div>
+        <div style="clear: both" />       
     </div>
- 	<div class="right" style="float: left;">
-        <div id="chart_div" style="height: 200px; width: 400px"></div>
-    </div>
-    <div style="clear: both" />
     
 </apex:component>

@@ -1029,8 +1029,8 @@
                                         </div>
                                         
                                         <!-- Transcripts Sent -->
-                                        <div style="overflow:hidden;max-height:200px; height: 200px">                                                                                    
-                                            <c:CivitasPersistenceData/>
+                                        <div style="overflow:hidden; max-height:250px; height: 250px">
+                                            <c:CivitasPersistenceData />
                                         </div>
                                         
                                         <div class="page-header-smaller">

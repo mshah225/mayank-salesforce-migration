@@ -286,7 +286,7 @@
                 </th>
             </tr>
         </table>
-        <div class="left" style="float: left; height: 350px; margin-left: 20px; margin-top: 30px;">
+        <div class="left" style="float: left; height: 150px; margin-left: 20px; margin-top: 30px; margin-bottom: 15px">
             <style>
                 #level, #lastUpdated, #change, #levelChangeDate {
                 display: block;

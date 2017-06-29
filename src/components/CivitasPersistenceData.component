@@ -76,10 +76,14 @@
 		};
     
         function drawChart() {
+            var x = document.getElementById('FeedbackButton');
+        	x.style.display = 'none';
+            
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.CivitasPersistenceController.getData}',
                 getUrlParameter('id'),
                 function (result, event) {
+                x.style.display = 'block';
                 if (result.length > 0) {
                     jQuery('#FeedbackButton').attr('href','./dynamicfeedback?carName=Student Profile&misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
                     jQuery('#FeedbackButtonMobile').attr('href','./dynamicfeedback?carName=Student Profile&misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);

@@ -57,6 +57,7 @@
     	jQuery(document).ready(function() {
         	document.getElementById("chart_div").innerHTML =
                 "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+            jQuery('[data-toggle="tooltip"]').tooltip()
         });
     
     	var getUrlParameter = function getUrlParameter(sParam) {
@@ -79,8 +80,9 @@
                 '{!$RemoteAction.CivitasPersistenceController.getData}',
                 getUrlParameter('id'),
                 function (result, event) {
-                console.log(result);
-                if (result.length > 0) {            
+                if (result.length > 0) {
+                    jQuery('#FeedbackButton').attr('href','./dynamicfeedback?carName=Student Profile&misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
+                    jQuery('#FeedbackButtonMobile').attr('href','./dynamicfeedback?carName=Student Profile&misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
                     document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
                     document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate;
                     
@@ -194,7 +196,7 @@
                             ],
                         },
                         
-                        width: 460,
+                        width: 375,
                         height: 200
                     };
                 
@@ -282,7 +284,6 @@
             <tr>
                 <th width="275px;">Persistence Outlook Level </th>
                 <th>Persistence Outlook Level
-                    <i class="fa fa-question-circle" aria-hidden="true" title="testing" style="float: right"></i>
                 </th>
             </tr>
         </table>
@@ -302,8 +303,61 @@
         </div>
         <div class="right" style="float: left; z-index: -1; margin-top: -20px">
             <div id="chart_div" style="height: 200px; width: 400px"></div>
+        </div>  
+        
+        <div style="float: right; margin-top: 30px; margin-right: 40px;">
+            <style>
+                .feedbackButton {
+                position:relative;
+                border:1px solid transparent;
+                border-radius:4px;
+                margin:0px;
+                padding-left:24px;
+                padding-right:24px;
+                padding-top:12px;
+                padding-bottom:8px;
+                color:white;
+                background-color:RGB(140, 29, 64);
+                transition:all 0.25s ease-in-out 0s;
+                word-wrap: break-word;
+                font-size:20px;
+                text-align:center;
+                text-decoration:none;
+                }
+                
+                .feedbackButton img {
+                transition: all 0.25s ease-in-out 0s;
+                -moz-transition: all 0.25s ease-in-out 0s;
+                -webkit-transition: all 0.25s ease-in-out 0s;
+                -o-transition: all 0.25s ease-in-out 0s;
+                -ms-transition: all 0.25s ease-in-out 0s;
+                }
+                
+                .feedbackButton:hover {
+                color:white;
+                text-decoration:none;
+                background-color:#d23153;
+                }
+                
+                .feedbackButton:hover img {
+                -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";
+                filter: alpha(opacity=95);
+                opacity: 0.95;
+                }
+                
+                .feedbackButton:focus {
+                color:white;
+                text-decoration:none;
+                }
+            </style>
+            <a href="./dynamicfeedback?carName=Student Profile&misc={!getInfo}}" 
+               class="feedbackButton & browser" target="_blank" id ="FeedbackButton">
+                <i class="fa fa-comment"></i> Feedback
+            </a>
+            <a href="./dynamicfeedback?carName=Student Profile&misc={!getInfo}}" 
+               class="feedbackButton & mobile" target="_blank" id ="FeedbackButtonMobile">
+                <i class="fa fa-comment"></i> Feedback
+            </a>
         </div>
-        <div style="clear: both" />       
     </div>
-    
 </apex:component>

@@ -4,6 +4,7 @@ public class CivitasPersistenceController{
 	public static Integer dayValue = 0;
     public static List<CivitasWrapper> dataList {get; set;}
     public static String emplId {get; set;}
+    public static Decimal persistenceLevel;
     
     public static string currentTerm{
         get{
@@ -86,7 +87,7 @@ public class CivitasPersistenceController{
     @RemoteAction
     public static List<CivitasWrapper> getData(String emplidIn){
         dataList = new List<CivitasWrapper>();
-        System.debug(emplId);
+        Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplidIn LIMIT 1];
         for (CV_ASU_STDNT_TERM__x trm : [
             Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c  
             FROM CV_ASU_STDNT_TERM__x 
@@ -95,7 +96,7 @@ public class CivitasPersistenceController{
         ]) {
             if (trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate) {
                 dataList.add(new CivitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
-                                                trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c ));                              
+                                                trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));                              
             }                  
         }
         
@@ -103,10 +104,26 @@ public class CivitasPersistenceController{
             dataList[0].allMonths = months;
         }
         
+        System.debug(dataList[dataList.size()-1].outlookLevel);
+        persistenceLevel = dataList[dataList.size()-1].outlookLevel;
         return dataList;
     }
     
+    public String getInfo{
+        get{
+            Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplid LIMIT 1];
+            getInfo = 'Name: ' + c.FirstName + ' ' + c.LastName + ' Persistence Level: ' + persistenceLevel;
+            
+            
+            return getInfo;
+        }
+        
+        set;
+    }
+    
     public class CivitasWrapper{
+        public String empl;
+        public String name;
         public Date snapDate;
         public Decimal outlookLevel;
         public Integer day;
@@ -117,10 +134,12 @@ public class CivitasPersistenceController{
         public String fullDate;
         public String flag;
         
-        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn){
+        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn){
             snapDate = sDate;
+            empl = empIn;
             outlookLevel = oLevel;  
             String currMonth = monthToText(snapDate.month());
+            name = fName + ' ' + lName;
             
             if (months == null) {
                 months.add(currMonth);

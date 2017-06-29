@@ -1025,11 +1025,12 @@
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
                                                 &nbsp;Persistence Outlook
+                                                <span class="fa fa-question-circle" data-html="true" data-toggle="tooltip" data-placement="right" title="Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student's performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). Visit knowledge article."></span>
                                             </h4>
                                         </div>
                                         
                                         <!-- Transcripts Sent -->
-                                        <div style="overflow:auto; max-height:260px; height: 260px">
+                                        <div style="overflow:auto; max-height:300px; height: 300px">
                                             <c:CivitasPersistenceData />
                                         </div>
                                         
@@ -1038,12 +1039,6 @@
                                                 <i class="fa fa-caret-down"></i>
                                                 &nbsp;General Indicators
                                             </h4>
-                                            <div style="float:right;">
-                                        		<c:DynamicFeedbackButton carName="Student Profile"
-                                            	miscInformation="{!theContact.FirstName} {!theContact.lastName} Id:{!theContact.EMPLID__c}"
-                                            	classes="mobile"
-                                            	betaTag="true"/>
-                                   			 </div>
                                         </div>
 
                                         <div id="UGgeneralIndicators"
@@ -1583,8 +1578,10 @@
             // Arrow Functionality
             $j(".page-header-smaller").click(function() {                                    
                 var container = $j(this);
-                var arrow = $j(this).find('.fa');
-                
+                var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
+                console.log(arrow);
+                console.log(container);
+                console.log(container.next());
                 if (arrow.hasClass('fa-caret-down')) {
                     container.next().slideUp().addClass('hide');
                 } else if (arrow.hasClass('fa-caret-right')) {

@@ -5,6 +5,6 @@ public class Test_AllPublishedArticlesController {
        PageReference pageRef = Page.AllPublishedArticles;
        Test.setCurrentPage(pageRef);
        AllPublishedArticlesController controller = new AllPublishedArticlesController();
-       Map<String, String> articleMap = controller.getArticleMap();
+       List<Map<String,String>> articleMap = controller.getArticleMap();
 	}
 }

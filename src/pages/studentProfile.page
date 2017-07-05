@@ -46,7 +46,9 @@
             function setTabTitle() {
                 //Set the current tab's title
                 try {
-                    sforce.console.setTabTitle('{!theContact.FirstName}\'s Student Profile');
+                    var name = "{!theContact.FirstName}";
+                    console.log(name);
+                    sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
                     inConsole = true;
                 } catch (e) {
                     console.log('Notice: Tab title can only be set when the Student Profile is opened inside of a Service Console tab! ' + e.message);
@@ -516,7 +518,7 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Expected Graduation Date</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.EXP_GRAD_TERM__c), '--', 
+                                                            <td>{!IF(ISBLANK(StudentProgram.EXP_GRAD_TERM__r.Name), '--', 
                                                                  StudentProgram.EXP_GRAD_TERM__r.Name)}
                                                             </td>
                                                         </tr>
@@ -530,7 +532,7 @@
                                                                 <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
                                                                     <apex:param value="{!studentProgram.APPT_DT__c}"/>
                                                                 </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT__c)}">--</apex:outputText>
+                                                                <apex:outputText rendered="{! (ISBLANK(studentProgram.APPT_DT__c))}">--</apex:outputText>
                                                             </td>
                                                         </tr>
 
@@ -543,7 +545,7 @@
                                                                 <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
                                                                     <apex:param value="{!studentProgram.APPT_DT_PENDING__c}"/>
                                                                 </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT_PENDING__c)}">--</apex:outputText>
+                                                                <apex:outputText rendered="{! (ISBLANK(studentProgram.APPT_DT_PENDING__c))}">--</apex:outputText>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -1025,8 +1027,8 @@
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
                                                 &nbsp;Persistence Outlook
-                                                <span class="fa fa-question-circle" data-html="true" data-toggle="tooltip" data-placement="right" title="Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student's performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). Visit knowledge article."></span>
-                                            </h4>
+                                                <a class='fa fa-question-circle' data-html="true" title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a target="_blank" href="https://docs.google.com/document/d/1ezUBwCjwnZmcfdcsGeGIr_9roVJYsYhpkm3nU5xpFVo/edit">Visit knowledge article.</a>.</span>' data-placement='right' data-trigger='manual'></a>
+                                                </h4>
                                         </div>
                                         
                                         <!-- Transcripts Sent -->
@@ -1565,7 +1567,23 @@
         <apex:includeScript value="{!URLFOR($Resource.bs_responsive_tabs)}"/>
 
         <script>
-            $j = jQuery.noConflict();
+
+        	$j = jQuery.noConflict();
+        	
+        	var timeoutHandle;
+
+            $j('.fa-question-circle').mouseenter(function(){
+                var that = $j(this)
+                that.tooltip('show');
+                window.clearTimeout(timeoutHandle);
+            });
+            
+            $j('.fa-question-circle').mouseleave(function(){
+                    var _this = $j(this);
+                timeoutHandle = window.setTimeout(function(){
+                    _this.tooltip('hide');
+                }, 2000);
+            });
 
             $j("#sunCard").error(function() {
                 $j(this).attr("src", "{!$Resource.blankAvatar}");

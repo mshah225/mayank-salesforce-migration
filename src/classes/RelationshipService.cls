@@ -48,7 +48,8 @@ public class RelationshipService {
                         Relationship_Type__c = settings.get(r.Relationship_Type__c).Reciprocal__c,
                         Reciprocal_Relationship__c = r.Id,
                         Relationship_Start_Date__c = r.Relationship_Start_Date__c,
-                        Relationship_End_Date__c = r.Relationship_End_Date__c
+                        Relationship_End_Date__c = r.Relationship_End_Date__c,
+                        Title__c = r.Title__c
                     );
                     
                     // RecordTypeId = r.RecordTypeId,
@@ -134,7 +135,8 @@ public class RelationshipService {
                                                   || r.Relationship_Type__c != settings.get(rel.Relationship_Type__c).Reciprocal__c
                                                   || r.Relationship_Start_Date__c != rel.Relationship_Start_Date__c
                                                   || r.Relationship_End_Date__c != rel.Relationship_End_Date__c
-                                                  || r.Reciprocal_Relationship__c != rel.Id) {
+                                                  || r.Reciprocal_Relationship__c != rel.Id
+                                                  || r.Title__c != rel.Title__c) {
                                                       r.Contact__c = rel.Related_Contact__c;
                                                       r.Related_Contact__c = rel.Contact__c;
                                                       r.Account__c = rel.Related_Account__c;
@@ -144,6 +146,7 @@ public class RelationshipService {
                                                       r.Relationship_Start_Date__c = rel.Relationship_Start_Date__c;
                                                       r.Relationship_End_Date__c = rel.Relationship_End_Date__c;
                                                       r.Reciprocal_Relationship__c = rel.Id;
+                                                      r.Title__c = rel.Title__c;
                                                       
                                                       relsToUpdate.add(r);
                                               }

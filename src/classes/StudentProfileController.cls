@@ -158,7 +158,7 @@ global with sharing class StudentProfileController
                 }
                 
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
-                    			  Select Subplan_description__c
+                            Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
                                   WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
                 ];

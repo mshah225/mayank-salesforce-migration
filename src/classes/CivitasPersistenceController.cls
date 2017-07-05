@@ -102,10 +102,16 @@ public class CivitasPersistenceController{
         
         if (dataList.size() > 0) {
             dataList[0].allMonths = months;
+        	persistenceLevel = dataList[dataList.size()-1].outlookLevel;
+            if(currentTerm.subString(3).equals('1')){
+                dataList[0].termInfo = 'Spring';
+            } else if (currentTerm.subString(3).equals('4')) {
+                dataList[0].termInfo = 'Summer';
+            } else {
+                dataList[0].termInfo = 'Fall';
+            }
         }
         
-        System.debug(dataList[dataList.size()-1].outlookLevel);
-        persistenceLevel = dataList[dataList.size()-1].outlookLevel;
         return dataList;
     }
     
@@ -133,6 +139,7 @@ public class CivitasPersistenceController{
         public String levelDesc;
         public String fullDate;
         public String flag;
+        public String termInfo;
         
         public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn){
             snapDate = sDate;
@@ -161,7 +168,6 @@ public class CivitasPersistenceController{
             day = snapDate.day() + (30 * (months.size()-1));
             dayDate = monthToText(snapDate.month()) + ' ' + snapDate.day();
             fullDate =  snapDate.month() + '/' + snapDate.day() + '/' + snapDate.year();
-            
             levelDesc = description;
             flag = flagIn;
         }

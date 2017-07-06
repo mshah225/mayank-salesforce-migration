@@ -75,14 +75,17 @@
     		}
 		};
     
-        function drawChart() {
-            var x = document.getElementById('FeedbackButton');
-        	x.style.display = 'none';
-            
+    		
+    
+    		function drawChart() {
+                var x = document.getElementById('FeedbackButton');
+                x.style.display = 'none';
+                
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.CivitasPersistenceController.getData}',
                 getUrlParameter('id'),
                 function (result, event) {
+                    console.log(result);
                 x.style.display = 'block';
                 if (result.length > 0) {
                     jQuery('#FeedbackButton').attr('href','./dynamicfeedback?carName=Student Profile&misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
@@ -102,7 +105,7 @@
                     if (loopCount > 0) {
         				if (result[loopCount].outlookLevel > result[loopCount-1].outlookLevel) {
                             document.getElementById("change").innerHTML = '<b>Change: </b> Up';
-                        } else if (result[loopCount].outlookLevel > result[loopCount-1].outlookLevel)  {
+                        } else if (result[loopCount].outlookLevel < result[loopCount-1].outlookLevel)  {
                             document.getElementById("change").innerHTML = '<b>Change: </b> Down';
                         } else{
                             document.getElementById("change").innerHTML = '<b>Change: </b> None';
@@ -159,7 +162,11 @@
                             title: result[0].termInfo + ' ' + result[0].year,
                             titleTextStyle: {
                                 bold: true,
-                                italic: false
+                                italic: false,
+                                fontSize: 14
+                            },
+                            textStyle: {
+                                fontSize: 14
                             }
                         },
         
@@ -188,6 +195,9 @@
                                 color: '#eee'
                             },
                             maxValue: 11.5,
+                            textStyle: {
+                                fontSize: 14
+                            },
                             ticks: [
                                 {v:0.0, f:''},
                                 {v:1.0, f:''},
@@ -307,64 +317,65 @@
             <span id="lastUpdated" style="margin-bottom: 18px;"></span>
             <span id="change"></span>
             <span id="levelChangeDate"></span>
+            <div style="margin-top: 15px;">
+                <style>
+                    .persistenceFeedbackButton {
+                    position:relative;
+                    border:1px solid transparent;
+                    border-radius:2px;
+                    margin:0px;
+                    padding-left:12px;
+                    padding-right:12px;
+                    padding-top:6px;
+                    padding-bottom:4px;
+                    color:white;
+                    background-color:RGB(140, 29, 64);
+                    transition:all 0.25s ease-in-out 0s;
+                    word-wrap: break-word;
+                    font-size:10px;
+                    text-align:center;
+                    text-decoration:none;
+                    }
+                    
+                    .persistenceFeedbackButton img {
+                    transition: all 0.25s ease-in-out 0s;
+                    -moz-transition: all 0.25s ease-in-out 0s;
+                    -webkit-transition: all 0.25s ease-in-out 0s;
+                    -o-transition: all 0.25s ease-in-out 0s;
+                    -ms-transition: all 0.25s ease-in-out 0s;
+                    }
+                    
+                    .persistenceFeedbackButton:hover {
+                    color:white;
+                    text-decoration:none;
+                    background-color:#d23153;
+                    }
+                    
+                    .persistenceFeedbackButton:hover img {
+                    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";
+                    filter: alpha(opacity=95);
+                    opacity: 0.95;
+                    }
+                    
+                    .persistenceFeedbackButton:focus {
+                    color:white;
+                    text-decoration:none;
+                    }
+                </style>
+                <a href="./dynamicfeedback?carName=Student Profile&misc={!getInfo}}" 
+                   class="persistenceFeedbackButton & browser" target="_blank" id ="FeedbackButton">
+                    <i class="fa fa-comment"></i> Persistence Outlook Feedback
+                </a>
+                <a href="./dynamicfeedback?carName=Student Profile&misc={!getInfo}}" 
+                   class="persistenceFeedbackButton & mobile" target="_blank" id ="FeedbackButtonMobile">
+                    <i class="fa fa-comment"></i> Persistence Outlook Feedback
+                </a>
+            </div>
         </div>
         <div class="right" style="float: left; z-index: -1; margin-top: -20px">
             <div id="chart_div" style="height: 200px; width: 400px"></div>
         </div>  
         
-        <div style="float: right; margin-top: 30px; margin-right: 40px;">
-            <style>
-                .feedbackButton {
-                position:relative;
-                border:1px solid transparent;
-                border-radius:4px;
-                margin:0px;
-                padding-left:24px;
-                padding-right:24px;
-                padding-top:12px;
-                padding-bottom:8px;
-                color:white;
-                background-color:RGB(140, 29, 64);
-                transition:all 0.25s ease-in-out 0s;
-                word-wrap: break-word;
-                font-size:20px;
-                text-align:center;
-                text-decoration:none;
-                }
-                
-                .feedbackButton img {
-                transition: all 0.25s ease-in-out 0s;
-                -moz-transition: all 0.25s ease-in-out 0s;
-                -webkit-transition: all 0.25s ease-in-out 0s;
-                -o-transition: all 0.25s ease-in-out 0s;
-                -ms-transition: all 0.25s ease-in-out 0s;
-                }
-                
-                .feedbackButton:hover {
-                color:white;
-                text-decoration:none;
-                background-color:#d23153;
-                }
-                
-                .feedbackButton:hover img {
-                -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";
-                filter: alpha(opacity=95);
-                opacity: 0.95;
-                }
-                
-                .feedbackButton:focus {
-                color:white;
-                text-decoration:none;
-                }
-            </style>
-            <a href="./dynamicfeedback?carName=Student Profile&misc={!getInfo}}" 
-               class="feedbackButton & browser" target="_blank" id ="FeedbackButton">
-                <i class="fa fa-comment"></i> Feedback
-            </a>
-            <a href="./dynamicfeedback?carName=Student Profile&misc={!getInfo}}" 
-               class="feedbackButton & mobile" target="_blank" id ="FeedbackButtonMobile">
-                <i class="fa fa-comment"></i> Feedback
-            </a>
-        </div>
+        
     </div>
 </apex:component>

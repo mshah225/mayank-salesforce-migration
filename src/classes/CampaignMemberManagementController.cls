@@ -120,6 +120,11 @@ public class CampaignMemberManagementController
             if ((cm.Campaign.RecordType.Name == 'Corporate Relations')
                 && (cm.Status == 'Active'))
             {
+                if (activeCRCamMap.get(cm.Campaign.Parent.Name) == null) {
+                    activeCRCamMap.put(cm.Campaign.Parent.Name, new List<CampaignMember>());
+                }
+                
+                activeCRCamMap.get(cm.Campaign.Parent.Name).add(cm);
                 tempCrActiveList.add(cm);
             }
             else if ((cm.Campaign.RecordType.Name == 'Corporate Relations')
@@ -525,6 +530,18 @@ public class CampaignMemberManagementController
         activeCrCamMems = campaignMemberMap.get('Active CR');
 
         return activeCrCamMems;
+    }
+    
+    public Map<String, List<CampaignMember>> activeCRCamMap {
+        get {
+            if (activeCRCamMap == null) {
+                activeCRCamMap = new Map<String, List<CampaignMember>>();
+            }
+            
+            return activeCRCamMap;
+        }
+        
+        set;
     }
 
     public void parentCampaignSearch()

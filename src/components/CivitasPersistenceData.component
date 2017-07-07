@@ -88,8 +88,8 @@
                     console.log(result);
                 x.style.display = 'block';
                 if (result.length > 0) {
-                    jQuery('#FeedbackButton').attr('href','./dynamicfeedback?carName=Student Profile&misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
-                    jQuery('#FeedbackButtonMobile').attr('href','./dynamicfeedback?carName=Student Profile&misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
+                    jQuery('#FeedbackButton').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
+                    jQuery('#FeedbackButtonMobile').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
                     document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
                     document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate + '<br />';
                     
@@ -362,11 +362,11 @@
                     text-decoration:none;
                     }
                 </style>
-                <a href="./dynamicfeedback?carName=Student Profile&misc={!getInfo}}" 
+                <a href="./persistencefeedback?misc={!getInfo}}" 
                    class="persistenceFeedbackButton & browser" target="_blank" id ="FeedbackButton">
                     <i class="fa fa-comment"></i> Persistence Outlook Feedback
                 </a>
-                <a href="./dynamicfeedback?carName=Student Profile&misc={!getInfo}}" 
+                <a href="./persistencefeedback?carName=Student Profile&misc={!getInfo}}" 
                    class="persistenceFeedbackButton & mobile" target="_blank" id ="FeedbackButtonMobile">
                     <i class="fa fa-comment"></i> Persistence Outlook Feedback
                 </a>

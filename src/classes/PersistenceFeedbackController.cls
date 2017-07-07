@@ -18,11 +18,11 @@ public without sharing class PersistenceFeedbackController {
     public pageReference init() {
         try {
             alertHandler = new AlertHandler();
-            URLParamsExistAndAreValid = false;
+            URLParamsExistAndAreValid = true;
             caseDescription = ApexPages.currentPage().getParameters().get('misc');
             retURL = ApexPages.currentPage().getParameters().get('retURL');
             caseContactId = ApexPages.currentPage().getParameters().get('contactId');
-            
+                
             if (caseDescription != '' && caseDescription != null) {
                 caseDescription = CaseDescription + '\n';
             }
@@ -84,14 +84,13 @@ public without sharing class PersistenceFeedbackController {
                     }
                 }
                 
-                Id rt = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1].Id;
 	            feedbackCase = new Case(
-	                RecordType = rt,
+	                RecordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1],
                     status = 'New',
 	                contactId = caseContactId,
-	                subject = carName + ' feedback',
+	                subject = 'Persistence Outlook feedback',
+	                Functional_Group__c = 'Enrollment Analysis', 
 	                description = caseDescription,
-	                Functional_Group__c = car.Functional_Group__c,
                     IsVisibleInSelfService = false
 	            );
 	            
@@ -101,7 +100,7 @@ public without sharing class PersistenceFeedbackController {
                 
                 alertHandler.newAlert(
                 	customAlert.CONFIRM,
-                    'Thank you for your feedback about the ' + carName + '. You may now close this window.'
+                    'Thank you for your feedback about the Persistence Outlook. You may now close this window.'
                 );
                 
                 caseDescription = '';

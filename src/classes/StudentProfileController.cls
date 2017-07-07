@@ -114,7 +114,13 @@ global with sharing class StudentProfileController
                 // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
+                // studentProgram = getStudentProgramData(theContact.EMPLID__c);
                 studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
+                if(studentProgramDataList.size() > 0){
+				    studentProgram = studentProgramDataList[0];
+				}
+                profileHeader = getProfileHeader(theContact.EMPLID__c);
+                getTermInfo();
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
                 

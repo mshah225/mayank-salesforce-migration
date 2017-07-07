@@ -196,25 +196,25 @@
                             },
                             maxValue: 11.5,
                             textStyle: {
-                                fontSize: 14
+                                fontSize: 11
                             },
                             ticks: [
                                 {v:0.0, f:''},
-                                {v:1.0, f:''},
-                                {v:2.0, f:'Very Low'},
+                                {v:1.0, f:'Very Low'},
+                                {v:2.0, f:''},
                                 {v:3.0, f:''},
                                 {v:4.0, f:'Low'},
                                 {v:5.0, f:''},
                                 {v:6.0, f:'Moderate'},
-                                {v:7.0, f:''},
-                                {v:8.0, f:'High'},
+                                {v:7.0, f:'High'},
+                                {v:8.0, f:'Very High'},
                                 {v:9.0, f:''},
-                                {v:10.0, f:'Very High'},
+                                {v:10.0, f:''},
                             ],
                         },
                         
-                        width: 375,
-                        height: 200
+                        width: 400,
+                        height: 260
                     };
                 	
                     var months = [];

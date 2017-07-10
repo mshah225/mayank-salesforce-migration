@@ -214,7 +214,7 @@
                         },
                         
                         width: 400,
-                        height: 260
+                        height: 250
                     };
                 	
                     var months = [];

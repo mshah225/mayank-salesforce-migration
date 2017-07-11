@@ -1400,6 +1400,15 @@
                                             </a>
                                         </td>
                                     </tr>
+                                    
+                                    <tr>
+                                        <td>
+                                            <a href="https://webapp4.asu.edu/myasu/viewas?id={!theContact.ASURite_ID__c}"
+                                               target="_blank">
+                                                
+                                            </a>
+                                        </td>
+                                    </tr>
                                 </table>
                             </div>
 

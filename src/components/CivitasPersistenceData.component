@@ -202,14 +202,14 @@
                                 {v:0.0, f:''},
                                 {v:1.0, f:'Very Low'},
                                 {v:2.0, f:''},
-                                {v:3.0, f:'Low'},
+                                {v:3.0, f:''},
                                 {v:4.0, f:''},
-                                {v:5.0, f:'Moderate'},
+                                {v:5.0, f:''},
                                 {v:6.0, f:''},
-                                {v:7.0, f:'High'},
+                                {v:7.0, f:''},
                                 {v:8.0, f:''},
-                                {v:9.0, f:'Very High'},
-                                {v:10.0, f:''},
+                                {v:9.0, f:''},
+                                {v:10.0, f:'Very High'},
                             ],
                         },
                         
@@ -262,7 +262,7 @@
                     });
         
                     chart.draw(data, options);
-                                    
+                    document.getElementById("legend").src="{!URLFOR($Resource.PersistenceLegend)}";               
                     var latestOutlook = result[result.length-1].outlookLevel;
                     switch(latestOutlook) {
                         case 1:
@@ -283,7 +283,7 @@
                             break;
                         case 9:
                         case 10:
-                            document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-5.png')}";
+                            document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, 'icon-5.png')}";
                             break;
                     }
                 } else if (event.type === 'exception') {
@@ -374,7 +374,10 @@
         </div>
         <div class="right" style="float: left; z-index: -1; margin-top: -20px">
             <div id="chart_div" style="height: 200px; width: 400px"></div>
-        </div>  
+        </div>
+        <div style="float: left; margin-top: 20px;">
+            <img id="legend"/>
+        </div>
         
         
     </div>

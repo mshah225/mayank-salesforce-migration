@@ -1631,6 +1631,27 @@ global with sharing class StudentProfileController
 
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
+<<<<<<< HEAD
+=======
+
+    @RemoteAction
+    global static void createCase(String emplid) {
+        Id student = [SELECT Id FROM Contact WHERE emplId__c = 'emplid' LIMIT 1].Id;
+        RecordType rt = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
+        Case feedbackCase = new Case(
+                    status = 'New',
+                    RecordType = rt,
+	                contactId = student,
+	                subject = ' feedback',
+	                description = 'Description',
+	                Origin__c = 'Student Profile',
+                    IsVisibleInSelfService = false
+	            );
+	            
+	            insert feedbackCase;
+    }
+    
+>>>>>>> Add Method to create case
     public String subPlanString {
         get{
             if(subPlanString == null){

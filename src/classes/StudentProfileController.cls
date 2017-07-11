@@ -115,14 +115,24 @@ global with sharing class StudentProfileController
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
                 studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
-                if(studentProgramDataList.size() > 0){
-				    studentProgram = studentProgramDataList[0];
-				}
+                if (studentProgramDataList.size() > 0) {
+				          studentProgram = studentProgramDataList[0];
+				        }
                 profileHeader = getProfileHeader(theContact.EMPLID__c);
                 getTermInfo();
+
+                sIList = getServiceIndicators(theContact.emplId__c);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
                 
+                for(JBT_RET_GENERAL_RIGHT__x prg : studentProgramDataList){
+                    if(prg.ACAD_CAREER__c.equals('UGRD')){
+                        ugStudentProgram = prg;
+                    }
+                    else if (prg.ACAD_CAREER__c.equals('GRAD')){
+                        gradStudentProgram = prg;
+                    }
+                }
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
         
@@ -162,7 +172,6 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-                
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
                     			  Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
@@ -1192,7 +1201,6 @@ global with sharing class StudentProfileController
             wrapper.faBalance = balanceList[0];
 
         List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
-        System.debug('Balance: ' + wrapper.faBalance.BALANCE_AMT__c);
         if (!snpRecords.isEmpty())
         {
             wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;
@@ -1254,6 +1262,14 @@ global with sharing class StudentProfileController
                     ORDER BY SRVC_IND_ACTIVE_DT__c ASC, SRVC_IND_CD__c ASC
                 ]
             );
+            Date currentDate = date.today();
+            
+            for(Integer i = serviceIndicatorList.size()-1; i >= 0; i--){
+                Date tempDate = serviceIndicatorList[i].SCC_SI_END_DT__c;
+                if (tempDate < currentDate) {
+                    serviceIndicatorList.remove(i);
+                }
+            }
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }

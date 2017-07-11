@@ -114,6 +114,7 @@ global with sharing class StudentProfileController
                 // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
+
                 studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
                 if (studentProgramDataList.size() > 0) {
 				          studentProgram = studentProgramDataList[0];

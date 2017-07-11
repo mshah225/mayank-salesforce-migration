@@ -1016,6 +1016,9 @@ global with sharing class StudentProfileController
         public List<PS_ASU_SP_CLASS_V__x> enrolledClasses = new List<PS_ASU_SP_CLASS_V__x>();
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
 
+        public void sortEnrolledClasses(String paramToSort){
+            
+        }
     }
 
     @RemoteAction

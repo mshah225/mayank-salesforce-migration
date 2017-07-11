@@ -1597,9 +1597,7 @@
             $j(".page-header-smaller").click(function() {                                    
                 var container = $j(this);
                 var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
-                console.log(arrow);
-                console.log(container);
-                console.log(container.next());
+                
                 if (arrow.hasClass('fa-caret-down')) {
                     container.next().slideUp().addClass('hide');
                 } else if (arrow.hasClass('fa-caret-right')) {

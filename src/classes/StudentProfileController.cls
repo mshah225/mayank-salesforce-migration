@@ -1016,8 +1016,32 @@ global with sharing class StudentProfileController
         public List<PS_ASU_SP_CLASS_V__x> enrolledClasses = new List<PS_ASU_SP_CLASS_V__x>();
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
 
-        public void sortEnrolledClasses(String paramToSort){
-            
+        public void sortEnrolledClasses(String paramToSort) {
+            if (paramToSort.equals('Session')) {
+                
+            } else if (paramToSort.equals('Class')) {
+                
+            } else if (paramToSort.equals('Course')) {
+                
+            } else if (paramToSort.equals('Title')) {
+                
+            } else if (paramToSort.equals('Topic')) {
+                
+            } else if (paramToSort.equals('Units')) {
+                
+            } else if (paramToSort.equals('Instructor(s)')) {
+                
+            } else if (paramToSort.equals('Days')) {
+                
+            } else if (paramToSort.equals('Times')) {
+                
+            } else if (paramToSort.equals('Dates')) {
+                
+            } else if (paramToSort.equals('Location')) {
+                
+            } else if (paramToSort.equals('Grade')) {
+                
+            }
         }
     }
 

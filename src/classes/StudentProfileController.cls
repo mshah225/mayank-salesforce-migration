@@ -1635,20 +1635,22 @@ global with sharing class StudentProfileController
 =======
 
     @RemoteAction
-    global static void createCase(String emplid) {
-        Id student = [SELECT Id FROM Contact WHERE emplId__c = 'emplid' LIMIT 1].Id;
+    global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
+        Id student = [SELECT Id FROM Contact WHERE emplId__c =: emplidIn LIMIT 1].Id;
         RecordType rt = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
         Case feedbackCase = new Case(
                     status = 'New',
                     RecordType = rt,
 	                contactId = student,
-	                subject = ' feedback',
-	                description = 'Description',
+	                subject = subjectIn,
+	                description = descriptionIn,
 	                Origin__c = 'Student Profile',
                     IsVisibleInSelfService = false
-	            );
+	    );
 	            
-	            insert feedbackCase;
+	    insert feedbackCase;
+	    
+	    return feedbackCase.Id;
     }
     
 >>>>>>> Add Method to create case

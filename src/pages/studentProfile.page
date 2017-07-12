@@ -1424,11 +1424,15 @@
                                                         document.getElementById('usrSubject').value = '';
                                                         document.getElementById('usrDescription').value = '';
                                                         document.getElementById('modalError').innerHTML = '';
-                                                        console.log(result);
                                                         var url = window.location.href;
-                                                        url = url.substring(0, url.indexOf('/apex')) + '/' + result;
-                                                        console.log(url);
-                                                        window.open(url,'_blank');
+                                                        if (url.indexOf('/apex') >= 0) {
+                                                            url = url.substring(0, url.indexOf('/apex')) + '/' + result;
+                                                            window.open(url,'_blank');
+                                                        }
+                                                        else if (url.indexOf('/console') >= 0) {
+                                                            url = url.substring(0, url.indexOf('/console')) + '/' + result;
+                                                            window.open(url,'_blank');
+                                                        }
                                                         jQuery('#myModal').modal('hide');
                                                     });
                                                 }

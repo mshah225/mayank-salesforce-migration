@@ -46,7 +46,9 @@
             function setTabTitle() {
                 //Set the current tab's title
                 try {
-                    sforce.console.setTabTitle('{!theContact.FirstName}\'s Student Profile');
+                    var name = "{!theContact.FirstName}";
+                    console.log(name);
+                    sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
                     inConsole = true;
                 } catch (e) {
                     console.log('Notice: Tab title can only be set when the Student Profile is opened inside of a Service Console tab! ' + e.message);
@@ -85,6 +87,14 @@
                 margin:auto !important;
                 margin-bottom:24px !important;
                 max-width:50% !important;
+            }
+            
+            li.transcriptAddress {
+                list-style: none;
+            }
+            
+            th.transcriptHeader {
+                width: 165px;
             }
             
             @media screen and (max-width:767px) {
@@ -208,7 +218,7 @@
                                             
                                             <h4 class="intro">
                                                 <span style="color:#353535;">Sub-Plan:</span>
-                                                &nbsp;{!IF(ISBLANK(subProgramPlan.Subplan_description__c), '--', subProgramPlan.Subplan_description__c)}
+                                                &nbsp;{!IF(subPlanString==null, '--', subPlanString)}
                                             </h4>
                                             
                                             <h4 class="intro">
@@ -560,7 +570,7 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Expected Graduation Date</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.EXP_GRAD_TERM__c), '--', 
+                                                            <td>{!IF(ISBLANK(StudentProgram.EXP_GRAD_TERM__r.Name), '--', 
                                                                  StudentProgram.EXP_GRAD_TERM__r.Name)}
                                                             </td>
                                                         </tr>
@@ -574,7 +584,7 @@
                                                                 <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
                                                                     <apex:param value="{!studentProgram.APPT_DT__c}"/>
                                                                 </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT__c)}">--</apex:outputText>
+                                                                <apex:outputText rendered="{! (ISBLANK(studentProgram.APPT_DT__c))}">--</apex:outputText>
                                                             </td>
                                                         </tr>
 
@@ -587,7 +597,7 @@
                                                                 <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
                                                                     <apex:param value="{!studentProgram.APPT_DT_PENDING__c}"/>
                                                                 </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT_PENDING__c)}">--</apex:outputText>
+                                                                <apex:outputText rendered="{! (ISBLANK(studentProgram.APPT_DT_PENDING__c))}">--</apex:outputText>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -624,9 +634,9 @@
                                                         </apex:outputLink>
                                                     </apex:column>
                                                     <apex:column headerValue="Sub-Plan">
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),false,true)}"
-                                                                         value="{!subProgramPlan.Subplan_Description__c}"/>
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),true,false)}"
+                                                        <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
+                                                                         value="{!subPlanString}"/>
+                                                        <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
                                                                          value="--"/>
                                                     </apex:column>
                                                     <apex:column headerValue="Plan Type"
@@ -792,9 +802,9 @@
                                                     </apex:outputLink>
                                                 </apex:column>
                                                 <apex:column headerValue="Sub-Plan">
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),false,true)}"
-                                                                         value="{!subProgramPlan.Subplan_Description__c}"/>
-                                                        <apex:outputText rendered="{!IF(ISBLANK(subProgramPlan.Subplan_Description__c),true,false)}"
+                                                        <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
+                                                                         value="{!subPlanString}"/>
+                                                        <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
                                                                          value="--"/>
                                                 </apex:column>
                                                 <apex:column headerValue="Plan Type"
@@ -1060,8 +1070,24 @@
                                     </apex:pageBlock>
                                 </div>
 
+                                
+                                
                                 <div role="tabpanel" class="tab-pane" id="UGindicators">
-                                    <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlock mode="maindetail">  
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;Persistence Outlook
+                                                <a class='fa fa-question-circle' data-html="true" title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a target="_blank" href="https://docs.google.com/document/d/1ezUBwCjwnZmcfdcsGeGIr_9roVJYsYhpkm3nU5xpFVo/edit">Visit knowledge article.</a>.</span>' data-placement='right' data-trigger='manual'></a>
+                                                </h4>
+                                        </div>
+                                        
+                                        <!-- Transcripts Sent -->
+                                        <div style="overflow:auto; max-height:300px; height: 300px">
+                                            <c:CivitasPersistenceData />
+                                        </div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1173,21 +1199,21 @@
 
                                         <div id="stdtRetentionResponseErrors"></div>
 
-<!-- 
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
-                                                &nbsp;Graph Indicators
+                                                &nbsp;Transcripts Sent
                                             </h4>
                                         </div>
+                                        
+                                        <!-- Transcripts Sent -->
+                                        <div style="overflow:auto;max-height:400px;">                                                                                    
+                                            <div id="ps_transcript"
+                                                 style="display:none;"></div>
 
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                Graph indicator info
-                                                goes here.
-                                            </div>
+                                            <div id="psTranscriptErrors"></div>
                                         </div>
--->
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1406,7 +1432,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="https://webapp4.asu.edu/uachieve/audit/create.html"
+                                            <a href="https://webapp4.asu.edu/uachieve/student/search.html"
                                                target="_blank">
                                                 DARS
                                             </a>
@@ -1593,7 +1619,23 @@
         <apex:includeScript value="{!URLFOR($Resource.bs_responsive_tabs)}"/>
 
         <script>
-            $j = jQuery.noConflict();
+
+        	$j = jQuery.noConflict();
+        	
+        	var timeoutHandle;
+
+            $j('.fa-question-circle').mouseenter(function(){
+                var that = $j(this)
+                that.tooltip('show');
+                window.clearTimeout(timeoutHandle);
+            });
+            
+            $j('.fa-question-circle').mouseleave(function(){
+                    var _this = $j(this);
+                timeoutHandle = window.setTimeout(function(){
+                    _this.tooltip('hide');
+                }, 2000);
+            });
 
             $j("#sunCard").error(function() {
                 $j(this).attr("src", "{!$Resource.blankAvatar}");
@@ -1606,7 +1648,7 @@
             // Arrow Functionality
             $j(".page-header-smaller").click(function() {                                    
                 var container = $j(this);
-                var arrow = $j(this).find('.fa');
+                var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
                 
                 if (arrow.hasClass('fa-caret-down')) {
                     container.next().slideUp().addClass('hide');
@@ -1674,6 +1716,7 @@
             var accountBalanceLoaded = false;
             var indicatorHistoryLoaded = false;
             var careerDevelopmentTabLoaded = false;
+            var transcriptsLoaded = false;
     
             var classesData;
             var financialAidData;
@@ -1710,6 +1753,7 @@
             function loadUGIndicatorTab() {
                 getStudentRetention();
                 getGeneralIndicators();
+                getTranscripts();
                 // getRetentionSNPs();
             }
     
@@ -2041,6 +2085,10 @@
                         '{!currentTerm}',
                         function (result, event) {
                             if (event.status) {
+                                document.getElementById('sr_en_holds').innerHTML =
+                                        "<span style='color:black'>" +
+                                        result.length
+                                        "</span>";
                                 if (result.length > 0) {
                                     document.getElementById('sr_en_holds').innerHTML =
                                         "<span style='color:red'>" +
@@ -2436,6 +2484,102 @@
                                     event.message + "<br/>\n<pre>" + event.where + "</pre>";
                             } else {
                                 document.getElementById("psMilestoneErrorsGrad").innerHTML =
+                                    event.message;
+                            }
+                        },
+                        {escape: true}
+                    );
+                }
+            }
+            
+            // Method to get transcripts
+            function getTranscripts() {
+                if (!transcriptsLoaded) {
+                    document.getElementById("psTranscriptErrors").innerHTML =
+                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+            
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.StudentProfileController.getTranscripts}',
+                        '{!theContact.EMPLID__c}',
+                        function (result, event) {
+                            if (event.status) {
+                                document.getElementById("psTranscriptErrors").innerHTML =
+                                    "";
+                                
+                                if (!Object.getOwnPropertyNames(result).length == 0) {
+                                    document.getElementById("ps_transcript").style.display =
+                                        "initial";
+            
+                                    var html = "" +
+                                        "<div class='table-responsive'>" +
+                                            "<table id='transcript_table' class='table table-striped table-bordered'> " +
+                                                "<thead>" +
+                                                    "<tr>" +
+                                                        "<th>Sent On</th>" +
+                                                        "<th>Status</th>" +
+                                                        "<th>Recipient</th>" +
+                                                    "</tr>" +
+                                                "</thead>" +
+                                                "<tbody>";
+                                                
+                                    for (var i = 0; i < result.length; i++) {
+                                        var utcSeconds = result[i].REQUEST_OR_SENT_DATE__c;
+                                        var sentDate = new Date(utcSeconds);
+                                        sentDate = (sentDate.getUTCMonth() + 1) + '/' +
+                                            sentDate.getUTCDate() + '/' +
+                                            sentDate.getUTCFullYear();
+                                    
+                                        var status = result[i].STATUS__c;
+                                        var recipient = new Array(
+                                            result[i].SEND_TO_NAME__c,
+                                            result[i].ADDRESS1__c,
+                                            result[i].ADDRESS2__c,
+                                            result[i].ADDRESS3__c,
+                                            result[i].ADDRESS4__c
+                                        );
+
+                                        html += "" +
+                                            "<tr>" +
+                                                "<td>" + sentDate + "</td>" +
+                                                "<td>" + status + "</td>" +
+                                                "<td>" +
+                                                    "<li class='transcriptAddress'>" + recipient[0] + "</li>";
+                                        
+                                                    for (var j = 1; j < recipient.length; j++) {
+                                                        if (recipient[j] != null && recipient[j] != '-') {
+                                                            html += "<li class='transcriptAddress'> " + recipient[j] + "</li>";
+                                                        }
+                                                    }
+                                    
+                                                    html += "<li class='transcriptAddress'>" +
+                                                        result[i].CITY__c + ", " + 
+                                                        result[i].STATE__c + " " +
+                                                        result[i].POSTAL__c + "</li>" + 
+                                                        "<li class='transcriptAddress'> " + result[i].COUNTRY__c +
+                                                    "</li>" +
+                                                "</td>" +
+                                            "</tr>";
+                                    }
+                                    
+                                    html += "" + 
+                                            "</tbody>" +
+                                        "</table>" +
+                                    "</div>";
+                                    
+                                    document.getElementById('ps_transcript').innerHTML = html;
+                                    cleanUpUndefined("ps_transcript");
+                                    transcriptsLoaded = true;
+            
+                                } else {
+                                    document.getElementById("ps_transcript").innerHTML =
+                                        'No transcripts found.';
+                                    transcriptsLoaded = true;
+                                }
+                            } else if (event.type === 'exception') {
+                                document.getElementById("psTranscriptErrors").innerHTML =
+                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                            } else {
+                                document.getElementById("psTranscriptErrors").innerHTML =
                                     event.message;
                             }
                         },

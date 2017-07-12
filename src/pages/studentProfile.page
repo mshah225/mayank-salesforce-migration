@@ -1068,16 +1068,6 @@
                                                 &nbsp;Persistence Outlook
                                             </h4>
                                         </div>
-
-                                        <div style="overflow:auto;max-height:400px;">
-                                            <div style="margin-bottom: 10px;">
-                                                 <c:CivitasPersistenceData />
-                                            </div>                                                                                     
-                                            <div id="cv_persistence_outlook"
-                                                 style="display:none;"></div>
-
-                                            <div id="cvPersistenceOutlookErrors"></div>
-                                        </div>
                                         
                                         <div class="page-header-smaller">
                                             <h4>

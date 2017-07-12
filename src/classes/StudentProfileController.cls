@@ -1105,30 +1105,6 @@ global with sharing class StudentProfileController
         
         return (termList.size() > 0? termList : new List<JBT_RET_TERMS_VW__x>());
     }
-
-    // Get Civitas Persistence Outlook Data
-    @RemoteAction
-    global static List<CV_ASU_STDNT_TERM__x> getCivitasPersistenceData(String emplId) {
-        List<CV_ASU_STDNT_TERM__x> persistenceDataList;
-        
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            persistenceDataList =
-            (
-                Test.isRunningTest() ? new List<CV_ASU_STDNT_TERM__x>() :
-                [
-                    SELECT SNAP_DATE__c
-                    FROM CV_ASU_STDNT_TERM__x
-                    WHERE Contact__c = :emplId
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-        
-        return (persistenceDataList.size() > 0? persistenceDataList : new List<CV_ASU_STDNT_TERM__x>());
-    }
     
     // Get Transfer Work Information
     @RemoteAction

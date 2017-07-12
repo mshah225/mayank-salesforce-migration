@@ -1430,30 +1430,33 @@
                                                     });
                                                 }
                                             };
+                                            
+                                            function clearError() {
+                                                document.getElementById('modalError').innerHTML = '';
+                                            };
                                         </script>
                                         <div class="modal fade" id="myModal" role="dialog">
                                             <div class="modal-dialog">
                                                 <!-- Modal content-->
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <button type="button" class="close" onclick="clearError()" data-dismiss="modal">&times;</button>
                                                         <h4 class="modal-title">New Service Case</h4>
                                                     </div>
                                                     <div class="modal-body">
+                                                        <div id="modalError" style="color:red"></div>
                                                         <div class="form-group">
                                                             <label for="comment">Subject:</label>
                                                             <input type="text" class="form-control" id="usrSubject" />
                                                         </div>
-                                                        <div id="modalErrorSubject" style="color:red"></div>
                                                         <div class="form-group">
                                                             <label for="comment">Description:</label>
                                                             <textarea class="form-control" rows="5" id="usrDescription"></textarea>
                                                         </div>
-                                                        <div id="modalErrorDescription" style="color:red"></div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-default"  onclick="submitCase();" >Submit</button>
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                        <button type="button" class="btn btn-default" onclick="clearError()" data-dismiss="modal">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>

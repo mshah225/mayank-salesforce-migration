@@ -1084,7 +1084,52 @@ global with sharing class StudentProfileController
         return (creditByExamList.size() > 0? creditByExamList : new List<PS_ASU_SP_TRNSFR_V__x>());
 
     }
+    
+    // Get the Term information from Jitterbit
+    public static List<JBT_RET_TERMS_VW__x> getTerms() {
+        List<JBT_RET_TERMS_VW__x> termList;
+        
+        try {
+            termList =
+            (
+                Test.isRunningTest() ? new List<JBT_RET_TERMS_VW__x>() :
+                [
+                    SELECT CURR_TERM_INCLUDE_SUMMER__c,
+                    NEXT_TERM_INCLUDE_SUMMER__c, PREV_TERM__c
+                    FROM JBT_RET_TERMS_VW__x
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return (termList.size() > 0? termList : new List<JBT_RET_TERMS_VW__x>());
+    }
 
+    // Get Civitas Persistence Outlook Data
+    @RemoteAction
+    global static List<CV_ASU_STDNT_TERM__x> getCivitasPersistenceData(String emplId) {
+        List<CV_ASU_STDNT_TERM__x> persistenceDataList;
+        
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            persistenceDataList =
+            (
+                Test.isRunningTest() ? new List<CV_ASU_STDNT_TERM__x>() :
+                [
+                    SELECT SNAP_DATE__c
+                    FROM CV_ASU_STDNT_TERM__x
+                    WHERE Contact__c = :emplId
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return (persistenceDataList.size() > 0? persistenceDataList : new List<CV_ASU_STDNT_TERM__x>());
+    }
+    
     // Get Transfer Work Information
     @RemoteAction
     global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
@@ -1154,7 +1199,60 @@ global with sharing class StudentProfileController
         }
 
         return wrapper;
-    } 
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_BOOKING_VW__x> housingInfoList = new List<REZ_HOUSING_BOOKING_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                housingInfoList =
+                [
+                    SELECT
+                        BOOKING_BUILDING__c, BOOKING_CAMPUS__c,
+                        BOOKING_FLOOR_SUITE__c, BOOKING_SECTION__c,
+                        BOOKING_STATUS__c, CHECK_IN_DT__c, CHECK_OUT_DT__c,
+                        TERM_CD__c
+                    FROM REZ_HOUSING_BOOKING_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY CHECK_OUT_DT__c DESC
+                ];
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return housingInfoList;
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_MEAL_PLAN_VW__x> getMealPlanInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_MEAL_PLAN_VW__x> mealPlanInfoList = new List<REZ_HOUSING_MEAL_PLAN_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                mealPlanInfoList =    
+                [
+                    SELECT
+                        MEAL_PLAN_STATUS__c, TERM_CD__c
+                    FROM REZ_HOUSING_MEAL_PLAN_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY MEAL_PLAN_END_DT__c
+                ];                
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return mealPlanInfoList;
+    }
 
     @RemoteAction
     global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)

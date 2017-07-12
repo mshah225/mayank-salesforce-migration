@@ -1410,22 +1410,25 @@
                                                 var subject = document.getElementById('usrSubject').value;
                                                 var description = document.getElementById('usrDescription').value;
                                                 if(subject.length <= 0 || description.length <= 0){
-                                                    document.getElementById('usrDescription').innerHTML = 'Please ensure that subject and description are not blank';
+                                                    document.getElementById('modalError').innerHTML = 'Please ensure that subject and description are not blank';
+                                                } else { 
+                                                    Visualforce.remoting.Manager.invokeAction(
+                                                    '{!$RemoteAction.StudentProfileController.createCase}',
+                                                    description,
+                                                    subject,
+                                                    '{!theContact.EMPLId__c}',
+                                                    function (result, event) {
+                                                        document.getElementById('usrSubject').value = '';
+                                                        document.getElementById('usrDescription').value = '';
+                                                        document.getElementById('modalError').innerHTML = '';
+                                                        console.log(result);
+                                                        var url = window.location.href;
+                                                        url = url.substring(0, url.indexOf('/apex')) + '/' + result;
+                                                        console.log(url);
+                                                        window.open(url,'_blank');
+                                                        jQuery('#myModal').modal('hide');
+                                                    });
                                                 }
-                                                Visualforce.remoting.Manager.invokeAction(
-                                                '{!$RemoteAction.StudentProfileController.createCase}',
-                                                description,
-                                                subject,
-                                                '{!theContact.EMPLId__c}',
-                                                function (result, event) {
-                                                    document.getElementById('usrSubject').value = '';
-                                                    document.getElementById('usrDescription').value = '';
-                                                    console.log(result);
-                                                    var url = window.location.href;
-                                                    url = url.substring(0, url.indexOf('/apex')) + '/' + result;
-                                                    console.log(url);
-                                                    window.open(url,'_blank');
-                                                });
                                             };
                                         </script>
                                         <div class="modal fade" id="myModal" role="dialog">
@@ -1437,19 +1440,20 @@
                                                         <h4 class="modal-title">New Service Case</h4>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div id="modalError"></div>
                                                         <div class="form-group">
                                                             <label for="comment">Subject:</label>
-                                                            <input type="text" class="form-control" id="usrSubject"/>
+                                                            <input type="text" class="form-control" id="usrSubject" />
                                                         </div>
+                                                        <div id="modalErrorSubject" style="color:red"></div>
                                                         <div class="form-group">
                                                             <label for="comment">Description:</label>
                                                             <textarea class="form-control" rows="5" id="usrDescription"></textarea>
                                                         </div>
+                                                        <div id="modalErrorDescription" style="color:red"></div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="submitCase();" >Submit</button>
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-default"  onclick="submitCase();" >Submit</button>
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>

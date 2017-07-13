@@ -34,7 +34,6 @@ public class CampaignMemberManagementController
     public String selectedParentCampaignName { get; set; }
     public String selectedChildCampaignName { get; set; }
     public String renderedTab { get; set; }
-    public String inActivateCMId { get; set; }
     public String eSearchString { get;set; }
     public String iSearchString { get;set; }
     public String deptColl { get; set; }
@@ -125,6 +124,7 @@ public class CampaignMemberManagementController
                 }
                 
                 activeCRCamMap.get(cm.Campaign.Parent.Name).add(cm);
+
                 tempCrActiveList.add(cm);
             }
             else if ((cm.Campaign.RecordType.Name == 'Corporate Relations')
@@ -532,6 +532,20 @@ public class CampaignMemberManagementController
         return activeCrCamMems;
     }
     
+    public String activeCRCamPMapKeys {
+        get {
+            activeCRCamPMapKeys = '';
+            
+            for (String s : activeCRCamMap.keySet()) {
+                activeCRCamPMapKeys+=s;
+            }
+            
+            return activeCRCamPMapKeys;
+        }
+        
+        set;
+    }
+    
     public Map<String, List<CampaignMember>> activeCRCamMap {
         get {
             if (activeCRCamMap == null) {
@@ -640,6 +654,63 @@ public class CampaignMemberManagementController
         save();
     } 
 
+    /*
+     * GoTo:
+     */
+     
+    /*
+     * When set by the page, this will inactivate the specified campaign member
+     */
+    public String inActivateCMId {
+        get;
+        
+        set {
+            inActivateCMId = value;
+            
+            List<CampaignMember> childKillList = new List<CampaignMember>();
+    
+            inActivateCamMem = [
+                SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name
+                FROM CampaignMember
+                WHERE Id = :inActivateCMId
+            ];
+            
+            User currentUser = [
+                SELECT Id, UserRole.Name
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+            ];
+    
+            if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name) {
+                inActivateCamMem.Status = 'Inactive';
+                update inActivateCamMem;
+            } else {
+                ApexPages.addmessage(
+                    new ApexPages.message(
+                        ApexPages.severity.ERROR,
+                        'You do not have access to remove this Affiliation, only a ' +
+                            'member of the Department that created it can.'
+                    )
+                );
+            }
+    
+            buildCampaignMemberMap();
+        }
+    }
+    
+    /*
+     * When set by the page, this will inactivate all campaign members that
+     * are children of the specified campaign
+     */
+    public String inActivateParentCM {
+        get;
+        
+        set {
+            // Only pull in camapgin members of the CR record type
+            // Only pull in campaigns of the CR record type
+        }
+    }
+     
     public void inActivateCM() 
     {
         List<CampaignMember> childKillList = new List<CampaignMember>();
@@ -693,8 +764,8 @@ public class CampaignMemberManagementController
 
     public void save() 
     {
-        try
-        {
+        //try
+        //{
             inactiveCrCamMems = campaignMemberMap.get('Inactive CR');
             Set<String> activeCamMemNameSet = new Set<String>();
             Set<String> inactiveCamMemNameSet = new Set<String>();
@@ -759,7 +830,7 @@ public class CampaignMemberManagementController
             selectedChildCampaignName = null;
             childCampaigns = null;
             buildCampaignMemberMap();
-        }
+        /*}
         catch (Exception e)
         {
             ApexPages.addmessage(
@@ -768,6 +839,6 @@ public class CampaignMemberManagementController
                     e.getMessage()
                 )
             );
-        }
+        }*/
     }
 }

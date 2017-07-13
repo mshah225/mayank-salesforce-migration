@@ -250,7 +250,7 @@
                                 </apex:outputLabel>
 
                                 <br/>
-                                <apex:pageMessages id="eventErrors"/>
+                                <!--<apex:pageMessages id="eventErrors"/>-->
                                 <br/>
 
                                 <apex:inputText id="eventSearchInput"
@@ -369,7 +369,7 @@
                                         </h3>
 
                                         <br />
-                                        <apex:pageMessages id="deetsErrors"/>
+                                        <!--<apex:pageMessages id="deetsErrors"/>-->
                                         <br />
 
                                         <apex:outputPanel id="statusSelect">
@@ -441,9 +441,9 @@
                           style="background-color:#f0f0f0;">
                     <apex:form style="font-size:9pt;overflow:auto;height:295px;max-width:1100px;">
                         <apex:pageBlock title="Campaigns this Contact is associated with.">
-                            <!--<apex:outputText rendered="{!IF(activeCrCamMems.size == 0,true,false)}">
+                            <apex:outputText rendered="{!IF(ISBLANK(activeCRCamMap),true,false)}">
                                 No Campaigns found for {!contact.Name}
-                            </apex:outputText>-->
+                            </apex:outputText>
 
                             <apex:actionStatus id="removeStatus">
                                 <apex:facet name="start" >
@@ -452,10 +452,11 @@
                                 </apex:facet>
                             </apex:actionStatus>
 
+                            <apex:outputPanel rendered="{!IF(ISBLANK(activeCRCamMap),false,true)}">
                             <table class="crTable list">
-                                <apex:repeat value="{!activeCRCamMap}"
-                                                 var="ec">
-                                    <apex:outputPanel rendered="{!IF(ec == null,false,true)}" layout="none" >
+                                <apex:repeat value="{!activeCRCamMap[null]}"
+                                                 var="pcm">
+                                    <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
                                         <tr style="padding-top:10px;padding-bottom:10px;"
                                         class="dataRow"
                                         onmouseover="if (window.hiOn){hiOn(this);}"
@@ -464,9 +465,8 @@
                                         onfocus="if (window.hiOn){hiOn(this);}">
                                             <td>
                                             <h4>
-                                                <apex:outputText value="{!ec}"/>
+                                                <apex:outputText value="{!pcm.Campaign.Name}"/>
                                             </h4>
-                                            
                                             <apex:actionRegion >
                                                 <apex:commandLink styleClass="linkBtn"
                                                                   style="margin-left:10px;"
@@ -475,60 +475,47 @@
                                                                   reRender="CRTabPanel"
                                                                   status="removeStatus">
                                                     <apex:param name="inActivateParentButton"
-                                                                value="{!ec}"
+                                                                value="{!pcm.Id}"
                                                                 assignTo="{!inActivateCMId}"/>
                                                 </apex:commandLink>
                                             </apex:actionRegion>
                                             </td>
                                         </tr>
-                                        <!--
-                                        <apex:repeat value="{!activeCRCamMap[ec]}" var="cm">
-                                            <div style="padding:10px;">
-                                                <span style="margin-left:20px;"/>
-                                                
-                                                <apex:outputText value="{!cm.Campaign.name}"
-                                                         style="margin-left:15px;"/>
-                                                         
-                                                <apex:actionRegion >
-                                                    <apex:commandLink styleClass="linkBtn"
-                                                                      style="margin-left:10px;"
-                                                                      value="Remove"
-                                                                      action="{!inActivateCM}"
-                                                                      reRender="CRTabPanel"
-                                                                      status="removeStatus">
-                                                        <apex:param name="inActivateParentButton"
-                                                                    value="{!cm.Id}"
-                                                                    assignTo="{!inActivateCMId}"/>
-                                                    </apex:commandLink>
-                                                </apex:actionRegion>
-                                            </div>
-                                            
+                                    </apex:outputPanel>
+                                    <apex:outputPanel layout="none" rendered="{!CONTAINS(activeCRCamPMapKeys, pcm.campaign.Name)}">
+                                        <apex:repeat value="{!activeCRCamMap[pcm.campaign.Name]}" var="cm" rendered="{!NOT(ISBLANK(activeCRCamMap[pcm.campaign.Name]))}">
+                                            <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
+                                            <tr style="padding-top:10px;padding-bottom:10px;"
+                                                class="dataRow"
+                                                onmouseover="if (window.hiOn){hiOn(this);}"
+                                                onmouseout="if (window.hiOff){hiOff(this);}"
+                                                onblur="if (window.hiOff){hiOff(this);}"
+                                                onfocus="if (window.hiOn){hiOn(this);}">
+                                                <td>
+                                                    <span style="margin-left:20px;"/>
+                                                    
+                                                    <apex:outputText value="{!cm.Campaign.name}"
+                                                             style="margin-left:15px;"/>
+                                                             
+                                                    <apex:actionRegion >
+                                                        <apex:commandLink styleClass="linkBtn"
+                                                                          style="margin-left:10px;"
+                                                                          value="Remove"
+                                                                          reRender="CRTabPanel"
+                                                                          status="removeStatus">
+                                                            <apex:param name="inActivateParentButton"
+                                                                        value="{!cm.Id}"
+                                                                        assignTo="{!inActivateCMId}"/>
+                                                        </apex:commandLink>
+                                                    </apex:actionRegion>
+                                                </td>
+                                            </tr>
+                                            </apex:outputPanel>
                                         </apex:repeat>
-                                        -->
-                                    </apex:outputPanel>
-                                    <!--
-                                    <apex:outputPanel rendered="{!IF(ec.Campaign.ParentId != null,true,false)}">
-                                        <span style="margin-left:20px;"/>
-
-                                        <apex:outputText value="{!ec.Campaign.Name}"
-                                                         style="margin-left:15px;"/>
-
-                                        <apex:actionRegion >
-                                            <apex:commandLink styleClass="linkBtn"
-                                                              style="margin-left:10px;"
-                                                              value="Remove"
-                                                              action="{!inActivateCM}"
-                                                              reRender="CRTabPanel"
-                                                              status="removeStatus">
-                                                <apex:param name="inActivateChildButton"
-                                                            value="{!ec.Id}"
-                                                            assignTo="{!inActivateCMId}"/>
-                                            </apex:commandLink>
-                                        </apex:actionRegion>
-                                    </apex:outputPanel>
-                                    -->
+                                        </apex:outputPanel>
                                 </apex:repeat>
                             </table>
+                            </apex:outputPanel>
                             <br/>
                         </apex:pageBlock>
                     </apex:form>
@@ -549,7 +536,7 @@
                                     </b>
 
                                     <br/>
-                                    <apex:pageMessages id="camErrors"/>
+                                    <!--<apex:pageMessages id="camErrors"/>-->
                                     <br/>
 
                                     <apex:inputText id="camSearchInput"
@@ -777,7 +764,7 @@
                             </apex:outputLabel>
 
                             <br/>
-                            <apex:pageMessages id="intErrors"/>
+                            <!--<apex:pageMessages id="intErrors"/>-->
                             <br/>
 
                             <apex:inputText id="intSearchInput"

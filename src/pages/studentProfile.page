@@ -6,6 +6,7 @@
     standardStylesheets="false"
     docType="HTML-5.0"
     action="{!init}">
+    <apex:includeScript value="/support/console/38.0/integration.js"/>
     <head>
         <title>{!theContact.FirstName}'s Student Profile</title>
         <meta charset="utf-8" />
@@ -1425,14 +1426,7 @@
                                                         document.getElementById('usrDescription').value = '';
                                                         document.getElementById('modalError').innerHTML = '';
                                                         var url = window.location.href;
-                                                        if (url.indexOf('/apex') >= 0) {
-                                                            url = url.substring(0, url.indexOf('/apex')) + '/' + result;
-                                                            window.open(url,'_blank');
-                                                        }
-                                                        else if (url.indexOf('/console') >= 0) {
-                                                            url = url.substring(0, url.indexOf('/console')) + '/' + result;
-                                                            window.open(url,'_blank');
-                                                        }
+                                                        sforce.console.openPrimaryTab(null, './' + result, true);
                                                         jQuery('#myModal').modal('hide');
                                                     });
                                                 }

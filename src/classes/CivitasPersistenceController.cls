@@ -1,10 +1,10 @@
-public class CivitasPersistenceController{
+global class CivitasPersistenceController{
 
-    public static List<String> months = new List<String>();
-	public static Integer dayValue = 0;
-    public static List<CivitasWrapper> dataList {get; set;}
-    public static String emplId {get; set;}
-    public static Decimal persistenceLevel;
+    global static List<String> months = new List<String>();
+	global static Integer dayValue = 0;
+    global static List<CivitasWrapper> dataList {get; set;}
+    global static String emplId {get; set;}
+    global static Decimal persistenceLevel;
     
     public static string currentTerm{
         get{
@@ -85,7 +85,7 @@ public class CivitasPersistenceController{
         }
     
     @RemoteAction
-    public static List<CivitasWrapper> getData(String emplidIn){
+    global static List<CivitasWrapper> getData(String emplidIn){
         dataList = new List<CivitasWrapper>();
         Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplidIn LIMIT 1];
         for (CV_ASU_STDNT_TERM__x trm : [
@@ -127,7 +127,7 @@ public class CivitasPersistenceController{
         set;
     }
     
-    public class CivitasWrapper{
+    global class CivitasWrapper{
         public String empl;
         public String name;
         public Date snapDate;

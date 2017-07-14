@@ -33,7 +33,8 @@ public with sharing class CampaignMemberService
             'Campaign.Event_Start_Date__c, Campaign.Event_End_Date__c, ' +
             'Campaign.Interest_PeopleSoft_Major__c, Campaign.StartDate, Campaign.EndDate ' +
             'FROM CampaignMember ' +
-            'WHERE ContactId = :contactId';
+            'WHERE ContactId = :contactId ' +
+            'ORDER BY Campaign.ParentId, Campaign.Name ASC';
 
         camMems = Database.query(soql);
 

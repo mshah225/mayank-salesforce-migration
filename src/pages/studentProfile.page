@@ -2994,7 +2994,7 @@
                                     document.getElementById('ugap_gpa').innerHTML =
                                     '<a href="https://students.asu.edu/gpa-calculator" target="_blank">' +
                                         result.jbtRetAcadSummaryVw.CUM_GPA__c +
-                                    '</a>';
+                                    '</a> ' + '<a href="https://students.asu.edu/gpa-calculator"  class="fa fa-calculator" aria-hidden="true"></a>';
                                     document.getElementById('ugap_cumulative_hours').innerHTML =
                                         (result.jbtRetAcadSummaryVw.TOT_CUMULATIVE__c == '' ? '--' : result.jbtRetAcadSummaryVw.TOT_CUMULATIVE__c);
                                    /* if (result.STATUS__c > 0) {

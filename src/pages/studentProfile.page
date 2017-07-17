@@ -47,8 +47,6 @@
             function setTabTitle() {
                 //Set the current tab's title
                 try {
-                    var name = "{!theContact.FirstName}";
-                    console.log(name);
                     sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
                     inConsole = true;
                 } catch (e) {
@@ -3129,7 +3127,7 @@
                             document.getElementById("psHousingErrorsGen").innerHTML =
                                 "";
 
-                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                            if (! result.length == 0 && ! Object.getOwnPropertyNames(result).length == 0) {
                                 $j('#residenceFloor').html(result[0].BOOKING_FLOOR_SUITE__c);
                                 $j('#residenceSection').html(result[0].BOOKING_SECTION__c);
                                 $j('#residenceHall').html(result[0].BOOKING_BUILDING__c);
@@ -3179,7 +3177,7 @@
                             document.getElementById("psHousingErrorsGen").innerHTML =
                                 "";
 
-                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                            if (! result.length == 0 && Object.getOwnPropertyNames(result).length == 0) {
                                 $j('#mealPlanStatus').html(result[0].MEAL_PLAN_STATUS__c);
                             } else {
                                 document.getElementById("psHousingErrorsGen").innerHTML +=

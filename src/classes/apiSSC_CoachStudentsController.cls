@@ -1,3 +1,9 @@
+/*****************************************
+* File: apiSSC_CoachStudentsController
+* Author: James Galindo
+* Description: Custom api controller for coaches/students
+* Last Modified By: James Galindo - Added Mobile_Phone__c to the SOQL for Pitch app.
+******************************************/
 @RestResource(urlMapping='/SuccessCoachStudents')
 global with sharing class apiSSC_CoachStudentsController {
 
@@ -20,7 +26,7 @@ global with sharing class apiSSC_CoachStudentsController {
                  ORDER BY ASURiteID__c ASC];
          if(coaches.size()>0)
          {
-             studentList = [SELECT Id, EMPLID__c, Name, Student__r.Name,Student__r.Email
+             studentList = [SELECT Id, EMPLID__c, Name, Student__r.Name,Student__r.Email, Mobile_Phone__c
                              FROM Success_Student__c 
                              WHERE Success_Resource__r.Resource__r.Alias =: coachId];
          }

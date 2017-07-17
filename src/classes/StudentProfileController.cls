@@ -1719,6 +1719,32 @@ global with sharing class StudentProfileController
 
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
+
+    @RemoteAction
+    global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
+        try{
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
+            Id student = [SELECT Id FROM Contact WHERE emplId__c =: emplidIn LIMIT 1].Id;
+            RecordType rt = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
+            Case feedbackCase = new Case(
+                        status = 'New',
+                        RecordType = rt,
+    	                contactId = student,
+    	                subject = subjectIn,
+    	                description = descriptionIn,
+    	                Origin__c = 'Student Profile',
+                        IsVisibleInSelfService = false
+    	    );
+    	            
+    	    insert feedbackCase;
+    	    
+    	    return feedbackCase.Id;
+	    } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        return null;
+    }
+    
     public String subPlanString {
         get{
             if(subPlanString == null){

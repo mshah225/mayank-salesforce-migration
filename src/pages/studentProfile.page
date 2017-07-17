@@ -1434,6 +1434,8 @@
                                             
                                             function clearError() {
                                                 document.getElementById('modalError').innerHTML = '';
+                                                document.getElementById('usrSubject').value = '';
+                                                document.getElementById('usrDescription').value = '';
                                             };
                                         </script>
                                         <div class="modal fade" id="myModal" role="dialog">

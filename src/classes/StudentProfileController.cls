@@ -114,8 +114,26 @@ global with sharing class StudentProfileController
                 // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
+
+                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
+                if (studentProgramDataList.size() > 0) {
+				          studentProgram = studentProgramDataList[0];
+				        }
+                profileHeader = getProfileHeader(theContact.EMPLID__c);
+                getTermInfo();
+
+                sIList = getServiceIndicators(theContact.emplId__c);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-        
+                studentDemographic = getStudentDemographicData(theContact.emplId__c);
+                
+                for(JBT_RET_GENERAL_RIGHT__x prg : studentProgramDataList){
+                    if(prg.ACAD_CAREER__c.equals('UGRD')){
+                        ugStudentProgram = prg;
+                    }
+                    else if (prg.ACAD_CAREER__c.equals('GRAD')){
+                        gradStudentProgram = prg;
+                    }
+                }
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
         
@@ -155,16 +173,18 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-                
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
                     			  Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
                                   WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
                 ];
-                if(tmpSubPlanList.size() > 0){
-                    subProgramPlan = tmpSubPlanList[0];  
-                }
                 
+                if(tmpSubPlanList.size() > 0){
+                    for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
+                        subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
+                    }
+                    subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
+                }
                 // Temporary solution for beta release; setting currentTerm to a hard-coded value
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
@@ -502,6 +522,41 @@ global with sharing class StudentProfileController
         else
         {
             return new List<PS_STDNT_CAR_MLSTN__x>();
+        }
+    }
+    
+    @RemoteAction
+    // Get student transcript information
+    global static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
+        vars = new List<String>();
+        List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts;
+        
+        // Build out the list to avoid 'null de-reference' errors
+        // TODO : Limit only to transcripts less than 365 days old
+        // NOTE: This external object was incorrectly mapped. Even though
+        // we are filtering by Contact__c, we need to pass it an EMPLID,
+        // not a Contact ID, in order for this query to work.
+        try {
+            transcripts = (
+                Test.isRunningTest() ? new List<JBT_RET_TRANSCRIPT_SENT_VW__x>() : [
+                    SELECT
+                        EMPLID__c, ADDRESS1__c, ADDRESS2__c, ADDRESS3__c,
+                        ADDRESS4__c, CITY__c, COUNTRY__c, SEND_TO_NAME__c,
+                        POSTAL__c, STATE__c, STATUS__c, REQUEST_OR_SENT_DATE__c,
+                        DisplayURL, ExternalId, Id
+                    FROM JBT_RET_TRANSCRIPT_SENT_VW__x
+                    WHERE EMPLID__c = :emplId
+                    ORDER BY REQUEST_OR_SENT_DATE__c DESC, SEND_TO_NAME__c DESC
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        if (transcripts.size() > 0) {
+            return transcripts;
+        } else {
+            return new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
         }
     }
 
@@ -1084,7 +1139,28 @@ global with sharing class StudentProfileController
         return (creditByExamList.size() > 0? creditByExamList : new List<PS_ASU_SP_TRNSFR_V__x>());
 
     }
-
+    
+    // Get the Term information from Jitterbit
+    public static List<JBT_RET_TERMS_VW__x> getTerms() {
+        List<JBT_RET_TERMS_VW__x> termList;
+        
+        try {
+            termList =
+            (
+                Test.isRunningTest() ? new List<JBT_RET_TERMS_VW__x>() :
+                [
+                    SELECT CURR_TERM_INCLUDE_SUMMER__c,
+                    NEXT_TERM_INCLUDE_SUMMER__c, PREV_TERM__c
+                    FROM JBT_RET_TERMS_VW__x
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return (termList.size() > 0? termList : new List<JBT_RET_TERMS_VW__x>());
+    }
+    
     // Get Transfer Work Information
     @RemoteAction
     global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
@@ -1147,14 +1223,66 @@ global with sharing class StudentProfileController
             wrapper.faBalance = balanceList[0];
 
         List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
-        System.debug('Balance: ' + wrapper.faBalance.BALANCE_AMT__c);
         if (!snpRecords.isEmpty())
         {
             wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;
         }
 
         return wrapper;
-    } 
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_BOOKING_VW__x> housingInfoList = new List<REZ_HOUSING_BOOKING_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                housingInfoList =
+                [
+                    SELECT
+                        BOOKING_BUILDING__c, BOOKING_CAMPUS__c,
+                        BOOKING_FLOOR_SUITE__c, BOOKING_SECTION__c,
+                        BOOKING_STATUS__c, CHECK_IN_DT__c, CHECK_OUT_DT__c,
+                        TERM_CD__c
+                    FROM REZ_HOUSING_BOOKING_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY CHECK_OUT_DT__c DESC
+                ];
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return housingInfoList;
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_MEAL_PLAN_VW__x> getMealPlanInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_MEAL_PLAN_VW__x> mealPlanInfoList = new List<REZ_HOUSING_MEAL_PLAN_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                mealPlanInfoList =    
+                [
+                    SELECT
+                        MEAL_PLAN_STATUS__c, TERM_CD__c
+                    FROM REZ_HOUSING_MEAL_PLAN_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY MEAL_PLAN_END_DT__c
+                ];                
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return mealPlanInfoList;
+    }
 
     @RemoteAction
     global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
@@ -1209,6 +1337,14 @@ global with sharing class StudentProfileController
                     ORDER BY SRVC_IND_ACTIVE_DT__c ASC, SRVC_IND_CD__c ASC
                 ]
             );
+            Date currentDate = date.today();
+            
+            for(Integer i = serviceIndicatorList.size()-1; i >= 0; i--){
+                Date tempDate = serviceIndicatorList[i].SCC_SI_END_DT__c;
+                if (tempDate < currentDate) {
+                    serviceIndicatorList.remove(i);
+                }
+            }
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
@@ -1542,7 +1678,7 @@ global with sharing class StudentProfileController
                 [SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c
                  FROM   PS_ASU_SP_ENRHLD_V__x
                  WHERE  EMPLID__c = :emplid
-                   AND  (STRM__c = :currentTerm OR STRM__c = '0000')
+                   AND  (STRM__c >= :currentTerm OR STRM__c = '0000')
                  ORDER BY STRM__c ASC, SRVC_IND_CD__c ASC 
                 ]
             );
@@ -1584,5 +1720,41 @@ global with sharing class StudentProfileController
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
 
+    @RemoteAction
+    global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
+        try{
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
+            Id student = [SELECT Id FROM Contact WHERE emplId__c =: emplidIn LIMIT 1].Id;
+            RecordType rt = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
+            Case feedbackCase = new Case(
+                        status = 'New',
+                        RecordType = rt,
+    	                contactId = student,
+    	                subject = subjectIn,
+    	                description = descriptionIn,
+    	                Origin__c = 'Student Profile',
+                        IsVisibleInSelfService = false
+    	    );
+    	            
+    	    insert feedbackCase;
+    	    
+    	    return feedbackCase.Id;
+	    } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        return null;
+    }
+    
+    public String subPlanString {
+        get{
+            if(subPlanString == null){
+                return '';
+            }
+            else{
+                return subPlanString;
+            }
+        }
+        set;
+    }
     private class StudentProfileException extends Exception {}
 }

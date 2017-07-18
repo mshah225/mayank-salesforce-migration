@@ -287,11 +287,15 @@
                             break;
                     }
                 } else if (event.type === 'exception') {
-                    document.getElementById("chart_div").innerHTML =
+                    document.getElementById("errorMessage").innerHTML =
                         event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        document.getElementById("chart_div").innerHTML = "";
+                        document.getElementById("leftID").float = "none";
                 } else {
-                    document.getElementById("chart_div").innerHTML =
-                        "<b>Error: </b>" + event.message;
+                    document.getElementById("errorMessage").innerHTML =
+                        "<b>No Data is Currently Available</b>";
+                    document.getElementById("chart_div").innerHTML = "";
+                    document.getElementById("leftID").float = "none";
                 }
             });
         }
@@ -304,7 +308,8 @@
                 </th>
             </tr>
         </table>
-        <div class="left" style="float: left; height: 150px; margin-left: 20px; margin-top: 30px; margin-bottom: 15px">
+        <div id="errorMessage" style="margin-left: 20px; margin-top: 30px;"></div>
+        <div id="leftID" class="left" style="float: left; height: 150px; margin-left: 20px; margin-top: 30px; margin-bottom: 15px">
             <style>
                 #level, #lastUpdated, #change, #levelChangeDate {
                 display: block;

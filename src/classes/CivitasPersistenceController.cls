@@ -111,7 +111,6 @@ global class CivitasPersistenceController{
                 dataList[0].termInfo = 'Fall';
             }
         }
-        
         return dataList;
     }
     

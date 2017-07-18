@@ -3057,7 +3057,7 @@
                                     var asrValue = '--';
     
                                     //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' + 
-                                    //                              result.enrolledClasses[i].SESSION_CODE__c + '|' +
+                                    //                        clas      result.enrolledClasses[i].SESSION_CODE__c + '|' +
                                     //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
                                     //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;UGindicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
                                     //} 
@@ -3230,6 +3230,89 @@
     
             }
     
+            //Method to Sort Class List
+            function sortClassList(paramToSort){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.sortClasses}',
+                    paramToSort,
+                    function (result, event) {
+                        document.getElementById("ps_enrolled_classes").style.display = "initial";
+
+                        var html = "" +
+                            "<div class='table-responsive'>" +
+                                "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
+                                    "<thead>" +
+                                        "<tr>" +
+                                            "<th>Term</th>" +
+                                            "<th>Session</th>" +
+                                            "<th>Class</th>" +
+                                            "<th>Course</th>" +
+                                            "<th>Title</th>" +
+                                            "<th>Topic</th>" +
+                                            "<th>Units</th>" +
+                                            "<th>Instructor(s)</th>" +
+                                            "<th>Days</th>" +
+                                            "<th>Times</th>" +
+                                            "<th>Dates</th>" +
+                                            "<th>Location</th>" +
+                                            "<th>Grade</th>" +
+                                            "<th>ASR</th>" +
+                                        "</tr>" +
+                                    "</thead>" +
+                                    "<tbody>";
+
+                        for (var i = 0; i < result.length; i++) {
+                            var asrValue = '--';
+
+                            //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' + 
+                            //                        clas      result.enrolledClasses[i].SESSION_CODE__c + '|' +
+                            //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
+                            //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;UGindicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
+                            //} 
+
+                            html += "" +
+                                "<tr>" +
+                                    "<td>" + result[i].TERM_DESCR30__c + "</td>" +
+                                    "<td>" + result[i].SESSION_CODE__c + "</td>" +
+                                    "<td>" + Math.floor(result[i].CLASS_NBR__c) + "</td>" +
+                                    "<td>" + result[i].SUBJECT__c + " " + result.enrolledClasses[i].CATALOG_NBR__c + "</td>" +
+                                    "<td>" + result[i].CLASS_DESCR__c + "</td>" +
+                                    "<td>" + result[i].SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                    "<td>" + result[i].UNT_TAKEN__c + "</td>" +
+                                    "<td>" + result[i].FT_FULL_NAME__c + "</td>" +
+                                    "<td>" + result[i].SCH_HTML_DAY1__c + "</td>" +
+                                    "<td>" + result[i].SCH_DAILY_TIME__c + "</td>" +
+                                    "<td>" + result[i].ASU_SCH_DATES__c + "</td>" +
+                                    "<td>" + result[i].SSR_MTG_LOC_LONG__c + "</td>" +
+                                    "<td>" + result[i].CRSE_GRADE_OFF__c + "</td>" +
+                                    "<td style='display:none'>" + result[i].EARN_CREDIT__c + "" + result.enrolledClasses[i].VALID_ATTEMPT__c + "</td>" + 
+                                    "<td style='display:none'>" + result[i].CUR_GPA__c + "</td>" +
+                                    "<td style='display:none'>" + result[i].CUM_GPA__c + "</td>" +
+                                    "<td style='display:none'>" + result[i].STRM__c + "</td>";
+
+                            if (result.asrClasses.indexOf(result[i].STRM__c + '|' + 
+                                                          result[i].SESSION_CODE__c + '|' +
+                                                          result[i].CLASS_NBR__c) > -1) {
+                                // ASR link opens Undergraduate Indicators tab when clicked
+                                html += "<td>" + '<a href="#" onclick="document.getElementById(\x27UGindicatorsLink\x27).click(); return false;">!</a>' + "</td>"
+                            } else {
+                                html += "<td>--</td>";
+                            }
+                            
+                            html += "</tr>";
+
+                        }
+
+                        html += "</tbody></table></div>";
+
+                        html += "<div style='float:right; font-weight:bold;' id='ps_enrolled_classes_summary'/><br/>";
+                        html += "<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>";
+
+                        document.getElementById('ps_enrolled_classes').innerHTML = html;
+                        cleanUpUndefined("ps_enrolled_classes");
+                    }
+            }
+            
             // Method to get Credit by Exam 
             function getCreditByExamData() {
                 document.getElementById("psCreditByExamErrors").innerHTML =

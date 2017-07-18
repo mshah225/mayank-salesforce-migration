@@ -32,6 +32,7 @@ global with sharing class StudentProfileController
     public String suncardPhotoURL { get; set; }
     public String deceased { get; set; }
     public string contactId {get; set;}
+    global static string sortParameter{get; set;}
     private Set<String> ugTestCodes;
     private Set<String> gradTestCodes;
 
@@ -1006,16 +1007,99 @@ global with sharing class StudentProfileController
 
     }
 
-    global class classesWrapper
+    @RemoteAction
+    global static List<sortableClass> sortClasses(String paramToSortBy){
+        List<sortableClass> classList = new List<sortableClass>();
+        for (PS_ASU_SP_CLASS_V__x c : classesData.enrolledClasses) {
+            classList.add(c);
+        }
+        
+        classList.paramToSort = paramToSortBy;
+        classList.sort();
+        return classList;
+    }
+
+    global class sortableClass implements Comparable{
+        PS_ASU_SP_CLASS_V__x classInfo;
+        global static String paramToSort {set; get;}
+        
+        public sortableClass(PS_ASU_SP_CLASS_V__x classIn){
+            classInfo = classIn;
+        }
+        
+        global Integer compareTo(Object compareObj) {
+            if (paramToSort.equals('Session')) {
+                return compareObj.enrolledClasses.SESSION_CODE__c.compareTo(this.enrolledClasses.SESSION_CODE__c);
+            } else if (paramToSort.equals('Class')) {
+                return compareObj.enrolledClasses.CLASS_NBR__c.compareTo(this.enrolledClasses.CLASS_NBR__c);
+            } else if (paramToSort.equals('Course')) {
+                return compareObj.enrolledClasses.CRSE_ID__c.compareTo(this.enrolledClasses.CRSE_ID__c);
+            } else if (paramToSort.equals('Title')) {
+                return compareObj.enrolledClasses.CLASS_DESCR__c.compareTo(this.enrolledClasses.CLASS_DESCR__c);
+            } else if (paramToSort.equals('Topic')) {
+                return compareObj.enrolledClasses.SSR_CLSTOPIC_DESCR__c.compareTo(this.enrolledClasses.SSR_CLSTOPIC_DESCR__c);
+            } else if (paramToSort.equals('Units')) {
+                return compareObj.enrolledClasses.UNT_TAKEN__c.compareTo(this.enrolledClasses.UNT_TAKEN__c);
+            } else if (paramToSort.equals('Instructor(s)')) {
+                return compareObj.enrolledClasses.FT_FULL_NAME__c.compareTo(this.enrolledClasses.FT_FULL_NAME__c);
+            } else if (paramToSort.equals('Days')) {
+                return compareObj.enrolledClasses.SCH_HTML_DAY1__c.compareTo(this.enrolledClasses.SCH_HTML_DAY1__c);
+            } else if (paramToSort.equals('Times')) {
+                return compareObj.enrolledClasses.SCH_DAILY_TIME__c.compareTo(this.enrolledClasses.SCH_DAILY_TIME__c);
+            } else if (paramToSort.equals('Dates')) {
+                return compareObj.enrolledClasses.ASU_SCH_DATES__c.compareTo(this.enrolledClasses.ASU_SCH_DATES__c);
+            } else if (paramToSort.equals('Location')) {
+                return compareObj.enrolledClasses.SSR_MTG_LOC_LONG__c.compareTo(this.enrolledClasses.SSR_MTG_LOC_LONG__c);
+            } else if (paramToSort.equals('Grade')) {
+                return compareObj.enrolledClasses.CRSE_GRADE_OFF__c.compareTo(this.enrolledClasses.CRSE_GRADE_OFF__c);
+            } else {
+                return 0;
+            }
+        }
+    }
+    
+    global class classesWrapper implements Comparable
     {
         //public Map<String, String> classTerms = new Map<String, String>();
         public Set<String> classTerms = new Set<String>();
         public Set<String> classSessions = new Set<String>();
         public Set<String> asrClasses = new Set<String>();
+        public string paramToSort {set; get;}
 
         public List<PS_ASU_SP_CLASS_V__x> enrolledClasses = new List<PS_ASU_SP_CLASS_V__x>();
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
+        
 
+        global Integer compareTo(Object compareObj) {
+            if (paramToSort.equals('Session')) {
+                return compareObj.enrolledClasses.SESSION_CODE__c.compareTo(this.enrolledClasses.SESSION_CODE__c);
+            } else if (paramToSort.equals('Class')) {
+                return compareObj.enrolledClasses.CLASS_NBR__c.compareTo(this.enrolledClasses.CLASS_NBR__c);
+            } else if (paramToSort.equals('Course')) {
+                return compareObj.enrolledClasses.CRSE_ID__c.compareTo(this.enrolledClasses.CRSE_ID__c);
+            } else if (paramToSort.equals('Title')) {
+                return compareObj.enrolledClasses.CLASS_DESCR__c.compareTo(this.enrolledClasses.CLASS_DESCR__c);
+            } else if (paramToSort.equals('Topic')) {
+                return compareObj.enrolledClasses.SSR_CLSTOPIC_DESCR__c.compareTo(this.enrolledClasses.SSR_CLSTOPIC_DESCR__c);
+            } else if (paramToSort.equals('Units')) {
+                return compareObj.enrolledClasses.UNT_TAKEN__c.compareTo(this.enrolledClasses.UNT_TAKEN__c);
+            } else if (paramToSort.equals('Instructor(s)')) {
+                return compareObj.enrolledClasses.FT_FULL_NAME__c.compareTo(this.enrolledClasses.FT_FULL_NAME__c);
+            } else if (paramToSort.equals('Days')) {
+                return compareObj.enrolledClasses.SCH_HTML_DAY1__c.compareTo(this.enrolledClasses.SCH_HTML_DAY1__c);
+            } else if (paramToSort.equals('Times')) {
+                return compareObj.enrolledClasses.SCH_DAILY_TIME__c.compareTo(this.enrolledClasses.SCH_DAILY_TIME__c);
+            } else if (paramToSort.equals('Dates')) {
+                return compareObj.enrolledClasses.ASU_SCH_DATES__c.compareTo(this.enrolledClasses.ASU_SCH_DATES__c);
+            } else if (paramToSort.equals('Location')) {
+                return compareObj.enrolledClasses.SSR_MTG_LOC_LONG__c.compareTo(this.enrolledClasses.SSR_MTG_LOC_LONG__c);
+            } else if (paramToSort.equals('Grade')) {
+                return compareObj.enrolledClasses.CRSE_GRADE_OFF__c.compareTo(this.enrolledClasses.CRSE_GRADE_OFF__c);
+            } else {
+                return 0;
+            }
+        }
+        
         public void sortEnrolledClasses(String paramToSort) {
             if (paramToSort.equals('Session')) {
                 
@@ -1107,11 +1191,11 @@ global with sharing class StudentProfileController
 
             for (PS_ASU_SP_CLASS_V__x course: classList)
             {
-                if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL')
+                if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL') {
                     classesData.enrolledClasses.add(course);
-                else
+                } else {
                     classesData.droppedClasses.add(course);
-
+                }
                 classesData.classTerms.add(course.STRM__c+ '|' + course.TERM_DESCR30__c);
                 classesData.classSessions.add(course.SESSION_CODE__c);
             }     

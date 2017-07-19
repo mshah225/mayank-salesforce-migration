@@ -32,7 +32,8 @@ global with sharing class StudentProfileController
     public String suncardPhotoURL { get; set; }
     public String deceased { get; set; }
     public string contactId {get; set;}
-    global static string sortParameter{get; set;}
+    global static String paramToSort {set; get;}
+    global static boolean sortDirect = true;
     private Set<String> ugTestCodes;
     private Set<String> gradTestCodes;
 
@@ -1008,125 +1009,121 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    global static List<sortableClass> sortClasses(String paramToSortBy){
+    global static List<sortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, boolean sortDirection){
         List<sortableClass> classList = new List<sortableClass>();
-        for (PS_ASU_SP_CLASS_V__x c : classesData.enrolledClasses) {
-            classList.add(c);
+        System.debug(sortDirection);
+        sortDirect = sortDirection;
+        for (PS_ASU_SP_CLASS_V__x c : listOfClasses) {
+            classList.add(new sortableClass(c));
         }
         
-        classList.paramToSort = paramToSortBy;
+        paramToSort = paramToSortBy;
         classList.sort();
+        if(!sortDirection) {
+            List<sortableClass> reversedList = new List<sortableClass>();
+            for(sortableClass sc : classList) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            System.debug(reversedList);
+            System.debug(classList);
+            return reversedList;
+        }
         return classList;
     }
 
     global class sortableClass implements Comparable{
         PS_ASU_SP_CLASS_V__x classInfo;
-        global static String paramToSort {set; get;}
+        
         
         public sortableClass(PS_ASU_SP_CLASS_V__x classIn){
             classInfo = classIn;
         }
         
-        global Integer compareTo(Object compareObj) {
+        global Integer compareTo(Object compareTo) {
+            sortableClass compareToClass = (sortableClass)compareTo;
+            Integer sortDir = 0;
             if (paramToSort.equals('Session')) {
-                return compareObj.enrolledClasses.SESSION_CODE__c.compareTo(this.enrolledClasses.SESSION_CODE__c);
+                sortDir = compareToClass.classInfo.SESSION_CODE__c.compareTo(this.classInfo.SESSION_CODE__c);
             } else if (paramToSort.equals('Class')) {
-                return compareObj.enrolledClasses.CLASS_NBR__c.compareTo(this.enrolledClasses.CLASS_NBR__c);
+                sortDir = compareToClass.classInfo.CLASS_NBR__c.compareTo(this.classInfo.CLASS_NBR__c);
             } else if (paramToSort.equals('Course')) {
-                return compareObj.enrolledClasses.CRSE_ID__c.compareTo(this.enrolledClasses.CRSE_ID__c);
+                sortDir = compareToClass.classInfo.CRSE_ID__c.compareTo(this.classInfo.CRSE_ID__c);
             } else if (paramToSort.equals('Title')) {
-                return compareObj.enrolledClasses.CLASS_DESCR__c.compareTo(this.enrolledClasses.CLASS_DESCR__c);
+                sortDir = compareToClass.classInfo.CLASS_DESCR__c.compareTo(this.classInfo.CLASS_DESCR__c);
             } else if (paramToSort.equals('Topic')) {
-                return compareObj.enrolledClasses.SSR_CLSTOPIC_DESCR__c.compareTo(this.enrolledClasses.SSR_CLSTOPIC_DESCR__c);
+                if(compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c != null) {
+                    sortDir = compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c.compareTo(this.classInfo.SSR_CLSTOPIC_DESCR__c);
+                } else if (compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c == null) {
+                    sortDir = 1;
+                } else {
+                    sortDir = 0;
+                }
             } else if (paramToSort.equals('Units')) {
-                return compareObj.enrolledClasses.UNT_TAKEN__c.compareTo(this.enrolledClasses.UNT_TAKEN__c);
-            } else if (paramToSort.equals('Instructor(s)')) {
-                return compareObj.enrolledClasses.FT_FULL_NAME__c.compareTo(this.enrolledClasses.FT_FULL_NAME__c);
+                if(compareToClass.classInfo.UNT_TAKEN__c == this.classInfo.UNT_TAKEN__c){
+                    sortDir = 0;
+                } else if (this.classInfo.UNT_TAKEN__c > compareToClass.classInfo.UNT_TAKEN__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (paramToSort.equals('Instructor')) {
+                if(compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c != null) {
+                    sortDir = compareToClass.classInfo.FT_FULL_NAME__c.compareTo(this.classInfo.FT_FULL_NAME__c);
+                } else if (compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c == null) {
+                    sortDir = 1;
+                } else {
+                    sortDir = 0;
+                }
             } else if (paramToSort.equals('Days')) {
-                return compareObj.enrolledClasses.SCH_HTML_DAY1__c.compareTo(this.enrolledClasses.SCH_HTML_DAY1__c);
+                if(compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c != null) {
+                    sortDir = compareToClass.classInfo.SCH_HTML_DAY1__c.compareTo(this.classInfo.SCH_HTML_DAY1__c);
+                } else if (compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c == null) {
+                    sortDir = 1;
+                } else {
+                    sortDir = 0;
+                }
             } else if (paramToSort.equals('Times')) {
-                return compareObj.enrolledClasses.SCH_DAILY_TIME__c.compareTo(this.enrolledClasses.SCH_DAILY_TIME__c);
+                if(compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c != null) {
+                    sortDir = compareToClass.classInfo.SCH_DAILY_TIME__c.compareTo(this.classInfo.SCH_DAILY_TIME__c);
+                } else if (compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c == null) {
+                    sortDir = 1;
+                } else {
+                    sortDir = 0;
+                }
             } else if (paramToSort.equals('Dates')) {
-                return compareObj.enrolledClasses.ASU_SCH_DATES__c.compareTo(this.enrolledClasses.ASU_SCH_DATES__c);
+                sortDir = compareToClass.classInfo.ASU_SCH_DATES__c.compareTo(this.classInfo.ASU_SCH_DATES__c);
             } else if (paramToSort.equals('Location')) {
-                return compareObj.enrolledClasses.SSR_MTG_LOC_LONG__c.compareTo(this.enrolledClasses.SSR_MTG_LOC_LONG__c);
+                sortDir = compareToClass.classInfo.SSR_MTG_LOC_LONG__c.compareTo(this.classInfo.SSR_MTG_LOC_LONG__c);
             } else if (paramToSort.equals('Grade')) {
-                return compareObj.enrolledClasses.CRSE_GRADE_OFF__c.compareTo(this.enrolledClasses.CRSE_GRADE_OFF__c);
+                if(compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c != null) {
+                    sortDir = compareToClass.classInfo.CRSE_GRADE_OFF__c.compareTo(this.classInfo.CRSE_GRADE_OFF__c);
+                } else if (compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c == null) {
+                    sortDir = 1;
+                } else {
+                    sortDir = 0;
+                }
             } else {
-                return 0;
+                sortDir = 0;
             }
+            
+            return sortDir * -1;
         }
     }
     
-    global class classesWrapper implements Comparable
+    global class classesWrapper
     {
         //public Map<String, String> classTerms = new Map<String, String>();
         public Set<String> classTerms = new Set<String>();
         public Set<String> classSessions = new Set<String>();
         public Set<String> asrClasses = new Set<String>();
-        public string paramToSort {set; get;}
 
         public List<PS_ASU_SP_CLASS_V__x> enrolledClasses = new List<PS_ASU_SP_CLASS_V__x>();
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
         
-
-        global Integer compareTo(Object compareObj) {
-            if (paramToSort.equals('Session')) {
-                return compareObj.enrolledClasses.SESSION_CODE__c.compareTo(this.enrolledClasses.SESSION_CODE__c);
-            } else if (paramToSort.equals('Class')) {
-                return compareObj.enrolledClasses.CLASS_NBR__c.compareTo(this.enrolledClasses.CLASS_NBR__c);
-            } else if (paramToSort.equals('Course')) {
-                return compareObj.enrolledClasses.CRSE_ID__c.compareTo(this.enrolledClasses.CRSE_ID__c);
-            } else if (paramToSort.equals('Title')) {
-                return compareObj.enrolledClasses.CLASS_DESCR__c.compareTo(this.enrolledClasses.CLASS_DESCR__c);
-            } else if (paramToSort.equals('Topic')) {
-                return compareObj.enrolledClasses.SSR_CLSTOPIC_DESCR__c.compareTo(this.enrolledClasses.SSR_CLSTOPIC_DESCR__c);
-            } else if (paramToSort.equals('Units')) {
-                return compareObj.enrolledClasses.UNT_TAKEN__c.compareTo(this.enrolledClasses.UNT_TAKEN__c);
-            } else if (paramToSort.equals('Instructor(s)')) {
-                return compareObj.enrolledClasses.FT_FULL_NAME__c.compareTo(this.enrolledClasses.FT_FULL_NAME__c);
-            } else if (paramToSort.equals('Days')) {
-                return compareObj.enrolledClasses.SCH_HTML_DAY1__c.compareTo(this.enrolledClasses.SCH_HTML_DAY1__c);
-            } else if (paramToSort.equals('Times')) {
-                return compareObj.enrolledClasses.SCH_DAILY_TIME__c.compareTo(this.enrolledClasses.SCH_DAILY_TIME__c);
-            } else if (paramToSort.equals('Dates')) {
-                return compareObj.enrolledClasses.ASU_SCH_DATES__c.compareTo(this.enrolledClasses.ASU_SCH_DATES__c);
-            } else if (paramToSort.equals('Location')) {
-                return compareObj.enrolledClasses.SSR_MTG_LOC_LONG__c.compareTo(this.enrolledClasses.SSR_MTG_LOC_LONG__c);
-            } else if (paramToSort.equals('Grade')) {
-                return compareObj.enrolledClasses.CRSE_GRADE_OFF__c.compareTo(this.enrolledClasses.CRSE_GRADE_OFF__c);
-            } else {
-                return 0;
-            }
-        }
-        
-        public void sortEnrolledClasses(String paramToSort) {
-            if (paramToSort.equals('Session')) {
-                
-            } else if (paramToSort.equals('Class')) {
-                
-            } else if (paramToSort.equals('Course')) {
-                
-            } else if (paramToSort.equals('Title')) {
-                
-            } else if (paramToSort.equals('Topic')) {
-                
-            } else if (paramToSort.equals('Units')) {
-                
-            } else if (paramToSort.equals('Instructor(s)')) {
-                
-            } else if (paramToSort.equals('Days')) {
-                
-            } else if (paramToSort.equals('Times')) {
-                
-            } else if (paramToSort.equals('Dates')) {
-                
-            } else if (paramToSort.equals('Location')) {
-                
-            } else if (paramToSort.equals('Grade')) {
-                
-            }
-        }
     }
 
     @RemoteAction
@@ -1204,7 +1201,7 @@ global with sharing class StudentProfileController
                 classesData.classSessions.add('All');
             }
         }
-
+        
         return classesData;
 
     }
@@ -1298,7 +1295,6 @@ global with sharing class StudentProfileController
             wrapper.faBalance = balanceList[0];
 
         List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
-        System.debug('Balance: ' + wrapper.faBalance.BALANCE_AMT__c);
         if (!snpRecords.isEmpty())
         {
             wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;

@@ -1104,9 +1104,9 @@ global with sharing class StudentProfileController
                 if(compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c != null) {
                     sortDir = compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c.compareTo(this.classInfo.SSR_CLSTOPIC_DESCR__c);
                 } else if (compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c == null) {
-                    sortDir = 1;
+                    sortDir = -1;
                 } else {
-                    sortDir = 0;
+                    sortDir = 1;
                 }
             } else if (paramToSort.equals('Units')) {
                 if(compareToClass.classInfo.UNT_TAKEN__c == this.classInfo.UNT_TAKEN__c){
@@ -1120,25 +1120,25 @@ global with sharing class StudentProfileController
                 if(compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c != null) {
                     sortDir = compareToClass.classInfo.FT_FULL_NAME__c.compareTo(this.classInfo.FT_FULL_NAME__c);
                 } else if (compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c == null) {
-                    sortDir = 1;
+                    sortDir = -1;
                 } else {
-                    sortDir = 0;
+                    sortDir = 1;
                 }
             } else if (paramToSort.equals('Days')) {
                 if(compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c != null) {
                     sortDir = compareToClass.classInfo.SCH_HTML_DAY1__c.compareTo(this.classInfo.SCH_HTML_DAY1__c);
                 } else if (compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c == null) {
-                    sortDir = 1;
+                    sortDir = -1;
                 } else {
-                    sortDir = 0;
+                    sortDir = 1;
                 }
             } else if (paramToSort.equals('Times')) {
                 if(compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c != null) {
                     sortDir = compareToClass.classInfo.SCH_DAILY_TIME__c.compareTo(this.classInfo.SCH_DAILY_TIME__c);
                 } else if (compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c == null) {
-                    sortDir = 1;
+                    sortDir = -1;
                 } else {
-                    sortDir = 0;
+                    sortDir = 1;
                 }
             } else if (paramToSort.equals('Dates')) {
                 sortDir = compareToClass.classInfo.ASU_SCH_DATES__c.compareTo(this.classInfo.ASU_SCH_DATES__c);
@@ -1148,9 +1148,9 @@ global with sharing class StudentProfileController
                 if(compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c != null) {
                     sortDir = compareToClass.classInfo.CRSE_GRADE_OFF__c.compareTo(this.classInfo.CRSE_GRADE_OFF__c);
                 } else if (compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c == null) {
-                    sortDir = 1;
+                    sortDir = -1;
                 } else {
-                    sortDir = 0;
+                    sortDir = 1;
                 }
             } else {
                 sortDir = 0;

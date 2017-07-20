@@ -32,8 +32,9 @@ global with sharing class StudentProfileController
     public String suncardPhotoURL { get; set; }
     public String deceased { get; set; }
     public string contactId {get; set;}
-    global static String paramToSort {set; get;}
+    global static String paramToSort {get; set;}
     global static String examParamSort {get; set;}
+    global static String transferParamSort {get; set;}
     global static boolean sortDirect = true;
     private Set<String> ugTestCodes;
     private Set<String> gradTestCodes;
@@ -1056,6 +1057,30 @@ global with sharing class StudentProfileController
         }
         return examList;
     }
+    
+    @RemoteAction
+    global static List<sortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, boolean sortDirection){
+        List<sortableTransferWork> transferList = new List<sortableTransferWork>();
+        sortDirect = sortDirection;
+        for (JBT_RET_CLASS_XFER__x c : listOfTransfer) {
+            transferList.add(new sortableTransferWork(c));
+        }
+        
+        transferParamSort = paramToSortBy;
+        transferList.sort();
+        if(!sortDirection) {
+            List<sortableTransferWork> reversedList = new List<sortableTransferWork>();
+            for(sortableTransferWork sc : transferList) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            return reversedList;
+        }
+        return transferList;
+    }
 
     global class sortableClass implements Comparable{
         PS_ASU_SP_CLASS_V__x classInfo;
@@ -1163,6 +1188,75 @@ global with sharing class StudentProfileController
                 if(compareToExam.examInfo.UNT_TRNSFR__c == this.examInfo.UNT_TRNSFR__c){
                     sortDir = 0;
                 } else if (this.examInfo.UNT_TRNSFR__c > compareToExam.examInfo.UNT_TRNSFR__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else {
+                sortDir = 0;
+            }
+            
+            return sortDir * -1;
+        }
+    }
+    
+    global class sortableTransferWork implements Comparable{
+        JBT_RET_CLASS_XFER__x  transferInfo;
+        
+        
+        public sortableTransferWork(JBT_RET_CLASS_XFER__x  transferIn){
+            transferInfo = transferIn;
+        }
+        
+        global Integer compareTo(Object compareTo) {
+            sortableTransferWork compareToTransfer = (sortableTransferWork)compareTo;
+            Integer sortDir = 0;
+            if (transferParamSort.equals('Term')) {
+                sortDir = compareToTransfer.transferInfo.TERM__c.compareTo(this.transferInfo.TERM__c );
+            } else if (transferParamSort.equals('Institution')) {
+                sortDir = compareToTransfer.transferInfo.INSTITUTION__c.compareTo(this.transferInfo.INSTITUTION__c );
+            } else if (transferParamSort.equals('Course')) {
+                sortDir = compareToTransfer.transferInfo.COURSE__c.compareTo(this.transferInfo.COURSE__c );
+            } else if (transferParamSort.equals('Title')) {
+                sortDir = compareToTransfer.transferInfo.TITLE__c.compareTo(this.transferInfo.TITLE__c );
+            } else if (transferParamSort.equals('Topic')) {
+                if(compareToTransfer.transferInfo.TOPIC__c != null && this.transferInfo.TOPIC__c != null) {
+                    sortDir = compareToTransfer.transferInfo.TOPIC__c.compareTo(this.transferInfo.TOPIC__c);
+                } else if (compareToTransfer.transferInfo.TOPIC__c != null && this.transferInfo.TOPIC__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (transferParamSort.equals('Grade')) {
+                sortDir = compareToTransfer.transferInfo.GRADE__c.compareTo(this.transferInfo.GRADE__c );
+            } else if (transferParamSort.equals('RCredit')) {
+                if(compareToTransfer.transferInfo.RCREDIT__c == this.transferInfo.RCREDIT__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.RCREDIT__c > compareToTransfer.transferInfo.RCREDIT__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (transferParamSort.equals('ECredit')) {
+                if(compareToTransfer.transferInfo.ECREDIT__c == this.transferInfo.ECREDIT__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.ECREDIT__c > compareToTransfer.transferInfo.ECREDIT__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (transferParamSort.equals('Hours')) {
+                if(compareToTransfer.transferInfo.GPAHRS__c == this.transferInfo.GPAHRS__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.GPAHRS__c > compareToTransfer.transferInfo.GPAHRS__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (transferParamSort.equals('Points')) {
+                if(compareToTransfer.transferInfo.GPAPTS__c == this.transferInfo.GPAPTS__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.GPAPTS__c > compareToTransfer.transferInfo.GPAPTS__c) {
                     sortDir = 1;
                 } else {
                     sortDir = -1;

@@ -3082,7 +3082,7 @@
                                     "<div class='table-responsive'>" +
                                         "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
                                             "<thead>" +
-                                                "<tr>" +
+                                                "<tr style=\"cursor:pointer\">" +
                                                     "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
                                                     "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
                                                     "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
@@ -3163,7 +3163,7 @@
                                     "<div class='table-responsive'>" +
                                         "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
                                             "<thead>" +
-                                                "<tr>" +
+                                                "<tr style=\"cursor:pointer\">" +
                                                     "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
                                                     "<th onclick=\"sortDroppedOnClick('Sessioj')\">Session</th>" +
                                                     "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
@@ -3291,7 +3291,7 @@
                             "<div class='table-responsive'>" +
                                 "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
                                     "<thead>" +
-                                        "<tr>" +
+                                        "<tr style=\"cursor:pointer\">" +
                                             "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
                                             "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
                                             "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
@@ -3371,7 +3371,7 @@
                                 "<div class='table-responsive'>" +
                                     "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
                                         "<thead>" +
-                                            "<tr>" +
+                                            "<tr style=\"cursor:pointer\">" +
                                                 "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
                                                 "<th onclick=\"sortDroppedOnClick('Session')\">Session</th>" +
                                                 "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
@@ -3434,7 +3434,7 @@
                                     "<div class='table-responsive'>" +
                                         "<table class='table table-striped table-bordered'> " +
                                             "<thead>" +
-                                                "<tr>" +
+                                                "<tr style=\"cursor:pointer\">" +
                                                     "<th onclick=\"sortExamOnClick('Title')\">Title</th>" +
                                                     "<th onclick=\"sortExamOnClick('Course Title')\">Course</th>" +
                                                     "<th onclick=\"sortExamOnClick('Score')\">Score</th>" +
@@ -3490,7 +3490,7 @@
                                     "<div class='table-responsive'>" +
                                         "<table class='table table-striped table-bordered'> " +
                                             "<thead>" +
-                                                "<tr>" +
+                                                "<tr style=\"cursor:pointer\">" +
                                                     "<th onclick=\"sortExamOnClick('Title')\">Title</th>" +
                                                     "<th onclick=\"sortExamOnClick('Course Title')\">Course</th>" +
                                                     "<th onclick=\"sortExamOnClick('Score')\">Score</th>" +
@@ -3543,7 +3543,7 @@
                                     "<div class='table-responsive'>" +
                                         "<table class='table table-striped table-bordered'> " +
                                             "<thead>" +
-                                                "<tr>" +
+                                                "<tr style=\"cursor:pointer\">" +
                                                     "<th onclick=\"sortTransferOnClick('Term')\">Term</th>" +
                                                     "<th onclick=\"sortTransferOnClick('Institution')\">Institution</th>" +
                                                     "<th onclick=\"sortTransferOnClick('Course')\">Course</th>" +
@@ -3611,7 +3611,7 @@
                                 "<div class='table-responsive'>" +
                                     "<table class='table table-striped table-bordered'> " +
                                         "<thead>" +
-                                            "<tr>" +
+                                            "<tr style=\"cursor:pointer\">" +
                                                 "<th onclick=\"sortTransferOnClick('Term')\">Term</th>" +
                                                 "<th onclick=\"sortTransferOnClick('Institution')\">Institution</th>" +
                                                 "<th onclick=\"sortTransferOnClick('Course')\">Course</th>" +

@@ -3000,8 +3000,22 @@
                 sortDroppedClassList(name, ascDirDropped);
             }
             
+            //Method for clicking to sort Transfer Exams
+            var ascDirExam = true;
+            var currSortExam = "Title";
+            function sortDroppedOnClick(name) {
+                if(name == currSortExam){
+                    ascDirExam = !ascDirExam;
+                } else {
+                    ascDirExam = true;
+                    currSortExam = name;
+                }
+                sortExamList(name, ascDirExam);
+            }
+            
             var enrolledWrapper;
             var droppedWrapper;
+            var examWrapper;
             // Method to get Enrolled Classes
             function getEnrolledClasses() {
                 if (classesData != null)
@@ -3405,16 +3419,16 @@
                             if (!Object.getOwnPropertyNames(result).length == 0) {
                                 document.getElementById("ps_credit_by_exam_work").style.display =
                                     "initial";
-    
+                                examWrapper = result;
                                 var html = "" +
                                     "<div class='table-responsive'>" +
                                         "<table class='table table-striped table-bordered'> " +
                                             "<thead>" +
                                                 "<tr>" +
-                                                    "<th>Title</th>" +
-                                                    "<th>Course</th>" +
-                                                    "<th>Score</th>" +
-                                                    "<th>Units Transferred</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Course Title')\">Course</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Score')\">Score</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Transfer')\">Units Transferred</th>" +
                                                 "</tr>" +
                                             "</thead>" +
                                             "<tbody>";
@@ -3450,6 +3464,53 @@
                 );
             }
     
+            //Method to Sort Dropped Class List
+            function sortExamList(paramToSort, direction){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.sortExams}',
+                    paramToSort,
+                    examWrapper,
+                    direction,
+                    function (result, event) {
+                        if (result.length > 0) {
+                            document.getElementById("ps_credit_by_exam_work").style.display =
+                                    "initial";
+                                    
+                                var html = "" +
+                                    "<div class='table-responsive'>" +
+                                        "<table class='table table-striped table-bordered'> " +
+                                            "<thead>" +
+                                                "<tr>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Course Title')\">Course</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Score')\">Score</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Transfer')\">Units Transferred</th>" +
+                                                "</tr>" +
+                                            "</thead>" +
+                                            "<tbody>";
+    
+                                for (var i = 0; i < result.length; i++) {
+    
+                                    html += "" +
+                                        "<tr>" +
+                                            "<td>" + result[i].examInfo.TITLE__c + "</td>" +
+                                            "<td>" + result[i].examInfo.COURSE_TITLE__c + "</td>" +
+                                            "<td>" + result[i].examInfo.SCORE__c + "</td>" +
+                                            "<td>" + result[i].examInfo.UNT_TRNSFR__c + "</td>" +
+                                        "</tr>";
+                                }
+    
+                                html += "</tbody></table></div>";
+    
+                                document.getElementById('ps_credit_by_exam_work').innerHTML = html;
+                                cleanUpUndefined("ps_credit_by_exam_work");
+                        } else {
+                            document.getElementById("psCreditByExamErrors").innerHTML =
+                                'No credit by exam found.';
+                        }
+                    });
+            }
+            
             // Method to get Transfer Work
             function getTransferWork() {
                 document.getElementById("psTransferWorkErrors").innerHTML =

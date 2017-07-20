@@ -2971,21 +2971,34 @@
                 }
             }
             
-            //Method for clicking to sort classes
-            var ascDir = true;
-            var currSort = "Term";
-            function sortOnClick(name) {
-                if(name == currSort){
-                    ascDir = !ascDir;
+            //Method for clicking to sort enrolled classes
+            var ascDirEnrolled = true;
+            var currSortEnrolled = "Term";
+            function sortEnrolledOnClick(name) {
+                if(name == currSortEnrolled){
+                    ascDirEnrolled = !ascDirEnrolled;
                 } else {
-                    ascDir = true;
-                    currSort = name;
+                    ascDirEnrolled = true;
+                    currSortEnrolled = name;
                 }
-                console.log(ascDir);
-                sortClassList(name, ascDir);
+                sortEnrolledClassList(name, ascDirEnrolled);
             }
             
-            var classWrapper;
+            //Method for clicking to sort Dropped Classes
+            var ascDirDropped = true;
+            var currSortDropped = "Term";
+            function sortDroppedOnClick(name) {
+                if(name == currSortDropped){
+                    ascDirDropped = !ascDirDropped;
+                } else {
+                    ascDirDropped = true;
+                    currSortDropped = name;
+                }
+                sortDroppedClassList(name, ascDirDropped);
+            }
+            
+            var enrolledWrapper;
+            var droppedWrapper;
             // Method to get Enrolled Classes
             function getEnrolledClasses() {
                 if (classesData != null)
@@ -3006,7 +3019,8 @@
                             document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
                                 "";
                             classesData = result;
-                            classWrapper = result.enrolledClasses;
+                            enrolledWrapper = result.enrolledClasses;
+                            droppedWrapper = result.droppedClasses;
                             var selectHtml = "";
                             if (!Object.getOwnPropertyNames(classesData.classSessions).length == 0) {
                                 selectHtml += "<label for='ps_classes_session_select'>Session:&nbsp;</label><select id='ps_classes_session_select' onchange='filterClasses()'>";
@@ -3042,19 +3056,19 @@
                                         "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
                                             "<thead>" +
                                                 "<tr>" +
-                                                    "<th onclick=\"sortOnClick('Term')\">Term</th>" +
-                                                    "<th onclick=\"sortOnClick('Session')\">Session</th>" +
-                                                    "<th onclick=\"sortOnClick('Class')\">Class</th>" +
-                                                    "<th onclick=\"sortOnClick('Course')\">Course</th>" +
-                                                    "<th onclick=\"sortOnClick('Title')\">Title</th>" +
-                                                    "<th onclick=\"sortOnClick('Topic')\">Topic</th>" +
-                                                    "<th onclick=\"sortOnClick('Units')\">Units</th>" +
-                                                    "<th onclick=\"sortOnClick('Instructor')\">Instructor(s)</th>" +
-                                                    "<th onclick=\"sortOnClick('Days')\">Days</th>" +
-                                                    "<th onclick=\"sortOnClick('Times')\">Times</th>" +
-                                                    "<th onclick=\"sortOnClick('Dates')\">Dates</th>" +
-                                                    "<th onclick=\"sortOnClick('Location')\">Location</th>" +
-                                                    "<th onclick=\"sortOnClick('Grade')\">Grade</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
                                                     "<th>ASR</th>" +
                                                 "</tr>" +
                                             "</thead>" +
@@ -3123,14 +3137,14 @@
                                         "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
                                             "<thead>" +
                                                 "<tr>" +
-                                                    "<th>Term</th>" +
-                                                    "<th>Session</th>" +
-                                                    "<th>Class</th>" +
-                                                    "<th>Course</th>" +
-                                                    "<th>Title</th>" +
-                                                    "<th>Topic</th>" +
-                                                    "<th>Units</th>" +
-                                                    "<th>Status</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Sessioj')\">Session</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Course')\">Course</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Topic')\">Topic</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Units')\">Units</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Status')\">Status</th>" +
                                                     "<th>ASR</th>" +
                                                 "</tr>" +
                                             "</thead>" +
@@ -3237,11 +3251,11 @@
             }
     
             //Method to Sort Class List
-            function sortClassList(paramToSort, direction){
+            function sortEnrolledClassList(paramToSort, direction){
                 Visualforce.remoting.Manager.invokeAction(
                     '{!$RemoteAction.StudentProfileController.sortClasses}',
                     paramToSort,
-                    classWrapper,
+                    enrolledWrapper,
                     direction,
                     function (result, event) {
                         document.getElementById("ps_enrolled_classes").style.display = "initial";
@@ -3251,19 +3265,19 @@
                                 "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
                                     "<thead>" +
                                         "<tr>" +
-                                            "<th onclick=\"sortOnClick('Term')\">Term</th>" +
-                                            "<th onclick=\"sortOnClick('Session')\">Session</th>" +
-                                            "<th onclick=\"sortOnClick('Class')\">Class</th>" +
-                                            "<th onclick=\"sortOnClick('Course')\">Course</th>" +
-                                            "<th onclick=\"sortOnClick('Title')\">Title</th>" +
-                                            "<th onclick=\"sortOnClick('Topic')\">Topic</th>" +
-                                            "<th onclick=\"sortOnClick('Units')\">Units</th>" +
-                                            "<th onclick=\"sortOnClick('Instructor')\">Instructor(s)</th>" +
-                                            "<th onclick=\"sortOnClick('Days')\">Days</th>" +
-                                            "<th onclick=\"sortOnClick('Times')\">Times</th>" +
-                                            "<th onclick=\"sortOnClick('Dates')\">Dates</th>" +
-                                            "<th onclick=\"sortOnClick('Location')\">Location</th>" +
-                                            "<th onclick=\"sortOnClick('Grade')\">Grade</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
                                             "<th>ASR</th>" +
                                         "</tr>" +
                                     "</thead>" +
@@ -3311,6 +3325,64 @@
                         document.getElementById('ps_enrolled_classes').innerHTML = html;
                         filterClasses();
                         cleanUpUndefined("ps_enrolled_classes");
+                    });
+            }
+            
+            //Method to Sort Dropped Class List
+            function sortDroppedClassList(paramToSort, direction){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.sortClasses}',
+                    paramToSort,
+                    droppedWrapper,
+                    direction,
+                    function (result, event) {
+                        if (result.length > 0) {
+                            document.getElementById("ps_dropped_withdrawn_classes").style.display =
+                                "initial";
+
+                            var html = "" +
+                                "<div class='table-responsive'>" +
+                                    "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
+                                        "<thead>" +
+                                            "<tr>" +
+                                                "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Session')\">Session</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Course')\">Course</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Topic')\">Topic</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Units')\">Units</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Status')\">Status</th>" +
+                                                "<th>ASR</th>" +
+                                            "</tr>" +
+                                        "</thead>" +
+                                        "<tbody>";
+
+                            for (var i = 0; i < result.length; i++) {
+
+                                html += "" +
+                                    "<tr>" +
+                                        "<td>" + result[i].classInfo.TERM_DESCR30__c + "</td>" +
+                                        "<td>" + result[i].classInfo.SESSION_CODE__c + "</td>" +
+                                        "<td>" + Math.floor(result[i].classInfo.CLASS_NBR__c) + "</td>" +
+                                        "<td>" + result[i].classInfo.SUBJECT__c + " " + result[i].classInfo.CATALOG_NBR__c + "</td>" +
+                                        "<td>" + result[i].classInfo.CLASS_DESCR__c + "</td>" +
+                                        "<td>" + result[i].classInfo.SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                        "<td>" + result[i].classInfo.UNT_TAKEN__c + "</td>" +
+                                        "<td>" + result[i].classInfo.ENRL_STATUS_REASON__c + "</td>" +
+                                        "<td>" + "--" + "</td>" +
+                                    "</tr>";
+                            }
+
+                            html += "</tbody></table></div>";
+
+                            document.getElementById('ps_dropped_withdrawn_classes').innerHTML = html;
+                            cleanUpUndefined("ps_dropped_withdrawn_classes");
+                        } else {
+                            document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
+                                'No dropped or withdrawn classes found.';
+                        }
+                        filterClasses();
                     });
             }
             

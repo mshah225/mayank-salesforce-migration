@@ -233,18 +233,18 @@ public class IDHelper {
         boolean exists = false;
         
         for (RecordType rt : [
-            SELECT Id, Name, SObjectType
+            SELECT Id, DeveloperName, SObjectType
             FROM RecordType
             ORDER BY SObjectType ASC
         ]) {
-            if ((rt.Name == Name || rt.Id == recordID) && rt.SobjectType == SObjectType) {
+            if ((rt.DeveloperName == Name || rt.Id == recordID) && rt.SobjectType == SObjectType) {
                 exists = true;
             }
             
             temp = new Record_Type_ids__c();
             
             temp.Name = string.valueOf(++key);
-            temp.Name__c = rt.Name;
+            temp.Name__c = rt.DeveloperName;
             temp.SObject_Type__c = rt.SobjectType;
             temp.Id__c = rt.Id;
             temp.Prefix__c = temp.Id__c.left(3);

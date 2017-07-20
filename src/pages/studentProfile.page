@@ -6,6 +6,7 @@
     standardStylesheets="false"
     docType="HTML-5.0"
     action="{!init}">
+    <apex:includeScript value="/support/console/38.0/integration.js"/>
     <head>
         <title>{!theContact.FirstName}'s Student Profile</title>
         <meta charset="utf-8" />
@@ -45,11 +46,9 @@
             var inConsole = false;
             function setTabTitle() {
                 //Set the current tab's title
-                try {
-                    sforce.console.setTabTitle('{!theContact.FirstName}\'s Student Profile');
-                    inConsole = true;
-                } catch (e) {
-                    console.log('Notice: Tab title can only be set when the Student Profile is opened inside of a Service Console tab! ' + e.message);
+                if (sforce.console.isInConsole()) {
+                	sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
+                	inConsole = true;
                 }
             }
             var pageLoad = window.onload;
@@ -217,7 +216,6 @@
                                             <h4 class="intro">
                                                 <span style="color:#353535;">Sub-Plan:</span>
                                                 &nbsp;{!IF(subPlanString==null, '--', subPlanString)}
-
                                             </h4>
                                             
                                             <h4 class="intro">
@@ -341,6 +339,7 @@
                                                 &nbsp;Contact Information
                                             </h4>
                                         </div>
+                                        
                                         <div class="row">
                                             <apex:outputPanel id="generalContact">
                                                 <div class="col-sm-6">
@@ -395,6 +394,57 @@
                                                 </div>
                                             </apex:outputPanel>
                                         </div>
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;University Housing and Dining Information
+                                            </h4>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <apex:outputPanel id="generalResidence">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Residence Hall</th>
+                                                            <td>
+                                                                <span id="residenceFloor">--</span><br />
+                                                                <span id="residenceSection"></span><br />
+                                                                <span id="residenceHall"></span><br />
+                                                                <span id="residenceCampus"></span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Room Check-In Date</th>
+                                                            <td id="checkInDate">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Check-Out Date</th>
+                                                            <td id="checkOutDate">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Status</th>
+                                                            <td id="roomStatus">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Meal Plan</th>
+                                                            <td id="mealPlanStatus">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                        
+                                        <div id="psHousingErrorsGen"></div>
 
                                         <div class="page-header-smaller">
                                             <h4>
@@ -517,7 +567,7 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Expected Graduation Date</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.EXP_GRAD_TERM__c), '--', 
+                                                            <td>{!IF(ISBLANK(StudentProgram.EXP_GRAD_TERM__r.Name), '--', 
                                                                  StudentProgram.EXP_GRAD_TERM__r.Name)}
                                                             </td>
                                                         </tr>
@@ -531,7 +581,7 @@
                                                                 <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
                                                                     <apex:param value="{!studentProgram.APPT_DT__c}"/>
                                                                 </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT__c)}">--</apex:outputText>
+                                                                <apex:outputText rendered="{! (ISBLANK(studentProgram.APPT_DT__c))}">--</apex:outputText>
                                                             </td>
                                                         </tr>
 
@@ -544,7 +594,7 @@
                                                                 <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
                                                                     <apex:param value="{!studentProgram.APPT_DT_PENDING__c}"/>
                                                                 </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT_PENDING__c)}">--</apex:outputText>
+                                                                <apex:outputText rendered="{! (ISBLANK(studentProgram.APPT_DT_PENDING__c))}">--</apex:outputText>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -581,11 +631,9 @@
                                                         </apex:outputLink>
                                                     </apex:column>
                                                     <apex:column headerValue="Sub-Plan">
-
                                                         <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
                                                                          value="{!subPlanString}"/>
                                                         <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
-
                                                                          value="--"/>
                                                     </apex:column>
                                                     <apex:column headerValue="Plan Type"
@@ -1019,8 +1067,24 @@
                                     </apex:pageBlock>
                                 </div>
 
+                                
+                                
                                 <div role="tabpanel" class="tab-pane" id="UGindicators">
-                                    <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlock mode="maindetail">  
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;Persistence Outlook
+                                                <a class='fa fa-question-circle' data-html="true" title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a target="_blank" href="https://docs.google.com/document/d/1ezUBwCjwnZmcfdcsGeGIr_9roVJYsYhpkm3nU5xpFVo/edit">Visit knowledge article.</a>.</span>' data-placement='right' data-trigger='manual'></a>
+                                                </h4>
+                                        </div>
+                                        
+                                        <!-- Transcripts Sent -->
+                                        <div style="overflow:auto; max-height:300px; height: 300px">
+                                            <c:CivitasPersistenceData />
+                                        </div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1132,20 +1196,6 @@
 
                                         <div id="stdtRetentionResponseErrors"></div>
 
-                                        <!-- <div class="page-header-smaller">
-                                            <h4>
-                                                <i class="fa fa-caret-down"></i>
-                                                &nbsp;Graph Indicators
-                                            </h4>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                Graph indicator info
-                                                goes here.
-                                            </div>
-                                        </div> -->
-                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1400,6 +1450,70 @@
                                             </a>
                                         </td>
                                     </tr>
+                                    
+                                    <tr>
+                                        <td>
+                                            <a href="#" data-toggle="modal" data-target="#myModal">
+                                                Create New Service Case
+                                            </a>
+                                        </td>
+                                        
+                                        <script>
+                                            function submitCase(){
+                                                var subject = document.getElementById('usrSubject').value;
+                                                var description = document.getElementById('usrDescription').value;
+                                                if(subject.length <= 0 || description.length <= 0){
+                                                    document.getElementById('modalError').innerHTML = 'Please ensure that subject and description are not blank';
+                                                } else { 
+                                                    Visualforce.remoting.Manager.invokeAction(
+                                                    '{!$RemoteAction.StudentProfileController.createCase}',
+                                                    description,
+                                                    subject,
+                                                    '{!theContact.EMPLId__c}',
+                                                    function (result, event) {
+                                                        document.getElementById('usrSubject').value = '';
+                                                        document.getElementById('usrDescription').value = '';
+                                                        document.getElementById('modalError').innerHTML = '';
+                                                        var url = window.location.href;
+                                                        sforce.console.openPrimaryTab(null, './' + result, true);
+                                                        jQuery('#myModal').modal('hide');
+                                                    });
+                                                }
+                                            };
+                                            
+                                            function clearError() {
+                                                document.getElementById('modalError').innerHTML = '';
+                                                document.getElementById('usrSubject').value = '';
+                                                document.getElementById('usrDescription').value = '';
+                                            };
+                                        </script>
+                                        <div class="modal fade" id="myModal" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" onclick="clearError()" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">New Service Case</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div id="modalError" style="color:red"></div>
+                                                        <div class="form-group">
+                                                            <label for="comment">Subject:</label>
+                                                            <input type="text" class="form-control" id="usrSubject" />
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="comment">Description:</label>
+                                                            <textarea class="form-control" rows="5" id="usrDescription"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default"  onclick="submitCase();" >Submit</button>
+                                                        <button type="button" class="btn btn-default" onclick="clearError()" data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </tr>
                                 </table>
                             </div>
 
@@ -1566,20 +1680,36 @@
         <apex:includeScript value="{!URLFOR($Resource.bs_responsive_tabs)}"/>
 
         <script>
-            $j = jQuery.noConflict();
+
+        	$j = jQuery.noConflict();
+        	
+        	var timeoutHandle;
+
+            $j('.fa-question-circle').mouseenter(function(){
+                var that = $j(this)
+                that.tooltip('show');
+                window.clearTimeout(timeoutHandle);
+            });
+            
+            $j('.fa-question-circle').mouseleave(function(){
+                    var _this = $j(this);
+                timeoutHandle = window.setTimeout(function(){
+                    _this.tooltip('hide');
+                }, 2000);
+            });
 
             $j("#sunCard").error(function() {
                 $j(this).attr("src", "{!$Resource.blankAvatar}");
             });
         
             $j(document).ready(function() {
-                // $j('.fa-caret-down').hide();    
+                loadGeneralTab();
             });
 
             // Arrow Functionality
             $j(".page-header-smaller").click(function() {                                    
                 var container = $j(this);
-                var arrow = $j(this).find('.fa');
+                var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
                 
                 if (arrow.hasClass('fa-caret-down')) {
                     container.next().slideUp().addClass('hide');
@@ -1653,6 +1783,11 @@
             var financialAidData;
     
             // Wrappers
+            function loadGeneralTab() {
+                getHousingInfo();
+                getMealPlanInfo();
+            }
+            
             function loadUGAcademicsTab() {
                 getStdntCarMlstnsUG();
                 getStdntTestComps();
@@ -2850,7 +2985,7 @@
                                     document.getElementById('ugap_gpa').innerHTML =
                                     '<a href="https://students.asu.edu/gpa-calculator" target="_blank">' +
                                         result.jbtRetAcadSummaryVw.CUM_GPA__c +
-                                    '</a>';
+                                    '</a> ' + '<a href="https://students.asu.edu/gpa-calculator"  target="_blank" class="fa fa-calculator" aria-hidden="true"></a>';
                                     document.getElementById('ugap_cumulative_hours').innerHTML =
                                         (result.jbtRetAcadSummaryVw.TOT_CUMULATIVE__c == '' ? '--' : result.jbtRetAcadSummaryVw.TOT_CUMULATIVE__c);
                                    /* if (result.STATUS__c > 0) {
@@ -3030,6 +3165,86 @@
             var droppedWrapper;
             var examWrapper;
             var transferWrapper;
+            
+            // Method to load the Undergraduate Academic Progress 
+            function getHousingInfo() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getHousingInfo}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                "";
+
+                            if (! result.length == 0 && ! Object.getOwnPropertyNames(result).length == 0) {
+                                $j('#residenceFloor').html(result[0].BOOKING_FLOOR_SUITE__c);
+                                $j('#residenceSection').html(result[0].BOOKING_SECTION__c);
+                                $j('#residenceHall').html(result[0].BOOKING_BUILDING__c);
+                                $j('#residenceCampus').html(result[0].BOOKING_CAMPUS__c);
+                                
+                                var checkInDate = result[0].CHECK_IN_DT__c;
+                                checkInDate = new Date(checkInDate);
+                                checkInDate = (checkInDate.getUTCMonth() + 1) + '/' +
+                                    checkInDate.getUTCDate() + '/' +
+                                    checkInDate.getUTCFullYear();
+                                    
+                                var checkOutDate = result[0].CHECK_OUT_DT__c;
+                                checkOutDate = new Date(checkOutDate);
+                                checkOutDate = (checkOutDate.getUTCMonth() + 1) + '/' +
+                                    checkOutDate.getUTCDate() + '/' +
+                                    checkOutDate.getUTCFullYear();
+                                
+                                $j('#checkInDate').html(checkInDate);
+                                $j('#checkOutDate').html(checkOutDate);
+                                
+                                $j('#roomStatus').html(result[0].BOOKING_STATUS__c);
+                                
+                            } else {
+                                document.getElementById("psHousingErrorsGen").innerHTML +=
+                                    'No housing data found. ';
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message;
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+            
+            // Method to load the Undergraduate Academic Progress 
+            function getMealPlanInfo() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getMealPlanInfo}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                "";
+
+                            if (! result.length == 0 && Object.getOwnPropertyNames(result).length == 0) {
+                                $j('#mealPlanStatus').html(result[0].MEAL_PLAN_STATUS__c);
+                            } else {
+                                document.getElementById("psHousingErrorsGen").innerHTML +=
+                                    'No meal plan data found. ';
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psHousingErrorsGen").innerHTML +=
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            document.getElementById("psHousingErrorsGen").innerHTML +=
+                                event.message;
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+    
             // Method to get Enrolled Classes
             function getEnrolledClasses() {
                 if (classesData != null)

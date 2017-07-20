@@ -3026,6 +3026,7 @@
             var enrolledWrapper;
             var droppedWrapper;
             var examWrapper;
+            var transferWrapper;
             // Method to get Enrolled Classes
             function getEnrolledClasses() {
                 if (classesData != null)
@@ -3522,7 +3523,6 @@
             }
             
             // Method to get Transfer Work
-            var transferWrapper;
             function getTransferWork() {
                 document.getElementById("psTransferWorkErrors").innerHTML =
                     "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";

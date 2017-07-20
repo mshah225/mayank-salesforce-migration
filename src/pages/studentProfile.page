@@ -3010,7 +3010,7 @@
                 sortExamList(name, ascDirExam);
             }
             
-            //Method for clicking to sort Transfer Creidts
+            //Method for clicking to sort Transfer Credits
             var ascDirTransfer = true;
             var currSortTransfer = "Term";
             function sortTransferOnClick(name) {
@@ -3105,7 +3105,7 @@
                                     var asrValue = '--';
     
                                     //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' + 
-                                    //                        clas      result.enrolledClasses[i].SESSION_CODE__c + '|' +
+                                    //                              result.enrolledClasses[i].SESSION_CODE__c + '|' +
                                     //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
                                     //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;UGindicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
                                     //} 

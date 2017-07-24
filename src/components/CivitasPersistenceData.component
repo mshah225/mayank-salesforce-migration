@@ -80,6 +80,7 @@
     		function drawChart() {
                 var x = document.getElementById('FeedbackButton');
                 x.style.display = 'none';
+                var y = document.getElementById('persistenceLegend');
                 
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.CivitasPersistenceController.getData}',
@@ -87,6 +88,7 @@
                 function (result, event) {
                     console.log(result);
                 x.style.display = 'block';
+                y.style.display = 'block';
                 if (result.length > 0) {
                     jQuery('#FeedbackButton').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
                     jQuery('#FeedbackButtonMobile').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
@@ -261,8 +263,7 @@
                         gradient.appendChild(createSVG('stop',{offset:'100%'}));
                     });
         
-                    chart.draw(data, options);
-                    document.getElementById("legend").src="{!URLFOR($Resource.PersistenceLegend)}";               
+                    chart.draw(data, options);              
                     var latestOutlook = result[result.length-1].outlookLevel;
                     switch(latestOutlook) {
                         case 1:
@@ -380,10 +381,59 @@
         <div class="right" style="float: left; z-index: -1; margin-top: -20px">
             <div id="chart_div" style="height: 200px; width: 400px"></div>
         </div>
-        <div style="float: left; margin-top: 20px;">
-            <img id="legend"/>
+        <div id="persistenceLegend" style="float: left; margin-top: 40px; display: none;">
+            <div style="height: 140px; width: 110px; border-style: solid; border-width: 1px;">
+                <div class='my-legend'>
+                    <div class='legend-title'>Persistence Outlook</div>
+                    <div class='legend-scale'>
+                        <ul class='legend-labels'>
+                            <li><span style='background:#FFDB75;'></span>Very High</li>
+                            <li><span style='background:#F9B77D;'></span>High</li>
+                            <li><span style='background:#E29A82;'></span>Moderate</li>
+                            <li><span style='background:#CC8282;'></span>Low</li>
+                            <li><span style='background:#B56B83;'></span>Very Low</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <style type='text/css'>
+              .my-legend .legend-title {
+                text-align: left;
+                margin-bottom: 5px;
+                font-weight: bold;
+                font-size: 90%;
+                }
+              .my-legend .legend-scale ul {
+                margin: 0;
+                margin-bottom: 5px;
+                padding: 0;
+                float: left;
+                list-style: none;
+                }
+              .my-legend .legend-scale ul li {
+                font-size: 80%;
+                list-style: none;
+                margin-left: 0;
+                line-height: 18px;
+                margin-bottom: 2px;
+                }
+              .my-legend ul.legend-labels li span {
+                display: block;
+                float: left;
+                height: 16px;
+                width: 30px;
+                margin-right: 5px;
+                margin-left: 0;
+                border: 1px solid #999;
+                }
+              .my-legend {
+                font-size: 70%;
+                color: 		#000000;
+                clear: both;
+                padding: 10px
+                }
+            </style>
         </div>
-        
-        
     </div>
 </apex:component>

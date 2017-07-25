@@ -86,12 +86,15 @@ global class CivitasPersistenceController{
             WHERE Contact__c =: emplIdIn
             ORDER BY SNAP_DATE__c ASC
         ]) {
-            if(trm.ONLINE_SEGMENT__c != 'N' && trm.CAREER_SEGMENT__c != 'U'){
-                rejected.add(new CivitasWrapper('Rejected'));
-            }
+            //Checks if it's not in persson OR not an undergrad.
+            
             if (trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate) {
-                dataList.add(new CivitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
-                                                trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));                              
+                if (trm.ONLINE_SEGMENT__c != 'N' || trm.CAREER_SEGMENT__c != 'U') {
+                    rejected.add(new CivitasWrapper('Rejected'));
+                } else {
+                    dataList.add(new CivitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
+                                                    trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));    
+                }
             }                  
         }
         

@@ -97,7 +97,8 @@ global class CivitasPersistenceController{
             }                  
         }
         
-        if(rejected.size() > 0){
+	// Break out of the method and return the rejected wrapper, which will display a "No data found" message to the user
+        if (rejected.size() > 0) {
             return rejected;
         }
         

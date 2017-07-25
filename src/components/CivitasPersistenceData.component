@@ -78,18 +78,24 @@
     		
     
     		function drawChart() {
-                var x = document.getElementById('FeedbackButton');
-                x.style.display = 'none';
-                var y = document.getElementById('persistenceLegend');
+                var feedback = document.getElementById('FeedbackButton');
+                feedback.style.display = 'none';
+                var legendLabel = document.getElementById('persistenceLegend');
                 
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.CivitasPersistenceController.getData}',
                 getUrlParameter('id'),
                 function (result, event) {
-                    console.log(result);
-                x.style.display = 'block';
-                y.style.display = 'block';
+                feedback.style.display = 'block';
                 if (result.length > 0) {
+                    if(result[0].name == 'Rejected') {
+                        document.getElementById("errorMessage").innerHTML =
+                            "Persistence Outlook Level data is not available.";
+                        document.getElementById("chart_div").innerHTML = "";
+                        document.getElementById("leftID").float = "none";
+                        return;
+                    }
+                    legendLabel.style.display = 'block';
                     jQuery('#FeedbackButton').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
                     jQuery('#FeedbackButtonMobile').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
                     document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;

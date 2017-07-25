@@ -11,10 +11,7 @@ global class CivitasPersistenceController{
             if (currentTerm == null) {
                 JBT_RET_TERMS_VW__x currentTermInfo = 
                 [
-                    SELECT  CURR_TERM__c, CURR_TERM_INCLUDE_SUMMER__c, 
-                            NEXT_TERM_INCLUDE_SUMMER__c,
-                            DisplayUrl, ExternalId, Id, 
-                            NEXT_TERM__c, PREV_TERM__c, PREV_PREV_TERM__c 
+                    SELECT  CURR_TERM__c
                     FROM    JBT_RET_TERMS_VW__x
                     LIMIT 1
                 ];
@@ -35,13 +32,7 @@ global class CivitasPersistenceController{
             if (nextTerm == null) {
                 JBT_RET_TERMS_VW__x currentTermInfo = 
                 [
-                            SELECT CURR_TERM__c,
-                                   CURR_TERM_INCLUDE_SUMMER__c, 
-                                   NEXT_TERM_INCLUDE_SUMMER__c,
-                                   DisplayUrl, ExternalId, Id, 
-                                   NEXT_TERM__c, 
-                                   PREV_TERM__c,
-                                   PREV_PREV_TERM__c 
+                            SELECT NEXT_TERM_INCLUDE_SUMMER__c
                             FROM JBT_RET_TERMS_VW__x
                             LIMIT 1
                 ];
@@ -87,17 +78,28 @@ global class CivitasPersistenceController{
     @RemoteAction
     global static List<CivitasWrapper> getData(String emplidIn){
         dataList = new List<CivitasWrapper>();
+        List<CivitasWrapper> rejected = new List<CivitasWrapper>();
         Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplidIn LIMIT 1];
         for (CV_ASU_STDNT_TERM__x trm : [
-            Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c  
+            Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c, ONLINE_SEGMENT__c, CAREER_SEGMENT__c  
             FROM CV_ASU_STDNT_TERM__x 
             WHERE Contact__c =: emplIdIn
             ORDER BY SNAP_DATE__c ASC
         ]) {
+            // Reject this data if student is an online student, or if student isn't an undergrad
             if (trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate) {
-                dataList.add(new CivitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
-                                                trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));                              
+                if (trm.ONLINE_SEGMENT__c != 'N' || trm.CAREER_SEGMENT__c != 'U') {
+                    rejected.add(new CivitasWrapper('Rejected'));
+                } else {
+                    dataList.add(new CivitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
+                                                    trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));    
+                }
             }                  
+        }
+        
+	// Break out of the method and return the rejected wrapper, which will display a "No data found" message to the user
+        if (rejected.size() > 0) {
+            return rejected;
         }
         
         if (dataList.size() > 0) {
@@ -139,6 +141,10 @@ global class CivitasPersistenceController{
         public String fullDate;
         public String flag;
         public String termInfo;
+        
+        public civitasWrapper(String nameIn) {
+            name = nameIn;
+        }
         
         public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn){
             snapDate = sDate;

@@ -3227,7 +3227,7 @@
                             document.getElementById("psHousingErrorsGen").innerHTML =
                                 "";
 
-                            if (! result.length == 0 && Object.getOwnPropertyNames(result).length == 0) {
+                            if (! result.length == 0 && ! Object.getOwnPropertyNames(result).length == 0) {
                                 $j('#mealPlanStatus').html(result[0].MEAL_PLAN_STATUS__c);
                             } else {
                                 document.getElementById("psHousingErrorsGen").innerHTML +=

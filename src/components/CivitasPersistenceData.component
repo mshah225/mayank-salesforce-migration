@@ -133,7 +133,7 @@
                     data.addColumn('number', 'Outlook');
                     data.addColumn({type: 'string', role: 'style'});
                     data.addColumn({type: 'string', role: 'tooltip'});
-                                    
+                              
                     data.addRows([
                         [result[0].day, null, result[0].outlookLevel, null, result[0].dayDate + '\nOutlook: ' + result[0].levelDesc]
                     ]);
@@ -229,6 +229,8 @@
                     for (var i = 0; i < result[0].allMonths.length; i++) {
                         months.push({v:(i*30), f: result[0].allMonths[i]});        
                     }
+                    console.log(months);
+                    console.log(result[0].allMonths);
                     options['hAxis']['ticks'] = months;                    
                     
                     if (result[0].year != result[result.length-1].year) {

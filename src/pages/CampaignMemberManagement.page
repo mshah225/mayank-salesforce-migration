@@ -250,7 +250,7 @@
                                 </apex:outputLabel>
 
                                 <br/>
-                                <!--<apex:pageMessages id="eventErrors"/>-->
+                                <apex:pageMessages id="eventErrors"/>
                                 <br/>
 
                                 <apex:inputText id="eventSearchInput"
@@ -369,7 +369,7 @@
                                         </h3>
 
                                         <br />
-                                        <!--<apex:pageMessages id="deetsErrors"/>-->
+                                        <apex:pageMessages id="deetsErrors"/>
                                         <br />
 
                                         <apex:outputPanel id="statusSelect">
@@ -440,8 +440,8 @@
                           label="View Affiliations"
                           style="background-color:#f0f0f0;">
                     <apex:form style="font-size:9pt;overflow:auto;height:295px;max-width:1100px;">
-                        <apex:pageBlock title="Campaigns this Contact is associated with.">
-                            <apex:outputText rendered="{!IF(ISBLANK(activeCRCamMap),true,false)}">
+                        <apex:pageBlock title="Campaigns this Contact is associated with."> 
+                            <apex:outputText rendered="{!activeCRCamMapEmpty}">
                                 No Campaigns found for {!contact.Name}
                             </apex:outputText>
 
@@ -452,11 +452,31 @@
                                 </apex:facet>
                             </apex:actionStatus>
 
-                            <apex:outputPanel rendered="{!IF(ISBLANK(activeCRCamMap),false,true)}">
+                            <!-- Note, due to the fact that we are working with child objects that are related
+                                 through their parents (campaings), mapping them together is unique.
+                                 We use a map<string, List<CampaignMember>>. The "null" key of the map
+                                 contains campaign members whose campaigns have no parents (the parent campaig members).
+                                 The subsequent keys map the parent campaign (by name) to a list of campaign members for all child
+                                 campaigns of the parent campaign.
+                                 
+                                 Lost yet? Yes? Good..
+                                 
+                                 We display the parent campaign by looping through the null key to get the campaign
+                                 member, and then displaying that campaign member's campaign's name
+                                 
+                                 Then, we get the list whose key matches this campaign's name.
+                                 
+                                 Lastly, we loop through the list of campaign members for the child campaings and
+                                 display their campaign names.
+                            -->
+                            <!--<apex:outputPanel rendered="{!NOT(ISBLANK(activeCRCamMap[null]))}">-->
                             <table class="crTable list">
                                 <apex:repeat value="{!activeCRCamMap[null]}"
                                                  var="pcm">
                                     <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
+                                        <!-- Note the events on the <tr> element are provided by SF.
+                                             These events were taken from the page block table tag to
+                                             match default sf functionality -->
                                         <tr style="padding-top:10px;padding-bottom:10px;"
                                         class="dataRow"
                                         onmouseover="if (window.hiOn){hiOn(this);}"
@@ -471,9 +491,9 @@
                                                 <apex:commandLink styleClass="linkBtn"
                                                                   style="margin-left:10px;"
                                                                   value="Remove"
-                                                                  action="{!inActivateCM}"
                                                                   reRender="CRTabPanel"
-                                                                  status="removeStatus">
+                                                                  status="removeStatus"
+                                                                  action="{!inActivateCM}">
                                                     <apex:param name="inActivateParentButton"
                                                                 value="{!pcm.Id}"
                                                                 assignTo="{!inActivateCMId}"/>
@@ -482,6 +502,8 @@
                                             </td>
                                         </tr>
                                     </apex:outputPanel>
+                                    <!-- activeCRCamPMapKeys exists because VF has no way to check if a map has a key and will throw
+                                         Visualforce exceptions if the map doesn't contain the key -->
                                     <apex:outputPanel layout="none" rendered="{!CONTAINS(activeCRCamPMapKeys, pcm.campaign.Name)}">
                                         <apex:repeat value="{!activeCRCamMap[pcm.campaign.Name]}" var="cm" rendered="{!NOT(ISBLANK(activeCRCamMap[pcm.campaign.Name]))}">
                                             <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
@@ -501,8 +523,8 @@
                                                         <apex:commandLink styleClass="linkBtn"
                                                                           style="margin-left:10px;"
                                                                           value="Remove"
-                                                                          reRender="CRTabPanel"
-                                                                          status="removeStatus">
+                                                                          status="removeStatus"
+                                                                          action="{!inActivateCM}">
                                                             <apex:param name="inActivateParentButton"
                                                                         value="{!cm.Id}"
                                                                         assignTo="{!inActivateCMId}"/>
@@ -515,7 +537,7 @@
                                         </apex:outputPanel>
                                 </apex:repeat>
                             </table>
-                            </apex:outputPanel>
+                            <!--</apex:outputPanel>-->
                             <br/>
                         </apex:pageBlock>
                     </apex:form>
@@ -536,7 +558,7 @@
                                     </b>
 
                                     <br/>
-                                    <!--<apex:pageMessages id="camErrors"/>-->
+                                    <apex:pageMessages id="camErrors"/>
                                     <br/>
 
                                     <apex:inputText id="camSearchInput"
@@ -764,7 +786,7 @@
                             </apex:outputLabel>
 
                             <br/>
-                            <!--<apex:pageMessages id="intErrors"/>-->
+                            <apex:pageMessages id="intErrors"/>
                             <br/>
 
                             <apex:inputText id="intSearchInput"

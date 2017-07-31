@@ -469,7 +469,7 @@
                                  Lastly, we loop through the list of campaign members for the child campaings and
                                  display their campaign names.
                             -->
-                            <!--<apex:outputPanel rendered="{!NOT(ISBLANK(activeCRCamMap[null]))}">-->
+                            <apex:outputPanel rendered="{!NOT(activeCRCamMapEmpty)}">
                             <table class="crTable list">
                                 <apex:repeat value="{!activeCRCamMap[null]}"
                                                  var="pcm">
@@ -537,7 +537,7 @@
                                         </apex:outputPanel>
                                 </apex:repeat>
                             </table>
-                            <!--</apex:outputPanel>-->
+                            </apex:outputPanel>
                             <br/>
                         </apex:pageBlock>
                     </apex:form>

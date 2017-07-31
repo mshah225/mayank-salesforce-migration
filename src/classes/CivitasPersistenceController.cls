@@ -32,14 +32,12 @@ global class CivitasPersistenceController{
             if (nextTerm == null) {
                 JBT_RET_TERMS_VW__x currentTermInfo = 
                 [
-                            SELECT NEXT_TERM_INCLUDE_SUMMER__c
+                            SELECT NEXT_TERM__c
                             FROM JBT_RET_TERMS_VW__x
                             LIMIT 1
                 ];
-                nextTerm = currentTermInfo.NEXT_TERM_INCLUDE_SUMMER__c;
-                if (nextTerm.length() > 4) {
-                    nextTerm = nextTerm.subString(1, 5);
-                }
+                nextTerm = currentTermInfo.NEXT_TERM__c;
+                
             }
             return nextTerm;
         }
@@ -103,15 +101,28 @@ global class CivitasPersistenceController{
         }
         
         if (dataList.size() > 0) {
-            dataList[0].allMonths = months;
+            Integer startMonth = startDate.month();
+            Integer endMonth = endDate.month();
         	persistenceLevel = dataList[dataList.size()-1].outlookLevel;
             if(currentTerm.subString(3).equals('1')){
                 dataList[0].termInfo = 'Spring';
+                if(dataList[datalist.size()-1].snapDate.month() <= 5) {
+                    endMonth = 5;
+                } else {
+                    endMonth = dataList[datalist.size()-1].snapDate.month();
+                }
             } else if (currentTerm.subString(3).equals('4')) {
                 dataList[0].termInfo = 'Summer';
             } else {
                 dataList[0].termInfo = 'Fall';
             }
+            
+            
+            for (Integer i = startMonth; i <= endMonth; i++) {
+                String textMonth = monthToText(i);
+                months.add(textMonth);
+            }
+            dataList[0].allMonths = months;
         }
         return dataList;
     }
@@ -126,6 +137,37 @@ global class CivitasPersistenceController{
         }
         
         set;
+    }
+    
+    
+    private static string monthToText(Integer month){
+        if (month == 1) {
+            return 'Jan';
+        } else if (month == 2) {
+            return 'Feb';
+        } else if (month == 3) {
+            return 'Mar';
+        } else if (month == 4) {
+            return 'Apr';
+        } else if (month == 5) {
+            return 'May';
+        } else if (month == 6) {
+            return 'Jun';
+        } else if (month == 7) {
+            return 'Jul';
+        } else if (month == 8) {
+            return 'Aug';
+        } else if (month == 9) {
+            return 'Sep';
+        } else if(month == 10) {
+            return 'Oct';
+        } else if(month == 11) {
+            return 'Nov';
+        } else if(month == 12) {
+            return 'Dec';
+        } else {
+            return 'Error';
+        }
     }
     
     global class CivitasWrapper{
@@ -153,58 +195,13 @@ global class CivitasPersistenceController{
             String currMonth = monthToText(snapDate.month());
             name = fName + ' ' + lName;
             
-            if (months == null) {
-                months.add(currMonth);
-            } else{
-                Boolean found = false;
-                
-                for (String m : months) {
-                    if (m.equals(currMonth)) {
-                        found = true;
-                    }
-                }
-                
-                if (!found) {
-                    months.add(currMonth);
-                }
-            }
-        
             year = snapDate.year();
-            day = snapDate.day() + (30 * (months.size()-1));
+            day = snapDate.day()  + (30 * (snapDate.month()-1));
             dayDate = monthToText(snapDate.month()) + ' ' + snapDate.day();
             fullDate =  snapDate.month() + '/' + snapDate.day() + '/' + snapDate.year();
             levelDesc = description;
             flag = flagIn;
         }
         
-        private string monthToText(Integer month){
-            if (month == 1) {
-                return 'Jan';
-            } else if (month == 2) {
-                return 'Feb';
-            } else if (month == 3) {
-                return 'Mar';
-            } else if (month == 4) {
-                return 'Apr';
-            } else if (month == 5) {
-                return 'May';
-            } else if (month == 6) {
-                return 'Jun';
-            } else if (month == 7) {
-                return 'Jul';
-            } else if (month == 8) {
-                return 'Aug';
-            } else if (month == 9) {
-                return 'Sep';
-            } else if(month == 10) {
-                return 'Oct';
-            } else if(month == 11) {
-                return 'Nov';
-            } else if(month == 12) {
-                return 'Dec';
-            } else {
-                return 'Error';
-            }
-        }
     }
 }

@@ -221,7 +221,7 @@
                             ],
                         },
                         
-                        width: 400,
+                        width: 425,
                         height: 250
                     };
                 	
@@ -274,22 +274,23 @@
                     chart.draw(data, options);              
                     var latestOutlook = result[result.length-1].outlookLevel;
                     switch(latestOutlook) {
+                        case 0:
                         case 1:
                         case 2:
+                        case 3:
                             document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-1.png')}";
                             break;
-                        case 3:
                         case 4:
+                        case 5:
                             document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-2.png')}";
                             break; 
-                        case 5:
                         case 6:
                             document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-3.png')}";
                             break;
                         case 7:
-                        case 8:
                             document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, '/icon-4.png')}";
                             break;
+                        case 8:
                         case 9:
                         case 10:
                             document.getElementById("meter").src="{!URLFOR($Resource.PersistenceChart, 'icon-5.png')}";
@@ -389,7 +390,7 @@
         <div class="right" style="float: left; z-index: -1; margin-top: -20px">
             <div id="chart_div" style="height: 200px; width: 400px"></div>
         </div>
-        <div id="persistenceLegend" style="float: left; margin-top: 40px; display: none;">
+        <div id="persistenceLegend" style="float: left; margin-top: 40px; margin-left: 25px; display: none;">
             <div style="height: 140px; width: 110px; border-style: solid; border-width: 1px;">
                 <div class='my-legend'>
                     <div class='legend-title'>Persistence Outlook</div>

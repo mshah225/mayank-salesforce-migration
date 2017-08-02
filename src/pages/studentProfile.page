@@ -6,6 +6,7 @@
     standardStylesheets="false"
     docType="HTML-5.0"
     action="{!init}">
+    <apex:includeScript value="/support/console/38.0/integration.js"/>
     <head>
         <title>{!theContact.FirstName}'s Student Profile</title>
         <meta charset="utf-8" />
@@ -1396,6 +1397,70 @@
                                                 Student's PeopleSoft
                                             </a>
                                         </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>
+                                            <a href="#" data-toggle="modal" data-target="#myModal">
+                                                Create New Service Case
+                                            </a>
+                                        </td>
+                                        
+                                        <script>
+                                            function submitCase(){
+                                                var subject = document.getElementById('usrSubject').value;
+                                                var description = document.getElementById('usrDescription').value;
+                                                if(subject.length <= 0 || description.length <= 0){
+                                                    document.getElementById('modalError').innerHTML = 'Please ensure that subject and description are not blank';
+                                                } else { 
+                                                    Visualforce.remoting.Manager.invokeAction(
+                                                    '{!$RemoteAction.StudentProfileController.createCase}',
+                                                    description,
+                                                    subject,
+                                                    '{!theContact.EMPLId__c}',
+                                                    function (result, event) {
+                                                        document.getElementById('usrSubject').value = '';
+                                                        document.getElementById('usrDescription').value = '';
+                                                        document.getElementById('modalError').innerHTML = '';
+                                                        var url = window.location.href;
+                                                        sforce.console.openPrimaryTab(null, './' + result, true);
+                                                        jQuery('#myModal').modal('hide');
+                                                    });
+                                                }
+                                            };
+                                            
+                                            function clearError() {
+                                                document.getElementById('modalError').innerHTML = '';
+                                                document.getElementById('usrSubject').value = '';
+                                                document.getElementById('usrDescription').value = '';
+                                            };
+                                        </script>
+                                        <div class="modal fade" id="myModal" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" onclick="clearError()" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">New Service Case</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div id="modalError" style="color:red"></div>
+                                                        <div class="form-group">
+                                                            <label for="comment">Subject:</label>
+                                                            <input type="text" class="form-control" id="usrSubject" />
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="comment">Description:</label>
+                                                            <textarea class="form-control" rows="5" id="usrDescription"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default"  onclick="submitCase();" >Submit</button>
+                                                        <button type="button" class="btn btn-default" onclick="clearError()" data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </tr>
                                 </table>
                             </div>

@@ -1631,8 +1631,6 @@ global with sharing class StudentProfileController
 
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
-<<<<<<< HEAD
-=======
 
     @RemoteAction
     global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
@@ -1659,7 +1657,6 @@ global with sharing class StudentProfileController
         return null;
     }
     
->>>>>>> Add Method to create case
     public String subPlanString {
         get{
             if(subPlanString == null){

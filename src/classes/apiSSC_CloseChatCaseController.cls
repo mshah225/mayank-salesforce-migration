@@ -11,6 +11,7 @@ global with sharing class apiSSC_CloseChatCaseController {
      {
          updateCase[0].Status = 'Closed: Resolved';
          updateCase[0].Engagement__c = 'Engaged';
+         
          update updateCase;
          retVal = true; 
      }

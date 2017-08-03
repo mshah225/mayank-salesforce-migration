@@ -6,8 +6,6 @@ global with sharing class apiSSC_CreateChatCaseController {
      String studentId = RestContext.request.params.get('studentId');
      String coachId = RestContext.request.params.get('coachId');
      String description = RestContext.request.params.get('description');
-     String caseSubject = RestContext.request.params.get('caseSubject');
-     String commDetails = RestContext.request.params.get('commDetails');
      String coachRecordTypeId;
      String retVal = '';
      List<RecordType> rectype = [SELECT Id FROM RecordType WHERE sObjectType = 'Case' AND DeveloperName =: 'ASU_Coach_Outreach'];
@@ -41,7 +39,7 @@ global with sharing class apiSSC_CreateChatCaseController {
                  newCase.Functional_Group__c = 'ASU Coach Outreach';
                  newCase.Category__c = 'Ad Hoc Case';
                  newCase.Type = 'Coach Initiated';
-                 newCase.Subject = caseSubject!=null?caseSubject:'Case created via Chat';
+                 newCase.Subject = 'Case created via Chat';
                  newCase.Description = description!=null?description:'Case from Chat';
                  newCase.Status = 'New';
                  newCase.ContactId = student[0].Student__c;
@@ -59,23 +57,6 @@ global with sharing class apiSSC_CreateChatCaseController {
                      result.OwnerId = coach[0].Resource__c;
                      update result;
                      retVal = result.Id;
-                     //Add Coach Comm Object if data was sent
-                     if (commDetails!=null){
-                        Coach_Communication__c coachComm = new Coach_Communication__c();
-                        coachComm.case__c = newCase.Id;
-                        Datetime x =  Datetime.now();
-                        Long nowMS = x.getTime();
-                        coachComm.Coach_Communication_ID__c = 'chat.'+student[0].Student__c + '.' + coach[0].Resource__c +'.'+nowMS ;
-                        //The id is overwritten by trigger
-                        //coachComm.Coach_Communication_ID__c = '111111chat.';
-                        coachComm.Success_Coach__c = coach[0].Resource__c;
-                        coachComm.Success_Student__c = student[0].Student__c;
-                        coachComm.Type__c = 'SMS';
-                        coachComm.Status__c = 'Completed';
-                        coachComm.Date_Updated__c = x;
-                        coachComm.Response_Packet__c = commDetails;
-                        insert coachComm;
-                     }
                  }
              }
              else

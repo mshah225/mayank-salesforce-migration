@@ -10,14 +10,14 @@
     <apex:attribute name="proactiveRTID" type="Id" description="" assignTo="{!proactiveCaseRTID}"/>
     <apex:attribute name="emailRTID" type="Id" description="" assignTo="{!portalEmailRTID}" />
     
-    <apex:attribute name="suppressSelection" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressName" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressEMPLID" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressMassEmail" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressProactiveCases" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressReactiveCases" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressSearch" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressRefresh" type="boolean" description="" default="false" />
+    <apex:attribute name="showSelection" type="boolean" description="" default="false" />
+    <apex:attribute name="showName" type="boolean" description="" default="false" />
+    <apex:attribute name="showEMPLID" type="boolean" description="" default="false" />
+    <apex:attribute name="showMassEmail" type="boolean" description="" default="false" />
+    <apex:attribute name="showProactiveCases" type="boolean" description="" default="false" />
+    <apex:attribute name="showReactiveCases" type="boolean" description="" default="false" />
+    <apex:attribute name="showSearch" type="boolean" description="" default="false" />
+    <apex:attribute name="showRefresh" type="boolean" description="" default="false" />
     
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
         <apex:form >
@@ -25,9 +25,9 @@
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group"> 
                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px"
-                                         onclick="toggleEmailModal(this)" rendered="{! NOT(suppressMassEmail)}">Mass Email</apex:outputLink>
+                                         onclick="toggleEmailModal(this)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                     </apex:outputPanel>
-                    <apex:outputPanel styleClass="input-group" style="width:100%;max-width:250px; margin-top: 5px;" rendered="{! NOT(suppressSearch)}">
+                    <apex:outputPanel styleClass="input-group" style="width:100%;max-width:250px; margin-top: 5px;" rendered="{! showSearch}">
                         <apex:inputText id="myStudentsInput"
                                         value="{!searchString}"
                                         html-placeholder="Filter Students"
@@ -165,14 +165,14 @@
                 </div>
             </div>
             <apex:dataTable value="{!studentList}" var="c" styleClass="ASUTable">
-                <apex:column headerClass="ASUColumnHead centerText" styleClass="ASUColumn centerText" rendered="{! NOT(suppressSelection)}" >
+                <apex:column headerClass="ASUColumnHead centerText" styleClass="ASUColumn centerText" rendered="{! showSelection}" >
                     <apex:inputCheckbox value="{!c.selected}" styleClass="selectBox" onchange="handleSelectAll(this);" />
                     <apex:facet name="header">
                         <input type="checkbox" class="selectAll"  onchange="checkAll(this);" />
                     </apex:facet>
                 </apex:column>
                 
-                <apex:column headerValue="Name" value="{!c.obj.Student_Name__c}" rendered="{! NOT(suppressName)}"
+                <apex:column headerValue="Name" value="{!c.obj.Student_Name__c}" rendered="{! showName}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
@@ -190,7 +190,7 @@
                     </apex:facet>
                 </apex:column>
                 
-                <apex:column headerValue="EMPLID" rendered="{! NOT(suppressEMPLID)}"
+                <apex:column headerValue="EMPLID" rendered="{! showEMPLID}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
@@ -209,11 +209,11 @@
 
                     <apex:outputLink value="javascript:;" onclick="openStudentProfile('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}')" styleClass="standardLink">{!c.obj.EMPLID__c}</apex:outputLink>
                 </apex:column>
-                <apex:column headerValue="Proactive" rendered="{! NOT(suppressProactiveCases)}"
+                <apex:column headerValue="Proactive" rendered="{! showProactiveCases}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                    {!caseCountMap[c.obj.Student__c].proactiveCount}
                 </apex:column>
-                <apex:column headerValue="Reactive" rendered="{! NOT(suppressReactiveCases)}"
+                <apex:column headerValue="Reactive" rendered="{! showReactiveCases}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                    {!caseCountMap[c.obj.Student__c].reactiveCount}
                 </apex:column>

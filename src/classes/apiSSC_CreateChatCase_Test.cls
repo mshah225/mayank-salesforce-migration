@@ -227,5 +227,27 @@ private class apiSSC_CreateChatCase_Test {
     //System.assertEquals(true, results);
     
     }
+    
+  static testMethod void testCreateChatCaseNullVals7() {
+    init();
+    RestRequest req = new RestRequest(); 
+    RestResponse res = new RestResponse();
+    req.AddParameter('studentId','jdoe1');
+    req.AddParameter('coachId','thecoach');
+    req.AddParameter('description','');
+    req.AddParameter('commDetails','This is some comm details');
+    req.AddParameter('caseSubject','Chat Case Submect');
+    req.requestURI = System.URL.getSalesforceBaseUrl().getHost() + '/services/apexrest/CreateChatCase';  
+    req.httpMethod = 'POST';
+    RestContext.request = req;
+    RestContext.response = res;
+    
+    string results = apiSSC_CreateChatCaseController.createChatCase();
+    
+    //System.assertEquals(true, results);
+    
+    }
+    
+    
 
 }

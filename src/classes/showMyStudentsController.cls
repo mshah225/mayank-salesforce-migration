@@ -115,11 +115,16 @@ public class showMyStudentsController extends ListViewController {
         for (SObject so : setCon.getRecords()) {
             tempStudent = (Success_Student__c) so;
             if(tempStudent.Student__c!=null) {
+                CivitasWrapper tmpCW = getCivitasData(tempStudent.EMPLID__c);
                 studentList.add(new studentWrapper(tempStudent));
             }
         }
         
         resetCaseCounts();
+    }
+    
+    public CivitasWrapper getCivitasData(String emplid){
+        
     }
     
     /*
@@ -172,10 +177,33 @@ public class showMyStudentsController extends ListViewController {
     public class studentWrapper {
         public Boolean selected {get; set;}
         public Success_Student__c obj {get; set;}
+        public CivitasWrapper cw {get; set;}
         
         public studentWrapper(Success_Student__c student) {
             selected = false;
             obj = student;
+        }
+        
+        public studentWrapper(Success_Student__c student, CivitasWrapper civitasIn) {
+            selected = false;
+            obj = student;
+            cw = civitasIn;
+        }
+    }
+    
+    /*
+     * Class to hold all of the data needed for Civitas
+     */
+    public class CivitasWrapper {
+        public Integer outlookScore {get; set;}
+        //Direction is negative for down, 0 for same, and positive for up
+        public Integer direction {get; set;}
+        public Date changeDate {get; set;}
+        
+        public CivitasWrapper(Integer oScore, Integer dir, Date change) {
+            outlookScore = oScore;
+            direction = dir;
+            changeDate = change;
         }
     }
     

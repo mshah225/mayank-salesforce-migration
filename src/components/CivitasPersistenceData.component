@@ -97,7 +97,6 @@
                     }
                     legendLabel.style.display = 'block';
                     jQuery('#FeedbackButton').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
-                    jQuery('#FeedbackButtonMobile').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
                     document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
                     document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate + '<br />';
                     
@@ -221,7 +220,7 @@
                             ],
                         },
                         
-                        width: 425,
+                        width: 490,
                         height: 250
                     };
                 	
@@ -381,16 +380,12 @@
                    class="persistenceFeedbackButton & browser" target="_blank" id ="FeedbackButton">
                     <i class="fa fa-comment"></i> Persistence Outlook Feedback
                 </a>
-                <a href="./persistencefeedback?carName=Student Profile&misc={!getInfo}}" 
-                   class="persistenceFeedbackButton & mobile" target="_blank" id ="FeedbackButtonMobile">
-                    <i class="fa fa-comment"></i> Persistence Outlook Feedback
-                </a>
             </div>
         </div>
         <div class="right" style="float: left; z-index: -1; margin-top: -20px">
             <div id="chart_div" style="height: 200px; width: 400px"></div>
         </div>
-        <div id="persistenceLegend" style="float: left; margin-top: 40px; margin-left: 25px; display: none;">
+        <div id="persistenceLegend" style="float: left; margin-top: 40px; margin-left: 90px; display: none;">
             <div style="height: 140px; width: 110px; border-style: solid; border-width: 1px;">
                 <div class='my-legend'>
                     <div class='legend-title'>Persistence Outlook</div>

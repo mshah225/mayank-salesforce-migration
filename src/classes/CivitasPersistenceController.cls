@@ -106,11 +106,6 @@ global class CivitasPersistenceController{
         	persistenceLevel = dataList[dataList.size()-1].outlookLevel;
             if(currentTerm.subString(3).equals('1')){
                 dataList[0].termInfo = 'Spring';
-                if(dataList[datalist.size()-1].snapDate.month() <= 5) {
-                    endMonth = 5;
-                } else {
-                    endMonth = dataList[datalist.size()-1].snapDate.month();
-                }
             } else if (currentTerm.subString(3).equals('4')) {
                 dataList[0].termInfo = 'Summer';
             } else {

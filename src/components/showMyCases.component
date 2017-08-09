@@ -220,6 +220,57 @@
                              headerClass="ASUColumnHead" styleClass="ASUColumn"/>
                 <apex:column headerValue="Reactive" value="{!caseCounts[c.obj.contactId].reactiveCount}" rendered="{! showReactive}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn"/>
+                <apex:column headerValue="Persistence Outlook" value="{!c.obj.Curr_Cont_Prediction_Level__c}"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="persistenceLevel"
+                                        value="Curr_Cont_Prediction_Level__c"
+                                        assignTo="{!sortField}"/>
+                            Persistence Outlook&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Curr_Cont_Prediction_Level__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Curr_Cont_Prediction_Level__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+                <apex:column headerValue="Change" value="{!c.changeDir}"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="change"
+                                        value="Most_Recent_Outlook_Change_Direction__c"
+                                        assignTo="{!sortField}"/>
+                            Change&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+                <apex:column headerValue="Change Date" value="{!c.obj.Change_Date__c}"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="changeDate"
+                                        value="Change_Date__c"
+                                        assignTo="{!sortField}"/>
+                            Change Date&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Change_Date__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Change_Date__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
             </apex:dataTable>
             <div class="modal fade transferModal" role="dialog">
                 <div class="modal-dialog" role="document" style ="padding-left: 5%">

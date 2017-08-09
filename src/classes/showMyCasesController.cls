@@ -188,10 +188,19 @@ public class showMyCasesController extends ListViewController {
     public class caseWrapper {
         public Boolean selected {get; set;}
         public Case obj {get; set;}
+        public String changeDir {get; set;}
         
         public caseWrapper (Case wrappedCase) {
             selected = false;
             obj = wrappedCase;
+            
+            if (obj.Most_Recent_Outlook_Change_Direction__c == 1) {
+                changeDir = 'Up';
+            } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
+                changeDir = 'Down';
+            } else {
+                changeDir = '--';
+            }
         }
     }
     

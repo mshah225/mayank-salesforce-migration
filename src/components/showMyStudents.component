@@ -234,18 +234,18 @@
                         </apex:commandLink>
                     </apex:facet>
                 </apex:column>
-                <apex:column headerValue="Change" value="{!c.obj.Curr_Cont_Prediction_Level__c}"
+                <apex:column headerValue="Change" value="{!c.obj.Most_Recent_Outlook_Change_Direction__c}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="change"
-                                        value="Curr_Cont_Prediction_Level__c"
+                                        value="Most_Recent_Outlook_Change_Direction__c"
                                         assignTo="{!sortField}"/>
                             Change&nbsp;
-                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Curr_Cont_Prediction_Level__c'}">
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}">
                                 <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
-                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Curr_Cont_Prediction_Level__c'}">
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}">
                                 <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>

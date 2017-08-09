@@ -177,17 +177,19 @@ public class showMyStudentsController extends ListViewController {
     public class studentWrapper {
         public Boolean selected {get; set;}
         public Success_Student__c obj {get; set;}
-        public CivitasWrapper cw {get; set;}
+        public String changeDir {get; set;}
         
         public studentWrapper(Success_Student__c student) {
             selected = false;
             obj = student;
-        }
-        
-        public studentWrapper(Success_Student__c student, CivitasWrapper civitasIn) {
-            selected = false;
-            obj = student;
-            cw = civitasIn;
+            
+            if (obj.Most_Recent_Outlook_Change_Direction__c == 1) {
+                changeDir = 'Up';
+            } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
+                changeDir = 'Down';
+            } else {
+                changeDir = '--';
+            }
         }
     }
     

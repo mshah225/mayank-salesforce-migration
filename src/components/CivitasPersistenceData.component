@@ -207,7 +207,7 @@
                             },
                             ticks: [
                                 {v:0.0, f:''},
-                                {v:1.0, f:'Very Low'},
+                                {v:1.0, f:''},
                                 {v:2.0, f:''},
                                 {v:3.0, f:''},
                                 {v:4.0, f:''},
@@ -216,11 +216,11 @@
                                 {v:7.0, f:''},
                                 {v:8.0, f:''},
                                 {v:9.0, f:''},
-                                {v:10.0, f:'Very High'},
+                                {v:10.0, f:''},
                             ],
                         },
-                        
-                        width: 490,
+                        chartArea: {width: 350, right: 0},
+                        width: 400,
                         height: 250
                     };
                 	
@@ -385,59 +385,9 @@
         <div class="right" style="float: left; z-index: -1; margin-top: -20px">
             <div id="chart_div" style="height: 200px; width: 400px"></div>
         </div>
-        <div id="persistenceLegend" style="float: left; margin-top: 40px; margin-left: 90px; display: none;">
-            <div style="height: 140px; width: 110px; border-style: solid; border-width: 1px;">
-                <div class='my-legend'>
-                    <div class='legend-title'>Persistence Outlook</div>
-                    <div class='legend-scale'>
-                        <ul class='legend-labels'>
-                            <li><span style='background:#FFDB75;'></span>Very High</li>
-                            <li><span style='background:#F9B77D;'></span>High</li>
-                            <li><span style='background:#E29A82;'></span>Moderate</li>
-                            <li><span style='background:#CC8282;'></span>Low</li>
-                            <li><span style='background:#B56B83;'></span>Very Low</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <style type='text/css'>
-              .my-legend .legend-title {
-                text-align: left;
-                margin-bottom: 5px;
-                font-weight: bold;
-                font-size: 90%;
-                }
-              .my-legend .legend-scale ul {
-                margin: 0;
-                margin-bottom: 5px;
-                padding: 0;
-                float: left;
-                list-style: none;
-                }
-              .my-legend .legend-scale ul li {
-                font-size: 80%;
-                list-style: none;
-                margin-left: 0;
-                line-height: 18px;
-                margin-bottom: 2px;
-                }
-              .my-legend ul.legend-labels li span {
-                display: block;
-                float: left;
-                height: 16px;
-                width: 30px;
-                margin-right: 5px;
-                margin-left: 0;
-                border: 1px solid #999;
-                }
-              .my-legend {
-                font-size: 70%;
-                color: 		#000000;
-                clear: both;
-                padding: 10px
-                }
-            </style>
+        <div id="persistenceLegend" style="float: left; margin-top: 27px; margin-left: 10px; display: none;">
+            <apex:image url="{!$Resource.PersistenceLegend}" width="75" height="158"/>
+
         </div>
     </div>
 </apex:component>

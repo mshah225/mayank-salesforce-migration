@@ -125,7 +125,7 @@
                         
                     var container = document.getElementById('chart_div');
                     var data = new google.visualization.DataTable();
-                    var pointStyle = 'point {size: 5; stroke-color: black; visible: true;}';
+                    var pointStyle = 'point {size: 3.5; stroke-color: black; visible: true;}';
                         
                     data.addColumn('number', 'Snap Date');
                     data.addColumn('number', 'Dummy');

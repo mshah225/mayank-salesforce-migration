@@ -115,16 +115,11 @@ public class showMyStudentsController extends ListViewController {
         for (SObject so : setCon.getRecords()) {
             tempStudent = (Success_Student__c) so;
             if(tempStudent.Student__c!=null) {
-                CivitasWrapper tmpCW = getCivitasData(tempStudent.EMPLID__c);
                 studentList.add(new studentWrapper(tempStudent));
             }
         }
         
         resetCaseCounts();
-    }
-    
-    public CivitasWrapper getCivitasData(String emplid){
-        
     }
     
     /*
@@ -178,6 +173,7 @@ public class showMyStudentsController extends ListViewController {
         public Boolean selected {get; set;}
         public Success_Student__c obj {get; set;}
         public String changeDir {get; set;}
+        public String imageName {get; set;}
         
         public studentWrapper(Success_Student__c student) {
             selected = false;
@@ -189,6 +185,18 @@ public class showMyStudentsController extends ListViewController {
                 changeDir = 'Down';
             } else {
                 changeDir = '--';
+            }
+            
+            if (obj.Curr_Cont_Prediction_Level__c < 4) {
+               imageName = 'icon-1.png'; 
+            } else if (obj.Curr_Cont_Prediction_Level__c < 6) {
+                imageName = 'icon-2.png';
+            } else if (obj.Curr_Cont_Prediction_Level__c == 7) {
+                imageName = 'icon-3.png';
+            } else if (obj.Curr_Cont_Prediction_Level__c == 8) {
+                imageName = 'icon-4.png';
+            } else {
+                imageName = 'icon-5.png';
             }
         }
     }

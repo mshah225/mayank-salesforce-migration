@@ -189,6 +189,7 @@ public class showMyCasesController extends ListViewController {
         public Boolean selected {get; set;}
         public Case obj {get; set;}
         public String changeDir {get; set;}
+        public String imageName {get; set;}
         
         public caseWrapper (Case wrappedCase) {
             selected = false;
@@ -200,6 +201,18 @@ public class showMyCasesController extends ListViewController {
                 changeDir = 'Down';
             } else {
                 changeDir = '--';
+            }
+            
+            if (obj.Curr_Cont_Prediction_Level__c < 4) {
+               imageName = 'icon-1.png'; 
+            } else if (obj.Curr_Cont_Prediction_Level__c < 6) {
+                imageName = 'icon-2.png';
+            } else if (obj.Curr_Cont_Prediction_Level__c == 7) {
+                imageName = 'icon-3.png';
+            } else if (obj.Curr_Cont_Prediction_Level__c == 8) {
+                imageName = 'icon-4.png';
+            } else {
+                imageName = 'icon-5.png';
             }
         }
     }

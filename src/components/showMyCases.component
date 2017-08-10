@@ -220,8 +220,7 @@
                              headerClass="ASUColumnHead" styleClass="ASUColumn"/>
                 <apex:column headerValue="Reactive" value="{!caseCounts[c.obj.contactId].reactiveCount}" rendered="{! showReactive}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn"/>
-                <apex:column headerValue="Persistence Outlook" value="{!c.obj.Curr_Cont_Prediction_Level__c}"
-                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                <apex:column headerValue="Persistence Outlook" headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="persistenceLevel"
@@ -236,6 +235,8 @@
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
+                    <apex:variable var="imageVar" value="{!c.imageName}"/>
+                    <apex:image url="{!URLFOR($Resource.PersistenceChart, imageVar)}" width="40" height="20"/>
                 </apex:column>
                 <apex:column headerValue="Change" value="{!c.changeDir}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">

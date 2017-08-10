@@ -163,7 +163,7 @@
                         hAxis: {
                             baselineColor: 'white',
                             gridlines: {
-                                color: '#eee'
+                                color: '#000'
                             },
                             showTextEvery: 1,
                             title: result[0].termInfo + ' ' + result[0].year,

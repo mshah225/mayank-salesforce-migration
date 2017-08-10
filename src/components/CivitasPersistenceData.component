@@ -25,20 +25,20 @@
 
         /* Lightest color (top of gradient) */
         #fx stop:nth-child(1) {
-            stop-color: rgb(179, 179, 179);
+            stop-color: rgb(229,232,236);
         }
 
         #fx stop:nth-child(2) {
-            stop-color: rgb(204, 204, 204);
+            stop-color: rgb(229,232,236);
         }
 
         #fx stop:nth-child(3) {
-            stop-color: rgb(204, 204, 204);
+            stop-color: rgb(229,232,236);
         }
 
         /* Darkest color (bottom of gradient) */
         #fx stop:nth-child(4) {
-            stop-color: rgb(179, 179, 179);
+            stop-color: rgb(229,232,236);
         }
 
         .left {

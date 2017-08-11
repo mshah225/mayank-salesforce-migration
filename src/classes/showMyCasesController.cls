@@ -207,9 +207,9 @@ public class showMyCasesController extends ListViewController {
                imageName = 'icon-1.png'; 
             } else if (obj.Curr_Cont_Prediction_Level__c < 6) {
                 imageName = 'icon-2.png';
-            } else if (obj.Curr_Cont_Prediction_Level__c == 7) {
+            } else if (obj.Curr_Cont_Prediction_Level__c == 6) {
                 imageName = 'icon-3.png';
-            } else if (obj.Curr_Cont_Prediction_Level__c == 8) {
+            } else if (obj.Curr_Cont_Prediction_Level__c == 7) {
                 imageName = 'icon-4.png';
             } else {
                 imageName = 'icon-5.png';

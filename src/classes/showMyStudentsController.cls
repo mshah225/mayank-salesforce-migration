@@ -183,8 +183,10 @@ public class showMyStudentsController extends ListViewController {
                 changeDir = 'Up';
             } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
                 changeDir = 'Down';
-            } else {
+            } else if(obj.Most_Recent_Outlook_Change_Direction__c == 0){
                 changeDir = '--';
+            } else {
+                changeDir = ' ';
             }
             
             if (obj.Curr_Cont_Prediction_Level__c < 4) {

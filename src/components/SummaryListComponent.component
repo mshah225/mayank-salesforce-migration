@@ -78,7 +78,7 @@
                         <apex:param value="{!TEXT(result['Followup_Date__c'])}" assignTo="{!followupDate}" name="followupDate" />
                     </apex:commandLink>
                     <apex:commandLink value="{!result['Subject']}" reRender="rerenderModal" styleClass="standardLink"
-                                      status="ASUAjaxStatus" oncomplete="toggleSummaryModal(this);" rendered="{!showSummaryFollowupDate}">
+                                      status="ASUAjaxStatus" oncomplete="toggleSummaryModal(this);" rendered="{! NOT(showSummaryFollowupDate)}">
                         <apex:param value="{!result['Subject']}" assignTo="{!subject}" name="subject" />
                     </apex:commandLink>
                 </apex:column>

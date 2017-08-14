@@ -434,10 +434,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 					}
                     currentCaseSubject = currentCaseSubject.trim();
                     theCase.Subject = currentCaseSubject;
+
                     Boolean hasAttachments = (email.textAttachments != null                                
                                       && email.textAttachments.size() >0) 
                                       || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
-                                      
                     // If we catch an auto reply loop, do not create the case and discard this email
                     if (recentCase.Description.equals(currentCaseDescription) && recentCase.OwnerId == theCase.OwnerID
                         && recentCase.Subject.equals(currentCaseSubject) && !hasAttachments)
@@ -1273,6 +1273,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         lostEmail.RejectedAttachments__c = !attachSuccess;
         if(!attachSuccess) {
             String attachmentInfo = '\n**********\nCase ID: '+ theCase.Id +'\n\n*****List of Attachments*****\n';     
+
             if(email.binaryAttachments != null){
                 for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
                     attachmentInfo += 'FileName: ' + bAttachment.fileName +' File Size: ' + bAttachment.body.size()/1000.00  +' kB\n';

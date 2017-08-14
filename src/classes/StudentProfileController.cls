@@ -119,7 +119,6 @@ global with sharing class StudentProfileController
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
 
-
                 studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
                 if (studentProgramDataList.size() > 0) {
 				          studentProgram = studentProgramDataList[0];
@@ -1983,6 +1982,7 @@ global with sharing class StudentProfileController
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
 
+
     @RemoteAction
     global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
         try{
@@ -2007,7 +2007,7 @@ global with sharing class StudentProfileController
         }
         return null;
     }
-    
+  
     public String subPlanString {
         get{
             if(subPlanString == null){

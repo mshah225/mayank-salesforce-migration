@@ -211,7 +211,7 @@ public class LeadService {
             }
         }
 
-        /*
+        
         List<me3__c> listme3=new List<me3__c>();
         for(me3__c objMe3: [
             SELECT id,Contact__c, Lead__c 
@@ -225,8 +225,8 @@ public class LeadService {
         
         if(listme3!=null && listme3.size()>0)
             update listme3;
-		*/
 		
+		/*
         List<et4ae5__IndividualEmailResult__c> emailList = new List<et4ae5__IndividualEmailResult__c>();
         for(et4ae5__IndividualEmailResult__c email : [
             Select id, et4ae5__Contact__c, et4ae5__Lead__c 
@@ -256,6 +256,7 @@ public class LeadService {
         if(subscriberList != null && subscriberList.size() > 0) {
             update subscriberList;
         }
+        */
 
         // Create LeadConvert objects from the leads and batch them up
         for (Integer batchNumber = 0; batchNumber < numberOfBatches; batchNumber++) {

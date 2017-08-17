@@ -133,6 +133,22 @@ public class PortalEmailService {
         }
     }
     
+    public static void verifiySubject (List<Portal_Email__c> emailsToValidate) {
+        for (Portal_Email__c pe : emailsToValidate) {
+            if (pe.Subject__c == '' || pe.Subject__c == null) {
+                pe.Subject__c = 'A Message from your College and Department';
+            }
+        }
+    }
+    
+    public static void verifyMessageText(List<Portal_Email__c> emailsToValidate) {
+        for (Portal_Email__c pe : emailsToValidate) {
+            if (pe.Additional_Message_Text__c == '' || pe.Additional_Message_Text__c == null) {
+                pe.Status__c = 'Cancelled';
+            }
+        }
+    }
+    
     @future @TestVisible
     private static void enqueueCoach(Set<Id> emailIds) {
         Map<Id, Portal_Email__c> emailsToUpdate;
@@ -167,10 +183,10 @@ public class PortalEmailService {
     private static void createEmailMessage(Set<Id> emailIds) {
         List<EmailMessage> newMessages = new List<EmailMessage>();
         for (Portal_Email__c pe : [SELECT From_Address__c, Contact_Email__c, Subject__c, Additional_Message_Text__c, Case__c, From_Name__c,
-                Email_Template_Name__c, Contact__r.FirstName, CreatedBy.Name
+                Email_Template_Name__c, Contact__r.FirstName, CreatedBy.Name, Status__c
             FROM Portal_Email__c
             WHERE Id IN :emailIds]) {
-            if (pe.Case__c != null) {
+            if (pe.Case__c != null && pe.Status__c != 'Cancelled') {
                 newMessages.add(new EmailMessage(
                     FromAddress = pe.From_Address__c,
                     FromName = pe.From_Name__c,

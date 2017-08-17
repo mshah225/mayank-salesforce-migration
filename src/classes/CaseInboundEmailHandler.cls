@@ -146,8 +146,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         // Get a list of closed cases that we want to re-open
                         List<Case> closedCases = [SELECT Id, IsClosed FROM Case WHERE Id = :theCase.Id];
 
-                        if (closedCases[0].IsClosed)
-                        {
+                        if (closedCases[0].IsClosed) {
                             this.theCase.Status = 'Re-Opened';
                             update this.theCase;
                         }
@@ -190,7 +189,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
 
             Case recentCase = new Case();
-
+			
             //Create a brand new case
             if (this.theCase == null)
             {
@@ -251,17 +250,17 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     theCase.Origin__c = 'Email';
                 }
 
-                theCase.Subject = email.Subject;
+                theCase.Subject = limitLength(email.Subject, 255);
                 theCase.Description = '';
 
                 if(email.plainTextBody != null)
                 {
-                    theCase.Description = email.plainTextBody;
+                    theCase.Description = limitLength(email.plainTextBody, 32000);
                 }
                 else if(email.htmlBody != null)
                 {
                     theCase.Description = 'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\n'
-                        + email.htmlBody.replaceAll('<[^>]+>', ''); 
+                        + limitLength(email.htmlBody.replaceAll('<[^>]+>', ''), 32000); 
                 }
 
                 String toAddressConcat = '';
@@ -339,7 +338,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         }
                     }
                 }
-
+				
                 if (contacts.size() > 0)
                 {
                     Contact theContact = contacts[0];
@@ -362,7 +361,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         theContact.Email_Change_Date__c = Datetime.now();
                         update theContact;
                     }
-
                     if (theContact.Last_Case_Email_Used__c == null || theContact.Last_Case_Email_Used__c != email.fromAddress)
                     {
                         theContact.Last_Case_Email_Used__c = email.fromAddress;
@@ -428,8 +426,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     currentCaseDescription = currentCaseDescription.trim();
 
                     String currentCaseSubject = theCase.Subject;
+                    if(currentCaseSubject == null || currentCaseSubject == '') {
+                        currentCaseSubject = 'Email Received From: ' + email.fromAddress;
+
+					}
                     currentCaseSubject = currentCaseSubject.trim();
+                    theCase.Subject = currentCaseSubject;
                     
+
                     // If we catch an auto reply loop, do not create the case and discard this email
                     if (recentCase.Description.equals(currentCaseDescription) && recentCase.OwnerId == theCase.OwnerID
                         && recentCase.Subject.equals(currentCaseSubject))
@@ -440,8 +444,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 catch (QueryException e)
                 {
                 }
-
                 insert this.theCase;
+                
             }
             else
             {
@@ -483,7 +487,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         {
             // Catch any exceptions and create a lost email.
             String error = e.getMessage() + '\n' + e.getStackTraceString();
-            generateLostEmail(email, error);
+            generateLostEmail(email, theCase, error);
         }   
         return result;
     }
@@ -501,6 +505,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                     sendAutoReply(theCase, theContact, attachmentFailureTemplateId);
             }
+            generateLostEmail(email, theCase, 'Attachment is invalid');
         }
 
         return successfulAttachment;
@@ -602,6 +607,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         return results;
     }
 
+    @TestVisible
     private void createEmailMessage(Case theCase, Messaging.InboundEmail email)
     {
         String value;
@@ -661,7 +667,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         }
 
         theEmail.CcAddress = limitLength(value,EmailMessage.CcAddress.getDescribe().getLength());
-
+		
         insert theEmail;
     }
 
@@ -1136,20 +1142,24 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     }
 
     // Make this public for unit test access
-    public LostEmail__C generateLostEmail(Messaging.InboundEmail email, String error)
+    public LostEmail__C generateLostEmail(Messaging.InboundEmail email, Case theCase, String error)
     {
         loadConfigurationSettings();
 
         LostEmail__c lostEmail = new LostEmail__c();
         insert lostEmail;
-
+		Id emailId = [Select Id 
+                      FROM LostEmail__c ORDER
+                      BY CreatedDate desc
+                      LIMIT 1
+                     ].Id;
         // Set the fields
-        lostEmail.Sender__c = email.fromAddress;
-        lostEmail.Subject__c = email.subject;
-        lostEmail.PlainTextBody__c = email.plainTextBody;
-		lostEmail.HtmlTextBody__c = email.htmlBody;
-        lostEmail.Cause__c = error;
-
+        lostEmail.Sender__c = limitLength(email.fromAddress, 255);
+        lostEmail.Subject__c = limitLength(email.subject, 255);
+        lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 32000);
+    	lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 32000);
+		lostEmail.Cause__c = limitLength(error, 255);
+        
         // Convert the List into a concatenated string
         String recipientsString = '';
         if (email.toAddresses != null)
@@ -1176,11 +1186,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         lostEmail.CarbonCopies__c = carbonCopiesString;
 
         Boolean attachSuccess = handleAttachments(lostEmail, email);
-
         lostEmail.RejectedAttachments__c = !attachSuccess;
-
+        if(!attachSuccess) {
+            String attachmentInfo = '\n**********\nCase ID: '+ theCase.Id +'\n\n*****List of Attachments*****\n';     
+            for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
+                attachmentInfo += 'FileName: ' + bAttachment.fileName +' File Size: ' + bAttachment.body.size()/1000.00  +' kB\n';
+            }
+            lostEmail.PlainTextBody__c += attachmentInfo;
+        }
         update lostEmail;
-		
+
         return lostEmail;
     }
 }

@@ -29,6 +29,19 @@ public class IDHelper {
         set;
     }
     
+    public static List<ObjPrefix__c> objPrefix{
+        /*
+         * Initializes to the values from the cache
+         */
+        get{
+            if (objPrefix == null) {
+                objPrefix = ObjPrefix__c.getAll().values();
+            }
+            
+            return objPrefix;
+        }
+    }
+    
     public static Integer ProfileIdsRecordCount {
         get {
             return ProfileIds.size();
@@ -38,7 +51,7 @@ public class IDHelper {
     }
     
     public static Integer RecordTypeIdsRecordCount {
-        get {
+        get { 
             return RecordTypeIds.size();
         }
         
@@ -83,15 +96,30 @@ public class IDHelper {
      * @return Id The Id of the desired record type
      */
     public static Id getRecordTypeId (String SObjectType, String Name) {
+        
         for (Record_Type_ids__c RTID : RecordTypeIds) {
             if (RTID.Name__c == Name && RTID.SObject_Type__c == SObjectType) {
-                System.debug(RTID.Id__C);
                 return RTID.Id__c;
             }
         }
         
-        if (rebuildRecordTypeIdCache(SObjectType, Name) ){
+        if (rebuildRecordTypeIdCache(SObjectType, Name, null) ){
         	return getRecordTypeId(SObjectType, Name);
+        } else {
+            return null;
+        }
+    }
+    /*
+     * Gets the name based on the record Type
+     */
+    public static String getName(String SObjectType, Id recordID){
+        for (Record_Type_ids__c RTID : RecordTypeIds) {
+            if (RTID.Id__c == recordID && RTID.SObject_Type__c == SObjectType) {
+                return RTID.Name__c;
+            }
+        }  
+        if (rebuildRecordTypeIdCache(SObjectType, null, recordID) ){
+        	return getName(SObjectType, recordID);
         } else {
             return null;
         }
@@ -131,12 +159,59 @@ public class IDHelper {
     }
     
     /*
+     * Returns the desired Object Name.
+     * 
+     * @param String The ID of the object.
+     * 
+     * @return Id The Object Name based on the ID Prefix
+     */
+    public static String findObjectNameFromRecordIdPrefix(String recordId){
+        recordId = recordId.left(3);
+        System.debug(objPrefix);
+        for(Integer i = 0; i < objPrefix.size(); i++){
+            if(recordId.equals(objPrefix[i].Prefix__c)){
+                return objPrefix[i].ObjectName__c;
+            }
+        }
+        rebuildPrefixCache();
+        for(Integer i = 0; i < objPrefix.size(); i++){
+            if(recordId.equals(objPrefix[i].Prefix__c)){
+                return objPrefix[i].ObjectName__c;
+            }
+        }
+        return 'Error';
+    }
+    
+    /*
+     * Returns the desired object ID.
+     * 
+     * @param String The name of the Object.
+     * 
+     * @return Id The Id Prefix of the desired object
+     */
+    public static String findPrefixFromObjectName(String objectName){
+        for(Integer i = 0; i < objPrefix.size(); i++){
+            if(objectName.equals(objPrefix[i].ObjectName__c)){
+                return objPrefix[i].Prefix__c;
+            }
+        }
+        rebuildPrefixCache();
+        for(Integer i = 0; i < objPrefix.size(); i++){
+            if(objectName.equals(objPrefix[i].ObjectName__c)){
+                return objPrefix[i].Prefix__c;
+            }
+        }
+        return 'Error';
+    }
+    
+    /*
      * Should there be any concern about the integrity of the cache,
      * this method can be used to clear out and re-build the cache.
      */
     public static void rebuildCache() {
         rebuildRecordTypeIdCache();
         rebuildProfileIdCache();
+        rebuildPrefixCache();
     }
     
     /*
@@ -144,13 +219,13 @@ public class IDHelper {
      * null params. Method provided as shorthand.
      */
     public static void rebuildRecordTypeIdCache() {
-        rebuildRecordTypeIdCache(null, null);
+        rebuildRecordTypeIdCache(null, null, null);
     }
     
     /*
      * Deletes all existing cached Record_Type_ids__c and re-creates them.
      */
-    private static boolean rebuildRecordTypeIdCache(String SObjectType, String Name) {
+    private static boolean rebuildRecordTypeIdCache(String SObjectType, String Name, Id recordID) {
         clearRecordTypeIdCache();
         Record_Type_ids__c temp;
         RecordTypeIds = new List<Record_Type_ids__c>();
@@ -162,7 +237,7 @@ public class IDHelper {
             FROM RecordType
             ORDER BY SObjectType ASC
         ]) {
-            if (rt.DeveloperName == Name && rt.SobjectType == SObjectType) {
+            if ((rt.DeveloperName == Name || rt.Id == recordID) && rt.SobjectType == SObjectType) {
                 exists = true;
             }
             
@@ -172,6 +247,7 @@ public class IDHelper {
             temp.Name__c = rt.DeveloperName;
             temp.SObject_Type__c = rt.SobjectType;
             temp.Id__c = rt.Id;
+            temp.Prefix__c = temp.Id__c.left(3);
             
             RecordTypeIds.add(temp);
         }
@@ -179,6 +255,7 @@ public class IDHelper {
         insert RecordTypeIds; // Insert seems to be failing
         return exists;
     }
+    
     
     /*
      * Calls rebuildProfileIdCache(String Name) with a null param.
@@ -220,6 +297,37 @@ public class IDHelper {
     }
     
     /*
+     * Deletes all existing ObjPrefix and then re-creates them
+     */
+    private static boolean rebuildPrefixCache(){
+        try{
+            clearObjPrefixCache();
+            //Get schema information
+            Map<String, Schema.SObjectType> gd =  Schema.getGlobalDescribe(); 
+            List<ObjPrefix__C> prefixList = new List<ObjPrefix__C>();
+            //Loop through all the sObject types returned by Schema
+            Integer nameCounter = 0;
+            for(Schema.SObjectType sType : gd.values()){
+                Schema.DescribeSObjectResult r = sType.getDescribe();
+                String prefix = r.getKeyPrefix();
+                String objName = r.getName();
+                ObjPrefix__C tmp = new ObjPrefix__C();
+                tmp.Prefix__c = prefix;
+                tmp.ObjectName__c = objName;
+                tmp.Name = '' + nameCounter++;
+                if(tmp.Name != null && tmp.Prefix__c != null){
+                	prefixList.add(tmp);
+                }
+            }
+            System.debug(prefixList);
+            upsert prefixList;
+        } catch(Exception e){
+            System.debug(e);
+        }
+        return true;
+    }
+    
+    /*
      * Should there be any concerns about the integrity of the cache,
      * this method can be used to clear it out. This will not re-build the
      * cache.
@@ -233,6 +341,7 @@ public class IDHelper {
     public static void clearCache() {
         clearRecordTypeIdCache();
         clearProfileIdCache();
+        clearObjPrefixCache();
     }
     
     /*
@@ -257,5 +366,16 @@ public class IDHelper {
         }
         
         ProfileIds = null;
+    }
+    
+    /*
+     * Deletes all existing ObjPrefix__c
+     */
+    @testVisible
+    private static void clearObjPrefixCache() {
+        if (objPrefix.size() > 0) {
+            delete objPrefix;
+        }
+        objPrefix = null;
     }
 }

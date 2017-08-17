@@ -13,6 +13,7 @@ public class Test_PortalEmailService {
         
         for(Integer i = 0; i < 10; i++){
             Portal_Email__c tmp = new Portal_Email__c();
+            tmp.Additional_Message_Text__c = 'Hello World';
             if(Math.mod(i, 2) == 0){
                 tmp.Success_Student__c = studentList[0].Id;
             }

@@ -1,14 +1,9 @@
-public class showMyCasesController {
+public class showMyCasesController extends ListViewController {
     
     private boolean debug = false;
-    // Constants
-    private final Integer cookieExpiration = 22592000; // 30 days in seconds (30 Days * 24 hours * 60 minutes * 60 seconds)
-    private final Integer defaultPageSize = 25; // The default page size to use if no cookie exists
-    private final String pageSizeCookieName = 'pageSize'; // The name of the cookie storing the desired number of records to display per page
     
     // Properties with standard getters/setters
     public Id proactiveCaseRTID {get; set;} // The record type Id of the proactive cases
-    private String oldQuery {get; set;} // Used to determine if the query changes
     public Map<Id, relatedCases> caseCounts {get; set;} // Stores the contact Id to summarized case counts
     public List<caseWrapper> caseList {get; set;} // List of Case Wrappers (cases) to display on the page
     public Id ownerId {get; set;} // Stores the Id of the new owner of the selected cases
@@ -16,90 +11,6 @@ public class showMyCasesController {
     private string originalQuery {get; set;} // Justin is this still required?
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
-    
-    // Transient properties (cookies cannot be stored in the view state)
-    private transient Map<String, Cookie> cookieMap; // Stores the pages cookies
-    private transient Cookie pageSizeCookie; // Stores the cookie containing the desired page size
-
-    // Properties with custom getters and setters
-    
-    /*
-     * Get the query from the component attribute and assign it to the
-     * internal query variable.
-     * 
-     * <p>
-     * This unbinds query from the attribute. SFDC prevents updating of variables.
-     * that are bound to component attributes.
-     * </p>
-     */
-    public String queryAttr {
-        get;
-        
-        set {
-            queryAttr = value;
-            if (queryAttr != oldQuery || query == null) {
-                query = queryAttr;
-                oldQuery = queryAttr;
-            }
-        }
-    }
-    
-    /*
-     * The query used to retrieve data from the database. When the query is
-     * set, setCon is rebuilt.
-     */
-    public String query {
-    	get;
-        
-        set {
-            List<String> vars = new List<String>();
-            try{
-                query = value;
-                setCon = new ApexPages.StandardSetController(Database.getQueryLocator(query));
-            } catch(Exception e){
-                vars.add(ErrorLogger.convertStringToJSON('query', query));
-                vars.add(string.valueOf(setCon));
-                ErrorLogger.log(e, vars, debug);
-            }
-        }
-    }
-    
-    /*
-     * The standard set controller instatiation that controls the pagination
-     * for the page. When this variable is reconstructed, case list is rebuilt.
-     */
-    public ApexPages.StandardSetController setCon {
-        get;
-        
-        set {
-            setCon = value;
-            setCon.setPageSize(pageSize);
-            resetCaseList();
-        }
-    }
-    
-    /*
-     * Keeps track of the desired page size.
-     * 
-     * <p>
-     * Setter creates a cookie to store user specific preferences. Cookie
-     * expires after ~ 30 days.
-     * </p>
-     */
-    public Integer pageSize {
-        get {
-            pageSize = integer.valueOf(getPageSizeCookie().getValue());    
-            return pageSize;
-        }
-        
-        set {
-            pageSize = value;               
-            pageSizeCookie = new Cookie('pageSize', string.valueOf(pageSize), null, cookieExpiration, false);            
-            getCookieMap().put('pageSize', pageSizeCookie);
-            ApexPages.currentPage().setCookies(cookieMap.values());
-            setConPageSize(pageSize);
-        }
-    }
         
     /*
      * Get the list of cases selected by the end user.
@@ -130,98 +41,6 @@ public class showMyCasesController {
         }
     }
     
-    /*
-     * A String to keep track of the Case list sort direction
-     */
-    public String sortDir {
-        get{
-            if(sortDir == NULL) {
-                if(query != null && query.indexOf('ASC') >= 0){
-                    return 'ASC';
-                } else if (query != null && query.indexOf('DESC') >= 0){
-                    return 'DESC';
-                } else {
-                    return NULL;
-                }
-            } else {
-                return sortDir;
-            }
-        }
-        
-        set;
-    }
-
-    /*
-     * Stores the API name of the field that the user wants to sort the list by.
-     * Setting this variable updates the query with the proper "ORDER BY" clause.
-     */
-    public String sortField {
-        get{
-            if (sortfield == null) {
-                Integer locStart = query.indexOf('ORDER BY');
-                if(locStart >= 0) {
-                    String queryEnd = query.substring(locStart+9);
-                    Integer locEnd = queryEnd.indexOf(' '); 
-                    if(locEnd > 0) {
-                        return queryEnd.substring(0, locEnd);
-                    }
-                }
-            }
-            
-            return sortfield;
-        }
-        
-        set {
-            String tempQuery;
-            Integer loc;
-            
-            if (!String.isEmpty(value)) {
-                if (value == sortField) { // Field has not changed
-                    if (sortDir == 'ASC') {
-                        sortDir = 'DESC';
-                    } else {
-                        sortDir = 'ASC';
-                    }
-                } else { // The value has changed
-                    sortDir = 'ASC';
-                }
-                
-                sortField = value;
-                
-                tempQuery = query;              
-                loc = tempQuery.indexOf('ORDER BY');              
-                if (loc > 0) {
-                    tempQuery = tempQuery.left(loc);
-                    tempQuery = tempQuery.trim();
-                }               
-                tempQuery = tempQuery + ' ORDER BY ' + sortField + ' ' + sortDir + ' NULLS LAST';
-                query = tempQuery;
-            }
-        }
-    }
-    
-    /*
-     * Used to force a refresh of the setCon.
-     * 
-     * <p>
-     * Used in the following locations:
-     * -Transfering cases
-     * -Refresh button on vf page
-     * </p>
-     */
-    public boolean refreshList {
-        get;
-        
-        set {
-            refreshList = value;
-            
-            if (refreshList == true) {
-                refreshList = false;
-                query = query;
-            }
-        }
-    }
-    
     /* 
      * Used to store imput from users for mass emails
      */
@@ -240,36 +59,6 @@ public class showMyCasesController {
         set;
     }
     
-    // Transient getters/setters
-    
-    /*
-     * Gets the pages current cookies
-     */
-    @TestVisible
-    private Map<String, Cookie> getCookieMap() {
-        cookieMap = ApexPages.currentPage().getCookies();
-        
-        return cookieMap;
-    }
-    
-    /*
-     * Gets the page size cookie if it exists. If it does not exist,
-     * create the default cookie.
-     */
-    private Cookie getPageSizeCookie() {
-        if (getCookieMap() != null) {
-            pageSizeCookie = cookieMap.get(pageSizeCookieName);
-        }
-        
-        if (pageSizeCookie == null) {
-            pageSizeCookie = new Cookie(pageSizeCookieName, string.valueOf(defaultPageSize), null, cookieExpiration, false);
-            cookieMap.put(pageSizeCookieName, pageSizeCookie);
-            ApexPages.currentPage().setCookies(cookieMap.values());
-        }
-        
-        return pageSizeCookie;
-    }
-    
     // Methods
     
     /*
@@ -284,7 +73,7 @@ public class showMyCasesController {
      * --SetConPageSize()
      * </p>
      */
-    public void resetCaseList() {
+    public override void resetRecordList() {
         Case tempCase;
         
         caseList = new List<CaseWrapper>(); 
@@ -378,30 +167,6 @@ public class showMyCasesController {
         selectedCases = null;
     }
     
-    /*
-     * Override the default next() method of setCon
-     */
-    public void setConNext() {
-        setCon.next();
-        resetCaseList();
-    }
-    
-    /*
-     * Override the default prev() method of setCon
-     */
-    public void setConPrev() {
-        setCon.previous();
-        resetCaseList();
-    }
-    
-    /*
-     * Override the default setpageSize() method of setCon
-     */
-    public void setConPageSize(integer newSize) {
-        setCon.setPageSize(newSize);
-        resetCaseList();
-    }
-    
     // Sub-classes
     
     /*
@@ -423,10 +188,34 @@ public class showMyCasesController {
     public class caseWrapper {
         public Boolean selected {get; set;}
         public Case obj {get; set;}
+        public String changeDir {get; set;}
+        public String imageName {get; set;}
         
         public caseWrapper (Case wrappedCase) {
             selected = false;
             obj = wrappedCase;
+            
+            if (obj.Most_Recent_Outlook_Change_Direction__c == 1) {
+                changeDir = 'Up';
+            } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
+                changeDir = 'Down';
+            } else if(obj.Most_Recent_Outlook_Change_Direction__c == 0){
+                changeDir = '--';
+            } else {
+                changeDir = ' ';
+            }
+            
+            if (obj.Curr_Cont_Prediction_Level__c < 4) {
+               imageName = 'icon-1.png'; 
+            } else if (obj.Curr_Cont_Prediction_Level__c < 6) {
+                imageName = 'icon-2.png';
+            } else if (obj.Curr_Cont_Prediction_Level__c == 6) {
+                imageName = 'icon-3.png';
+            } else if (obj.Curr_Cont_Prediction_Level__c == 7) {
+                imageName = 'icon-4.png';
+            } else {
+                imageName = 'icon-5.png';
+            }
         }
     }
     

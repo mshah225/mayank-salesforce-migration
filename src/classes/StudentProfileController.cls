@@ -32,6 +32,10 @@ global with sharing class StudentProfileController
     public String suncardPhotoURL { get; set; }
     public String deceased { get; set; }
     public string contactId {get; set;}
+    global static String paramToSort {get; set;}
+    global static String examParamSort {get; set;}
+    global static String transferParamSort {get; set;}
+    global static boolean sortDirect = true;
     private Set<String> ugTestCodes;
     private Set<String> gradTestCodes;
 
@@ -114,9 +118,25 @@ global with sharing class StudentProfileController
                 // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
+
+                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
+                if (studentProgramDataList.size() > 0) {
+				          studentProgram = studentProgramDataList[0];
+				        }
+                profileHeader = getProfileHeader(theContact.EMPLID__c);
+                getTermInfo();
+                sIList = getServiceIndicators(theContact.emplId__c);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
                 
+                for(JBT_RET_GENERAL_RIGHT__x prg : studentProgramDataList){
+                    if(prg.ACAD_CAREER__c.equals('UGRD')){
+                        ugStudentProgram = prg;
+                    }
+                    else if (prg.ACAD_CAREER__c.equals('GRAD')){
+                        gradStudentProgram = prg;
+                    }
+                }
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
         
@@ -156,7 +176,6 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-                
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
                     			  Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
@@ -173,7 +192,7 @@ global with sharing class StudentProfileController
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
                 // PeopleSoft only as-needed
-                currentTerm = '2171';
+                currentTerm = '2177';
                 
                 try {
                     if (! theContact.ASU_Online_Student__c) {
@@ -1005,6 +1024,265 @@ global with sharing class StudentProfileController
 
     }
 
+    @RemoteAction
+    global static List<sortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, boolean sortDirection){
+        List<sortableClass> classList = new List<sortableClass>();
+        sortDirect = sortDirection;
+        for (PS_ASU_SP_CLASS_V__x c : listOfClasses) {
+            classList.add(new sortableClass(c));
+        }
+        
+        paramToSort = paramToSortBy;
+        classList.sort();
+        if(!sortDirection) {
+            List<sortableClass> reversedList = new List<sortableClass>();
+            for(sortableClass sc : classList) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            return reversedList;
+        }
+        return classList;
+    }
+    
+    @RemoteAction
+    global static List<sortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, boolean sortDirection){
+        List<sortableCreditByExam> examList = new List<sortableCreditByExam>();
+        sortDirect = sortDirection;
+        for (PS_ASU_SP_TRNSFR_V__x c : listOfExams) {
+            examList.add(new sortableCreditByExam(c));
+        }
+        
+        examParamSort = paramToSortBy;
+        examList.sort();
+        if(!sortDirection) {
+            List<sortableCreditByExam> reversedList = new List<sortableCreditByExam>();
+            for(sortableCreditByExam sc : examList) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            return reversedList;
+        }
+        return examList;
+    }
+    
+    @RemoteAction
+    global static List<sortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, boolean sortDirection){
+        List<sortableTransferWork> transferList = new List<sortableTransferWork>();
+        sortDirect = sortDirection;
+        for (JBT_RET_CLASS_XFER__x c : listOfTransfer) {
+            transferList.add(new sortableTransferWork(c));
+        }
+        
+        transferParamSort = paramToSortBy;
+        transferList.sort();
+        if(!sortDirection) {
+            List<sortableTransferWork> reversedList = new List<sortableTransferWork>();
+            for(sortableTransferWork sc : transferList) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            return reversedList;
+        }
+        return transferList;
+    }
+
+    global class sortableClass implements Comparable{
+        PS_ASU_SP_CLASS_V__x classInfo;
+        
+        
+        public sortableClass(PS_ASU_SP_CLASS_V__x classIn){
+            classInfo = classIn;
+        }
+        
+        global Integer compareTo(Object compareTo) {
+            sortableClass compareToClass = (sortableClass)compareTo;
+            Integer sortDir = 0;
+            if (paramToSort.equals('Session')) {
+                sortDir = compareToClass.classInfo.SESSION_CODE__c.compareTo(this.classInfo.SESSION_CODE__c);
+            } else if (paramToSort.equals('Class')) {
+                sortDir = compareToClass.classInfo.CLASS_NBR__c.compareTo(this.classInfo.CLASS_NBR__c);
+            } else if (paramToSort.equals('Course')) {
+                sortDir = compareToClass.classInfo.CRSE_ID__c.compareTo(this.classInfo.CRSE_ID__c);
+            } else if (paramToSort.equals('Title')) {
+                sortDir = compareToClass.classInfo.CLASS_DESCR__c.compareTo(this.classInfo.CLASS_DESCR__c);
+            } else if (paramToSort.equals('Topic')) {
+                if(compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c != null) {
+                    sortDir = compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c.compareTo(this.classInfo.SSR_CLSTOPIC_DESCR__c);
+                } else if (compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (paramToSort.equals('Units')) {
+                if(compareToClass.classInfo.UNT_TAKEN__c == this.classInfo.UNT_TAKEN__c){
+                    sortDir = 0;
+                } else if (this.classInfo.UNT_TAKEN__c > compareToClass.classInfo.UNT_TAKEN__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (paramToSort.equals('Instructor')) {
+                if(compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c != null) {
+                    sortDir = compareToClass.classInfo.FT_FULL_NAME__c.compareTo(this.classInfo.FT_FULL_NAME__c);
+                } else if (compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (paramToSort.equals('Days')) {
+                if(compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c != null) {
+                    sortDir = compareToClass.classInfo.SCH_HTML_DAY1__c.compareTo(this.classInfo.SCH_HTML_DAY1__c);
+                } else if (compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (paramToSort.equals('Times')) {
+                if(compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c != null) {
+                    sortDir = compareToClass.classInfo.SCH_DAILY_TIME__c.compareTo(this.classInfo.SCH_DAILY_TIME__c);
+                } else if (compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (paramToSort.equals('Dates')) {
+                sortDir = compareToClass.classInfo.ASU_SCH_DATES__c.compareTo(this.classInfo.ASU_SCH_DATES__c);
+            } else if (paramToSort.equals('Location')) {
+                sortDir = compareToClass.classInfo.SSR_MTG_LOC_LONG__c.compareTo(this.classInfo.SSR_MTG_LOC_LONG__c);
+            } else if (paramToSort.equals('Grade')) {
+                if(compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c != null) {
+                    sortDir = compareToClass.classInfo.CRSE_GRADE_OFF__c.compareTo(this.classInfo.CRSE_GRADE_OFF__c);
+                } else if (compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else {
+                sortDir = 0;
+            }
+            
+            return sortDir * -1;
+        }
+    }
+    
+    global class sortableCreditByExam implements Comparable{
+        PS_ASU_SP_TRNSFR_V__x examInfo;
+        
+        
+        public sortableCreditByExam(PS_ASU_SP_TRNSFR_V__x examIn){
+            examInfo = examIn;
+        }
+        
+        global Integer compareTo(Object compareTo) {
+            sortableCreditByExam compareToExam = (sortableCreditByExam)compareTo;
+            Integer sortDir = 0;
+            if (examParamSort.equals('Title')) {
+                sortDir = compareToExam.examInfo.Title__c.compareTo(this.examInfo.TITLE__c );
+            } else if (examParamSort.equals('Course Title')) {
+                sortDir = compareToExam.examInfo.COURSE_TITLE__c.compareTo(this.examInfo.COURSE_TITLE__c );
+            } else if (examParamSort.equals('Score')) {
+                if(compareToExam.examInfo.SCORE__c == this.examInfo.SCORE__c){
+                    sortDir = 0;
+                } else if (this.examInfo.SCORE__c > compareToExam.examInfo.SCORE__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (examParamSort.equals('Transfer')) {
+                if(compareToExam.examInfo.UNT_TRNSFR__c == this.examInfo.UNT_TRNSFR__c){
+                    sortDir = 0;
+                } else if (this.examInfo.UNT_TRNSFR__c > compareToExam.examInfo.UNT_TRNSFR__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else {
+                sortDir = 0;
+            }
+            
+            return sortDir * -1;
+        }
+    }
+    
+    global class sortableTransferWork implements Comparable{
+        JBT_RET_CLASS_XFER__x  transferInfo;
+        
+        
+        public sortableTransferWork(JBT_RET_CLASS_XFER__x  transferIn){
+            transferInfo = transferIn;
+        }
+        
+        global Integer compareTo(Object compareTo) {
+            sortableTransferWork compareToTransfer = (sortableTransferWork)compareTo;
+            Integer sortDir = 0;
+            if (transferParamSort.equals('Term')) {
+                sortDir = compareToTransfer.transferInfo.TERM__c.compareTo(this.transferInfo.TERM__c );
+            } else if (transferParamSort.equals('Institution')) {
+                sortDir = compareToTransfer.transferInfo.INSTITUTION__c.compareTo(this.transferInfo.INSTITUTION__c );
+            } else if (transferParamSort.equals('Course')) {
+                sortDir = compareToTransfer.transferInfo.COURSE__c.compareTo(this.transferInfo.COURSE__c );
+            } else if (transferParamSort.equals('Title')) {
+                sortDir = compareToTransfer.transferInfo.TITLE__c.compareTo(this.transferInfo.TITLE__c );
+            } else if (transferParamSort.equals('Topic')) {
+                if(compareToTransfer.transferInfo.TOPIC__c != null && this.transferInfo.TOPIC__c != null) {
+                    sortDir = compareToTransfer.transferInfo.TOPIC__c.compareTo(this.transferInfo.TOPIC__c);
+                } else if (compareToTransfer.transferInfo.TOPIC__c != null && this.transferInfo.TOPIC__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (transferParamSort.equals('Grade')) {
+                sortDir = compareToTransfer.transferInfo.GRADE__c.compareTo(this.transferInfo.GRADE__c );
+            } else if (transferParamSort.equals('RCredit')) {
+                if(compareToTransfer.transferInfo.RCREDIT__c == this.transferInfo.RCREDIT__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.RCREDIT__c > compareToTransfer.transferInfo.RCREDIT__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (transferParamSort.equals('ECredit')) {
+                if(compareToTransfer.transferInfo.ECREDIT__c == this.transferInfo.ECREDIT__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.ECREDIT__c > compareToTransfer.transferInfo.ECREDIT__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (transferParamSort.equals('Hours')) {
+                if(compareToTransfer.transferInfo.GPAHRS__c == this.transferInfo.GPAHRS__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.GPAHRS__c > compareToTransfer.transferInfo.GPAHRS__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (transferParamSort.equals('Points')) {
+                if(compareToTransfer.transferInfo.GPAPTS__c == this.transferInfo.GPAPTS__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.GPAPTS__c > compareToTransfer.transferInfo.GPAPTS__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else {
+                sortDir = 0;
+            }
+            
+            return sortDir * -1;
+        }
+    }
+    
     global class classesWrapper
     {
         //public Map<String, String> classTerms = new Map<String, String>();
@@ -1014,7 +1292,7 @@ global with sharing class StudentProfileController
 
         public List<PS_ASU_SP_CLASS_V__x> enrolledClasses = new List<PS_ASU_SP_CLASS_V__x>();
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
-
+        
     }
 
     @RemoteAction
@@ -1079,11 +1357,11 @@ global with sharing class StudentProfileController
 
             for (PS_ASU_SP_CLASS_V__x course: classList)
             {
-                if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL')
+                if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL') {
                     classesData.enrolledClasses.add(course);
-                else
+                } else {
                     classesData.droppedClasses.add(course);
-
+                }
                 classesData.classTerms.add(course.STRM__c+ '|' + course.TERM_DESCR30__c);
                 classesData.classSessions.add(course.SESSION_CODE__c);
             }     
@@ -1092,7 +1370,7 @@ global with sharing class StudentProfileController
                 classesData.classSessions.add('All');
             }
         }
-
+        
         return classesData;
 
     }
@@ -1123,7 +1401,28 @@ global with sharing class StudentProfileController
         return (creditByExamList.size() > 0? creditByExamList : new List<PS_ASU_SP_TRNSFR_V__x>());
 
     }
-
+    
+    // Get the Term information from Jitterbit
+    public static List<JBT_RET_TERMS_VW__x> getTerms() {
+        List<JBT_RET_TERMS_VW__x> termList;
+        
+        try {
+            termList =
+            (
+                Test.isRunningTest() ? new List<JBT_RET_TERMS_VW__x>() :
+                [
+                    SELECT CURR_TERM_INCLUDE_SUMMER__c,
+                    NEXT_TERM_INCLUDE_SUMMER__c, PREV_TERM__c
+                    FROM JBT_RET_TERMS_VW__x
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return (termList.size() > 0? termList : new List<JBT_RET_TERMS_VW__x>());
+    }
+    
     // Get Transfer Work Information
     @RemoteAction
     global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
@@ -1186,14 +1485,66 @@ global with sharing class StudentProfileController
             wrapper.faBalance = balanceList[0];
 
         List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
-        System.debug('Balance: ' + wrapper.faBalance.BALANCE_AMT__c);
         if (!snpRecords.isEmpty())
         {
             wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;
         }
 
         return wrapper;
-    } 
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_BOOKING_VW__x> housingInfoList = new List<REZ_HOUSING_BOOKING_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                housingInfoList =
+                [
+                    SELECT
+                        BOOKING_BUILDING__c, BOOKING_CAMPUS__c,
+                        BOOKING_FLOOR_SUITE__c, BOOKING_SECTION__c,
+                        BOOKING_STATUS__c, CHECK_IN_DT__c, CHECK_OUT_DT__c,
+                        TERM_CD__c
+                    FROM REZ_HOUSING_BOOKING_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY CHECK_OUT_DT__c DESC
+                ];
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return housingInfoList;
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_MEAL_PLAN_VW__x> getMealPlanInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_MEAL_PLAN_VW__x> mealPlanInfoList = new List<REZ_HOUSING_MEAL_PLAN_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                mealPlanInfoList =    
+                [
+                    SELECT
+                        MEAL_PLAN_STATUS__c, TERM_CD__c
+                    FROM REZ_HOUSING_MEAL_PLAN_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY MEAL_PLAN_END_DT__c
+                ];                
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return mealPlanInfoList;
+    }
 
     @RemoteAction
     global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
@@ -1248,6 +1599,14 @@ global with sharing class StudentProfileController
                     ORDER BY SRVC_IND_ACTIVE_DT__c ASC, SRVC_IND_CD__c ASC
                 ]
             );
+            Date currentDate = date.today();
+            
+            for(Integer i = serviceIndicatorList.size()-1; i >= 0; i--){
+                Date tempDate = serviceIndicatorList[i].SCC_SI_END_DT__c;
+                if (tempDate < currentDate) {
+                    serviceIndicatorList.remove(i);
+                }
+            }
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
@@ -1622,6 +1981,33 @@ global with sharing class StudentProfileController
 
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
+
+
+    @RemoteAction
+    global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
+        try{
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
+            Id student = [SELECT Id FROM Contact WHERE emplId__c =: emplidIn LIMIT 1].Id;
+            RecordType rt = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
+            Case feedbackCase = new Case(
+                        status = 'New',
+                        RecordType = rt,
+    	                contactId = student,
+    	                subject = subjectIn,
+    	                description = descriptionIn,
+    	                Origin__c = 'Student Profile',
+                        IsVisibleInSelfService = false
+    	    );
+    	            
+    	    insert feedbackCase;
+    	    
+    	    return feedbackCase.Id;
+	    } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        return null;
+    }
+  
     public String subPlanString {
         get{
             if(subPlanString == null){

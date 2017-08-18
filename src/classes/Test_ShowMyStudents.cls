@@ -14,7 +14,7 @@ public class Test_ShowMyStudents {
         pod = new List<Success_Pod__c>([SELECT Id FROM Success_Pod__c LIMIT 1]);
         
         if (pod.size() > 0) {
-            query = 'SELECT Student_Name__c, EMPLID__c, Student__c ' +
+            query = 'SELECT Student_Name__c, EMPLID__c, Student__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                 'FROM Success_Student__c ' +
                 'WHERE Success_Pod__c = \'' + pod[0].Id + '\' ' +
                 'AND Is_Active__c = true';

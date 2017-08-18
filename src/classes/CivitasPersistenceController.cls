@@ -11,7 +11,7 @@ global class CivitasPersistenceController{
             if (currentTerm == null) {
                 JBT_RET_TERMS_VW__x currentTermInfo = 
                 [
-                    SELECT  CURR_TERM__c
+                    SELECT  CURR_TERM__c, NEXT_TERM__c, PREV_TERM__c
                     FROM    JBT_RET_TERMS_VW__x
                     LIMIT 1
                 ];
@@ -20,6 +20,9 @@ global class CivitasPersistenceController{
                 if (currentTerm.length() > 4) {
                     currentTerm = currentTerm.subString(1, 5);
                 }
+                
+                nextTerm = currentTermInfo.NEXT_TERM__c;
+                prevTerm = currentTermInfo.PREV_TERM__c;
             }
             return currentTerm;
         }
@@ -28,22 +31,16 @@ global class CivitasPersistenceController{
     }
         
     public static string nextTerm{
-        get{
-            if (nextTerm == null) {
-                JBT_RET_TERMS_VW__x currentTermInfo = 
-                [
-                            SELECT NEXT_TERM__c
-                            FROM JBT_RET_TERMS_VW__x
-                            LIMIT 1
-                ];
-                nextTerm = currentTermInfo.NEXT_TERM__c;
-                
-            }
-            return nextTerm;
-        }
+        get;
+        
         set;
     }
     
+    public static string prevTerm {
+        get;
+        
+        set;
+    }
     public static Date startDate{
         get{
             if (startDate == null) {
@@ -52,6 +49,14 @@ global class CivitasPersistenceController{
                              WHERE PeopleSoft_Code__c =: currentTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startDate.addDays(21);
+            }
+            if(startDate >= Date.today()) {
+                endDate = startDate;
+                startDate = [Select Session_A_C_Start_Date__c 
+                             FROM Term__c 
+                             WHERE PeopleSoft_Code__c =: prevTerm
+                             LIMIT 1].Session_A_C_Start_Date__c;
+                startDate = startdate.addDays(21);
             }
             return startDate;
         }

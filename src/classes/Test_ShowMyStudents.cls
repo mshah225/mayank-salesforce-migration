@@ -116,43 +116,14 @@ public class Test_ShowMyStudents {
     }
     
     /*
-     * Tests the controllers ability to handle null values in sortDir
+     * Tests the controllers ability to default to ASC
      */
     public static testmethod void Test_getSort() {
         smsc.sortDir = null; // Set to null
         system.assertEquals('ASC', smsc.sortDir); // Make sure the sortDir is set to default ASC
     }
     
-    /*
-     * Tests the controllers ability to toggle the sort dir
-     */
-   /* public static testmethod void Test_toggleSort() {
-        // toggleSort violates the single purpose principal and updates the query as well
-        // so lets test that here as well
-        String tempQuery;
-        tempQuery = smsc.query;
-        
-        smsc.sortField = 'Student_Name__c';
-        system.assertEquals('DESC', smsc.sortDir);
-        
-        smsc.sortField = 'EMPLID__c'; // set sortfield for the query
-        
-        smsc.toggleSort(); // Since default is DESC, it should now be ASC
-        system.assertEquals('ASC', smsc.sortDir);
-        
-        // The page currently utilizes what can best be described as a bug
-        // Because of this, we need to reset the query to the old query or we will just
-        // stack order by clauses into the query. The bug in the page handles this for us.
-        smsc.query = tempQuery;
-        
-        smsc.toggleSort();
-        system.assertEquals('DESC', smsc.sortDir);
-        
-        smsc.query = tempQuery;
-        
-        smsc.toggleSort();
-        system.assertEquals('ASC', smsc.sortDir);
-    }*/
+    
     
     /*
      * Tests the controllers ability to toggle the sort dir

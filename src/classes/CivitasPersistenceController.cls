@@ -11,7 +11,7 @@ global class CivitasPersistenceController{
             if (currentTerm == null) {
                 JBT_RET_TERMS_VW__x currentTermInfo = 
                 [
-                    SELECT  CURR_TERM__c, Next_Term__c, Prev_Term__c
+                    SELECT  CURR_TERM__c, NEXT_TERM__c, PREV_TERM__c
                     FROM    JBT_RET_TERMS_VW__x
                     LIMIT 1
                 ];
@@ -21,8 +21,8 @@ global class CivitasPersistenceController{
                     currentTerm = currentTerm.subString(1, 5);
                 }
                 
-                nextTerm = currentTermInfo.Next_Term__c;
-                prevTerm = currentTermInfo.Prev_Term__c;
+                nextTerm = currentTermInfo.NEXT_TERM__c;
+                prevTerm = currentTermInfo.PREV_TERM__c;
             }
             return currentTerm;
         }
@@ -50,12 +50,13 @@ global class CivitasPersistenceController{
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startDate.addDays(21);
             }
-            if(startDate > Date.today()) {
+            if(startDate >= Date.today()) {
                 endDate = startDate;
                 startDate = [Select Session_A_C_Start_Date__c 
                              FROM Term__c 
                              WHERE PeopleSoft_Code__c =: prevTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
+                startDate = startdate.addDays(21);
             }
             return startDate;
         }

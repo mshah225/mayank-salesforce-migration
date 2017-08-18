@@ -31,19 +31,8 @@ global class CivitasPersistenceController{
     }
         
     public static string nextTerm{
-        get{
-            /*if (nextTerm == null) {
-                JBT_RET_TERMS_VW__x currentTermInfo = 
-                [
-                            SELECT NEXT_TERM__c
-                            FROM JBT_RET_TERMS_VW__x
-                            LIMIT 1
-                ];
-                nextTerm = currentTermInfo.NEXT_TERM__c;
-                
-            }*/
-            return nextTerm;
-        }
+        get;
+        
         set;
     }
     

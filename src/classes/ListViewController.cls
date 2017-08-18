@@ -3,6 +3,7 @@ public virtual class ListViewController {
     private final Integer cookieExpiration = 22592000;
     private final Integer defaultPageSize = 25;
     private final String pageSizeCookieName = 'pageSize';
+    private boolean debug = false;
     
     // Properties with standard getters/setters
     private String oldQuery {get; set;} // Used to determine if the query changges
@@ -64,8 +65,14 @@ public virtual class ListViewController {
         get;
         
         set {
-            query = value;
-            setCon = new ApexPages.StandardSetController(Database.getQueryLocator(query));
+            List<String> vars = new List<String>();
+            try {
+                query = value;
+                vars.add(query);
+                setCon = new ApexPages.StandardSetController(Database.getQueryLocator(query));
+            } catch (Exception e) {
+                ErrorLogger.log(e, vars, debug);
+            }
         }
     }
     
@@ -122,9 +129,11 @@ public virtual class ListViewController {
                         sortDir = 'ASC';
                     } else if (query.indexOf('DESC') >= 0) {
                         sortDir = 'DESC';
+                    } else {
+                        sortDir = 'ASC';
                     }
                 } else {
-                    sortDir = null;
+                    sortDir = 'ASC';
                 }
             }
             
@@ -185,7 +194,7 @@ public virtual class ListViewController {
                     }
                 } else { // The value has changed
                     sortDir = 'ASC';
-                }
+                } 
                 
                 sortField = value;
                 

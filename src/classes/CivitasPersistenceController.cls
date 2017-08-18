@@ -11,7 +11,7 @@ global class CivitasPersistenceController{
             if (currentTerm == null) {
                 JBT_RET_TERMS_VW__x currentTermInfo = 
                 [
-                    SELECT  CURR_TERM__c
+                    SELECT  CURR_TERM__c, Next_Term__c, Prev_Term__c
                     FROM    JBT_RET_TERMS_VW__x
                     LIMIT 1
                 ];
@@ -20,6 +20,9 @@ global class CivitasPersistenceController{
                 if (currentTerm.length() > 4) {
                     currentTerm = currentTerm.subString(1, 5);
                 }
+                
+                nextTerm = currentTermInfo.Next_Term__c;
+                prevTerm = currentTermInfo.Prev_Term__c;
             }
             return currentTerm;
         }
@@ -29,7 +32,7 @@ global class CivitasPersistenceController{
         
     public static string nextTerm{
         get{
-            if (nextTerm == null) {
+            /*if (nextTerm == null) {
                 JBT_RET_TERMS_VW__x currentTermInfo = 
                 [
                             SELECT NEXT_TERM__c
@@ -38,12 +41,17 @@ global class CivitasPersistenceController{
                 ];
                 nextTerm = currentTermInfo.NEXT_TERM__c;
                 
-            }
+            }*/
             return nextTerm;
         }
         set;
     }
     
+    public static string prevTerm {
+        get;
+        
+        set;
+    }
     public static Date startDate{
         get{
             if (startDate == null) {
@@ -52,6 +60,13 @@ global class CivitasPersistenceController{
                              WHERE PeopleSoft_Code__c =: currentTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startDate.addDays(21);
+            }
+            if(startDate > Date.today()) {
+                endDate = startDate;
+                startDate = [Select Session_A_C_Start_Date__c 
+                             FROM Term__c 
+                             WHERE PeopleSoft_Code__c =: prevTerm
+                             LIMIT 1].Session_A_C_Start_Date__c;
             }
             return startDate;
         }

@@ -26,11 +26,7 @@ global with sharing class apiSSC_CoachStudentsController {
                  ORDER BY ASURiteID__c ASC];
          if(coaches.size()>0)
          {
-<<<<<<< HEAD
              studentList = [SELECT Id, ASURiteID__c, EMPLID__c, Name, Student__r.Name,Student__r.Email, Mobile_Phone__c, Student__r.Gender__c
-=======
-             studentList = [SELECT Id, EMPLID__c, Name, Student__r.Name,Student__r.Email
->>>>>>> Civitas_Months
                              FROM Success_Student__c 
                              WHERE Success_Resource__r.Resource__r.Alias =: coachId];
          }

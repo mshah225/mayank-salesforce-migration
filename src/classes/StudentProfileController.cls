@@ -118,10 +118,21 @@ global with sharing class StudentProfileController
                 // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
+
+                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
+
                 sIList = getServiceIndicators(theContact.emplId__c);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
                 
+                for(JBT_RET_GENERAL_RIGHT__x prg : studentProgramDataList){
+                    if(prg.ACAD_CAREER__c.equals('UGRD')){
+                        ugStudentProgram = prg;
+                    }
+                    else if (prg.ACAD_CAREER__c.equals('GRAD')){
+                        gradStudentProgram = prg;
+                    }
+                }
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
         
@@ -161,7 +172,6 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-                
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
                     			  Select Subplan_description__c
                                   FROM Student_Program_Subplan__c

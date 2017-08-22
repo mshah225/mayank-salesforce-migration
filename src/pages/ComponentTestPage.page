@@ -1,3 +1,7 @@
 <apex:page id="ComponentTestPage">
+<<<<<<< HEAD
     Testing...
+=======
+    <c:CivitasPersistenceData />
+>>>>>>> Civitas_Months
 </apex:page>

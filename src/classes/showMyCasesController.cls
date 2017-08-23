@@ -11,7 +11,7 @@ public class showMyCasesController extends ListViewController {
     private string originalQuery {get; set;} // Justin is this still required?
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
-        
+    
     /*
      * Get the list of cases selected by the end user.
      */
@@ -216,6 +216,7 @@ public class showMyCasesController extends ListViewController {
             } else {
                 imageName = 'icon-5.png';
             }
+            
         }
     }
     

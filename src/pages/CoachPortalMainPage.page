@@ -37,9 +37,9 @@
                                     proactiveRTID="{!CoachCaseRTID}"
                                     rerenderList="{!$Component.viewAsComponent.viewAsComponent.proactiveList}"
                                     caseEmailRTID="{!CoachEmailRTID}"
-                                    showSummarySubject="true" showSummaryCount="true" showSummaryFollowupDate="true"
+                                    showSummarySubject="true" showSummaryCount="true" showSummaryFollowupDate="false"
                                     showCaseListSelection="true" showCaseListName="true" showCaseListEMPLID="true" showCaseListSubject="true"
-                                    showCaseListStatus="true" showCaseListFollowupDate="false" showCaseListTransfer="true" showCaseMassEmail="true" 
+                                    showCaseListStatus="true" showCaseListFollowupDate="true" showCaseListTransfer="true" showCaseMassEmail="true" 
                                     showProactiveCaseCount="false" showReactiveCaseCount="false" showSearch="true" />
 
             <apex:tabPanel styleClass="buffer" id="tabPanel">

@@ -24,6 +24,7 @@
     <apex:attribute name="showReactive" type="boolean" description="" default="false" />
     <apex:attribute name="showSearch" type="boolean" description="" default="false" />
     <apex:attribute name="showRefresh" type="boolean" description="" default="false" />
+    <apex:attribute name="showCivitas" type="boolean" description="" default="false"/>
 
     
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
@@ -220,7 +221,7 @@
                              headerClass="ASUColumnHead" styleClass="ASUColumn"/>
                 <apex:column headerValue="Reactive" value="{!caseCounts[c.obj.contactId].reactiveCount}" rendered="{! showReactive}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn"/>
-                <apex:column headerValue="Persistence Outlook" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                <apex:column headerValue="Persistence Outlook" headerClass="ASUColumnHead" styleClass="ASUColumn" rendered="{! showCivitas}">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="persistenceLevel"
@@ -239,7 +240,7 @@
                     <apex:image url="{!URLFOR($Resource.PersistenceChart, imageVar)}" width="40" height="20"/>
                 </apex:column>
                 <apex:column headerValue="Change" value="{!c.changeDir}"
-                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                             headerClass="ASUColumnHead" styleClass="ASUColumn" rendered="{! showCivitas}">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="change"
@@ -256,7 +257,7 @@
                     </apex:facet>
                 </apex:column>
                 <apex:column headerValue="Change Date" value="{!c.obj.Change_Date__c}"
-                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                             headerClass="ASUColumnHead" styleClass="ASUColumn" rendered="{! showCivitas}">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="changeDate"

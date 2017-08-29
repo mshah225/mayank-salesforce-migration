@@ -437,6 +437,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                                       && email.textAttachments.size() >0) 
                                       || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
 
+                    Boolean hasAttachments = (email.textAttachments != null                                
+                                      && email.textAttachments.size() >0) 
+                                      || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
+                                      
                     // If we catch an auto reply loop, do not create the case and discard this email
                     if(recentCase.Description.equals(currentCaseDescription) && recentCase.OwnerId == theCase.OwnerID
                        && !hasAttachments) {

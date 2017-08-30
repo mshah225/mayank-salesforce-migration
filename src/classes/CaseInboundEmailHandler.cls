@@ -16,6 +16,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     private Id fallbackQueueId;
     private String typeOfAdditionalAssignmentNeeded;
     private boolean associateCaseToActiveOpportunity;
+    private Email_Logging__c loggingSettings = Email_Logging__c.getValues('Current_Settings');
     protected Case theCase = null;
     protected Messaging.InboundEmail inboundEmail;
     protected String defaultCaseOwnerId;
@@ -69,6 +70,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             // Check the inbound email for filtered terms; if found, no do nothing
             if (filteredTermFound())
             {
+                if(loggingSettings.Spam_Logging__c) {
+                    generateLostEmail(email, theCase, 'Filtered Term Detected');
+                }
                 // If we want to send a reply with a failure message, the result props can be changed
                 return result;
             }
@@ -436,10 +440,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     Boolean hasAttachments = (email.textAttachments != null                                
                                       && email.textAttachments.size() >0) 
                                       || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
-
-                    Boolean hasAttachments = (email.textAttachments != null                                
-                                      && email.textAttachments.size() >0) 
-                                      || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
                                       
                     // If we catch an auto reply loop, do not create the case and discard this email
                     if(recentCase.Description.equals(currentCaseDescription) && recentCase.OwnerId == theCase.OwnerID
@@ -522,7 +522,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                     sendAutoReply(theCase, theContact, attachmentFailureTemplateId);
             }
-            generateLostEmail(email, theCase, 'Attachment is invalid');
+            if(loggingSettings.Attachment_Logging__c) {
+                generateLostEmail(email, theCase, 'Attachment is invalid');
+            }
         }
 
         return successfulAttachment;
@@ -1211,6 +1213,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
             lostEmail.PlainTextBody__c += attachmentInfo;
         }
+        
         update lostEmail;
 
         return lostEmail;

@@ -306,7 +306,7 @@
                                             }
                                             
                                             if(!isBodyPopulated) {
-                                                alert('You cannot proceed without entering a message.');
+                                                alert('Email Body cannot be empty.');
                                             } else {
                                                 document.getElementById(commandLinkParam).click(); // explicitly click on #renderMyTab commandlink to rerender the target modal
                                             }

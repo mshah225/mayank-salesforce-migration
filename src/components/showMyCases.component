@@ -25,6 +25,7 @@
     <apex:attribute name="suppressSearch" type="boolean" description="" default="false" />
     <apex:attribute name="suppressRefresh" type="boolean" description="" default="false" />
     
+    
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
         <apex:form >
             <div class="headerFooter">

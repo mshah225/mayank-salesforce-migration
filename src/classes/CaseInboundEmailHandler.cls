@@ -68,10 +68,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
 
             // Check the inbound email for filtered terms; if found, no do nothing
-            if (filteredTermFound())
+            String filteredTerm = filteredTermFound();
+            if (filteredTerm != null)
             {
                 if(loggingSettings.Spam_Logging__c) {
-                    generateLostEmail(email, theCase, 'Filtered Term Detected');
+                    generateLostEmail(email, theCase, 'Filtered Term: ' + filteredTerm);
                 }
                 // If we want to send a reply with a failure message, the result props can be changed
                 return result;
@@ -751,8 +752,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         return address;
     }
 
-    private Boolean filteredTermFound()
+    private String filteredTermFound()
     {
+        
         Email_To_Case_Filter__c[] filteredTerms = [
             SELECT Name, Rejection_Count__c
             FROM Email_To_Case_Filter__c
@@ -775,7 +777,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
                     update filter;
 
-                    return true;
+                    return lcFilter;
                 }
             }
             else if (inboundEmail.subject != null)
@@ -785,11 +787,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
                     update filter;
 
-                    return true;
+                    return lcFilter;
                 }
             }
         }
-        return false;
+        return null;
     }
 
     private void loadConfigurationSettings()

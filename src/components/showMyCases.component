@@ -299,7 +299,6 @@
                             
                             <div class="modal-footer">
                                 <apex:outputPanel layout="none" rendered="{!AND(NOT(emailPreviewMode), ISBLANK(emailInsertResults))}">
-                                    <!-- SFE-9109, added a separate commandlink and modified Preview button -->
                                     <apex:commandLink type="button" id="renderMyTab" reRender="EmailModalContent">
                                         <apex:param assignTo="{!emailPreviewMode}" value="true" name="previewMode"/>
                                     </apex:commandLink>

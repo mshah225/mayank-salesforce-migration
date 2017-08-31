@@ -249,7 +249,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade emailModal" role="dialog">
+            <div id="caseModal" class="modal fade emailModal" role="dialog">
                 <div class="modal-dialog" role="document" style ="padding-left: 5%;">
                     <apex:outputPanel id="EmailModalContent">
                         <div class="modal-content" style="width: 95%;">
@@ -284,7 +284,7 @@
                                 <apex:outputPanel layout="none" rendered="{!AND(emailPreviewMode, ISBLANK(emailInsertResults))}">
                                     <apex:outputField value="{!tempEmail.Subject__c}" />
                                     <p style="margin-top:10px;">
-                                        Dear StudentFirstName ,
+                                        Dear StudentFirstName,
                                     </p>
                                     <apex:outputField value="{!tempEmail.Additional_Message_Text__c}" />
                                     <p style="margin-top:10px;">
@@ -307,7 +307,7 @@
                                     <apex:commandLink type="button" styleClass="btn btn-default asu-primary" 
                                                       onclick="checkEmailBodyCase('{!$Component.renderMyTab}', '{!$Component.caseEmailBody}', '{!$Component.caseErrorBox}'); return false;" value="Preview">
                                     </apex:commandLink>
-                                    <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="button" onclick="clearCaseErrorBox('{!$Component.caseErrorBox}');" class="btn btn-default asu-secondary" data-dismiss="modal">Cancel</button>
                                 </apex:outputPanel>
                                 <apex:outputPanel layout="none" rendered="{!AND(emailPreviewMode, ISBLANK(emailInsertResults))}">
                                     <apex:commandLink type="button" action="{!massEmail}" styleClass="btn btn-default asu-primary"

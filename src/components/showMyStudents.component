@@ -25,7 +25,7 @@
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group"> 
                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px"
-                                         onclick="toggleEmailModal(this)" rendered="{! NOT(suppressMassEmail)}">Mass Email - Student</apex:outputLink>
+                                         onclick="toggleEmailModal(this)" rendered="{! NOT(suppressMassEmail)}">Mass Email</apex:outputLink>
                     </apex:outputPanel>
                     <apex:outputPanel styleClass="input-group" style="width:100%;max-width:250px; margin-top: 5px;" rendered="{! NOT(suppressSearch)}">
                         <apex:inputText id="myStudentsInput"
@@ -115,6 +115,9 @@
                                     <p style="margin-top:10px;">
                                         Dear StudentFirstName,
                                     </p>
+                                    <apex:outputPanel layout="block" id="studentErrorBox" style="display: none;">
+                                        <p style="color: red">Email Body cannot be empty.</p>
+                                    </apex:outputPanel>
                                     <apex:inputField value="{!tempEmail.Additional_Message_Text__c}" styleClass="emailTextBox" id="studentEmailBody" style="width:100%; height: 200px; resize: none;" />
                                     <p style="margin-top:10px;">
                                         Sincerely,<br />
@@ -138,32 +141,13 @@
                             </div>
                             
                             <div class="modal-footer">
-                                <!-- SFE-9109, Code for checking if email body is null, else call actionfunction to rerender modal -->
-                                <script>
-                                    function checkEmailBodyStudent(emailBodyParam) {
-                                        
-                                        var isBodyPopulated = false; // boolean variable to check if the body is populated or not 
-                                        var textAreaValue = document.getElementById(emailBodyParam).value; // variable to store the value of textarea and check if it is empty or not
-                                        if(textAreaValue != undefined && textAreaValue != null && textAreaValue != '') {
-                                            if(textAreaValue.length > 0) { // if textarea is populated, set isBodyPopulated to true
-                                                isBodyPopulated = true;
-                                            }
-                                        }
-                                        
-                                        if(!isBodyPopulated) {
-                                            alert('Email Body cannot be empty.');
-                                        } else {
-                                            progressToEmailPreviewStudent(); // call action function to rerender the modal
-                                        }
-                                    }
-                                </script>
                                 <apex:outputPanel layout="none" rendered="{!AND(NOT(emailPreviewMode), ISBLANK(emailInsertResults))}">
                                     <!-- SFE-9109, added an actionFunction and modified Preview button -->
                                     <apex:actionFunction name="progressToEmailPreviewStudent" reRender="EmailModalContent" >
                                         <apex:param assignTo="{!emailPreviewMode}" value="true" name="previewMode"/>
                                     </apex:actionFunction>
                                     <apex:commandLink type="button" styleClass="btn btn-default asu-primary"
-                                                      onclick="checkEmailBodyStudent('{!$Component.studentEmailBody}'); return false;" value="Preview">
+                                                      onclick="checkEmailBodyStudent('{!$Component.studentEmailBody}', '{!$Component.studentErrorBox}'); return false;" value="Preview">
                                     </apex:commandLink>
                                     <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">Cancel</button>
                                 </apex:outputPanel>

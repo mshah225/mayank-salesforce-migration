@@ -163,7 +163,7 @@
                                     <apex:commandLink type="button" action="{!clearSaveResults}" styleClass="btn btn-default asu-primary"
                                               reRender="rerenderMe" value="Ok" oncomplete="actionComplete()"
                                               onclick="toggleEmailModal(this)" status="ASUAjaxStatus"/>
-                                </apex:outputPanel>
+                                </apex:outputPanel> 
                             </div>
                         </div>
                     </apex:outputPanel>

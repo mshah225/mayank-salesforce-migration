@@ -322,7 +322,7 @@
                                               onclick="toggleEmailModal(this)" status="ASUAjaxStatus">
                                         <apex:param name="updateCaseStates" value="true" assignTo="{!refreshList}"/>
                                     </apex:commandLink>
-                                </apex:outputPanel>
+                                </apex:outputPanel> 
                             </div>
                         </div>
                     </apex:outputPanel>

@@ -2007,7 +2007,7 @@ global with sharing class StudentProfileController
         }
         return null;
     }
-  
+
     public String subPlanString {
         get{
             if(subPlanString == null){

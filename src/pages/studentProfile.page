@@ -1196,6 +1196,13 @@
 
                                         <div id="stdtRetentionResponseErrors"></div>
 
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                Graph indicator info
+                                                goes here.
+                                            </div>
+                                        </div> -->
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1211,6 +1218,7 @@
                                             <div id="psTranscriptErrors"></div>
                                         </div>
                                         
+
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>

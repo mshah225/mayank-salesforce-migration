@@ -347,7 +347,7 @@
                 <apex:outputText value="{!setCon.ResultSize} Records" />
                 <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}"
                                   style="float:right;" styleClass="standardLink" reRender="rerenderMe"
-                                  status="ASUAjaxStatus" />
+                                  status="ASUAjaxStatus" /> 
             </div>
         </apex:form>
     </apex:outputPanel> 

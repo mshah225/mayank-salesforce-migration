@@ -118,6 +118,13 @@ global with sharing class StudentProfileController
                 // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
                 // testScoreList = TestScoreService.getTestScores(theContact.Id);
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
+
+                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
+                if(studentProgramDataList.size() > 0){
+				    studentProgram = studentProgramDataList[0];
+				}
+                profileHeader = getProfileHeader(theContact.EMPLID__c);
+                getTermInfo();
                 sIList = getServiceIndicators(theContact.emplId__c);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
@@ -163,7 +170,7 @@ global with sharing class StudentProfileController
                 }
                 
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
-                    			  Select Subplan_description__c
+                            Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
                                   WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
                 ];
@@ -223,7 +230,7 @@ global with sharing class StudentProfileController
     private void getTermInfo()
     {
         vars = new List<String>();
-        List<JBT_RET_TERMS_VW__x> termInfoList;
+        List<JBT_RET_TERMS_VW__x> termInfoList = new List<JBT_RET_TERMS_VW__x>();
        
         try {
             termInfoList = 
@@ -272,7 +279,7 @@ global with sharing class StudentProfileController
     global static JBT_RET_PROFILE_HEADER_VW__x getProfileHeader(String emplId)
     {
         vars = new List<String>();
-        List<JBT_RET_PROFILE_HEADER_VW__x> headerlist;
+        List<JBT_RET_PROFILE_HEADER_VW__x> headerlist = new List<JBT_RET_PROFILE_HEADER_VW__x>();
         
         // Build out list to avoid de-reference null object errors.
         try {
@@ -765,7 +772,7 @@ global with sharing class StudentProfileController
     global static List<JBT_RET_GENERAL_RIGHT__x> getStudentProgramData(String emplId)
     {
         vars = new List<String>();
-        List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList;
+        List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList = new List<JBT_RET_GENERAL_RIGHT__x>();
         
         // Temporary while database issues are investigated
         //return new List<JBT_RET_GENERAL_RIGHT__x>();

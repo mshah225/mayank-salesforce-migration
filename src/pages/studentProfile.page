@@ -62,20 +62,19 @@
         <script text="text/javascript">        
             function openNewSubtab(subtabUrl, subtabTitle)
             {
-             
-                var openSubtab = function(result)
-                {
-                      if (subtabTitle != 'null')
-                        sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
-                      else
-                        sforce.console.openSubtab(result.id, subtabUrl, true);
-
-                };
-
-                if (inConsole)
-                      sforce.console.getEnclosingPrimaryTabId(openSubtab);
-                else
+                if (sforce.console.isInConsole()) {
+                    sforce.console.getEnclosingPrimaryTabId(openSubtab);
+                    var openSubtab = function(result)
+                    {
+                          if (subtabTitle != 'null')
+                            sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
+                          else
+                            sforce.console.openSubtab(result.id, subtabUrl, true);
+    
+                    };
+                } else {
                     window.open(subtabUrl);
+                }
              }
         </script>  
         <style>

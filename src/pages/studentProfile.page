@@ -62,9 +62,8 @@
         </script>
         <script text="text/javascript">        
             function openNewSubtab(subtabUrl, subtabTitle)
-            {
+            { 
                 if (sforce.console.isInConsole()) {
-                    sforce.console.getEnclosingPrimaryTabId(openSubtab);
                     var openSubtab = function(result)
                     {
                           if (subtabTitle != 'null')
@@ -73,6 +72,7 @@
                             sforce.console.openSubtab(result.id, subtabUrl, true);
     
                     };
+                    sforce.console.getEnclosingPrimaryTabId(openSubtab);
                 } else {
                     window.open(subtabUrl);
                 }

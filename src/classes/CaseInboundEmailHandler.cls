@@ -16,6 +16,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     private Id fallbackQueueId;
     private String typeOfAdditionalAssignmentNeeded;
     private boolean associateCaseToActiveOpportunity;
+    private boolean neutralEmail = true; //Allows attachment, but doesn't save it
     protected Case theCase = null;
     protected Messaging.InboundEmail inboundEmail;
     protected String defaultCaseOwnerId;
@@ -470,7 +471,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                    this.theCase.Description = ''; 
                 }
 
-                if (hasAttachments) {
+                if (hasAttachments && !neutralEmail) {
                     this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong(); 
                 } else {
                     this.theCase.Description += ' Email received at ' + Datetime.now().formatLong() + ' without email body or attachment.';
@@ -545,7 +546,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         attachment.Name = tAttachment.fileName;
                         attachment.Body = Blob.valueOf(tAttachment.body);
                         attachment.ParentId = parentObject.Id;
-                        insert attachment;
+                        if(!tAttachment.fileName.toLowerCase().contains('.p7s')) {
+                            neutralEmail = false;
+                            insert attachment;
+                        }
                     }
                 }
                 else if (!validFileExtensionSet.isEmpty())
@@ -573,7 +577,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         attachment.Name = bAttachment.fileName;
                         attachment.Body = bAttachment.body;
                         attachment.ParentId = parentObject.Id;
-                        insert(attachment);
+                        if(!bAttachment.fileName.toLowerCase().contains('.p7s')) {
+                            neutralEmail = false;
+                            insert attachment;
+                        }
                     }
                 }
                 else if (!validFileExtensionSet.isEmpty())

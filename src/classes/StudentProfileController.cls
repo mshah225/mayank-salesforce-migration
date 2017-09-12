@@ -120,14 +120,17 @@ global with sharing class StudentProfileController
                 // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
 
                 studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
+
                 if (studentProgramDataList.size() > 0) {
 				          studentProgram = studentProgramDataList[0];
 				        }
+              
                 profileHeader = getProfileHeader(theContact.EMPLID__c);
                 getTermInfo();
                 sIList = getServiceIndicators(theContact.emplId__c);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
+                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
                 
                 for(JBT_RET_GENERAL_RIGHT__x prg : studentProgramDataList){
                     if(prg.ACAD_CAREER__c.equals('UGRD')){
@@ -177,7 +180,7 @@ global with sharing class StudentProfileController
                     }
                 }
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
-                    			  Select Subplan_description__c
+                            Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
                                   WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
                 ];

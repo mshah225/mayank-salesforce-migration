@@ -47,7 +47,7 @@
             function setTabTitle() {
                 //Set the current tab's title
                 try {
-                    sforce.console.setTabTitle('{!theContact.FirstName}\'s Student Profile');
+                    sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
                     inConsole = true;
                 } catch (e) {
                     console.log('Notice: Tab title can only be set when the Student Profile is opened inside of a Service Console tab! ' + e.message);
@@ -517,7 +517,7 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Expected Graduation Date</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.EXP_GRAD_TERM__c), '--', 
+                                                            <td>{!IF(ISBLANK(StudentProgram.EXP_GRAD_TERM__r.Name), '--', 
                                                                  StudentProgram.EXP_GRAD_TERM__r.Name)}
                                                             </td>
                                                         </tr>
@@ -531,7 +531,7 @@
                                                                 <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
                                                                     <apex:param value="{!studentProgram.APPT_DT__c}"/>
                                                                 </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT__c)}">--</apex:outputText>
+                                                                <apex:outputText rendered="{! (ISBLANK(studentProgram.APPT_DT__c))}">--</apex:outputText>
                                                             </td>
                                                         </tr>
 
@@ -544,7 +544,7 @@
                                                                 <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
                                                                     <apex:param value="{!studentProgram.APPT_DT_PENDING__c}"/>
                                                                 </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT_PENDING__c)}">--</apex:outputText>
+                                                                <apex:outputText rendered="{! (ISBLANK(studentProgram.APPT_DT_PENDING__c))}">--</apex:outputText>
                                                             </td>
                                                         </tr>
                                                     </table>

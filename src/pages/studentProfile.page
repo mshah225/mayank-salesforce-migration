@@ -45,11 +45,9 @@
             var inConsole = false;
             function setTabTitle() {
                 //Set the current tab's title
-                try {
-                    sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
-                    inConsole = true;
-                } catch (e) {
-                    console.log('Notice: Tab title can only be set when the Student Profile is opened inside of a Service Console tab! ' + e.message);
+                if (sforce.console.isInConsole() || window.location.href.includes("FrameOrigin")) {
+                	sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
+                	inConsole = true;
                 }
             }
             var pageLoad = window.onload;
@@ -62,17 +60,17 @@
         </script>
         <script text="text/javascript">        
             function openNewSubtab(subtabUrl, subtabTitle)
-            { 
-                if (sforce.console.isInConsole()) {
-                    var openSubtab = function(result)
-                    {
-                          if (subtabTitle != 'null')
-                            sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
-                          else
-                            sforce.console.openSubtab(result.id, subtabUrl, true);
-    
-                    };
-                    sforce.console.getEnclosingPrimaryTabId(openSubtab);
+            {
+                var openSubtab = function(result) {
+                      if (subtabTitle != 'null'){
+                        sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
+                      } else {
+                        sforce.console.openSubtab(result.id, subtabUrl, true);
+                      }
+                };
+                
+                if (inConsole) {
+                      sforce.console.getEnclosingPrimaryTabId(openSubtab);
                 } else {
                     window.open(subtabUrl);
                 }

@@ -83,6 +83,7 @@ global class CivitasPersistenceController{
         dataList = new List<CivitasWrapper>();
         List<CivitasWrapper> rejected = new List<CivitasWrapper>();
         Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplidIn LIMIT 1];
+        CV_ASU_STDNT_TERM__x prevData;
         for (CV_ASU_STDNT_TERM__x trm : [
             Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c, ONLINE_SEGMENT__c, CAREER_SEGMENT__c  
             FROM CV_ASU_STDNT_TERM__x 
@@ -95,9 +96,19 @@ global class CivitasPersistenceController{
                 if (trm.ONLINE_SEGMENT__c != 'N' || trm.CAREER_SEGMENT__c != 'U') {
                     rejected.add(new CivitasWrapper('Rejected'));
                 } else {
+                    if(prevData == null) {
+                        prevData = trm;
+                    }
+                    while(prevData.Snap_Date__c < trm.Snap_Date__c) {
+                        prevData.Snap_Date__c = prevData.Snap_Date__c.addDays(1);
+                        dataList.add(new CivitasWrapper(prevData.Snap_Date__c, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
+                                                    prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));  
+                    }
                     dataList.add(new CivitasWrapper(trm.Snap_Date__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
                                                     trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));    
                 }
+                
+                prevData = trm; 
             }                  
         }
         

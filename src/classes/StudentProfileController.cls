@@ -1539,7 +1539,7 @@ global with sharing class StudentProfileController
                     FROM REZ_HOUSING_MEAL_PLAN_VW__x
                     WHERE EMPLID__c = :emplId
                     AND TERM_CD__c = :currentTerm
-                    ORDER BY MEAL_PLAN_END_DT__c
+                    ORDER BY MEAL_PLAN_ID__c DESC
                 ];                
             }
         } catch (Exception e) {

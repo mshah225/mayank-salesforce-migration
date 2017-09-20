@@ -438,7 +438,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     currentCaseSubject = currentCaseSubject.trim();
                     theCase.Subject = currentCaseSubject;
                     
-                    Boolean hasAttachments = (email.textAttachments != null                                
+                    Boolean hasAttachments = (email.textAttachments != null
                                       && email.textAttachments.size() >0) 
                                       || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
                                       

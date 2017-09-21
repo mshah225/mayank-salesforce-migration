@@ -100,7 +100,7 @@ global class CivitasPersistenceController{
                 if (trm.ONLINE_SEGMENT__c != 'N' || trm.CAREER_SEGMENT__c != 'U') {
                     rejected.add(new CivitasWrapper('Rejected'));
                 } else {
-                    if(trm.Snap_Date__c < startDate && startSemesterData != null) {
+                    if(trm.Snap_Date__c > startDate && startSemesterData != null) {
                         Date tempStart = startDate;
                         while(tempStart < trm.Snap_Date__c) {
                             dataList.add(new CivitasWrapper(tempStart, startSemesterData.CURR_CONT_PREDICTION_LEVEL__c, 

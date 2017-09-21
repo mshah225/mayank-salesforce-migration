@@ -99,10 +99,11 @@ global class CivitasPersistenceController{
                     if(prevData == null) {
                         prevData = trm;
                     }
-                    while(prevData.Snap_Date__c < trm.Snap_Date__c) {
+                    Date prevDate = prevData.Snap_Date__c;
+                    while(prevDate < trm.Snap_Date__c) {
                         System.debug('Loop: ' + prevData);
-                        prevData.Snap_Date__c = prevData.Snap_Date__c.addDays(1);
-                        dataList.add(new CivitasWrapper(prevData.Snap_Date__c, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
+                        prevDate = prevDate.addDays(1);
+                        dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
                                                     prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));  
                     }
                     System.debug('Loop: ' + trm);
@@ -113,10 +114,12 @@ global class CivitasPersistenceController{
                 prevData = trm; 
             }                  
         }
-        while(prevData.Snap_Date__c < Date.today()) {
+        
+        Date prevDate = prevData.Snap_Date__c;
+        while(prevDate < Date.today()) {
             System.debug('Loop: ' + prevData);
-            prevData.Snap_Date__c = prevData.Snap_Date__c.addDays(1);
-            dataList.add(new CivitasWrapper(prevData.Snap_Date__c, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
+            prevDate = prevDate.addDays(1);
+            dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
                                         prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));  
         }
         

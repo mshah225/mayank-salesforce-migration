@@ -128,12 +128,14 @@ global class CivitasPersistenceController{
             }                  
         }
         
-        Date prevDate = prevData.Snap_Date__c;
-        while(prevDate < Date.today()) {
-            prevDate = prevDate.addDays(1);
-            dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
-                                        prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));  
-            dateIncr++;
+        if(prevData != null) {
+            Date prevDate = prevData.Snap_Date__c;
+            while(prevDate < Date.today()) {
+                prevDate = prevDate.addDays(1);
+                dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
+                                            prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));  
+                dateIncr++;
+            }
         }
         
         

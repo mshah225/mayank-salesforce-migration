@@ -93,7 +93,7 @@ global class CivitasPersistenceController{
             ORDER BY SNAP_DATE__c ASC
         ]) {
             //Checks if it's not in persson OR not an undergrad.
-            if(trm < startDate()) {
+            if(trm.Snap_Date__c < startDate) {
                 startSemesterData = trm;
             }
             if (trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate) {

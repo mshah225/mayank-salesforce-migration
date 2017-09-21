@@ -324,7 +324,7 @@ public class AdvisorPortalMainPageController {
     public String myProactiveQuery {
         get {
             if (ownerId != null) {
-                myProactiveQuery = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c ' +
+                myProactiveQuery = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
@@ -343,7 +343,7 @@ public class AdvisorPortalMainPageController {
     public String myWatchlistQuery {
         get {
             if (ownerId != null) {
-                myWatchlistQuery = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c ' +
+                myWatchlistQuery = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
@@ -363,7 +363,8 @@ public class AdvisorPortalMainPageController {
     public String myStudentsQuery {
         get {
             if (ownerId != null) {
-                myStudentsQuery = 'SELECT Student_Name__c, EMPLID__c, Student__c, Student__r.FirstName, Student__r.LastName ' +
+                myStudentsQuery = 'SELECT Student_Name__c, EMPLID__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c, ' 
+                + 'Student__c, Student__r.FirstName, Student__r.LastName ' +
                     'FROM Success_Student__c ' +
                     'WHERE Success_Pod__r.OwnerId = \'' + ownerId + '\' ' +
                         'AND Is_Active__c = true ORDER BY Student_Name__c ASC';

@@ -113,6 +113,13 @@ global class CivitasPersistenceController{
                 prevData = trm; 
             }                  
         }
+        while(prevData.Snap_Date__c < Date.today()) {
+            System.debug('Loop: ' + prevData);
+            prevData.Snap_Date__c = prevData.Snap_Date__c.addDays(1);
+            dataList.add(new CivitasWrapper(prevData.Snap_Date__c, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
+                                        prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn));  
+        }
+        
         
         if(rejected.size() > 0){
             return rejected;

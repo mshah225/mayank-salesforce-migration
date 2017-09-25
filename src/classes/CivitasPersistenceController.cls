@@ -133,7 +133,7 @@ global class CivitasPersistenceController{
             while(prevDate < Date.today()) {
                 prevDate = prevDate.addDays(1);
                 dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
-                                            prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));  
+                                            prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, prevData.CHANGE_DIRECTION__c, prevData.PREV_CONT_PREDICTION_DATE__c));  
                 dateIncr++;
             }
         }
@@ -228,7 +228,7 @@ global class CivitasPersistenceController{
             name = nameIn;
         }
         
-        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn, Integer valueIn, String direction, Date prevDate){
+        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn, Integer valueIn, String direction, Date prevDateIn){
             snapDate = sDate;
             empl = empIn;
             outlookLevel = oLevel;  
@@ -239,7 +239,9 @@ global class CivitasPersistenceController{
             day = valueIn;
             dayDate = monthToText(snapDate.month()) + ' ' + snapDate.day();
             fullDate =  snapDate.month() + '/' + snapDate.day() + '/' + snapDate.year();
-            prevDate = prevDate.month() + '/' + prevDate.day() + '/' + prevDate.year();
+            if (prevDateIn != null) {
+                prevDate = prevDateIn.month() + '/' + prevDateIn.day() + '/' + prevDateIn.year();
+            }
             levelDesc = description;
             
             flag = flagIn;

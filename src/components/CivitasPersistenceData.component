@@ -88,6 +88,7 @@
                 function (result, event) {
                 feedback.style.display = 'block';
                 if (result.length > 0) {
+                    console.log(result);
                     if(result[0].name == 'Rejected') {
                         document.getElementById("errorMessage").innerHTML =
                             "Persistence Outlook Level data is not available.";

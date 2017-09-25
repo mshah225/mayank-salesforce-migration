@@ -87,7 +87,7 @@ global class CivitasPersistenceController{
         Integer dateIncr = startDate.day();
         CV_ASU_STDNT_TERM__x startSemesterData;
         for (CV_ASU_STDNT_TERM__x trm : [
-            Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c, ONLINE_SEGMENT__c, CAREER_SEGMENT__c  
+            Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c, ONLINE_SEGMENT__c, CAREER_SEGMENT__c, CHANGE_DIRECTION__c, PREV_CONT_PREDICTION_DATE__c 
             FROM CV_ASU_STDNT_TERM__x 
             WHERE Contact__c =: emplIdIn
             ORDER BY SNAP_DATE__c ASC
@@ -104,7 +104,7 @@ global class CivitasPersistenceController{
                         Date tempStart = startDate;
                         while(tempStart < trm.Snap_Date__c) {
                             dataList.add(new CivitasWrapper(tempStart, startSemesterData.CURR_CONT_PREDICTION_LEVEL__c, 
-                                         startSemesterData.CURRENT_SEGMENT_DESCR__c, startSemesterData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));
+                                         startSemesterData.CURRENT_SEGMENT_DESCR__c, startSemesterData.CHANGE_FLG__c,  c.FirstName, c.LastName, emplidIn, dateIncr, startSemesterData.CHANGE_DIRECTION__c, startSemesterData.PREV_CONT_PREDICTION_DATE__c));
                             dateIncr++;
                             tempStart = tempStart.addDays(1);
                         }
@@ -116,11 +116,11 @@ global class CivitasPersistenceController{
                     while(prevDate < trm.Snap_Date__c) {
                         prevDate = prevDate.addDays(1);
                         dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
-                                                    prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));
+                                                    prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, prevData.CHANGE_DIRECTION__c, prevData.PREV_CONT_PREDICTION_DATE__c));
                         dateIncr = dateIncr++;
                     }
                     dataList.add(new CivitasWrapper(trm.SNAP_DATE__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
-                                                    trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));
+                                                    trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, trm.CHANGE_DIRECTION__c, trm.PREV_CONT_PREDICTION_DATE__c));
                     dateIncr++;
                 }
                 
@@ -221,12 +221,14 @@ global class CivitasPersistenceController{
         public String fullDate;
         public String flag;
         public String termInfo;
+        public String direction;
+        public String prevDate;
         
         public civitasWrapper(String nameIn) {
             name = nameIn;
         }
         
-        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn, Integer valueIn){
+        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn, Integer valueIn, String direction, Date prevDate){
             snapDate = sDate;
             empl = empIn;
             outlookLevel = oLevel;  
@@ -237,7 +239,9 @@ global class CivitasPersistenceController{
             day = valueIn;
             dayDate = monthToText(snapDate.month()) + ' ' + snapDate.day();
             fullDate =  snapDate.month() + '/' + snapDate.day() + '/' + snapDate.year();
+            prevDate = prevDate.month() + '/' + prevDate.day() + '/' + prevDate.year();
             levelDesc = description;
+            
             flag = flagIn;
         }
         

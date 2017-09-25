@@ -100,7 +100,7 @@
                     document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
                     document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate + '<br />';
                     
-                    var loopCount = result.length;
+                    /*var loopCount = result.length;
                     var found = false;
                     while (loopCount > 0 && !found) {
                     	loopCount--;
@@ -118,6 +118,15 @@
                             document.getElementById("change").innerHTML = '<b>Change: </b> None';
                         }
                     	document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
+                    } else {
+                        document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
+                        document.getElementById("levelChangeDate").innerHTML += '<b>Level Change Date: </b> N/A';
+                    }*/
+                    
+                    var endPoint = result.length-1;
+                    if(result[endPoint].direction != null && result[endPoint].prevDate != null) {
+                        document.getElementById("change").innerHTML = '<b>Change: </b>' + result[endPoint].direction;
+                        document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[endPoint].prevDate;
                     } else {
                         document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
                         document.getElementById("levelChangeDate").innerHTML += '<b>Level Change Date: </b> N/A';

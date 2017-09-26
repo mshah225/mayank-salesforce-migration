@@ -105,7 +105,6 @@ public without sharing class PersistenceFeedbackController {
                 
                 caseDescription = '';
         	}
-            system.debug('called');
             return null;
         } catch (Exception e) {
             List<String> vars = new List<String>();

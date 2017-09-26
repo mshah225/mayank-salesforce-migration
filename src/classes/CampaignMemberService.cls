@@ -29,12 +29,11 @@ public with sharing class CampaignMemberService
 
         String soql = '' +
             'SELECT ' + camFields + ', Campaign.RecordType.Name, Campaign.Name, ' +
-            'Campaign.ParentId, Campaign.Type, Campaign.Requested__c, ' +
+            'Campaign.ParentId, Campaign.Type, Campaign.Requested__c, Campaign.Parent.Name, ' +
             'Campaign.Event_Start_Date__c, Campaign.Event_End_Date__c, ' +
             'Campaign.Interest_PeopleSoft_Major__c, Campaign.StartDate, Campaign.EndDate ' +
             'FROM CampaignMember ' +
-            'WHERE ContactId = :contactId ' +
-            'ORDER BY Campaign.ParentId, Campaign.Name ASC';
+            'WHERE ContactId = :contactId ';
 
         camMems = Database.query(soql);
 

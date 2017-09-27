@@ -101,7 +101,7 @@
                     document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
                     document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate + '<br />';
                     
-                    var loopCount = result.length;
+                    var loopCount = result.length - 1;
                     var found = false;
                     while (loopCount > 0 && !found) {
                     	loopCount--;

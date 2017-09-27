@@ -48,7 +48,7 @@ global class CivitasPersistenceController{
                              FROM Term__c 
                              WHERE PeopleSoft_Code__c =: currentTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
-                startDate = startDate.addDays(21);
+                startDate = startDate.addDays(22);
             }
             if(startDate >= Date.today()) {
                 endDate = startDate;
@@ -56,7 +56,7 @@ global class CivitasPersistenceController{
                              FROM Term__c 
                              WHERE PeopleSoft_Code__c =: prevTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
-                startDate = startdate.addDays(21);
+                startDate = startdate.addDays(22);
             }
             return startDate;
         }
@@ -71,7 +71,7 @@ global class CivitasPersistenceController{
                              FROM Term__c 
                              WHERE PeopleSoft_Code__c =: nextTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
-                endDate = endDate.addDays(21);
+                endDate = endDate.addDays(22);
             }
             return endDate;
         }
@@ -128,7 +128,7 @@ global class CivitasPersistenceController{
             }                  
         }
         
-        if(prevData != null) {
+        /*if(prevData != null) {
             Date prevDate = prevData.Snap_Date__c;
             while(prevDate < Date.today()) {
                 prevDate = prevDate.addDays(1);
@@ -136,7 +136,7 @@ global class CivitasPersistenceController{
                                             prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));  
                 dateIncr++;
             }
-        }
+        }*/
         
         
         if(rejected.size() > 0){

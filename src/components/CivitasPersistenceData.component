@@ -106,7 +106,8 @@
                     while (loopCount > 0 && !found) {
                     	loopCount--;
                         if (result[loopCount].outlookLevel != result[result.length-1].outlookLevel) {
-                        	found = true;    
+                        	found = true;
+                        	loopCount++;
                         }
                     }
                         

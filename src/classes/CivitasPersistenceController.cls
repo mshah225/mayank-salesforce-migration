@@ -96,6 +96,7 @@ global class CivitasPersistenceController{
             if(trm.Snap_Date__c < startDate) {
                 startSemesterData = trm;
             }
+            // Reject this data if student is an online student, or if student isn't an undergrad
             if (trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate) {
                 if (trm.ONLINE_SEGMENT__c != 'N' || trm.CAREER_SEGMENT__c != 'U') {
                     rejected.add(new CivitasWrapper('Rejected'));
@@ -136,10 +137,12 @@ global class CivitasPersistenceController{
                                             prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));  
                 dateIncr++;
             }
+
         }*/
         
-        
-        if(rejected.size() > 0){
+
+	// Break out of the method and return the rejected wrapper, which will display a "No data found" message to the user
+        if (rejected.size() > 0) {
             return rejected;
         }
         

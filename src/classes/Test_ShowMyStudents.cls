@@ -14,7 +14,7 @@ public class Test_ShowMyStudents {
         pod = new List<Success_Pod__c>([SELECT Id FROM Success_Pod__c LIMIT 1]);
         
         if (pod.size() > 0) {
-            query = 'SELECT Student_Name__c, EMPLID__c, Student__c ' +
+            query = 'SELECT Student_Name__c, EMPLID__c, Student__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                 'FROM Success_Student__c ' +
                 'WHERE Success_Pod__c = \'' + pod[0].Id + '\' ' +
                 'AND Is_Active__c = true';
@@ -116,43 +116,14 @@ public class Test_ShowMyStudents {
     }
     
     /*
-     * Tests the controllers ability to handle null values in sortDir
+     * Tests the controllers ability to default to ASC
      */
     public static testmethod void Test_getSort() {
         smsc.sortDir = null; // Set to null
         system.assertEquals('ASC', smsc.sortDir); // Make sure the sortDir is set to default ASC
     }
     
-    /*
-     * Tests the controllers ability to toggle the sort dir
-     */
-   /* public static testmethod void Test_toggleSort() {
-        // toggleSort violates the single purpose principal and updates the query as well
-        // so lets test that here as well
-        String tempQuery;
-        tempQuery = smsc.query;
-        
-        smsc.sortField = 'Student_Name__c';
-        system.assertEquals('DESC', smsc.sortDir);
-        
-        smsc.sortField = 'EMPLID__c'; // set sortfield for the query
-        
-        smsc.toggleSort(); // Since default is DESC, it should now be ASC
-        system.assertEquals('ASC', smsc.sortDir);
-        
-        // The page currently utilizes what can best be described as a bug
-        // Because of this, we need to reset the query to the old query or we will just
-        // stack order by clauses into the query. The bug in the page handles this for us.
-        smsc.query = tempQuery;
-        
-        smsc.toggleSort();
-        system.assertEquals('DESC', smsc.sortDir);
-        
-        smsc.query = tempQuery;
-        
-        smsc.toggleSort();
-        system.assertEquals('ASC', smsc.sortDir);
-    }*/
+    
     
     /*
      * Tests the controllers ability to toggle the sort dir

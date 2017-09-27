@@ -18,6 +18,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     private Id fallbackQueueId;
     private String typeOfAdditionalAssignmentNeeded;
     private boolean associateCaseToActiveOpportunity;
+    private boolean neutralEmail = true; //Allows attachment, but doesn't save it
+    private Email_Logging__c loggingSettings = Email_Logging__c.getValues('Current_Settings');
     protected Case theCase = null;
     protected Messaging.InboundEmail inboundEmail;
     protected String defaultCaseOwnerId;
@@ -69,8 +71,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
 
             // Check the inbound email for filtered terms; if found, no do nothing
-            if (filteredTermFound())
+            String filteredTerm = filteredTermFound();
+            if (filteredTerm != null)
             {
+                if(loggingSettings.Spam_Logging__c) {
+                    generateLostEmail(email, theCase, 'Filtered Term: ' + filteredTerm);
+                }
                 // If we want to send a reply with a failure message, the result props can be changed
                 return result;
             }
@@ -434,12 +440,27 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 					}
                     currentCaseSubject = currentCaseSubject.trim();
                     theCase.Subject = currentCaseSubject;
+                    
+                    Boolean hasAttachments = (email.textAttachments != null                                
+                                      && email.textAttachments.size() >0) 
+                                      || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
+                                      
                     // If we catch an auto reply loop, do not create the case and discard this email
-                    if (recentCase.Description.equals(currentCaseDescription) && recentCase.OwnerId == theCase.OwnerID
-                        && recentCase.Subject.equals(currentCaseSubject))
-                    {
-                        return result;
-                    }
+                    if(recentCase.Description.equals(currentCaseDescription) && recentCase.OwnerId == theCase.OwnerID
+                       && !hasAttachments) {
+                       
+                       Integer currentCasePos = currentCaseSubject.indexOf('Case Number');
+                       Integer prevCasePos = recentCase.Subject.indexOf('Case Number');
+                       if(currentCasePos >= 0 && prevCasePos >= 0) {
+                           if(currentCaseSubject.substring(0, currentCasePos).equals(recentCase.Subject.substring(0, prevCasePos))) {
+                               return result;
+                           }
+                       } else {
+                           if(recentCase.Subject.equals(currentCaseSubject)) {
+                               return result;
+                           }
+                       }    
+		    }
                 }
                 catch (QueryException e)
                 {
@@ -470,7 +491,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                    this.theCase.Description = ''; 
                 }
 
-                if (hasAttachments) {
+                if (hasAttachments && !neutralEmail) {
                     this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong(); 
                 } else {
                     this.theCase.Description += ' Email received at ' + Datetime.now().formatLong() + ' without email body or attachment.';
@@ -505,7 +526,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                     sendAutoReplyAttachment(theCase, theContact, attachmentFailureTemplateId);
             }
-            generateLostEmail(email, theCase, 'Attachment is invalid');
+
+            if(loggingSettings.Attachment_Logging__c) {
+                generateLostEmail(email, theCase, 'Attachment is invalid');
+            }
+
         }
 
         return successfulAttachment;
@@ -546,7 +571,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         attachment.Name = tAttachment.fileName;
                         attachment.Body = Blob.valueOf(tAttachment.body);
                         attachment.ParentId = parentObject.Id;
-                        insert attachment;
+                        if(!tAttachment.fileName.toLowerCase().contains('.p7s')) {
+                            neutralEmail = false;
+                            insert attachment;
+                        }
                     }
                 }
                 else if (!validFileExtensionSet.isEmpty())
@@ -576,7 +604,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         attachment.Name = bAttachment.fileName;
                         attachment.Body = bAttachment.body;
                         attachment.ParentId = parentObject.Id;
-                        insert(attachment);
+                        if(!bAttachment.fileName.toLowerCase().contains('.p7s')) {
+                            neutralEmail = false;
+                            insert attachment;
+                        }
                     }
                 }
                 else if (!validFileExtensionSet.isEmpty())
@@ -736,8 +767,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         return address;
     }
 
-    private Boolean filteredTermFound()
+    private String filteredTermFound()
     {
+        
         Email_To_Case_Filter__c[] filteredTerms = [
             SELECT Name, Rejection_Count__c
             FROM Email_To_Case_Filter__c
@@ -760,7 +792,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
                     update filter;
 
-                    return true;
+                    return lcFilter;
                 }
             }
             else if (inboundEmail.subject != null)
@@ -770,11 +802,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
                     update filter;
 
-                    return true;
+                    return lcFilter;
                 }
             }
         }
-        return false;
+        return null;
     }
 
     private void loadConfigurationSettings()
@@ -1269,6 +1301,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         lostEmail.RejectedAttachments__c = !attachSuccess;
         if(!attachSuccess) {
             String attachmentInfo = '\n**********\nCase ID: '+ theCase.Id +'\n\n*****List of Attachments*****\n';     
+
             if(email.binaryAttachments != null){
                 for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
                     attachmentInfo += 'FileName: ' + bAttachment.fileName +' File Size: ' + bAttachment.body.size()/1000.00  +' kB\n';

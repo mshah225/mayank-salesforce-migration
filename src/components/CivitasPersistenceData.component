@@ -103,22 +103,22 @@
                     
                     var loopCount = result.length - 1;
                     var found = false;
+                    var chgDirection = 'None';
                     while (loopCount > 0 && !found) {
                     	loopCount--;
-                        if (result[loopCount].outlookLevel != result[result.length-1].outlookLevel) {
+                        if (result[loopCount].outlookLevel < result[result.length-1].outlookLevel) {
                         	found = true;
+                        	cngDirection = 'Up';
+                        	loopCount++;
+                        } else if (result[loopCount].outlookLevel > result[result.length-1].outlookLevel) {
+                            found = true;
+                        	cngDirection = 'Down';
                         	loopCount++;
                         }
                     }
                         
                     if (loopCount > 0) {
-        				if (result[loopCount].outlookLevel < result[result.length-1].outlookLevel) {
-                            document.getElementById("change").innerHTML = '<b>Change: </b> Up';
-                        } else if (result[loopCount].outlookLevel > result[result.length-1].outlookLevel)  {
-                            document.getElementById("change").innerHTML = '<b>Change: </b> Down';
-                        } else{
-                            document.getElementById("change").innerHTML = '<b>Change: </b> None';
-                        }
+                        document.getElementById("change").innerHTML = '<b>Change: </b> ' + cngDirection;
                     	document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
                     } else {
                         document.getElementById("change").innerHTML = '<b>Change: </b> N/A';

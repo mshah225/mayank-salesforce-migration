@@ -108,6 +108,7 @@ global class CivitasPersistenceController{
                             dateIncr++;
                             tempStart = tempStart.addDays(1);
                         }
+                        startSemesterData = null;
                     }
                     if(prevData == null) {
                         prevData = trm;
@@ -117,7 +118,7 @@ global class CivitasPersistenceController{
                         prevDate = prevDate.addDays(1);
                         dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
                                                     prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));
-                        dateIncr = dateIncr++;
+                        dateIncr++;
                     }
                     dataList.add(new CivitasWrapper(trm.SNAP_DATE__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
                                                     trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));

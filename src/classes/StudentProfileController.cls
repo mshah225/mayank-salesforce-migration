@@ -194,7 +194,7 @@ global with sharing class StudentProfileController
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
                 // PeopleSoft only as-needed
-                currentTerm = '2177';
+                currentTerm = [Select Curr_Term__C FROM JBT_RET_TERMS_VW__x LIMIT 1].Curr_Term__C;
                 
                 try {
                     if (! theContact.ASU_Online_Student__c) {

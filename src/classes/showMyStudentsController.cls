@@ -184,7 +184,7 @@ public class showMyStudentsController extends ListViewController {
             } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
                 changeDir = 'Down';
             } else if(obj.Most_Recent_Outlook_Change_Direction__c == 0){
-                changeDir = '--';
+                changeDir = ' ';
             } else {
                 changeDir = ' ';
             }

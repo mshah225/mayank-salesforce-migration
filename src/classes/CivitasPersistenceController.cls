@@ -80,6 +80,12 @@ global class CivitasPersistenceController{
     
     @RemoteAction
     global static List<CivitasWrapper> getData(String emplidIn){
+        try {
+            if(emplidIn != null && emplidIn.substring(0,3).equals('003')) {
+                emplidIn = [Select EMPLID__c FROM Contact Where Id =: emplidIn LIMIT 1].EMPLID__c;
+            }
+        }
+        catch(Exception e){}
         dataList = new List<CivitasWrapper>();
         List<CivitasWrapper> rejected = new List<CivitasWrapper>();
         Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplidIn LIMIT 1];

@@ -87,6 +87,13 @@
                 getUrlParameter('id'),
                 function (result, event) {
                 feedback.style.display = 'block';
+                if(result == null) {
+                    document.getElementById("errorMessage").innerHTML =
+                            "Persistence Outlook Level data is not available.";
+                    document.getElementById("chart_div").innerHTML = "";
+                    document.getElementById("leftID").float = "none";
+                    return;
+                }
                 if (result.length > 0) {
                     console.log(result);
                     if(result[0].name == 'Rejected') {

@@ -4392,7 +4392,7 @@
         
         <!-- Script to mask Phone Numbers -->
         <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.min.js" />
-        <script>
+        <script> 
             // Mask each phone number in (XXX) XXX-XXXX format
             function maskPhoneNumbers() {
                 $j('.phone').each(function() {                

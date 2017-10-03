@@ -1,5 +1,5 @@
 global with sharing class StudentProfileController
-{
+{ 
     // Error Logger Variables 
     private static boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
@@ -115,39 +115,20 @@ global with sharing class StudentProfileController
                 // Start populating the lists
                 openCases = CaseService.getAllOpenCases(theContact.Id);
                 sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
-                // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
-                // testScoreList = TestScoreService.getTestScores(theContact.Id);
-                // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
 
-                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
-                if(studentProgramDataList.size() > 0){
-				    studentProgram = studentProgramDataList[0];
-				}
-                profileHeader = getProfileHeader(theContact.EMPLID__c);
                 getTermInfo();
-                sIList = getServiceIndicators(theContact.emplId__c);
-                allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-                studentDemographic = getStudentDemographicData(theContact.emplId__c);
-                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
                 
-                for(JBT_RET_GENERAL_RIGHT__x prg : studentProgramDataList){
-                    if(prg.ACAD_CAREER__c.equals('UGRD')){
-                        ugStudentProgram = prg;
-                    }
-                    else if (prg.ACAD_CAREER__c.equals('GRAD')){
-                        gradStudentProgram = prg;
-                    }
-                }
+                allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
+                
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
-        
                 /*
                 * Handling for nulls. Get the Objects as Lists from the different services first.
                 * If the list size is greater than expected, use first Object in list.
                 */
                 List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
                     StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
-        
+         
                 programPlan = new Student_Program_Plan__c();
                 if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0)
                 {
@@ -157,8 +138,8 @@ global with sharing class StudentProfileController
                         {
                             programPlan = spp;
                             break;
-                        }
-                    }                   
+                        } 
+                    }
                 }
                 
                 ugProgramPlans = new List<Student_Program_Plan__c>();
@@ -177,7 +158,6 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-                
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
                             Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
@@ -196,30 +176,22 @@ global with sharing class StudentProfileController
                 // PeopleSoft only as-needed
                 currentTerm = [Select Curr_Term__C FROM JBT_RET_TERMS_VW__x LIMIT 1].Curr_Term__C;
                 
-                try {
-                    if (! theContact.ASU_Online_Student__c) {
-                        suncardPhotoURL = getSuncardPhotoURL(theContact.ASURite_ID__c, theContact.EMPLID__c);
-                    }
-                } catch (Exception e) {
-                    System.debug(e.getMessage());
-                }                
-                
             } else {
                 failState = true;
                 vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
                 throw new StudentProfileException('URL Parameters are missing or invalid');
             }
-        
             return null;
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
             return null;
         }
     }
-
-    public String getSuncardPhotoURL(String asurite, String emplId) {
+    
+    @RemoteAction
+    global static String getSunCardPhotoRA(String asurite, String emplId) {
         String suncardPhotoURL;
-        vars = new List<String>();
+        List<String> vars = new List<String>();
         
         if (! Test.isRunningTest()) {
             try {
@@ -235,7 +207,7 @@ global with sharing class StudentProfileController
 
         return suncardPhotoURL;
     }
-
+    
     private void getTermInfo()
     {
         vars = new List<String>();
@@ -1403,7 +1375,28 @@ global with sharing class StudentProfileController
         return (creditByExamList.size() > 0? creditByExamList : new List<PS_ASU_SP_TRNSFR_V__x>());
 
     }
-
+    
+    // Get the Term information from Jitterbit
+    public static List<JBT_RET_TERMS_VW__x> getTerms() {
+        List<JBT_RET_TERMS_VW__x> termList;
+        
+        try {
+            termList =
+            (
+                Test.isRunningTest() ? new List<JBT_RET_TERMS_VW__x>() :
+                [
+                    SELECT CURR_TERM_INCLUDE_SUMMER__c,
+                    NEXT_TERM_INCLUDE_SUMMER__c, PREV_TERM__c
+                    FROM JBT_RET_TERMS_VW__x
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return (termList.size() > 0? termList : new List<JBT_RET_TERMS_VW__x>());
+    }
+    
     // Get Transfer Work Information
     @RemoteAction
     global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
@@ -1472,7 +1465,60 @@ global with sharing class StudentProfileController
         }
 
         return wrapper;
-    } 
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_BOOKING_VW__x> housingInfoList = new List<REZ_HOUSING_BOOKING_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                housingInfoList =
+                [
+                    SELECT
+                        BOOKING_BUILDING__c, BOOKING_CAMPUS__c,
+                        BOOKING_FLOOR_SUITE__c, BOOKING_SECTION__c,
+                        BOOKING_STATUS__c, CHECK_IN_DT__c, CHECK_OUT_DT__c,
+                        TERM_CD__c
+                    FROM REZ_HOUSING_BOOKING_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY CHECK_OUT_DT__c DESC
+                ];
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return housingInfoList;
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_MEAL_PLAN_VW__x> getMealPlanInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_MEAL_PLAN_VW__x> mealPlanInfoList = new List<REZ_HOUSING_MEAL_PLAN_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                mealPlanInfoList =    
+                [
+                    SELECT
+                        MEAL_PLAN_STATUS__c, TERM_CD__c
+                    FROM REZ_HOUSING_MEAL_PLAN_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY MEAL_PLAN_ID__c DESC
+                ];                
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return mealPlanInfoList;
+    }
 
     @RemoteAction
     global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
@@ -1503,7 +1549,7 @@ global with sharing class StudentProfileController
     } 
 
     @RemoteAction
-    // Get Service Indicators as a list
+    // Get Service Indicators as a list // done
     global static List<PS_ASU_SP_SVCIND_V__x> getServiceIndicators(String emplId)
     {
         //Temporary
@@ -1910,6 +1956,7 @@ global with sharing class StudentProfileController
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
 
+
     @RemoteAction
     global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
         try{
@@ -1919,22 +1966,22 @@ global with sharing class StudentProfileController
             Case feedbackCase = new Case(
                         status = 'New',
                         RecordType = rt,
-    	                contactId = student,
-    	                subject = subjectIn,
-    	                description = descriptionIn,
-    	                Origin__c = 'Student Profile',
+                        contactId = student,
+                        subject = subjectIn,
+                        description = descriptionIn,
+                        Origin__c = 'Student Profile',
                         IsVisibleInSelfService = false
-    	    );
-    	            
-    	    insert feedbackCase;
-    	    
-    	    return feedbackCase.Id;
-	    } catch (Exception e) {
+            );
+                    
+            insert feedbackCase;
+            
+            return feedbackCase.Id;
+        } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
         return null;
     }
-    
+
     public String subPlanString {
         get{
             if(subPlanString == null){

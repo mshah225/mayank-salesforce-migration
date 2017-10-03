@@ -1760,7 +1760,7 @@
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>Country of Citizenship</th>" +
-                                              "<td>{!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__c)}</td>" +
+                                              "<td>{!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__r.Name)}</td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>FERPA Level</th>" +
@@ -2048,7 +2048,6 @@
                                              ' alt="suncard photo" ' +
                                              ' class="img-responsive intro" ' +
                                              ' style="max-width:200px;width:100%;"/>';
-                                             console.log(html);
                                 document.getElementById('sundevilImgDiv').innerHTML = html;
                                 cleanUpUndefined("sundevilImgDiv");
                             } else {

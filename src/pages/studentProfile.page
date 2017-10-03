@@ -169,7 +169,7 @@
                                              alt="suncard photo"
                                              class="img-responsive intro"
                                              style="max-width:200px;width:100%;"/> 
-                                            <i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' 
+                                            <i id="sunImgSpinner" class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' 
                                                style='position: absolute; top: 50%; left: 42%; text-align:center;'></i>
                                         </div>
                                         </apex:form>
@@ -464,15 +464,15 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Current Academic Level</th>
-                                                            <td id="profileHeaderTD"></td>
+                                                            <td id="profileHeaderTD">--</td>
                                                         </tr>
                                                         <tr>
                                                             <th>{!currentTermName} Term Enrolled Hours</th>
-                                                            <td id="curTermEnrolled"><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>
+                                                            <td id="curTermEnrolled"><i id='curTermSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>
                                                         </tr>
                                                         <tr>
                                                             <th>{!nextTermName} Term Enrolled Hours</th>
-                                                            <td id="nextTermEnrolled"></td>
+                                                            <td id="nextTermEnrolled">--</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -1490,12 +1490,14 @@
                                     attDate = (attDate.getUTCMonth() + 1) + '/' +
                                         attDate.getUTCDate() + '/' +
                                         attDate.getUTCFullYear();
+                                    var description = result[i].DESCR__c;
+                                    if (description.length > 100)
+                                      description = description.substring(0,100)+'...';
                                     html += "" +
                                         "<tr>" +
                                             "<td>" + attDate + "</td>" +
                                             "<td>" + result[i].SRVC_IND_CD__c + "</td>" +
-                                            "<td>" + result[i].MILESTONE_TITLE__c + "</td>" +
-                                            "<td>" + result[i].DESCR__c + "</td>" +
+                                            "<td>" + description + "</td>" +
                                             "<td>" + result[i].REASON_DESCR__c + "</td>" +
                                         "</tr>";
                                 }
@@ -1625,23 +1627,23 @@
                                       "<table class=\"table table-striped\">" +
                                           "<tr>" +
                                               "<th>WUE</th>" +
-                                              "<td></td>" +
+                                              "<td>--</td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>Residency</th>" +
-                                              "<td></td>" +
+                                              "<td>--</td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>Country of Citizenship</th>" +
-                                              "<td><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
+                                              "<td id='initHtmlTd' ><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>FERPA Level</th>" +
-                                              "<td></td>" +
+                                              "<td>--</td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>Financial Need Level</th>" +
-                                              "<td></td>" +
+                                              "<td>--</td>" +
                                           "</tr>";
                   buildInitHtml += "</table></div>";
               document.getElementById("studentProgramDiv").innerHTML = buildInitHtml;
@@ -1650,15 +1652,15 @@
                                       "<table class=\"table table-striped\">" +
                                           "<tr>" +
                                               "<th>Expected Graduation Date</th>" +
-                                              "<td></td>" +
+                                              "<td>--</td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>{!currentTermName} Enrollment Appointment</th>" +
-                                              "<td><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
+                                              "<td id='initGradTd'><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>{!nextTermName} Enrollment Appointment</th>" +
-                                              "<td></td>" +
+                                              "<td>--</td>" +
                                           "</tr>";
               buildInitGradHtml += "</table></div>";
               document.getElementById("expectedGradDateDiv").innerHTML = buildInitGradHtml;
@@ -1668,19 +1670,15 @@
                                                 "<table class='table table-striped'>"+
                                                     "<tr>"+
                                                         "<th>Application Admit Type</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                     "<tr>"+
                                                         "<th>Applied Program</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                     "<tr>"+
                                                         "<th>Applied Date</th>"+
-                                                        "<td></td>"+
-                                                    "</tr>"+
-                                                    "<tr>"+
-                                                        "<th>Admit Term</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                 "</table>"+
                                             "</div>"+
@@ -1688,15 +1686,15 @@
                                                 "<table class='table table-striped'>"+
                                                     "<tr>"+
                                                         "<th>Enroll Deposit</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                     "<tr>"+
                                                         "<th>Orientation Date</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                 "</table>"+
                                             "</div>"+
-                                            "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' "+
+                                            "<i id='underGradSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' "+
                                                "style='top: 50%; left: 42%; text-align:center;'></i>"+
                                             "</div>";
               document.getElementById("underGradAcadDiv").innerHTML = buldInitUnderAcadHtml;
@@ -1706,19 +1704,19 @@
                                                 "<table class='table table-striped'>"+
                                                     "<tr>"+
                                                         "<th>Application Admit Type</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                     "<tr>"+
                                                         "<th>Applied Program</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                     "<tr>"+
                                                         "<th>Applied Date</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                     "<tr>"+
                                                         "<th>Admit Term</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                 "</table>"+
                                             "</div>"+
@@ -1726,15 +1724,15 @@
                                                 "<table class='table table-striped'>"+
                                                     "<tr>"+
                                                         "<th>Enroll Deposit</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                     "<tr>"+
                                                         "<th>Orientation Date</th>"+
-                                                        "<td></td>"+
+                                                        "<td>--</td>"+
                                                     "</tr>"+
                                                 "</table>"+
                                             "</div>"+
-                                            "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' "+
+                                            "<i id='gradSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' "+
                                                "style='top: 50%; left: 42%; text-align:center;'></i>"+
                                             "</div>";
               document.getElementById("gradAcadDiv").innerHTML = buldInitGradAcadHtml;
@@ -1795,7 +1793,7 @@
                               
                               if(studentProgram.APPT_DT_PENDING__c != undefined && studentProgram.APPT_DT_PENDING__c != '' && studentProgram.APPT_DT_PENDING__c!= null) {
                                 nextAppointDay = new Date(studentProgram.APPT_DT_PENDING__c);
-                                nextAppointDay = (appointDay.getUTCMonth() + 1) + '/' +
+                                nextAppointDay = (nextAppointDay.getUTCMonth() + 1) + '/' +
                                         nextAppointDay.getUTCDate() + '/' +
                                         nextAppointDay.getUTCFullYear();
                               }
@@ -1859,7 +1857,6 @@
                               var ugApplAdmitType = '--';
                               var ugAppliedProg = '--';
                               var ugAdmitTerm = '--';
-                              var ugAdmitType = '--';
                               var ugEntrollDep = '--';
                               var ugAppDate = '--';
                               var ugOrientDate = '--';
@@ -1868,7 +1865,6 @@
                                   ugApplAdmitType = checkIfBlank(ugStudentProgram, ugStudentProgram.ADMIT_TYPE__c);
                                   ugAppliedProg = checkIfBlank(ugStudentProgram, ugStudentProgram.ADM_APPL_PROG__c);
                                   ugAdmitTerm = checkIfBlank(ugStudentProgram, ugStudentProgram.ADMIT_TERM__c);
-                                  ugAdmitType = checkIfBlank(ugStudentProgram, ugStudentProgram.ADMIT_TYPE__c);
                                   ugEntrollDep = checkIfBlank(ugStudentProgram, ugStudentProgram.ENRL_DEPOSIT__c);
                                   
                                   
@@ -1906,10 +1902,6 @@
                                                         "<tr>"+
                                                             "<th>Admit Term</th>"+
                                                             "<td>"+ ugAdmitTerm  +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Admit Type</th>"+
-                                                            "<td>"+ ugAdmitType  +"</td>"+
                                                         "</tr>"+
                                                     "</table>"+
                                                 "</div>"+
@@ -2001,7 +1993,27 @@
                                                 "</div>";
                                     document.getElementById('gradAcadDiv').innerHTML = gradAcadHtml;
                                     cleanUpUndefined("gradAcadDiv");
+                          }  else {
+                              jQuery('#initHtmlTd').empty();
+                              jQuery('#initHtmlTd').html('--');
+                              
+                              jQuery('#initGradTd').empty();
+                              jQuery('#initGradTd').html('--');
+                              
+                              jQuery('#curTermSpinner').remove();
+                              jQuery('#underGradSpinner').remove();
+                              jQuery('#gradSpinner').remove();
                           }
+                      } else {
+                          jQuery('#initHtmlTd').empty();
+                          jQuery('#initHtmlTd').html('--');
+                          
+                          jQuery('#initGradTd').empty();
+                          jQuery('#initGradTd').html('--');
+                          
+                          jQuery('#curTermSpinner').remove();
+                          jQuery('#underGradSpinner').remove()
+                          jQuery('#gradSpinner').remove()
                       }
                   },
                   {escape: true}
@@ -2039,7 +2051,11 @@
                                              console.log(html);
                                 document.getElementById('sundevilImgDiv').innerHTML = html;
                                 cleanUpUndefined("sundevilImgDiv");
+                            } else {
+                                jQuery('#sunImgSpinner').remove();
                             }
+                        } else {
+                            jQuery('#sunImgSpinner').remove();
                         }
                     },
                     {escape: true}

@@ -441,7 +441,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     currentCaseSubject = currentCaseSubject.trim();
                     theCase.Subject = currentCaseSubject;
                     
-                    Boolean hasAttachments = (email.textAttachments != null                                
+                    Boolean hasAttachments = (email.textAttachments != null
                                       && email.textAttachments.size() >0) 
                                       || (email.binaryAttachments != null && email.binaryAttachments.size() > 0);
                                       
@@ -460,7 +460,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                                return result;
                            }
                        }    
-		    }
+                    }
+
                 }
                 catch (QueryException e)
                 {
@@ -526,11 +527,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             {
                     sendAutoReplyAttachment(theCase, theContact, attachmentFailureTemplateId);
             }
-
             if(loggingSettings.Attachment_Logging__c) {
                 generateLostEmail(email, theCase, 'Attachment is invalid');
             }
-
         }
 
         return successfulAttachment;
@@ -1301,7 +1300,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         lostEmail.RejectedAttachments__c = !attachSuccess;
         if(!attachSuccess) {
             String attachmentInfo = '\n**********\nCase ID: '+ theCase.Id +'\n\n*****List of Attachments*****\n';     
-
             if(email.binaryAttachments != null){
                 for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
                     attachmentInfo += 'FileName: ' + bAttachment.fileName +' File Size: ' + bAttachment.body.size()/1000.00  +' kB\n';
@@ -1314,6 +1312,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
             lostEmail.PlainTextBody__c += attachmentInfo;
         }
+        
         update lostEmail;
 
         return lostEmail;

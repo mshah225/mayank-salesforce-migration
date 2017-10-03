@@ -1,5 +1,5 @@
 global with sharing class StudentProfileController
-{
+{ 
     // Error Logger Variables 
     private static boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
@@ -115,41 +115,20 @@ global with sharing class StudentProfileController
                 // Start populating the lists
                 openCases = CaseService.getAllOpenCases(theContact.Id);
                 sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
-                // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
-                // testScoreList = TestScoreService.getTestScores(theContact.Id);
-                // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
 
-                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
-
-                if (studentProgramDataList.size() > 0) {
-				          studentProgram = studentProgramDataList[0];
-				        }
-              
-                profileHeader = getProfileHeader(theContact.EMPLID__c);
                 getTermInfo();
-                sIList = getServiceIndicators(theContact.emplId__c);
-                allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-                studentDemographic = getStudentDemographicData(theContact.emplId__c);
-                studentProgramDataList = getStudentProgramData(theContact.EMPLID__c);
                 
-                for(JBT_RET_GENERAL_RIGHT__x prg : studentProgramDataList){
-                    if(prg.ACAD_CAREER__c.equals('UGRD')){
-                        ugStudentProgram = prg;
-                    }
-                    else if (prg.ACAD_CAREER__c.equals('GRAD')){
-                        gradStudentProgram = prg;
-                    }
-                }
+                allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
+                
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
-        
                 /*
                 * Handling for nulls. Get the Objects as Lists from the different services first.
                 * If the list size is greater than expected, use first Object in list.
                 */
                 List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
                     StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
-        
+         
                 programPlan = new Student_Program_Plan__c();
                 if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0)
                 {
@@ -159,8 +138,8 @@ global with sharing class StudentProfileController
                         {
                             programPlan = spp;
                             break;
-                        }
-                    }                   
+                        } 
+                    }
                 }
                 
                 ugProgramPlans = new List<Student_Program_Plan__c>();
@@ -197,30 +176,22 @@ global with sharing class StudentProfileController
                 // PeopleSoft only as-needed
                 currentTerm = [Select Curr_Term__C FROM JBT_RET_TERMS_VW__x LIMIT 1].Curr_Term__C;
                 
-                try {
-                    if (! theContact.ASU_Online_Student__c) {
-                        suncardPhotoURL = getSuncardPhotoURL(theContact.ASURite_ID__c, theContact.EMPLID__c);
-                    }
-                } catch (Exception e) {
-                    System.debug(e.getMessage());
-                }                
-                
             } else {
                 failState = true;
                 vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
                 throw new StudentProfileException('URL Parameters are missing or invalid');
             }
-        
             return null;
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
             return null;
         }
     }
-
-    public String getSuncardPhotoURL(String asurite, String emplId) {
+    
+    @RemoteAction
+    global static String getSunCardPhotoRA(String asurite, String emplId) {
         String suncardPhotoURL;
-        vars = new List<String>();
+        List<String> vars = new List<String>();
         
         if (! Test.isRunningTest()) {
             try {
@@ -236,7 +207,7 @@ global with sharing class StudentProfileController
 
         return suncardPhotoURL;
     }
-
+    
     private void getTermInfo()
     {
         vars = new List<String>();
@@ -1578,7 +1549,7 @@ global with sharing class StudentProfileController
     } 
 
     @RemoteAction
-    // Get Service Indicators as a list
+    // Get Service Indicators as a list // done
     global static List<PS_ASU_SP_SVCIND_V__x> getServiceIndicators(String emplId)
     {
         //Temporary
@@ -1995,17 +1966,17 @@ global with sharing class StudentProfileController
             Case feedbackCase = new Case(
                         status = 'New',
                         RecordType = rt,
-    	                contactId = student,
-    	                subject = subjectIn,
-    	                description = descriptionIn,
-    	                Origin__c = 'Student Profile',
+                        contactId = student,
+                        subject = subjectIn,
+                        description = descriptionIn,
+                        Origin__c = 'Student Profile',
                         IsVisibleInSelfService = false
-    	    );
-    	            
-    	    insert feedbackCase;
-    	    
-    	    return feedbackCase.Id;
-	    } catch (Exception e) {
+            );
+                    
+            insert feedbackCase;
+            
+            return feedbackCase.Id;
+        } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
         return null;

@@ -68,7 +68,7 @@ public class ContactService
         Contact loggedInContact = null;
         String EmployeeId;
         List<Contact> lstLoggedInContact;
-        String contactFields = contactFieldsToString();
+        String contactFields = contactFieldsToString() + ', Country_of_Citizenship__r.Name ';
         String selectContactInfoByLoggedInUser;
         try
         {
@@ -119,7 +119,7 @@ public class ContactService
     {
         //Id viewAsContactId = null;
         Contact viewAsContact = null;
-        String contactFields = contactFieldsToString();
+        String contactFields = contactFieldsToString() + ', Country_of_Citizenship__r.Name ';
         System.debug(asurite);
 
         try
@@ -220,7 +220,7 @@ public class ContactService
     public static Contact getContactInformation(String contactId, String emplId)
     {
         Contact contactInfo = null;
-        String contactFields = contactFieldsToString();
+        String contactFields = contactFieldsToString() + ', Country_of_Citizenship__r.Name ';
         String contactInfoQuery;
 
         // Get the list of cases associated with our set of contacts

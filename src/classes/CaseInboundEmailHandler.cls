@@ -461,6 +461,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                            }
                        }    
                     }
+
                 }
                 catch (QueryException e)
                 {

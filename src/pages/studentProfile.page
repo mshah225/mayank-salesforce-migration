@@ -46,11 +46,9 @@
             var inConsole = false;
             function setTabTitle() {
                 //Set the current tab's title
-                try {
-                    sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
-                    inConsole = true;
-                } catch (e) {
-                    console.log('Notice: Tab title can only be set when the Student Profile is opened inside of a Service Console tab! ' + e.message);
+                if (sforce.console.isInConsole() || window.location.href.includes("FrameOrigin")) {
+                	sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
+                	inConsole = true;
                 }
             }
             var pageLoad = window.onload;
@@ -64,20 +62,19 @@
         <script text="text/javascript">        
             function openNewSubtab(subtabUrl, subtabTitle)
             {
-             
-                var openSubtab = function(result)
-                {
-                      if (subtabTitle != 'null')
+                var openSubtab = function(result) {
+                      if (subtabTitle != 'null'){
                         sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
-                      else
+                      } else {
                         sforce.console.openSubtab(result.id, subtabUrl, true);
-
+                      }
                 };
-
-                if (inConsole)
+                
+                if (inConsole) {
                       sforce.console.getEnclosingPrimaryTabId(openSubtab);
-                else
+                } else {
                     window.open(subtabUrl);
+                }
              }
         </script>  
         <style>
@@ -343,6 +340,7 @@
                                                 &nbsp;Contact Information
                                             </h4>
                                         </div>
+                                        
                                         <div class="row">
                                             <apex:outputPanel id="generalContact">
                                                 <div class="col-sm-6">
@@ -397,6 +395,57 @@
                                                 </div>
                                             </apex:outputPanel>
                                         </div>
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;University Housing and Dining Information
+                                            </h4>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <apex:outputPanel id="generalResidence">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Residence Hall</th>
+                                                            <td>
+                                                                <span id="residenceFloor">--</span><br />
+                                                                <span id="residenceSection"></span><br />
+                                                                <span id="residenceHall"></span><br />
+                                                                <span id="residenceCampus"></span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Room Check-In Date</th>
+                                                            <td id="checkInDate">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Check-Out Date</th>
+                                                            <td id="checkOutDate">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Status</th>
+                                                            <td id="roomStatus">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Meal Plan</th>
+                                                            <td id="mealPlanStatus">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                        
+                                        <div id="psHousingErrorsGen"></div>
 
                                         <div class="page-header-smaller">
                                             <h4>
@@ -863,8 +912,24 @@
                                     </apex:pageBlock>
                                 </div>
 
+                                
+                                
                                 <div role="tabpanel" class="tab-pane" id="UGindicators">
-                                    <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlock mode="maindetail">  
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;Persistence Outlook
+                                                <a class='fa fa-question-circle' data-html="true" title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a target="_blank" href="https://docs.google.com/document/d/1ezUBwCjwnZmcfdcsGeGIr_9roVJYsYhpkm3nU5xpFVo/edit">Visit knowledge article.</a>.</span>' data-placement='right' data-trigger='manual'></a>
+                                                </h4>
+                                        </div>
+                                        
+                                        <!-- Transcripts Sent -->
+                                        <div style="overflow:auto; max-height:310px; height: 310px">
+                                            <c:CivitasPersistenceData />
+                                        </div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1005,6 +1070,7 @@
                                             <div id="psTranscriptErrors"></div>
                                         </div>
                                         
+
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1446,7 +1512,23 @@
         <apex:includeScript value="{!URLFOR($Resource.bs_responsive_tabs)}"/>
 
         <script>
-            $j = jQuery.noConflict();
+
+        	$j = jQuery.noConflict();
+        	
+        	var timeoutHandle;
+
+            $j('.fa-question-circle').mouseenter(function(){
+                var that = $j(this)
+                that.tooltip('show');
+                window.clearTimeout(timeoutHandle);
+            });
+            
+            $j('.fa-question-circle').mouseleave(function(){
+                    var _this = $j(this);
+                timeoutHandle = window.setTimeout(function(){
+                    _this.tooltip('hide');
+                }, 2000);
+            });
 
             $j("#sunCard").error(function() {
                 $j(this).attr("src", "{!$Resource.blankAvatar}");
@@ -1459,6 +1541,7 @@
                 llStudentDemographic();
                 llStudentProgram();
                 llSundevilImg();
+                loadGeneralTab();
             });
             
             function llServiceIndicator() {
@@ -2064,7 +2147,7 @@
             // Arrow Functionality
             $j(".page-header-smaller").click(function() {                                    
                 var container = $j(this);
-                var arrow = $j(this).find('.fa');
+                var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
                 
                 if (arrow.hasClass('fa-caret-down')) {
                     container.next().slideUp().addClass('hide');
@@ -2138,6 +2221,11 @@
             var financialAidData;
     
             // Wrappers
+            function loadGeneralTab() {
+                getHousingInfo();
+                getMealPlanInfo();
+            }
+            
             function loadUGAcademicsTab() {
                 getStdntCarMlstnsUG();
                 getStdntTestComps();
@@ -3514,6 +3602,86 @@
             var droppedWrapper;
             var examWrapper;
             var transferWrapper;
+            
+            // Method to load the Undergraduate Academic Progress 
+            function getHousingInfo() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getHousingInfo}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                "";
+
+                            if (! result.length == 0 && ! Object.getOwnPropertyNames(result).length == 0) {
+                                $j('#residenceFloor').html(result[0].BOOKING_FLOOR_SUITE__c);
+                                $j('#residenceSection').html(result[0].BOOKING_SECTION__c);
+                                $j('#residenceHall').html(result[0].BOOKING_BUILDING__c);
+                                $j('#residenceCampus').html(result[0].BOOKING_CAMPUS__c);
+                                
+                                var checkInDate = result[0].CHECK_IN_DT__c;
+                                checkInDate = new Date(checkInDate);
+                                checkInDate = (checkInDate.getUTCMonth() + 1) + '/' +
+                                    checkInDate.getUTCDate() + '/' +
+                                    checkInDate.getUTCFullYear();
+                                    
+                                var checkOutDate = result[0].CHECK_OUT_DT__c;
+                                checkOutDate = new Date(checkOutDate);
+                                checkOutDate = (checkOutDate.getUTCMonth() + 1) + '/' +
+                                    checkOutDate.getUTCDate() + '/' +
+                                    checkOutDate.getUTCFullYear();
+                                
+                                $j('#checkInDate').html(checkInDate);
+                                $j('#checkOutDate').html(checkOutDate);
+                                
+                                $j('#roomStatus').html(result[0].BOOKING_STATUS__c);
+                                
+                            } else {
+                                document.getElementById("psHousingErrorsGen").innerHTML +=
+                                    'No housing data found. ';
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message;
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+            
+            // Method to load the Undergraduate Academic Progress 
+            function getMealPlanInfo() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getMealPlanInfo}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                "";
+
+                            if (! result.length == 0 && ! Object.getOwnPropertyNames(result).length == 0) {
+                                $j('#mealPlanStatus').html(result[0].MEAL_PLAN_STATUS__c);
+                            } else {
+                                document.getElementById("psHousingErrorsGen").innerHTML +=
+                                    'No meal plan data found. ';
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psHousingErrorsGen").innerHTML +=
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            document.getElementById("psHousingErrorsGen").innerHTML +=
+                                event.message;
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+    
             // Method to get Enrolled Classes
             function getEnrolledClasses() {
                 if (classesData != null)

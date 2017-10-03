@@ -115,7 +115,7 @@ global with sharing class StudentProfileController
                 // Start populating the lists
                 openCases = CaseService.getAllOpenCases(theContact.Id);
                 sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
-                
+
                 getTermInfo();
                 
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
@@ -158,7 +158,6 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-                
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
                             Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
@@ -296,7 +295,7 @@ global with sharing class StudentProfileController
     global static ASU_STDNT_RETENTION__x getStudentRetention(String emplId)
     {
         vars = new List<String>();
-        List<ASU_STDNT_RETENTION__x> stdntList;
+        List<ASU_STDNT_RETENTION__x> stdntList = new List<ASU_STDNT_RETENTION__x>();
         
         // Build out list to avoid de-reference null object errors.
         try {
@@ -347,7 +346,7 @@ global with sharing class StudentProfileController
     {
         vars = new List<String>();
         Set<String> testCodes = getTestCodes(career);
-        List<PS_STDNT_TEST_COMP__x> stdntTestComps;
+        List<PS_STDNT_TEST_COMP__x> stdntTestComps = new List<PS_STDNT_TEST_COMP__x>();
 
         // Build out list to avoid de-reference null object errors.
 /*                SELECT DisplayUrl, EMPLID__c, ExternalId, Id, SCORE__c,
@@ -396,7 +395,7 @@ global with sharing class StudentProfileController
     global static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsUG(String emplId)
     {
         vars = new List<String>();
-        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG;
+        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG = new List<PS_STDNT_CAR_MLSTN__x>();
         
  /*
                 SELECT ACAD_PROG__c, ACAD_CAREER__c, ACAD_PLAN__c,  ANTICIPATED_TERM__c,
@@ -453,7 +452,7 @@ global with sharing class StudentProfileController
     global static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsGrad(String emplId)
     {
         vars = new List<String>();
-        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG;
+        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG = new List<PS_STDNT_CAR_MLSTN__x>();
 /*
                 SELECT ACAD_CAREER__c, ACAD_PLAN__c, ACAD_PROG__c, ANTICIPATED_TERM__c,
                     DATE_COMPLETED__c, DESCR__c, DESCRFORMAL__c, DisplayUrl, EFFDT__c,
@@ -507,7 +506,7 @@ global with sharing class StudentProfileController
     // Get student transcript information
     global static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
         vars = new List<String>();
-        List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts;
+        List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts = new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
         
         // Build out the list to avoid 'null de-reference' errors
         // TODO : Limit only to transcripts less than 365 days old
@@ -543,7 +542,7 @@ global with sharing class StudentProfileController
     global static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId)
     {
         vars = new List<String>();
-        List<ASU_STDNT_RETENTION_SNP__x> retention_snps;
+        List<ASU_STDNT_RETENTION_SNP__x> retention_snps = new List<ASU_STDNT_RETENTION_SNP__x>();
             
         // Build out list to avoid de-reference null object errors.
         try {
@@ -589,7 +588,7 @@ global with sharing class StudentProfileController
     global static List<advNoteWrapper> getPSAdvisorNotes(String emplId)
     {
         vars = new List<String>();
-        List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList;
+        List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = new List<PS_ASU_SP_ADNOTE_V__x>();
         
         List<advNoteWrapper> advNoteWrapperList = new List<advNoteWrapper>();
         List<String> advAsuRiteIds = new List<String>();
@@ -660,7 +659,7 @@ global with sharing class StudentProfileController
     global static List<commentWrapper> getComments(String emplId)
     {
         vars = new List<String>();
-        List<PS_ASU_SP_COMMNT_V__x> commentsList;
+        List<PS_ASU_SP_COMMNT_V__x> commentsList = new List<PS_ASU_SP_COMMNT_V__x>();
         
         List<commentWrapper> commentWrapperList = new List<commentWrapper>();
         Set<String> commenterUserIds = new Set<String>();
@@ -725,7 +724,7 @@ global with sharing class StudentProfileController
     global static List<PS_ASU_SP_GUEST_V__x> getGuestAccess(String emplId)
     {
         vars = new List<String>();
-        List<PS_ASU_SP_GUEST_V__x> guestAccessList;
+        List<PS_ASU_SP_GUEST_V__x> guestAccessList = new List<PS_ASU_SP_GUEST_V__x>();
         
         // Build out list to avoid de-reference null object errors.
         try {
@@ -792,7 +791,7 @@ global with sharing class StudentProfileController
     global static JBT_RET_GENERAL_LEFT__x getStudentDemographicData(String emplId)
     {
         vars = new List<String>();
-        List<JBT_RET_GENERAL_LEFT__x> studentDemographicDataList;
+        List<JBT_RET_GENERAL_LEFT__x> studentDemographicDataList = new List<JBT_RET_GENERAL_LEFT__x>();
         
         //Temporary
         //return new JBT_RET_GENERAL_LEFT__x();
@@ -834,11 +833,11 @@ global with sharing class StudentProfileController
     global static academicProgressDataWrapper getAcademicProgressData(String emplId, String career)
     {
         vars = new List<String>();
-        List<JBT_RET_ACAD_SUMMARY_VW__x> academicSummaryList;
-        List<JBT_RET_OTH_IND1_VW__x> otherIndicatorList;
-        List<PS_ASU_SP_AC_STNDV__x> academicStandingList;
-        List<PS_ASU_SP_ACAD_ADV__x> academicAdviserList;
-        List<PS_ASU_SR_COL_PLAN__x> gradPlanList;
+        List<JBT_RET_ACAD_SUMMARY_VW__x> academicSummaryList = new List<JBT_RET_ACAD_SUMMARY_VW__x>();
+        List<JBT_RET_OTH_IND1_VW__x> otherIndicatorList = new List<JBT_RET_OTH_IND1_VW__x>();
+        List<PS_ASU_SP_AC_STNDV__x> academicStandingList = new List<PS_ASU_SP_AC_STNDV__x>();
+        List<PS_ASU_SP_ACAD_ADV__x> academicAdviserList = new List<PS_ASU_SP_ACAD_ADV__x>();
+        List<PS_ASU_SR_COL_PLAN__x> gradPlanList = new List<PS_ASU_SR_COL_PLAN__x>();
         
         academicProgressDataWrapper dataWrapper = new academicProgressDataWrapper();
 
@@ -1279,7 +1278,7 @@ global with sharing class StudentProfileController
             List<PS_ASU_SP_ASR_CLSV__x> asrList = new List<PS_ASU_SP_ASR_CLSV__x>();
             Set<String> asrClassSet = new Set<String>();
 
-            List<PS_ASU_SP_CLASS_V__x> classList;
+            List<PS_ASU_SP_CLASS_V__x> classList = new List<PS_ASU_SP_CLASS_V__x>();
             
             try {
                 vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
@@ -1354,7 +1353,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static LIST<PS_ASU_SP_TRNSFR_V__x> getCreditByExamData(String emplId)
     {
-        List<PS_ASU_SP_TRNSFR_V__x> creditByExamList;
+        List<PS_ASU_SP_TRNSFR_V__x> creditByExamList = new List<PS_ASU_SP_TRNSFR_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1376,12 +1375,33 @@ global with sharing class StudentProfileController
         return (creditByExamList.size() > 0? creditByExamList : new List<PS_ASU_SP_TRNSFR_V__x>());
 
     }
-
+    
+    // Get the Term information from Jitterbit
+    public static List<JBT_RET_TERMS_VW__x> getTerms() {
+        List<JBT_RET_TERMS_VW__x> termList;
+        
+        try {
+            termList =
+            (
+                Test.isRunningTest() ? new List<JBT_RET_TERMS_VW__x>() :
+                [
+                    SELECT CURR_TERM_INCLUDE_SUMMER__c,
+                    NEXT_TERM_INCLUDE_SUMMER__c, PREV_TERM__c
+                    FROM JBT_RET_TERMS_VW__x
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return (termList.size() > 0? termList : new List<JBT_RET_TERMS_VW__x>());
+    }
+    
     // Get Transfer Work Information
     @RemoteAction
     global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
     {
-        List<JBT_RET_CLASS_XFER__x> transferWorkList;
+        List<JBT_RET_CLASS_XFER__x> transferWorkList = new List<JBT_RET_CLASS_XFER__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1417,7 +1437,7 @@ global with sharing class StudentProfileController
     {
         balancesWrapper wrapper = new balancesWrapper();
 
-        List<PS_ASU_SP_FA_BAL_V__x> balanceList;
+        List<PS_ASU_SP_FA_BAL_V__x> balanceList = new List<PS_ASU_SP_FA_BAL_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1445,12 +1465,65 @@ global with sharing class StudentProfileController
         }
 
         return wrapper;
-    } 
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_BOOKING_VW__x> housingInfoList = new List<REZ_HOUSING_BOOKING_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                housingInfoList =
+                [
+                    SELECT
+                        BOOKING_BUILDING__c, BOOKING_CAMPUS__c,
+                        BOOKING_FLOOR_SUITE__c, BOOKING_SECTION__c,
+                        BOOKING_STATUS__c, CHECK_IN_DT__c, CHECK_OUT_DT__c,
+                        TERM_CD__c
+                    FROM REZ_HOUSING_BOOKING_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY CHECK_OUT_DT__c DESC
+                ];
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return housingInfoList;
+    }
+    
+    @RemoteAction
+    global static List<REZ_HOUSING_MEAL_PLAN_VW__x> getMealPlanInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_MEAL_PLAN_VW__x> mealPlanInfoList = new List<REZ_HOUSING_MEAL_PLAN_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                mealPlanInfoList =    
+                [
+                    SELECT
+                        MEAL_PLAN_STATUS__c, TERM_CD__c
+                    FROM REZ_HOUSING_MEAL_PLAN_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY MEAL_PLAN_ID__c DESC
+                ];                
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return mealPlanInfoList;
+    }
 
     @RemoteAction
     global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
     {
-        List<Financial_Aid_Package__c> financesPackageList;
+        List<Financial_Aid_Package__c> financesPackageList = new List<Financial_Aid_Package__c>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1482,7 +1555,7 @@ global with sharing class StudentProfileController
         //Temporary
         //return new List<PS_ASU_SP_SVCIND_V__x>();
 
-        List<PS_ASU_SP_SVCIND_V__x> serviceIndicatorList;
+        List<PS_ASU_SP_SVCIND_V__x> serviceIndicatorList = new List<PS_ASU_SP_SVCIND_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1575,7 +1648,7 @@ global with sharing class StudentProfileController
     {
         generalIndicatorsWrapper giData = new generalIndicatorsWrapper();
 
-        List<ASU_STDNT_RETENTION__x> asuStdntRetentionList;
+        List<ASU_STDNT_RETENTION__x> asuStdntRetentionList = new List<ASU_STDNT_RETENTION__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1600,7 +1673,7 @@ global with sharing class StudentProfileController
         if (asuStdntRetentionList.size() > 0)
             giData.asuStudentRetention = asuStdntRetentionList[0];
 
-        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList;
+        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList = new List<JBT_RET_FINAID_INDICATORS__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1636,7 +1709,7 @@ global with sharing class StudentProfileController
             ErrorLogger.log(e, vars, debug);
         }
 
-        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList;
+        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList = new List<PS_ASU_SR_INDASR_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1697,7 +1770,7 @@ global with sharing class StudentProfileController
         
         giData.enrollmentHoldCount = giData.enrollmentHoldInformation.size();
 
-        List<JBT_RET_MYASU_ACCESS_CNT_VW__x> jbtRetMyasuAccessCntVwList;
+        List<JBT_RET_MYASU_ACCESS_CNT_VW__x> jbtRetMyasuAccessCntVwList = new List<JBT_RET_MYASU_ACCESS_CNT_VW__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1726,7 +1799,7 @@ global with sharing class StudentProfileController
     global static JBT_RET_FINAID_INDICATORS__x getFinAidIndicator(String emplid)
     {
 
-        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList;
+        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList = new List<JBT_RET_FINAID_INDICATORS__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1750,7 +1823,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static List<JBT_RET_FINAID_UNRESOLVED__x> getFinAidUnresolved(String emplid, String currentTerm)
     {
-        List<JBT_RET_FINAID_UNRESOLVED__x> jbtRetFinaidUnresolvedList;
+        List<JBT_RET_FINAID_UNRESOLVED__x> jbtRetFinaidUnresolvedList= new List<JBT_RET_FINAID_UNRESOLVED__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1776,7 +1849,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static PS_ASU_SR_INDASR_V__x getAsrIndicator(String emplid, String currentTerm)
     {
-        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList;
+        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList = new List<PS_ASU_SR_INDASR_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1802,7 +1875,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static List<PS_ASU_SR_ASR_INDV__x> getAsrInformation(String emplid, String currentTerm)
     {
-        List<PS_ASU_SR_ASR_INDV__x> asrInformationList;
+        List<PS_ASU_SR_ASR_INDV__x> asrInformationList = new List<PS_ASU_SR_ASR_INDV__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1829,7 +1902,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static List<PS_ASU_SP_ENRHLD_V__x> getEnrollmentHolds(String emplid, String currentTerm)
     {
-        List<PS_ASU_SP_ENRHLD_V__x> enrollmentHoldList;
+        List<PS_ASU_SP_ENRHLD_V__x> enrollmentHoldList = new List<PS_ASU_SP_ENRHLD_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1855,7 +1928,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static me3__c getMe3Results(String contactId)
     {
-        List<me3__c> me3List;
+        List<me3__c> me3List = new List<me3__c>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
@@ -1883,6 +1956,7 @@ global with sharing class StudentProfileController
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
 
+
     @RemoteAction
     global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
         try{
@@ -1907,7 +1981,7 @@ global with sharing class StudentProfileController
         }
         return null;
     }
-    
+
     public String subPlanString {
         get{
             if(subPlanString == null){

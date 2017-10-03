@@ -120,11 +120,12 @@ global class CivitasPersistenceController{
                         prevData = trm;
                     }
                     Date prevDate = prevData.Snap_Date__c;
+                    prevDate = prevDate.addDays(1);
                     while(prevDate < trm.Snap_Date__c) {
-                        prevDate = prevDate.addDays(1);
                         dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
                                                     prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));
                         dateIncr++;
+                        prevDate = prevDate.addDays(1);
                     }
                     dataList.add(new CivitasWrapper(trm.SNAP_DATE__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
                                                     trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));

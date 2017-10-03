@@ -1519,23 +1519,23 @@
                                         "<table class=\"table table-striped\">" +
                                             "<tr>" +
                                                 "<th>Gender</th>" +
-                                                "<td></td>" +
+                                                "<td>--</td>" +
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>Ethnicity</th>" +
-                                                "<td></td>" +
+                                                "<td>--</td>" +
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>Age</th>" +
-                                                "<td><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
+                                                "<td id='studentDemoTd'><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>BirthDate</th>" +
-                                                "<td></td>" +
+                                                "<td>--</td>" +
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>First Generation</th>" +
-                                                "<td></td>" +
+                                                "<td>--</td>" +
                                             "</tr>";
                     buildInitHtml += "</table></div>";
                 document.getElementById("studentDemographicDiv").innerHTML = buildInitHtml;
@@ -1589,6 +1589,9 @@
                                 document.getElementById('studentDemographicDiv').innerHTML = html;
                                 cleanUpUndefined("studentDemographicDiv");
                             }
+                        } else {
+                            jQuery('#studentDemoTd').empty();
+                            jQuery('#studentDemoTd').html('--');
                         }
                     },
                     {escape: true}
@@ -3788,7 +3791,7 @@
                             //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;UGindicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
                             //} 
 
-                            html += "" +
+                            html += "" + 
                                 "<tr>" +
                                     "<td>" + result[i].classInfo.TERM_DESCR30__c + "</td>" +
                                     "<td>" + result[i].classInfo.SESSION_CODE__c + "</td>" +

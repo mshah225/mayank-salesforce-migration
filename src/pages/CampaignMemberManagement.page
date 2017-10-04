@@ -138,6 +138,12 @@
         .remCols {
             padding: 12px !important;
         }
+        
+        .crTable {
+            background-color:white !important;
+            padding:5px;
+            width:100%;
+        }
     </style>
 
     <apex:includeScript value="/support/console/32.0/integration.js"/>
@@ -434,8 +440,8 @@
                           label="View Affiliations"
                           style="background-color:#f0f0f0;">
                     <apex:form style="font-size:9pt;overflow:auto;height:295px;max-width:1100px;">
-                        <apex:pageBlock title="Campaigns this Contact is associated with.">
-                            <apex:outputText rendered="{!IF(activeCrCamMems.size == 0,true,false)}">
+                        <apex:pageBlock title="Campaigns this Contact is associated with."> 
+                            <apex:outputText rendered="{!activeCRCamMapEmpty}">
                                 No Campaigns found for {!contact.Name}
                             </apex:outputText>
 
@@ -446,53 +452,92 @@
                                 </apex:facet>
                             </apex:actionStatus>
 
-                            <apex:pageBlockTable value="{!activeCrCamMems}"
-                                                 var="ec"
-                                                 cellspacing="5"
-                                                 style="font-size:9pt;"
-                                                 headerClass="none"
-                                                 columnClasses="remCols">
-                                <apex:column >
-                                    <apex:outputPanel rendered="{!IF(ec.Campaign.ParentId == null,true,false)}">
-                                        <h4>
-                                            <apex:outputText value="{!ec.Campaign.Name}"/>
-                                        </h4>
-
-                                        <apex:actionRegion >
-                                            <apex:commandLink styleClass="linkBtn"
-                                                              style="margin-left:10px;"
-                                                              value="Remove"
-                                                              action="{!inActivateCM}"
-                                                              reRender="CRTabPanel"
-                                                              status="removeStatus">
-                                                <apex:param name="inActivateParentButton"
-                                                            value="{!ec.Id}"
-                                                            assignTo="{!inActivateCMId}"/>
-                                            </apex:commandLink>
-                                        </apex:actionRegion>
+                            <!-- Note, due to the fact that we are working with child objects that are related
+                                 through their parents (campaings), mapping them together is unique.
+                                 We use a map<string, List<CampaignMember>>. The "null" key of the map
+                                 contains campaign members whose campaigns have no parents (the parent campaig members).
+                                 The subsequent keys map the parent campaign (by name) to a list of campaign members for all child
+                                 campaigns of the parent campaign.
+                                 
+                                 Lost yet? Yes? Good..
+                                 
+                                 We display the parent campaign by looping through the null key to get the campaign
+                                 member, and then displaying that campaign member's campaign's name
+                                 
+                                 Then, we get the list whose key matches this campaign's name.
+                                 
+                                 Lastly, we loop through the list of campaign members for the child campaings and
+                                 display their campaign names.
+                            -->
+                            <apex:outputPanel rendered="{!NOT(activeCRCamMapEmpty)}">
+                            <table class="crTable list">
+                                <apex:repeat value="{!activeCRCamMap[null]}"
+                                                 var="pcm">
+                                    <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
+                                        <!-- Note the events on the <tr> element are provided by SF.
+                                             These events were taken from the page block table tag to
+                                             match default sf functionality -->
+                                        <tr style="padding-top:10px;padding-bottom:10px;"
+                                        class="dataRow"
+                                        onmouseover="if (window.hiOn){hiOn(this);}"
+                                        onmouseout="if (window.hiOff){hiOff(this);}"
+                                        onblur="if (window.hiOff){hiOff(this);}"
+                                        onfocus="if (window.hiOn){hiOn(this);}">
+                                            <td>
+                                            <h4>
+                                                <apex:outputText value="{!pcm.Campaign.Name}"/>
+                                            </h4>
+                                            <apex:actionRegion >
+                                                <apex:commandLink styleClass="linkBtn"
+                                                                  style="margin-left:10px;"
+                                                                  value="Remove"
+                                                                  reRender="CRTabPanel"
+                                                                  status="removeStatus"
+                                                                  action="{!inActivateCM}">
+                                                    <apex:param name="inActivateParentButton"
+                                                                value="{!pcm.Id}"
+                                                                assignTo="{!inActivateCMId}"/>
+                                                </apex:commandLink>
+                                            </apex:actionRegion>
+                                            </td>
+                                        </tr>
                                     </apex:outputPanel>
-
-                                    <apex:outputPanel rendered="{!IF(ec.Campaign.ParentId != null,true,false)}">
-                                        <span style="margin-left:20px;"/>
-
-                                        <apex:outputText value="{!ec.Campaign.Name}"
-                                                         style="margin-left:15px;"/>
-
-                                        <apex:actionRegion >
-                                            <apex:commandLink styleClass="linkBtn"
-                                                              style="margin-left:10px;"
-                                                              value="Remove"
-                                                              action="{!inActivateCM}"
-                                                              reRender="CRTabPanel"
-                                                              status="removeStatus">
-                                                <apex:param name="inActivateChildButton"
-                                                            value="{!ec.Id}"
-                                                            assignTo="{!inActivateCMId}"/>
-                                            </apex:commandLink>
-                                        </apex:actionRegion>
-                                    </apex:outputPanel>
-                                </apex:column>
-                            </apex:pageBlockTable>
+                                    <!-- activeCRCamPMapKeys exists because VF has no way to check if a map has a key and will throw
+                                         Visualforce exceptions if the map doesn't contain the key -->
+                                    <apex:outputPanel layout="none" rendered="{!CONTAINS(activeCRCamPMapKeys, pcm.campaign.Name)}">
+                                        <apex:repeat value="{!activeCRCamMap[pcm.campaign.Name]}" var="cm" rendered="{!NOT(ISBLANK(activeCRCamMap[pcm.campaign.Name]))}">
+                                            <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
+                                            <tr style="padding-top:10px;padding-bottom:10px;"
+                                                class="dataRow"
+                                                onmouseover="if (window.hiOn){hiOn(this);}"
+                                                onmouseout="if (window.hiOff){hiOff(this);}"
+                                                onblur="if (window.hiOff){hiOff(this);}"
+                                                onfocus="if (window.hiOn){hiOn(this);}">
+                                                <td>
+                                                    <span style="margin-left:20px;"/>
+                                                    
+                                                    <apex:outputText value="{!cm.Campaign.name}"
+                                                             style="margin-left:15px;"/>
+                                                             
+                                                    <apex:actionRegion >
+                                                        <apex:commandLink styleClass="linkBtn"
+                                                                          style="margin-left:10px;"
+                                                                          value="Remove"
+                                                                          status="removeStatus"
+                                                                          action="{!inActivateCM}">
+                                                            <apex:param name="inActivateParentButton"
+                                                                        value="{!cm.Id}"
+                                                                        assignTo="{!inActivateCMId}"/>
+                                                        </apex:commandLink>
+                                                    </apex:actionRegion>
+                                                </td>
+                                            </tr>
+                                            </apex:outputPanel>
+                                        </apex:repeat>
+                                        </apex:outputPanel>
+                                </apex:repeat>
+                            </table>
+                            </apex:outputPanel>
                             <br/>
                         </apex:pageBlock>
                     </apex:form>

@@ -6,6 +6,7 @@ public class SummaryListController {
     public String followupDate {get;set;} // Stores the followupDate to filter by in the dynamic query
     private String oldQuery; // Stores the query after generating a list to track if query changes
     public boolean excludeFollowUpDate {get; set;} // Determine if the followup date should be included in the dynamic query
+    public boolean coaching {get; set;}
 
     /*
      * Run query to generate results
@@ -77,7 +78,7 @@ public class SummaryListController {
                 'AND RecordTypeId = \'' + proactiveCaseRTID + '\' ' +
                 'AND IsClosed = false';
 
-            if (!excludeFollowUpDate) {
+            if (!excludeFollowUpDate && coaching == null) {
                 if (followUpDate != null && followUpDate != '') {
                     dynamicQuery = dynamicQuery + ' AND Followup_Date__c = ' + followUpDate;
                 } else {

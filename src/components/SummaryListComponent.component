@@ -6,6 +6,7 @@
     <apex:attribute name="transferOptions" type="SelectOption[]" description="" />
     <apex:attribute name="proactiveRTID" type="Id" description="" assignTo="{!proactiveCaseRTID}" />
     <apex:attribute name="caseEmailRTID" type="Id" description="" />
+    <apex:attribute name="isCoaching" type="boolean" description="Is this for the coaching side?" assignTo="{!coaching}"/>
     
     <!-- Suppress columns -->
     <apex:attribute name="showSummarySubject" type="boolean" description="" default="false" />

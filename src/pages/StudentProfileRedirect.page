@@ -13,7 +13,7 @@
             sforce.console.openPrimaryTab(null, recommendationURL, true, 'Profile', null, 'Profile');
             setTimeout(function() {
                 window.history.back();
-            }, 500);
+            }, 100);
         } else {
             window.open(recommendationURL, '_self');
         }

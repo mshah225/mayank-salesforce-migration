@@ -76,21 +76,28 @@ public without sharing class PersistenceFeedbackController {
         	}
         
         	if (proceed) {
+	            Feedback_Cars__c settings = Feedback_Cars__c.getAll().get('Persistence Outlook');
 	            
-                if (useLoggedInContact) {
-                    loggedInContact=ContactService.getLoggedInContact();
-                    if(loggedInContact!=null){
-                        caseContactId=loggedInContact.Id;
-                    }
-                }
+                Case_Assignment_Rule__c car = [SELECT Id, Queue_Id__c, Origin__c, Functional_Group__c, Category__c,
+                        Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c, Campus__c
+	                FROM Case_Assignment_Rule__c 
+	                WHERE Id = :settings.CAR_Id__c];
                 
+                System.debug(caseContactId);
 	            feedbackCase = new Case(
 	                RecordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1],
                     status = 'New',
 	                contactId = caseContactId,
 	                subject = 'Persistence Outlook feedback',
-	                Functional_Group__c = 'Enrollment Analysis', 
 	                description = caseDescription,
+	                Origin__c = car.Origin__c,
+	                Functional_Group__c = car.Functional_Group__c,
+	                Category__c = car.Category__c,
+	                OwnerId = car.Queue_ID__c,
+	                Sub_Category__c = car.Sub_Category__c,
+                    Case_Feed_Email__c = car.Email_Address__c,
+                    Case_Feed_Email_Template_Id__C = car.Case_Feed_Email_Template_Id__c,
+                    Campus__c = car.Campus__c,
                     IsVisibleInSelfService = false
 	            );
 	            

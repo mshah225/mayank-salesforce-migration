@@ -104,7 +104,9 @@
                         return;
                     }
                     legendLabel.style.display = 'block';
-                    jQuery('#FeedbackButton').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel);
+                    //var urlString = './persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel) +'&contactId=' + result[0].contactId;
+                    //console.log(urlString);
+                    jQuery('#FeedbackButton').attr('href','./persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length-1].outlookLevel +'&contactId=' + result[0].contactId);
                     document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length-1].levelDesc;
                     document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length-1].fullDate + '<br />';
                     
@@ -394,7 +396,7 @@
                     text-decoration:none;
                     }
                 </style>
-                <a href="./persistencefeedback?misc={!getInfo}}" 
+                <a href="./persistencefeedback?misc={!getInfo}" 
                    class="persistenceFeedbackButton & browser" target="_blank" id ="FeedbackButton">
                     <i class="fa fa-comment"></i> Persistence Outlook Feedback
                 </a>

@@ -5,6 +5,7 @@ global class CivitasPersistenceController{
     global static List<CivitasWrapper> dataList {get; set;}
     global static String emplId {get; set;}
     global static Decimal persistenceLevel;
+    global static Contact c;
     
     public static string currentTerm{
         get{
@@ -111,7 +112,7 @@ global class CivitasPersistenceController{
                         Date tempStart = startDate;
                         while(tempStart < trm.Snap_Date__c) {
                             dataList.add(new CivitasWrapper(tempStart, startSemesterData.CURR_CONT_PREDICTION_LEVEL__c, 
-                                         startSemesterData.CURRENT_SEGMENT_DESCR__c, startSemesterData.CHANGE_FLG__c,  c.FirstName, c.LastName, emplidIn, dateIncr));
+                                         startSemesterData.CURRENT_SEGMENT_DESCR__c, startSemesterData.CHANGE_FLG__c,  c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                             dateIncr++;
                             tempStart = tempStart.addDays(1);
                         }
@@ -124,12 +125,12 @@ global class CivitasPersistenceController{
                     prevDate = prevDate.addDays(1);
                     while(prevDate < trm.Snap_Date__c) {
                         dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
-                                                    prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));
+                                                    prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                         dateIncr++;
                         prevDate = prevDate.addDays(1);
                     }
                     dataList.add(new CivitasWrapper(trm.SNAP_DATE__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
-                                                    trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr));
+                                                    trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                     dateIncr++;
                 }
                 
@@ -178,10 +179,10 @@ global class CivitasPersistenceController{
     
     public String getInfo{
         get{
-            Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplid LIMIT 1];
-            getInfo = 'Name: ' + c.FirstName + ' ' + c.LastName + ' Persistence Level: ' + persistenceLevel;
-            
-            
+            emplid = apexpages.currentPage().getparameters().get('id');
+            c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
+            getInfo = 'Name: ' + c.FirstName + ' ' + c.LastName + ' (' + emplid + ') Persistence Level: No Data Available&contactId=' + c.Id;
+             
             return getInfo;
         }
         
@@ -234,17 +235,19 @@ global class CivitasPersistenceController{
         public String termInfo;
         public String direction;
         public String prevDate;
+        public String contactId;
         
         public civitasWrapper(String nameIn) {
             name = nameIn;
         }
         
-        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn, Integer valueIn){
+        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn, Integer valueIn, Id contactIdIn){
             snapDate = sDate;
             empl = empIn;
             outlookLevel = oLevel;  
             String currMonth = monthToText(snapDate.month());
             name = fName + ' ' + lName;
+            contactId = contactIdIn;
             
             year = snapDate.year();
             day = valueIn;

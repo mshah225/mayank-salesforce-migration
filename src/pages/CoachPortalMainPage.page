@@ -37,7 +37,7 @@
                                     proactiveRTID="{!CoachCaseRTID}"
                                     rerenderList="{!$Component.viewAsComponent.viewAsComponent.proactiveList}"
                                     caseEmailRTID="{!CoachEmailRTID}"
-                                    isCoaching = "true"
+                                    isCoaching="true"
                                     showSummarySubject="true" showSummaryCount="true" showSummaryFollowupDate="false"
                                     showCaseListSelection="true" showCaseListName="true" showCaseListEMPLID="true" showCaseListSubject="true"
                                     showCaseListStatus="true" showCaseListFollowupDate="true" showCaseListTransfer="true" showCaseMassEmail="true" 

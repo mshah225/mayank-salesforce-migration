@@ -49,6 +49,7 @@
                 if (sforce.console.isInConsole() || window.location.href.includes("FrameOrigin")) {
                 	sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
                 	inConsole = true;
+
                 }
             }
             var pageLoad = window.onload;
@@ -1014,8 +1015,24 @@
                                     </apex:pageBlock>
                                 </div>
 
+                                
+                                
                                 <div role="tabpanel" class="tab-pane" id="UGindicators">
-                                    <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlock mode="maindetail">  
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;Persistence Outlook
+                                                <a class='fa fa-question-circle' data-html="true" title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a target="_blank" href="https://docs.google.com/document/d/1ezUBwCjwnZmcfdcsGeGIr_9roVJYsYhpkm3nU5xpFVo/edit">Visit knowledge article.</a>.</span>' data-placement='right' data-trigger='manual'></a>
+                                                </h4>
+                                        </div>
+                                        
+                                        <!-- Transcripts Sent -->
+                                        <div style="overflow:auto; max-height:310px; height: 310px">
+                                            <c:CivitasPersistenceData />
+                                        </div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1611,7 +1628,23 @@
         <apex:includeScript value="{!URLFOR($Resource.bs_responsive_tabs)}"/>
 
         <script>
-            $j = jQuery.noConflict();
+
+        	$j = jQuery.noConflict();
+        	
+        	var timeoutHandle;
+
+            $j('.fa-question-circle').mouseenter(function(){
+                var that = $j(this)
+                that.tooltip('show');
+                window.clearTimeout(timeoutHandle);
+            });
+            
+            $j('.fa-question-circle').mouseleave(function(){
+                    var _this = $j(this);
+                timeoutHandle = window.setTimeout(function(){
+                    _this.tooltip('hide');
+                }, 2000);
+            });
 
             $j("#sunCard").error(function() {
                 $j(this).attr("src", "{!$Resource.blankAvatar}");
@@ -1624,8 +1657,10 @@
             // Arrow Functionality
             $j(".page-header-smaller").click(function() {                                    
                 var container = $j(this);
-                var arrow = $j(this).find('.fa');
-                
+                var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
+                console.log(arrow);
+                console.log(container);
+                console.log(container.next());
                 if (arrow.hasClass('fa-caret-down')) {
                     container.next().slideUp().addClass('hide');
                 } else if (arrow.hasClass('fa-caret-right')) {

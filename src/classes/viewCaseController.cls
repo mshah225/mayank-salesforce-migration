@@ -1,15 +1,15 @@
 public class viewCaseController{
 
-	private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
-	private Date today;
-	private Decimal origPin;
-	private Term__c termcAC;
+    private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
+    private Date today;
+    private Decimal origPin;
+    private Term__c termcAC;
     private Term__c termcB;
     private Map<String, String> viewAsMap;
     public Id caseId {get;set;}
 
-	public Decimal newPin { get; set; }
-	public String firstName { get; set; }
+    public Decimal newPin { get; set; }
+    public String firstName { get; set; }
     public String lastName { get; set; }
     public String emplId { get; set; }
     public String asurite { get; set; }
@@ -20,17 +20,19 @@ public class viewCaseController{
     public Contact userContact;
     public String viewAsUrl { get; set; }
     public List<Opportunity> oppList;
+    
    
-	public viewCaseController(){
-		viewingAs = false;
-	    checkForViewAs();
+    public viewCaseController(){
+        viewingAs = false;
+        checkForViewAs();
         popUserContact();
         popTerms();
         setCaseId();
 
-	}
+    }
 
-	public void checkForViewAs(){
+    
+    public void checkForViewAs(){
         if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null){
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
 
@@ -88,10 +90,10 @@ public class viewCaseController{
 
 
     public void setCaseId(){
-		caseId=ApexPages.currentPage().getParameters().get('id');
+        caseId=ApexPages.currentPage().getParameters().get('id');
 
-	}
-	
+    }
+    
      public Case getCaseDetails(){
         if (viewingAs){
             return MyASUViewAs.getViewAsCaseDetails(
@@ -149,9 +151,9 @@ public class viewCaseController{
     public List<bomgar__Event__c> getChatMessages() {
         return [
             SELECT bomgar__DestinationValue__c, bomgar__EventDateTime__c, bomgar__EventType__c, bomgar__PerformedByType__c, 
-            	bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId 
+                bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId 
             FROM bomgar__Event__c 
-			WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c =  :ApexPages.currentPage().getParameters().get('Id')
+            WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c =  :ApexPages.currentPage().getParameters().get('Id')
             AND (bomgar__PerformedByType__c = 'representative' OR bomgar__PerformedByType__c  = 'customer') 
             AND bomgar__DestinationValue__c = 'everyone' order by bomgar__EventDateTime__c asc
         ];
@@ -218,10 +220,18 @@ public class viewCaseController{
             if (userContact.PIN_lockout__c == true){
                 userContact.PIN_lockout__c = false;
             }
-
-            update userContact;
-
-            return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
+            try{
+                update userContact;
+                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
+            }
+            catch(Exception e){
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
+                vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
+                vars.add(ErrorLogger.convertStringToJSON('Employee Id',userContact.EMPLId__c));
+                ErrorLogger.log(e,vars,false);
+                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
+            }
         }
         else{
             return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');

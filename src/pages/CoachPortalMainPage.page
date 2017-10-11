@@ -37,9 +37,11 @@
                                     proactiveRTID="{!CoachCaseRTID}"
                                     rerenderList="{!$Component.viewAsComponent.viewAsComponent.proactiveList}"
                                     caseEmailRTID="{!CoachEmailRTID}"
-                                    suppressSummaryFollowupDate="true"
-                                    suppressProactiveCaseCount="true"
-                                    suppressReactiveCaseCount="true"/>
+                                    isCoaching = "true"
+                                    showSummarySubject="true" showSummaryCount="true" showSummaryFollowupDate="false"
+                                    showCaseListSelection="true" showCaseListName="true" showCaseListEMPLID="true" showCaseListSubject="true"
+                                    showCaseListStatus="true" showCaseListFollowupDate="true" showCaseListTransfer="true" showCaseMassEmail="true" 
+                                    showProactiveCaseCount="false" showReactiveCaseCount="false" showSearch="true" />
 
             <apex:tabPanel styleClass="buffer" id="tabPanel">
                 <apex:tab label="My Students"
@@ -49,11 +51,9 @@
                     <c:showMyCoachingStudents queryString="{!myStudentsQuery}"
                                       proactiveRTID="{!CoachCaseRTID}"
                                       emailRTID="{!CoachEmailRTID}"
-                                      suppressProactiveCases="true"
-                                      suppressReactiveCases="true"
-                                      suppressMassEmail="true"
                                       mimicId="{!mimicId}"
-                                      suppressSelection="true"/>
+                                      showProactiveCases="false" showReactiveCases="false" showMassEmail="false"
+                                      showSelection="false" showName="true" showEMPLID="true" showSearch="true"/>
                 </apex:tab>
 
                 <apex:tab label="My Proactive Cases"
@@ -65,9 +65,9 @@
                                    transferOptions="{!mySubordinateOptions}"
                                    proactiveRTID="{!CoachCaseRTID}"
                                    emailRTID="{!CoachEmailRTID}"
-                                   suppressProactive="true"
-                                   suppressReactive="true"
-                                   suppressMassEmail="true"/>
+                                   showSelection="true" showName="true" showEMPLID="true" showSubject="true"
+                                   showStatus="true" showFollowupDate="true" showTransfer="true" showMassEmail="false"
+                                   showProactive="false" showReactive="false" showSearch="true" showRefresh="true"/>
                 </apex:tab>
 
                 <apex:tab label="Success Tools"

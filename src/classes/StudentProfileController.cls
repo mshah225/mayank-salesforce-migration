@@ -125,6 +125,7 @@ global with sharing class StudentProfileController
 				}
                 profileHeader = getProfileHeader(theContact.EMPLID__c);
                 getTermInfo();
+
                 sIList = getServiceIndicators(theContact.emplId__c);
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
                 studentDemographic = getStudentDemographicData(theContact.emplId__c);
@@ -177,7 +178,6 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-                
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
                             Select Subplan_description__c
                                   FROM Student_Program_Subplan__c

@@ -1,4 +1,4 @@
-public class ServiceCenter
+public with sharing class ServiceCenter
 {
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
     private static final Integer CLOSEDCASELIMIT = 5;    
@@ -208,18 +208,8 @@ public class ServiceCenter
             if (userContact.PIN_lockout__c == true){
                 userContact.PIN_lockout__c = false;
             }
-            try {
-                update userContact;
-                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
-            }
-            catch(Exception e) {
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
-                vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
-                vars.add(ErrorLogger.convertStringToJSON('Employee Id',userContact.EMPLId__c));
-                ErrorLogger.log(e,vars,false);
-                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-            }
+            update userContact;
+            return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
         }
         else{
             return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');

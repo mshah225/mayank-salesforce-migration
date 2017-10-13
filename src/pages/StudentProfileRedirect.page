@@ -4,8 +4,9 @@
     <apex:includeScript value="/support/console/33.0/integration.js"/>
     <apex:includeScript value="/soap/ajax/34/apex.js"/>
     <script type="text/javascript" >    
-    var myappname = document.getElementById("tsidLabel").innerText;
-    var isInSalesConsole = myappname.includes("Service");
+    var urlValue = window.location.href;
+    urlValue = urlValue.toLowerCase();
+	var isInSalesConsole = (urlValue.includes("console") || urlValue.includes("iframe"));
     function viewRecommendation(studentId) {
         var recommendationURL = "/apex/StudentProfile?id=" + studentId;            
         if (isInSalesConsole) {
@@ -13,7 +14,7 @@
             sforce.console.openPrimaryTab(null, recommendationURL, true, 'Profile', null, 'Profile');
             setTimeout(function() {
                 window.history.back();
-            }, 100);
+            }, 500);
         } else {
             window.open(recommendationURL, '_self');
         }

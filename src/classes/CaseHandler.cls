@@ -105,6 +105,7 @@ public without sharing class CaseHandler implements ITrigger {
         }
         else if (Trigger.isUpdate) {
 			//Handles Webform cases (webforms.asu.edu)
+            CaseService.handleClosingWebformsCases();
             for (Case c : (List<Case>)Trigger.new) {
                 if (c.Status == 'Processing' && c.Deep_Links__c != NULL) {
                     List<String> links = c.Deep_Links__c.split('Click Here');

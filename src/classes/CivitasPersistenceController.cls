@@ -177,7 +177,12 @@ global class CivitasPersistenceController{
     public String getInfo{
         get{
             emplid = apexpages.currentPage().getparameters().get('id');
-            c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
+            if(emplid.substring(0, 3).equals('003')) {
+                c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE id =: emplid LIMIT 1];
+            }
+            else {
+            	c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
+            }
             getInfo = 'Name: ' + c.FirstName + ' ' + c.LastName + ' (' + emplid + ') Persistence Level: No Data Available&contactId=' + c.Id;
              
             return getInfo;

@@ -392,7 +392,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                         }
 
                         Lead leadToUpdate = leadsInTrigger.get(leadId);
-                        if(leadToUpdate.Primary_Interest__c != primary.CampaignId)
+                        if(leadToUpdate != null && leadToUpdate.Primary_Interest__c != primary.CampaignId)
                         {
                             leadToUpdate.Primary_Interest__c = primary.CampaignId;
                             leadsToUpdate.add(leadToUpdate);
@@ -401,7 +401,7 @@ public without sharing class CampaignMemberHandler implements ITrigger
                     else
                     {
                         Lead leadToUpdate = leadsInTrigger.get(leadId);
-                        if(leadToUpdate.Primary_Interest__c != null)
+                        if(leadToUpdate != null && leadToUpdate.Primary_Interest__c != null)
                         {
                             leadToUpdate.Primary_Interest__c = null;
                             leadsToUpdate.add(leadToUpdate);

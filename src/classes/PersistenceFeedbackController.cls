@@ -83,7 +83,6 @@ public without sharing class PersistenceFeedbackController {
 	                FROM Case_Assignment_Rule__c 
 	                WHERE Id = :settings.CAR_Id__c];
                 
-                System.debug(caseContactId);
 	            feedbackCase = new Case(
 	                RecordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1],
                     status = 'New',
@@ -112,6 +111,7 @@ public without sharing class PersistenceFeedbackController {
                 
                 caseDescription = '';
         	}
+            system.debug('called');
             return null;
         } catch (Exception e) {
             List<String> vars = new List<String>();

@@ -1,6 +1,6 @@
-public with sharing class SCMyCasesBoxController{
-    private static final Integer CLOSEDCASELIMIT = 5;
-    private Id caseId;
+public class SCMyCasesBoxController{
+	private static final Integer CLOSEDCASELIMIT = 5;
+	private Id caseId;
     private Map<String, String> viewAsMap;
     private Term__c termcAC;
     private Term__c termcB;
@@ -8,7 +8,7 @@ public with sharing class SCMyCasesBoxController{
     private Date today;
 
     public Boolean viewingAs { get; set; }
-    public Case newCase { get; set; }
+	public Case newCase { get; set; }
     public List<Opportunity> oppList;    
     public Contact userContact;
     public String stopViewAsUrl { get; set; }
@@ -20,13 +20,13 @@ public with sharing class SCMyCasesBoxController{
     public String asurite { get; set; }
     public String masqScopeIdCookie { get; set; }
 
-    public SCMyCasesBoxController(){
-        newCase=new Case();
+	public SCMyCasesBoxController(){
+		newCase=new Case();
         viewingAs = false;
-        checkForViewAs();
+		checkForViewAs();
         popUserContact();
         popTerms();
-    }
+	}
 
     public void checkForViewAs()
     {
@@ -46,7 +46,7 @@ public with sharing class SCMyCasesBoxController{
         }
     }
 
-    public void popUserContact()
+	public void popUserContact()
     {
         if (viewingAs)
         {
@@ -160,21 +160,15 @@ public with sharing class SCMyCasesBoxController{
 
         newCase.ContactId = userContact.Id;
         newCase.Web_Submission__c = 'My ASU Standard';
-        try{
-            insert newCase;
-            ApexPages.currentPage().getParameters().put('caseId',newCase.Id);
-            confirmPage=viewCase();
-            confirmPage.setRedirect(true);
-            return confirmPage;
-        }       
-        catch(Exception e){
-              List<String> vars = new List<String>();
-              vars.add(ErrorLogger.convertStringToJSON('ContactId',newCase.ContactId));
-              vars.add(ErrorLogger.convertStringToJSON('Subject',newCase.Subject));
-              vars.add(ErrorLogger.convertStringToJSON('Description', newCase.Description));
-              ErrorLogger.log(e,vars,false);
-              return null;
-        }
+        
+        insert newCase;
+      
+        //confirmPage=new PageReference('/studentSC?Confirm=newcase');
+        ApexPages.currentPage().getParameters().put('caseId',newCase.Id);
+        confirmPage=viewCase();
+        confirmPage.setRedirect(true);
+               
+        return confirmPage;
         
     }
 

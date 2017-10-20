@@ -45,7 +45,6 @@ public class CaseService
             FROM EmailMessage
             WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
             AND Incoming = false
-            AND Status !='5'
             AND CreatedDate > :launchDate
             AND ToAddress IN :contactEmails
             ORDER BY CreatedDate DESC

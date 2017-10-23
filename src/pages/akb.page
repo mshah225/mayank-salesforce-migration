@@ -404,10 +404,14 @@
                                         <apex:pageBlock mode="maindetail">
                                             <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                                             <br />
-                                            <apex:inputField id="articleDetails"
+                                            <div class = "requiredInput">
+
+                                            <div class = "requiredBlock"></div>
+                                            <apex:inputTextarea id="articleDetails"
                                                              required="true"
-                                                             value="{!suggestAnArticle.Description}"
+                                                             value="{!strArticleIdea}"
                                                              style="width:100%;max-width:400px;height:100px;"/>
+                                            </div>
                                         </apex:pageBlock>
                                     </div>
                                     <div class="modal-footer">

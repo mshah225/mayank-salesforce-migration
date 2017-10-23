@@ -405,9 +405,8 @@
                                             <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                                             <br />
                                             <div class = "requiredInput">
-
-                                            <div class = "requiredBlock"></div>
-                                            <apex:inputTextarea id="articleDetails"
+                                                <div class = "requiredBlock"></div>
+                                                <apex:inputTextarea id="articleDetails"
                                                              required="true"
                                                              value="{!strArticleIdea}"
                                                              style="width:100%;max-width:400px;height:100px;"/>

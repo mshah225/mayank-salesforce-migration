@@ -5,7 +5,7 @@ public class Test_StudentProfileController
     {
     	PageReference pageRef = Page.studentProfile;
 		Test.setCurrentPage(pageRef);
-        ApexPages.currentPage().getParameters().put('id', '1203436008');
+        ApexPages.currentPage().getParameters().put('contactId', '1203436008');
 
         StudentProfileController controller = new StudentProfileController();
 

@@ -1,4 +1,4 @@
- public with sharing class AllPublishedArticlesController {
+public with sharing class AllPublishedArticlesController {
 	
 	private string urlPrefix = 'https://asu.secure.force.com/kb/articles/';
 	

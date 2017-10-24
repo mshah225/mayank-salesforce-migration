@@ -59,9 +59,7 @@ global with sharing class StudentProfileController
     public StudentProfileController() {
         URLParamsExistAndAreValid = true;
         
-        if (ApexPages.currentPage().getParameters().get('id') != null) {
-            contactId = ApexPages.currentPage().getParameters().get('id');
-        } else if (ApexPages.currentPage().getParameters().get('contactId') != null) {
+        if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
         

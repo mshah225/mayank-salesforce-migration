@@ -56,7 +56,7 @@
         };
         
         function openStudentProfile(recId,recName){
-            var redirectUrl = '/apex/studentProfile?id=' + recId;
+            var redirectUrl = '/apex/studentProfile?contactId=' + recId;
             if (sforce.console.isInConsole()) { 
                  sforce.console.openPrimaryTab(null, redirectUrl, true, recName);
             }

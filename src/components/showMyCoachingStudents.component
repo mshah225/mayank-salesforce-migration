@@ -269,7 +269,7 @@
                         } else if (type == 'Chat') {
                             sforce.console.openSubtab(result.id, 'https://pitch.asuonline.asu.edu/direct/' + asurite, true, 'Pitch Chat - ' + contactName, null);
                         } else if (type == 'Profile') {
-                            sforce.console.openSubtab(result.id, '/apex/studentProfile?id=' + contactId, true, contactName + ' Student Profile', null);
+                            sforce.console.openSubtab(result.id, '/apex/studentProfile?contactId=' + contactId, true, contactName + ' Student Profile', null);
                         } else if (type == 'All Cases') {
                             sforce.console.openSubtab(result.id, '003?rlid=RelatedCaseList&id=' + contactId, true, contactName + ' All Cases', null);
                         }
@@ -289,7 +289,7 @@
                                             } else if (type == 'Chat') {
                                                 sforce.console.openSubtab(parentTabId, 'https://pitch.asuonline.asu.edu/direct/' + asurite, true, 'Pitch Chat - ' + contactName, null);
                                             } else if (type == 'Profile') {
-                                                sforce.console.openSubtab(parentTabId, '/apex/studentProfile?id=' + contactId, true, contactName + ' Student Profile', null);
+                                                sforce.console.openSubtab(parentTabId, '/apex/studentProfile?contactId=' + contactId, true, contactName + ' Student Profile', null);
                                             } else if (type == 'All Cases') {
                                                 sforce.console.openSubtab(result.id, '003?rlid=RelatedCaseList&id=' + contactId, true, contactName + ' All Cases', null);
                                             }

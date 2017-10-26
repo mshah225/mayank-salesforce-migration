@@ -84,7 +84,7 @@
                 
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.CivitasPersistenceController.getData}',
-                getUrlParameter('id'),
+                getUrlParameter('contactId'),
                 function (result, event) {
                 feedback.style.display = 'block';
                 if(result == null) {

@@ -871,7 +871,7 @@
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
                                                 &nbsp;Persistence Outlook
-                                                <a class='fa fa-question-circle' data-html="true" title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a target="_blank" href="https://docs.google.com/document/d/1ezUBwCjwnZmcfdcsGeGIr_9roVJYsYhpkm3nU5xpFVo/edit">Visit knowledge article.</a>.</span>' data-placement='right' data-trigger='manual'></a>
+                                                <a class='fa fa-question-circle' data-html="true" title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a href="#" onclick="openNewSubtab(&quot;/articles/FAQ/What-is-a-Persistence-Outlook/p&quot;,&quot;Details&quot;);return false">Visit knowledge article.</a>.</span>' data-placement='right' data-trigger='manual'></a>
                                                 </h4>
                                         </div>
                                         

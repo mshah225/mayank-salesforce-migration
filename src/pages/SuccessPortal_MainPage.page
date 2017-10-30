@@ -344,7 +344,7 @@
     
     function OpenStudentProfile(recId,studentName){
         if (sforce.console.isInConsole()) { 
-            sforce.console.openPrimaryTab(null, '/apex/StudentProfile?id=' + recId, true, studentName, studentName);
+            sforce.console.openPrimaryTab(null, '/apex/StudentProfile?contactId=' + recId, true, studentName, studentName);
         } 
     }
  

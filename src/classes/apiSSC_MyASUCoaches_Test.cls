@@ -79,7 +79,6 @@ private class apiSSC_MyASUCoaches_Test {
         successStudent.Student__c = userStudent.Id;
         successStudent.Success_Resource__c = successCoach.Id;
         successStudent.Success_POD__c = successPOD.Id;
-        successStudent.Coaching_Student__c = true;
         insert successStudent;
 
     }
@@ -95,7 +94,7 @@ private class apiSSC_MyASUCoaches_Test {
     
     List<Success_Student__c> results = apiSSC_MyASUCoachesController.getAllCoaches();
     
-    //System.assertEquals(1, results.size());
+    System.assertEquals(1, results.size());
     
     }
 

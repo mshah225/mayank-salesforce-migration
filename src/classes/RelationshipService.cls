@@ -1,16 +1,16 @@
 public class RelationshipService {
     /**
-     * When a relationship is inserted a "Reciprocal" (recip)
-    * relationship must be created. The primary difference between the two relationships
-     * is that the Contact__c and Related_Contact__c field values are flipped. The relationships
-     * are linked 1:1 via the Reciprocal_Relationship__c field.
-     * <p>
-     * If a relationship is inserted and the Reciprocal_Relationship__c field is pre-populated,
-     * we only need to update the recip to ensure that the values match.
-     * </p>
-     *
-     * @param List<SObject> List of newly inserted relationships
-     */
+* When a relationship is inserted a "Reciprocal" (recip)
+* relationship must be created. The primary difference between the two relationships
+* is that the Contact__c and Related_Contact__c field values are flipped. The relationships
+* are linked 1:1 via the Reciprocal_Relationship__c field.
+* <p>
+* If a relationship is inserted and the Reciprocal_Relationship__c field is pre-populated,
+* we only need to update the recip to ensure that the values match.
+* </p>
+*
+* @param List<SObject> List of newly inserted relationships
+*/
     public static void createReciprocal(List<SObject> newRels) {
         Id contactToAccountRTID; // Id of contact to account record type
         ID accountToContactRTID; // Id of account to contact record type
@@ -48,8 +48,7 @@ public class RelationshipService {
                         Relationship_Type__c = settings.get(r.Relationship_Type__c).Reciprocal__c,
                         Reciprocal_Relationship__c = r.Id,
                         Relationship_Start_Date__c = r.Relationship_Start_Date__c,
-                        Relationship_End_Date__c = r.Relationship_End_Date__c,
-                        Title__c = r.Title__c
+                        Relationship_End_Date__c = r.Relationship_End_Date__c
                     );
                     
                     // RecordTypeId = r.RecordTypeId,
@@ -121,7 +120,7 @@ public class RelationshipService {
             if (recipToSource.size() > 0) {
                 for (Relationship__c r : [SELECT Contact__c,  Related_Contact__c, RecordTypeId, Related_Account__c,
                                           Relationship_Start_Date__c, Active_Relationship__c, Relationship_Type__c,
-                                          Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c, Title__c
+                                          Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c
                                           FROM Relationship__c
                                           WHERE Id IN :recipToSource.keySet()]) {
                                               rel = recipToSource.get(r.Id);
@@ -135,8 +134,7 @@ public class RelationshipService {
                                                   || r.Relationship_Type__c != settings.get(rel.Relationship_Type__c).Reciprocal__c
                                                   || r.Relationship_Start_Date__c != rel.Relationship_Start_Date__c
                                                   || r.Relationship_End_Date__c != rel.Relationship_End_Date__c
-                                                  || r.Reciprocal_Relationship__c != rel.Id
-                                                  || r.Title__c != rel.Title__c) {
+                                                  || r.Reciprocal_Relationship__c != rel.Id) {
                                                       r.Contact__c = rel.Related_Contact__c;
                                                       r.Related_Contact__c = rel.Contact__c;
                                                       r.Account__c = rel.Related_Account__c;
@@ -146,7 +144,6 @@ public class RelationshipService {
                                                       r.Relationship_Start_Date__c = rel.Relationship_Start_Date__c;
                                                       r.Relationship_End_Date__c = rel.Relationship_End_Date__c;
                                                       r.Reciprocal_Relationship__c = rel.Id;
-                                                      r.Title__c = rel.Title__c;
                                                       
                                                       relsToUpdate.add(r);
                                               }

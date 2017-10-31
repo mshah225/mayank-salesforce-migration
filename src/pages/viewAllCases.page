@@ -1,10 +1,10 @@
 <apex:page docType="html-5.0"
            showHeader="false"
            sidebar="false"
-           controller="ViewAllCasesController"
+           controller="ServiceCenter"
            action="{!init}"
            cache="true"
-           extensions="NavLinks">
+           extensions="ViewAllCasesController,NavLinks">
     <head>
         <title>My ASU | View All Cases</title>
         <c:asu_responsive_header_section linkList="{!linkList}"/>

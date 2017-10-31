@@ -337,7 +337,6 @@ public class CaseListTransferController {
                     c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
                     c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
                     c.Campus__c = selectedCAR.Campus__c;
-                    c.RecordTypeId = selectedCAR.Case_Record_Type_Id__c;
                 }
             }
             

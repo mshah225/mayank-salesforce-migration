@@ -75,13 +75,11 @@ public without sharing class  ErrorLogger {
                 // with the same subject for de-duping
                 if (loggedInContact != null) {
                     
-                    system.debug('errorLogger 78: ' + limits.getQueryRows());
                     oldCases = [SELECT Subject, IsClosed 
                        FROM Case 
                        WHERE (ContactId = :loggedInContact.Id)
                        AND IsClosed = false 
                        AND subject = :subject];
-                    system.debug('errorLogger 84: ' + limits.getQueryRows());
                        
                    if (oldCases.size() > 0) {
                        createCase = false;
@@ -153,17 +151,11 @@ public without sharing class  ErrorLogger {
                 List<String> addresses = new List<String>();
                 List<Id> recipientObjectIds = new List<Id>();
                 List<String> vars = new List<String>();
-                Id adminProfileId = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
                 
                 // Uses targetObjectId to send Emails
-                // uses the Recieve_Apex_errors__c field on user object to determine the users to which the Error email needs to be sent.
+                // uses the Receive_Apex_errors__c field on user object to determine the users to which the Error email needs to be sent.
                 
-                for(User emailUser : [
-                    SELECT id, Email
-                    FROM User
-                    WHERE Receive_Apex_Errors__c = true
-                    AND ProfileId = :adminProfileId
-                ]){
+                for(User emailUser:[Select id,Email from User where Receive_Apex_Errors__c=true]){
                     newEmail = new Messaging.SingleEmailMessage();
                     newEmail.setTargetObjectId(emailUser.Id);
                     newEmail.subject = subject;

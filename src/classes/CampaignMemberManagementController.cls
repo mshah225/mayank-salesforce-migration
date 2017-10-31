@@ -1,4 +1,4 @@
-public class CampaignMemberManagementController 
+public with sharing class CampaignMemberManagementController
 {
     private Set<Id> assignedEventIds;
     private Set<Id> assignedIntIds;
@@ -30,16 +30,24 @@ public class CampaignMemberManagementController
     public List<Campaign> fixedChildCampaigns { get; set; }
     public List<Campaign> eventSearchResults { get; set; }
     public List<Campaign> interestSearchResults { get; set; }
+    public List<Subscriber__c> subscriberList { private get; set; } // New for Marketing Cloud project
+    public List<Message> filteredMessageList; // New for Marketing Cloud project
+    public List<Message> allMessageList { get; set; } // New for Marketing Cloud project
     public String searchString { get; set; }
     public String selectedParentCampaignName { get; set; }
     public String selectedChildCampaignName { get; set; }
     public String renderedTab { get; set; }
+    public String inActivateCMId { get; set; }
     public String eSearchString { get;set; }
     public String iSearchString { get;set; }
     public String deptColl { get; set; }
     public String selectedEventName { get; set; }
 
-    public CampaignMemberManagementController(ApexPages.StandardController controller) 
+    public String commFilterType {get; set;} // New for Marketing Cloud project
+    public Date commFilterStartDate {get; set;} // New for Marketing Cloud project
+    public Date commFilterEndDate {get; set;} // New for Marketing Cloud project
+
+    public CampaignMemberManagementController(ApexPages.StandardController controller)
     {
         contactId = ApexPages.currentPage().getParameters().get('id');
         admin = false;
@@ -52,6 +60,7 @@ public class CampaignMemberManagementController
         camMemEvent = new CampaignMember();
 
         buildCampaignMemberMap();
+        buildCommMessageList();
 
         String profileName = [
             SELECT Profile.Name
@@ -102,8 +111,6 @@ public class CampaignMemberManagementController
     public void buildCampaignMemberMap()
     {
         campaignMemberMap = new Map<String, List<CampaignMember>>();
-        activeCRCamMap = new Map<String, List<CampaignMember>>();
-        activeCRCamMap.put(null,new List<CampaignMember>());
         List<CampaignMember> contactCamMems = CampaignMemberService.getCampaignMembers(contactId);
         List<CampaignMember> tempCrActiveList = new List<CampaignMember>();
         List<CampaignMember> tempCrInactiveList = new List<CampaignMember>();
@@ -121,12 +128,6 @@ public class CampaignMemberManagementController
             if ((cm.Campaign.RecordType.Name == 'Corporate Relations')
                 && (cm.Status == 'Active'))
             {
-                if (activeCRCamMap.get(cm.Campaign.Parent.Name) == null) {
-                    activeCRCamMap.put(cm.Campaign.Parent.Name, new List<CampaignMember>());
-                }
-                
-                activeCRCamMap.get(cm.Campaign.Parent.Name).add(cm);
-
                 tempCrActiveList.add(cm);
             }
             else if ((cm.Campaign.RecordType.Name == 'Corporate Relations')
@@ -180,6 +181,132 @@ public class CampaignMemberManagementController
         campaignMemberMap.put('Course', tempCourseList);
     }
 
+    /*
+    public List<Subscriber__c> getSubscriberList()
+    {
+        if (subscriberList == null)
+            subscriberList = SubscriberService.getSubscribers(contactId);
+
+        return subscriberList;
+    }
+    */
+    
+    public List<Subscriber__c> getSubscriberList()
+    {
+        if (subscriberList == null)
+            subscriberList = [SELECT Id, Subscriber_Status__c, Last_Subscribed_Date__c, Last_Unsubscribed_Date__c,
+                                     Subscription__r.Name, Subscription__r.Subscription_Type__c, Subscription__r.Business_Unit__r.Name
+                              FROM Subscriber__c
+                              WHERE Contact__c = :contactId];
+
+        return subscriberList;
+    }
+
+    public List<Message> getfilteredMessageList()
+    {
+        List<Message> messageList = new List<Message>();
+
+        for (Message m: allMessageList)
+        {
+            if (commFilterType == 'Sent')
+            {
+                if (commFilterStartDate != null && m.timeSent < commFilterStartDate)
+                {
+                    continue;
+                }
+                if (commFilterEndDate != null && m.timeSent > commFilterEndDate.addDays(1))
+                {
+                    continue;
+                }
+            }
+            else if (commFilterType == 'Opened')
+            {
+                if (commFilterStartDate != null && (m.timeOpened < commFilterStartDate || m.timeOpened == null))
+                {
+                    continue;
+                }
+                if (commFilterEndDate != null && m.timeOpened > commFilterEndDate.addDays(1) || m.timeOpened == null)
+                {
+                    continue;
+                }
+            }
+            messageList.add(m);
+        }
+
+        return messageList;
+    }
+
+    public List<Message> buildCommMessageList()
+    {
+            List<et4ae5__IndividualEmailResult__c> ierList = new List<et4ae5__IndividualEmailResult__c>();
+            // Query for the communication history
+            ierList = [
+                SELECT Id, Name, et4ae5__SubjectLine__c, et4ae5__FromName__c,
+                    et4ae5__FromAddress__c, et4ae5__SoftBounce__c, et4ae5__HardBounce__c,
+                    et4ae5__DateSent__c, et4ae5__DateOpened__c,
+                    et4ae5__NumberOfUniqueClicks__c, et4ae5__Contact__c,
+                    et4ae5__SendDefinition__c,
+                    et4ae5__SendDefinition__r.et4ae5__fBusiness_Unit__c
+                FROM et4ae5__IndividualEmailResult__c
+                WHERE et4ae5__Contact__c = :contactId
+                ORDER BY et4ae5__DateSent__c DESC
+                LIMIT 750
+            ];
+
+        allMessageList = new List<Message>();
+        for (et4ae5__IndividualEmailResult__c ier: ierList)
+        {
+            Message m = new Message();
+            m.id = ier.Id;
+            m.name = ier.Name;
+            m.subject = ier.et4ae5__SubjectLine__c;
+            m.sender =  (ier.et4ae5__SendDefinition__c == null? ier.et4ae5__FromName__c : ier.et4ae5__SendDefinition__r.et4ae5__fBusiness_Unit__c);
+
+            // Determine the delivery status of the message based on whether or not it returned a hard or soft bounce
+            if (ier.et4ae5__HardBounce__c) {
+                m.deliveryStatus = 'Hard Bounce';
+            } else if (ier.et4ae5__SoftBounce__c) {
+                m.deliveryStatus = 'Soft Bounce';
+            } else {
+                m.deliveryStatus = 'Delivered';
+            }
+
+            m.timeSent = ier.et4ae5__DateSent__c;
+
+            m.timeOpened = ier.et4ae5__DateOpened__c;
+            m.uniqueClicks = String.valueOf(ier.et4ae5__NumberOfUniqueClicks__c);
+
+            allMessageList.add(m);
+        }
+
+        return filteredMessageList;
+    }
+
+    // New for Marketing Cloud project
+    public List<SelectOption> getCommFilterOptions() {
+        List<SelectOption> options = new List<SelectOption>();
+
+        options.add(new SelectOption('Sent', 'Date Sent'));
+        options.add(new SelectOption('Opened', 'Date Opened'));
+
+        return options;
+    }
+
+    // New for Marketing Cloud project
+    /*
+    * @description: Clears the search filters. As a result, all communication history for the
+    * case is displayed.
+    */
+    public void clearCommFilter() {
+        // Reset the input fields for Start Date and End Date
+        this.commFilterStartDate = null;
+        this.commFilterEndDate = null;
+
+        // Reset the filter type to its default value
+        commFilterType = 'Sent';
+
+    }
+
     public List<SelectOption> getDepartmentsColleges()
     {
         List<SelectOption> options = new List<SelectOption>();
@@ -218,7 +345,7 @@ public class CampaignMemberManagementController
     }
 
     // Event tab.
-    public List<CampaignMember> getEventList() 
+    public List<CampaignMember> getEventList()
     {
         List<CampaignMember> tempEvents = campaignMemberMap.get('Event');
         List<CampaignMember> tempEOSSEvents = campaignMemberMap.get('EOSS Event');
@@ -234,7 +361,7 @@ public class CampaignMemberManagementController
             eventList.addAll(tempEOSSEvents);
         }
 
-        if (eventList != null) 
+        if (eventList != null)
         {
             assignedEventIds = new Set<Id>();
 
@@ -249,7 +376,7 @@ public class CampaignMemberManagementController
         return eventList;
     }
 
-    public void doEventSearch() 
+    public void doEventSearch()
     {
         eventDeets = false;
 
@@ -308,7 +435,7 @@ public class CampaignMemberManagementController
     }
 
     // Interest tab.
-    public List<CampaignMember> getInterestList() 
+    public List<CampaignMember> getInterestList()
     {
         List<CampaignMember> tempInterests = new List<CampaignMember>();
         List<CampaignMember> interestList = new List<CampaignMember>();
@@ -320,7 +447,7 @@ public class CampaignMemberManagementController
             interestList.addAll(tempInterests);
         }
 
-        if (interestList != null) 
+        if (interestList != null)
         {
             assignedIntIds = new Set<Id>();
 
@@ -333,7 +460,7 @@ public class CampaignMemberManagementController
         return interestList;
     }
 
-    public void doInterestSearch() 
+    public void doInterestSearch()
     {
         if (iSearchString.length() < 2)
         {
@@ -373,7 +500,7 @@ public class CampaignMemberManagementController
     }
 
     // Scholarship tab.
-    public List<CampaignMember> getScholarList() 
+    public List<CampaignMember> getScholarList()
     {
         List<CampaignMember> tempScholarList = new List<CampaignMember>();
         List<CampaignMember> scholarList = new List<CampaignMember>();
@@ -384,12 +511,12 @@ public class CampaignMemberManagementController
         {
             scholarList.addAll(tempScholarList);
         }
-        
+
         return scholarList;
     }
 
     // Cohort tab.
-    public List<CampaignMember> getCohortList() 
+    public List<CampaignMember> getCohortList()
     {
         List<CampaignMember> tempCohortList = new List<CampaignMember>();
         List<CampaignMember> cohortList = new List<CampaignMember>();
@@ -400,12 +527,12 @@ public class CampaignMemberManagementController
         {
             cohortList.addAll(tempCohortList);
         }
-        
+
         return cohortList;
     }
 
     // Other Sources tab.
-    public List<CampaignMember> getoSourceList() 
+    public List<CampaignMember> getoSourceList()
     {
         List<CampaignMember> tempOtherList = new List<CampaignMember>();
         List<CampaignMember> oSourceList = new List<CampaignMember>();
@@ -416,12 +543,12 @@ public class CampaignMemberManagementController
         {
             oSourceList.addAll(tempOtherList);
         }
-        
+
         return oSourceList;
     }
 
     // Marketing/Communications tab.
-    public List<CampaignMember> getMarkCommList() 
+    public List<CampaignMember> getMarkCommList()
     {
         List<CampaignMember> tempCommList = new List<CampaignMember>();
         List<CampaignMember> markCommList = new List<CampaignMember>();
@@ -432,12 +559,12 @@ public class CampaignMemberManagementController
         {
             markCommList.addAll(tempCommList);
         }
-        
+
         return markCommList;
     }
 
     // Partnered Courses tab.
-    public List<CampaignMember> getPartCourseList() 
+    public List<CampaignMember> getPartCourseList()
     {
         List<CampaignMember> tempCourseList = new List<CampaignMember>();
         List<CampaignMember> partCourseList = new List<CampaignMember>();
@@ -448,7 +575,7 @@ public class CampaignMemberManagementController
         {
             partCourseList.addAll(tempCourseList);
         }
-        
+
         return partCourseList;
     }
 
@@ -532,45 +659,6 @@ public class CampaignMemberManagementController
         activeCrCamMems = campaignMemberMap.get('Active CR');
 
         return activeCrCamMems;
-    }
-    
-    public Boolean activeCRCamMapEmpty {
-        get {
-            if (activeCRCamMap.get(null).size() == 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        
-        set;
-    }
-    
-    public String activeCRCamPMapKeys {
-        get {
-            activeCRCamPMapKeys = '';
-            
-            for (String s : activeCRCamMap.keySet()) {
-            // Use String.Value of since null is an expected key
-                activeCRCamPMapKeys+=String.ValueOf(s);
-            }
-            
-            return activeCRCamPMapKeys;
-        }
-        
-        set;
-    }
-    
-    public Map<String, List<CampaignMember>> activeCRCamMap {
-        get {
-            if (activeCRCamMap == null) {
-                activeCRCamMap = new Map<String, List<CampaignMember>>();
-            }
-            
-            return activeCRCamMap;
-        }
-        
-        set;
     }
 
     public void parentCampaignSearch()
@@ -667,73 +755,70 @@ public class CampaignMemberManagementController
         newChildCamMem.CampaignId = selectedChildCampaign;
         newChildCamMem.Status = 'Active';
         save();
-    } 
-
-    public String inActivateCMId {get; set;}
-
-     
-    public void inActivateCM() 
-    {
-        inActivateCamMem = [
-                SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name
-                FROM CampaignMember
-                WHERE Id = :inActivateCMId
-            ];
-            
-            User currentUser = [
-                SELECT Id, UserRole.Name
-                FROM User
-                WHERE Id = :UserInfo.getUserId()
-            ];
-    
-            if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name) {
-                inActivateCamMem.Status = 'Inactive';
-                
-                if (inActivateCamMem.Campaign.ParentId == null) {
-                    List<CampaignMember> ChildKillList = new List<CampaignMember>();
-                    
-                    for (CampaignMember ck : [
-                        SELECT Id, Status
-                        FROM Campaignmember
-                        WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
-                    ]) {
-                        ck.status = 'Inactive';
-                        ChildKillList.add(ck);
-                    }
-                    
-                    update ChildKillList;
-                }
-                
-                update inActivateCamMem;
-                
-            } else {
-                ApexPages.addmessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'You do not have access to remove this Affiliation, only a ' +
-                            'member of the Department that created it can.'
-                    )
-                );
-            }
-    
-            buildCampaignMemberMap();
-            renderedTab = 'crTab';
-            system.debug(activeCRCamPMapKeys);
-            system.debug(String.ValueOf(activeCRCamMap));
     }
 
-    public void save() 
+    public void inActivateCM()
+    {
+        List<CampaignMember> childKillList = new List<CampaignMember>();
+
+        inActivateCamMem = [
+            SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name
+            FROM CampaignMember
+            WHERE Id = :inActivateCMId
+        ];
+
+        User currentUser = [
+            SELECT Id, UserRole.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+        ];
+
+        if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name)
+        {
+            inActivateCamMem.Status = 'Inactive';
+
+            if (inActivateCamMem.Campaign.ParentId == null)
+            {
+                childKillList = [
+                    SELECT Id, Status
+                    FROM CampaignMember
+                    WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
+                ];
+
+                for (CampaignMember kill: childKillList)
+                {
+                    kill.Status = 'Inactive';
+                }
+            }
+
+            update inActivateCamMem;
+            update childKillList;
+        }
+        else
+        {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You do not have access to remove this Affiliation, only a ' +
+                        'member of the Department that created it can.'
+                )
+            );
+        }
+
+        buildCampaignMemberMap();
+    }
+
+    public void save()
     {
         try
         {
             inactiveCrCamMems = campaignMemberMap.get('Inactive CR');
             Set<String> activeCamMemNameSet = new Set<String>();
             Set<String> inactiveCamMemNameSet = new Set<String>();
-            
-            for (String s : activeCRCamMap.keySet()) {
-                for (CampaignMember acm : activeCRCamMap.get(s)) {
-                    activeCamMemNameSet.add(acm.campaign.name);
-                }
+
+            for (CampaignMember c: activeCrCamMems)
+            {
+                activeCamMemNameSet.add(c.Campaign.Name);
             }
 
             for (CampaignMember ia: inactiveCrCamMems)
@@ -771,7 +856,7 @@ public class CampaignMemberManagementController
                         insert newChildCamMem;
                     }
                 }
-                else 
+                else
                 {
                     activateChildCamMem = [
                         SELECT Id
@@ -800,6 +885,38 @@ public class CampaignMemberManagementController
                     e.getMessage()
                 )
             );
+        }
+    }
+    /*
+    * @description: Wrapper class for historical communication
+    */
+    public class Message {
+        public String id {get; set;}
+        public String name {get; set;}
+        public String subject {get; set;}
+        public String sender {get; set;}
+
+        // Hard Bounce, Soft Bounce, Delivered
+        public String deliveryStatus {get; set;}
+
+        public Datetime timeSent {get; set;}
+        public Datetime timeOpened {get; set;}
+        public String uniqueClicks {get; set;}
+        public String subscriptionStatus {get; set;}
+
+        public Message() {
+            this.id = id;
+            this.name = name;
+            this.subject = subject;
+            this.sender = sender;
+
+            // Formula using hardbounce/softbounce to determine status
+            this.deliverystatus = '';
+
+            this.timeSent = timeSent;
+            this.timeOpened = timeOpened;
+            this.uniqueClicks = uniqueClicks;
+            this.subscriptionStatus = subscriptionStatus;
         }
     }
 }

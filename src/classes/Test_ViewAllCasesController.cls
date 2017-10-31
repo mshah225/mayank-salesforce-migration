@@ -58,7 +58,8 @@ private class Test_ViewAllCasesController
 		Test.startTest();
 		System.runAs(testUser)
 		{
-			vac = new ViewAllCasesController();
+			sc = new ServiceCenter();
+			vac = new ViewAllCasesController(sc);
 
 			closedCases = vac.getAllClosedCases();
 		}

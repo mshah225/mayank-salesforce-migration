@@ -81,7 +81,6 @@ private class apiSSC_CoachStudentsController_Test {
         userStudent.ASURITE_ID__c = 'jdoe1';
         userStudent.Hidden_Selected__c = true;
         userStudent.EMPLID__c = '8888';
-        userStudent.MobilePhone = '5552223333';
         insert userStudent;
         
         //create success student

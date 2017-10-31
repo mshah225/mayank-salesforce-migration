@@ -1,5 +1,5 @@
 // TODO : Exception handling on all DML statements : SP
-public without sharing class ContactHandler implements ITrigger 
+public without sharing class ContactHandler implements ITrigger
 {
     private Map<Id, Account> existingAccountMap = new Map<Id, Account>();
     private List<Account> accountList;
@@ -21,8 +21,8 @@ public without sharing class ContactHandler implements ITrigger
     public void bulkBefore() {
         // Create a map of Contact to Account
         newContactToNewAccountMap = new Map<Contact,Account>();
-        
-        if (Trigger.IsInsert || Trigger.IsUpdate) {  
+
+        if (Trigger.IsInsert || Trigger.IsUpdate) {
             // If any of the necessary Record Type IDs are null...
             if (ExtMasteredContactRTId == null
                 || SFMasteredContactRTId == null
@@ -31,8 +31,8 @@ public without sharing class ContactHandler implements ITrigger
 
                 // ...get the necessary RecordType IDs
                 List<RecordType> recordTypeList = new List<RecordType>([
-                    SELECT Id, sObjectType, DeveloperName 
-                    FROM RecordType 
+                    SELECT Id, sObjectType, DeveloperName
+                    FROM RecordType
                     WHERE sObjectType IN ('Account', 'Contact', 'Relationship__c')
                 ]);
 
@@ -56,10 +56,10 @@ public without sharing class ContactHandler implements ITrigger
                     } else if (rt.SobjectType == 'Relationship__c') {
                         if (rt.DeveloperName == 'Contact_to_Account') {
                             relationshipContactToAccountRTID = rt.Id;
-                        } 
+                        }
                     }
                 }
-            }    
+            }
 
             // Populate a Map that we use to translate from Contact Record Type ID to Account
             // Record Type ID
@@ -69,8 +69,8 @@ public without sharing class ContactHandler implements ITrigger
             // Get the Id for the old bucket Account to check
             if (bucketAccountId == null) {
                 List<Account> bucketAccountList = new List<Account>([
-                    SELECT Id 
-                    FROM Account 
+                    SELECT Id
+                    FROM Account
                     WHERE Name = 'Arizona State University'
                 ]);
 
@@ -99,9 +99,9 @@ public without sharing class ContactHandler implements ITrigger
                     if (c.eContacts__Created_By_eContacts__c) {
                         System.debug('Account ID: ' + c.AccountId);
                         // Store the Contact's Account lookup as the Business Card Account
-                        c.Bizcard_Account__c = c.AccountId;    
+                        c.Bizcard_Account__c = c.AccountId;
                         c.AccountId = null;
-                        
+
                         // Populate the Corporate Relations Account Owner
                         Id userId = UserInfo.getUserId();
                         List<User> userList = [SELECT Id, Name FROM User WHERE Id = :userId];
@@ -126,12 +126,12 @@ public without sharing class ContactHandler implements ITrigger
                         Account a = createAccount(c);
                         newContactToNewAccountMap.put(c,a);
                     } else {
-                        // Otherwise, add the Contact to our list of Contacts to check on Update 
-                        contactsToCheckIfUpdate.add(c);  
+                        // Otherwise, add the Contact to our list of Contacts to check on Update
+                        contactsToCheckIfUpdate.add(c);
                     }
                 }
             }
-            
+
             // If there were any new Accounts created...
             if (newContactToNewAccountMap.size() > 0) {
                 // Insert the new Accounts
@@ -165,20 +165,20 @@ public without sharing class ContactHandler implements ITrigger
 
                 // Populate a map of all of the existing Accounts for the Contacts being updated
                 existingAccountMap = new Map<Id, Account>([
-                    SELECT Id, Name, Contact__c, OwnerId, RecordType.Name 
-                    FROM Account 
+                    SELECT Id, Name, Contact__c, OwnerId, RecordType.Name
+                    FROM Account
                     WHERE Id IN :existingAccountIds
                 ]);
             }
-        }  
+        }
     }
-    
+
     public void beforeInsert(SObject so) {
         Contact c = (Contact)so;
         //Automatically generate a PIN for a new contact
         c.Self_Service_PIN__c = ContactService.generateRandomPin(c.Birthdate);
     }
-    
+
     public void beforeUpdate(SObject oldSo, SObject so) {
         // Store the triggering sObject as a Contact
         Contact c = (Contact) so;
@@ -188,8 +188,8 @@ public without sharing class ContactHandler implements ITrigger
 
         // If an Account exists for the triggering contact, and its information doesn't match up
         // with the Contact, add it to our set of Accounts to update
-        if (a != null && 
-            (a.Name != c.FirstName + ' ' + c.LastName 
+        if (a != null &&
+            (a.Name != c.FirstName + ' ' + c.LastName
                 || a.OwnerId != c.OwnerId
                 || a.RecordTypeId != contactToAccountRTIdMap.get(c.RecordTypeID)
                 || a.Contact__c != c.Id
@@ -204,20 +204,20 @@ public without sharing class ContactHandler implements ITrigger
     }
 
     public void beforeDelete(SObject so) { }
-    
-    public void beforeFinally() { 
+
+    public void beforeFinally() {
         // If there are any Accounts to update, update them.
         if (accountsToUpdate.size() > 0) {
             update accountsToUpdate;
         }
     }
 
-    public void bulkAfter() {  
-        // On After Insert... 
+    public void bulkAfter() {
+        // On After Insert...
         if (Trigger.IsInsert) {
             // Create a list to store our Business Card Contact IDs
             List<Id> bizcardContactIds = new List<Id>();
-            
+
             // For each triggering sObject...
             for (SObject so : Trigger.New) {
                 // Store the sObject as a Contact
@@ -240,21 +240,21 @@ public without sharing class ContactHandler implements ITrigger
                     bizcardContactIds.add(c.Id);
                     System.debug('Contact IDs: ' + bizcardContactIds);
                 }
-            
+
             }
 
             // If any Contacts were created by the VisionE/Scan application...
             if (bizcardContactIds.size() > 0) {
                 // Populate a list of all the Contacts created by the VisionE/Scan application
                 List<Contact> contacts = [
-                    SELECT Id, Bizcard_Account__c, Title,CreatedBy.UserRole.Name 
+                    SELECT Id, Bizcard_Account__c, Title,CreatedBy.UserRole.Name
                     FROM Contact WHERE Id IN :bizcardContactIds
                 ];
 
                 // For each Contact that was created by the VisionE/Scan application...
                 for (Contact c : contacts) {
                     System.debug('Contact ' + c);
-                    
+
                     // Create a Relationship between the Contact and its Account, and add it to our
                     // list of Business Card Relationships.
                     if (c.Bizcard_Account__c != null) {
@@ -284,7 +284,7 @@ public without sharing class ContactHandler implements ITrigger
                     // Business Card Campaign Members map
                     bizcardCampaignMembers.get(c.CreatedBy.UserRole.Name).add(cm);
                 }
-            } 
+            }
         }
 
         // If there are any new Contact/Account pairs, update them.
@@ -302,7 +302,7 @@ public without sharing class ContactHandler implements ITrigger
         if (bizcardCampaignMembers.size() > 0) {
 
             System.debug('Bizcard Campaign Members: ' + bizcardCampaignMembers);
-            
+
             // Create a set of roles from the map
             Set<String> roleNames = bizcardCampaignMembers.keySet();
 
@@ -337,7 +337,17 @@ public without sharing class ContactHandler implements ITrigger
 
     public void afterInsert(SObject so) { }
 
-    public void afterUpdate(SObject oldSo, SObject so) { }
+    public void afterUpdate(SObject oldSo, SObject so) {
+        /*
+        // If the Email Opt-out value has changed, call Marketing Cloud to reflect the change
+        Contact newCon = (Contact)so;
+        Contact oldCon = (Contact)oldSo;
+        if (newCon.HasOptedOutOfEmail && !oldCon.HasOptedOutOfEmail)
+            SetMarketingCloudSubStatus(newCon.Id, false);
+        else if (!newCon.HasOptedOutOfEmail && oldCon.HasOptedOutOfEmail)
+            SetMarketingCloudSubStatus(newCon.Id, true);
+        */
+     }
 
     public void afterDelete(SObject so) { }
 
@@ -346,11 +356,19 @@ public without sharing class ContactHandler implements ITrigger
     private Account createAccount(Contact c) {
         // Create the new 1:1 Account record for this Contact
         Account a = new Account(
-            Name = c.FirstName + ' ' + c.LastName, 
+            Name = c.FirstName + ' ' + c.LastName,
             RecordTypeId = contactToAccountRTIdMap.get(c.RecordTypeID),
             OwnerId = c.OwnerId
         );
 
         return a;
+    }
+
+    @future (callout=true)
+    static void SetMarketingCloudSubStatus(String subscriberKey, Boolean subStatus) {
+        if (!subStatus)
+            et4ae5.jsButtonMethods.performUnsub(subscriberKey,'contact');
+        else
+            et4ae5.jsButtonMethods.performResub(subscriberKey,'contact');
     }
 }

@@ -50,11 +50,11 @@ private class Test_RelationshipHandler {
         // Insert relationships
         insert relsToCreate;
     }
-  
-  /**
-   * Initialize static variables (called once for each test method)
-   */
-  static {
+	
+	/**
+	 * Initialize static variables (called once for each test method)
+	 */
+	static {
         try {
             settings = Relationships__c.getAll();
             Set<Id> contactIds = new Set<Id>(); // Used to pull up contacts labled as parents
@@ -83,8 +83,8 @@ private class Test_RelationshipHandler {
                 WHERE Id IN :contactIds];
         } catch (Exception e) {}
     }
-  
-  static testMethod void testReciprocalCreation() {
+	
+	static testMethod void testReciprocalCreation() {
         Relationship__c parent;
         Relationship__c child;
         
@@ -101,11 +101,11 @@ private class Test_RelationshipHandler {
         }
         
         system.assertEquals(qtyToTest, [SELECT Id FROM Relationship__c WHERE Relationship_Type__c = 'Child'].size());
-  }
+	}
 
-  static testMethod void testReciprocalUpdate() {
-      List<Relationship__c> relsToUpdate = new List<Relationship__c>();
-      List<Id> relsToVerify = new List<Id>();
+	static testMethod void testReciprocalUpdate() {
+	    List<Relationship__c> relsToUpdate = new List<Relationship__c>();
+	    List<Id> relsToVerify = new List<Id>();
         
         // Change parents to children
         for (Relationship__c r : [SELECT Reciprocal_Relationship__c
@@ -127,9 +127,9 @@ private class Test_RelationshipHandler {
             WHERE Id IN :relsToVerify]) {
             system.assertEquals('Parent', r.Relationship_Type__c);
         }
-  }
+	}
 
-  static testMethod void testReciprocalDeletion() {
+	static testMethod void testReciprocalDeletion() {
         test.startTest();
         delete relationships;
         test.stopTest();
@@ -139,5 +139,5 @@ private class Test_RelationshipHandler {
         );
         
         undelete relationships;
-  }
+	}
 }

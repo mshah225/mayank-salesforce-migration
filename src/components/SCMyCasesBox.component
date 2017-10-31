@@ -1,6 +1,6 @@
-<apex:component controller="SCMyCasesBoxController" allowDML="true">
+<apex:component controller="ServiceCenter" allowDML="true">
     <!-- This component renders the My Cases Box on the Service Center -->
-    <apex:outputPanel >
+    <apex:outputPanel rendered="{!MyCasesBox}">
         <div class="box">
             <div class="header">
                 <h6><b>My Cases</b></h6>
@@ -137,6 +137,17 @@
 
                 </div>
 
+                <script>
+                    jQuery(document).ready(function($){
+                        $("td.truncate").each(function(){
+                            if ($(this).text().length > 99) {
+                                $(this).text($(this).text().substr(0, 99));
+                                $(this).append('...');
+                            }
+                        });
+                    });
+                </script>
+
                 <div id="newCaseForm" style="display:none">
                     <apex:form style="width:100%">
                         <h5>Create a New Case</h5>
@@ -163,11 +174,7 @@
                                                  style="height:100px;resize:none;"
                                                  label=""
                                                  html-placeholder="Enter a description"/>
-								
-                                <label for="attHelpText" style="margin-bottom:0px;">Attachments</label>
-                                <apex:outputText id="attHelpText">
-                                    Attachments can be uploaded once the case has been created.
-                                </apex:outputText>
+
                                 <apex:outputText id="newCaseHelpText">
                                     Responses to your case will be sent to your official ASU
                                     email or the email account you are forwarding your ASU email to.
@@ -178,8 +185,7 @@
                                 <apex:commandButton action="{!submitCase}"
                                                     value="Submit"
                                                     styleClass="btn kbbtn"
-                                                    style="color:#fff;background:#990033;padding:5px;width:55px;"
-                                                    />
+                                                    style="color:#fff;background:#990033;padding:5px;width:55px;"/>
                             </apex:pageblockbuttons>
                         </apex:pageBlock>
                     </apex:form>

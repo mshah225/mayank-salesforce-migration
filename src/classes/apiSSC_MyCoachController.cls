@@ -12,10 +12,8 @@ global with sharing class apiSSC_MyCoachController {
      if(studentId!=null && studentId!='')
      {
          studentInfo = [SELECT Id, Success_Resource__c 
-                                 FROM Success_Student__c
-                                 WHERE Student__r.ASURite_ID__c =: studentId 
-                                 AND Coaching_Student__c = true 
-                                 AND Is_Active__c = true LIMIT 1];
+                                 FROM Success_Student__c 
+                                 WHERE Student__r.ASURite_ID__c =: studentId LIMIT 1];
          if(studentInfo.size()>0)
          {
              coachInfo = [Select Id, Name, Resource__r.Name, 

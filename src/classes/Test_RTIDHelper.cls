@@ -1,6 +1,5 @@
 @isTest
 public class Test_RTIDHelper {
-    /*
     public static testmethod void Test_getRTID() {
         List<RecordType> tempRTs = [SELECT Name, SObjectType FROM RecordType LIMIT 2];
         Id tempId;
@@ -25,5 +24,4 @@ public class Test_RTIDHelper {
         system.assertEquals(tempRTs[1].Id, tempId);
         system.assertEquals(5, Limits.getQueries());
     }
-*/
 }

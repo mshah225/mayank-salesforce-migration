@@ -28,14 +28,14 @@
 
     
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
-        <apex:form >
+        <apex:form id="tableForm">
             <div class="headerFooter">
                 <div class="toolbar" >
                     <apex:outputPanel layout="inline" styleClass="button-group">
                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px; margin-top: 5px;"
-                                         onclick="toggleTransferModal(this)" rendered="{! showTransfer}">Mass Transfer</apex:outputLink>
+                                         onclick="toggleTransferModal(this, '{!$Component.tableForm}')" rendered="{! showTransfer}">Mass Transfer</apex:outputLink>
                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
-                                         onclick="toggleEmailModal(this, adjustTextHeight)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
+                                         onclick="toggleEmailModal(this, '{!$Component.tableForm}', adjustTextHeight)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                         <apex:commandLink styleClass="btn btn-default asu-primary" style="margin-top: 5px;"
                                           rendered="{! showRefresh}" reRender="rerenderMe" status="ASUAjaxStatus">
                             <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
@@ -111,8 +111,6 @@
                 
                 </div>
             </div>
-        </apex:form>
-        <apex:form id="tableForm">
             <apex:dataTable value="{!caseList}" var="c" styleClass="ASUTable">
                 <apex:column headerClass="ASUColumnHead centerText" styleClass="ASUColumn centerText" rendered="{! showSelection}" >
                     <apex:inputCheckbox value="{!c.selected}" styleClass="selectBox" onchange="handleSelectAll(this);" />

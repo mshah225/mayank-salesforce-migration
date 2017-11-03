@@ -322,7 +322,7 @@
                                     <apex:inputField id="subjectField" value="{!tempEmail.Subject__c}" style="width:100%;"/>
                                     <p style="margin-top:10px;">
                                         Dear StudentFirstName,
-                                    </p> 
+                                    </p>
                                     <apex:outputPanel layout="block" id="caseErrorBox" style="display: none;">
                                         <p style="color: red">Email Body cannot be empty.</p>
                                     </apex:outputPanel>

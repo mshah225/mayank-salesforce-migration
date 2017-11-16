@@ -28,7 +28,7 @@
 	          </apex:commandLink>
 				</apex:column>
 				<apex:column headerValue="File Name">
-	  				<a href="/servlet/servlet.FileDownload?file={!a.Id}" target="_self">{!a.Name}</a> 
+	  				<a href="/servlet/servlet.FileDownload?file={!a.Id}" target="_self" download="{!a.Name}">{!a.Name}</a> 
 				</apex:column>
 				<apex:column value="{! ROUND((a.BodyLength / 1024), 0)} {!'KB'}" headerValue="Size"/>		
 				<apex:column value="{!a.LastModifiedDate}" headerValue="Last Modified"/>		

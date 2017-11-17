@@ -41,16 +41,16 @@ public class ChatterAutoAddUsers
         // Populate a map of all the groups and their members for later.
         dupeMemberCheckMap = new Map<String, List<CollaborationGroupMember>>();
 
-		for (CollaborationGroup cg : chatterGroups)
-		{
-	        List<CollaborationGroupMember> groupMembers = [
-	            SELECT MemberId
-	            FROM CollaborationGroupMember
-	            WHERE CollaborationGroupId = :cg.Id
-	        ];
-	        
-	        dupeMemberCheckMap.put(cg.Name, groupMembers);
-		}
+        for (CollaborationGroup cg : chatterGroups)
+        {
+            List<CollaborationGroupMember> groupMembers = [
+                SELECT MemberId
+                FROM CollaborationGroupMember
+                WHERE CollaborationGroupId = :cg.Id
+            ];
+
+            dupeMemberCheckMap.put(cg.Name, groupMembers);
+        }
 
         /*
         * Loop through the userList to decide which users need to be added to what groups

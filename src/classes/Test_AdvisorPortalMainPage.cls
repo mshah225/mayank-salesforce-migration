@@ -10,7 +10,7 @@ public class Test_AdvisorPortalMainPage {
      */
     static {
         numberOfPods = 3;
-        numberOfCases = 10;
+        numberOfCases = 1;
         numberOfStudents = 10;
         apmpc = new AdvisorPortalMainPageController();
     }
@@ -80,5 +80,26 @@ public class Test_AdvisorPortalMainPage {
     public static testMethod void Test_getSetMimicId() {
         apmpc.OwnerId = UserInfo.getUserId();
         system.assertEquals(UserInfo.getUserId(), apmpc.OwnerId);
+    }
+    
+    public static testMethod void Test_getAdvisorEmailRTID() {
+        system.assertEquals(IDHelper.getRTID('Portal_Email__c', 'Advisor'), apmpc.advisorEmailRTID);
+    }
+    
+    public static testMethod void Test_getAdvisorProactiveCaseRTID() {
+        system.assertEquals(IDHelper.getRTID('Case', 'ASU_Advisor_Outreach'), apmpc.AdvisorProactiveCaseRTID);
+    }
+    
+    public static testMethod void Test_getAdvisorReactiveCaseRTID() {
+        system.assertEquals(IDHelper.getRTID('Case', 'ASU_Service'), apmpc.AdvisorReactiveCaseRTID);
+    }
+    
+    public static testMethod void Test_getQueries() {
+        apmpc.ownerId = UserInfo.getUserId();
+        
+        system.assert(apmpc.myProactiveQuery.contains((String) apmpc.OwnerId));
+        system.assert(apmpc.myWatchlistQuery.contains((String) apmpc.OwnerId));
+        system.assert(apmpc.mySummaryListQuery.contains((String) apmpc.OwnerId));
+        system.assert(apmpc.myStudentsQuery.contains((String) apmpc.OwnerId));
     }
 }

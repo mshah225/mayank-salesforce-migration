@@ -2,6 +2,7 @@ public class NavLinks
 {
     public NavLinks() {}
     public NavLinks(ServiceCenter controller) { }
+    public NavLinks(viewCaseController controller){}
     public NavLinks(AKBController controller) { }
     public NavLinks(ViewAllCasesController controller) { }
     public NavLinks(ApexPages.StandardController controller) { }

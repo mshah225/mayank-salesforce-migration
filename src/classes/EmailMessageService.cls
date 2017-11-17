@@ -61,7 +61,7 @@ public class EmailMessageService {
                 throw new EmailMessageServiceException('CasesToCheck parameter is null');
             }
             
-            advisorRTID = RTIDHelper.getRTID('Case', 'ASU Advisor Outreach');
+            advisorRTID = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach');
             result = new Map<Id, Case>();
             
             for (Case c : casesToCheck.values()) {

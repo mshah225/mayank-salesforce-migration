@@ -6,23 +6,25 @@
     <apex:attribute name="transferOptions" type="SelectOption[]" description="" />
     <apex:attribute name="proactiveRTID" type="Id" description="" assignTo="{!proactiveCaseRTID}" />
     <apex:attribute name="caseEmailRTID" type="Id" description="" />
+    <apex:attribute name="isCoaching" type="boolean" description="Is this for the coaching side?" assignTo="{!coaching}"/>
     
     <!-- Suppress columns -->
-    <apex:attribute name="suppressSummarySubject" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressSummaryCount" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressSummaryFollowupDate" type="boolean" description="" default="false" assignTo="{!excludeFollowUpDate}"/>
+    <apex:attribute name="showSummarySubject" type="boolean" description="" default="false" />
+    <apex:attribute name="showSummaryCount" type="boolean" description="" default="false" />
+    <apex:attribute name="showSummaryFollowupDate" type="boolean" description="" default="false" assignTo="{!excludeFollowUpDate}"/>
     
 	<!-- Suppress caseList columns -->
-    <apex:attribute name="suppressCaseListSelection" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressCaseListName" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressCaseListEMPLID" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressCaseListSubject" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressCaseListStatus" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressCaseListFollowupDate" type="boolean" description="" default="false"/>
-    <apex:attribute name="suppressCaseListTransfer" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressCaseMassEmail" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressProactiveCaseCount" type="boolean" description="" default="false" />
-    <apex:attribute name="suppressReactiveCaseCount" type="boolean" description="" default="false" />
+    <apex:attribute name="showCaseListSelection" type="boolean" description="" default="false" />
+    <apex:attribute name="showCaseListName" type="boolean" description="" default="false" />
+    <apex:attribute name="showCaseListEMPLID" type="boolean" description="" default="false" />
+    <apex:attribute name="showCaseListSubject" type="boolean" description="" default="false" />
+    <apex:attribute name="showCaseListStatus" type="boolean" description="" default="false" />
+    <apex:attribute name="showCaseListFollowupDate" type="boolean" description="" default="false"/>
+    <apex:attribute name="showCaseListTransfer" type="boolean" description="" default="false" />
+    <apex:attribute name="showCaseMassEmail" type="boolean" description="" default="false" />
+    <apex:attribute name="showProactiveCaseCount" type="boolean" description="" default="false" />
+    <apex:attribute name="showReactiveCaseCount" type="boolean" description="" default="false" />
+    <apex:attribute name="showSearch" type="boolean" description="" default="false" />
     
     <apex:attribute name="rerenderList" type="String" description="" />
     
@@ -66,29 +68,29 @@
         </h1>
         <apex:form id="summaryResults">
             <apex:dataTable value="{!summaryResult}" var="result" styleClass="summaryTable ASUTable">
-                <apex:column headerClass="ASUColumnHead" rendered="{! NOT(suppressSummarySubject)}"
+                <apex:column headerClass="ASUColumnHead" rendered="{! showSummarySubject}"
                              styleClass="ASUColumn">
                     <apex:facet name="header">
                         <apex:outputText value="Subject" />
                     </apex:facet>
                     <apex:commandLink value="{!result['Subject']}" reRender="rerenderModal" styleClass="standardLink"
-                                      status="ASUAjaxStatus" oncomplete="toggleSummaryModal(this);" rendered="{!NOT(suppressSummaryFollowupDate)}">
+                                      status="ASUAjaxStatus" oncomplete="toggleSummaryModal(this);" rendered="{! showSummaryFollowupDate}">
                         <apex:param value="{!result['Subject']}" assignTo="{!subject}" name="subject" />
                         <apex:param value="{!TEXT(result['Followup_Date__c'])}" assignTo="{!followupDate}" name="followupDate" />
                     </apex:commandLink>
                     <apex:commandLink value="{!result['Subject']}" reRender="rerenderModal" styleClass="standardLink"
-                                      status="ASUAjaxStatus" oncomplete="toggleSummaryModal(this);" rendered="{!suppressSummaryFollowupDate}">
+                                      status="ASUAjaxStatus" oncomplete="toggleSummaryModal(this);" rendered="{! NOT(showSummaryFollowupDate)}">
                         <apex:param value="{!result['Subject']}" assignTo="{!subject}" name="subject" />
                     </apex:commandLink>
                 </apex:column>
                 <apex:column value="{!result['Total']}" headerClass="ASUColumnHead"
-                             styleClass="ASUColumn" rendered="{! NOT(suppressSummaryCount)}">
+                             styleClass="ASUColumn" rendered="{! showSummaryCount}">
                     <apex:facet name="header">
                         <apex:outputText value="Total" />
                     </apex:facet>
                 </apex:column>
                 <apex:column headerValue="Followup Date" headerClass="ASUColumnHead"
-                             styleClass="ASUColumn" rendered="{! NOT(suppressSummaryFollowupDate)}">
+                             styleClass="ASUColumn" rendered="{! showSummaryFollowupDate}">
                     <apex:outputText value="{0, date, MMMM d','  yyyy}">
                         <apex:param value="{!result['Followup_Date__c']}" /> 
                     </apex:outputText>
@@ -112,12 +114,13 @@
                         <div class="modal-body">
                             <c:showMyCases queryString="{!dynamicQuery}" transferOptions="{!transferOptions}"
                                 rerenderList="{!$Component.SummaryListComponent.summaryResults},{!rerenderList}"
-                                suppressSelection="{!suppressCaseListSelection}" suppressName="{!suppressCaseListName}"
-                                suppressEMPLID="{!suppressCaseListEMPLID}" suppressSubject="{!suppressCaseListSubject}"
-                                suppressStatus="{!suppressCaseListStatus}" suppressFollowupDate="{!suppressCaseListFollowupDate}"
-                                suppressTransfer="{!suppressCaseListTransfer}" proactiveRTID="{!proactiveRTID}"
-                                emailRTID="{!caseEmailRTID}" suppressProactive="{!suppressProactiveCaseCount}"
-                                suppressReactive="{!suppressReactiveCaseCount}" suppressMassEmail="{!suppressCaseMassEmail}"/>
+                                showSelection="{!showCaseListSelection}" showName="{!showCaseListName}"
+                                showEMPLID="{!showCaseListEMPLID}" showSubject="{!showCaseListSubject}"
+                                showStatus="{!showCaseListStatus}" showFollowupDate="{!showCaseListFollowupDate}"
+                                showTransfer="{!showCaseListTransfer}" proactiveRTID="{!proactiveRTID}"
+                                emailRTID="{!caseEmailRTID}" showProactive="{!showProactiveCaseCount}"
+                                showReactive="{!showReactiveCaseCount}" showMassEmail="{!showCaseMassEmail}"
+                                showSearch="{!showSearch}"           />
                         </div>
                         
                         <div class="modal-footer">

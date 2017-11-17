@@ -13,7 +13,8 @@ global with sharing class apiSSC_MyASUCoachController {
      {
          studentInfo = [SELECT Id, Success_Resource__c 
                                  FROM Success_Student__c 
-                                 WHERE Student__r.ASURite_ID__c =: studentId LIMIT 1];
+                                 WHERE Coaching_Student__c = true
+                                 AND Student__r.ASURite_ID__c =: studentId LIMIT 1];
          if(studentInfo.size()>0)
          {
              coachInfo = [Select Id, 

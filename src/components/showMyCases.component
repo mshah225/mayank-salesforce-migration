@@ -195,7 +195,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade emailModal" role="dialog">
+            <div id="caseModal" class="modal fade emailModal" role="dialog">
                 <div class="modal-dialog" role="document" style ="padding-left: 5%;">
                     <div class="modal-content" style="width: 95%;">
                         <div class="modal-header">

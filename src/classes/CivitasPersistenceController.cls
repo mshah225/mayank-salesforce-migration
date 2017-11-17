@@ -176,7 +176,7 @@ global class CivitasPersistenceController{
     
     public String getInfo{
         get{
-            emplid = apexpages.currentPage().getparameters().get('id');
+            emplid = apexpages.currentPage().getparameters().get('contactId');
             if(emplid.substring(0, 3).equals('003')) {
                 c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE id =: emplid LIMIT 1];
             }

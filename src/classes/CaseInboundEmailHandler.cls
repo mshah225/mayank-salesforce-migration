@@ -429,6 +429,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     {
                         return result;
                     }
+
                 }
                 catch (QueryException e)
                 {

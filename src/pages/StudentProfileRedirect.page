@@ -4,11 +4,13 @@
     <apex:includeScript value="/support/console/33.0/integration.js"/>
     <apex:includeScript value="/soap/ajax/34/apex.js"/>
     <script type="text/javascript" >    
+
     var urlValue = window.location.href;
     urlValue = urlValue.toLowerCase();
-	var isInSalesConsole = (urlValue.includes("console") || urlValue.includes("iframe"));
+	var isInSalesConsole = (urlValue.includes("console") || urlValue.includes("iframe") || (window.self !== window.top));
+
     function viewRecommendation(studentId) {
-        var recommendationURL = "/apex/StudentProfile?id=" + studentId;            
+        var recommendationURL = "/apex/StudentProfile?contactId=" + studentId;            
         if (isInSalesConsole) {
             sforce.console.refreshNavigationTab();
             sforce.console.openPrimaryTab(null, recommendationURL, true, 'Profile', null, 'Profile');
@@ -19,7 +21,7 @@
             window.open(recommendationURL, '_self');
         }
     }
-        
+    
     var studentId = '{!$CurrentPage.parameters.studentId}';
     window.onload = function () { 
         viewRecommendation(studentId);

@@ -1,7 +1,7 @@
 <apex:page docType="html-5.0"
            showHeader="false"
            sidebar="false"
-           controller="viewCaseController"
+           controller="ServiceCenter"
            action="{!init}"
            cache="true"
            extensions="NavLinks">
@@ -174,7 +174,6 @@
                 viewAsUrl="{!viewAsUrl}"
                 linkList="{!linkList}"/>
 
-
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"
                                firstName="{!firstName}"
@@ -233,7 +232,7 @@
                             </apex:form>
                         </div>
                     </div>
-                    
+
                     <apex:outputPanel id="emailMessagesBox"
                                       rendered="{!IF(EmailMessages.empty,false,true)}">
                         <div class="box commentBox">
@@ -288,21 +287,7 @@
                             </div>
                         </div>
                     </apex:outputPanel>
-                    
 
-
-                    <apex:outputPanel >
-                        <div class="box">
-                            <div class="content">
-                                <apex:form styleClass="detailsForm">
-                                    <h3 style="word-wrap: break-word;">Attachments</h3>
-                                    <br />
-                                    <br />
-                                    <c:SCAttachmentBox parentId="{!caseId}" />
-                                </apex:form>
-                            </div>
-                         </div>
-                    </apex:outputPanel>
                     <apex:outputPanel id="chatMessagesBox" rendered="{!IF(chatMessages.empty,false,true)}" >
                         <div class="box commentBox">
                             <div class="header">
@@ -323,9 +308,8 @@
                             </div>
                         </div>
                     </apex:outputPanel>
-
-                    
                 </div><!-- end col-md-8 -->
+
                 <div class="col-md-5">
                     <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}"
                                                 NormalPhone="{!NormalPhone}"
@@ -338,6 +322,7 @@
             </div><!-- end row -->
         </div><!-- end container -->
     </div><!-- End ASU Content -->
+
     <c:SCFooter />
 
     <script>
@@ -391,5 +376,4 @@
         }
     </script>
     </body>
-
 </apex:page>

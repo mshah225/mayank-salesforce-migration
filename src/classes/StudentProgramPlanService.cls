@@ -2,6 +2,19 @@ public class StudentProgramPlanService
 {
     public static List<PlanWrapper> planList;
     
+    /**
+    * Returns all the fields on Student Program Plan in a String
+    * @return A string containing all the Student Program Plan fields
+    */
+    public static String sPPFieldsToString()
+    {
+        Map<String, SObjectField> sPPFieldMap =
+            ObjectService.getObjectFieldMap('Student_Program_Plan__c');
+
+        String sPPFields = ObjectService.objectFieldsToString(sPPFieldMap);
+
+        return sPPFields;
+    }
 
     /**
     * Get the Student Program Plans for this contact
@@ -10,14 +23,12 @@ public class StudentProgramPlanService
     */
     public static List<Student_Program_Plan__c> getContactStudentProgramPlans(Id contactId)
     {
-        String sPPFields = 
-            'Status__c, Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, ' +
-            'Plan_Description__c, Career__c, Program_Description__c, Degree__c';
+        String sPPFields = sPPFieldsToString();
                     
         String selectStudentPP = 'SELECT ' + sPPFields + ' ' +
                 ', Campus__r.Name ' +
             'FROM Student_Program_Plan__c ' +
-            'WHERE Contact__c = :contactId AND Status__c <>\'Discontinued\' ' +
+            'WHERE Contact__c = :contactId ' +
             'ORDER BY Status__c, Primary_Flag__c DESC, Completion_Term__c DESC, Plan_Type_Text__c, Plan_Description__c';
         
         List<Student_Program_Plan__c> sPPList = Database.query(selectStudentPP);
@@ -34,6 +45,7 @@ public class StudentProgramPlanService
         planList.sort();
         
         sPPList = new List<Student_Program_Plan__c>();
+        
         for (PlanWrapper w : planList) {
             sPPList.add(w.plan);
         }
@@ -50,9 +62,7 @@ public class StudentProgramPlanService
         Id contactId
     )
     {
-        String sPPFields = 
-            'Status__c, Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, ' +
-            'Plan_Description__c, Career__c, Program_Description__c, Degree__c';
+        String sPPFields = sPPFieldsToString();
         
         List<Student_Program_Plan__c> programPlans = new List<Student_Program_Plan__c>();
 

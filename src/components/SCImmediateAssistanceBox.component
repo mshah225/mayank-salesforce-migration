@@ -7,7 +7,7 @@
     <apex:attribute name="newPin" description="The new PIN" type="Decimal"/>
     <apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action"/>
 
-    <apex:outputPanel >
+    <apex:outputPanel rendered="{!HelpBox}">
         <div class="box">
             <div class="header">
                 <h6><b>Immediate Assistance</b></h6>

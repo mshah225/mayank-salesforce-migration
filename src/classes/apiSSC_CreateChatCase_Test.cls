@@ -227,5 +227,5 @@ private class apiSSC_CreateChatCase_Test {
     //System.assertEquals(true, results);
     
     }
-    
+
 }

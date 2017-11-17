@@ -138,12 +138,11 @@
         .remCols {
             padding: 12px !important;
         }
-        
-        .crTable {
-            background-color:white !important;
-            padding:5px;
-            width:100%;
+
+        .indent {
+            margin-left: 20px !important;
         }
+        .activeTab, .activeSubTab, .inactiveTab, .inactiveSubTab { padding: 8px 20px 8px 20px; }
     </style>
 
     <apex:includeScript value="/support/console/32.0/integration.js"/>
@@ -153,6 +152,17 @@
         function openViewTab(recid, recname) {
             if (!sforce.console.isInConsole()) {
                 window.parent.location.replace('/' + recid);
+            } else {
+                sforce.console.getEnclosingPrimaryTabId(function (result) {
+                    primaryTabId = result.id;
+                    sforce.console.openSubtab(result.id, recid, true, recname, null);
+                });
+            }
+        }
+
+        function openNewViewTab(recid, recname) {
+            if (!sforce.console.isInConsole()) {
+                window.open('/' + recid, '_blank');
             } else {
                 sforce.console.getEnclosingPrimaryTabId(function (result) {
                     primaryTabId = result.id;
@@ -440,8 +450,8 @@
                           label="View Affiliations"
                           style="background-color:#f0f0f0;">
                     <apex:form style="font-size:9pt;overflow:auto;height:295px;max-width:1100px;">
-                        <apex:pageBlock title="Campaigns this Contact is associated with."> 
-                            <apex:outputText rendered="{!activeCRCamMapEmpty}">
+                        <apex:pageBlock title="Campaigns this Contact is associated with.">
+                            <apex:outputText rendered="{!IF(activeCrCamMems.size == 0,true,false)}">
                                 No Campaigns found for {!contact.Name}
                             </apex:outputText>
 
@@ -452,92 +462,53 @@
                                 </apex:facet>
                             </apex:actionStatus>
 
-                            <!-- Note, due to the fact that we are working with child objects that are related
-                                 through their parents (campaings), mapping them together is unique.
-                                 We use a map<string, List<CampaignMember>>. The "null" key of the map
-                                 contains campaign members whose campaigns have no parents (the parent campaig members).
-                                 The subsequent keys map the parent campaign (by name) to a list of campaign members for all child
-                                 campaigns of the parent campaign.
-                                 
-                                 Lost yet? Yes? Good..
-                                 
-                                 We display the parent campaign by looping through the null key to get the campaign
-                                 member, and then displaying that campaign member's campaign's name
-                                 
-                                 Then, we get the list whose key matches this campaign's name.
-                                 
-                                 Lastly, we loop through the list of campaign members for the child campaings and
-                                 display their campaign names.
-                            -->
-                            <apex:outputPanel rendered="{!NOT(activeCRCamMapEmpty)}">
-                            <table class="crTable list">
-                                <apex:repeat value="{!activeCRCamMap[null]}"
-                                                 var="pcm">
-                                    <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
-                                        <!-- Note the events on the <tr> element are provided by SF.
-                                             These events were taken from the page block table tag to
-                                             match default sf functionality -->
-                                        <tr style="padding-top:10px;padding-bottom:10px;"
-                                        class="dataRow"
-                                        onmouseover="if (window.hiOn){hiOn(this);}"
-                                        onmouseout="if (window.hiOff){hiOff(this);}"
-                                        onblur="if (window.hiOff){hiOff(this);}"
-                                        onfocus="if (window.hiOn){hiOn(this);}">
-                                            <td>
-                                            <h4>
-                                                <apex:outputText value="{!pcm.Campaign.Name}"/>
-                                            </h4>
-                                            <apex:actionRegion >
-                                                <apex:commandLink styleClass="linkBtn"
-                                                                  style="margin-left:10px;"
-                                                                  value="Remove"
-                                                                  reRender="CRTabPanel"
-                                                                  status="removeStatus"
-                                                                  action="{!inActivateCM}">
-                                                    <apex:param name="inActivateParentButton"
-                                                                value="{!pcm.Id}"
-                                                                assignTo="{!inActivateCMId}"/>
-                                                </apex:commandLink>
-                                            </apex:actionRegion>
-                                            </td>
-                                        </tr>
+                            <apex:pageBlockTable value="{!activeCrCamMems}"
+                                                 var="ec"
+                                                 cellspacing="5"
+                                                 style="font-size:9pt;"
+                                                 headerClass="none"
+                                                 columnClasses="remCols">
+                                <apex:column >
+                                    <apex:outputPanel rendered="{!IF(ec.Campaign.ParentId == null,true,false)}">
+                                        <h4>
+                                            <apex:outputText value="{!ec.Campaign.Name}"/>
+                                        </h4>
+
+                                        <apex:actionRegion >
+                                            <apex:commandLink styleClass="linkBtn"
+                                                              style="margin-left:10px;"
+                                                              value="Remove"
+                                                              action="{!inActivateCM}"
+                                                              reRender="CRTabPanel"
+                                                              status="removeStatus">
+                                                <apex:param name="inActivateParentButton"
+                                                            value="{!ec.Id}"
+                                                            assignTo="{!inActivateCMId}"/>
+                                            </apex:commandLink>
+                                        </apex:actionRegion>
                                     </apex:outputPanel>
-                                    <!-- activeCRCamPMapKeys exists because VF has no way to check if a map has a key and will throw
-                                         Visualforce exceptions if the map doesn't contain the key -->
-                                    <apex:outputPanel layout="none" rendered="{!CONTAINS(activeCRCamPMapKeys, pcm.campaign.Name)}">
-                                        <apex:repeat value="{!activeCRCamMap[pcm.campaign.Name]}" var="cm" rendered="{!NOT(ISBLANK(activeCRCamMap[pcm.campaign.Name]))}">
-                                            <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
-                                            <tr style="padding-top:10px;padding-bottom:10px;"
-                                                class="dataRow"
-                                                onmouseover="if (window.hiOn){hiOn(this);}"
-                                                onmouseout="if (window.hiOff){hiOff(this);}"
-                                                onblur="if (window.hiOff){hiOff(this);}"
-                                                onfocus="if (window.hiOn){hiOn(this);}">
-                                                <td>
-                                                    <span style="margin-left:20px;"/>
-                                                    
-                                                    <apex:outputText value="{!cm.Campaign.name}"
-                                                             style="margin-left:15px;"/>
-                                                             
-                                                    <apex:actionRegion >
-                                                        <apex:commandLink styleClass="linkBtn"
-                                                                          style="margin-left:10px;"
-                                                                          value="Remove"
-                                                                          status="removeStatus"
-                                                                          action="{!inActivateCM}">
-                                                            <apex:param name="inActivateParentButton"
-                                                                        value="{!cm.Id}"
-                                                                        assignTo="{!inActivateCMId}"/>
-                                                        </apex:commandLink>
-                                                    </apex:actionRegion>
-                                                </td>
-                                            </tr>
-                                            </apex:outputPanel>
-                                        </apex:repeat>
-                                        </apex:outputPanel>
-                                </apex:repeat>
-                            </table>
-                            </apex:outputPanel>
+
+                                    <apex:outputPanel rendered="{!IF(ec.Campaign.ParentId != null,true,false)}">
+                                        <span style="margin-left:20px;"/>
+
+                                        <apex:outputText value="{!ec.Campaign.Name}"
+                                                         style="margin-left:15px;"/>
+
+                                        <apex:actionRegion >
+                                            <apex:commandLink styleClass="linkBtn"
+                                                              style="margin-left:10px;"
+                                                              value="Remove"
+                                                              action="{!inActivateCM}"
+                                                              reRender="CRTabPanel"
+                                                              status="removeStatus">
+                                                <apex:param name="inActivateChildButton"
+                                                            value="{!ec.Id}"
+                                                            assignTo="{!inActivateCMId}"/>
+                                            </apex:commandLink>
+                                        </apex:actionRegion>
+                                    </apex:outputPanel>
+                                </apex:column>
+                            </apex:pageBlockTable>
                             <br/>
                         </apex:pageBlock>
                     </apex:form>
@@ -993,41 +964,148 @@
         <apex:tab label="Marketing/Communication"
                   name="markComm"
                   id="markCommTab">
-            <apex:form id="viewMarkComm">
-                <apex:outputPanel layout="block" style="overflow:auto;height:335px;">
-                    <apex:pageBlock title="Marketing/Communication">
-                        <apex:pageBlockTable id="cohortList"
-                                             value="{!markCommList}"
-                                             var="m"
-                                             cellpadding="7"
-                                             width="100%"
-                                             rendered="{!IF(markCommList.size > 0,true,false)}">
-                            <apex:column headerValue="Actions">
-                                <apex:outputLink styleClass="linkBtn"
-                                                 value="#"
-                                                 onclick="openViewTab('{!m.Id}','{!m.Campaign.Name}');">
-                                    View
-                                </apex:outputLink>
-                            </apex:column>
+                  <apex:tabPanel switchType="client"
+                                 selectedTab="marketingCampaigns"
+                                 id="theTabPanel4"
+                                 tabClass="activeSubTab"
+                                 styleClass="subTab"
+                                 inactiveTabClass="inactiveSubTab"
+                                 width="100%">
+                      <apex:tab label="Campaigns"
+                                name="marketingCampaigns"
+                                id="marketingCampaigns">
 
-                            <apex:column headerValue="Campaign Name"
-                                         value="{!m.Campaign.Name}"/>
-                            <apex:column headerValue="Type"
-                                         value="{!m.Campaign.Type}"/>
-                            <apex:column headerValue="Department / College"
-                                         value="{!m.Campaign.Requested__c}"/>
-                            <apex:column headervalue="Status"
-                                         value="{!m.Status}"/>
-                            <apex:column headerValue="Status Updated"
-                                         value="{!m.Last_Member_Status_Change__c}"/>
-                        </apex:pageBlockTable>
 
-                        <apex:outputText rendered="{!IF(markCommList.size == 0,true,false)}">
-                            No Marketing or Communications Campaigns found for this Campaign Member.
-                        </apex:outputText>
-                    </apex:pageBlock>
-                </apex:outputPanel>
-            </apex:form>
+                        <apex:form id="viewMarkComm">
+                            <apex:outputPanel layout="block" style="overflow:auto;height:295px;">
+                                <apex:pageBlock title="Marketing/Communication">
+                                    <apex:pageBlockTable id="cohortList"
+                                                         value="{!markCommList}"
+                                                         var="m"
+                                                         cellpadding="7"
+                                                         width="100%"
+                                                         rendered="{!IF(markCommList.size > 0,true,false)}">
+                                        <apex:column headerValue="Actions">
+                                            <apex:outputLink styleClass="linkBtn"
+                                                             value="#"
+                                                             onclick="openViewTab('{!m.Id}','{!m.Campaign.Name}');">
+                                                View
+                                            </apex:outputLink>
+                                        </apex:column>
+
+                                        <apex:column headerValue="Campaign Name"
+                                                     value="{!m.Campaign.Name}"/>
+                                        <apex:column headerValue="Type"
+                                                     value="{!m.Campaign.Type}"/>
+                                        <apex:column headerValue="Department / College"
+                                                     value="{!m.Campaign.Requested__c}"/>
+                                        <apex:column headervalue="Status"
+                                                     value="{!m.Status}"/>
+                                        <apex:column headerValue="Status Updated"
+                                                     value="{!m.Last_Member_Status_Change__c}"/>
+                                    </apex:pageBlockTable>
+
+                                    <apex:outputText rendered="{!IF(markCommList.size == 0,true,false)}">
+                                        No Marketing or Communications Campaigns found for this Campaign Member.
+                                    </apex:outputText>
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:tab>
+                    <apex:tab label="Communications"
+                              name="marketingCommunications"
+                              id="marketingCommunications">
+                              <apex:form id="viewCommunications">
+                                  <apex:outputPanel layout="block" style="overflow:auto;height:295px;">
+                                      <apex:pageBlock title="Communications">
+
+                                      <apex:pageBlockSection id="communicationFilter" columns="1">
+                                          <!-- Filters start here -->
+                                            <apex:outputPanel rendered="{!IF(allMessageList.size > 0,true,false)}">
+                                              <apex:outputText >Filter By: </apex:outputText>
+                                              <apex:selectList styleClass="indent" value="{!commFilterType}" size="1">
+                                                  <apex:selectOptions value="{!commFilterOptions}" />
+                                              </apex:selectList>
+
+                                              <apex:outputLabel styleClass="indent">Start:&nbsp;</apex:outputLabel>
+                                              <apex:input type="date" value="{!commFilterStartDate}" />
+
+                                              <apex:outputLabel styleClass="indent">End:&nbsp;</apex:outputLabel>
+                                              <apex:input type="date" value="{!commFilterEndDate}" />
+
+                                              <apex:commandLink id="searchButton"
+                                                                style="text-decoration:none; margin-left:5px;"
+                                                                styleClass="btn"
+                                                                reRender="communicationList,noCommsMsg">
+                                                  Search
+                                              </apex:commandLink>
+                                              <apex:commandLink styleClass="indent" style="margin-left: 20px" id="clearFilterLink"
+                                              reRender="communicationFilter,communicationList" action="{!clearCommFilter}">Reset</apex:commandLink>
+                                          </apex:outputPanel>
+                                          <!-- Filters end here -->
+                                      </apex:pageBlockSection>
+                                          <apex:pageBlockTable id="communicationList"
+                                                               value="{!filteredMessageList}"
+                                                               var="message"
+                                                               cellpadding="7"
+                                                               width="100%"
+                                                               rendered="{!IF(allMessageList.size > 0,true,false)}">
+                                              <!-- Email Name -->
+                                              <apex:column >
+                                                  <apex:facet name="header">Email Name</apex:facet>
+                                                  <apex:outputText >
+                                                      <a href="/{!message.Id}" target="_blank">{!message.name}</a>
+                                                  </apex:outputText>
+                                              </apex:column>
+
+                                              <!-- Subject -->
+                                              <apex:column >
+                                                  <apex:facet name="header">Subject</apex:facet>
+                                                  <apex:outputText value="{!message.subject}" />
+                                              </apex:column>
+
+                                              <!-- Sent By -->
+                                              <apex:column >
+                                                  <apex:facet name="header">Sent By</apex:facet>
+                                                  <apex:outputText value="{!message.sender}" />
+                                              </apex:column>
+
+                                              <!-- Delivery Status -->
+                                              <apex:column >
+                                                  <apex:facet name="header">Delivery Status</apex:facet>
+                                                  <apex:outputText value="{!message.deliveryStatus}" />
+                                              </apex:column>
+
+                                              <!-- Sent Date/Time -->
+                                              <apex:column >
+                                                  <apex:facet name="header">Sent Date/Time</apex:facet>
+                                                  <apex:outputText value="{!message.timeSent}" />
+                                              </apex:column>
+
+                                              <!-- Open Date/Time -->
+                                              <apex:column >
+                                                  <apex:facet name="header">Open Date/Time</apex:facet>
+                                                  <apex:outputText value="{!message.timeOpened}" />
+                                              </apex:column>
+
+                                              <!-- Unique Clicks -->
+                                              <apex:column >
+                                                  <apex:facet name="header">Unique Clicks</apex:facet>
+                                                  <apex:outputText value="{!message.uniqueClicks}" />
+                                              </apex:column>
+                                          </apex:pageBlockTable>
+                                          <apex:outputText id="noCommsMsg" rendered="{!IF(allMessageList.size == 0,true,false)}">
+                                                No Communications Found
+                                          </apex:outputText>
+                                      </apex:pageBlock>
+                                  </apex:outputPanel>
+                              </apex:form>
+
+                    </apex:tab>
+
+                </apex:tabPanel>
+
+
         </apex:tab>
 
         <apex:tab label="Partnered Courses"
@@ -1070,6 +1148,67 @@
                 </apex:outputPanel>
             </apex:form>
         </apex:tab>
+
+        <!-- NEW for Marketing Cloud project-->
+        <apex:tab label="Subscriptions"
+                  name="Subscriptions"
+                  id="subscriptionsTab">
+            <apex:form id="viewSubscriptions">
+                <apex:outputPanel layout="block" style="overflow:auto;height:335px;">
+                    <apex:pageBlock title="Subscriptions">
+                        <apex:pageblockButtons location="top">
+                            <!--apex:commandButton styleClass="editBtn" value="New" onclick="openNewViewTab('a1z/e','New Subscriber');" -->
+                            <apex:outputLink styleClass="editBtn"
+                                             value="#"
+                                             onclick="openNewViewTab('a1z/e?CF00N4B0000010cck={!contact.Name}&CF00N4B0000010cck_lkid={!contactId}','New Subscriber');">
+                                New
+                            </apex:outputLink>
+
+                        </apex:pageblockButtons>
+
+                        <apex:pageBlockTable id="subscriptionList"
+                                             value="{!subscriberList}"
+                                             var="s"
+                                             cellpadding="7"
+                                             width="100%"
+                                             rendered="{!IF(subscriberList.size > 0,true,false)}">
+                            <apex:column headerValue="Actions">
+                                <apex:outputLink styleClass="linkBtn"
+                                                 value="#"
+                                                 onclick="openViewTab('{!s.Id}','{!s.Subscription__r.Name}');">
+                                    View
+                                </apex:outputLink>
+
+                                <apex:outputLink styleClass="editBtn"
+                                                 value="#"
+                                                 onclick="openViewTab('{!s.Id}/e','{!s.Subscription__r.Name}');"
+                                                 rendered="{!IF(NOT(crProfile) || admin,true,false)}">
+                                    Edit
+                                </apex:outputLink>
+                            </apex:column>
+
+                            <apex:column headerValue="Subscription Name"
+                                         value="{!s.Subscription__r.Name}"/>
+                            <apex:column headerValue="Subscription Type"
+                                         value="{!s.Subscription__r.Subscription_Type__c}"/>
+                            <apex:column headerValue="Business Unit"
+                                         value="{!s.Subscription__r.Business_Unit__r.Name}"/>
+                            <apex:column headerValue="Status"
+                                         value="{!s.Subscriber_Status__c}"/>
+                            <apex:column headerValue="Last Subscribed Date"
+                                         value="{!s.Last_Subscribed_Date__c}"/>
+                            <apex:column headerValue="Last Unsubscribed Date"
+                                         value="{!s.Last_Unsubscribed_Date__c}"/>
+                        </apex:pageBlockTable>
+
+                        <apex:outputText rendered="{!IF(subscriberList.size == 0,true,false)}">
+                            No Subscriptions found.
+                        </apex:outputText>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+            </apex:form>
+        </apex:tab>
+
     </apex:tabPanel>
 
     <script>

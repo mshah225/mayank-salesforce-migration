@@ -10,8 +10,6 @@ global with sharing class apiSSC_CloseChatCaseController {
      if(updateCase.size()>0)
      {
          updateCase[0].Status = 'Closed: Resolved';
-         updateCase[0].Communication_Close_Method__c = 'Pitch';
-         updateCase[0].Engagement__c = 'Engaged';
          update updateCase;
          retVal = true; 
      }

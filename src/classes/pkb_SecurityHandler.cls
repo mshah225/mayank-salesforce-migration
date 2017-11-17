@@ -505,7 +505,7 @@ public with sharing class pkb_SecurityHandler {
 
         Profile p = [select Id, Name from Profile where Name = 'Read Only'];
         User u = new User(
-            UserName = 'asu-test-user2143e@test-company.com',
+            UserName = 'test-user@test-company.com',
             FirstName = 'Test-First-Name',
             LastName = 'Test-Last-Name',
             Alias = 'test',

@@ -11,7 +11,7 @@ public class RelationshipDispatcher implements IDispatch {
      */
     public void afterUpdate() {
         if (checkRecursive.runCount < 1) {
-            RelationshipService.updateReciprocal(Trigger.New);
+          RelationshipService.updateReciprocal(Trigger.New);   
         }
     }
     

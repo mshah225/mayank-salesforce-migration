@@ -1,32 +1,33 @@
 public with sharing class AllPublishedArticlesController {
 	
-	//private string urlPrefix = 'https://utocomm-uto.cs10.force.com/pkb/articles/';
 	private string urlPrefix = 'https://asu.secure.force.com/kb/articles/';
-	//public List<ArticleInfo> aiList;
-	public Map<String, String> articleMap;
-		
-/*
-	public class ArticleInfo {
-		string url;
-		string title;
-	}
-*/
+	
+	
+	public List<Map<String,String>> lstArticleMap {get;set;}	
+
 	
 	public AllPublishedArticlesController() {
-		articleMap = new Map<String, String>();
-		List<KnowledgeArticleVersion> kavList = new List<KnowledgeArticleVersion>([SELECT id,Title, UrlName, KnowledgeArticleId, PublishStatus, language 
-				 																   FROM KnowledgeArticleVersion 
-				   																   WHERE PublishStatus='Online'
-				   																   AND language ='en_US'
-				   																   AND IsVisibleInPkb = true 
-				   																   LIMIT 1000]);
-		for (KnowledgeArticleVersion kav: kavList) {
-			articleMap.put(getArticleUrl(kav), kav.title);
+		lstArticleMap = new List<Map<String,String>>();
+		lstArticleMap.add(new Map<String,String>());
+		Integer lstSize=lstArticleMap.size();
+		for(KnowledgeArticleVersion kav: [SELECT id,Title, UrlName, KnowledgeArticleId, PublishStatus, language 
+				 						  FROM KnowledgeArticleVersion 
+				   						  WHERE PublishStatus='Online'
+				   						  AND language ='en_US'
+				   						  AND IsVisibleInPkb = true ]) {
+			lstArticleMap[lstSize-1].put(getArticleUrl(kav), kav.title);
+			if(lstArticleMap[lstSize-1].size()==1000) {
+				lstArticleMap.add(new Map<String,String>());
+				lstSize++;
+				
+			}
+				   																   	
 		}
+
 	}
 	
-	public Map<String, String> getArticleMap() {
-		return articleMap;
+	public List<Map<String, String>> getArticleMap() {
+		return lstArticleMap;
 	}
 
 	

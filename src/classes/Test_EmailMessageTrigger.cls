@@ -22,7 +22,7 @@ public class Test_EmailMessageTrigger {
         for (integer x = 0; x < contacts.size(); x++) {
             cases[x].contactId = contacts[x].id;
             if (math.mod(x, 2) == 0) {
-                cases[x].recordTypeId = RTIDHelper.getRTID('Case', 'ASU Advisor Outreach');
+                cases[x].recordTypeId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach');
             }
         }
         
@@ -49,7 +49,7 @@ public class Test_EmailMessageTrigger {
      */
     public static testMethod void test_setAdvisorStatus() {
         for (Case c : [SELECT Status, RecordTypeId FROM Case]) {
-            if (c.recordTypeId == RTIDHelper.getRTID('Case', 'ASU Advisor Outreach')) {
+            if (c.recordTypeId == IDHelper.getRTID('Case', 'ASU_Advisor_Outreach')) {
                 system.assertEquals('Email Sent', c.status);
             } else {
                 system.assertEquals('New', c.status);

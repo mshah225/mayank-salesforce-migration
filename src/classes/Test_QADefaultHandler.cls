@@ -30,7 +30,7 @@ public class Test_QADefaultHandler {
      */
     public static testmethod void Test_isAdvisorCase () {
         for (Case c : cases) {
-            if (c.recordTypeId == RTIDHelper.getRTID('Case', 'ASU Advisor Outreach')) {
+            if (c.recordTypeId == IDHelper.getRTID('Case', 'ASU_Advisor_Outreach')) {
                 system.assert(qadh.isAdvisorCase(c));
             } else {
                 system.assert(!qadh.isAdvisorCase(c));
@@ -65,5 +65,11 @@ public class Test_QADefaultHandler {
                 }
             }
         }
+    }
+    
+    public static testmethod void Test_nullContextId(){
+        qadh.getEmailFromAddress(NULL);
+        List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];    
+        System.assertEquals(1, errorList.size());
     }
 }

@@ -3,7 +3,7 @@ private class Test_CampaignMemberManagementController {
 
     private static ApexPages.standardController std;
     private static CampaignMemberManagementController cm;
-
+    
     @testSetup static void setUp()
     {
         List<Campaign> campaignList = new List<Campaign>();
@@ -156,41 +156,8 @@ private class Test_CampaignMemberManagementController {
         crCamMemsToInsert =
             CampaignMemberService.createTestCampaignMembers(testContact.Id, camsToAddToContact);
         insert crCamMemsToInsert;
-
-        // Add test Subscription records
-        List<Subscription__c> subscriptions = TestDataFactory.createTestSubscriptions(5);
-        for (Subscription__c subscription: subscriptions)
-        {
-            subscription.Subscriber_Private_in_Salesforce__c = false;
-        }
-        insert subscriptions;
-
-        // Add test Subscriber records
-        List<Subscriber__c> subscribers = TestDataFactory.createTestSubscribers(new List<Contact>{testContact}, subscriptions);
-        insert subscribers;
-
-        // Add test Business Units (Marketing Cloud)
-        List<et4ae5__Business_Unit__c> buList = TestDataFactory.createBusinessUnits(1);
-        for (et4ae5__Business_Unit__c bu: buList)
-        {
-            bu.IER_Private_in_Salesforce__c = false;
-        }
-        insert buList;
-
-        // Add test Email Send Definitions (Marketing Cloud)
-        List<et4ae5__SendDefinition__c> sdList = TestDataFactory.createEmailSends(5, 'Send Definition');
-        for (et4ae5__SendDefinition__c sd: sdList)
-        {
-            sd.et4ae5__Business_Unit__c = buList[0].Id;
-        }
-        insert sdList;
-
-        // Add test Individual Email Results (Marketing Cloud)
-        List<et4ae5__IndividualEmailResult__c> ierList = TestDataFactory.createTestIERs(new List<Contact>{testContact}, sdList);
-        insert ierList;
-
     }
-
+    
     @isTest static void testEventsAndInterest()
     {
         Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
@@ -234,7 +201,7 @@ private class Test_CampaignMemberManagementController {
         cm = new CampaignMemberManagementController(std);
 
         cm.getEventList();
-        cm.getInterestList();
+        cm.getInterestList();     
         cm.getScholarList();
         cm.getCohortList();
         cm.getoSourceList();
@@ -356,119 +323,4 @@ private class Test_CampaignMemberManagementController {
 
         System.assertNotEquals(null, tempParentId);
     }
-
-    @isTest public static void testSubscriptions()
-    {
-        Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
-
-        List<Campaign> crCamParents = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE Name LIKE '%Parent CR'
-            AND ParentId = null
-        ];
-
-        List<Campaign> crChilds = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE ParentId IN :crCamParents
-        ];
-
-        List<Campaign> allCRCams = new List<Campaign>();
-        allCRCams.addAll(crCamParents);
-        allCRCams.addAll(crChilds);
-
-        Integer listSize = crCamParents.size() + crChilds.size();
-
-        Id[] fixedSearchResults = new Id[listSize];
-
-        for (Integer i = 0; i < listSize; i++)
-        {
-            fixedSearchResults[i] = allCRCams[i].Id;
-        }
-
-        Test.setFixedSearchResults(fixedSearchResults);
-        Test.setCurrentPage(Page.CampaignMemberManagement);
-        System.currentPageReference().getParameters().put('Id', tempContact.Id);
-
-        Test.startTest();
-
-        std = new ApexPages.standardController(tempContact);
-        cm = new CampaignMemberManagementController(std);
-
-        Test.stopTest();
-
-        System.assertEquals(cm.getSubscriberList().size(), 5);
-
-    }
-
-
-    @isTest public static void testMarketingCommunications()
-    {
-        Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
-
-        List<Campaign> crCamParents = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE Name LIKE '%Parent CR'
-            AND ParentId = null
-        ];
-
-        List<Campaign> crChilds = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE ParentId IN :crCamParents
-        ];
-
-        List<Campaign> allCRCams = new List<Campaign>();
-        allCRCams.addAll(crCamParents);
-        allCRCams.addAll(crChilds);
-
-        Integer listSize = crCamParents.size() + crChilds.size();
-
-        Id[] fixedSearchResults = new Id[listSize];
-
-        for (Integer i = 0; i < listSize; i++)
-        {
-            fixedSearchResults[i] = allCRCams[i].Id;
-        }
-
-        Test.setFixedSearchResults(fixedSearchResults);
-        Test.setCurrentPage(Page.CampaignMemberManagement);
-        System.currentPageReference().getParameters().put('Id', tempContact.Id);
-
-        Test.startTest();
-
-        std = new ApexPages.standardController(tempContact);
-        cm = new CampaignMemberManagementController(std);
-
-        Test.stopTest();
-
-        System.assertEquals(cm.allMessageList.size(), 5);
-        System.assertEquals(cm.getFilteredMessageList().size(), 5);
-
-        System.assertEquals(cm.getCommFilterOptions().size(), 2);
-        cm.commFilterType = 'Sent';
-        cm.commFilterStartDate = Date.today().addDays(1);
-        cm.commFilterEndDate = Date.today().addDays(2);
-        System.assertEquals(cm.getfilteredMessageList().size(), 0);
-        cm.commFilterStartDate = Date.today().addDays(-5);
-        cm.commFilterEndDate = Date.today().addDays(-4);
-        System.assertEquals(cm.getfilteredMessageList().size(), 0);
-
-        cm.commFilterType = 'Opened';
-        cm.commFilterStartDate = Date.today().addDays(1);
-        cm.commFilterEndDate = Date.today().addDays(2);
-        System.assertEquals(cm.getfilteredMessageList().size(), 0);
-        cm.commFilterStartDate = Date.today().addDays(-5);
-        cm.commFilterEndDate = Date.today().addDays(-4);
-        System.assertEquals(cm.getfilteredMessageList().size(), 0);
-
-        cm.clearCommFilter();
-        System.assert(cm.commFilterStartDate == null);
-        System.assertEquals(cm.getFilteredMessageList().size(), 5);
-
-
-    }
-
 }

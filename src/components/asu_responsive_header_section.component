@@ -5,9 +5,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
-    <!--script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303,
-            '/dist/css/bootstrap.min.css')}"/-->
+            '/dist/css/bootstrap.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
             'MyASUHeader4_3/css/asu_header.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
@@ -23,7 +23,7 @@
         'innovation-main.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.wrappedBrandGuide,
         'forms.css')}" />
-
+    
     <!--[if IE 9]>
     <style type="text/css">
         #asu_universal_nav ul ul {

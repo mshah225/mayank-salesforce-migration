@@ -14,11 +14,11 @@ public class Test_ShowMyStudents {
         pod = new List<Success_Pod__c>([SELECT Id FROM Success_Pod__c LIMIT 1]);
         
         if (pod.size() > 0) {
-            query = 'SELECT Student_Name__c, EMPLID__c, Student__c ' +
+            query = 'SELECT Student_Name__c, EMPLID__c, Student__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                 'FROM Success_Student__c ' +
                 'WHERE Success_Pod__c = \'' + pod[0].Id + '\' ' +
                 'AND Is_Active__c = true';
-            smsc.query = query;
+            smsc.queryAttr = query;
         }
     }
     
@@ -116,42 +116,25 @@ public class Test_ShowMyStudents {
     }
     
     /*
-     * Tests the controllers ability to handle null values in sortDir
+     * Tests the controllers ability to default to ASC
      */
     public static testmethod void Test_getSort() {
         smsc.sortDir = null; // Set to null
-        system.assertEquals('DESC', smsc.sortDir); // Make sure the sortDir is set to default DESC
+        system.assertEquals('ASC', smsc.sortDir); // Make sure the sortDir is set to default ASC
     }
+    
+    
     
     /*
      * Tests the controllers ability to toggle the sort dir
      */
-    public static testmethod void Test_toggleSort() {
-        // toggleSort violates the single purpose principal and updates the query as well
-        // so lets test that here as well
-        String tempQuery;
-        tempQuery = smsc.query;
-        
-        smsc.sortField = 'EMPLID__c'; // set sortfield for the query
-        
-        smsc.toggleSort(); // Since default is DESC, it should now be ASC
-        system.assertEquals('ASC', smsc.sortDir);
-        
-        // The page currently utilizes what can best be described as a bug
-        // Because of this, we need to reset the query to the old query or we will just
-        // stack order by clauses into the query. The bug in the page handles this for us.
-        smsc.query = tempQuery;
-        
-        smsc.toggleSort();
-        system.assertEquals('DESC', smsc.sortDir);
-        
-        smsc.query = tempQuery;
-        
-        smsc.toggleSort();
-        system.assertEquals('ASC', smsc.sortDir);
-        
+    public static testmethod void Test_setSortField() {
+        // Set sortfield to contact.name
+        // verify the query contains "ORDER BY" and "Contact.Name"
+        smsc.sortField = 'Student_Name__c';
         
         system.assert(smsc.query.contains('ORDER BY'));
+        system.assert(smsc.query.contains('Student_Name__c'));
     }
     
     /*
@@ -178,11 +161,51 @@ public class Test_ShowMyStudents {
         smsc.tempEmail.Email_Template_Name__c = 'Advisor Ad-hoc template';
         smsc.tempEmail.Additional_Message_Text__c = 'Test mass email';
         
-        smsc.portalEmailRTID = RTIDHelper.getRTID('Portal_Email__c', 'Advisor');
+        smsc.portalEmailRTID = IDHelper.getRTID('Portal_Email__c', 'Advisor');
         
         // Insert Portal Emails
         smsc.massEmail();
         
         system.assertEquals(smsc.studentList.size(), [SELECT Id FROM Portal_Email__c].size());
+    }
+    
+    /**
+     * Ensures ErrorHandler for UpdateQuery is handing Invalid Query Queries correctly
+     */ 
+    public static testmethod void Test_getUpdateQueryError(){
+        smsc.query = 'InvalidInput';
+        smsc.updateQuery();
+        List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
+        System.assertEquals(errorList.size(), 2);
+    }
+    
+    /**Test Page moving
+     */
+    public static testmethod void Test_setConNextPrev(){
+        smsc.setConPageSize(1);
+        smsc.setConNext();
+        System.assertEquals(smsc.setCon.getPageNumber(), 2);
+        smsc.setConPrev();
+        System.assertEquals(smsc.setCon.getPageNumber(), 1);
+    }
+    
+    /**
+     * Test Clear Results
+     */
+    public static testmethod void Test_clearSaveResults(){
+        smsc.clearSaveResults();
+        System.assertEquals(smsc.emailInsertResults, NULL);
+        System.assertEquals(smsc.selectedStudents.size(), 0);
+    }
+
+    
+   /**
+     * Test Search Methods
+     */ 
+    public static testmethod void Test_Search(){
+        smsc.searchString = '';
+        System.assert(smsc.query.contains('LIKE'));
+        smsc.resetSearch();
+        System.assert(!smsc.query.contains('LIKE'));
     }
 }

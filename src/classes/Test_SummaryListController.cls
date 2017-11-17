@@ -22,7 +22,7 @@ public class Test_SummaryListController {
         query = 'SELECT count(Id) total, Subject, Followup_Date__c ' +
             'FROM Case ' +
             'WHERE OwnerId = \'' + ownerId + '\' ' +
-            'AND recordTypeId = \'' + RTIDHelper.getRTID('Case', 'ASU Advisor Outreach') + '\' ' +
+            'AND recordTypeId = \'' + IDHelper.getRTID('Case', 'ASU_Advisor_Outreach') + '\' ' +
             'AND IsClosed = false ' +
             'GROUP BY Subject, Followup_Date__c ' +
             'ORDER BY Followup_Date__c ASC NULLS LAST';
@@ -51,7 +51,7 @@ public class Test_SummaryListController {
      */
     public static testMethod void Test_getDynamicQuery () {
         String tempQuery;
-        Id tempRTID = RTIDHelper.getRTID('Case', 'ASU Advisor Outreach');
+        Id tempRTID = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach');
         
         slc.subject = 'Case Bloat 0';
         slc.proactiveCaseRTID = tempRTID;
@@ -60,7 +60,7 @@ public class Test_SummaryListController {
         
         system.assert(tempQuery.contains(string.valueOf(UserInfo.getUserId()))); // Check for proper owner Id
         system.assert(tempQuery.contains('Case Bloat 0')); // Check for proper subject
-        system.assert(tempQuery.contains(string.valueOf(RTIDHelper.getRTID('Case', 'ASU Advisor Outreach')))); // Check for record type id
+        system.assert(tempQuery.contains(string.valueOf(IDHelper.getRTID('Case', 'ASU_Advisor_Outreach')))); // Check for record type id
         system.assert(tempQuery.contains('null')); // Check for followup date
     }
     

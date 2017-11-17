@@ -124,7 +124,7 @@ global with sharing class BatchContactUpload implements Database.batchable<Strin
                                                      Unique_Key__c = String.valueOf(cud.Subscription__c).left(15) + '.' + String.valueOf(cud.Contact__c).left(15),
                                                      Subscriber_Status__c = 'Subscribed'));
        }
-       system.debug('GRF cudList: ' + cudList);
+       system.debug('cudList: ' + cudList);
        if (subscriberList.size() > 0)
           upsert subscriberList Unique_Key__c;
 
@@ -151,9 +151,9 @@ global with sharing class BatchContactUpload implements Database.batchable<Strin
        for (String key: matchingFieldMap.keySet())
        {
            if (!String.isBlank(String.valueOf(cud.get(key))))
-                parmMap.put(matchingFieldMap.get(key), String.valueOf(cud.get(key)));
+                parmMap.put(matchingFieldMap.get(key), EncodingUtil.urlEncode(String.valueOf(cud.get(key)),'UTF-8'));
        }
-       system.debug('GRF parmMap: ' + parmMap);
+       system.debug('parmMap: ' + parmMap);
 
        if (parmMap.size() > 0)
        {
@@ -176,7 +176,7 @@ global with sharing class BatchContactUpload implements Database.batchable<Strin
                // Id is a reserved word, so let's change it
                response = response.replace('"id":', '"contactId":');
                response = response.replace('"contact"','"contactDetails"');
-               system.debug('GRF response: ' + response);
+               system.debug('response: ' + response);
                try
                {
                    conResponse = (ContactResponse)JSON.deserialize(response, ContactResponse.class);
@@ -186,7 +186,7 @@ global with sharing class BatchContactUpload implements Database.batchable<Strin
                    setDetailError(cud, 'Error parsing Contact service response: ' + e.getMessage());
                    return false;
                }
-               system.debug('GRF conResponse: ' + conResponse);
+               system.debug('conResponse: ' + conResponse);
 
                if (conResponse.contactDetails != null && conResponse.contactDetails.size() > 0)
                {
@@ -227,7 +227,7 @@ global with sharing class BatchContactUpload implements Database.batchable<Strin
                            setDetailError(cud, 'Error parsing Contact POST service response: ' + e.getMessage());
                            return false;
                        }
-                       system.debug('GRF conPostResponse: ' + conPostResponse);
+                       system.debug('conPostResponse: ' + conPostResponse);
                        if (conPostResponse.upsertResults != null && !String.isBlank(conPostResponse.upsertResults[0].contactId))
                        {
                            cud.Contact__c = conPostResponse.upsertResults[0].contactId;

@@ -10,7 +10,7 @@ public with sharing class HTTPRestService_EnterpriseContact {
 		for (String key: parmMap.keySet())
 		{
 			if (!String.isBlank(parmMap.get(key)))
-				queryString += (firstParm ? '' : '&') + key + '=' + parmMap.get(key);
+				queryString += (firstParm ? '' : '&') + key + '=' + EncodingUtil.urlEncode(parmMap.get(key), 'UTF-8');
 			firstParm = false;
 		}
 

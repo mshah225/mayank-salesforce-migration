@@ -298,7 +298,7 @@ public without sharing class SubscriptionCenterController
 				}
 				else
 				{
-					if (subscription.Available_for_Opt_In__c)
+                    if (subscription.Available_for_Opt_In__c && subscription.Parent_Subscription__c != null && availableSubsByParentSubIdMap.containsKey(subscription.Parent_Subscription__c))
 					{
 						availableSubsByParentSubIdMap.get(subscription.Parent_Subscription__c).add(new SubscriberWrapper(subscription, null));
 					}

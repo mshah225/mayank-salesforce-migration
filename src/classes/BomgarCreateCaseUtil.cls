@@ -12,22 +12,27 @@ global class BomgarCreateCaseUtil
                                                           .replace('\t', '\\t')
                                                           .replace('\b', '\\b')
                                                           .replace('\f', '\\f');
+        system.debug('jsonObject: ' + jsonObject);
         String.escapeSinglequotes(jsonObject);
-        JSONParser parser = JSON.createParser(jsonObject);
-
-        System.debug(jsonObject);
-
-        while (parser.nextToken() != null)
-        {
-            if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
+        JSONParser parser;
+        try {
+            parser = JSON.createParser(jsonObject);
+            while (parser.nextToken() != null)
             {
-                String key = parser.getText();
-                parser.nextToken();
-                String value = parser.getText();
-                dynamicFieldMap.put(key, value);
+                if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
+                {
+                    String key = parser.getText();
+                    parser.nextToken();
+                    String value = parser.getText();
+                    dynamicFieldMap.put(key, value);
+                }
             }
+        } catch(Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('jsonObject', jsonObject));
+            ErrorLogger.log(ex, vars, false);
         }
-
+        
         Contact contact = null;
         Case c = new Case();
 

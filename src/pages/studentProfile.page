@@ -1517,10 +1517,10 @@
                                             "<tbody>";
 
                                 for (var i = 0; i < result.length; i++) {
-                                    var attDate = new Date(result[i].SRVC_IND_ACTIVE_DT__c+"Z");
+                                    var attDate = new Date(result[i].SRVC_IND_ACTIVE_DT__c);
                                     attDate = (attDate.getUTCMonth() + 1) + '/' +
-                                        attDate.getUTCDate() + '/' +
-                                        attDate.getUTCFullYear();
+                                                attDate.getUTCDate() + '/' +
+                                                attDate.getUTCFullYear(); 
                                     var description = result[i].DESCR__c;
                                     if (description.length > 100)
                                       description = description.substring(0,100)+'...';

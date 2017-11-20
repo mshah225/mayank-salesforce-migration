@@ -161,9 +161,36 @@
                 });
             });
         </script>
+        <script>
+            function validateFile(){
+                var isValid=true;
+                $('input[type=file]').each(function(){
+                    fileName=this.files[0].name;
+                    fileSize=this.files[0].size/1000000;
+                    var validFileTypes=['.doc','.docx','.xls','.xlsx','.jpg', '.jpeg', '.gif', '.png', '.pdf', '.txt'];
+                    var fileExtArr=fileName.split('.');
+                    var fileExtension='.'+fileExtArr[fileExtArr.length-1];                      
+                    if(validFileTypes.indexOf(fileExtension.toLowerCase())==-1 || fileSize>25){
+                        alert('This attachment is not an acceptable file type or exceeds 25MB.\n'+
+                         'The following attachment types are allowed:\n'+
+                         'Microsoft Word (.doc or .docx)\n'+
+                        'Microsoft Excel (.xls or .xlsx)\n'+
+                        'Image (.jpg, .jpeg, .gif, .png)\n'+
+                        'Adobe PDF (.pdf)\n'+
+                        'Text (.txt)');
+    
+                        isValid=false;
+                    }
+                                    
+                });       
+                return isValid;                            
+            }  
+    </script>
     </head>
 
     <body>
+    <apex:pageMessages id="message" />
+
     <div id="main-search" class="main-search closed"></div>
 
     <c:SCHeader firstName="{!firstName}"
@@ -289,20 +316,70 @@
                         </div>
                     </apex:outputPanel>
                     
-
-
-                    <apex:outputPanel >
+                     <apex:outputPanel >
                         <div class="box">
                             <div class="content">
                                 <apex:form styleClass="detailsForm">
-                                    <h3 style="word-wrap: break-word;">Attachments</h3>
+                                    <h3 style="word-wrap: break-word;">Reply To Cases</h3>
                                     <br />
                                     <br />
-                                    <c:SCAttachmentBox parentId="{!caseId}" />
+                                    <apex:pageBlock >
+                                        <!-- Section to Upload New Attachments -->
+                                            <div class="row">
+                                                <div class="header">
+                                                    <h6>
+                                                        <b>For Queries on this Case Click Here</b>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                    </apex:pageBlock>
+                                    <apex:commandButton action="{!displayReplyBox}"
+                                            value="Reply" styleClass="btn kbbtn"
+                                            style="color:#fff;background:#990033;padding:5px;width:55px;" reRender="replyBox" />
+                                </apex:form>
+                                <apex:outputPanel id="replyBox">
+                                     <apex:outputPanel rendered="{!boolAllowReply}" >
+                                        <apex:form styleClass="detailsForm">
+                                            <br />
+                                            <br />
+                                            <apex:inputTextarea value="{!strCaseReply}" rows="10" cols="99" />
+                                        <!--</apex:form>-->
+                                        <br />
+                                        <br />
+                                        <!--<apex:form styleClass="detailsForm">-->
+                                            <div class="row">
+                                                <div class="header">
+                                                    <h6>
+                                                        <b>Upload New Attachments (Max size 25MB) </b>
+                                                    </h6>
+                                                </div>
+                                                <br />
+                                                <apex:inputFile fileName="{!objAtt.name}" value="{!objAtt.Body}" style="float:left;"/>
+                                                <br />
+                                                <div align="center" draggable="false" >
+                                                    <apex:commandButton action="{!submitReply}"
+                                                    value="Submit" styleClass="btn kbbtn"
+                                                    style="color:#fff;background:#990033;padding:5px;width:55px;"/>
+                                                </div>
+                                            </div>
+                                        </apex:form>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                    
+                    <!--<apex:outputPanel >
+                        <div class="box">
+                            <div class="content">
+                                <apex:form styleClass="detailsForm">
+                                     <h3 style="word-wrap: break-word;">Add Attachments</h3>
+                                            <br />
+                                            <c:SCAttachmentBox parentId="{!caseId}" />
                                 </apex:form>
                             </div>
                          </div>
-                    </apex:outputPanel>
+                    </apex:outputPanel>-->
                     <apex:outputPanel id="chatMessagesBox" rendered="{!IF(chatMessages.empty,false,true)}" >
                         <div class="box commentBox">
                             <div class="header">

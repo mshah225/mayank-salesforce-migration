@@ -1,4 +1,4 @@
-public class viewCaseController{
+public without sharing class viewCaseController{
 
 	private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
 	private Date today;
@@ -20,9 +20,15 @@ public class viewCaseController{
     public Contact userContact;
     public String viewAsUrl { get; set; }
     public List<Opportunity> oppList;
+    public Boolean boolAllowReply {get;set; }
+    public String strCaseReply {get;set; }
+    public Attachment objAtt { get; set; }
+    public List<String> vars {get; set; }
    
 	public viewCaseController(){
 		viewingAs = false;
+		boolAllowReply = false;
+		objAtt=new Attachment();
 	    checkForViewAs();
         popUserContact();
         popTerms();
@@ -234,5 +240,65 @@ public class viewCaseController{
         redirect.getParameters().put(param, value);
         redirect.setRedirect(true);
         return redirect;
+    }
+    
+    public void displayReplyBox(){
+        boolAllowReply = true;
+    }
+    
+    public Integer uploadAtt(){
+        Integer result = 0;
+        if(objAtt.Name!=null && objAtt.Body!=null && caseId!=null){
+                objAtt.ParentId=caseId;
+                try {
+                    insert objAtt;
+                    result = 1;
+                } catch(Exception e) {
+                    vars = new List<String>();
+                    vars.add(ErrorLogger.convertStringToJSON('name',objAtt.name));
+                    ErrorLogger.log(e,vars,false);
+                    result = -1;
+                }
+                objAtt=new Attachment();
+        }
+        return result;
+    }
+    
+    public PageReference submitReply(){
+        System.debug('###########Case Response:' + strCaseReply);
+        Integer attResponseCode = uploadAtt();
+        if(attResponseCode == -1){
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Could not upload attachment, please try again'));
+            return null;
+        }
+        else {
+            if(strCaseReply!=null && strCaseReply.trim()!='') {
+                User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+                EmailMessage response = new EmailMessage();
+                response.HtmlBody = strCaseReply;
+                response.TextBody = strCaseReply; 
+                response.Incoming = true;
+                response.ParentId = caseId;
+                response.Status = '5';
+                response.Subject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ' + System.now();
+                response.FromName = currentUser.FirstName + ' ' + currentUser.LastName;
+                response.FromAddress = currentUser.Email;
+                response.ToAddress = 'test@test.com';
+                try{
+                    insert response;
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));
+                }
+                catch(Exception e) {
+                        vars = new List<String>();
+                        vars.add(ErrorLogger.convertStringToJSON('Case Id:',caseId));
+                       // vars.add(ErrorLogger.convertStringToJSON('Users Name:',currentUser.Name));
+                        vars.add(ErrorLogger.convertStringToJSON('Reply from User:',strCaseReply));
+                        ErrorLogger.log(e,vars,false);
+                        ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Response was not recorded, please try again or call help desk'));
+                }
+            }
+            
+        }
+        return null;
     }
 }

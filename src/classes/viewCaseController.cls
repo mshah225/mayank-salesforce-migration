@@ -290,7 +290,7 @@ public without sharing class viewCaseController{
                 response.TextBody = strCaseReply; 
                 response.Incoming = true;
                 response.ParentId = caseId;
-                response.Status = '5';
+                response.Status = '2';
                 response.Subject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ' + System.now();
                 response.FromName = currentUser.FirstName + ' ' + currentUser.LastName;
                 response.FromAddress = currentUser.Email;
@@ -302,7 +302,7 @@ public without sharing class viewCaseController{
                 catch(Exception e) {
                         vars = new List<String>();
                         vars.add(ErrorLogger.convertStringToJSON('Case Id:',caseId));
-                       // vars.add(ErrorLogger.convertStringToJSON('Users Name:',currentUser.Name));
+                        vars.add(ErrorLogger.convertStringToJSON('Users Name:',currentUser.Name));
                         vars.add(ErrorLogger.convertStringToJSON('Reply from User:',strCaseReply));
                         ErrorLogger.log(e,vars,false);
                         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Response was not recorded, please try again or call help desk'));

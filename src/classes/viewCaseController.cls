@@ -1,4 +1,4 @@
-public without sharing class viewCaseController{
+global without sharing class viewCaseController {
 
 
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
@@ -283,33 +283,66 @@ public without sharing class viewCaseController{
             return null;
         }
         else {
-            if(strCaseReply!=null && strCaseReply.trim()!='') {
+            //Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
+            // Set recipients to two contact IDs.
+// Replace IDs with valid record IDs in your org.
+
+            /*message.toAddresses = new String[] { '0030v000001VQhC'};
+            message.optOutPolicy = 'FILTER';
+            message.subject = 'Opt Out Test Message';
+            message.plainTextBody = 'This is the message body.';
+
+Messaging.SingleEmailMessage[] messages =
+    new List<Messaging.SingleEmailMessage> {message};
+
+         Messaging.SendEmailResult[] results = Messaging.sendEmail(messages);
+
+if (results[0].success) {
+
+    System.debug('The email was sent successfully.');
+
+} else {
+
+    System.debug('The email failed to send: '
+
+          + results[0].errors[0].message);
+
+}*/
+
+            addMessage(strCaseReply, caseId);
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));
+        }
+        return null;
+    }
+    
+    @future
+    public static void addMessage(String strCaseReply, String caseId){
+        if(strCaseReply!=null && strCaseReply.trim()!='') {
                 User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
                 EmailMessage response = new EmailMessage();
-                response.HtmlBody = strCaseReply;
+                //response.HtmlBody = strCaseReply;
                 response.TextBody = strCaseReply; 
-                response.Incoming = true;
+                //response.Incoming = true;
                 response.ParentId = caseId;
-                response.Status = '2';
-                response.Subject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ' + System.now();
+                //response.Status = '5';
+                response.Subject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
                 response.FromName = currentUser.FirstName + ' ' + currentUser.LastName;
                 response.FromAddress = currentUser.Email;
-                response.ToAddress = 'test@test.com';
+                response.ToAddress = 'test1@test.com';
                 try{
-                    insert response;
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));
+                        insert response;
+                        //ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));
                 }
                 catch(Exception e) {
-                        vars = new List<String>();
+                        List<String> vars = new List<String>();
                         vars.add(ErrorLogger.convertStringToJSON('Case Id:',caseId));
                         vars.add(ErrorLogger.convertStringToJSON('Users Name:',currentUser.Name));
                         vars.add(ErrorLogger.convertStringToJSON('Reply from User:',strCaseReply));
                         ErrorLogger.log(e,vars,false);
-                        ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Response was not recorded, please try again or call help desk'));
+                        //ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Response was not recorded, please try again or call help desk'));
                 }
+                
             }
-            
-        }
-        return null;
+        
     }
 }

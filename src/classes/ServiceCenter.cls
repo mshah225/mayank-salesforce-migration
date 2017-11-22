@@ -13,7 +13,7 @@ public with sharing class ServiceCenter
     public Boolean viewingAs { get; set; }
     public Case suggestAnArticle { get; set; }
     public String strArticleIdea { get; set; }
-    public Contact userContact;
+    public Contact userContact {get; set; }
     public Decimal newPin { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }

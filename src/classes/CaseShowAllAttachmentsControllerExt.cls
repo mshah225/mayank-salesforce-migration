@@ -1,6 +1,5 @@
 public with sharing class CaseShowAllAttachmentsControllerExt {
     private final Case theCase;
-    public string attId{get;set;}
     public Attachment[] allAttachments;
     
     public CaseShowAllAttachmentsControllerExt(ApexPages.StandardController stdController) {
@@ -35,19 +34,5 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     
     public String getContactName() {
     	return this.theCase.Contact.Name;
-    }
-    
-    public PageReference deleteAttachment(){
-        try{
-            Attachment objAtt = new Attachment(id=attId);
-            delete objAtt;
-        }
-        catch(Exception e){
-            ApexPages.addMessage(
-                new ApexPages.Message(
-                    ApexPages.Severity.ERROR,
-                    'There was a problem deleting the attachment. Please try again or contact the administrator.' ));
-        }
-        return null;
     }
 }

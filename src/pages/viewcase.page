@@ -357,7 +357,7 @@
                                                 <div align="center" draggable="false" >
                                                 <apex:commandButton action="{!submitReply}"
                                                 value="Submit" styleClass="btn kbbtn"
-                                                style="color:#fff;background:#990033;padding:5px;width:55px;"/>
+                                                style="color:#fff;background:#990033;padding:5px;width:55px;" />
                                                 </div>
                                             </div>
                                         </apex:form>
@@ -367,17 +367,6 @@
                         </div>
                     </apex:outputPanel>
                     
-                    <!--<apex:outputPanel >
-                        <div class="box">
-                            <div class="content">
-                                <apex:form styleClass="detailsForm">
-                                     <h3 style="word-wrap: break-word;">Add Attachments</h3>
-                                            <br />
-                                            <c:SCAttachmentBox parentId="{!caseId}" />
-                                </apex:form>
-                            </div>
-                         </div>
-                    </apex:outputPanel>-->
                     <apex:outputPanel id="chatMessagesBox" rendered="{!IF(chatMessages.empty,false,true)}" >
                         <div class="box commentBox">
                             <div class="header">

@@ -265,73 +265,51 @@ global without sharing class viewCaseController {
     }
     
     public PageReference submitReply(){
-        System.debug('###########Case Response:' + strCaseReply);
-        Integer attResponseCode = uploadAtt();
-        if(attResponseCode == -1){
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Could not upload attachment, please try again'));
-            return null;
+        Boolean boolReplySuccess = true;
+        if(strCaseReply!=null && strCaseReply.trim()!='') {
+            User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+            String baseURL = System.URL.getSalesforceBaseURL().toExternalForm();
+            String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
+            EmailMessage response = new EmailMessage();
+            String jsonInput = '{';  
+            jsonInput += '"strTextBody":"' + strCaseReply + '"' + ',';
+            jsonInput += '"strParentId":"' + caseId + '"' + ',';
+            jsonInput += '"strSubject":"' + emailSubject + '"' + ',';
+            jsonInput += '"boolIncoming":"' + 'true' + '"' + ',';
+            jsonInput += '"strFromName":"' + currentUser.Name + '"' + ',';
+            jsonInput += '"strFromAddress":"' + currentUser.Email + '"' + ',';
+            jsonInput += '"strStatus":"' + '2' + '"';
+            jsonInput += '}' ;
+            Http objHttp = new Http();
+            HttpRequest objReq = new HttpRequest();
+
+            objReq.setHeader('Content-Type', 'application/json');
+            objReq.setEndpoint(baseURL + '/services/apexrest/insertEmailMessage');
+            objReq.setMethod('POST');
+            objReq.setBody(jsonInput);
+            HttpResponse res = objHttp.send(objReq);
+            String resMessage = res.getBody();
+            if(resMessage == '"success"'){
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));        
+            }
+            else{
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Could not add response to case. Please try again or contact system admin'));
+                boolReplySuccess = false;
+            }
+            strCaseReply = '';
         }
-        else {
-            //Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-            // Set recipients to two contact IDs.
-// Replace IDs with valid record IDs in your org.
-
-            /*message.toAddresses = new String[] { '0030v000001VQhC'};
-            message.optOutPolicy = 'FILTER';
-            message.subject = 'Opt Out Test Message';
-            message.plainTextBody = 'This is the message body.';
-
-Messaging.SingleEmailMessage[] messages =
-    new List<Messaging.SingleEmailMessage> {message};
-
-         Messaging.SendEmailResult[] results = Messaging.sendEmail(messages);
-
-if (results[0].success) {
-
-    System.debug('The email was sent successfully.');
-
-} else {
-
-    System.debug('The email failed to send: '
-
-          + results[0].errors[0].message);
-
-}*/
-
-            addMessage(strCaseReply, caseId);
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));
+        if(boolReplySuccess){
+            Integer attResponseCode = uploadAtt();
+            if(attResponseCode == -1){
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Could not upload attachment, please try again'));
+            }
+            if(attResponseCode == 1){
+               ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));     
+            }
         }
+        boolAllowReply = false;
         return null;
     }
     
-    @future
-    public static void addMessage(String strCaseReply, String caseId){
-        if(strCaseReply!=null && strCaseReply.trim()!='') {
-                User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-                EmailMessage response = new EmailMessage();
-                //response.HtmlBody = strCaseReply;
-                response.TextBody = strCaseReply; 
-                //response.Incoming = true;
-                response.ParentId = caseId;
-                //response.Status = '5';
-                response.Subject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
-                response.FromName = currentUser.FirstName + ' ' + currentUser.LastName;
-                response.FromAddress = currentUser.Email;
-                response.ToAddress = 'test1@test.com';
-                try{
-                        insert response;
-                        //ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));
-                }
-                catch(Exception e) {
-                        List<String> vars = new List<String>();
-                        vars.add(ErrorLogger.convertStringToJSON('Case Id:',caseId));
-                        vars.add(ErrorLogger.convertStringToJSON('Users Name:',currentUser.Name));
-                        vars.add(ErrorLogger.convertStringToJSON('Reply from User:',strCaseReply));
-                        ErrorLogger.log(e,vars,false);
-                        //ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Response was not recorded, please try again or call help desk'));
-                }
-                
-            }
-        
-    }
+    
 }

@@ -407,6 +407,9 @@
             </apex:actionRegion>
         </apex:form>
     </apex:outputPanel>
+    <!--<apex:outputPanel id="completePage" rendered="{!IF(page = 5,true,false)}">
+        Successfully Transferred Cases to {!SelectedCar.CC_Functional_Group__r.Name}
+    </apex:outputPanel>-->
 </div>
 
 <script>

@@ -1,5 +1,7 @@
 public class CaseService
 {
+    public static Id faCaseQueueId;
+
     /**
     * Returns all the fields on Case in a String
     * @return A string containing all the Case fields
@@ -23,7 +25,7 @@ public class CaseService
     public static Case getCaseDetails(Id caseId)
     {
         Case requestedCase = [
-            SELECT Id, CaseNumber, Functional_Group__c, Subject, Description,
+            SELECT Id, CaseNumber, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
             Feedback_Link__c, CreatedDate, Status, ClosedDate
             FROM Case
             WHERE Id = :caseId
@@ -45,11 +47,14 @@ public class CaseService
             FROM EmailMessage
             WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
             AND Incoming = false
+            AND Status !='5'
             AND CreatedDate > :launchDate
             AND ToAddress IN :contactEmails
             ORDER BY CreatedDate DESC
         ];
     }
+
+
 
     /**
     * Get these contact's open visible cases

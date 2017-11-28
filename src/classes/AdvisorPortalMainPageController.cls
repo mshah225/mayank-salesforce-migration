@@ -347,10 +347,9 @@ public class AdvisorPortalMainPageController {
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
-                    'AND Category__c = \'Watchlist\'' +
+                    'AND CC_Category__c IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC';
             }
-            
             return myWatchlistQuery;
         }
         
@@ -385,7 +384,7 @@ public class AdvisorPortalMainPageController {
                 mySummaryListQuery = 'SELECT count(Id) total, Subject, Followup_Date__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
-                    'AND Category__c != \'Watchlist\'' +
+                    'AND CC_Category__c NOT IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
                     'AND IsClosed = false ' +
                     'GROUP BY Subject, Followup_Date__c ' +

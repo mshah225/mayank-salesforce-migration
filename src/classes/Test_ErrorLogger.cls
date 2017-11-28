@@ -75,6 +75,34 @@ public class Test_ErrorLogger {
         // Clean up for next test
         delete exceptionCases;
         
+        Test.stopTest();
+    }
+    
+        /**
+     * Tests for logging errors as cases or emails.
+     */
+    public static testmethod void Test_logTwo() {
+        Exception ex = TestDataFactory.createException();
+        User userWithContact = [SELECT Id, contactId FROM User WHERE lastName = 'CommunityUser'];
+        User userWithoutContact = [SELECT Id FROM User WHERE lastName = 'UserWithoutContact'];
+        User siteGuestUser = [SELECT Id FROM User WHERE lastName = 'siteGuestUser'];
+        List<String> vars = new List<String>();
+        Map<Id,User> userMap = new Map<Id,User>();
+        List<Case> exceptionCases;
+        String subject = 'Apex Exception: ' + ex.getTypeName() + ' Date: ' + system.today();
+        
+        //Create some variables to pass to the logger
+        userMap.put(userWithContact.Id, userWithContact);
+        userMap.put(userWithoutContact.Id, userWithoutContact);
+        
+        vars.add(ErrorLogger.convertBooleanToJSON('boolean', true));
+        vars.add(ErrorLogger.convertIntegerToJSON('integer', 1));
+        vars.add(ErrorLogger.convertStringToJSON('string', 'true'));
+        vars.add(ErrorLogger.convertMapToJSON('userMap',userMap));
+        
+        
+        Test.startTest();
+        
         system.runAs(userWithoutContact) {
             // Test 5 : Debug mode enabled
             system.assertEquals(false, ErrorLogger.log(ex, vars, true));
@@ -104,13 +132,41 @@ public class Test_ErrorLogger {
         }
         
         delete exceptionCases;
+        Test.stopTest();
+    }
+    
+    /**
+    * Tests for logging errors as cases or emails.
+    */
+    public static testmethod void Test_logThree() {
+        Exception ex = TestDataFactory.createException();
+        User userWithContact = [SELECT Id, contactId FROM User WHERE lastName = 'CommunityUser'];
+        User userWithoutContact = [SELECT Id FROM User WHERE lastName = 'UserWithoutContact'];
+        User siteGuestUser = [SELECT Id FROM User WHERE lastName = 'siteGuestUser'];
+        List<String> vars = new List<String>();
+        Map<Id,User> userMap = new Map<Id,User>();
+        List<Case> exceptionCases;
+        String subject = 'Apex Exception: ' + ex.getTypeName() + ' Date: ' + system.today();
+        
+        //Create some variables to pass to the logger
+        userMap.put(userWithContact.Id, userWithContact);
+        userMap.put(userWithoutContact.Id, userWithoutContact);
+        
+        vars.add(ErrorLogger.convertBooleanToJSON('boolean', true));
+        vars.add(ErrorLogger.convertIntegerToJSON('integer', 1));
+        vars.add(ErrorLogger.convertStringToJSON('string', 'true'));
+        vars.add(ErrorLogger.convertMapToJSON('userMap',userMap));
+        
+        
+        Test.startTest();
         
         system.runAs(siteGuestUser) {
             // Test 9 : Debug mode enabled
             system.assertEquals(false, ErrorLogger.log(ex, vars, true));
             
             // Test 10 : Site Guest User, Debug disabled
-            system.assertEquals(true, ErrorLogger.log(ex, vars, false));
+            Boolean troll = ErrorLogger.log(ex, vars, false);
+            system.assertEquals(true, troll);
             
             // Test 11 : Site Guest User should allow duplicate cases. debug disabled
             system.assertEquals(true, ErrorLogger.log(ex, vars, false));

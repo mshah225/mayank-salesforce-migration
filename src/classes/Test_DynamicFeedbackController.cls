@@ -56,12 +56,19 @@ public class Test_DynamicFeedbackController {
             insert testQueue;
         }
         
+        TestDataFactory.createFunctionalGroup('Student-Centric Initiatives');
+        TestDataFactory.createCategory('Student-Centric Initiatives', 'Student Profile Feedback');
+        
+        Id functionalGroup = [Select Id FROM case_classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND name = 'Student-Centric Initiatives' LIMIT 1].Id;
+        Id category = [Select Id FROM case_classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND name = 'Student Profile Feedback' LIMIT 1].Id;
+        
+        
         car = new Case_Assignment_Rule__c(
         	Priority__c = 1,
             Customer_Notice_Email_From_Name__c = 'ASU Student-Centric Initiatives',
             Queue_ID__c = string.valueOf(testGroup.Id).left(15),
-            Functional_Group__c = 'Student-Centric Initiatives',
-            Category__c = 'Student Profile Feedback',
+            CC_Functional_Group__c = functionalGroup,
+            CC_Category__c = category,
             Origin__c = 'Web'
         );
         
@@ -87,8 +94,8 @@ public class Test_DynamicFeedbackController {
             ApexPages.CurrentPage().getParameters().put('carName', carName);
             ApexPages.CurrentPage().getParameters().put('misc', 'Test');
             settings = Feedback_Cars__c.getAll().get(carName);
-            car = [SELECT Id, Queue_Id__c, Origin__c, Functional_Group__c, Category__c,
-                      Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c, Campus__c
+            car = [SELECT Id, Queue_Id__c, Origin__c, CC_Functional_Group__c, CC_Category__c,
+                      CC_Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c, Campus__c
                       FROM Case_Assignment_Rule__c WHERE Id = :settings.CAR_Id__c];
             testContact = [SELECT Id FROM Contact WHERE LastName = 'DynamicFeedback'];
         } catch (Exception e) {}
@@ -111,17 +118,17 @@ public class Test_DynamicFeedbackController {
             test.stopTest();
         }
         
-        cases = [SELECT Id, OwnerId, Origin__c, Functional_Group__c, Category__c,
-                    Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c, 
+        cases = [SELECT Id, OwnerId, Origin__c, CC_Functional_Group__c, CC_Category__c,
+                    CC_Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c, 
                     Campus__c, contactId
                     FROM Case];
         
         system.assertEquals(1, cases.size());
         system.assertEquals(cases[0].OwnerId, car.Queue_ID__c);
         system.assertEquals(cases[0].Origin__c, car.Origin__c);
-        system.assertEquals(cases[0].Functional_Group__c, car.Functional_Group__c);
-        system.assertEquals(cases[0].Category__c, car.Category__c);
-        system.assertEquals(cases[0].Sub_Category__c, car.Sub_Category__c);
+        system.assertEquals(cases[0].CC_Functional_Group__c, car.CC_Functional_Group__c);
+        system.assertEquals(cases[0].CC_Category__c, car.CC_Category__c);
+        system.assertEquals(cases[0].CC_Sub_Category__c, car.CC_Sub_Category__c);
         system.assertEquals(cases[0].Case_Feed_Email__c, car.Email_Address__c);
         system.assertEquals(cases[0].Case_Feed_Email_Template_Id__c, car.Case_Feed_Email_Template_Id__c);
         system.assertEquals(cases[0].Campus__c, car.Campus__c);
@@ -148,17 +155,17 @@ public class Test_DynamicFeedbackController {
             test.stopTest();
         }
         
-        cases = [SELECT Id, OwnerId, Origin__c, Functional_Group__c, Category__c,
-                    Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
+        cases = [SELECT Id, OwnerId, Origin__c, CC_Functional_Group__c, CC_Category__c,
+                    CC_Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
                     Campus__c, contactId
                     FROM Case];
         
         system.assertEquals(1, cases.size());
         system.assertEquals(cases[0].OwnerId, car.Queue_ID__c);
         system.assertEquals(cases[0].Origin__c, car.Origin__c);
-        system.assertEquals(cases[0].Functional_Group__c, car.Functional_Group__c);
-        system.assertEquals(cases[0].Category__c, car.Category__c);
-        system.assertEquals(cases[0].Sub_Category__c, car.Sub_Category__c);
+        system.assertEquals(cases[0].CC_Functional_Group__c, car.CC_Functional_Group__c);
+        system.assertEquals(cases[0].CC_Category__c, car.CC_Category__c);
+        system.assertEquals(cases[0].CC_Sub_Category__c, car.CC_Sub_Category__c);
         system.assertEquals(cases[0].Case_Feed_Email__c, car.Email_Address__c);
         system.assertEquals(cases[0].Case_Feed_Email_Template_Id__c, car.Case_Feed_Email_Template_Id__c);
         system.assertEquals(cases[0].Campus__c, car.Campus__c);
@@ -183,17 +190,17 @@ public class Test_DynamicFeedbackController {
         controller.submit();
         test.stopTest();
         
-        cases = [SELECT Id, OwnerId, Origin__c, Functional_Group__c, Category__c,
-                    Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
+        cases = [SELECT Id, OwnerId, Origin__c, CC_Functional_Group__c, CC_Category__c,
+                    CC_Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
                     Campus__c, contactId
                     FROM Case];
         
         system.assertEquals(1, cases.size());
         system.assertEquals(cases[0].OwnerId, car.Queue_ID__c);
         system.assertEquals(cases[0].Origin__c, car.Origin__c);
-        system.assertEquals(cases[0].Functional_Group__c, car.Functional_Group__c);
-        system.assertEquals(cases[0].Category__c, car.Category__c);
-        system.assertEquals(cases[0].Sub_Category__c, car.Sub_Category__c);
+        system.assertEquals(cases[0].CC_Functional_Group__c, car.CC_Functional_Group__c);
+        system.assertEquals(cases[0].CC_Category__c, car.CC_Category__c);
+        system.assertEquals(cases[0].CC_Sub_Category__c, car.CC_Sub_Category__c);
         system.assertEquals(cases[0].Case_Feed_Email__c, car.Email_Address__c);
         system.assertEquals(cases[0].Case_Feed_Email_Template_Id__c, car.Case_Feed_Email_Template_Id__c);
         system.assertEquals(cases[0].Campus__c, car.Campus__c);
@@ -218,8 +225,8 @@ public class Test_DynamicFeedbackController {
         controller.submit();
         test.stopTest();
         
-        cases = [SELECT Id, OwnerId, Origin__c, Functional_Group__c, Category__c,
-                    Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
+        cases = [SELECT Id, OwnerId, Origin__c, CC_Functional_Group__c, CC_Category__c,
+                    CC_Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
                     Campus__c, contactId
                     FROM Case];
         
@@ -242,8 +249,8 @@ public class Test_DynamicFeedbackController {
         controller.submit();
         test.stopTest();
         
-        cases = [SELECT Id, OwnerId, Origin__c, Functional_Group__c, Category__c,
-                    Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
+        cases = [SELECT Id, OwnerId, Origin__c, CC_Functional_Group__c, CC_Category__c,
+                    CC_Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
                     Campus__c, contactId, Description
                     FROM Case];
         
@@ -263,17 +270,17 @@ public class Test_DynamicFeedbackController {
         controller.submit();
         test.stopTest();
         
-        cases = [SELECT Id, OwnerId, Origin__c, Functional_Group__c, Category__c,
-                    Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
+        cases = [SELECT Id, OwnerId, Origin__c, CC_Functional_Group__c, CC_Category__c,
+                    CC_Sub_Category__c, Case_Feed_Email__c, Case_Feed_Email_Template_Id__c,
                     Campus__c, contactId
                     FROM Case];
         
         system.assertEquals(1, cases.size());
         system.assertEquals(cases[0].OwnerId, car.Queue_ID__c);
         system.assertEquals(cases[0].Origin__c, car.Origin__c);
-        system.assertEquals(cases[0].Functional_Group__c, car.Functional_Group__c);
-        system.assertEquals(cases[0].Category__c, car.Category__c);
-        system.assertEquals(cases[0].Sub_Category__c, car.Sub_Category__c);
+        system.assertEquals(cases[0].CC_Functional_Group__c, car.CC_Functional_Group__c);
+        system.assertEquals(cases[0].CC_Category__c, car.CC_Category__c);
+        system.assertEquals(cases[0].CC_Sub_Category__c, car.CC_Sub_Category__c);
         system.assertEquals(cases[0].Case_Feed_Email__c, car.Email_Address__c);
         system.assertEquals(cases[0].Case_Feed_Email_Template_Id__c, car.Case_Feed_Email_Template_Id__c);
         system.assertEquals(cases[0].Campus__c, car.Campus__c);

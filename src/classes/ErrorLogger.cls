@@ -94,8 +94,8 @@ public without sharing class  ErrorLogger {
                 }
                 
                 if (createCase) {
-                    sfCar = new List<Case_Assignment_Rule__c>([Select Queue_ID__c, Functional_Group__c, Category__c,
-                        Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c, Campus__c, Origin__c,
+                    sfCar = new List<Case_Assignment_Rule__c>([Select Queue_ID__c, CC_Functional_Group__c, CC_Category__c,
+                        CC_Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c, Campus__c, Origin__c,
                         Case_Record_Type_Id__c
                         FROM Case_Assignment_Rule__c
                         WHERE Origin__c = 'Error Logger' ORDER BY Priority__c DESC LIMIT 1]);
@@ -112,9 +112,9 @@ public without sharing class  ErrorLogger {
                         AND Type = 'Queue' LIMIT 1];
                     
                     newCase.OwnerId = sfCar[0].Queue_ID__c;
-                    newCase.Functional_Group__c = sfCar[0].Functional_Group__c;
-                    newCase.Category__c = sfCar[0].Category__c;
-                    newCase.Sub_Category__c = sfCar[0].Sub_Category__c;
+                    newCase.CC_Functional_Group__c = sfCar[0].CC_Functional_Group__c;
+                    newCase.CC_Category__c = sfCar[0].CC_Category__c;
+                    newCase.CC_Sub_Category__c = sfCar[0].CC_Sub_Category__c;
                     newCase.Case_Feed_Email__c = sfCar[0].Email_Address__c;
                     newCase.Case_Feed_Email_Template_Id__C = sfCar[0].Case_Feed_Email_Template_Id__c;
                     newCase.Campus__c = sfCar[0].Campus__c;
@@ -386,6 +386,8 @@ public without sharing class  ErrorLogger {
      */
     public static Case_Assignment_Rule__c createDefaultCar() {
         Case_Assignment_Rule__c defaultCar = new Case_Assignment_Rule__c();
+        List<Case_Classification__c> lstCaseCategory = [SELECT Id, Name, Parent__c FROM Case_Classification__c WHERE Active__c = true AND Name='General' AND Parent__r.Name='ASU Salesforce Support'];  // query category and functional group from case classification if it exists
+        List<RecordType> lstRT = [SELECT Id,DeveloperName FROM RecordType WHERE DeveloperName='Functional_Group' OR DeveloperName='Category']; // query record types of case classification object
         Integer priority; // Priority of the new CAR
         String QueueId = [SELECT Id FROM Group WHERE Name = 'ASU Salesforce Support (Case)'].Id; // Owner of the new CAR
         List<Case_Assignment_Rule__c> highestPriority = new List<Case_Assignment_Rule__c>(
@@ -405,9 +407,41 @@ public without sharing class  ErrorLogger {
         defaultCar.Priority__c = priority;
         
         // Other fields required by Error Logger
-        defaultCar.Functional_Group__c = 'ASU Salesforce Support';
-        defaultCar.Category__c = 'General';
-        defaultCar.Sub_Category__c = '';
+        // Assign Functional Group and Category if they exist
+        if(lstCaseCategory!=null && lstCaseCategory.size()>0) {
+            defaultCar.CC_Functional_Group__c = lstCaseCategory[0].Parent__c;
+            defaultCar.CC_Category__c = lstCaseCategory[0].Id;
+        }
+        // Create Functional Group and Category Record and then assign it to default CAR
+        else {
+            Case_Classification__c defaultFuncGroup=new Case_Classification__c();
+            defaultFuncGroup.Name='ASU Salesforce Support';
+            defaultFuncGroup.Record_Types__c='ASU Coach Outreach; ASU Service';
+            defaultFuncGroup.Record_Types_String__c='ASU Coach Outreach;ASU Service';
+            defaultFuncGroup.Active__c=true;
+            defaultFuncGroup.Visible__c=true;
+            if(lstRT[0].DeveloperName=='Functional_Group')
+                defaultFuncGroup.RecordTypeId=lstRT[0].Id;
+            else 
+                defaultFuncGroup.RecordTypeId=lstRT[1].Id;
+            
+            insert defaultFuncGroup;
+            
+            Case_Classification__c defaultCategory= new Case_Classification__c();
+            defaultCategory.Name='General';
+            defaultCategory.Active__c=true;
+            defaultCategory.Visible__c=true;
+            defaultCategory.Parent__c=defaultFuncGroup.Id;
+            if(lstRT[0].DeveloperName=='Category')
+                defaultCategory.RecordTypeId=lstRT[0].Id;
+            else 
+                defaultCategory.RecordTypeId=lstRT[1].Id;
+            
+            insert defaultCategory;
+            
+            defaultCar.CC_Functional_Group__c = defaultCategory.Parent__c;
+            defaultCar.CC_Category__c = defaultCategory.Id;
+        }
         defaultCar.Email_Address__c = ''; //ToDo see if we should add SF email here
         defaultCar.Case_Feed_Email_Template_Id__c = '';
         defaultCar.Campus__c = '';

@@ -22,15 +22,22 @@ private class Test_CaseListTransferController {
 
         List<Case_Assignment_Rule__c> carList = new List<Case_Assignment_Rule__c>();
 
+        
+        TestDataFactory.createFunctionalGroupWithCategory('Engineering', 'Eng', 'SubEng');
+        TestDataFactory.createFunctionalGroup('University Registrar Services');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Engineering'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Eng' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'SubEng' AND Parent__c =: cat.Id];
+        Case_Classification__c fgTwo = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'University Registrar Services'];
         Case_Assignment_Rule__c one = new Case_Assignment_Rule__c(
             CTPColumn__c = 'Colleges',
             CTPGroup__c = 'Engineering',
             CTPVisible__c = true,
             Email_Address__c = 'default@email.com',
-            Functional_Group__c = 'Engineering',
+            CC_Functional_Group__c = fg.Id,
             Label__c = 'Engineering (Default)',
-            Category__c = 'Eng',
-            Sub_Category__c = 'SubEng',
+            CC_Category__c = cat.Id,
+            CC_Sub_Category__c = subCat.Id,
             Queue_ID__c = String.valueOf(testGroup.Id).substring(0, 15)
         );
 
@@ -39,7 +46,7 @@ private class Test_CaseListTransferController {
             CTPGroup__c = 'Engineering',
             CTPVisible__c = true,
             Email_Address__c = 'default@email.com',
-            Functional_Group__c = 'Engineering',
+            CC_Functional_Group__c = fg.Id,
             Label__c = 'School of blah blah'
         );
 
@@ -48,7 +55,7 @@ private class Test_CaseListTransferController {
             CTPGroup__c = 'University Registrar Services',
             CTPVisible__c = true,
             Email_Address__c = 'default@email.com',
-            Functional_Group__c = 'University Registrar Services',
+            CC_Functional_Group__c = fgTwo.Id,
             Label__c = 'University Registrar Services (Default)'
         );
 
@@ -57,7 +64,7 @@ private class Test_CaseListTransferController {
             CTPGroup__c = 'University Registrar Services',
             CTPVisible__c = true,
             Email_Address__c = 'default@email.com',
-            Functional_Group__c = 'University Registrar Services',
+            CC_Functional_Group__c = fgTwo.Id,
             Label__c = 'School of blah blah'
         );
 
@@ -117,7 +124,7 @@ private class Test_CaseListTransferController {
         Test.stopTest();
 
         Case caseToAssert = [
-            SELECT Id, Functional_Group__c, OwnerId
+            SELECT Id, CC_Functional_Group__c, OwnerId
             FROM Case
             WHERE Id = :caseToTest.Id
         ];
@@ -128,7 +135,8 @@ private class Test_CaseListTransferController {
             WHERE Name = 'Test Group Name'
         ];
 
-        System.assertEquals('Engineering', caseToAssert.Functional_Group__c);
+        Case_Classification__c expectedResult = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Engineering'];
+        System.assertEquals(expectedResult.Id, caseToAssert.CC_Functional_Group__c);
         System.assertEquals(groupToAssert.Id, caseToAssert.OwnerId);
     }
 

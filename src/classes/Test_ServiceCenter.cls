@@ -38,6 +38,8 @@ private class Test_ServiceCenter{
         }
 
         insert testUserList;
+        
+        TestDataFactory.createFunctionalGroupWithCategory('Student-Centric Initiatives', 'Knowledge', 'Test');
     }
 
     @testSetup static void setUpEnrolledTestSessionA(){
@@ -366,6 +368,7 @@ private class Test_ServiceCenter{
         System.runAs(testUser){
             sc = new ServiceCenter();
             sc.suggestAnArticle.Description = 'Test submitting a suggestion';
+            sc.strArticleIdea = 'Description';
             PageReference submit = ApexPages.currentPage();
             submit.getParameters().put('Suggest', 'yes');
             System.assertEquals(submit.getURL(), sc.suggestAnArticleSubmit().getURL());

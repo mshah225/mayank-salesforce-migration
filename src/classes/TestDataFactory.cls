@@ -442,7 +442,7 @@ public class TestDataFactory {
     }
     
     public static List<Success_Student__c> createAdvisorStudents(List<Success_Pod__c> pods, Integer numberOfStudents) {
-        // Id advisorStudentRTID = RTIDHelper.getRTID('Success_Student__c', 'Advisor');
+        // Id advisorStudentRTID = IDHelper.getRTID('Success_Student__c', 'Advisor');
         List<Success_Student__c> result = new List<Success_Student__c>();
         Map<Id, List<Contact>> contacts = new Map<Id, List<Contact>>();
         
@@ -508,7 +508,12 @@ public class TestDataFactory {
         // Pods may end up with cases for students not in their pod
         // This can and has happened in the real world so we are accounting for it here
         List<Case> cases = new List<Case>();
-        
+        createFunctionalGroup('ASU Advisor Outreach');
+        createCategory('ASU Advisor Outreach', 'Outreach');
+        createCategory('ASU Advisor Outreach', 'Watchlist');
+        Id functionalGroup = [Select Id FROM case_classification__c WHERE name = 'ASU Advisor Outreach' LIMIT 1].Id;
+        Id categoryOutreach = [Select Id FROM case_classification__c WHERE name = 'Outreach' LIMIT 1].Id;
+        Id categoryWatchlist = [Select Id FROM case_classification__c WHERE name = 'Watchlist' LIMIT 1].Id;
         // Cases for pods
         for (Success_Pod__c sp : myAdvisorPods) {
             for (Integer x = 0; x < numberOfCases; x++) {
@@ -517,8 +522,8 @@ public class TestDataFactory {
                 	OwnerId = sp.OwnerId,
                     RecordTypeId = advisorOutReachId,
                     Status = 'Outreach Required',
-                    Functional_Group__c = 'ASU Advisor Outreach',
-                    Category__c = 'Outreach',
+                    CC_Functional_Group__c = functionalGroup,
+                    CC_Category__c = categoryOutreach,
                     Origin__c = 'Outreach',
                     Subject = 'Case Bloat ' + math.mod(x, 2),
                     Description = 'Case Bloat',
@@ -529,8 +534,8 @@ public class TestDataFactory {
                     OwnerId = sp.OwnerId,
                     RecordTypeId = advisorOutReachId,
                     Status = 'New',
-                    Functional_Group__c = 'ASU Advisor Outreach',
-                    Category__c = 'Watchlist',
+                    CC_Functional_Group__c = functionalGroup,
+                    CC_Category__c = categoryWatchlist,
                     Origin__c = 'Outreach',
                     Subject = 'Case Bloat ' + math.mod(x, 2),
                     Description = 'Case Bloat',
@@ -547,8 +552,8 @@ public class TestDataFactory {
                 OwnerId = UserInfo.getUserId(),
                 RecordTypeId = advisorOutReachId,
                 Status = 'Outreach Required',
-                Functional_Group__c = 'ASU Advisor Outreach',
-                Category__c = 'Watchlist',
+                CC_Functional_Group__c = functionalGroup,
+                CC_Category__c = categoryWatchlist,
                 Origin__c = 'Outreach',
                 Subject = 'Case Bloat ' + math.mod(x, 2),
                 Description = 'Case Bloat',
@@ -558,7 +563,43 @@ public class TestDataFactory {
         }
         insert cases;
     }
-    
+
+    /**
+     * Creates a functional group
+     */
+    public static Case_Classification__c createFunctionalGroup(string RT){
+        Case_Classification__c tmp = new Case_Classification__c();
+        tmp.RecordTypeId = [Select Id FROM RecordType WHERE Name ='Functional Group'].Id;
+		tmp.Name = RT;
+        tmp.Record_Types__c = 'ASU Service';
+		insert tmp;
+		return tmp;
+    }
+
+    public static Case_Classification__c createCategory(string parent, string name){
+        Case_Classification__c tmp = new Case_Classification__c();
+		tmp.Name = name;
+        tmp.RecordTypeId = [Select Id FROM RecordType WHERE Name = 'Category'].Id;
+        tmp.Parent__c = [Select Id FROM Case_Classification__c WHERE Name =: parent].Id;
+		insert tmp;
+		return tmp;
+    }
+
+    public static Case_Classification__c createSubCategory(String parent, string name){
+        Case_Classification__c tmp = new Case_Classification__c();
+		tmp.Name = name;
+        tmp.RecordTypeId = [Select Id FROM RecordType WHERE Name ='Sub Category'].Id;
+        tmp.Parent__c = [Select Id FROM Case_Classification__c WHERE Name =: parent].Id;
+		insert tmp;
+		return tmp;
+    }
+
+    public static void createFunctionalGroupWithCategory(string functionalGroupName, string categoryName, string subcategoryName){
+        createFunctionalGroup(functionalGroupName);
+        createCategory(functionalGroupName, categoryName);
+        createSubCategory(categoryName, subcategoryName);
+    }
+
     /**
      * Creates an exception object that can be used for testing exception handlers
      *

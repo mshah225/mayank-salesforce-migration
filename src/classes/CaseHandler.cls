@@ -1,5 +1,4 @@
-public without sharing class CaseHandler implements ITrigger
-{
+public without sharing class CaseHandler implements ITrigger {
     Map<ID, Contact> relatedContactMap = new Map<ID, Contact>();
     Map<Id, Campaign> sourceMap = new Map<Id, Campaign>();
     Map<Id, String> groupNameMap = new Map<Id, String>();
@@ -12,67 +11,85 @@ public without sharing class CaseHandler implements ITrigger
     * This method is called prior to execution of a BEFORE trigger. Use this to cache
     * any data required into maps prior execution of the trigger.
     */
-    public void bulkBefore()
-    {
+    public void bulkBefore() {
 
         // Call the Group Service to map all the group names to their ids
         groupNameMap = GroupService.mapGroupIdToName();
+		Set<String> caseClassificationsToQuery = new Set<String>();
+		List<CaseClassifier> casesToClassify = new List<CaseClassifier>();
 
-        if (Trigger.isInsert)
-        {
+        if (Trigger.isInsert) {
             LogSuite.log('query', 'Calling recruitment case RT query');
             recruitmentCaseRT = new List<RecordType>([SELECT Id FROM RecordType WHERE SobjectType='Case' AND DeveloperName = 'ASU_Admission_Services']);
-            if (recruitmentCaseRT.size() < 1)
-            {
+            if (recruitmentCaseRT.size() < 1) {
                 return;
             }
 
             Set<Id> caseContactIdSet = new Set<ID>();
             Set<Id> campaignIdSet = new Set<Id>();
 
-            for (Case c: (List<Case>)Trigger.new)
-            {
-                if (c.RecordTypeId == recruitmentCaseRT[0].Id)
-                {
+            for (Case c: (List<Case>)Trigger.new) {
+                if (c.RecordTypeId == recruitmentCaseRT[0].Id) {
                     campaignIdSet.add(c.Case_Source__c);
                     // Case "a"
                     // SFR-1109; removed boolean check here to correct bug on webform submissions
                     //if (c.Associate_Case_to_Active_Opportunity__c == true) {
                     caseContactIdSet.add(c.ContactId);
                     //}
-                }
-            }
+				}
+
+				// Check each incoming case for valid classification fields.
+				CaseClassifier classifier = new CaseClassifier(c);
+				if (classifier.hasInvalidCaseClassification()) {
+					caseClassificationsToQuery.addAll(classifier.getMissingClassifications());
+					casesToClassify.add(classifier);
+				}
+			}
+
+			if (!casesToClassify.isEmpty()) {
+				List<Case_Classification__c> classifications = [
+					SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
+					FROM Case_Classification__c
+					WHERE Name IN :caseClassificationsToQuery
+					AND Active__c = TRUE
+				];
+				Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
+				for (Case_Classification__c classification : classifications) {
+					String classificationName = CaseClassifier.getClassificationUniqueName(
+						classification.Name,
+						classification.Parent__c == null ? '' : classification.Parent__r.Name,
+						(classification.Parent__c == null || classification.Parent__r.Parent__c == null) ? '' :  classification.Parent__r.Parent__r.Name,
+						classification.RecordType.Name);
+					nameToClassification.put(classificationName, classification);
+				}
+
+				for (CaseClassifier caseToClassify : casesToclassify) {
+					caseToClassify.classifyCase(nameToClassification);
+				}
+			}
 
             LogSuite.log('query', 'Calling related contact map query');
             relatedContactMap = new Map<Id, Contact>([SELECT Id, (Select Id, StageName, Territory_Assignment_Last_Rule_Type__c, OwnerId, Owner.IsActive, Enrollment_Coach__c, Enrollment_Coach__r.IsActive, CreatedDate, IsClosed FROM Opportunities__r ORDER BY IsClosed ASC, CreatedDate DESC) FROM Contact WHERE Id in :caseContactIdSet]);
 
-            if (campaignIdSet.size() > 0)
-            {
+            if (campaignIdSet.size() > 0) {
                 LogSuite.log('query', 'Calling source map query');
                 sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.Category__c, Case_Assignment_Rule__r.Sub_Category__c, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.Functional_Group__c, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
             }
         }
-        else if(Trigger.isUpdate)
-        {
+        else if (Trigger.isUpdate) {
             //Handles Webform cases (webforms.asu.edu)
-            for(Case c : (List<Case>)Trigger.new)
-            {
-                if(c.Status == 'Processing' && c.Deep_Links__c != NULL)
-                {
+            for (Case c : (List<Case>)Trigger.new) {
+                if (c.Status == 'Processing' && c.Deep_Links__c != NULL) {
                     List<String> links = c.Deep_Links__c.split('Click Here');
-                    if(links.size() == (Integer.valueof(c.Number_of_Files__c) + 1))
-                    {
+                    if (links.size() == (Integer.valueof(c.Number_of_Files__c) + 1)) {
                         c.Status = 'New';
 
                         List<String> subjectSplit = c.Subject.split('%');
-                        if(subjectSplit.size() >= 2)
-                        {
+                        if (subjectSplit.size() >= 2) {
                             String queueId = '';
-                            for(Integer x = 0; x < subjectSplit.size(); x++)
-                            {
+                            for (Integer x = 0; x < subjectSplit.size(); x++) {
                                 List<String> tokenSplit = subjectSplit[x].split(':');
-                                if(tokenSplit.size() >= 2 && tokenSplit[0] == 'Queue' && tokenSplit[1] != '')
-                                {
+                                if (tokenSplit.size() >= 2 && tokenSplit[0] == 'Queue' && tokenSplit[1] != '') {
                                     queueId = tokenSplit[1];
                                     c.OwnerId = queueId;
                                     System.debug(c.OwnerId);
@@ -90,15 +107,43 @@ public without sharing class CaseHandler implements ITrigger
                                 AND Type = 'Queue' LIMIT 1
                         ].Id;
 
-                        if(c.OwnerId == faCaseQueue)
-                        {
+                        if (c.OwnerId == faCaseQueue) {
                             c.Visible_By_Contact__c = FALSE;
                             c.Status = 'Closed: Resolved';
                             c.IsClosedOnCreate = TRUE;
                         }
                     }
                 }
+
+				// Check each incoming case for valid classification fields.
+				CaseClassifier classifier = new CaseClassifier(c);
+				if (classifier.hasInvalidCaseClassification()) {
+					caseClassificationsToQuery.addAll(classifier.getMissingClassifications());
+					casesToClassify.add(classifier);
+				}
             }
+
+			if (!casesToClassify.isEmpty()) {
+				List<Case_Classification__c> classifications = [
+					SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
+					FROM Case_Classification__c
+					WHERE Name IN :caseClassificationsToQuery
+					AND Active__c = TRUE
+				];
+				Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
+				for (Case_Classification__c classification : classifications) {
+					String classificationName = CaseClassifier.getClassificationUniqueName(
+						classification.Name,
+						classification.Parent__c == null ? '' : classification.Parent__r.Name,
+						(classification.Parent__c == null || classification.Parent__r.Parent__c == null) ? '' :  classification.Parent__r.Parent__r.Name,
+						classification.RecordType.Name);
+					nameToClassification.put(classificationName, classification);
+				}
+
+				for (CaseClassifier caseToClassify : casesToclassify) {
+					caseToClassify.classifyCase(nameToClassification);
+				}
+			}
         }
     }
 
@@ -140,7 +185,7 @@ public without sharing class CaseHandler implements ITrigger
                 String emplid = '';
                 String first = '';
                 String last = '';
-                
+
                 for(Integer x = 0; x < subjectSplit.size(); x++)
                 {
                     List<String> tokenSplit = subjectSplit[x].split(':');

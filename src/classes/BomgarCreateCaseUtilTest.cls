@@ -32,7 +32,28 @@ private class BomgarCreateCaseUtilTest
         testBomgarUser.FederationIdentifier = 'testuser@admin.asu.edu';
         testBomgarUser.bomgar__Bomgar_Username__c = 'testuser';
         insert testBomgarUser;
-
+        
+        Case_Classification__c cc = new Case_Classification__c();
+        cc.Name = 'Help Desk';
+        cc.Active__c = true;
+        cc.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Functional Group').getRecordTypeId();
+        insert cc;
+        
+        List<Case_Classification__c> lstCC = new List<Case_Classification__c>();
+        Case_Classification__c cc1 = new Case_Classification__c();
+        cc1.Name = 'Finances (Help Desk)';
+        cc1.Active__c = true;
+        cc1.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Category').getRecordTypeId();
+        cc1.Parent__c = cc.Id;
+        lstCC.add(cc1);
+        
+        Case_Classification__c cc2 = new Case_Classification__c();
+        cc2.Name = 'General Help Desk';
+        cc2.Active__c = true;
+        cc2.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Category').getRecordTypeId();
+        cc2.Parent__c = cc.Id;
+        lstCC.add(cc2);
+        insert lstCC;
     }
 
     @isTest static void testCreateCaseFA()
@@ -56,14 +77,14 @@ private class BomgarCreateCaseUtilTest
         value = BomgarCreateCaseUtil.createCase(webEvent);
 
         Case testCase = [
-            SELECT Id, Category__c
+            SELECT Id, CC_Category__r.Name
             FROM Case
             WHERE Id = :value
         ];
 
         Test.stopTest();
 
-        System.assertEquals('Finances (Help Desk)', testCase.Category__c);
+        System.assertEquals('Finances (Help Desk)', testCase.CC_Category__r.Name);
     }
 
     @isTest static void testCreateCaseOther()
@@ -81,14 +102,14 @@ private class BomgarCreateCaseUtilTest
         value = BomgarCreateCaseUtil.createCase(webEvent);
 
         Case testCase = [
-            SELECT Id, Category__c
+            SELECT Id, CC_Category__r.Name
             FROM Case
             WHERE Id = :value
         ];
 
         Test.stopTest();
 
-        System.assertEquals('General Help Desk', testCase.Category__c);
+        System.assertEquals('General Help Desk', testCase.CC_Category__r.Name);
     }
 
     @isTest static void testCreateCaseNoExternalKey()
@@ -106,14 +127,14 @@ private class BomgarCreateCaseUtilTest
         value = BomgarCreateCaseUtil.createCase(webEvent);
 
         Case testCase = [
-            SELECT Id, Category__c
+            SELECT Id, CC_Category__r.Name
             FROM Case
             WHERE Id = :value
         ];
 
         Test.stopTest();
 
-        System.assertEquals('General Help Desk', testCase.Category__c);
+        System.assertEquals('General Help Desk', testCase.CC_Category__r.Name);
     }
 
     @isTest static void testContactLookupNoEmplId()

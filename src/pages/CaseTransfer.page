@@ -413,6 +413,9 @@
         <br />
         <chatter:feed entityId="{!Case.Id}" feedItemType="TextPost"/>
     </apex:outputPanel>
+    <!--<apex:outputPanel id="completePage" rendered="{!IF(page = 5,true,false)}">
+        Successfully Transferred Case to {!SelectedCar.CC_Functional_Group__r.Name}
+    </apex:outputPanel>-->
 </div>
 
 <script>

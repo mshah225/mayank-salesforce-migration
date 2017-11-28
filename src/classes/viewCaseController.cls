@@ -1,5 +1,6 @@
 public class viewCaseController{
 
+
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
     private Date today;
     private Decimal origPin;
@@ -7,7 +8,6 @@ public class viewCaseController{
     private Term__c termcB;
     private Map<String, String> viewAsMap;
     public Id caseId {get;set;}
-
     public Decimal newPin { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -19,16 +19,17 @@ public class viewCaseController{
     public String userAsurite;
     public Contact userContact;
     public String viewAsUrl { get; set; }
+    public String caseFunctionalGroup { get; set; }
     public List<Opportunity> oppList;
     
    
+
     public viewCaseController(){
         viewingAs = false;
         checkForViewAs();
         popUserContact();
         popTerms();
         setCaseId();
-
     }
 
     
@@ -91,7 +92,6 @@ public class viewCaseController{
 
     public void setCaseId(){
         caseId=ApexPages.currentPage().getParameters().get('id');
-
     }
     
      public Case getCaseDetails(){
@@ -101,12 +101,15 @@ public class viewCaseController{
             );
         }
         else{
-            return [
-                SELECT Id, CaseNumber, Functional_Group__c, Subject, Description,
+            Case returnCase=[
+                SELECT Id, CaseNumber, RecordType.Name, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
                     Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
                 FROM Case
                 WHERE Id = :ApexPages.currentPage().getParameters().get('Id')
+                LIMIT 1
             ];
+        
+            return returnCase;
         }
     }
 

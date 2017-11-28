@@ -30,6 +30,12 @@ public with sharing class Test_CaseInboundEmailHandler {
         String fallbackQueueId = String.valueOf(caseGroup.Id).substring(0,15);
         String templateId = String.valueOf(e1.Id).substring(0,15);
         
+		
+		TestDataFactory.createFunctionalGroupWithCategory('Test Group', 'Test Category', 'Test Subcategory');
+		TestDataFactory.createFunctionalGroupWithCategory('Test RMM Group 1', 'Test RMM Category 1', 'Test RMM Subcategory 1');
+		TestDataFactory.createFunctionalGroupWithCategory('Test RMM Group 2', 'Test RMM Category 2', 'Test RMM Subcategory 2');
+		TestDataFactory.createFunctionalGroupWithCategory('Test Group 2', 'Test Category 2', 'Test Subcategory 2');
+		
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c();
         car.Email_Address__c = 'service12345123451234512345@test.test'; 
         car.Customer_notice_email_from_name__c = 'Test Service';
@@ -37,6 +43,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         car.Queue_id__c = queueId;
         car.Fallback_Queue_Id__c = fallbackQueueId;
         car.Origin__c = 'Test Origin';
+        car.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Test Group' LIMIT 1].Id;
+        car.CC_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' LIMIT 1].Id;
+        car.CC_Sub_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' LIMIT 1].Id;
         car.Functional_Group__c = 'Test Group';
         car.Category__c = 'Test Category';
         car.Sub_Category__c = 'Test Subcategory';
@@ -51,6 +60,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         rmmCar1.Queue_id__c = queueId;
         rmmCar1.Fallback_Queue_Id__c = fallbackQueueId;
         rmmCar1.Origin__c = 'Test RMM Origin 1';
+        rmmCar1.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Test RMM Group 1' LIMIT 1].Id;
+        rmmCar1.CC_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test RMM Category 1' LIMIT 1].Id;
+        rmmCar1.CC_Sub_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test RMM Subcategory 1' LIMIT 1].Id;
         rmmCar1.Functional_Group__c = 'Test RMM Group 1';
         rmmCar1.Category__c = 'Test RMM Category 1';
         rmmCar1.Sub_Category__c = 'Test RMM Subcategory 1';
@@ -65,6 +77,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         rmmCar2.Queue_id__c = queueId;
         rmmCar2.Fallback_Queue_Id__c = fallbackQueueId;
         rmmCar2.Origin__c = 'Test RMM Origin 2';
+        rmmCar2.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Test RMM Group 2' LIMIT 1].Id;
+        rmmCar2.CC_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test RMM Category 2' LIMIT 1].Id;
+        rmmCar2.CC_Sub_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test RMM Subcategory 2' LIMIT 1].Id;
         rmmCar2.Functional_Group__c = 'Test RMM Group 2';
         rmmCar2.Category__c = 'Test RMM Category 2';
         rmmCar2.Sub_Category__c = 'Test RMM Subcategory 2';
@@ -79,6 +94,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         carDefault.Queue_Id__c = queueId;
         carDefault.Fallback_Queue_Id__c = fallbackQueueId;
         carDefault.Origin__c = 'Test Origin 2';
+        carDefault.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Test Group 2' LIMIT 1].Id;
+        carDefault.CC_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category 2' LIMIT 1].Id;
+        carDefault.CC_Sub_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory 2' LIMIT 1].Id;
         carDefault.Functional_Group__c = 'Test Group 2';
         carDefault.Category__c = 'Test Category 2';
         carDefault.Sub_Category__c = 'Test Subcategory 2';
@@ -111,6 +129,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 
     @isTest static void newContact() 
     {
+        Test.startTest();
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
@@ -161,10 +180,12 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
+        Test.stopTest();
     }
 
     @isTest static void newContactLongName() 
     {
+        Test.startTest();
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
         Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
@@ -214,11 +235,13 @@ public with sharing class Test_CaseInboundEmailHandler {
         ];
 
         System.assertEquals('test', createdCase.Subject);
-        System.assertEquals('New', createdCase.Status); 
+        System.assertEquals('New', createdCase.Status);
+        Test.stopTest();
     } 
 
     @isTest static void existingContact() 
     {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -240,19 +263,22 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status, CC_Functional_Group__c
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
         ];
 
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Test Group'];
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
-        System.assertEquals('Test Group', createdCase.Functional_Group__c);
+        System.assertEquals(fg.Id, createdCase.CC_Functional_Group__c);
+        Test.stopTest();
    }
 
     @isTest static void existingContactCcOnly() 
     {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -277,20 +303,24 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status, CC_Functional_Group__c
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
         ];
-
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Test Group'];
+        
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
-        System.assertEquals('Test Group', createdCase.Functional_Group__c);
+        System.assertEquals(fg.Id, createdCase.CC_Functional_Group__c);
+      
+        Test.stopTest();
     }  
 
 
     @isTest static void multipleExistingContacts() 
     {
+        Test.startTest();
         Contact c1 = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test');
         Contact c2 = new Contact(FirstName='First', LastName='Last', Email='user@work.com.test', ASU_Gmail__c='user@acme.com.test');
         insert c1;
@@ -323,6 +353,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
+        Test.stopTest();
     }  
 
     @isTest static void existingContactDefaultRule() 
@@ -393,6 +424,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals(expectedLostEmail.Recipient__c, actualLostEmail.Recipient__c, 'Unexpected differences in the LostEmails');
         System.assertEquals(expectedLostEmail.RejectedAttachments__c, actualLostEmail.RejectedAttachments__c, 'Unexpected differences in the LostEmails');
         System.assertEquals(expectedLostEmail.Cause__c, actualLostEmail.Cause__c, 'Unexpected differences in the LostEmails');
+    
     }
 
     @isTest static void createLostEmailWithAttachment()
@@ -458,6 +490,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         //
         System.assert(attachments.size() == 2, 'Unexpected number of Attachments for this LostEmail');
+    
     }
 
     @isTest static void reopenACaseFromEmail()
@@ -469,9 +502,13 @@ public with sharing class Test_CaseInboundEmailHandler {
         List<Case> testCases = CaseService.createTestCases(1, c);
         Case createdCase = testCases.get(0);
         createdCase.Status = 'Closed: Resolved';
+        TestDataFactory.createFunctionalGroup('CaseFuncGroup');
+        TestDataFactory.createFunctionalGroup('External Unit');
+        Id CFG = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'CaseFuncGroup' LIMIT 1].Id;
+        Id EU = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'External Unit' LIMIT 1].Id;
         createdCase.Most_Recent_Queue__c = 'CaseQueue';
-        createdCase.Most_Recent_Functional_Group__c = 'CaseFuncGroup';
-        createdCase.Functional_Group__c = 'External Unit';
+        createdCase.CC_Most_Recent_Functional_Group__c = CFG;
+        createdCase.CC_Functional_Group__c = EU;
 
         insert createdCase;
 
@@ -495,12 +532,12 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         // Verify that the case status was updated
         createdCase = [
-                SELECT Status, Functional_Group__c
+                SELECT Status, CC_Functional_Group__c
                 FROM Case
                 WHERE Id = :createdCase.Id
         ];
 
-        System.assertEquals('CaseFuncGroup', createdCase.Functional_Group__c, 'External Unit case was not re-opened to most recent functional group');
+        System.assertEquals(EU, createdCase.CC_Functional_Group__c, 'External Unit case was not re-opened to most recent functional group');
         System.assertEquals('Re-Opened', createdCase.Status, 'Case was not reopened correctly');
     }
 
@@ -553,6 +590,7 @@ public with sharing class Test_CaseInboundEmailHandler {
 
     @isTest static void testRMMPartialMatchExact() 
     {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -574,19 +612,21 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status, CC_Functional_Group__c
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
         ];
-
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Test RMM Group 1'];
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
-        System.assertEquals('Test RMM Group 1', createdCase.Functional_Group__c);
+        System.assertEquals(fg.Id, createdCase.CC_Functional_Group__c);
+        Test.stopTest();
    }  
 
     @isTest static void testRMMPartialMatchPartial() 
     {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -608,19 +648,23 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status, CC_Functional_Group__c
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
         ];
-
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Test RMM Group 2'];
+        
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
-        System.assertEquals('Test RMM Group 2', createdCase.Functional_Group__c);
+        System.assertEquals(fg.Id, createdCase.CC_Functional_Group__c);
+  
+        Test.stopTest();
    } 
 
   @isTest static void testBothBodiesPopulated()
    {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -651,10 +695,13 @@ public with sharing class Test_CaseInboundEmailHandler {
         ];
 
         System.assert(createdCase.Description == 'This is a plaintext body');
+        
+        Test.stopTest();
    }
 
    @isTest static void testHTMLBodyPopulated()
    {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -685,10 +732,13 @@ public with sharing class Test_CaseInboundEmailHandler {
         ];
 
         System.assert(createdCase.Description == 'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\nThis is a HTML body');
+   
+        Test.stopTest();
    }
 
    @isTest static void testNoBodiesPopulatedNoAttachment()
    {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -719,10 +769,12 @@ public with sharing class Test_CaseInboundEmailHandler {
        
 		System.assert(createdCase.Description != null);
         System.assert(createdCase.Description.contains('without email body or attachment'));
+        Test.stopTest();
    }
 
    @isTest static void testNoBodiesPopulatedBinaryAttachment()
    {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -761,10 +813,12 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assert(createdCase.Description != null);
         System.assert(createdCase.Description.contains('Attachment received at'));
+        Test.stopTest();
    }
 
    @isTest static void testNoBodiesPopulatedTextAttachment()
    {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -804,10 +858,12 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assert(createdCase.Description != null);
         System.assert(createdCase.Description.contains('Attachment received at'));
+        Test.stopTest();
    }
 
    @isTest static void testOriginalEmailPresent()
    {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -851,10 +907,14 @@ public with sharing class Test_CaseInboundEmailHandler {
         ];
 
         System.assert(createdCase.Intended_Recipient__c == 'gwgmer@gmail.com');
+        
+        Test.stopTest();
    }
 
    @isTest static void testOriginalEmailNotPresent1()
    {
+   
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -897,10 +957,12 @@ public with sharing class Test_CaseInboundEmailHandler {
         ];
 
         System.assert(createdCase.Intended_Recipient__c == null);
+        Test.stopTest();
    }
 
    @isTest static void testOriginalEmailNotPresent2()
    {
+        Test.startTest();
         Contact c = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
         insert c;
 
@@ -930,6 +992,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         ];
 
         System.assert(createdCase.Intended_Recipient__c == null);
+        Test.stopTest();
    }
    
 }

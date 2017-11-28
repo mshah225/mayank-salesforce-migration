@@ -289,14 +289,18 @@ public with sharing class Test_CaseHandler {
         string queueId = String.valueOf(testGroup.Id).substring(0,15);
         string templateId = String.valueOf(e.Id).substring(0,15);
         
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id]; 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
                                                                   customer_notice_email_from_name__c = 'Test Service',
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
                                                                   origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   priority__c = 99);
         insert car;
 
@@ -305,9 +309,9 @@ public with sharing class Test_CaseHandler {
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
                                                                   origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   priority__c = 999);
         insert carDefault;
 
@@ -362,10 +366,10 @@ public with sharing class Test_CaseHandler {
         Test.stopTest();
 
         //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
-        List<Case> newCaseList = new List<Case>([SELECT Id, Category__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, CC_Category__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
-            system.assert(ca.Category__c == 'Test Category', 'Case Category was not assigned to CAR Category');
+            system.assert(ca.CC_Category__c == cat.Id, 'Case Category was not assigned to CAR Category');
         }
     }   
 
@@ -445,14 +449,19 @@ public with sharing class Test_CaseHandler {
         string queueId = String.valueOf(testGroup.Id).substring(0,15);
         string templateId = String.valueOf(e.Id).substring(0,15);
         
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id]; 
+        
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
                                                                   customer_notice_email_from_name__c = 'Test Service',
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
                                                                   origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services - Undergraduate',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach',
                                                                   priority__c = 99);
         insert car;
@@ -462,9 +471,9 @@ public with sharing class Test_CaseHandler {
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
                                                                   origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services - Undergraduate',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   priority__c = 999);
         insert carDefault;
 
@@ -520,7 +529,7 @@ public with sharing class Test_CaseHandler {
         Test.stopTest();
 
         //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
-        List<Case> newCaseList = new List<Case>([SELECT Id, Category__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, CC_Category__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == ECUser.Id, 'Case owner was not assigned to Enrollment Coach');
         }
@@ -586,14 +595,19 @@ public with sharing class Test_CaseHandler {
         string queueId = String.valueOf(testGroup.Id).substring(0,15);
         string templateId = String.valueOf(e.Id).substring(0,15);
         
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+        
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
                                                                   customer_notice_email_from_name__c = 'Test Service',
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
                                                                   //origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services - Undergraduate',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   priority__c = 99);
         insert car;
 
@@ -602,9 +616,9 @@ public with sharing class Test_CaseHandler {
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
                                                                   origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services - Undergraduate',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   priority__c = 999);
         insert carDefault;
 
@@ -659,10 +673,10 @@ public with sharing class Test_CaseHandler {
         Test.stopTest();
 
         //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
-        List<Case> newCaseList = new List<Case>([SELECT Id, functional_group__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
-            system.assert(ca.functional_group__c == 'Admission Services - Undergraduate', 'Case Functional Group was not assigned to CAR Functional Group');
+            system.assert(ca.CC_functional_group__c == fg.Id, 'Case Functional Group was not assigned to CAR Functional Group');
         }
     }   
 
@@ -727,14 +741,19 @@ public with sharing class Test_CaseHandler {
         string queueId = String.valueOf(testGroup.Id).substring(0,15);
         string templateId = String.valueOf(e.Id).substring(0,15);
         
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+        
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
                                                                   customer_notice_email_from_name__c = 'Test Service',
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
                                                                   origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services - Undergraduate',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   priority__c = 99);
         insert car;
 
@@ -743,9 +762,9 @@ public with sharing class Test_CaseHandler {
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
                                                                   origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services - Undergraduate',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   priority__c = 999);
         insert carDefault;
 
@@ -889,14 +908,19 @@ public with sharing class Test_CaseHandler {
         string queueId = String.valueOf(testGroup.Id).substring(0,15);
         string templateId = String.valueOf(e.Id).substring(0,15);
         
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+        
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
                                                                   customer_notice_email_from_name__c = 'Test Service',
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
                                                                   origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services - Undergraduate',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   priority__c = 99);
         insert car;
 
@@ -905,9 +929,9 @@ public with sharing class Test_CaseHandler {
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
                                                                   origin__c = 'Test Origin',
-                                                                  functional_group__c = 'Admission Services - Undergraduate',
-                                                                  category__c = 'Test Category',
-                                                                  sub_category__c = 'Test Subcategory',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
                                                                   Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach',
                                                                   priority__c = 999);
         insert carDefault;
@@ -998,14 +1022,13 @@ public with sharing class Test_CaseHandler {
         Test.stopTest();
 
         Case stat = [
-            SELECT Status, Visible_by_Contact__c, IsClosedOnCreate
+            SELECT Status, Visible_by_Contact__c
             FROM Case
             WHERE Id = :c.Id LIMIT 1
         ];
 
-        System.assert(stat.Status == 'Closed: Resolved');
+        System.assert(stat.Status == 'Closed: Resolved (Webforms)');
         System.assert(stat.Visible_by_Contact__c == FALSE);
-        System.assert(stat.IsClosedOnCreate == TRUE);
     }
 
     static testmethod void testCreateWebformsCase()
@@ -1152,5 +1175,47 @@ public with sharing class Test_CaseHandler {
         
         Case stat = [SELECT Status FROM Case WHERE Id = :c.Id LIMIT 1];
         System.assert(stat.Status == 'Processing');
+    }
+
+    static testmethod void TestRejectWebformsCaseReopen()
+    {
+        Id fa_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'Financial Aid (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        User apiDrupalUser = [
+            SELECT Id
+            FROM User
+            WHERE Name = 'API ASU DRUPAL'
+        ];
+
+        Contact con = createContact();
+        Case c = createCase(fa_id, con);
+        c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
+        c.Number_of_Files__c = '3';
+        update c;
+
+        Test.startTest();
+        System.runAs(apiDrupalUser) 
+        {
+            c.Subject = 'Test Subject%ASURITE:' + con.EMPLID__c + '%Queue:' + fa_id + '%First:' + con.FirstName + '%Last:' + con.LastName;
+            c.Status = 'Processing';
+            c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />';
+            update c;
+        }
+        Test.stopTest();
+
+        c = [
+            SELECT Status, Subject 
+            FROM Case 
+            WHERE Id = :c.Id 
+            LIMIT 1
+        ];
+
+        System.assertEquals('Closed: Resolved (Webforms)', c.Status);
+        System.assertEquals('Test Subject', c.Subject);
     }
 }

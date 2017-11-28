@@ -230,7 +230,7 @@ private class Test_SubscriptionCenter {
         SubscriptionCenterController controller;
         Id subscriber = [SELECT Id FROM Contact LIMIT 1].Id;
         List<Id> fakeResults = new List<Id>();
-        
+        Test.startTest();
         for (Campaign c : [SELECT Id FROM Campaign]) {
             fakeResults.add(c.Id);
         }
@@ -318,7 +318,7 @@ private class Test_SubscriptionCenter {
         system.runAs(guestUser) {
             controller.upsertSearchResults();
         }
-        
+        Test.stopTest();
         errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
         
         system.assertEquals(1, errorCases.size());

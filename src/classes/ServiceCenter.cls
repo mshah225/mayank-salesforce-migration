@@ -12,6 +12,7 @@ public with sharing class ServiceCenter
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
     public Case suggestAnArticle { get; set; }
+    public String strArticleIdea { get; set; }
     public Contact userContact;
     public Decimal newPin { get; set; }
     public String firstName { get; set; }
@@ -115,10 +116,10 @@ public with sharing class ServiceCenter
         }
 
         suggestAnArticle.Subject = 'Suggest An Article';
-        suggestAnArticle.Description = suggestAnArticle.Description;
+        suggestAnArticle.Description = strArticleIdea;
         suggestAnArticle.ContactId = userContact.Id;
-        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
-        suggestAnArticle.Category__c = 'Knowledge';
+        suggestAnArticle.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Student-Centric Initiatives' LIMIT 1].Id;
+				suggestAnArticle.CC_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Knowledge' AND Parent__c =: suggestAnArticle.CC_Functional_Group__c LIMIT 1].Id;
         suggestAnArticle.Origin__c = 'My ASU';
         suggestAnArticle.Visible_by_Contact__c = false;
 

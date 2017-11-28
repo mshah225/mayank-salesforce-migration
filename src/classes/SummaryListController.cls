@@ -74,7 +74,7 @@ public class SummaryListController {
                 'FROM Case ' +
                 'WHERE OwnerId = \'' + ownerId + '\' ' +
                 'AND subject =  \'' + subject + '\' ' +
-                'AND Category__c != \'Watchlist\' ' +
+                'AND CC_Category__c NOT IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
                 'AND RecordTypeId = \'' + proactiveCaseRTID + '\' ' +
                 'AND IsClosed = false';
 

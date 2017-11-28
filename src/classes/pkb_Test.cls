@@ -14,6 +14,7 @@ private class pkb_Test
 
     static testMethod void testController()
     {
+        Test.startTest();
         setupData();
         setupSettingsData();
         Id kaId = (Id)kavObj.get('KnowledgeArticleId');
@@ -90,7 +91,6 @@ private class pkb_Test
         pkbCon.nextPage();
         pkbCon.prevPage();
         System.assertEquals(pkbCon.currPage, 1);
-
         // test basic defferal -- a deflection record should be created with an article associated to it since an article is being viewed
         pkbCon.deferred();
         pafds = [
@@ -209,6 +209,7 @@ private class pkb_Test
         pkbCon.theCud.reqType = validType;
         pkbCon.createCase();
         pkbCon.theCase.AccountId = '0013010101jQrdW'; // fake account number, on purpose, have to call this after createCase since createCase instantiates theCase
+        Test.stopTest();
         pkbCon.insertRecords();
         System.debug('***** CREATE CASE FINISHED *****');
         System.assert(pkbCon.caseCreateError);
@@ -236,8 +237,9 @@ private class pkb_Test
 
     static testMethod void testSettingsController()
     {
+        Test.startTest();
         setupSettingsData();
-
+        Test.stopTest();
         pkb_SettingsController refCon = new pkb_SettingsController();
         pkb_SettingsController pkbsc;
         PageReference p;
@@ -271,7 +273,9 @@ private class pkb_Test
 
     static testMethod void testSettings_CTI_keywords()
     {
+        Test.startTest();
         setupSettingsData();
+        Test.stopTest();
 
         pkb_SettingsController refCon = new pkb_SettingsController();
         pkb_SettingsController pkbsc;
@@ -326,9 +330,11 @@ private class pkb_Test
 
     static testMethod void test_searchString()
     {
+        Test.startTest();
         setupData();
         setupSettingsData();
-
+        Test.stopTest();
+    
         Id kaId = (Id)kavObj.get('KnowledgeArticleId');
         Id kavId = (Id)kavObj.get('Id');
         String catString;

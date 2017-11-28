@@ -18,7 +18,7 @@ public with sharing class FullCaseCommentsController {
                 SELECT Id
                 FROM Case
                 WHERE ContactId = :theContact.Id
-                AND RecordTypeId = :RTIDHelper.getRTID('Case', 'ASU Coach Outreach')
+                AND RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Coach_Outreach')
             ]);
 
             if (coachCaseMap.size() > 0) {

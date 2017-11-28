@@ -173,9 +173,4 @@ public class Test_ShowMyCases {
         System.assert(!smsc.query.contains('LIKE'));
     }
     
-    public static testmethod void Test_nullQuery(){
-        smsc.query = NULL;
-        List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
-        System.assertEquals(errorList.size(), 1);
-    }
 }

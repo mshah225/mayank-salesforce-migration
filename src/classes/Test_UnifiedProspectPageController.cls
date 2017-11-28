@@ -5,9 +5,12 @@ private class Test_UnifiedProspectPageController
     private static Contact contact;
     private static Opportunity opportunity;
     private static Case c;
+    private static Case_Classification__c fgroup;
 
     @testSetup static void setUpTest()
     {
+        TestDataFactory.createFunctionalGroup('Test Group');
+    
         Account testAccount = new Account(
             Name = 'Test School'
         );
@@ -153,6 +156,13 @@ private class Test_UnifiedProspectPageController
         contact.Phone = '4803805555';
         contact.MobilePhone = '4803806666';
         uppc.smsText = TRUE;
+        
+        fgroup = [
+            SELECT Id
+            FROM Case_Classification__c 
+            WHERE RecordType.Name = 'Functional_Group' AND active__c = true
+            LIMIT 1
+        ];
     }
 
     private static testmethod void testUndergradCaseCreationCaseNoInterest()
@@ -168,7 +178,7 @@ private class Test_UnifiedProspectPageController
         uppc.originSelection = 'Email';
         c.Subject = 'Test';
         c.Description = 'Test';
-        c.Functional_Group__c = 'ASU Online';
+        c.CC_Functional_Group__c = fgroup.Id;
         c.Category__c = 'Admissions';
         c.Sub_Category__c = 'International';
 
@@ -216,7 +226,7 @@ private class Test_UnifiedProspectPageController
         c = [
             SELECT Subject, Status, Case_Source__c, Origin__c
             FROM Case
-            WHERE Functional_Group__c = 'ASU Online'
+            WHERE CC_Functional_Group__c = :fgroup.id
             LIMIT 1
         ];
 
@@ -393,7 +403,7 @@ private class Test_UnifiedProspectPageController
         uppc.originSelection = 'Incoming Call';
         c.Subject = 'Test';
         c.Description = 'Test';
-        c.Functional_Group__c = 'ASU Online';
+        c.CC_Functional_Group__c = fgroup.Id;
         c.Category__c = 'Admissions';
         c.Sub_Category__c = 'International';
 
@@ -407,10 +417,10 @@ private class Test_UnifiedProspectPageController
 
         // Fail on case creation
         uppc.originSelection = '';
-        uppc.caseC.Functional_Group__c = null;
+        uppc.caseC.CC_Functional_Group__c = null;
         uppc.save();
         uppc.originSelection = 'Incoming Call';
-        uppc.caseC.Functional_Group__c = 'ASU Online';
+        uppc.caseC.CC_Functional_Group__c = fgroup.Id;
 
         PageReference referenceToCheck = uppc.saveAndNew();
 
@@ -454,7 +464,7 @@ private class Test_UnifiedProspectPageController
         c = [
             SELECT Subject, Status, Case_Source__c, Origin__c
             FROM Case
-            WHERE Functional_Group__c = 'ASU Online'
+            WHERE CC_Functional_Group__c = :fgroup.Id
             LIMIT 1
         ];
 
@@ -492,7 +502,7 @@ private class Test_UnifiedProspectPageController
         uppc.originSelection = 'Walk In';
         c.Subject = 'Test';
         c.Description = 'Test';
-        c.Functional_Group__c = 'ASU Online';
+        c.CC_Functional_Group__c = fgroup.Id;
         c.Category__c = 'Admissions';
         c.Sub_Category__c = 'International';
 
@@ -542,7 +552,7 @@ private class Test_UnifiedProspectPageController
         c = [
             SELECT Subject, Status, Case_Source__c, Origin__c
             FROM Case
-            WHERE Functional_Group__c = 'ASU Online'
+            WHERE CC_Functional_Group__c = :fgroup.Id
             LIMIT 1
         ];
 

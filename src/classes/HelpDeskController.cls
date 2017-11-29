@@ -246,7 +246,7 @@ public with sharing class HelpDeskController
                     'There was a problem running the query. Please try again. ' + e.getMessage()
                 )
             );
-            
+
         }
 
     }
@@ -532,7 +532,7 @@ public with sharing class HelpDeskController
                     'You must enter search terms.'
                 )
             );
-            
+
         }
     }
 
@@ -627,7 +627,7 @@ public with sharing class HelpDeskController
             mycase.clear();
         }
 
-        TestDataFactory.createFunctionalGroup('Help Desk');
+        
         ID functionalTypeId = IDHelper.getRTID('Case_Classification__c', 'Functional_Group');
         System.debug('FunctionalTypeID: ' + functionalTypeId);
         mycase.ContactId = selectedContactId;
@@ -854,7 +854,7 @@ public with sharing class HelpDeskController
                     'You must enter both a Subject and Description to save the Case.'
                 )
             );
-            
+
             return null;
         }
         try{
@@ -949,12 +949,12 @@ public with sharing class HelpDeskController
             return null;
         }
         catch (Exception e)
-        {   
+        {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, e.getMessage()));
             return null;
         }
 
-        
+
     }
 
     public void cancelCloseCase()

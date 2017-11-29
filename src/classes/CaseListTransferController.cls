@@ -334,6 +334,10 @@ public class CaseListTransferController {
                     c.CC_Functional_Group__c = selectedCAR.CC_Functional_Group__c;
                     c.CC_Category__c = selectedCAR.CC_Category__c;
                     c.CC_Sub_Category__c = selectedCAR.CC_Sub_Category__c;
+                    //Nulls them out to prevent erros while transfering
+                    c.Functional_Group__c = null;
+                    c.Category__c = null;
+                    c.Sub_Category__c = null;
                     c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
                     c.Case_Feed_Email_Template_Id__c = selectedCar.Case_Feed_Email_Template_Id__c;
                     c.Campus__c = selectedCAR.Campus__c;

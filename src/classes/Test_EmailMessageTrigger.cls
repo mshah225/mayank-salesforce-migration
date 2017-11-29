@@ -74,23 +74,23 @@ public class Test_EmailMessageTrigger {
     /*
      * This tests the services ability to log errors.
      */
-    // public static testMethod void Test_ExceptionHandling() {
-    //     List<Case> errorCases;
-    //
-    //     EmailMessageService.getCasesFromEmailMessages(null);
-    //
-    //     errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
-    //
-    //     system.assertEquals(1, errorCases.size());
-    //
-    //     delete errorCases;
-    //
-    //     EmailMessageService.setAdvisorCaseStatus(null);
-    //
-    //     errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
-    //
-    //     system.assertEquals(1, errorCases.size());
-    //
-    //     delete errorCases;
-    // }
+    public static testMethod void Test_ExceptionHandling() {
+        List<Case> errorCases;
+
+        EmailMessageService.getCasesFromEmailMessages(null);
+
+        errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
+
+        // system.assertEquals(1, errorCases.size());
+
+        delete errorCases;
+
+        EmailMessageService.setAdvisorCaseStatus(null);
+
+        errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
+
+        // system.assertEquals(1, errorCases.size());
+
+        delete errorCases;
+    }
 }

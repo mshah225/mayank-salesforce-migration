@@ -33,7 +33,11 @@ public without sharing class CaseClassifier {
 	}
 
 	public Boolean hasInvalidCaseClassification() {
-		return invalidFunctionalGroup;
+		if (missingClassifications.isEmpty()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	public Case classifyCase(Map<String, Case_Classification__c> nameToClassification) {

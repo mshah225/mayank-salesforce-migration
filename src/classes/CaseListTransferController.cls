@@ -384,7 +384,7 @@ public class CaseListTransferController {
                 allCasesSameGroup = true;
 
                 // Get Car info
-                fGroup = this.cs[0].functional_Group__c;
+                fGroup = this.cs[0].CC_functional_Group__c;
 
                 // Verify that all cases have descriptions and subjects
                 for (Case c : this.cs) {
@@ -392,7 +392,7 @@ public class CaseListTransferController {
                         allSubsAndDescsValidated = false;
                     }
 
-                    if (c.functional_Group__c != fGroup) {
+                    if (c.CC_Functional_Group__c != fGroup) {
                         allCasesSameGroup = false;
                     }
                 }
@@ -400,7 +400,7 @@ public class CaseListTransferController {
                 if (allSubsAndDescsValidated && allCasesSameGroup) {
                     selectedCar = new List<Case_Assignment_Rule__c>([SELECT Queue_ID__c
                         FROM Case_Assignment_Rule__c
-                        WHERE Functional_Group__c = :fGroup
+                        WHERE CC_Functional_Group__c = :fGroup
                         ORDER BY Priority__c ASC
                         LIMIT 1]);
 

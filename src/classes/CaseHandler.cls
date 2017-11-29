@@ -46,6 +46,14 @@ public without sharing class CaseHandler implements ITrigger {
 				}
 			}
 
+            LogSuite.log('query', 'Calling related contact map query');
+            relatedContactMap = new Map<Id, Contact>([SELECT Id, (Select Id, StageName, Territory_Assignment_Last_Rule_Type__c, OwnerId, Owner.IsActive, Enrollment_Coach__c, Enrollment_Coach__r.IsActive, CreatedDate, IsClosed FROM Opportunities__r ORDER BY IsClosed ASC, CreatedDate DESC) FROM Contact WHERE Id in :caseContactIdSet]);
+
+            if (campaignIdSet.size() > 0) {
+                LogSuite.log('query', 'Calling source map query');
+                sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.Category__c, Case_Assignment_Rule__r.Sub_Category__c, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.Functional_Group__c, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
+            }
+
 			if (!casesToClassify.isEmpty()) {
 				List<Case_Classification__c> classifications = [
 					SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
@@ -67,14 +75,6 @@ public without sharing class CaseHandler implements ITrigger {
 					caseToClassify.classifyCase(nameToClassification);
 				}
 			}
-
-            LogSuite.log('query', 'Calling related contact map query');
-            relatedContactMap = new Map<Id, Contact>([SELECT Id, (Select Id, StageName, Territory_Assignment_Last_Rule_Type__c, OwnerId, Owner.IsActive, Enrollment_Coach__c, Enrollment_Coach__r.IsActive, CreatedDate, IsClosed FROM Opportunities__r ORDER BY IsClosed ASC, CreatedDate DESC) FROM Contact WHERE Id in :caseContactIdSet]);
-
-            if (campaignIdSet.size() > 0) {
-                LogSuite.log('query', 'Calling source map query');
-                sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.Category__c, Case_Assignment_Rule__r.Sub_Category__c, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.Functional_Group__c, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
-            }
         }
         else if (Trigger.isUpdate) {
             //Handles Webform cases (webforms.asu.edu)

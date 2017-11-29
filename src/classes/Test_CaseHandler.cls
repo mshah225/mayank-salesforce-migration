@@ -11,7 +11,7 @@ public with sharing class Test_CaseHandler {
         }
 
         return contactList;
-    } 
+    }
 
     private static List<Opportunity> createOpportunities(List<Contact> contactList) {
         List<Opportunity> oppList = new List<Opportunity>();
@@ -37,18 +37,18 @@ public with sharing class Test_CaseHandler {
             Description = 'Test Description',
             Status = 'Processing'
         );
-        
+
         insert newCase;
         return newCase;
     }
-    
+
     private static Contact createContact()
     {
         Contact newContact = new Contact(
             LastName = 'Contact',
             EMPLID__c = '9999999999'
         );
-        
+
         insert newContact;
         return newContact;
     }
@@ -68,7 +68,7 @@ public with sharing class Test_CaseHandler {
         List<Opportunity> oppList = createOpportunities(contactList);
         insert oppList;
 
-        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Case; 
+        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Case;
         Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
 
         List<Case> caseList = new List<Case>();
@@ -76,8 +76,8 @@ public with sharing class Test_CaseHandler {
             Case ca = new Case(ContactId = c.Id,
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Associate_Case_to_Active_Opportunity__c = true,
-                               Subject='Test Subject', 
-                               Description='Test Desc', 
+                               Subject='Test Subject',
+                               Description='Test Desc',
                                Status='In Progress');
             caseList.add(ca);
         }
@@ -98,7 +98,7 @@ public with sharing class Test_CaseHandler {
 
     private static testMethod void testAdmissionsCaseTerritoryManagerAssignment() {
         Profile saProfile = [select id from profile where name='System Administrator'];
-        
+
         User TMUser = new User();
         TMUser.FirstName = 'Test';
         TMUser.LastName = 'Name';
@@ -114,7 +114,7 @@ public with sharing class Test_CaseHandler {
         TMUser.ProfileId = saProfile.Id;
         TMUser.LanguageLocaleKey = 'en_US';
         TMUser.IsActive = true;
-        insert TMUser; 
+        insert TMUser;
 
         List<Contact> contactList = createContacts(1);
         insert contactList;
@@ -134,7 +134,7 @@ public with sharing class Test_CaseHandler {
         }
         insert oppList;
 
-        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Case; 
+        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Case;
         Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
 
         List<Case> caseList = new List<Case>();
@@ -143,8 +143,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Associate_Case_to_Active_Opportunity__c = true,
                                Type_of_Additional_Assignment_Needed__c = 'Territory Manager',
-                               Subject='Test Subject', 
-                               Description='Test Desc', 
+                               Subject='Test Subject',
+                               Description='Test Desc',
                                Status='In Progress');
             caseList.add(ca);
         }
@@ -161,11 +161,11 @@ public with sharing class Test_CaseHandler {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to Opportunity owner (Territory Manager)');
         }
 
-    }   
+    }
 
     private static testMethod void testAdmissionsCaseEnrollmentCoachAssignment() {
         Profile saProfile = [select id from profile where name='System Administrator'];
-        
+
         User TMUser = new User();
         TMUser.FirstName = 'Test';
         TMUser.LastName = 'Name';
@@ -181,7 +181,7 @@ public with sharing class Test_CaseHandler {
         TMUser.ProfileId = saProfile.Id;
         TMUser.LanguageLocaleKey = 'en_US';
         TMUser.IsActive = true;
-        insert TMUser; 
+        insert TMUser;
 
         List<Contact> contactList = createContacts(1);
         insert contactList;
@@ -200,7 +200,7 @@ public with sharing class Test_CaseHandler {
         }
         insert oppList;
 
-        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Case; 
+        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Case;
         Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
 
         List<Case> caseList = new List<Case>();
@@ -209,8 +209,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Associate_Case_to_Active_Opportunity__c = true,
                                Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach',
-                               Subject='Test Subject', 
-                               Description='Test Desc', 
+                               Subject='Test Subject',
+                               Description='Test Desc',
                                Status='In Progress');
             caseList.add(ca);
         }
@@ -227,12 +227,12 @@ public with sharing class Test_CaseHandler {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to Opportunity Enrollment Coach');
         }
 
-    }   
+    }
 
 
     private static testMethod void testAdmissionsCaseWebformCARAssignment() {
         Profile saProfile = [select id from profile where name='System Administrator'];
-        
+
         User APIUser = new User();
         APIUser.FirstName = 'API';
         APIUser.LastName = 'LName';
@@ -248,7 +248,7 @@ public with sharing class Test_CaseHandler {
         APIUser.ProfileId = saProfile.Id;
         APIUser.LanguageLocaleKey = 'en_US';
         APIUser.IsActive = true;
-        insert APIUser; 
+        insert APIUser;
 
         User TMUser = new User();
         TMUser.FirstName = 'FName';
@@ -265,35 +265,35 @@ public with sharing class Test_CaseHandler {
         TMUser.ProfileId = saProfile.Id;
         TMUser.LanguageLocaleKey = 'en_US';
         TMUser.IsActive = true;
-        insert TMUser;  
+        insert TMUser;
 
         // Set up Case Assignment Rules
         Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
-        
+
         EmailTemplate e;
         QueueSobject testQueue;
         Group testGroup;
         System.runAs(new User(Id = Userinfo.getUserId())) {
-            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
+            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true);
             insert e;
 
             testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
             insert testGroup;
-            
+
             testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Case');
             insert testQueue;
         }
-        
+
 
 
         string queueId = String.valueOf(testGroup.Id).substring(0,15);
         string templateId = String.valueOf(e.Id).substring(0,15);
-        
+
         TestDataFactory.createFunctionalGroupWithCategory('Admission Services', 'Test Category', 'Test Subcategory');
         Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services'];
         Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
-        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id]; 
-        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test',
                                                                   customer_notice_email_from_name__c = 'Test Service',
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
@@ -304,7 +304,7 @@ public with sharing class Test_CaseHandler {
                                                                   priority__c = 99);
         insert car;
 
-        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu', 
+        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu',
                                                                   customer_notice_email_from_name__c = 'Default Test Service',
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
@@ -315,15 +315,15 @@ public with sharing class Test_CaseHandler {
                                                                   priority__c = 999);
         insert carDefault;
 
-        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign; 
+        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign;
         Map<String,Schema.RecordTypeInfo> CampaignRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
-        
+
         Campaign camp = new Campaign(Name = 'C Test',
                                      Type = 'Web',
                                      RecordTypeId = CampaignRecordTypeInfo.get('Other Source').getRecordTypeId(),
                                      Case_Assignment_Rule__c = car.Id,
-                                     IsActive = TRUE);            
-        insert camp;    
+                                     IsActive = TRUE);
+        insert camp;
 
         List<Contact> contactList = createContacts(1);
         insert contactList;
@@ -342,7 +342,7 @@ public with sharing class Test_CaseHandler {
         }
         insert oppList;
 
-        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case; 
+        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
         Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
 
         List<Case> caseList = new List<Case>();
@@ -351,8 +351,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Case_Source__c = camp.Id,
                                Associate_Case_to_Active_Opportunity__c = false,
-                               Subject='Test Subject', 
-                               Description='Test Desc', 
+                               Subject='Test Subject',
+                               Description='Test Desc',
                                Status='In Progress');
             caseList.add(ca);
         }
@@ -371,11 +371,11 @@ public with sharing class Test_CaseHandler {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
             system.assert(ca.CC_Category__c == cat.Id, 'Case Category was not assigned to CAR Category');
         }
-    }   
+    }
 
     private static testMethod void testAdmissionsCaseWebformECAssignment() {
         Profile saProfile = [select id from profile where name='System Administrator'];
-        
+
         User APIUser = new User();
         APIUser.FirstName = 'API';
         APIUser.LastName = 'LName';
@@ -391,7 +391,7 @@ public with sharing class Test_CaseHandler {
         APIUser.ProfileId = saProfile.Id;
         APIUser.LanguageLocaleKey = 'en_US';
         APIUser.IsActive = true;
-        insert APIUser; 
+        insert APIUser;
 
         User TMUser = new User();
         TMUser.FirstName = 'FName';
@@ -408,466 +408,7 @@ public with sharing class Test_CaseHandler {
         TMUser.ProfileId = saProfile.Id;
         TMUser.LanguageLocaleKey = 'en_US';
         TMUser.IsActive = true;
-        insert TMUser;  
-
-        User ECUser = new User();
-        ECUser.FirstName = 'FName';
-        ECUser.LastName = 'LName';
-        ECUser.CompanyName = 'Test Company';
-        ECUser.MobilePhone = '123-456-7890';
-        ECUser.Username = 'testUser-Inactive3@test.test';
-        ECUser.Email = 'testUser-Inactive3@test.test';
-        ECUser.Alias = 'testXX2';
-        ECUser.CommunityNickname = 'test3';
-        ECUser.TimeZoneSidKey = 'America/New_York';
-        ECUser.LocaleSidKey = 'en_US';
-        ECUser.EmailEncodingKey = 'UTF-8';
-        ECUser.ProfileId = saProfile.Id;
-        ECUser.LanguageLocaleKey = 'en_US';
-        ECUser.IsActive = true;
-        insert ECUser;      
-
-        // Set up Case Assignment Rules
-        Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
-        
-        EmailTemplate e;
-        QueueSobject testQueue;
-        Group testGroup;
-        System.runAs(new User(Id = Userinfo.getUserId())) {
-            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
-            insert e;
-
-            testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
-            insert testGroup;
-            
-            testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Case');
-            insert testQueue;
-        }
-        
-
-
-        string queueId = String.valueOf(testGroup.Id).substring(0,15);
-        string templateId = String.valueOf(e.Id).substring(0,15);
-        
-        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
-        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
-        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
-        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id]; 
-        
-        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
-                                                                  customer_notice_email_from_name__c = 'Test Service',
-                                                                  email_template_id__c = templateId,
-                                                                  queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
-                                                                  origin__c = 'Test Origin',
-                                                                  CC_functional_group__c = fg.Id,
-                                                                  CC_category__c = cat.Id,
-                                                                  CC_sub_category__c = subCat.Id,
-                                                                  Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach',
-                                                                  priority__c = 99);
-        insert car;
-
-        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu', 
-                                                                  customer_notice_email_from_name__c = 'Default Test Service',
-                                                                  email_template_id__c = templateId,
-                                                                  queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
-                                                                  origin__c = 'Test Origin',
-                                                                  CC_functional_group__c = fg.Id,
-                                                                  CC_category__c = cat.Id,
-                                                                  CC_sub_category__c = subCat.Id,
-                                                                  priority__c = 999);
-        insert carDefault;
-
-        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign; 
-        Map<String,Schema.RecordTypeInfo> CampaignRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
-        
-        Campaign camp = new Campaign(Name = 'C Test',
-                                     Type = 'Web',
-                                     RecordTypeId = CampaignRecordTypeInfo.get('Other Source').getRecordTypeId(),
-                                     Case_Assignment_Rule__c = car.Id,
-                                     IsActive = TRUE);            
-        insert camp;    
-
-        List<Contact> contactList = createContacts(1);
-        insert contactList;
-
-        Set<Id> contactIds = new Set<Id>();
-        for (Contact c: contactList) {
-            contactIds.add(c.Id);
-        }
-
-        // Re-select Contacts to get AccountId values
-        contactList = [SELECT Id, AccountId FROM Contact WHERE Id IN :contactIds];
-
-        List<Opportunity> oppList = createOpportunities(contactList);
-        for (Opportunity o: oppList) {
-            o.Enrollment_Coach__c = ECUser.Id;
-            o.OwnerId = TMUser.Id;
-        }
-        insert oppList;
-
-        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case; 
-        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
-
-        List<Case> caseList = new List<Case>();
-        for (Contact c: contactList) {
-            Case ca = new Case(ContactId = c.Id,
-                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
-                               Case_Source__c = camp.Id,
-                               Associate_Case_to_Active_Opportunity__c = false,
-                               Subject='Test Subject', 
-                               Description='Test Desc', 
-                               Status='In Progress');
-            caseList.add(ca);
-        }
-
-        Test.startTest();
-        LogSuite.activateTestFlowSuite('Test Admissions Case Webform EC Assignment');
-        System.runAs(APIUser) {
-            insert caseList;
-        }
-        LogSuite.deactivateTestFlowSuite();
-        Test.stopTest();
-
-        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
-        List<Case> newCaseList = new List<Case>([SELECT Id, CC_Category__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
-        for (Case ca: newCaseList) {
-            system.assert(ca.OwnerId == ECUser.Id, 'Case owner was not assigned to Enrollment Coach');
-        }
-    }   
-
-
-    private static testMethod void testAdmissionsCaseWebformCARFunctionalGroup() {
-        Profile saProfile = [select id from profile where name='System Administrator'];
-        
-        User APIUser = new User();
-        APIUser.FirstName = 'API';
-        APIUser.LastName = 'LName';
-        APIUser.CompanyName = 'Test Company';
-        APIUser.MobilePhone = '123-456-7890';
-        APIUser.Username = 'testUser-Inactive@test.test';
-        APIUser.Email = 'testUser-Inactive@test.test';
-        APIUser.Alias = 'testXX';
-        APIUser.CommunityNickname = 'test1';
-        APIUser.TimeZoneSidKey = 'America/New_York';
-        APIUser.LocaleSidKey = 'en_US';
-        APIUser.EmailEncodingKey = 'UTF-8';
-        APIUser.ProfileId = saProfile.Id;
-        APIUser.LanguageLocaleKey = 'en_US';
-        APIUser.IsActive = true;
-        insert APIUser; 
-
-        User TMUser = new User();
-        TMUser.FirstName = 'FName';
-        TMUser.LastName = 'LName';
-        TMUser.CompanyName = 'Test Company';
-        TMUser.MobilePhone = '123-456-7890';
-        TMUser.Username = 'testUser-Inactive2@test.test';
-        TMUser.Email = 'testUser-Inactive2@test.test';
-        TMUser.Alias = 'testXX2';
-        TMUser.CommunityNickname = 'test2';
-        TMUser.TimeZoneSidKey = 'America/New_York';
-        TMUser.LocaleSidKey = 'en_US';
-        TMUser.EmailEncodingKey = 'UTF-8';
-        TMUser.ProfileId = saProfile.Id;
-        TMUser.LanguageLocaleKey = 'en_US';
-        TMUser.IsActive = true;
-        insert TMUser;  
-
-        // Set up Case Assignment Rules
-        Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
-        
-        EmailTemplate e;
-        QueueSobject testQueue;
-        Group testGroup;
-        System.runAs(new User(Id = Userinfo.getUserId())) {
-            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
-            insert e;
-
-            testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
-            insert testGroup;
-            
-            testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Case');
-            insert testQueue;
-        }
-        
-
-
-        string queueId = String.valueOf(testGroup.Id).substring(0,15);
-        string templateId = String.valueOf(e.Id).substring(0,15);
-        
-        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
-        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
-        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
-        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
-        
-        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
-                                                                  customer_notice_email_from_name__c = 'Test Service',
-                                                                  email_template_id__c = templateId,
-                                                                  queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
-                                                                  //origin__c = 'Test Origin',
-                                                                  CC_functional_group__c = fg.Id,
-                                                                  CC_category__c = cat.Id,
-                                                                  CC_sub_category__c = subCat.Id,
-                                                                  priority__c = 99);
-        insert car;
-
-        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu', 
-                                                                  customer_notice_email_from_name__c = 'Default Test Service',
-                                                                  email_template_id__c = templateId,
-                                                                  queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
-                                                                  origin__c = 'Test Origin',
-                                                                  CC_functional_group__c = fg.Id,
-                                                                  CC_category__c = cat.Id,
-                                                                  CC_sub_category__c = subCat.Id,
-                                                                  priority__c = 999);
-        insert carDefault;
-
-        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign; 
-        Map<String,Schema.RecordTypeInfo> CampaignRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
-        
-        Campaign camp = new Campaign(Name = 'C Test',
-                                     Type = 'Web',
-                                     RecordTypeId = CampaignRecordTypeInfo.get('Other Source').getRecordTypeId(),
-                                     Case_Assignment_Rule__c = car.Id,
-                                     IsActive = TRUE);            
-        insert camp;    
-
-        List<Contact> contactList = createContacts(1);
-        insert contactList;
-
-        Set<Id> contactIds = new Set<Id>();
-        for (Contact c: contactList) {
-            contactIds.add(c.Id);
-        }
-
-        // Re-select Contacts to get AccountId values
-        contactList = [SELECT Id, AccountId FROM Contact WHERE Id IN :contactIds];
-
-        List<Opportunity> oppList = createOpportunities(contactList);
-        for (Opportunity o: oppList) {
-//          o.Enrollment_Coach__c = TMUser.Id;
-        }
-        insert oppList;
-
-        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case; 
-        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
-
-        List<Case> caseList = new List<Case>();
-        for (Contact c: contactList) {
-            Case ca = new Case(ContactId = c.Id,
-                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
-                               Case_Source__c = camp.Id,
-                               Associate_Case_to_Active_Opportunity__c = false,
-                               Subject='Test Subject', 
-                               Description='Test Desc', 
-                               Status='In Progress');
-            caseList.add(ca);
-        }
-
-        Test.startTest();
-        LogSuite.activateTestFlowSuite('Test Admissions Case Webform Functional Group Assignment');
-        System.runAs(APIUser) {
-            insert caseList;
-        }
-        LogSuite.deactivateTestFlowSuite();
-        Test.stopTest();
-
-        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
-        List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
-        for (Case ca: newCaseList) {
-            system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
-            system.assert(ca.CC_functional_group__c == fg.Id, 'Case Functional Group was not assigned to CAR Functional Group');
-        }
-    }   
-
-
-    
-    private static testMethod void testAdmissionsCaseWebformDefaultCARAssignment() {
-        Profile saProfile = [select id from profile where name='System Administrator'];
-        
-        User APIUser = new User();
-        APIUser.FirstName = 'API';
-        APIUser.LastName = 'LName';
-        APIUser.CompanyName = 'Test Company';
-        APIUser.MobilePhone = '123-456-7890';
-        APIUser.Username = 'testUser-Inactive@test.test';
-        APIUser.Email = 'testUser-Inactive@test.test';
-        APIUser.Alias = 'testXX';
-        APIUser.CommunityNickname = 'test1';
-        APIUser.TimeZoneSidKey = 'America/New_York';
-        APIUser.LocaleSidKey = 'en_US';
-        APIUser.EmailEncodingKey = 'UTF-8';
-        APIUser.ProfileId = saProfile.Id;
-        APIUser.LanguageLocaleKey = 'en_US';
-        APIUser.IsActive = true;
-        insert APIUser; 
-
-        User TMUser = new User();
-        TMUser.FirstName = 'FName';
-        TMUser.LastName = 'LName';
-        TMUser.CompanyName = 'Test Company';
-        TMUser.MobilePhone = '123-456-7890';
-        TMUser.Username = 'testUser-Inactive2@test.test';
-        TMUser.Email = 'testUser-Inactive2@test.test';
-        TMUser.Alias = 'testXX2';
-        TMUser.CommunityNickname = 'test2';
-        TMUser.TimeZoneSidKey = 'America/New_York';
-        TMUser.LocaleSidKey = 'en_US';
-        TMUser.EmailEncodingKey = 'UTF-8';
-        TMUser.ProfileId = saProfile.Id;
-        TMUser.LanguageLocaleKey = 'en_US';
-        TMUser.IsActive = true;
-        insert TMUser;  
-
-        // Set up Case Assignment Rules
-        Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
-        
-        EmailTemplate e;
-        QueueSobject testQueue;
-        Group testGroup;
-        System.runAs(new User(Id = Userinfo.getUserId())) {
-            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
-            insert e;
-
-            testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
-            insert testGroup;
-            
-            testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Lead');
-            insert testQueue;
-        }
-        
-
-
-        string queueId = String.valueOf(testGroup.Id).substring(0,15);
-        string templateId = String.valueOf(e.Id).substring(0,15);
-        
-        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
-        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
-        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
-        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
-        
-        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
-                                                                  customer_notice_email_from_name__c = 'Test Service',
-                                                                  email_template_id__c = templateId,
-                                                                  queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
-                                                                  origin__c = 'Test Origin',
-                                                                  CC_functional_group__c = fg.Id,
-                                                                  CC_category__c = cat.Id,
-                                                                  CC_sub_category__c = subCat.Id,
-                                                                  priority__c = 99);
-        insert car;
-
-        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu', 
-                                                                  customer_notice_email_from_name__c = 'Default Test Service',
-                                                                  email_template_id__c = templateId,
-                                                                  queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
-                                                                  origin__c = 'Test Origin',
-                                                                  CC_functional_group__c = fg.Id,
-                                                                  CC_category__c = cat.Id,
-                                                                  CC_sub_category__c = subCat.Id,
-                                                                  priority__c = 999);
-        insert carDefault;
-
-
-        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign; 
-        Map<String,Schema.RecordTypeInfo> CampaignRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
-        
-        Campaign camp = new Campaign(Name = 'C Test',
-                                     Type = 'Web',
-                                     RecordTypeId = CampaignRecordTypeInfo.get('Other Source').getRecordTypeId(),
-                                     IsActive = TRUE);            
-        insert camp; 
- 
-
-        List<Contact> contactList = createContacts(1);
-        insert contactList;
-
-        Set<Id> contactIds = new Set<Id>();
-        for (Contact c: contactList) {
-            contactIds.add(c.Id);
-        }
-
-        // Re-select Contacts to get AccountId values
-        contactList = [SELECT Id, AccountId FROM Contact WHERE Id IN :contactIds];
-
-        List<Opportunity> oppList = createOpportunities(contactList);
-        for (Opportunity o: oppList) {
-            o.CloseDate = Date.today();
-            o.OwnerId = TMUser.Id;
-        }
-        insert oppList;
-        
-        TMUser.IsActive = false;
-        System.runAs(new User(Id = Userinfo.getUserId())) {
-            update TMUser;
-        }
-
-        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case; 
-        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
-
-        List<Case> caseList = new List<Case>();
-        for (Contact c: contactList) {
-            Case ca = new Case(ContactId = c.Id,
-                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
-                               Case_Source__c = camp.Id,
-                               Associate_Case_to_Active_Opportunity__c = false,
-                               Subject='Test Subject', 
-                               Description='Test Desc', 
-                               Status='In Progress');
-            caseList.add(ca);
-        }
-
-        Test.startTest();
-        LogSuite.activateTestFlowSuite('Test Admissions Case Webform Default CAR Assignment');
-        System.runAs(APIUser) {
-            insert caseList;
-        }
-        LogSuite.deactivateTestFlowSuite();
-        Test.stopTest();
-
-        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
-        List<Case> newCaseList = new List<Case>([SELECT Id, OwnerId FROM Case WHERE ContactId IN :contactIds]);
-        for (Case ca: newCaseList) {
-            system.assert(ca.OwnerId == APIUser.Id, 'Case owner was not assigned to Default CAR Queue/User');
-        }
-    }   
-
-    private static testMethod void testAdmissionsCaseWebformDefaultCAR_ECAssignment() {
-        Profile saProfile = [select id from profile where name='System Administrator'];
-        
-        User APIUser = new User();
-        APIUser.FirstName = 'API';
-        APIUser.LastName = 'LName';
-        APIUser.CompanyName = 'Test Company';
-        APIUser.MobilePhone = '123-456-7890';
-        APIUser.Username = 'testUser-Inactive@test.test';
-        APIUser.Email = 'testUser-Inactive@test.test';
-        APIUser.Alias = 'testXX';
-        APIUser.CommunityNickname = 'test1';
-        APIUser.TimeZoneSidKey = 'America/New_York';
-        APIUser.LocaleSidKey = 'en_US';
-        APIUser.EmailEncodingKey = 'UTF-8';
-        APIUser.ProfileId = saProfile.Id;
-        APIUser.LanguageLocaleKey = 'en_US';
-        APIUser.IsActive = true;
-        insert APIUser; 
-
-        User TMUser = new User();
-        TMUser.FirstName = 'FName';
-        TMUser.LastName = 'LName';
-        TMUser.CompanyName = 'Test Company';
-        TMUser.MobilePhone = '123-456-7890';
-        TMUser.Username = 'testUser-Inactive2@test.test';
-        TMUser.Email = 'testUser-Inactive2@test.test';
-        TMUser.Alias = 'testXX2';
-        TMUser.CommunityNickname = 'test2';
-        TMUser.TimeZoneSidKey = 'America/New_York';
-        TMUser.LocaleSidKey = 'en_US';
-        TMUser.EmailEncodingKey = 'UTF-8';
-        TMUser.ProfileId = saProfile.Id;
-        TMUser.LanguageLocaleKey = 'en_US';
-        TMUser.IsActive = true;
-        insert TMUser;  
+        insert TMUser;
 
         User ECUser = new User();
         ECUser.FirstName = 'FName';
@@ -888,32 +429,324 @@ public with sharing class Test_CaseHandler {
 
         // Set up Case Assignment Rules
         Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
-        
+
         EmailTemplate e;
         QueueSobject testQueue;
         Group testGroup;
         System.runAs(new User(Id = Userinfo.getUserId())) {
-            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true); 
+            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true);
             insert e;
 
             testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
             insert testGroup;
-            
-            testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Lead');
+
+            testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Case');
             insert testQueue;
         }
-        
+
 
 
         string queueId = String.valueOf(testGroup.Id).substring(0,15);
         string templateId = String.valueOf(e.Id).substring(0,15);
-        
+
         TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
         Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
         Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
         Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
-        
-        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test', 
+
+        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test',
+                                                                  customer_notice_email_from_name__c = 'Test Service',
+                                                                  email_template_id__c = templateId,
+                                                                  queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
+                                                                  origin__c = 'Test Origin',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
+                                                                  Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach',
+                                                                  priority__c = 99);
+        insert car;
+
+        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu',
+                                                                  customer_notice_email_from_name__c = 'Default Test Service',
+                                                                  email_template_id__c = templateId,
+                                                                  queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
+                                                                  origin__c = 'Test Origin',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
+                                                                  priority__c = 999);
+        insert carDefault;
+
+        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign;
+        Map<String,Schema.RecordTypeInfo> CampaignRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
+
+        Campaign camp = new Campaign(Name = 'C Test',
+                                     Type = 'Web',
+                                     RecordTypeId = CampaignRecordTypeInfo.get('Other Source').getRecordTypeId(),
+                                     Case_Assignment_Rule__c = car.Id,
+                                     IsActive = TRUE);
+        insert camp;
+
+        List<Contact> contactList = createContacts(1);
+        insert contactList;
+
+        Set<Id> contactIds = new Set<Id>();
+        for (Contact c: contactList) {
+            contactIds.add(c.Id);
+        }
+
+        // Re-select Contacts to get AccountId values
+        contactList = [SELECT Id, AccountId FROM Contact WHERE Id IN :contactIds];
+
+        List<Opportunity> oppList = createOpportunities(contactList);
+        for (Opportunity o: oppList) {
+            o.Enrollment_Coach__c = ECUser.Id;
+            o.OwnerId = TMUser.Id;
+        }
+        insert oppList;
+
+        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
+        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
+
+        List<Case> caseList = new List<Case>();
+        for (Contact c: contactList) {
+            Case ca = new Case(ContactId = c.Id,
+                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
+                               Case_Source__c = camp.Id,
+                               Associate_Case_to_Active_Opportunity__c = false,
+                               Subject='Test Subject',
+                               Description='Test Desc',
+                               Status='In Progress');
+            caseList.add(ca);
+        }
+
+        Test.startTest();
+        LogSuite.activateTestFlowSuite('Test Admissions Case Webform EC Assignment');
+        System.runAs(APIUser) {
+            insert caseList;
+        }
+        LogSuite.deactivateTestFlowSuite();
+        Test.stopTest();
+
+        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, CC_Category__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
+        for (Case ca: newCaseList) {
+            system.assert(ca.OwnerId == ECUser.Id, 'Case owner was not assigned to Enrollment Coach');
+        }
+    }
+
+
+    private static testMethod void testAdmissionsCaseWebformCARFunctionalGroup() {
+        Profile saProfile = [select id from profile where name='System Administrator'];
+
+        User APIUser = new User();
+        APIUser.FirstName = 'API';
+        APIUser.LastName = 'LName';
+        APIUser.CompanyName = 'Test Company';
+        APIUser.MobilePhone = '123-456-7890';
+        APIUser.Username = 'testUser-Inactive@test.test';
+        APIUser.Email = 'testUser-Inactive@test.test';
+        APIUser.Alias = 'testXX';
+        APIUser.CommunityNickname = 'test1';
+        APIUser.TimeZoneSidKey = 'America/New_York';
+        APIUser.LocaleSidKey = 'en_US';
+        APIUser.EmailEncodingKey = 'UTF-8';
+        APIUser.ProfileId = saProfile.Id;
+        APIUser.LanguageLocaleKey = 'en_US';
+        APIUser.IsActive = true;
+        insert APIUser;
+
+        User TMUser = new User();
+        TMUser.FirstName = 'FName';
+        TMUser.LastName = 'LName';
+        TMUser.CompanyName = 'Test Company';
+        TMUser.MobilePhone = '123-456-7890';
+        TMUser.Username = 'testUser-Inactive2@test.test';
+        TMUser.Email = 'testUser-Inactive2@test.test';
+        TMUser.Alias = 'testXX2';
+        TMUser.CommunityNickname = 'test2';
+        TMUser.TimeZoneSidKey = 'America/New_York';
+        TMUser.LocaleSidKey = 'en_US';
+        TMUser.EmailEncodingKey = 'UTF-8';
+        TMUser.ProfileId = saProfile.Id;
+        TMUser.LanguageLocaleKey = 'en_US';
+        TMUser.IsActive = true;
+        insert TMUser;
+
+        // Set up Case Assignment Rules
+        Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
+
+        EmailTemplate e;
+        QueueSobject testQueue;
+        Group testGroup;
+        System.runAs(new User(Id = Userinfo.getUserId())) {
+            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true);
+            insert e;
+
+            testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
+            insert testGroup;
+
+            testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Case');
+            insert testQueue;
+        }
+
+
+
+        string queueId = String.valueOf(testGroup.Id).substring(0,15);
+        string templateId = String.valueOf(e.Id).substring(0,15);
+
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+
+        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test',
+                                                                  customer_notice_email_from_name__c = 'Test Service',
+                                                                  email_template_id__c = templateId,
+                                                                  queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
+                                                                  //origin__c = 'Test Origin',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
+                                                                  priority__c = 99);
+        insert car;
+
+        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu',
+                                                                  customer_notice_email_from_name__c = 'Default Test Service',
+                                                                  email_template_id__c = templateId,
+                                                                  queue_id__c = String.valueOf(TMUser.Id).subString(0,15),
+                                                                  origin__c = 'Test Origin',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
+                                                                  priority__c = 999);
+        insert carDefault;
+
+        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign;
+        Map<String,Schema.RecordTypeInfo> CampaignRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
+
+        Campaign camp = new Campaign(Name = 'C Test',
+                                     Type = 'Web',
+                                     RecordTypeId = CampaignRecordTypeInfo.get('Other Source').getRecordTypeId(),
+                                     Case_Assignment_Rule__c = car.Id,
+                                     IsActive = TRUE);
+        insert camp;
+
+        List<Contact> contactList = createContacts(1);
+        insert contactList;
+
+        Set<Id> contactIds = new Set<Id>();
+        for (Contact c: contactList) {
+            contactIds.add(c.Id);
+        }
+
+        // Re-select Contacts to get AccountId values
+        contactList = [SELECT Id, AccountId FROM Contact WHERE Id IN :contactIds];
+
+        List<Opportunity> oppList = createOpportunities(contactList);
+        for (Opportunity o: oppList) {
+//          o.Enrollment_Coach__c = TMUser.Id;
+        }
+        insert oppList;
+
+        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
+        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
+
+        List<Case> caseList = new List<Case>();
+        for (Contact c: contactList) {
+            Case ca = new Case(ContactId = c.Id,
+                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
+                               Case_Source__c = camp.Id,
+                               Associate_Case_to_Active_Opportunity__c = false,
+                               Subject='Test Subject',
+                               Description='Test Desc',
+                               Status='In Progress');
+            caseList.add(ca);
+        }
+
+        Test.startTest();
+        LogSuite.activateTestFlowSuite('Test Admissions Case Webform Functional Group Assignment');
+        System.runAs(APIUser) {
+            insert caseList;
+        }
+        LogSuite.deactivateTestFlowSuite();
+        Test.stopTest();
+
+        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
+        for (Case ca: newCaseList) {
+            system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
+            system.assert(ca.CC_functional_group__c == fg.Id, 'Case Functional Group was not assigned to CAR Functional Group');
+        }
+    }
+
+
+
+    private static testMethod void testAdmissionsCaseWebformDefaultCARAssignment() {
+        Profile saProfile = [select id from profile where name='System Administrator'];
+
+        User APIUser = new User();
+        APIUser.FirstName = 'API';
+        APIUser.LastName = 'LName';
+        APIUser.CompanyName = 'Test Company';
+        APIUser.MobilePhone = '123-456-7890';
+        APIUser.Username = 'testUser-Inactive@test.test';
+        APIUser.Email = 'testUser-Inactive@test.test';
+        APIUser.Alias = 'testXX';
+        APIUser.CommunityNickname = 'test1';
+        APIUser.TimeZoneSidKey = 'America/New_York';
+        APIUser.LocaleSidKey = 'en_US';
+        APIUser.EmailEncodingKey = 'UTF-8';
+        APIUser.ProfileId = saProfile.Id;
+        APIUser.LanguageLocaleKey = 'en_US';
+        APIUser.IsActive = true;
+        insert APIUser;
+
+        User TMUser = new User();
+        TMUser.FirstName = 'FName';
+        TMUser.LastName = 'LName';
+        TMUser.CompanyName = 'Test Company';
+        TMUser.MobilePhone = '123-456-7890';
+        TMUser.Username = 'testUser-Inactive2@test.test';
+        TMUser.Email = 'testUser-Inactive2@test.test';
+        TMUser.Alias = 'testXX2';
+        TMUser.CommunityNickname = 'test2';
+        TMUser.TimeZoneSidKey = 'America/New_York';
+        TMUser.LocaleSidKey = 'en_US';
+        TMUser.EmailEncodingKey = 'UTF-8';
+        TMUser.ProfileId = saProfile.Id;
+        TMUser.LanguageLocaleKey = 'en_US';
+        TMUser.IsActive = true;
+        insert TMUser;
+
+        // Set up Case Assignment Rules
+        Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
+
+        EmailTemplate e;
+        QueueSobject testQueue;
+        Group testGroup;
+        System.runAs(new User(Id = Userinfo.getUserId())) {
+            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true);
+            insert e;
+
+            testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
+            insert testGroup;
+
+            testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Lead');
+            insert testQueue;
+        }
+
+
+
+        string queueId = String.valueOf(testGroup.Id).substring(0,15);
+        string templateId = String.valueOf(e.Id).substring(0,15);
+
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+
+        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test',
                                                                   customer_notice_email_from_name__c = 'Test Service',
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
@@ -924,7 +757,174 @@ public with sharing class Test_CaseHandler {
                                                                   priority__c = 99);
         insert car;
 
-        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu', 
+        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu',
+                                                                  customer_notice_email_from_name__c = 'Default Test Service',
+                                                                  email_template_id__c = templateId,
+                                                                  queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
+                                                                  origin__c = 'Test Origin',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
+                                                                  priority__c = 999);
+        insert carDefault;
+
+
+        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign;
+        Map<String,Schema.RecordTypeInfo> CampaignRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
+
+        Campaign camp = new Campaign(Name = 'C Test',
+                                     Type = 'Web',
+                                     RecordTypeId = CampaignRecordTypeInfo.get('Other Source').getRecordTypeId(),
+                                     IsActive = TRUE);
+        insert camp;
+
+
+        List<Contact> contactList = createContacts(1);
+        insert contactList;
+
+        Set<Id> contactIds = new Set<Id>();
+        for (Contact c: contactList) {
+            contactIds.add(c.Id);
+        }
+
+        // Re-select Contacts to get AccountId values
+        contactList = [SELECT Id, AccountId FROM Contact WHERE Id IN :contactIds];
+
+        List<Opportunity> oppList = createOpportunities(contactList);
+        for (Opportunity o: oppList) {
+            o.CloseDate = Date.today();
+            o.OwnerId = TMUser.Id;
+        }
+        insert oppList;
+
+        TMUser.IsActive = false;
+        System.runAs(new User(Id = Userinfo.getUserId())) {
+            update TMUser;
+        }
+
+        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
+        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
+
+        List<Case> caseList = new List<Case>();
+        for (Contact c: contactList) {
+            Case ca = new Case(ContactId = c.Id,
+                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
+                               Case_Source__c = camp.Id,
+                               Associate_Case_to_Active_Opportunity__c = false,
+                               Subject='Test Subject',
+                               Description='Test Desc',
+                               Status='In Progress');
+            caseList.add(ca);
+        }
+
+        Test.startTest();
+        LogSuite.activateTestFlowSuite('Test Admissions Case Webform Default CAR Assignment');
+        System.runAs(APIUser) {
+            insert caseList;
+        }
+        LogSuite.deactivateTestFlowSuite();
+        Test.stopTest();
+
+        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, OwnerId FROM Case WHERE ContactId IN :contactIds]);
+        for (Case ca: newCaseList) {
+            system.assert(ca.OwnerId == APIUser.Id, 'Case owner was not assigned to Default CAR Queue/User');
+        }
+    }
+
+    private static testMethod void testAdmissionsCaseWebformDefaultCAR_ECAssignment() {
+        Profile saProfile = [select id from profile where name='System Administrator'];
+
+        User APIUser = new User();
+        APIUser.FirstName = 'API';
+        APIUser.LastName = 'LName';
+        APIUser.CompanyName = 'Test Company';
+        APIUser.MobilePhone = '123-456-7890';
+        APIUser.Username = 'testUser-Inactive@test.test';
+        APIUser.Email = 'testUser-Inactive@test.test';
+        APIUser.Alias = 'testXX';
+        APIUser.CommunityNickname = 'test1';
+        APIUser.TimeZoneSidKey = 'America/New_York';
+        APIUser.LocaleSidKey = 'en_US';
+        APIUser.EmailEncodingKey = 'UTF-8';
+        APIUser.ProfileId = saProfile.Id;
+        APIUser.LanguageLocaleKey = 'en_US';
+        APIUser.IsActive = true;
+        insert APIUser;
+
+        User TMUser = new User();
+        TMUser.FirstName = 'FName';
+        TMUser.LastName = 'LName';
+        TMUser.CompanyName = 'Test Company';
+        TMUser.MobilePhone = '123-456-7890';
+        TMUser.Username = 'testUser-Inactive2@test.test';
+        TMUser.Email = 'testUser-Inactive2@test.test';
+        TMUser.Alias = 'testXX2';
+        TMUser.CommunityNickname = 'test2';
+        TMUser.TimeZoneSidKey = 'America/New_York';
+        TMUser.LocaleSidKey = 'en_US';
+        TMUser.EmailEncodingKey = 'UTF-8';
+        TMUser.ProfileId = saProfile.Id;
+        TMUser.LanguageLocaleKey = 'en_US';
+        TMUser.IsActive = true;
+        insert TMUser;
+
+        User ECUser = new User();
+        ECUser.FirstName = 'FName';
+        ECUser.LastName = 'LName';
+        ECUser.CompanyName = 'Test Company';
+        ECUser.MobilePhone = '123-456-7890';
+        ECUser.Username = 'testUser-Inactive3@test.test';
+        ECUser.Email = 'testUser-Inactive3@test.test';
+        ECUser.Alias = 'testXX2';
+        ECUser.CommunityNickname = 'test3';
+        ECUser.TimeZoneSidKey = 'America/New_York';
+        ECUser.LocaleSidKey = 'en_US';
+        ECUser.EmailEncodingKey = 'UTF-8';
+        ECUser.ProfileId = saProfile.Id;
+        ECUser.LanguageLocaleKey = 'en_US';
+        ECUser.IsActive = true;
+        insert ECUser;
+
+        // Set up Case Assignment Rules
+        Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' and AccessType = 'Public' LIMIT 1];
+
+        EmailTemplate e;
+        QueueSobject testQueue;
+        Group testGroup;
+        System.runAs(new User(Id = Userinfo.getUserId())) {
+            e = new EmailTemplate (developerName = 'test', TemplateType= 'Text', Name = 'test', FolderId = f.Id, isActive=true);
+            insert e;
+
+            testGroup = new Group(Name = 'TestQueue', Type = 'Queue');
+            insert testGroup;
+
+            testQueue = new QueueSObject(QueueId = testGroup.Id, SobjectType = 'Lead');
+            insert testQueue;
+        }
+
+
+
+        string queueId = String.valueOf(testGroup.Id).substring(0,15);
+        string templateId = String.valueOf(e.Id).substring(0,15);
+
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+
+        Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test',
+                                                                  customer_notice_email_from_name__c = 'Test Service',
+                                                                  email_template_id__c = templateId,
+                                                                  queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
+                                                                  origin__c = 'Test Origin',
+                                                                  CC_functional_group__c = fg.Id,
+                                                                  CC_category__c = cat.Id,
+                                                                  CC_sub_category__c = subCat.Id,
+                                                                  priority__c = 99);
+        insert car;
+
+        Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(Email_Address__c='admissions@asu.edu',
                                                                   customer_notice_email_from_name__c = 'Default Test Service',
                                                                   email_template_id__c = templateId,
                                                                   queue_id__c = String.valueOf(APIUser.Id).substring(0,15),
@@ -937,15 +937,15 @@ public with sharing class Test_CaseHandler {
         insert carDefault;
 
 
-        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign; 
+        Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.Campaign;
         Map<String,Schema.RecordTypeInfo> CampaignRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();
-        
+
         Campaign camp = new Campaign(Name = 'C Test',
                                      Type = 'Web',
                                      RecordTypeId = CampaignRecordTypeInfo.get('Other Source').getRecordTypeId(),
-                                     IsActive = TRUE);            
-        insert camp; 
- 
+                                     IsActive = TRUE);
+        insert camp;
+
 
         List<Contact> contactList = createContacts(1);
         insert contactList;
@@ -965,13 +965,13 @@ public with sharing class Test_CaseHandler {
             o.Enrollment_Coach__c = ECUser.Id;
         }
         insert oppList;
-        
+
         TMUser.IsActive = false;
         System.runAs(new User(Id = Userinfo.getUserId())) {
             update TMUser;
         }
 
-        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case; 
+        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
         Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
 
         List<Case> caseList = new List<Case>();
@@ -980,8 +980,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Case_Source__c = camp.Id,
                                Associate_Case_to_Active_Opportunity__c = false,
-                               Subject='Test Subject', 
-                               Description='Test Desc', 
+                               Subject='Test Subject',
+                               Description='Test Desc',
                                Status='In Progress');
             caseList.add(ca);
         }
@@ -999,8 +999,8 @@ public with sharing class Test_CaseHandler {
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == ECUser.Id, 'Case owner was not assigned to Enrollment Coach User as specified by Default CAR');
         }
-    }   
-    
+    }
+
     static testmethod void TestFAChangeStateWithSufficientLinks()
     {
         Id fa_id = [
@@ -1027,7 +1027,7 @@ public with sharing class Test_CaseHandler {
             WHERE Id = :c.Id LIMIT 1
         ];
 
-        System.assert(stat.Status == 'Closed: Resolved (Webforms)');
+        System.assert(stat.Status == 'Closed: Resolved');
         System.assert(stat.Visible_by_Contact__c == FALSE);
     }
 
@@ -1074,7 +1074,7 @@ public with sharing class Test_CaseHandler {
             Description = 'Test Description',
             Status = 'Processing'
         );
-        
+
         insert c;
         LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
@@ -1109,7 +1109,7 @@ public with sharing class Test_CaseHandler {
             Description = 'Test Description',
             Status = 'Processing'
         );
-        
+
         insert c;
         LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
@@ -1152,7 +1152,7 @@ public with sharing class Test_CaseHandler {
         System.assert(stat.Status == 'New');
         System.assert(stat.Visible_by_Contact__c == TRUE);
     }
-    
+
     static testmethod void TestChangeStateWithoutSufficientLinks()
     {
         Id reg_id = [
@@ -1172,7 +1172,7 @@ public with sharing class Test_CaseHandler {
         update c;
         LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
-        
+
         Case stat = [SELECT Status FROM Case WHERE Id = :c.Id LIMIT 1];
         System.assert(stat.Status == 'Processing');
     }
@@ -1199,7 +1199,7 @@ public with sharing class Test_CaseHandler {
         update c;
 
         Test.startTest();
-        System.runAs(apiDrupalUser) 
+        System.runAs(apiDrupalUser)
         {
             c.Subject = 'Test Subject%ASURITE:' + con.EMPLID__c + '%Queue:' + fa_id + '%First:' + con.FirstName + '%Last:' + con.LastName;
             c.Status = 'Processing';
@@ -1209,13 +1209,13 @@ public with sharing class Test_CaseHandler {
         Test.stopTest();
 
         c = [
-            SELECT Status, Subject 
-            FROM Case 
-            WHERE Id = :c.Id 
+            SELECT Status, Subject
+            FROM Case
+            WHERE Id = :c.Id
             LIMIT 1
         ];
 
-        System.assertEquals('Closed: Resolved (Webforms)', c.Status);
+        System.assertEquals('Closed: Resolved', c.Status);
         System.assertEquals('Test Subject', c.Subject);
     }
 }

@@ -324,7 +324,7 @@ public class CaseListTransferController {
         PageReference nextPage;
         boolean allSubsAndDescsValidated = true;
 		Id securedCaseRTID = IDHelper.getRTID('Case', 'ASU_Secured_Service');
-        Id securedCaseRTID15 = securedCaseRTID == null ? null : (Id) String.valueOf().left(15);
+        Id securedCaseRTID15 = securedCaseRTID == null ? null : (Id) String.valueOf(securedCaseRTID).left(15);
 
         // Note: While we could put this into the loop
         // since the loop already has to check for toUser,

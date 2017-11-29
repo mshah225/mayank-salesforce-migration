@@ -1176,46 +1176,4 @@ public with sharing class Test_CaseHandler {
         Case stat = [SELECT Status FROM Case WHERE Id = :c.Id LIMIT 1];
         System.assert(stat.Status == 'Processing');
     }
-
-    static testmethod void TestRejectWebformsCaseReopen()
-    {
-        Id fa_id = [
-                SELECT Id
-                FROM Group
-                WHERE Name = 'Financial Aid (Case)'
-                AND Type = 'Queue' LIMIT 1
-        ].Id;
-
-        User apiDrupalUser = [
-            SELECT Id
-            FROM User
-            WHERE Name = 'API ASU DRUPAL'
-        ];
-
-        Contact con = createContact();
-        Case c = createCase(fa_id, con);
-        c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
-        c.Number_of_Files__c = '3';
-        update c;
-
-        Test.startTest();
-        System.runAs(apiDrupalUser)
-        {
-            c.Subject = 'Test Subject%ASURITE:' + con.EMPLID__c + '%Queue:' + fa_id + '%First:' + con.FirstName + '%Last:' + con.LastName;
-            c.Status = 'Processing';
-            c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />';
-            update c;
-        }
-        Test.stopTest();
-
-        c = [
-            SELECT Status, Subject
-            FROM Case
-            WHERE Id = :c.Id
-            LIMIT 1
-        ];
-
-        //System.assertEquals('Closed: Resolved', c.Status);
-        System.assertEquals('Test Subject', c.Subject);
-    }
 }

@@ -386,7 +386,7 @@ public class CaseListTransferController {
         }
 
         // If the selected car is a secured record type, show success message
-        if (selectedCar.Case_Record_Type_Id__c == securedCaseRTID15) {
+        if (securedCaseRTID15 != null && selectedCar.Case_Record_Type_Id__c == securedCaseRTID15) {
             page = 5;
             ApexPages.addmessage(
                 new ApexPages.message(

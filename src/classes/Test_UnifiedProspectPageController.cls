@@ -10,7 +10,7 @@ private class Test_UnifiedProspectPageController
     @testSetup static void setUpTest()
     {
         TestDataFactory.createFunctionalGroup('Test Group');
-    
+
         Account testAccount = new Account(
             Name = 'Test School'
         );
@@ -156,13 +156,8 @@ private class Test_UnifiedProspectPageController
         contact.Phone = '4803805555';
         contact.MobilePhone = '4803806666';
         uppc.smsText = TRUE;
-        
-        fgroup = [
-            SELECT Id
-            FROM Case_Classification__c 
-            WHERE RecordType.Name = 'Functional_Group' AND active__c = true
-            LIMIT 1
-        ];
+
+        fgroup = TestDataFactory.createFunctionalGroup('TestFG');
     }
 
     private static testmethod void testUndergradCaseCreationCaseNoInterest()

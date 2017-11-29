@@ -21,7 +21,7 @@ public class CaseListTransferController {
     public String source {get; set;}
     public Id selectedId {
         get;
-        
+
         set {
             selectedId = value;
             if (validator.validateId(selectedId, user.class)) {
@@ -40,10 +40,10 @@ public class CaseListTransferController {
 
         this.cs = [
             SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c
-            FROM Case 
+            FROM Case
             WHERE Id = :((Case) stdController.getRecord()).Id
         ];
-        
+
         for (Case c : this.cs) {
             if (String.isBlank(c.Subject) || String.isBlank(c.Description)) {
                 ApexPages.addmessage(
@@ -59,7 +59,7 @@ public class CaseListTransferController {
     public CaseListTransferController (ApexPages.StandardSetController stdController) {
         String tstring; // Used to store temporary data
         String selectedIds = fixParameter(apexpages.currentpage().getparameters().get('caseIds'));
-        
+
         List<Id> CaseIds = new List<Id>();
         page = 1;
         isUserPageLoaded = false;
@@ -67,10 +67,10 @@ public class CaseListTransferController {
         userList = new List<User>();
         serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
-        
+
         if (selectedIds != null) {
             Validator.setPrefix(Case.class);
-            
+
             for (String s : selectedIds.split(',')) {
                 if (Validator.validateId(s)) {
                     caseIds.add(s);
@@ -88,7 +88,7 @@ public class CaseListTransferController {
 	            CaseIds.add(so.Id);
 	        }
         }
-        
+
         this.cs = [SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c
             FROM Case WHERE Id IN :CaseIds];
 
@@ -103,7 +103,7 @@ public class CaseListTransferController {
             }
         }
     }
-    
+
     public PageReference page1() {
         page = 1;
 
@@ -323,8 +323,9 @@ public class CaseListTransferController {
     public PageReference transferCase() {
         PageReference nextPage;
         boolean allSubsAndDescsValidated = true;
-        Id securedCaseRTID15 = (Id) String.valueOf(IDHelper.getRTID('Case', 'ASU_Secured_Service')).left(15);
-        
+		Id securedCaseRTID = IDHelper.getRTID('Case', 'ASU_Secured_Service');
+        Id securedCaseRTID15 = securedCaseRTID == null ? null : (Id) String.valueOf().left(15);
+
         // Note: While we could put this into the loop
         // since the loop already has to check for toUser,
         // That would effectively put a SOQL query into a loop.
@@ -340,7 +341,7 @@ public class CaseListTransferController {
                 WHERE Id = :selectedId
             ];
         }
-        
+
         // Verify that all cases have descriptions and subjects
         // Note: While it would be possible to combine these loops,
         // that would change the business logic in a manner that does
@@ -350,7 +351,7 @@ public class CaseListTransferController {
                 allSubsAndDescsValidated = false;
             }
         }
-        
+
         if (allSubsAndDescsValidated) {
             for (Case c : this.cs) {
                 /*
@@ -370,7 +371,7 @@ public class CaseListTransferController {
                     c.RecordTypeId = selectedCAR.Case_Record_Type_Id__c;
                 }
             }
-            
+
             try {
                 update this.cs;
             } catch (Exception e) {
@@ -401,10 +402,10 @@ public class CaseListTransferController {
         } else if (this.cs.size() > 1) { // else, if there is more than 1 case, return to the desired list view
             return new ApexPages.action('{!list}').invoke();
         }
-        
+
         return null;
     }
-    
+
     /**
      * Release case ownership back to the queue
      */
@@ -412,37 +413,37 @@ public class CaseListTransferController {
         Boolean allSubsAndDescsValidated;
         Boolean allCasesSameGroup;
         String fGroup;
-        
+
         if (this.cs != null) {
             if (this.cs.size() > 0) {
                 allSubsAndDescsValidated = true;
                 allCasesSameGroup = true;
-                
+
                 // Get Car info
                 fGroup = this.cs[0].CC_functional_Group__c;
-                
+
                 // Verify that all cases have descriptions and subjects
                 for (Case c : this.cs) {
                     if (String.isBlank(c.Description) || string.isBlank(c.Subject)) {
                         allSubsAndDescsValidated = false;
                     }
-                    
+
                     if (c.CC_functional_Group__c != fGroup) {
                         allCasesSameGroup = false;
                     }
                 }
-                
+
                 if (allSubsAndDescsValidated && allCasesSameGroup) {
-                    selectedCar = [SELECT Queue_ID__c 
+                    selectedCar = [SELECT Queue_ID__c
                         FROM Case_Assignment_Rule__c
                         WHERE CC_Functional_Group__c = :fGroup
                         ORDER BY Priority__c ASC
                         LIMIT 1][0];
-                    
+
                     for (Case c : this.cs) {
                         c.ownerId = selectedCar.Queue_ID__c;
                     }
-                    
+
                     update cs;
                 } else {
                     if (!allSubsAndDescsValidated) {
@@ -452,7 +453,7 @@ public class CaseListTransferController {
                                 'out the missing fields before transferring the case.')
                         );
                     }
-                    
+
                     if (!allCasesSameGroup) {
                         ApexPages.addmessage(
                             new ApexPages.message(ApexPages.severity.ERROR, 'All of the selected cases' +
@@ -462,16 +463,16 @@ public class CaseListTransferController {
                 }
             }
         }
-        
+
         page = 5;
     }
-    
+
     /**
      * Navigate to the previous page
      */
     public pageReference goBack() {
         pageReference lastPage;
-        
+
         if (page == 1) { // Go back to case or list view
             if (this.cs.size() == 1) {
                 lastPage = new PageReference('/' + string.ValueOf(this.cs[0].Id));
@@ -490,10 +491,10 @@ public class CaseListTransferController {
         } else if (page == 5) {
             page = 4;
         }
-        
+
         return lastPage;
     }
-    
+
     /**
      * Fix the parameters provided by the success portal
      */
@@ -504,7 +505,7 @@ public class CaseListTransferController {
 	        param = param.replace('(','');
 	        param = param.replace(')','');
         }
-        
+
         return param;
     }
 }

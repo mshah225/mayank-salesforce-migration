@@ -1,13 +1,14 @@
 public class CaseListTransferController {
-    public final List<Case> cs {get; set;}
+    private final List<Case> cs;
     private Boolean isUserPageLoaded;
     private Boolean isCARPageLoaded;
     private List<User> asUsersToAdd;
     private Set<Id> asRoleIds;
     private Set<Id> uberRoleIds;
 
-    public Boolean toUser {get; set;}
+    public Boolean toUser;
     public Integer page {get; set;}
+    public Id selectedId {get; set;}
     public List<Case_Assignment_Rule__c> allNonGenCARs;
     public List<Case_Assignment_Rule__c> allGenCARs;
     public List<User> userList {get; set;}
@@ -15,20 +16,8 @@ public class CaseListTransferController {
     public Map<String, List<Case_Assignment_Rule__c>> collegeCARS {get; set;}
     public String selectedGroupName {get; set;}
     public String selectedCARLabel {get; set;}
-    public Case_Assignment_Rule__c selectedCAR {get; set;}
-    public User selectedUser {get; set;}
     public String searchString {get; set;}
     public String source {get; set;}
-    public Id selectedId {
-        get;
-
-        set {
-            selectedId = value;
-            if (validator.validateId(selectedId, user.class)) {
-                selectedUser = [SELECT Name FROM User WHERE Id = :selectedId];
-            }
-        }
-    }
 
     public CaseListTransferController(ApexPages.StandardController stdController) {
         page = 1;
@@ -323,29 +312,8 @@ public class CaseListTransferController {
     public PageReference transferCase() {
         PageReference nextPage;
         boolean allSubsAndDescsValidated = true;
-		Id securedCaseRTID = IDHelper.getRTID('Case', 'ASU_Secured_Service');
-        Id securedCaseRTID15 = securedCaseRTID == null ? null : (Id) String.valueOf(securedCaseRTID).left(15);
-
-        // Note: While we could put this into the loop
-        // since the loop already has to check for toUser,
-        // That would effectively put a SOQL query into a loop.
-        // We can't fix this with a null check in the selectedCar
-        // getter since selectedCar is used in more then 1 place
-        // and the query logic is different in each place.
-        if (!toUser) {
-            selectedCAR = [
-                SELECT Queue_Id__c, CC_Functional_Group__c, CC_Category__c,
-                    CC_Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c,
-                    Campus__c, Case_Record_Type_Id__c, CC_Functional_Group__r.Name
-                FROM Case_Assignment_Rule__c
-                WHERE Id = :selectedId
-            ];
-        }
 
         // Verify that all cases have descriptions and subjects
-        // Note: While it would be possible to combine these loops,
-        // that would change the business logic in a manner that does
-        // not adhere to functional requirements.
         for (Case c : this.cs) {
             if (String.isBlank(c.Description) || string.isBlank(c.Subject)) {
                 allSubsAndDescsValidated = false;
@@ -361,6 +329,7 @@ public class CaseListTransferController {
                 if (toUser) {
                     c.OwnerId = selectedId;
                 } else {
+                    Case_Assignment_Rule__c selectedCAR = CARService.getCAR(selectedId);
                     c.OwnerId = selectedCAR.Queue_ID__c;
                     c.CC_Functional_Group__c = selectedCAR.CC_Functional_Group__c;
                     c.CC_Category__c = selectedCAR.CC_Category__c;
@@ -376,6 +345,8 @@ public class CaseListTransferController {
                 update this.cs;
             } catch (Exception e) {
                 ApexPages.addMessages(e);
+
+                return null;
             }
         } else {
             ApexPages.addmessage(
@@ -383,36 +354,29 @@ public class CaseListTransferController {
                     'Description are required fields for case transfer. Please fill ' +
                     'out the missing fields before transferring the case.')
             );
-        }
 
-        // If the selected car is a secured record type, show success message
-        if (securedCaseRTID15 != null && selectedCar.Case_Record_Type_Id__c == securedCaseRTID15) {
-            page = 5;
-            ApexPages.addmessage(
-                new ApexPages.message(
-                    ApexPages.severity.CONFIRM,
-                    'Successfully transfered case(s) to ' + SelectedCar.CC_Functional_Group__r.Name
-                )
-            );
             return null;
-        } else if (this.cs.size() == 1) { // else, if this is only 1 case, return to the desired case
-            nextPage = new PageReference('/' + this.cs[0].Id);
-            nextPage.setRedirect(true);
-            return nextPage;
-        } else if (this.cs.size() > 1) { // else, if there is more than 1 case, return to the desired list view
-            return new ApexPages.action('{!list}').invoke();
         }
 
-        return null;
+        if (this.cs.size() == 1) {
+            nextPage = new PageReference('/' + cs[0].Id);
+            nextPage.setRedirect(true);
+        } else {
+            nextPage = new ApexPages.action('{!list}').invoke();
+        }
+
+        return nextPage;
     }
 
     /**
      * Release case ownership back to the queue
      */
-    public void releaseOwnership() {
+    public pageReference releaseOwnership() {
+        PageReference nextPage;
         Boolean allSubsAndDescsValidated;
         Boolean allCasesSameGroup;
         String fGroup;
+        List<Case_Assignment_Rule__c> selectedCar;
 
         if (this.cs != null) {
             if (this.cs.size() > 0) {
@@ -428,23 +392,33 @@ public class CaseListTransferController {
                         allSubsAndDescsValidated = false;
                     }
 
-                    if (c.CC_functional_Group__c != fGroup) {
+                    if (c.CC_Functional_Group__c != fGroup) {
                         allCasesSameGroup = false;
                     }
                 }
 
                 if (allSubsAndDescsValidated && allCasesSameGroup) {
-                    selectedCar = [SELECT Queue_ID__c
+                    selectedCar = new List<Case_Assignment_Rule__c>([SELECT Queue_ID__c
                         FROM Case_Assignment_Rule__c
                         WHERE CC_Functional_Group__c = :fGroup
                         ORDER BY Priority__c ASC
-                        LIMIT 1][0];
+                        LIMIT 1]);
 
-                    for (Case c : this.cs) {
-                        c.ownerId = selectedCar.Queue_ID__c;
+                    if (selectedCar.size() == 1) {
+                        for (Case c : this.cs) {
+                            c.ownerId = selectedCar[0].Queue_ID__c;
+                        }
+
+                        update cs;
+                    } else {
+                        ApexPages.addmessage(
+                            new ApexPages.message(ApexPages.severity.ERROR, 'Could not locate assignment rule.' +
+                            ' Please ensure that the functional group, category and sub-category fields are filled out' +
+                            ' correctly for all cases.')
+                        );
+
+                        return null;
                     }
-
-                    update cs;
                 } else {
                     if (!allSubsAndDescsValidated) {
                         ApexPages.addmessage(
@@ -460,11 +434,20 @@ public class CaseListTransferController {
                             ' must be assigned to the same functional group.')
                         );
                     }
+                    return null;
                 }
+
+                if (this.cs.size() == 1) {
+                    nextPage = new PageReference('/' + string.ValueOf(this.cs[0].Id));
+                } else {
+                    return new ApexPages.action('{!list}').invoke();
+                }
+
+                return nextPage;
             }
         }
 
-        page = 5;
+        return null;
     }
 
     /**
@@ -488,8 +471,6 @@ public class CaseListTransferController {
             } else {
                 page = 3;
             }
-        } else if (page == 5) {
-            page = 4;
         }
 
         return lastPage;

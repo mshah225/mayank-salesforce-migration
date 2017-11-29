@@ -14,7 +14,6 @@ private class pkb_Test
 
     static testMethod void testController()
     {
-        Test.startTest();
         setupData();
         setupSettingsData();
         Id kaId = (Id)kavObj.get('KnowledgeArticleId');
@@ -31,6 +30,7 @@ private class pkb_Test
         ]);
         String catString;
 
+		Test.startTest();
         // setupData will have instantiated kavObj, and if it hasn't, show the error and return
         if (kavObj == null)
         {
@@ -334,7 +334,7 @@ private class pkb_Test
         setupData();
         setupSettingsData();
         Test.stopTest();
-    
+
         Id kaId = (Id)kavObj.get('KnowledgeArticleId');
         Id kavId = (Id)kavObj.get('Id');
         String catString;

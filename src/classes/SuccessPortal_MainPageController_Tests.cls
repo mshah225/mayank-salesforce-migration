@@ -551,61 +551,6 @@ private class SuccessPortal_MainPageController_Tests {
         Test.StopTest();
     }
 
-    @istest static void testCallsToActionCoach()
-    {
-        createCoachTestData();
-        Test.StartTest();
-        User u1 = [SELECT Id FROM User WHERE Alias='coachu'];
-        System.RunAs(u1){
-                System.debug('running as coach');
-                PageReference pageRef = Page.SuccessPortal_MainPage;
-                Test.setCurrentPage(pageRef);
-                Case cs = new Case();
-                ApexPages.standardController controller = new ApexPages.standardController(cs);
-
-                pag = new SuccessPortal_MainPageController();
-                pag.pageTitle = '';
-                pag.init();
-
-                pag.isCoachUser = true;
-
-                runInsertAdHocCaseCoach();
-                runInsertWatchlistCaseCoach();
-
-                runPreviewEmail(null);
-                runPreviewEmail(epm1.Id);
-
-                runPreviewMassEmail(null);
-                runPreviewMassEmail(epm1.Id);
-
-                runMassEmail('');
-                runMassEmail('studentsGrid');
-
-                runMassSMS('');
-                runMassSMS('studentsGrid');
-
-                runSendMassEmail(null);
-                runSendMassEmail(epm1.Id);
-
-                runSendMassSMS('');
-                runSendMassSMS('test');
-
-                runSendSMS('');
-                runSendSMS('Ad Hoc SMS');
-
-                runSendEmail(null);
-                runSendEmail(epm2.Id);
-
-                runStartChat();
-
-                runStartPhoneCall();
-
-                runMassTransferCases();
-                runSubmitMassTranferCases();
-        }
-        Test.StopTest();
-    }
-
     @istest static void testCallsToActionAdvisor()
     {
         createAdvisorTestData();

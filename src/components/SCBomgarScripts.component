@@ -29,7 +29,7 @@
                 var jsonString = null;
                 var jsonObject = {};
                     jsonObject.employeeNumber = "{!emplId}";
-                    jsonObject.description = document.getElementById('FADesc').value;
+                    jsonObject.description = document.getElementById('FADesc').value.formatForJson();
                     jsonObject.asuriteId = "{!asurite}";
                     jsonObject.externalKey = 'Finances';
 

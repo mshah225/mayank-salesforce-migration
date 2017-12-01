@@ -8,6 +8,10 @@
     <script src="https://bomgar.asu.edu/api/start_session.js"></script>
     <script>
         String.prototype.formatForJson = function () {
+            var context = this;
+            if (typeof context == 'undefined' || context === null) {
+                return;
+            }
             var str = this.replace(/\"/g,"\\\"").replace(/\\/g, "\\\\");
             console.log('string after replacement');
             console.log(str);

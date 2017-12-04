@@ -35,7 +35,7 @@
                 var jsonString = null;
                 var jsonObject = {};
                     jsonObject.employeeNumber = "{!emplId}";
-                    jsonObject.description = document.getElementById('FADesc').value.formatForJson();
+                    jsonObject.description = document.getElementById('FADesc').value;//.formatForJson();
                     jsonObject.asuriteId = "{!asurite}";
                     jsonObject.externalKey = 'Finances';
 
@@ -50,7 +50,7 @@
 
                 if (jsonString == null)
                 {
-                    jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('FADesc').value.formatForJson() + '", "asuriteId":"{!asurite}", "externalKey":"Finances"}';
+                    jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('FADesc').value + '", "asuriteId":"{!asurite}", "externalKey":"Finances"}';
                 }
 
                 BG.start(BG.START_TYPE.CHAT,
@@ -60,7 +60,7 @@
                         codeName: 'studentfinances_chat',
                         customerName: "{!firstName} {!lastName}",
                         companyName: 'ASU',
-                        details: document.getElementById('FADesc').value.formatForJson()
+                        details: document.getElementById('FADesc').value//.formatForJson()
                     },
                     attributes:
                     {
@@ -90,7 +90,7 @@
                 var jsonString = null;
                 var jsonObject = {};
                     jsonObject.employeeNumber = "{!emplId}";
-                    jsonObject.description = document.getElementById('SFDCDesc').value.formatForJson();
+                    jsonObject.description = document.getElementById('SFDCDesc').value;//.formatForJson();
                     jsonObject.asuriteId = "{!asurite}";
                     jsonObject.externalKey = 'Other';
 
@@ -105,7 +105,7 @@
 
                 if (jsonString == null)
                 {
-                    jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('SFDCDesc').value.formatForJson() + '", "asuriteId":"{!asurite}", "externalKey":"Other"}';
+                    jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('SFDCDesc').value + '", "asuriteId":"{!asurite}", "externalKey":"Other"}';
                 }
 
                 BG.start(BG.START_TYPE.CHAT,
@@ -115,7 +115,7 @@
                         codeName: 'salesforce_chat',
                         customerName: "{!firstName} {!lastName}",
                         companyName: 'ASU',
-                        details: document.getElementById('SFDCDesc').value.formatForJson()
+                        details: document.getElementById('SFDCDesc').value//.formatForJson()
                     },
                     attributes:
                     {

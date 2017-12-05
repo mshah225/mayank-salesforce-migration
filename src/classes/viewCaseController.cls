@@ -267,6 +267,7 @@ global without sharing class viewCaseController {
     public PageReference submitReply(){
         Boolean boolReplySuccess = true;
         if(strCaseReply!=null && strCaseReply.trim()!='') {
+            String resMessage;
             User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
             String baseURL = System.URL.getSalesforceBaseURL().toExternalForm();
             String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
@@ -280,6 +281,7 @@ global without sharing class viewCaseController {
             jsonInput += '"strFromAddress":"' + currentUser.Email + '"' + ',';
             jsonInput += '"strStatus":"' + '2' + '"';
             jsonInput += '}' ;
+            
             Http objHttp = new Http();
             HttpRequest objReq = new HttpRequest();
 
@@ -288,7 +290,9 @@ global without sharing class viewCaseController {
             objReq.setMethod('POST');
             objReq.setBody(jsonInput);
             HttpResponse res = objHttp.send(objReq);
-            String resMessage = res.getBody();
+            resMessage = res.getBody();
+            
+            
             if(resMessage == '"success"'){
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));        
             }

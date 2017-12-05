@@ -475,7 +475,8 @@ private class Test_ServiceCenter{
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', testCase.Id);
         Test.setCurrentPage(viewCase);
-
+        
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
         Test.startTest();
 
         System.runAs(testUser){   
@@ -500,7 +501,8 @@ private class Test_ServiceCenter{
             vcc.getChatMessages();
             vcc.objAtt.Name = 'Test Name';
             vcc.objAtt.Body = Blob.valueOf('Test Attachment Body');
-            vcc.uploadAtt();  
+            vcc.strCaseReply = 'Test Message';
+            vcc.submitReply();  
             
             vcc.viewingAs=true;
             vcc.getCaseDetails();

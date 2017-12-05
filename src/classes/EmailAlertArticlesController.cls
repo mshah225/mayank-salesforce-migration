@@ -159,11 +159,13 @@ global class EmailAlertArticlesController implements Schedulable {
                     htmlBody = htmlBody.replace('{!FAQ__kav.ArticleNumber}',objFaqKav.ArticleNumber);
                     htmlBody = htmlBody.replace('{!FAQ__kav.Link}', System.URL.getSalesforceBaseURL().toExternalForm() + '/' + objFaqKav.Id);
                     mail = new Messaging.SingleEmailMessage();
-                    mail.setToAddresses(lstEmailUserId);
-                    mail.setTemplateId(objET.Id);     
-                    mail.setSubject(subject);
-                    mail.setHtmlBody(htmlBody);
-                    lstMassEmailMsg.add(mail);
+                    if(lstEmailUserId!=null && lstEmailUserId.size()>0){
+                        mail.setToAddresses(lstEmailUserId);
+                        mail.setTemplateId(objET.Id);     
+                        mail.setSubject(subject);
+                        mail.setHtmlBody(htmlBody);
+                        lstMassEmailMsg.add(mail);
+                    }
                 }
             }
         }

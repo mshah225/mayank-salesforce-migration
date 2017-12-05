@@ -37,7 +37,7 @@
                     <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
                                      onclick="checkSeletedCase(this, '{!$Component.tableForm}', adjustTextHeight)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                     <apex:commandLink styleClass="btn btn-default asu-primary" style="margin-top: 5px;"
-                                      rendered="{! showRefresh}" reRender="rerenderMe" status="ASUAjaxStatus">
+                                      rendered="{!showRefresh}" reRender="rerenderMe" status="ASUAjaxStatus">
                         <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
                         <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg "></i>
                     </apex:commandLink>
@@ -84,8 +84,9 @@
                     </span>
                 </apex:outputPanel>    
             </div>
-            <div style="height: 1px; width = 100%">
-                
+    
+            <div id="divForm" class="toolbar" >
+                <h5 id="errorMsg" class="divForm" style="color:red;display:none;">Please select at least one student.</h5>
             </div>
             <div>
             

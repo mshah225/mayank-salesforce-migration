@@ -19,8 +19,9 @@
     <apex:attribute name="showSearch" type="boolean" description="" default="false" />
     <apex:attribute name="showRefresh" type="boolean" description="" default="false" />
     
+    
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
-        <apex:form >
+        <apex:form id="tableForm">
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group"> 
@@ -70,6 +71,10 @@
                     
                 </div>
                 
+                <div id="divForm" class="toolbar" >
+                    <h5 id="errorMsg" class="divForm" style="color:red;display:none;">Please select at least one student.</h5>
+                </div>
+                
                 <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
                     <apex:commandLink action="{!setCon.previous}" value="<< Prev" rendered="{!setCon.HasPrevious}"
                                       style="float:left;" styleClass="standardLink" reRender="rerenderMe"
@@ -90,8 +95,6 @@
                                       status="ASUAjaxStatus" />
                 </apex:outputPanel>
             </div>
-        </apex:form>
-        <apex:form id="tableForm">
             <div id="studentModal" class="modal fade emailModal" role="dialog">
                 <div class="modal-dialog" role="document" style ="padding-left: 5%;">
                     <apex:outputPanel id="EmailModalContent">

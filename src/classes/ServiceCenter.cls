@@ -129,16 +129,10 @@ public with sharing class ServiceCenter
 
         suggestAnArticle.Subject = 'Suggest An Article';
         suggestAnArticle.Description = strArticleIdea;
-<<<<<<< HEAD
-        suggestAnArticle.ContactId = userContact.Id;
+        if(userContact!=null)
+            suggestAnArticle.ContactId = userContact.Id;
         suggestAnArticle.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Student-Centric Initiatives' LIMIT 1].Id;
 				suggestAnArticle.CC_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Knowledge' AND Parent__c =: suggestAnArticle.CC_Functional_Group__c LIMIT 1].Id;
-=======
-        if(userContact!=null)
-           suggestAnArticle.ContactId = userContact.Id;
-        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
-        suggestAnArticle.Category__c = 'Knowledge';
->>>>>>> 13330ac7... Revert "Merge pull request #989 from ASU/revert-970-SFE-8892"
         suggestAnArticle.Origin__c = 'My ASU';
         suggestAnArticle.Visible_by_Contact__c = false;
 

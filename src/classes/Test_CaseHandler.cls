@@ -351,6 +351,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Case_Source__c = camp.Id,
                                Associate_Case_to_Active_Opportunity__c = false,
+                               CC_Functional_Group__c = fg.Id,
+                               CC_Category__c = cat.Id,
                                Subject='Test Subject',
                                Description='Test Desc',
                                Status='In Progress');
@@ -369,7 +371,7 @@ public with sharing class Test_CaseHandler {
         List<Case> newCaseList = new List<Case>([SELECT Id, CC_Category__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
-            //system.assert(ca.CC_Category__c == cat.Id, 'Case Category was not assigned to CAR Category');
+            system.assert(ca.CC_Category__c == cat.Id, 'Case Category was not assigned to CAR Category');
         }
     }
 
@@ -658,6 +660,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Case_Source__c = camp.Id,
                                Associate_Case_to_Active_Opportunity__c = false,
+                               CC_Functional_Group__c = fg.Id,
+                               CC_Category__c = cat.Id,
                                Subject='Test Subject',
                                Description='Test Desc',
                                Status='In Progress');
@@ -676,7 +680,7 @@ public with sharing class Test_CaseHandler {
         List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
-            //system.assert(ca.CC_functional_group__c == fg.Id, 'Case Functional Group was not assigned to CAR Functional Group');
+            system.assert(ca.CC_functional_group__c == fg.Id, 'Case Functional Group was not assigned to CAR Functional Group');
         }
     }
 

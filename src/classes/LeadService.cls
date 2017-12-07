@@ -211,13 +211,14 @@ public class LeadService {
             }
         }
 
-        List<me3__c> listme3=new List<me3__c>();
-        for(me3__c objMe3: [
+        List<me3__c> listMe3 = new List<me3__c>();
+        for (me3__c objMe3 : [
             SELECT id,Contact__c, Lead__c
             FROM me3__c
-            WHERE Lead__c IN: leadList]) {
-            if(leadMap.containsKey(objMe3.Lead__c)) {
-                objMe3.Contact__c=leadMap.get(objMe3.Lead__c).Convert_Contact__c;
+            WHERE Lead__c IN: leadList]
+		) {
+            if (leadMap.containsKey(objMe3.Lead__c)) {
+                objMe3.Contact__c = leadMap.get(objMe3.Lead__c).Convert_Contact__c;
                 listme3.add(objMe3);
             }
         }

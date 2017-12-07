@@ -223,7 +223,7 @@ public class LeadService {
             }
         }
 
-        if listme3.size() > 0 {
+        if (listme3.size()) > 0 {
             update listme3;
 		}
 

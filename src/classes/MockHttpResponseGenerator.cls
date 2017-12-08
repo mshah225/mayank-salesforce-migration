@@ -14,7 +14,7 @@ global class MockHttpResponseGenerator implements HttpCalloutMock {
 
         res.setHeader('Content-Type', 'application/json');
 
-        res.setBody('{"example":"test"}');
+        res.setBody('"success"');
 
         res.setStatusCode(200);
 

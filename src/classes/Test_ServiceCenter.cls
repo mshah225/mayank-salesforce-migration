@@ -6,6 +6,38 @@ private class Test_ServiceCenter{
     private static viewCaseController vcc;
     private static ViewAllCasesController vacc;
     private static SCMyCasesBoxController scMyCaseBox;
+    public static User testUser1;
+    public static Contact testContact1;
+    public static Case testCase1;
+    public static List<Opportunity> oppList1;
+    
+    static void initVars(){
+        testUser1 = [
+            SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
+            FROM User
+            WHERE FirstName = 'Test0'
+        ];
+
+        testContact1 = [
+            SELECT Id, Self_Service_PIN__c
+            FROM Contact
+            WHERE Id = :testUser1.ContactId
+        ];
+
+        testCase1 = [
+            SELECT Id
+            FROM Case
+            WHERE ContactId = :testUser1.ContactId
+            LIMIT 1
+        ];
+
+        oppList1 = [
+            SELECT Career__c, Term__c, StageName, Admitted_Session__c
+            FROM Opportunity
+            WHERE Contact__c = :testUser1.ContactId
+        ];
+        
+    }
 
     @testSetup static void setTestData(){
         ASUComm = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
@@ -414,27 +446,15 @@ private class Test_ServiceCenter{
     }
 
     @isTest static void testViewAs(){
-        User testUser = [
-            SELECT Id, ContactId
-            FROM User
-            WHERE FirstName = 'Test0'
-        ];
-
-
-        Case testCase = [
-            SELECT Id
-            FROM Case
-            WHERE ContactId = :testUser.ContactId
-            LIMIT 1
-        ];
+        initVars();
 
         PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase.Id);
+        viewCase.getParameters().put('id', testCase1.Id);
         Test.setCurrentPage(viewCase);
 
         Test.startTest();
 
-        System.runAs(testUser){
+        System.runAs(testUser1){
             sc = new ServiceCenter();
             sc.viewingAs = true;
             PageReference stop = ApexPages.currentPage();
@@ -445,72 +465,103 @@ private class Test_ServiceCenter{
 
         Test.stopTest();
     }
-
-    @isTest static void testViewCase(){
-        User testUser = [
-            SELECT Id, ContactId
-            FROM User
-            WHERE FirstName = 'Test0'
-        ];
-
-        Contact testContact = [
-            SELECT Id, Self_Service_PIN__c
-            FROM Contact
-            WHERE Id = :testUser.ContactId
-        ];
-
-        Case testCase = [
-            SELECT Id
-            FROM Case
-            WHERE ContactId = :testUser.ContactId
-            LIMIT 1
-        ];
-
-         List<Opportunity> oppList = [
-            SELECT Career__c, Term__c, StageName, Admitted_Session__c
-            FROM Opportunity
-            WHERE Contact__c = :testUser.ContactId
-        ];
-
+    
+    @isTest static void testViewCasePinError(){
+        
+        initVars();
         PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase.Id);
+        viewCase.getParameters().put('id', testCase1.Id);
         Test.setCurrentPage(viewCase);
         
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
-        Test.startTest();
-
-        System.runAs(testUser){   
+        System.runAs(testUser1){   
             vcc=new viewCaseController();
-            vcc.newPin = testContact.Self_Service_PIN__c;
+            vcc.newPin = testContact1.Self_Service_PIN__c;
             PageReference error = ApexPages.currentPage();
             error.getParameters().put('PIN', 'error');
+            Test.startTest();
             System.assertEquals(error.getURL(), vcc.changePin().getURL());
-
+            Test.stopTest();
+        }
+}
+       
+    
+    @isTest static void testViewCasePinError2(){
+        
+        initVars();
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
+        
+        System.runAs(testUser1){   
+            vcc=new viewCaseController();
             vcc.newPin = 111111;
             PageReference error2 = ApexPages.currentPage();
             error2.getParameters().put('PIN', 'error');
+            Test.startTest();
             System.assertEquals(error2.getURL(), vcc.changePin().getURL());
-
+            Test.stopTest();
+        }
+    }
+    
+     @isTest static void testViewCasePinSuccess(){
+        
+        initVars();
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
+       
+        System.runAs(testUser1){ 
+            vcc=new viewCaseController();
             vcc.newPin = 574838;
             PageReference submit = ApexPages.currentPage();
             submit.getParameters().put('PIN', 'success');
+            Test.startTest();
             System.assertEquals(submit.getURL(), vcc.changePin().getURL());
-                 
-            vcc.getCaseDetails();
+            Test.stopTest();
+        }
+    }
+    
+    @isTest static void testOtherMethods(){
+        initVars();
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
+        Case checkCase;
+        Test.startTest();
+        System.runAs(testUser1){
+            vcc = new viewCaseController();
+            checkCase = vcc.getCaseDetails();
             vcc.getEmailMessages();
             vcc.getChatMessages();
-            vcc.objAtt.Name = 'Test Name';
-            vcc.objAtt.Body = Blob.valueOf('Test Attachment Body');
-            vcc.strCaseReply = 'Test Message';
-            vcc.submitReply();  
-            
+        
             vcc.viewingAs=true;
             vcc.getCaseDetails();
             vcc.getEmailMessages();
             vcc.getChatMessages();
             vcc.changePin();
-            
         }
         Test.stopTest();
+        System.assertEquals(checkCase.Id, testCase1.Id);
     }
+    
+    @isTest static void testRestCallout(){
+        initVars();
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
+        
+        System.runAs(testUser1) {
+            vcc = new viewCaseController();
+            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+            vcc.objAtt.Name = 'Test Name';
+            vcc.objAtt.Body = Blob.valueOf('Test Attachment Body');
+            vcc.strCaseReply = 'Test Message';
+            Test.startTest();
+            vcc.submitReply();  
+            Test.stopTest();
+        }
+        List<Attachment> lstAttachment = [Select Id from Attachment where ParentId=: testCase1.Id];
+        System.assertEquals(lstAttachment.size(), 1);
+    }
+    
 }

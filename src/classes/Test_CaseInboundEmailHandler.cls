@@ -992,5 +992,4 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assert(createdCase.Intended_Recipient__c == null);
         Test.stopTest();
    }
-
 }

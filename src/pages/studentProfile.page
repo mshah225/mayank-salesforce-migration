@@ -1349,7 +1349,7 @@
                                                 cellPadding="10"
                                                 rowClasses="sideBoxTableRow"
                                                 headerClass="sideBoxTableHeader">
-                                    <apex:column headerValue="Date">
+                                    <apex:column headerValue="Last Modified">
                                         <apex:outputText value="{0, date, MM/d/YY}">
                                             <apex:param value="{!oc.LastModifiedDate}" />
                                         </apex:outputText>

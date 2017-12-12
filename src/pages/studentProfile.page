@@ -396,7 +396,9 @@
                                                 </div>
                                             </apex:outputPanel>
                                         </div>
-
+										
+                                        <div id="psHousingErrorsGen"></div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -449,7 +451,54 @@
                                                 </div> -->
                                             </apex:outputPanel>
                                         </div>
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;University Housing Information
+                                            </h4>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <apex:outputPanel id="generalResidence">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Residence Hall</th>
+                                                            <td>
+                                                                <span id="residenceFloor">--</span><br />
+                                                                <span id="residenceSection"></span><br />
+                                                                <span id="residenceHall"></span><br />
+                                                                <span id="residenceCampus"></span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
 
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Room Check-In Date</th>
+                                                            <td id="checkInDate">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Check-Out Date</th>
+                                                            <td id="checkOutDate">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Status</th>
+                                                            <td id="roomStatus">--</td>
+                                                        </tr>
+                                                        
+                                                    </table>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                        
+ 
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1132,7 +1181,7 @@
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
-                                                &nbsp;me3 Results
+                                                &nbsp;me3@ASU Results
                                             </h4>
                                         </div>
                                         <div id="Me3Results"
@@ -1149,7 +1198,7 @@
                                                     <div class="col-sm-6">
                                                     <table class="table table-striped">
                                                         <tr>
-                                                            <th>Source</th>
+                                                            <th style="width: 150px;">Source</th>
                                                             <td id="me3_source">--</td>
                                                         </tr>
                                                     </table>
@@ -1193,12 +1242,77 @@
                                             </div>
                                             <div id="me3_career_interest_table"/>
                                         </div>
-                                        <div id="me3ResponseErrors"/>
+                                        <div id="me3ResponseErrors"></div>
+
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;me3 High School Results
+                                            </h4>
+                                        </div>
+
+                                        <div id="Me3HSResults"
+                                             style="display:none;width:100%;">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Test Completion Date</th>
+                                                            <td id="me3_hs_completion_date">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                    <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th style="width: 150px;">Source</th>
+                                                            <td id="me3_hs_source">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Realistic (R) Score</th>
+                                                            <td id="me3_hs_r_score">--</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Investigative (I) Score</th>
+                                                            <td id="me3_hs_i_score">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Artistic (A) Score</th>
+                                                            <td id="me3_hs_a_score">--</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Social (S) Score</th>
+                                                            <td id="me3_hs_s_score">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Enterprising (E) Score</th>
+                                                            <td id="me3_hs_e_score">--</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Conventional (C) Score</th>
+                                                            <td id="me3_hs_c_score">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div id="me3_hs_career_interest_table"/>
+                                        </div>
+                                        
+                                        <div id="me3HSResponseErrors"></div>
                                     </apex:pageBlock>
                                 </div>
-
-
-
                             </div>
 
                             <!-- Load up responsive tabs asap to minimize flicker on mobile -->
@@ -1349,7 +1463,7 @@
                                                 cellPadding="10"
                                                 rowClasses="sideBoxTableRow"
                                                 headerClass="sideBoxTableHeader">
-                                    <apex:column headerValue="Date">
+                                    <apex:column headerValue="Last Modified">
                                         <apex:outputText value="{0, date, MM/d/YY}">
                                             <apex:param value="{!oc.LastModifiedDate}" />
                                         </apex:outputText>
@@ -1490,6 +1604,7 @@
                 llStudentDemographic();
                 llStudentProgram();
                 llSundevilImg();
+                loadGeneralTab();
             });
             
             function llServiceIndicator() {
@@ -2166,11 +2281,18 @@
             var indicatorHistoryLoaded = false;
             var careerDevelopmentTabLoaded = false;
             var transcriptsLoaded = false;
+            var me3ResultsLoaded = false;
+            var me3HSResultsLoaded = false;
     
             var classesData;
             var financialAidData;
     
             // Wrappers
+            
+            function loadGeneralTab() {
+                getHousingInfo();
+            }
+ 
             function loadUGAcademicsTab() {
                 getStdntCarMlstnsUG();
                 getStdntTestComps();
@@ -2209,6 +2331,7 @@
 
             function loadCareerDevelopmentTab() {
                 getMe3Results();
+                getMe3HSResults();
             }
 
     
@@ -3543,6 +3666,56 @@
                 sortTransferList(name, ascDirTransfer);
             }
             
+            // Method to load the Undergraduate Academic Progress 
+            function getHousingInfo() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getHousingInfo}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psHousingErrorsGen").innerHTML = "";
+
+                            if (!result.length == 0 && !Object.getOwnPropertyNames(result).length == 0) {
+                                console.log(result);
+                                $j('#residenceFloor').html(result[0].BOOKING_FLOOR_SUITE__c);
+                                $j('#residenceSection').html(result[0].BOOKING_SECTION__c);
+                                $j('#residenceHall').html(result[0].BOOKING_BUILDING__c);
+                                $j('#residenceCampus').html(result[0].BOOKING_CAMPUS__c);
+                                
+                                var checkInDate = result[0].CHECK_IN_DT__c;
+                                checkInDate = new Date(checkInDate);
+                                checkInDate = (checkInDate.getUTCMonth() + 1) + '/' +
+                                    checkInDate.getUTCDate() + '/' +
+                                    checkInDate.getUTCFullYear();
+                                    
+                                var checkOutDate = result[0].CHECK_OUT_DT__c;
+                                checkOutDate = new Date(checkOutDate);
+                                checkOutDate = (checkOutDate.getUTCMonth() + 1) + '/' +
+                                    checkOutDate.getUTCDate() + '/' +
+                                    checkOutDate.getUTCFullYear();
+                                
+                                $j('#checkInDate').html(checkInDate);
+                                $j('#checkOutDate').html(checkOutDate);
+                                
+                                $j('#roomStatus').html(result[0].BOOKING_STATUS__c);
+                                
+                            } else {
+                                document.getElementById("psHousingErrorsGen").innerHTML +=
+                                    'No housing data found. ';
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message;
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+         
             var enrolledWrapper;
             var droppedWrapper;
             var examWrapper;
@@ -4357,9 +4530,9 @@
                 document.getElementById('fa_disbursed_total').innerHTML = disbursedTotal.toLocaleString(o,s);
             }
 
-            // Method to load the Undergraduate Indicators tab
+            // Method to load me3@asu results
             function getMe3Results() {
-                if (!careerDevelopmentTabLoaded) {
+                if (!me3ResultsLoaded) {
                     var errorHtml = "";
     
                     document.getElementById("me3ResponseErrors").innerHTML =
@@ -4402,36 +4575,132 @@
                                      "<div class='table-responsive'>" +
                                         "<table id='career_dev_table' class='table table-striped table-bordered'> " +
                                         "<tbody>";
+                                    if (typeof result.me3_Careers__r != 'undefined') {
+                                      for (var i = 0; i < result.me3_Careers__r.length; i++) {
+                                          if (result.me3_Careers__r[i].Updated_Date__c) {
+                                            var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
+                                            var updatedDate = new Date(cdUtcSeconds);
+                                            updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
+                                                updatedDate.getUTCDate() + '/' +
+                                                updatedDate.getUTCFullYear();
+                                          } else {
+                                            updatedDate == '--';
+                                          }
 
-                                    for (var i = 0; i < result.me3_Careers__r.length; i++) {
-                                        var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
-                                        var updatedDate = new Date(cdUtcSeconds);
-                                        updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
-                                            updatedDate.getUTCDate() + '/' +
-                                            updatedDate.getUTCFullYear();       
-                                        html += "" +
-                                            (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
-                                                "<td>" + updatedDate + "</td>" +
-                                                "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
-                                                "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
-                                                "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
-                                                result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
-                                            "</tr>";
+                                          html += "" +
+                                              (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
+                                                  "<td style='min-width: 75px;'>" + updatedDate + "</td>" +
+                                                  "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
+                                                  "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
+                                                  "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
+                                                  result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
+                                              "</tr>";
+                                      }
                                     }
+
                                     html += "</tbody></table></div>";
                                     document.getElementById('me3_career_interest_table').innerHTML = html;
 
                                     cleanUpUndefined("Me3Results");
-                                    careerDevelopmentTabLoaded = true;
+                                    me3ResultsLoaded = true;
                                 } else {
                                     document.getElementById("me3ResponseErrors").innerHTML =
-                                        'No Me3 results found';
-                                    careerDevelopmentTabLoaded = true;
+                                        'No me3 results found';
+                                    me3ResultsLoaded = true;
                                 }
                             } else if (event.type === 'exception') {
                                document.getElementById("me3ResponseErrors").innerHTML = "<br/>\n<pre>" + event.where + "</pre>";
                             } else {
                                 document.getElementById("me3ResponseErrors").innerHTML = event.message;
+                            }
+                        },
+                        {escape: true}
+                    );
+                }
+            }
+
+          // Method to load me3hs results
+            function getMe3HSResults() {
+                if (!me3HSResultsLoaded) {
+                    var errorHtml = "";
+    
+                    document.getElementById("me3HSResponseErrors").innerHTML =
+                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+    
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.StudentProfileController.getMe3HSResults}',
+                        '{!theContact.Id}',
+                        function (result, event) {
+                            if (event.status) {
+                                document.getElementById("me3HSResponseErrors").innerHTML =
+                                    "";     
+                                if (!Object.getOwnPropertyNames(result).length == 0) {
+                                    document.getElementById("Me3HSResults").style.display =
+                                        "initial";
+
+                                    var utcSeconds = result.Test_Completed_Date__c;
+                                    var testDate = new Date(utcSeconds);
+                                    testDate = (testDate.getUTCMonth() + 1) + '/' +
+                                        testDate.getUTCDate() + '/' +
+                                        testDate.getUTCFullYear();
+
+                                    document.getElementById('me3_hs_completion_date').innerHTML =
+                                        testDate;
+                                     document.getElementById('me3_hs_source').innerHTML = result.Source__c;
+                                     document.getElementById('me3_hs_r_score').innerHTML = 
+                                        (result.R_Score__c > 0 ? result.R_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_hs_a_score').innerHTML = 
+                                        (result.A_Score__c > 0 ? result.A_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_hs_i_score').innerHTML = 
+                                        (result.I_Score__c > 0 ? result.I_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_hs_s_score').innerHTML = 
+                                        (result.S_Score__c > 0 ? result.S_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_hs_e_score').innerHTML = 
+                                        (result.E_Score__c > 0 ? result.E_Score__c : '0') + ' / 100';
+                                     document.getElementById('me3_hs_c_score').innerHTML = 
+                                        (result.C_Score__c > 0 ? result.C_Score__c : '0') + ' / 100';
+
+                                    var html = 
+                                     "<div class='table-responsive'>" +
+                                        "<table id='career_dev_table' class='table table-striped table-bordered'> " +
+                                        "<tbody>";
+
+                                    if (typeof result.me3_Careers__r != 'undefined') {
+                                      for (var i = 0; i < result.me3_Careers__r.length; i++) {
+                                          if (result.me3_Careers__r[i].Updated_Date__c) {
+                                            var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
+                                            var updatedDate = new Date(cdUtcSeconds);
+                                            updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
+                                                updatedDate.getUTCDate() + '/' +
+                                                updatedDate.getUTCFullYear();
+                                          } else {
+                                            updatedDate == '--';
+                                          }
+
+                                          html += "" +
+                                              (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
+                                                  "<td>" + updatedDate + "</td>" +
+                                                  "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
+                                                  "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
+                                                  "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
+                                                  result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
+                                              "</tr>";
+                                      }
+                                    }
+                                    html += "</tbody></table></div>";
+                                    document.getElementById('me3_hs_career_interest_table').innerHTML = html;
+
+                                    cleanUpUndefined("Me3HSResults");
+                                    me3HSResultsLoaded = true;
+                                } else {
+                                    document.getElementById("me3HSResponseErrors").innerHTML =
+                                        'No me3 high school results found';
+                                    me3HSResultsLoaded = true;
+                                }
+                            } else if (event.type === 'exception') {
+                               document.getElementById("me3HSResponseErrors").innerHTML = "<br/>\n<pre>" + event.where + "</pre>";
+                            } else {
+                                document.getElementById("me3HSResponseErrors").innerHTML = event.message;
                             }
                         },
                         {escape: true}

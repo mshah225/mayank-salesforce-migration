@@ -53,6 +53,10 @@ public without sharing class CaseHandler implements ITrigger {
 					caseClassificationsToQuery.addAll(classifier.getMissingClassifications());
 					casesToClassify.add(classifier);
 				}
+<<<<<<< HEAD
+=======
+
+>>>>>>> c9bd4d28... Sfe 11309 (#1077)
 				// populate CaseClassification Ids into list for a bulk query
 				setOfCaseClassficationId.add(c.CC_Functional_Group__c);
 				setOfCaseClassficationId.add(c.CC_Category__c);
@@ -105,6 +109,7 @@ public without sharing class CaseHandler implements ITrigger {
 
         }
         else if (Trigger.isUpdate) {
+<<<<<<< HEAD
 			//Handles Webform cases (webforms.asu.edu)
             for (Case c : (List<Case>)Trigger.new) {
                 if (c.Status == 'Processing' && c.Deep_Links__c != NULL) {
@@ -143,6 +148,16 @@ public without sharing class CaseHandler implements ITrigger {
                     }
                 }
 
+=======
+            CaseService.handleClosingWebformsCases();
+
+			Set<String> caseClassificationsToQuery = new Set<String>();
+			List<CaseClassifier> casesToClassify = new List<CaseClassifier>();
+			Set<Id> setOfCaseClassficationId = new Set<Id>();
+
+
+			for (Case c: (List<Case>)Trigger.new) {
+>>>>>>> c9bd4d28... Sfe 11309 (#1077)
 				// Check each incoming case for valid classification fields.
 				CaseClassifier classifier = new CaseClassifier(c);
 				if (classifier.hasInvalidCaseClassification()) {
@@ -549,26 +564,18 @@ public without sharing class CaseHandler implements ITrigger {
                 caseRecord.RecordTypeId = RT_ADMIN_ONLY_ASU_ADVISOR_OUTREACH;
             } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Coach Outreach')) {
                 caseRecord.RecordTypeId = RT_ASU_COACH_OUTREACH;
-            } else if (caseRecord.RecordTypeId != RT_ASU_SERVICE && !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Salesforce Support')) {
-                if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services')) {
-                    caseRecord.RecordTypeId = RT_ASU_ADMISSION_SERVICE;
-                } else if (mapCCIdToName.containsKey(caseRecord.CC_Category__c) && mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment')) {
-                    caseRecord.RecordTypeId = RT_ASU_ADMISSION_SERVICE;
-                } else if (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) && mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')) {
-                    caseRecord.RecordTypeId = RT_ASU_ADMISSION_SERVICE;
-                }
-            } else if (caseRecord.RecordTypeId != RT_ASU_SECURED_SERVICE && caseRecord.Case_Owner__c.equalsIgnoreCase('Disability Resource Center (Case)')) {
-                    caseRecord.RecordTypeId = RT_ASU_SECURED_SERVICE;
-            } else if (caseRecord.RecordTypeId != RT_ASU_SECURED_SERVICE && mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Disability Resource Center')) {
-                    caseRecord.RecordTypeId = RT_ASU_SECURED_SERVICE;
+            } else if ((caseRecord.RecordTypeId != RT_ASU_SERVICE && !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Salesforce Support')) &&
+                (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') ||
+                (mapCCIdToName.containsKey(caseRecord.CC_Category__c) && mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment')) ||
+                (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) && mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
+            ) {
+                caseRecord.RecordTypeId = RT_ASU_ADMISSION_SERVICE;
             } else if (caseRecord.RecordTypeId == RT_ASU_ADMISSION_SERVICE &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('External Unit') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Disability Resource Center') &&
-                mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
-                !mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment') &&
-                mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) &&
-                !mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')
+                (caseRecord.CC_Category__c == null || (mapCCIdToName.containsKey(caseRecord.CC_Category__c) && !mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment'))) &&
+                (caseRecord.CC_Sub_Category__c == null || (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) && !mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
             ) {
                 caseRecord.RecordTypeId = RT_ASU_SERVICE;
             } else if (caseRecord.RecordTypeId == RT_ASU_SECURED_SERVICE &&
@@ -582,5 +589,4 @@ public without sharing class CaseHandler implements ITrigger {
             }
         }
     }
-
 }

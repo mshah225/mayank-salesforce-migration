@@ -595,10 +595,10 @@ public with sharing class Test_CaseHandler {
         string queueId = String.valueOf(testGroup.Id).substring(0,15);
         string templateId = String.valueOf(e.Id).substring(0,15);
 
-        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
-        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
-        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
-        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services', 'Recruitment - Cat', 'Recruitment - Sub Cat');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Recruitment - Cat' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Recruitment - Sub Cat' AND Parent__c =: cat.Id];
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test',
                                                                   customer_notice_email_from_name__c = 'Test Service',
@@ -1298,10 +1298,10 @@ public with sharing class Test_CaseHandler {
 
     private static testMethod void testAssignRTAdService() {
 
-        TestDataFactory.createFunctionalGroupWithCategory('Admission Services', 'Test Category', 'Test Subcategory');
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services', 'Recruitment', 'Recruitment');
         Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services'];
-        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
-        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Recruitment' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Recruitment' AND Parent__c =: cat.Id];
 
 
         List<Contact> contactList = createContacts(1);
@@ -1313,7 +1313,7 @@ public with sharing class Test_CaseHandler {
         List<Case> caseList = new List<Case>();
         for (Contact c: contactList) {
             Case ca = new Case(ContactId = c.Id,
-                               RecordTypeId = CaseRecordTypeInfo.get('ASU Service').getRecordTypeId(),
+                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Subject='Test Subject',
                                CC_functional_group__c = fg.Id,
                                Description='Test Desc',
@@ -1331,44 +1331,6 @@ public with sharing class Test_CaseHandler {
         List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, RecordTypeId FROM Case ]);
         for (Case ca: newCaseList) {
             system.assertEquals(ca.RecordTypeId, CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId());
-        }
-    }
-
-    private static testMethod void testAssignRTSecService() {
-
-        TestDataFactory.createFunctionalGroupWithCategory('Disability Resource Center', 'Test Category', 'Test Subcategory');
-        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Disability Resource Center'];
-        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
-        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
-
-
-        List<Contact> contactList = createContacts(1);
-        insert contactList;
-
-        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
-        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
-
-        List<Case> caseList = new List<Case>();
-        for (Contact c: contactList) {
-            Case ca = new Case(ContactId = c.Id,
-                               RecordTypeId = CaseRecordTypeInfo.get('ASU Service').getRecordTypeId(),
-                               Subject='Test Subject',
-                               CC_functional_group__c = fg.Id,
-                               Description='Test Desc',
-                               Status='In Progress');
-            caseList.add(ca);
-        }
-
-        Test.startTest();
-        LogSuite.activateTestFlowSuite('Test Admissions Case Webform Functional Group Assignment');
-        insert caseList;
-        LogSuite.deactivateTestFlowSuite();
-        Test.stopTest();
-
-        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
-        List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, RecordTypeId FROM Case ]);
-        for (Case ca: newCaseList) {
-            system.assertEquals(ca.RecordTypeId, CaseRecordTypeInfo.get('ASU Secured Service').getRecordTypeId());
         }
     }
 

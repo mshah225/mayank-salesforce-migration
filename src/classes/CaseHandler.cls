@@ -70,8 +70,8 @@ public without sharing class CaseHandler implements ITrigger {
 			List<Case_Classification__c> classifications = [
 				SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
 				FROM Case_Classification__c
-				WHERE (Name IN :caseClassificationsToQuery AND Active__c = TRUE) OR
-				      (ID IN: setOfCaseClassficationId)
+				WHERE (Name IN :caseClassificationsToQuery AND Active__c = TRUE)
+					OR (ID IN: setOfCaseClassficationId)
 			];
 			Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
 			mapCCIdToName = new Map<Id, String>();
@@ -158,8 +158,8 @@ public without sharing class CaseHandler implements ITrigger {
 			List<Case_Classification__c> classifications = [
 				SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
 				FROM Case_Classification__c
-				WHERE (Name IN :caseClassificationsToQuery AND Active__c = TRUE) OR
-				      (ID IN: setOfCaseClassficationId)
+				WHERE (Name IN :caseClassificationsToQuery AND Active__c = TRUE)
+					OR (ID IN: setOfCaseClassficationId)
 			];
 			Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
 			mapCCIdToName = new map<Id, String>();
@@ -364,17 +364,17 @@ public without sharing class CaseHandler implements ITrigger {
                         {
                             c.Origin__c = source.Case_Assignment_Rule__r.Origin__c;
                         }
-                        if (source.Case_Assignment_Rule__r.Category__c != null)
+                        if (source.Case_Assignment_Rule__r.CC_Category__c != null)
                         {
-                            c.Category__c = source.Case_Assignment_Rule__r.Category__c;
+                            c.CC_Category__c = source.Case_Assignment_Rule__r.CC_Category__c;
                         }
-                        if (source.Case_Assignment_Rule__r.Sub_Category__c != null)
+                        if (source.Case_Assignment_Rule__r.CC_Sub_Category__c != null)
                         {
-                            c.Sub_Category__c = source.Case_Assignment_Rule__r.Sub_Category__c;
+                            c.CC_Sub_Category__c = source.Case_Assignment_Rule__r.CC_Sub_Category__c;
                         }
-                        if (source.Case_Assignment_Rule__r.Functional_Group__c != null)
+                        if (source.Case_Assignment_Rule__r.CC_Functional_Group__c != null)
                         {
-                            c.Functional_Group__c =source.Case_Assignment_Rule__r.Functional_Group__c;
+                            c.CC_Functional_Group__c =source.Case_Assignment_Rule__r.CC_Functional_Group__c;
                         }
                     }
                     else
@@ -390,7 +390,7 @@ public without sharing class CaseHandler implements ITrigger {
                             if (defaultCAR == null)
                             {
                                 LogSuite.log('query', 'Calling default CAR query');
-                                defaultCar = [SELECT Id, Queue_ID__c, Origin__c, Category__c, Sub_Category__c, Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
+                                defaultCar = [SELECT Id, Queue_ID__c, Origin__c, CC_Category__c, CC_Sub_Category__c, CC_Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
                                 if (!(defaultCAR == null))
                                 {
                                     // SFE-690 Apply TM/EC logic to API users as well as non-API users
@@ -425,17 +425,17 @@ public without sharing class CaseHandler implements ITrigger {
                                         {
                                             c.Origin__c = defaultCAR.Origin__c;
                                         }
-                                        if (defaultCAR.Category__c != null)
+                                        if (defaultCAR.CC_Category__c != null)
                                         {
-                                            c.Category__c = defaultCAR.Category__c;
+                                            c.CC_Category__c = defaultCAR.CC_Category__c;
                                         }
-                                        if (defaultCAR.Sub_Category__c != null)
+                                        if (defaultCAR.CC_Sub_Category__c != null)
                                         {
-                                            c.Sub_Category__c = defaultCAR.Sub_Category__c;
+                                            c.CC_Sub_Category__c = defaultCAR.CC_Sub_Category__c;
                                         }
-                                        if (defaultCAR.Functional_Group__c != null)
+                                        if (defaultCAR.CC_Functional_Group__c != null)
                                         {
-                                            c.Functional_Group__c = defaultCAR.Functional_Group__c;
+                                            c.CC_Functional_Group__c = defaultCAR.CC_Functional_Group__c;
                                         }
                                     }
                                 }

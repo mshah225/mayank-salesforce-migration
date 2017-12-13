@@ -53,10 +53,6 @@ public without sharing class CaseHandler implements ITrigger {
 					caseClassificationsToQuery.addAll(classifier.getMissingClassifications());
 					casesToClassify.add(classifier);
 				}
-<<<<<<< HEAD
-=======
-
->>>>>>> c9bd4d28... Sfe 11309 (#1077)
 				// populate CaseClassification Ids into list for a bulk query
 				setOfCaseClassficationId.add(c.CC_Functional_Group__c);
 				setOfCaseClassficationId.add(c.CC_Category__c);
@@ -109,7 +105,6 @@ public without sharing class CaseHandler implements ITrigger {
 
         }
         else if (Trigger.isUpdate) {
-<<<<<<< HEAD
 			//Handles Webform cases (webforms.asu.edu)
             for (Case c : (List<Case>)Trigger.new) {
                 if (c.Status == 'Processing' && c.Deep_Links__c != NULL) {
@@ -148,16 +143,6 @@ public without sharing class CaseHandler implements ITrigger {
                     }
                 }
 
-=======
-            CaseService.handleClosingWebformsCases();
-
-			Set<String> caseClassificationsToQuery = new Set<String>();
-			List<CaseClassifier> casesToClassify = new List<CaseClassifier>();
-			Set<Id> setOfCaseClassficationId = new Set<Id>();
-
-
-			for (Case c: (List<Case>)Trigger.new) {
->>>>>>> c9bd4d28... Sfe 11309 (#1077)
 				// Check each incoming case for valid classification fields.
 				CaseClassifier classifier = new CaseClassifier(c);
 				if (classifier.hasInvalidCaseClassification()) {

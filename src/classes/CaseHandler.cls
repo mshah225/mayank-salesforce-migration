@@ -9,7 +9,6 @@ public without sharing class CaseHandler implements ITrigger {
     public final String RT_ADMIN_ONLY_ASU_ADVISOR_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('(Admin Only) ASU Advisor Outreach').getRecordTypeId();
     public final String RT_ASU_COACH_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Coach Outreach').getRecordTypeId();
     public final String RT_ASU_ADMISSION_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Admission Services').getRecordTypeId();
-    public final String RT_ASU_SECURED_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Secured Service').getRecordTypeId();
     public final String RT_ASU_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Service').getRecordTypeId();
     public final String RT_ASU_STUDENT_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Student Outreach').getRecordTypeId();
 
@@ -561,10 +560,6 @@ public without sharing class CaseHandler implements ITrigger {
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Disability Resource Center') &&
                 (caseRecord.CC_Category__c == null || (mapCCIdToName.containsKey(caseRecord.CC_Category__c) && !mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment'))) &&
                 (caseRecord.CC_Sub_Category__c == null || (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) && !mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
-            ) {
-                caseRecord.RecordTypeId = RT_ASU_SERVICE;
-            } else if (caseRecord.RecordTypeId == RT_ASU_SECURED_SERVICE &&
-                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Disability Resource Center')
             ) {
                 caseRecord.RecordTypeId = RT_ASU_SERVICE;
             } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Financial Aid') &&

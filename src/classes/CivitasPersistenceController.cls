@@ -147,7 +147,6 @@ global class CivitasPersistenceController{
              }
         }*/
 
-
         if(rejected.size() > 0){
             return rejected;
         }

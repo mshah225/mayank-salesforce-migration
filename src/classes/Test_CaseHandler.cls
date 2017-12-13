@@ -369,7 +369,7 @@ public with sharing class Test_CaseHandler {
         List<Case> newCaseList = new List<Case>([SELECT Id, CC_Category__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
-            //system.assert(ca.CC_Category__c == cat.Id, 'Case Category was not assigned to CAR Category');
+            system.assert(ca.CC_Category__c == cat.Id, 'Case Category was not assigned to CAR Category');
         }
     }
 
@@ -677,7 +677,7 @@ public with sharing class Test_CaseHandler {
         List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
-            //system.assert(ca.CC_functional_group__c == fg.Id, 'Case Functional Group was not assigned to CAR Functional Group');
+            system.assert(ca.CC_functional_group__c == fg.Id, 'Case Functional Group was not assigned to CAR Functional Group');
         }
     }
 
@@ -1204,7 +1204,7 @@ public with sharing class Test_CaseHandler {
         {
             c.Subject = 'Test Subject%ASURITE:' + con.EMPLID__c + '%Queue:' + fa_id + '%First:' + con.FirstName + '%Last:' + con.LastName;
             c.Status = 'Processing';
-            c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />';
+            c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
             update c;
         }
         Test.stopTest();
@@ -1216,7 +1216,7 @@ public with sharing class Test_CaseHandler {
             LIMIT 1
         ];
 
-        System.assertEquals('Closed: Resolved (Webforms)', c.Status);
+        System.assertEquals('Closed: Resolved', c.Status);
         System.assertEquals('Test Subject', c.Subject);
     }
 

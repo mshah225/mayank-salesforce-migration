@@ -1,90 +1,247 @@
-public without sharing class UserHandler implements ITrigger
+@isTest
+public class Test_UserHandler
 {
-	public void bulkBefore() 
-	{
-		if(Trigger.isInsert)
-		{
-			List<User> newUsers = Trigger.new; 
-			Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-			Id communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
-            List<String> asurites = new List<String>();
-            Map<String, Contact> asuritesToContact = new Map<String, Contact>();
-            Map<String, User> asuritesToUser = new Map<String, User>();
+    @isTest static void changeKnowledgePermission()
+    {
+        User updateUser = UserService.createTestUser();
+        updateUser.LastName = updateUser.LastName + '1';
+        Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+        updateUser.ProfileId = sysAdminProfile;
+        insert updateUser;
 
-			for(Integer x = 0; x < newUsers.size(); x++)
-			{
-				User newUser = newUsers.get(0);
+        updateUser.Role_Knowledge__c = true;
 
-				if (newUser.UserPermissionsKnowledgeUser)
-				{
-					newUser.Role_Knowledge__c = true;
-				}
+        update updateUser;
 
-				if(newUser.FederationIdentifier != null && newUser.ProfileId == communityProfile)
-				{
-                    asurites.add(newUser.FederationIdentifier.split('@').get(0));
-					asuritesToUser.put(newUser.FederationIdentifier.split('@').get(0), newUser);
-                    System.debug(newUser.FederationIdentifier.split('@').get(0));
-				}
-			}
+        updateUser = [SELECT Role_Knowledge__c FROM User WHERE Id =: updateUser.Id];
 
-            if(asurites.size() > 0)
-			{
-                List<Contact> newUserContactsByASURITE = [SELECT Id, ASURITE_Id__c, CAP__c FROM Contact WHERE ASURITE_Id__c IN :asurites];
-				for(Integer x = 0; x < newUserContactsByASURITE.size(); x++)
-                {
-                    Contact c = newUserContactsByASURITE.get(x);
-                    asuritesToContact.put(c.ASURITE_Id__c, c);
-                }
-                
-                List<String> asuritesKeys = new List<String>(asuritesToContact.keySet());
-                
-                for(Integer x = 0; x < asuritesKeys.size(); x++)
-                {
-                    String asurite = asuritesKeys.get(x);
-                    Contact c = asuritesToContact.get(asurite);
-                    User u = asuritesToUser.get(asurite);
-                    u.ContactId = c.Id;
+        System.assert(!updateUser.Role_Knowledge__c);
+    }
 
-                    if(c.CAP__c != null)
-                    {
-						u.ProfileId = communityCapProfile;
-                    }
-                }
-			}
-            
-            //throw new ContactServiceException('This is the Contact: ' + );
-		}
-	}
+    @isTest static void insertCAPUser()
+    {
+        Account acc = new Account(Name='Test Account Name');
+        insert acc;
 
-	public void bulkAfter() {}
+        Contact testContact = ContactService.createTestContact();
+        testContact.FirstName = 'Test';
+        testContact.LastName = 'User';
+        testContact.ASURite_ID__c = 'testuser';
+        testContact.CAP_Possible__c = TRUE;
+        testContact.ACcountId = acc.Id;
+        insert testContact;
 
-	public void beforeInsert(SObject so) {}
+        Test.startTest();
+        Student_Group__c testGroup = new Student_Group__c();
+        testGroup.SG_Status__c = TRUE;
+        testGroup.SG_PeopleSoft_Code__c = 'CP00';
+        testGroup.SG_Contact__c = testContact.Id;
+        insert testGroup;
 
-	public void beforeUpdate(SObject oldSo, SObject so) 
-	{
-		User updatedUser = (User) so;
-		User oldUser = (User) so;
+        User testUser = UserService.createTestUser();
+        Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+        testUser.ProfileId = communityProfile;
 
-		if (updatedUser.UserPermissionsKnowledgeUser)
-		{
-			updatedUser.Role_Knowledge__c = true;
-		}
-		else
-		{
-			updatedUser.Role_Knowledge__c = false;
-		}
-	}
+        testUser.isActive = true;
+        testUser.FederationIdentifier = 'testuser@asu.edu';
+        insert testUser;
+        Test.stopTest();
 
-	public void beforeDelete(SObject so) {}
+        Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
+        testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
 
-	public void beforeFinally() {}
+        System.assert(testUser.ProfileId == communityCapProfile.Id);
+    }
 
-	public void afterInsert(SObject so) {}
+    @isTest static void insertNonCAPUser()
+    {
+        User testUser = UserService.createTestUser();
+        Id chatterProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'].Id;
+        testUser.ProfileId = chatterProfile;
+        testUser.FederationIdentifier = 'testuser@asu.edu';
+        insert testUser;
 
-	public void afterUpdate(SObject oldSo, SObject so) {}
+        Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
+        testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
 
-	public void afterDelete(SObject so) {}
+        System.assert(testUser.ProfileId != communityCapProfile.Id);
+    }
 
-	public void andFinally() {}
+    //methods to test bulkAfter
+    //insert a ASU Service user and check whether hes added to the corresponding chatter group or not.
+
+     @isTest static void insertASUServiceUser()
+     {
+         Double dbRandom = Math.random();
+         //Create record in Chatter Auto Add User custom setting
+         Chatter_Auto_Add_Users__c objAsuService = new Chatter_Auto_Add_Users__c();
+         objAsuService.Name = 'Case Management';
+		 //Assign Case Management People Soft Role.
+         objAsuService.PeopleSoft_Role__c = 'Case Management';
+		 // Assign a chatter group name that is unique throughout the org(reason for appending random number)
+         objAsuService.Chatter_Group_Name__c = 'ASU Service'+ String.valueOf(dbRandom);
+         objAsuService.NotificationFrequency__c = 'D';
+         insert objAsuService;
+
+         //Insert corresponding collaboration group record(name must be unique throughout org)
+         List<CollaborationGroup> testCGList = new List<CollaborationGroup>();
+         String strGrpName = 'ASU Service'+String.valueOf(dbRandom);
+         CollaborationGroup objCG = new collaborationgroup(name=strGrpName, CollaborationType='Public');
+         testCGList.add(objCG);
+         insert (testCGList);
+         //Insert a user with a Case Management People Soft Role
+         Test.startTest();
+         User testUser = UserService.createTestUser();
+         testUser.Role_Case_Management__c = true;
+         Id asuServiceProfile = [Select Id from Profile WHERE Name='ASU Service - ASU Online'].Id;
+         testUser.ProfileId = asuServiceProfile;
+         testUser.FederationIdentifier = 'testuserService@asu.edu';
+         insert testUser;
+         Test.stopTest();
+         //Query the CollabortationGroupId(Chatter Group) for the inserted user
+         List<CollaborationGroupMember> lstCGM = [SELECT MemberId,CollaborationGroupId
+                                                 FROM CollaborationGroupMember
+                                                 WHERE MemberId=:testUser.Id];
+
+         System.assertEquals(lstCGM.size(),1);
+		 //Check whether the user is added to the correct chatter group.
+         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
+
+     }
+
+     //insert a recruitment user and check whether hes added to the corresponding chatter group or not.
+
+     @isTest static void insertASURecruitUser()
+     {
+         Double dbRandom=Math.random();
+         //Create record in Chatter Auto Add User custom setting
+         Chatter_Auto_Add_Users__c objAsuRecruit = new Chatter_Auto_Add_Users__c();
+         objAsuRecruit.Name = 'ASU Recruitment2';
+		 //Assign Recruitment Communications People Soft Role.
+         objAsuRecruit.PeopleSoft_Role__c = 'Recruitment Communications';
+		 // Assign a chatter group name that is unique throughout the org(reason for appending random number)
+         objAsuRecruit.Chatter_Group_Name__c = 'ASU Recruitment'+ String.valueOf(dbRandom);
+         objAsuRecruit.NotificationFrequency__c = 'D';
+         insert objAsuRecruit;
+
+		 //Insert corresponding collaboration group record(name must be unique throughout org)
+         List<CollaborationGroup> testCGList = new List<CollaborationGroup>();
+         String strGrpName = 'ASU Recruitment'+String.valueOf(dbRandom);
+         CollaborationGroup objCG = new CollaborationGroup(name=strGrpName,CollaborationType='Public');
+         testCGList.add(objCG);
+         insert (testCGList);
+
+         //Insert a user with a Recruitment Communications People Soft Role
+         Test.startTest();
+         User testUser = UserService.createTestUser();
+         testUser.Role_Recruitment_Communications__c = true;
+         Id asuRecruitProfile = [Select Id from Profile WHERE Name='ASU Recruitment - Admission Services'].Id;
+         testUser.ProfileId = asuRecruitProfile;
+         testUser.FederationIdentifier = 'testuserRecruit@asu.edu';
+         insert testUser;
+         Test.stopTest();
+
+         //Query the CollabortationGroupId(Chatter Group) for the inserted user
+         List<CollaborationGroupMember> lstCGM = [SELECT MemberId,CollaborationGroupId
+                                                 FROM CollaborationGroupMember
+                                                 WHERE MemberId=:testUser.Id];
+
+         System.assertEquals(lstCGM.size(),1);
+		 //Check whether the user is added to the correct chatter group.
+         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
+
+     }
+
+     //insert a knowledge user and check whether hes added to the corresponding chatter group or not.
+
+     @isTest static void insertASUKnowledgeUser()
+     {
+         Double dbRandom = Math.random();
+         //Create record in Chatter Auto Add User custom setting
+         Chatter_Auto_Add_Users__c objAsuKnowledge = new Chatter_Auto_Add_Users__c();
+         objAsuKnowledge.Name = 'Knowledge';
+		 //Assign Knowledge People Soft Role.
+         objAsuKnowledge.PeopleSoft_Role__c = 'Knowledge';
+		 // Assign a chatter group name that is unique throughout the org(reason for appending random number)
+         objAsuKnowledge.Chatter_Group_Name__c = 'Knowledge Users'+ String.valueOf(dbRandom);
+         objAsuKnowledge.NotificationFrequency__c = 'D';
+         insert objAsuKnowledge;
+
+         //Insert corresponding collaboration group record(name must be unique throughout org)
+         List<CollaborationGroup> testCGList = new List<CollaborationGroup>();
+         String strGrpName = 'Knowledge Users'+String.valueOf(dbRandom);
+         CollaborationGroup objCG = new CollaborationGroup(name=strGrpName,CollaborationType='Public');
+         testCGList.add(objCG);
+         insert (testCGList);
+
+         //Insert a user with Knwoledge People Soft Role
+         Test.startTest();
+
+         User testUser = UserService.createTestUser();
+         testUser.Role_Knowledge__c = true;
+         Id asuRecruitProfile = [Select Id from Profile WHERE Name='ASU Knowledge User'].Id;
+         testUser.ProfileId = asuRecruitProfile;
+         testUser.FederationIdentifier = 'testuserKnowledge@asu.edu';
+         insert testUser;
+
+         Test.stopTest();
+
+
+         //Query the CollabortationGroupId(Chatter Group) for the inserted user
+         List<CollaborationGroupMember> lstCGM = [SELECT MemberId, CollaborationGroupId
+                                                 FROM CollaborationGroupMember
+                                                 WHERE MemberId=:testUser.Id];
+
+         System.assertEquals(lstCGM.size(),1);
+		 //Check whether the user is added to the correct chatter group.
+         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
+
+     }
+     //insert a marketing cloud user and check whether the user is added to the corresponding collaboration group.
+
+     @isTest static void insertASUMarketingUser()
+     {
+         Decimal dbRandom = Math.random();
+         dbRandom=dbRandom.SetScale(2);		// Round off to two decimal points(More decimal points may cause name character limit to exceed)
+
+		 //Create record in Chatter Auto Add User custom setting
+         Chatter_Auto_Add_Users__c objAsuMarketing = new Chatter_Auto_Add_Users__c();
+         objAsuMarketing.Name = 'Marketing1';
+		 //Assign Connected Marketing Cloud Adm People Soft Role.
+         objAsuMarketing.PeopleSoft_Role__c = 'Connected Marketing Cloud Adm';
+         objAsuMarketing.NotificationFrequency__c = 'P';
+		 // Assign a chatter group name that is unique throughout the org(reason for appending random number)
+         objAsuMarketing.Chatter_Group_Name__c = 'ASU Connected Marketing Cloud'+ String.valueOf(dbRandom);
+         insert objAsuMarketing;
+
+		 //Insert corresponding collaboration group record(name must be unique throughout org)
+         List<CollaborationGroup> testCGList = new List<CollaborationGroup>();
+         String strGrpName = 'ASU Connected Marketing Cloud'+String.valueOf(dbRandom);
+         CollaborationGroup objCG = new CollaborationGroup(name=strGrpName,CollaborationType='Public');
+         testCGList.add(objCG);
+         insert (testCGList);
+
+         Test.startTest();
+
+         //Insert a user with Marketing Cloud Admin People Soft Role
+         User testUser = UserService.createTestUser();
+         testUser.Role_Connected_MC_Adm__c = true;
+         Id asuRecruitProfile = [Select Id from Profile WHERE Name='ASU Knowledge User'].Id;
+         testUser.ProfileId = asuRecruitProfile;
+         testUser.FederationIdentifier = 'testuserMarketing1@asu.edu';
+         insert testUser;
+
+         Test.stopTest();
+
+		 //Query the CollabortationGroupId(Chatter Group) for the inserted user
+         List<CollaborationGroupMember> lstCGM = [SELECT MemberId, CollaborationGroupId
+                                                 FROM CollaborationGroupMember
+                                                 WHERE MemberId=:testUser.Id];
+
+         System.assertEquals(lstCGM.size(),1);
+		 //Check whether the user is added to the correct chatter group.
+		 System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
+
+
+    }
 }

@@ -570,31 +570,3 @@ public without sharing class CaseHandler implements ITrigger {
         }
     }
 }
-
-
-
-AND (
- OR (
-  IF(
-    ISBLANK([Case].CC_Functional_Group__c),
-   false,
-   [Case].CC_Functional_Group__c.Name = "Admission Services"
-  ),
-  IF(
-   ISBLANK([Case].CC_Category__c),
-   false,
-   CONTAINS([Case].CC_Category__c.Name, "Recruitment")
-  ),
-  IF (
-   ISBLANK([Case].CC_Sub_Category__c),
-   false,
-   CONTAINS([Case].CC_Sub_Category__c.Name, "Recruitment")
-  )
- ), /*end of OR statement*/
- IF(
-    ISBLANK([Case].CC_Functional_Group__c),
-   false,
-   [Case].CC_Functional_Group__c.Name != "ASU Salesforce Support"
-  ),
- [Case].RecordType.Name = "ASU Service"
-)

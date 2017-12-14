@@ -548,7 +548,7 @@ public without sharing class CaseHandler implements ITrigger {
                 caseRecord.RecordTypeId = RT_ADMIN_ONLY_ASU_ADVISOR_OUTREACH;
             } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Coach Outreach')) {
                 caseRecord.RecordTypeId = RT_ASU_COACH_OUTREACH;
-            } else if ((caseRecord.RecordTypeId != RT_ASU_SERVICE && !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Salesforce Support')) &&
+            } else if ((caseRecord.RecordTypeId == RT_ASU_SERVICE && !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Salesforce Support')) &&
                 (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') ||
                 (mapCCIdToName.containsKey(caseRecord.CC_Category__c) && mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment')) ||
                 (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) && mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
@@ -570,3 +570,31 @@ public without sharing class CaseHandler implements ITrigger {
         }
     }
 }
+
+
+
+AND (
+ OR (
+  IF(
+    ISBLANK([Case].CC_Functional_Group__c),
+   false,
+   [Case].CC_Functional_Group__c.Name = "Admission Services"
+  ),
+  IF(
+   ISBLANK([Case].CC_Category__c),
+   false,
+   CONTAINS([Case].CC_Category__c.Name, "Recruitment")
+  ),
+  IF (
+   ISBLANK([Case].CC_Sub_Category__c),
+   false,
+   CONTAINS([Case].CC_Sub_Category__c.Name, "Recruitment")
+  )
+ ), /*end of OR statement*/
+ IF(
+    ISBLANK([Case].CC_Functional_Group__c),
+   false,
+   [Case].CC_Functional_Group__c.Name != "ASU Salesforce Support"
+  ),
+ [Case].RecordType.Name = "ASU Service"
+)

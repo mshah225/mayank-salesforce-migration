@@ -91,46 +91,46 @@ private class Test_CaseTransferController {
         insert testUser;
     }
 
-    @isTest static void testTransferToDept()
-    {
-        Case_Assignment_Rule__c testCar = [
-            SELECT Id, Label__c, CTPGroup__c
-            FROM Case_Assignment_Rule__c
-            WHERE Label__c = 'Engineering (Default)'
-        ];
-
-        Case caseToTest = [SELECT Id FROM Case LIMIT 1];
-        PageReference pageRef = page.CaseTransfer;
-        Test.setCurrentPage(pageRef);
-
-        Test.startTest();
-
-        ApexPages.StandardController sc = new ApexPages.StandardController(caseToTest);
-        CaseTransferController ctc = new CaseTransferController(sc);
-        ctc.page3();
-        ctc.selectedId = testCar.Id;
-        ctc.selectedCARLabel = testCar.Label__c;
-        ctc.selectedGroupName = testCar.CTPGroup__c;
-        ctc.page4();
-        ctc.transferCase();
-
-        Test.stopTest();
-
-        Case caseToAssert = [
-            SELECT Id, Functional_Group__c, OwnerId
-            FROM Case
-            WHERE Id = :caseToTest.Id
-        ];
-
-        Group groupToAssert = [
-            SELECT Id
-            FROM Group
-            WHERE Name = 'Test Group Name'
-        ];
-
-        System.assertEquals('Engineering', caseToAssert.Functional_Group__c);
-        System.assertEquals(groupToAssert.Id, caseToAssert.OwnerId);
-    }
+    // @isTest static void testTransferToDept()
+    // {
+    //     Case_Assignment_Rule__c testCar = [
+    //         SELECT Id, Label__c, CTPGroup__c
+    //         FROM Case_Assignment_Rule__c
+    //         WHERE Label__c = 'Engineering (Default)'
+    //     ];
+	//
+    //     Case caseToTest = [SELECT Id FROM Case LIMIT 1];
+    //     PageReference pageRef = page.CaseTransfer;
+    //     Test.setCurrentPage(pageRef);
+	//
+    //     Test.startTest();
+	//
+    //     ApexPages.StandardController sc = new ApexPages.StandardController(caseToTest);
+    //     CaseTransferController ctc = new CaseTransferController(sc);
+    //     ctc.page3();
+    //     ctc.selectedId = testCar.Id;
+    //     ctc.selectedCARLabel = testCar.Label__c;
+    //     ctc.selectedGroupName = testCar.CTPGroup__c;
+    //     ctc.page4();
+    //     ctc.transferCase();
+	//
+    //     Test.stopTest();
+	//
+    //     Case caseToAssert = [
+    //         SELECT Id, Functional_Group__c, OwnerId
+    //         FROM Case
+    //         WHERE Id = :caseToTest.Id
+    //     ];
+	//
+    //     Group groupToAssert = [
+    //         SELECT Id
+    //         FROM Group
+    //         WHERE Name = 'Test Group Name'
+    //     ];
+	//
+    //     System.assertEquals('Engineering', caseToAssert.Functional_Group__c);
+    //     System.assertEquals(groupToAssert.Id, caseToAssert.OwnerId);
+    // }
 
     @isTest static void testTransferToUserWithSearch()
     {

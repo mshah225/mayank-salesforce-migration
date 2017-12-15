@@ -592,5 +592,5 @@ private class Test_ServiceCenter{
         List<Case> lstCase=[Select Id, Subject, Description from Case where Origin__c='Error Logger'];
         System.assertEquals(lstCase.size(),1);
     }
-
 }
+

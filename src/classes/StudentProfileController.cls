@@ -1849,6 +1849,36 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
+    global static me3__c getMe3HSResults(String contactId) {
+        List<me3__c> me3List = new List<me3__c>();
+        
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
+            
+            me3List =
+            (
+                Test.isRunningTest() ? new List<me3__c>() : 
+                [SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,                 
+                        Source__c, Test_Completed_Date__c, User_Id__c, 
+                        (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
+                                Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
+                         FROM   me3_Careers__r
+                         ORDER BY Active__c DESC, Updated_Date__c DESC, Position__c, Plan_Code__c
+                         LIMIT 10) 
+                 FROM me3__c
+                 WHERE  Contact__c = :contactId AND Source__c = 'me3hs'
+                 ORDER BY Test_Completed_Date__c DESC
+                 LIMIT 1 
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+
+        return (me3List.size() > 0? me3List[0] : new me3__c());        
+    }
+
+    @RemoteAction
     global static me3__c getMe3Results(String contactId)
     {
         List<me3__c> me3List;
@@ -1864,10 +1894,10 @@ global with sharing class StudentProfileController
                         (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
                                 Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
                          FROM   me3_Careers__r
-                         ORDER BY Active__c DESC, Updated_Date__c DESC, Plan_Code__c
+                         ORDER BY Active__c DESC, Updated_Date__c DESC, Position__c, Plan_Code__c
                          LIMIT 10) 
-                 FROM   me3__c
-                 WHERE  Contact__c = :contactId
+                 FROM me3__c
+                 WHERE  Contact__c = :contactId AND Source__c = 'DegreeSearch'
                  ORDER BY Test_Completed_Date__c DESC
                  LIMIT 1 
                 ]
@@ -1879,6 +1909,34 @@ global with sharing class StudentProfileController
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
 
+     @RemoteAction
+    global static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_BOOKING_VW__x> housingInfoList = new List<REZ_HOUSING_BOOKING_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                housingInfoList =
+                [
+                    SELECT
+                        BOOKING_BUILDING__c, BOOKING_CAMPUS__c,
+                        BOOKING_FLOOR_SUITE__c, BOOKING_SECTION__c,
+                        BOOKING_STATUS__c, CHECK_IN_DT__c, CHECK_OUT_DT__c,
+                        TERM_CD__c
+                    FROM REZ_HOUSING_BOOKING_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY CHECK_OUT_DT__c DESC
+                ];
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return housingInfoList;
+    }
+    
     @RemoteAction
     global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
         try{

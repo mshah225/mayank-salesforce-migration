@@ -6,70 +6,70 @@ global class CivitasPersistenceController{
     global static String emplId {get; set;}
     global static Decimal persistenceLevel;
     global static Contact c;
-    
+
     public static string currentTerm{
         get{
             if (currentTerm == null) {
-                JBT_RET_TERMS_VW__x currentTermInfo = 
+                JBT_RET_TERMS_VW__x currentTermInfo =
                 [
                     SELECT  CURR_TERM__c, NEXT_TERM__c, PREV_TERM__c
                     FROM    JBT_RET_TERMS_VW__x
                     LIMIT 1
                 ];
                 currentTerm = currentTermInfo.CURR_TERM__c;
-                
+
                 if (currentTerm.length() > 4) {
                     currentTerm = currentTerm.subString(1, 5);
                 }
-                
+
                 nextTerm = currentTermInfo.NEXT_TERM__c;
                 prevTerm = currentTermInfo.PREV_TERM__c;
             }
             return currentTerm;
         }
-    
+
         set;
     }
-        
+
     public static string nextTerm{
         get;
-        
+
         set;
     }
-    
+
     public static string prevTerm {
         get;
-        
+
         set;
     }
     public static Date startDate{
         get{
             if (startDate == null) {
-                startDate = [Select Session_A_C_Start_Date__c 
-                             FROM Term__c 
+                startDate = [Select Session_A_C_Start_Date__c
+                             FROM Term__c
                              WHERE PeopleSoft_Code__c =: currentTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startDate.addDays(22);
             }
             if(startDate >= Date.today()) {
                 endDate = startDate;
-                startDate = [Select Session_A_C_Start_Date__c 
-                             FROM Term__c 
+                startDate = [Select Session_A_C_Start_Date__c
+                             FROM Term__c
                              WHERE PeopleSoft_Code__c =: prevTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startdate.addDays(22);
             }
             return startDate;
         }
-    
+
         set;
     }
-        
+
     public static Date endDate{
         get{
             if (endDate == null) {
-                endDate = [Select Session_A_C_Start_Date__c 
-                             FROM Term__c 
+                endDate = [Select Session_A_C_Start_Date__c
+                             FROM Term__c
                              WHERE PeopleSoft_Code__c =: nextTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
             }
@@ -77,7 +77,7 @@ global class CivitasPersistenceController{
         }
         set;
         }
-    
+
     @RemoteAction
     global static List<CivitasWrapper> getData(String emplidIn){
         try {
@@ -94,7 +94,7 @@ global class CivitasPersistenceController{
         CV_ASU_STDNT_TERM__x startSemesterData;
         for (CV_ASU_STDNT_TERM__x trm : [
             Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c, ONLINE_SEGMENT__c, CAREER_SEGMENT__c
-            FROM CV_ASU_STDNT_TERM__x 
+            FROM CV_ASU_STDNT_TERM__x
             WHERE Contact__c =: emplIdIn
             ORDER BY SNAP_DATE__c ASC
         ]) {
@@ -109,7 +109,7 @@ global class CivitasPersistenceController{
                     if(trm.Snap_Date__c > startDate && startSemesterData != null) {
                         Date tempStart = startDate;
                         while(tempStart < trm.Snap_Date__c) {
-                            dataList.add(new CivitasWrapper(tempStart, startSemesterData.CURR_CONT_PREDICTION_LEVEL__c, 
+                            dataList.add(new CivitasWrapper(tempStart, startSemesterData.CURR_CONT_PREDICTION_LEVEL__c,
                                          startSemesterData.CURRENT_SEGMENT_DESCR__c, startSemesterData.CHANGE_FLG__c,  c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                             dateIncr++;
                             tempStart = tempStart.addDays(1);
@@ -122,25 +122,24 @@ global class CivitasPersistenceController{
                     Date prevDate = prevData.Snap_Date__c;
                     prevDate = prevDate.addDays(1);
                     while(prevDate < trm.Snap_Date__c) {
-                        dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c, 
+                        dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c,
                                                     prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                         dateIncr++;
                         prevDate = prevDate.addDays(1);
                     }
-                    dataList.add(new CivitasWrapper(trm.SNAP_DATE__c, trm.CURR_CONT_PREDICTION_LEVEL__c, 
+                    dataList.add(new CivitasWrapper(trm.SNAP_DATE__c, trm.CURR_CONT_PREDICTION_LEVEL__c,
                                                     trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                     dateIncr++;
                 }
-                
-                prevData = trm; 
-            }                  
+
+                prevData = trm;
+            }
         }
-        
-        
+
         if(rejected.size() > 0){
             return rejected;
         }
-        
+
         if (dataList.size() > 0) {
             Integer startMonth = startDate.month();
             Integer endMonth = endDate.month();
@@ -152,8 +151,8 @@ global class CivitasPersistenceController{
             } else {
                 dataList[0].termInfo = 'Fall';
             }
-            
-            
+
+
             for (Integer i = startMonth; i <= endMonth+12; i++) {
                 String textMonth = monthToText(Math.mod(i, 12));
                 months.add(textMonth);
@@ -162,7 +161,7 @@ global class CivitasPersistenceController{
         }
         return dataList;
     }
-    
+
     public String getInfo{
         get{
             emplid = apexpages.currentPage().getparameters().get('contactId');
@@ -173,14 +172,14 @@ global class CivitasPersistenceController{
             	c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
             }
             getInfo = 'Name: ' + c.FirstName + ' ' + c.LastName + ' (' + emplid + ') Persistence Level: No Data Available&contactId=' + c.Id;
-             
+
             return getInfo;
         }
-        
+
         set;
     }
-    
-    
+
+
     private static string monthToText(Integer month){
         if (month == 1) {
             return 'Jan';
@@ -210,7 +209,7 @@ global class CivitasPersistenceController{
             return 'Error';
         }
     }
-    
+
     global class CivitasWrapper{
         public String empl;
         public String name;
@@ -227,27 +226,27 @@ global class CivitasPersistenceController{
         public String direction;
         public String prevDate;
         public String contactId;
-        
+
         public civitasWrapper(String nameIn) {
             name = nameIn;
         }
-        
+
         public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn, Integer valueIn, Id contactIdIn){
             snapDate = sDate;
             empl = empIn;
-            outlookLevel = oLevel;  
+            outlookLevel = oLevel;
             String currMonth = monthToText(snapDate.month());
             name = fName + ' ' + lName;
             contactId = contactIdIn;
-            
+
             year = snapDate.year();
             day = valueIn;
             dayDate = monthToText(snapDate.month()) + ' ' + snapDate.day();
             fullDate =  snapDate.month() + '/' + snapDate.day() + '/' + snapDate.year();
             levelDesc = description;
-            
+
             flag = flagIn;
         }
-        
+
     }
 }

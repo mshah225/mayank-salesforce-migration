@@ -351,6 +351,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Case_Source__c = camp.Id,
                                Associate_Case_to_Active_Opportunity__c = false,
+                               CC_Functional_Group__c = fg.Id,
+                               CC_Category__c = cat.Id,
                                Subject='Test Subject',
                                Description='Test Desc',
                                Status='In Progress');
@@ -658,6 +660,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Case_Source__c = camp.Id,
                                Associate_Case_to_Active_Opportunity__c = false,
+                               CC_Functional_Group__c = fg.Id,
+                               CC_Category__c = cat.Id,
                                Subject='Test Subject',
                                CC_functional_group__c = fg.Id,
                                Description='Test Desc',

@@ -3,7 +3,7 @@ public class Test_EmailMessageTrigger {
     private static Integer numberOfCases;
 
     static {
-        numberOfCases = 5;
+        numberOfCases = 3;
     }
 
     @testSetup
@@ -76,12 +76,12 @@ public class Test_EmailMessageTrigger {
      */
     public static testMethod void Test_ExceptionHandling() {
         List<Case> errorCases;
-
+		Test.startTest();
         EmailMessageService.getCasesFromEmailMessages(null);
 
         errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
 
-        // system.assertEquals(1, errorCases.size());
+        system.assertEquals(1, errorCases.size());
 
         delete errorCases;
 
@@ -89,8 +89,9 @@ public class Test_EmailMessageTrigger {
 
         errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
 
-        // system.assertEquals(1, errorCases.size());
+        system.assertEquals(1, errorCases.size());
 
         delete errorCases;
+        Test.stopTest();
     }
 }

@@ -68,7 +68,6 @@
                     <div class="panel-body">
                         <apex:form id="feedbackForm" style="max-width:600px;">
                             <h3><b style="font-weight:400">Persistence Outlook Feedback</b></h3>
-    
                             <p>Each note about persistence outlook will be responded to and feedback will be used to improve processes and models that generate persistence outlook. Please tell us if your comments are (a) <b>specific to this particular student</b> (for example, you suspect some important information you know may not be taken into account given their persistence outlook), (b)<b> may apply to a group of students</b> (for example, persistence outlook seems off for students that all have something in common you know about), (c) <b>oddities about persistence outlook</b> (for example, persistence outlook level keeps moving up and down dramatically), and/or (d) <b>general questions related to persistence outlook</b>. </p>
     						<div class="form-item webform-component webform-component-textarea webform-component--text-area">
                                 <apex:outputLabel value="Feedback Comments:" for="caseFeedbackComments" />

@@ -484,7 +484,7 @@
                                                         
                                                         <tr>
                                                             <th>Room Check-Out Date</th>
-                                                            <td id="checkOutDate">--</td>
+                                                            <td id="checkOutDate"><i id='checkOutSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>
                                                         </tr>
                                                         
                                                         <tr>
@@ -3633,13 +3633,19 @@
                             } else {
                                 document.getElementById("psHousingErrorsGen").innerHTML +=
                                     'No housing data found. ';
+                                jQuery('#checkOutSpinner').remove();
+                                document.getElementById("checkOutDate").innerHTML = '--';
                             }
                         } else if (event.type === 'exception') {
                             document.getElementById("psHousingErrorsGen").innerHTML =
                                 event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                            jQuery('#checkOutSpinner').remove();
+                                document.getElementById("checkOutDate").innerHTML = '--';
                         } else {
                             document.getElementById("psHousingErrorsGen").innerHTML =
                                 event.message;
+                            jQuery('#checkOutSpinner').remove();
+                                document.getElementById("checkOutDate").innerHTML = '--';
                         }
                     },
                     {escape: true}

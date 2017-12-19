@@ -68,7 +68,6 @@ public class ContactService
         Contact loggedInContact = null;
         String EmployeeId;
         List<Contact> lstLoggedInContact;
-
         String contactFields = contactFieldsToString() + ', Country_of_Citizenship__r.Name ';
 
         String selectContactInfoByLoggedInUser;

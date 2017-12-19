@@ -396,7 +396,9 @@
                                                 </div>
                                             </apex:outputPanel>
                                         </div>
-
+										
+                                        <div id="psHousingErrorsGen"></div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -449,7 +451,54 @@
                                                 </div> -->
                                             </apex:outputPanel>
                                         </div>
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;University Housing Information
+                                            </h4>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <apex:outputPanel id="generalResidence">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Residence Hall</th>
+                                                            <td>
+                                                                <span id="residenceFloor">--</span><br />
+                                                                <span id="residenceSection"></span><br />
+                                                                <span id="residenceHall"></span><br />
+                                                                <span id="residenceCampus"></span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
 
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Room Check-In Date</th>
+                                                            <td id="checkInDate">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Check-Out Date</th>
+                                                            <td id="checkOutDate"><i id='checkOutSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Status</th>
+                                                            <td id="roomStatus">--</td>
+                                                        </tr>
+                                                        
+                                                    </table>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                        
+ 
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1194,11 +1243,9 @@
                                             <div id="me3_career_interest_table"/>
                                         </div>
                                         <div id="me3ResponseErrors"/>
+
                                     </apex:pageBlock>
                                 </div>
-
-
-
                             </div>
 
                             <!-- Load up responsive tabs asap to minimize flicker on mobile -->
@@ -1490,6 +1537,7 @@
                 llStudentDemographic();
                 llStudentProgram();
                 llSundevilImg();
+                loadGeneralTab();
             });
             
             function llServiceIndicator() {
@@ -2171,6 +2219,11 @@
             var financialAidData;
     
             // Wrappers
+            
+            function loadGeneralTab() {
+                getHousingInfo();
+            }
+ 
             function loadUGAcademicsTab() {
                 getStdntCarMlstnsUG();
                 getStdntTestComps();
@@ -3543,6 +3596,62 @@
                 sortTransferList(name, ascDirTransfer);
             }
             
+            // Method to load the Undergraduate Academic Progress 
+            function getHousingInfo() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getHousingInfo}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psHousingErrorsGen").innerHTML = "";
+
+                            if (!result.length == 0 && !Object.getOwnPropertyNames(result).length == 0) {
+                                console.log(result);
+                                $j('#residenceFloor').html(result[0].BOOKING_FLOOR_SUITE__c);
+                                $j('#residenceSection').html(result[0].BOOKING_SECTION__c);
+                                $j('#residenceHall').html(result[0].BOOKING_BUILDING__c);
+                                $j('#residenceCampus').html(result[0].BOOKING_CAMPUS__c);
+                                
+                                var checkInDate = result[0].CHECK_IN_DT__c;
+                                checkInDate = new Date(checkInDate);
+                                checkInDate = (checkInDate.getUTCMonth() + 1) + '/' +
+                                    checkInDate.getUTCDate() + '/' +
+                                    checkInDate.getUTCFullYear();
+                                    
+                                var checkOutDate = result[0].CHECK_OUT_DT__c;
+                                checkOutDate = new Date(checkOutDate);
+                                checkOutDate = (checkOutDate.getUTCMonth() + 1) + '/' +
+                                    checkOutDate.getUTCDate() + '/' +
+                                    checkOutDate.getUTCFullYear();
+                                
+                                $j('#checkInDate').html(checkInDate);
+                                $j('#checkOutDate').html(checkOutDate);
+                                
+                                $j('#roomStatus').html(result[0].BOOKING_STATUS__c);
+                                
+                            } else {
+                                document.getElementById("psHousingErrorsGen").innerHTML +=
+                                    'No housing data found. ';
+                                jQuery('#checkOutSpinner').remove();
+                                document.getElementById("checkOutDate").innerHTML = '--';
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                            jQuery('#checkOutSpinner').remove();
+                                document.getElementById("checkOutDate").innerHTML = '--';
+                        } else {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message;
+                            jQuery('#checkOutSpinner').remove();
+                                document.getElementById("checkOutDate").innerHTML = '--';
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+         
             var enrolledWrapper;
             var droppedWrapper;
             var examWrapper;
@@ -4402,22 +4511,29 @@
                                      "<div class='table-responsive'>" +
                                         "<table id='career_dev_table' class='table table-striped table-bordered'> " +
                                         "<tbody>";
+                                    if (typeof result.me3_Careers__r != 'undefined') {
+                                      for (var i = 0; i < result.me3_Careers__r.length; i++) {
+                                          if (result.me3_Careers__r[i].Updated_Date__c) {
+                                            var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
+                                            var updatedDate = new Date(cdUtcSeconds);
+                                            updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
+                                                updatedDate.getUTCDate() + '/' +
+                                                updatedDate.getUTCFullYear();
+                                          } else {
+                                            updatedDate == '--';
+                                          }
 
-                                    for (var i = 0; i < result.me3_Careers__r.length; i++) {
-                                        var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
-                                        var updatedDate = new Date(cdUtcSeconds);
-                                        updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
-                                            updatedDate.getUTCDate() + '/' +
-                                            updatedDate.getUTCFullYear();       
-                                        html += "" +
-                                            (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
-                                                "<td>" + updatedDate + "</td>" +
-                                                "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
-                                                "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
-                                                "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
-                                                result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
-                                            "</tr>";
+                                          html += "" +
+                                              (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
+                                                  "<td style='min-width: 75px;'>" + updatedDate + "</td>" +
+                                                  "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
+                                                  "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
+                                                  "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
+                                                  result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
+                                              "</tr>";
+                                      }
                                     }
+
                                     html += "</tbody></table></div>";
                                     document.getElementById('me3_career_interest_table').innerHTML = html;
 
@@ -4425,7 +4541,7 @@
                                     careerDevelopmentTabLoaded = true;
                                 } else {
                                     document.getElementById("me3ResponseErrors").innerHTML =
-                                        'No Me3 results found';
+                                        'No me3 results found';
                                     careerDevelopmentTabLoaded = true;
                                 }
                             } else if (event.type === 'exception') {

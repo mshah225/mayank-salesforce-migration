@@ -99,7 +99,7 @@ public without sharing class CaseHandler implements ITrigger {
                 caseRecord.Category__c =  mapCCIdToName.get(caseRecord.CC_Category__c);
                 caseRecord.Sub_Category__c = mapCCIdToName.get(caseRecord.CC_Sub_Category__c);
                 caseRecord.Original_Functional_Group__c = caseRecord.Functional_Group__c;
-                caseRecord.Original_Cateogory__c = caseRecord.Category__c;
+                caseRecord.Original_Category__c = caseRecord.Category__c;
                 assignRecordType(caseRecord);
             }
 

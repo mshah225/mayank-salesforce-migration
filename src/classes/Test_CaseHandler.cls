@@ -663,7 +663,6 @@ public with sharing class Test_CaseHandler {
                                CC_Functional_Group__c = fg.Id,
                                CC_Category__c = cat.Id,
                                Subject='Test Subject',
-                               CC_functional_group__c = fg.Id,
                                Description='Test Desc',
                                Status='In Progress');
             caseList.add(ca);

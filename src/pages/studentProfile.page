@@ -4500,7 +4500,12 @@
             }
     
             function filterFinancialAid() {
-                var e = document.getElementById("ps_financial_aid_year_select"); 
+                var e = document.getElementById("ps_financial_aid_year_select");
+                if(e.options[0] == null) {
+                    document.getElementById("ps_financial_aid_year_picklist").innerHTML = '';
+                    document.getElementById('ps_financial_aid_summary').innerHTML = 'No data is currentely available for this student';
+                    return;
+                }
                 var search = e.options[e.selectedIndex].text ;
                 var faTable = document.getElementById('financial_aid_table');
                 var offeredTotal = 0.00;

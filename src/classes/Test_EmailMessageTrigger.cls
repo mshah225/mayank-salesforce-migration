@@ -76,7 +76,7 @@ public class Test_EmailMessageTrigger {
      */
     public static testMethod void Test_ExceptionHandling() {
         List<Case> errorCases;
-		Test.startTest();
+        Test.startTest();
         EmailMessageService.getCasesFromEmailMessages(null);
 
         errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];

@@ -13,7 +13,6 @@
                 return;
             }
             var str = this.replace(/\"/g,"\\\"").replace(/\\/g, "\\\\");
-            console.log(str);
             return str;
         }
         

@@ -255,8 +255,7 @@ public class RelationshipService {
                 for(Relationship__c r : relList) {
                     if(c.Id == r.Contact__c) {
                         if(c.Rel_Parent_1__c == null) {
-                            c.Rel_Parent_1__c = c.Rel_Parent_2__c;
-                            c.Rel_Parent_2__c = null;
+                            c.Rel_Parent_1__c = r.Related_Contact__c;
                         } else {
                             c.Rel_Parent_2__c = r.Related_Contact__c;
                         }
@@ -275,20 +274,32 @@ public class RelationshipService {
         }
         
         List<Contact>  contactList = [Select Id, Rel_Parent_1__c, Rel_Parent_2__c
-                                      From Contact
-                                      WHERE Id IN: contactIdList];
+                              From Contact
+                              WHERE Id IN: contactIdList];
+
+        Map<Id, Contact> parent1ToContact = new Map<Id, Contact>();
+        Map<Id, Contact> parent2ToContact = new Map<Id, Contact>();
+        for (Contact c : contactList) {
+            if (c.Rel_Parent_1__c != null) {
+                parent1ToContact.put(c.Rel_Parent_1__c, c);
+            }
+            if (c.Rel_Parent_2__c != null) {
+                parent2ToContact.put(c.Rel_Parent_2__c, c);
+            }
+        }
         
         List<Contact> contactsToUpdate = new List<Contact>();
-        for(Contact c : contactList) {
-            for(Relationship__c r : relList) {
-                if(c.Id == r.Contact__c) {
-                    if(c.Rel_Parent_1__c == r.Related_Contact__c) {
-                        c.Rel_Parent_1__c = null;
-                    } else if (c.Rel_Parent_2__c == r.Related_Contact__c) {
-                        c.Rel_Parent_2__c = null;
-                    }
-                    contactsToUpdate.add(c);
+        for(Relationship__c r : relList) {
+            if (parent1ToContact.containsKey(r.Id)) {
+                Contact relatedContact = parent1ToContact.get(r.Id);
+                if (relatedContact.Rel_Parent_2__c == null) {
+                    relatedContact.Rel_Parent_1__c = null;
+                } else {
+                    relatedContact.Rel_Parent_1__c = relatedContact.Rel_Parent_2__c;
+                    relatedContact.Rel_Parent_2__c;
+                    parent2ToContact.remove(relatedContact.Rel_Parent_2__c);
                 }
+                contactsToUpdate.add(c);
             }
         }
         update contactsToUpdate;

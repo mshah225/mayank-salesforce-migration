@@ -269,39 +269,48 @@ public class RelationshipService {
     
     public static void removeParent(List<Relationship__c> relList) {
         List<Id> contactIdList = new List<Id>();
-        for(Relationship__c r : relList) {
-            contactIdList.add(r.Contact__c);
-        }
+        System.debug('Rel List ' + relList);
         
-        List<Contact>  contactList = [Select Id, Rel_Parent_1__c, Rel_Parent_2__c
-                              From Contact
-                              WHERE Id IN: contactIdList];
-
-        Map<Id, Contact> parent1ToContact = new Map<Id, Contact>();
-        Map<Id, Contact> parent2ToContact = new Map<Id, Contact>();
-        for (Contact c : contactList) {
-            if (c.Rel_Parent_1__c != null) {
-                parent1ToContact.put(c.Rel_Parent_1__c, c);
+        if(relList.size() > 0) {
+            for(Relationship__c r : relList) {
+                contactIdList.add(r.Contact__c);
             }
-            if (c.Rel_Parent_2__c != null) {
-                parent2ToContact.put(c.Rel_Parent_2__c, c);
-            }
-        }
-        
-        List<Contact> contactsToUpdate = new List<Contact>();
-        for(Relationship__c r : relList) {
-            if (parent1ToContact.containsKey(r.Id)) {
-                Contact relatedContact = parent1ToContact.get(r.Id);
-                if (relatedContact.Rel_Parent_2__c == null) {
-                    relatedContact.Rel_Parent_1__c = null;
-                } else {
-                    relatedContact.Rel_Parent_1__c = relatedContact.Rel_Parent_2__c;
-                    relatedContact.Rel_Parent_2__c;
-                    parent2ToContact.remove(relatedContact.Rel_Parent_2__c);
+            
+            List<Contact>  contactList = [Select Id, Rel_Parent_1__c, Rel_Parent_2__c
+                                          From Contact
+                                          WHERE Id IN: contactIdList];
+            System.debug('Contact List: ' + contactList);
+            Map<Id, Contact> parent1ToContact = new Map<Id, Contact>();
+            Map<Id, Contact> parent2ToContact = new Map<Id, Contact>();
+            for (Contact c : contactList) {
+                if (c.Rel_Parent_1__c != null) {
+                    parent1ToContact.put(c.Rel_Parent_1__c, c);
                 }
-                contactsToUpdate.add(c);
+                if (c.Rel_Parent_2__c != null) {
+                    parent2ToContact.put(c.Rel_Parent_2__c, c);
+                }
             }
+            System.debug('Parent1Map: ' + parent1ToContact);
+            System.debug('Parent2Map: ' + parent2ToContact);
+            List<Contact> contactsToUpdate = new List<Contact>();
+            for(Relationship__c r : relList) {
+                if (parent1ToContact.containsKey(r.Related_Contact__c)) {
+                    Contact relatedContact = parent1ToContact.get(r.Related_Contact__c);
+                    if (relatedContact.Rel_Parent_2__c == null) {
+                        relatedContact.Rel_Parent_1__c = null;
+                    } else {
+                        relatedContact.Rel_Parent_1__c = relatedContact.Rel_Parent_2__c;
+                        relatedContact.Rel_Parent_2__c = null;
+                        parent2ToContact.remove(relatedContact.Rel_Parent_2__c);
+                    }
+                    contactsToUpdate.add(relatedContact);
+                } else if (parent2ToContact.containsKey(r.Related_Contact__c)) {
+                    Contact relatedContact = parent2ToContact.get(r.Related_Contact__c);
+                    relatedContact.Rel_Parent_2__c = null;
+                    contactsToUpdate.add(relatedContact);
+                }
+            }
+            update contactsToUpdate;
         }
-        update contactsToUpdate;
     }
 }

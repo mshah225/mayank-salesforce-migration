@@ -43,6 +43,7 @@ public class RelationshipDispatcher implements IDispatch {
      * Contains business logic to process after deleting relationships
      */
     public void afterDelete() {
+        	RelationshipService.removeParent((List<Relationship__c>)Trigger.Old);
             RelationshipService.deleteReciprocal(Trigger.Old);
     }
     

@@ -428,7 +428,7 @@ public with sharing class CampaignMemberManagementController
             sosl += 'AND Event_Start_Date__c = :camStartDate ';
         }
 
-        sosl += 'ORDER BY Name ASC)';
+        sosl += 'ORDER BY Name ASC LIMIT 1000)';
 
         List<List<SObject>> sObjects = Search.query(sosl);
 

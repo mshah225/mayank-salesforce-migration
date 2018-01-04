@@ -804,9 +804,6 @@ public with sharing class CampaignMemberManagementController
         save();
     } 
 
-    public String inActivateCMId {get; set;}
-
-     
     public void inActivateCM() 
     {
         inActivateCamMem = [

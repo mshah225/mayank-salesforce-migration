@@ -3,8 +3,13 @@
     <apiVersion>28.0</apiVersion>
     <packageVersions>
         <majorNumber>1</majorNumber>
-        <minorNumber>205</minorNumber>
+        <minorNumber>230</minorNumber>
         <namespace>eContacts</namespace>
+    </packageVersions>
+    <packageVersions>
+        <majorNumber>210</majorNumber>
+        <minorNumber>1</minorNumber>
+        <namespace>et4ae5</namespace>
     </packageVersions>
     <status>Active</status>
 </ApexClass>

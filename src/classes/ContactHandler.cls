@@ -217,12 +217,12 @@ public without sharing class ContactHandler implements ITrigger
         if (Trigger.IsInsert) {
             // Create a list to store our Business Card Contact IDs
             List<Id> bizcardContactIds = new List<Id>();
-            
+			List<Id> conIDList = new List<Id>();
             // For each triggering sObject...
             for (SObject so : Trigger.New) {
                 // Store the sObject as a Contact
                 Contact c = (Contact) so;
-
+                conIdList.add(c.Id);
                 // If there are any new Contact/Account pairs
                 if (newContactToNewAccountMap.get(c) != null) {
                     // Store the Account associated with the Contact
@@ -240,9 +240,11 @@ public without sharing class ContactHandler implements ITrigger
                     bizcardContactIds.add(c.Id);
                     System.debug('Contact IDs: ' + bizcardContactIds);
                 }
-            
-            }
 
+            }
+            if(conIdList.size() > 0) {
+                setHashId(conIdList);
+            }
             // If any Contacts were created by the VisionE/Scan application...
             if (bizcardContactIds.size() > 0) {
                 // Populate a list of all the Contacts created by the VisionE/Scan application
@@ -337,7 +339,17 @@ public without sharing class ContactHandler implements ITrigger
 
     public void afterInsert(SObject so) { }
 
-    public void afterUpdate(SObject oldSo, SObject so) { }
+    public void afterUpdate(SObject oldSo, SObject so) {
+        /*
+        // If the Email Opt-out value has changed, call Marketing Cloud to reflect the change
+        Contact newCon = (Contact)so;
+        Contact oldCon = (Contact)oldSo;
+        if (newCon.HasOptedOutOfEmail && !oldCon.HasOptedOutOfEmail)
+            SetMarketingCloudSubStatus(newCon.Id, false);
+        else if (!newCon.HasOptedOutOfEmail && oldCon.HasOptedOutOfEmail)
+            SetMarketingCloudSubStatus(newCon.Id, true);
+        */
+     }
 
     public void afterDelete(SObject so) { }
 
@@ -352,5 +364,31 @@ public without sharing class ContactHandler implements ITrigger
         );
 
         return a;
+    }
+
+    @future (callout=true)
+    static void SetMarketingCloudSubStatus(String subscriberKey, Boolean subStatus) {
+        if (!subStatus)
+            et4ae5.jsButtonMethods.performUnsub(subscriberKey,'contact');
+        else
+            et4ae5.jsButtonMethods.performResub(subscriberKey,'contact');
+    }
+    
+    @future
+    static void setHashId(List<Id> contactIdList) {
+        List<Contact> conList = new List<Contact>();
+        for(Id i : contactIdList) {
+            Contact c = new Contact(Id = i, HashContactID__c = hashId(i));
+            conList.add(c);
+        }
+        update conList;
+    }
+    
+    private static String hashId(String IdIn) {
+        Blob blobId = Blob.valueOf(IdIn);
+        Blob digestId = Crypto.generateDigest('SHA-512', blobId);
+        String stringId = EncodingUtil.base64Encode((digestId));
+        String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
+        return encodedId;
     }
 }

@@ -56,18 +56,9 @@ public with sharing class CampaignService
     public static void setHashId(List<Id> CampaignIdList) {
         List<Campaign> CampaignList = new List<Campaign>();
         for(Id i : campaignIdList) {
-            Campaign c = new Campaign(Id = i, HashCampaignID__c = hashId(i));
+            Campaign c = new Campaign(Id = i, HashCampaignID__c = Hasher.hashId(i));
             CampaignList.add(c);
         }
         update CampaignList;
     }
-    
-    static String hashId(String IdIn) {
-        Blob blobId = Blob.valueOf(IdIn);
-        Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-        String stringId = EncodingUtil.base64Encode((digestId));
-        String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-        return encodedId;
-    }
-    
 }

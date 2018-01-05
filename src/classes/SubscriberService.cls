@@ -148,18 +148,10 @@ public without sharing class SubscriberService {
     public static void setHashId(List<Id> subIdList) {
         List<Subscriber__c> subList = new List<Subscriber__c>();
         for(Id i : subIdList) {
-            Subscriber__c c = new Subscriber__c(Id = i, HashSubscriberID__c = hashId(i));
+            Subscriber__c c = new Subscriber__c(Id = i, HashSubscriberID__c = Hasher.hashId(i));
             subList.add(c);
         }
         update subList;
-    }
-    
-    static String hashId(String IdIn) {
-        Blob blobId = Blob.valueOf(IdIn);
-        Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-        String stringId = EncodingUtil.base64Encode((digestId));
-        String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-        return encodedId;
     }
 
 }

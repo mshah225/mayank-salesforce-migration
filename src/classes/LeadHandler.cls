@@ -210,20 +210,11 @@ public without sharing class LeadHandler implements ITrigger
     static void setHashId(List<Id> LeadIdList) {
         List<Lead> leadList = new List<Lead>();
         for(Id i : leadIdList) {
-            Lead c = new Lead(Id = i, HashLeadID__c = hashId(i));
+            Lead c = new Lead(Id = i, HashLeadID__c = Hasher.hashId(i));
             leadList.add(c);
         }
         update leadList;
     }
-    
-    static String hashId(String IdIn) {
-        Blob blobId = Blob.valueOf(IdIn);
-        Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-        String stringId = EncodingUtil.base64Encode((digestId));
-        String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-        return encodedId;
-    }
-    
-    
+  
     class LeadConversionException extends Exception {}
 }

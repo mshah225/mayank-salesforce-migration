@@ -1,4 +1,4 @@
-public class CampaignMemberManagementController 
+public with sharing class CampaignMemberManagementController
 {
     private Set<Id> assignedEventIds;
     private Set<Id> assignedIntIds;
@@ -30,16 +30,24 @@ public class CampaignMemberManagementController
     public List<Campaign> fixedChildCampaigns { get; set; }
     public List<Campaign> eventSearchResults { get; set; }
     public List<Campaign> interestSearchResults { get; set; }
+    public List<Subscriber__c> subscriberList { private get; set; } // New for Marketing Cloud project
+    public List<Message> filteredMessageList; // New for Marketing Cloud project
+    public List<Message> allMessageList { get; set; } // New for Marketing Cloud project
     public String searchString { get; set; }
     public String selectedParentCampaignName { get; set; }
     public String selectedChildCampaignName { get; set; }
     public String renderedTab { get; set; }
+    public String inActivateCMId { get; set; }
     public String eSearchString { get;set; }
     public String iSearchString { get;set; }
     public String deptColl { get; set; }
     public String selectedEventName { get; set; }
 
-    public CampaignMemberManagementController(ApexPages.StandardController controller) 
+    public String commFilterType {get; set;} // New for Marketing Cloud project
+    public Date commFilterStartDate {get; set;} // New for Marketing Cloud project
+    public Date commFilterEndDate {get; set;} // New for Marketing Cloud project
+
+    public CampaignMemberManagementController(ApexPages.StandardController controller)
     {
         contactId = ApexPages.currentPage().getParameters().get('id');
         admin = false;
@@ -52,6 +60,7 @@ public class CampaignMemberManagementController
         camMemEvent = new CampaignMember();
 
         buildCampaignMemberMap();
+        buildCommMessageList();
 
         String profileName = [
             SELECT Profile.Name
@@ -178,6 +187,132 @@ public class CampaignMemberManagementController
         campaignMemberMap.put('Other Source', tempOtherList);
         campaignMemberMap.put('Communication', tempCommList);
         campaignMemberMap.put('Course', tempCourseList);
+    }
+
+    /*
+    public List<Subscriber__c> getSubscriberList()
+    {
+        if (subscriberList == null)
+            subscriberList = SubscriberService.getSubscribers(contactId);
+
+        return subscriberList;
+    }
+    */
+    
+    public List<Subscriber__c> getSubscriberList()
+    {
+        if (subscriberList == null)
+            subscriberList = [SELECT Id, Subscriber_Status__c, Last_Subscribed_Date__c, Last_Unsubscribed_Date__c,
+                                     Subscription__r.Name, Subscription__r.Subscription_Type__c, Subscription__r.Business_Unit__r.Name
+                              FROM Subscriber__c
+                              WHERE Contact__c = :contactId];
+
+        return subscriberList;
+    }
+
+    public List<Message> getfilteredMessageList()
+    {
+        List<Message> messageList = new List<Message>();
+
+        for (Message m: allMessageList)
+        {
+            if (commFilterType == 'Sent')
+            {
+                if (commFilterStartDate != null && m.timeSent < commFilterStartDate)
+                {
+                    continue;
+                }
+                if (commFilterEndDate != null && m.timeSent > commFilterEndDate.addDays(1))
+                {
+                    continue;
+                }
+            }
+            else if (commFilterType == 'Opened')
+            {
+                if (commFilterStartDate != null && (m.timeOpened < commFilterStartDate || m.timeOpened == null))
+                {
+                    continue;
+                }
+                if (commFilterEndDate != null && m.timeOpened > commFilterEndDate.addDays(1) || m.timeOpened == null)
+                {
+                    continue;
+                }
+            }
+            messageList.add(m);
+        }
+
+        return messageList;
+    }
+
+    public List<Message> buildCommMessageList()
+    {
+            List<et4ae5__IndividualEmailResult__c> ierList = new List<et4ae5__IndividualEmailResult__c>();
+            // Query for the communication history
+            ierList = [
+                SELECT Id, Name, et4ae5__SubjectLine__c, et4ae5__FromName__c,
+                    et4ae5__FromAddress__c, et4ae5__SoftBounce__c, et4ae5__HardBounce__c,
+                    et4ae5__DateSent__c, et4ae5__DateOpened__c,
+                    et4ae5__NumberOfUniqueClicks__c, et4ae5__Contact__c,
+                    et4ae5__SendDefinition__c,
+                    et4ae5__SendDefinition__r.et4ae5__fBusiness_Unit__c
+                FROM et4ae5__IndividualEmailResult__c
+                WHERE et4ae5__Contact__c = :contactId
+                ORDER BY et4ae5__DateSent__c DESC
+                LIMIT 750
+            ];
+
+        allMessageList = new List<Message>();
+        for (et4ae5__IndividualEmailResult__c ier: ierList)
+        {
+            Message m = new Message();
+            m.id = ier.Id;
+            m.name = ier.Name;
+            m.subject = ier.et4ae5__SubjectLine__c;
+            m.sender =  (ier.et4ae5__SendDefinition__c == null? ier.et4ae5__FromName__c : ier.et4ae5__SendDefinition__r.et4ae5__fBusiness_Unit__c);
+
+            // Determine the delivery status of the message based on whether or not it returned a hard or soft bounce
+            if (ier.et4ae5__HardBounce__c) {
+                m.deliveryStatus = 'Hard Bounce';
+            } else if (ier.et4ae5__SoftBounce__c) {
+                m.deliveryStatus = 'Soft Bounce';
+            } else {
+                m.deliveryStatus = 'Delivered';
+            }
+
+            m.timeSent = ier.et4ae5__DateSent__c;
+
+            m.timeOpened = ier.et4ae5__DateOpened__c;
+            m.uniqueClicks = String.valueOf(ier.et4ae5__NumberOfUniqueClicks__c);
+
+            allMessageList.add(m);
+        }
+
+        return filteredMessageList;
+    }
+
+    // New for Marketing Cloud project
+    public List<SelectOption> getCommFilterOptions() {
+        List<SelectOption> options = new List<SelectOption>();
+
+        options.add(new SelectOption('Sent', 'Date Sent'));
+        options.add(new SelectOption('Opened', 'Date Opened'));
+
+        return options;
+    }
+
+    // New for Marketing Cloud project
+    /*
+    * @description: Clears the search filters. As a result, all communication history for the
+    * case is displayed.
+    */
+    public void clearCommFilter() {
+        // Reset the input fields for Start Date and End Date
+        this.commFilterStartDate = null;
+        this.commFilterEndDate = null;
+
+        // Reset the filter type to its default value
+        commFilterType = 'Sent';
+
     }
 
     public List<SelectOption> getDepartmentsColleges()
@@ -669,9 +804,6 @@ public class CampaignMemberManagementController
         save();
     } 
 
-    public String inActivateCMId {get; set;}
-
-     
     public void inActivateCM() 
     {
         inActivateCamMem = [
@@ -800,6 +932,38 @@ public class CampaignMemberManagementController
                     e.getMessage()
                 )
             );
+        }
+    }
+    /*
+    * @description: Wrapper class for historical communication
+    */
+    public class Message {
+        public String id {get; set;}
+        public String name {get; set;}
+        public String subject {get; set;}
+        public String sender {get; set;}
+
+        // Hard Bounce, Soft Bounce, Delivered
+        public String deliveryStatus {get; set;}
+
+        public Datetime timeSent {get; set;}
+        public Datetime timeOpened {get; set;}
+        public String uniqueClicks {get; set;}
+        public String subscriptionStatus {get; set;}
+
+        public Message() {
+            this.id = id;
+            this.name = name;
+            this.subject = subject;
+            this.sender = sender;
+
+            // Formula using hardbounce/softbounce to determine status
+            this.deliverystatus = '';
+
+            this.timeSent = timeSent;
+            this.timeOpened = timeOpened;
+            this.uniqueClicks = uniqueClicks;
+            this.subscriptionStatus = subscriptionStatus;
         }
     }
 }

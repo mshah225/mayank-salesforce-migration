@@ -1555,15 +1555,9 @@
             
             function llStudentDemographic() {
                 
-                var bDay = new Date("{!theContact.Birthdate}Z");
-                console.log("{!theContact.Birthdate}");
-                console.log(bDay);
-                var age = calculateAge(bDay);
-                console.log(age);
-                                    bDay = (bDay.getUTCMonth() + 1) + '/' +
-                                        bDay.getUTCDate() + '/' +
-                                        bDay.getUTCFullYear();
-                console.log(bDay);                        
+                var bDay = "{!birthdate}";
+                var age = "{!age}";
+                
                 var buildInitHtml = "<div class=\"col-sm-6\">" +
                                         "<table class=\"table table-striped\">" +
                                             "<tr>" +

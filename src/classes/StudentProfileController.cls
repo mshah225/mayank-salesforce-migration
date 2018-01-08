@@ -114,7 +114,18 @@ global with sharing class StudentProfileController
                 Date tmpDate = theContact.birthDate;
                 if(tmpDate != null) {
                     birthDate = tmpDate.month() + '/' + tmpDate.day() + '/' + tmpDate.year();
-                    age = Math.floor(Today()-birthDate/365.2425);
+                    Date nowDate = Date.Today();
+                    if(nowDate.month() > tmpDate.month()) {
+                        age = '' + (nowDate.year() - tmpDate.year() - 1);
+                    } else if (nowDate.month() < tmpDate.month()) {
+                        age = '' + (nowDate.year() - tmpDate.year());
+                    } else {
+                        if(nowDate.day() > tmpDate.day()) {
+                            age = '' + (nowDate.year() - tmpDate.year());
+                        } else {
+                            age = '' + (nowDate.year() - tmpDate.year() - 1);
+                        }
+                    }
                 }
                 // Start populating the lists
                 openCases = CaseService.getAllOpenCases(theContact.Id);

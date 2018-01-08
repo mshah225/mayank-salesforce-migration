@@ -32,6 +32,8 @@ global with sharing class StudentProfileController
     public String suncardPhotoURL { get; set; }
     public String deceased { get; set; }
     public string contactId {get; set;}
+    public String birthDate {get; set;}
+    public String age {get; set;}
     global static String paramToSort {get; set;}
     global static String examParamSort {get; set;}
     global static String transferParamSort {get; set;}
@@ -109,7 +111,11 @@ global with sharing class StudentProfileController
                 sIList = new List<PS_ASU_SP_SVCIND_V__x>();
                 allProgramPlans = new List<Student_Program_Plan__c>();
                 deceased = '';
-                
+                Date tmpDate = theContact.birthDate;
+                if(tmpDate != null) {
+                    birthDate = tmpDate.month() + '/' + tmpDate.day() + '/' + tmpDate.year();
+                    age = Math.floor(Today()-birthDate/365.2425);
+                }
                 // Start populating the lists
                 openCases = CaseService.getAllOpenCases(theContact.Id);
                 sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);

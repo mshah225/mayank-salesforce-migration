@@ -1,31 +1,22 @@
-global class ContactHashUpdateBatch implements Database.Batchable<sObject>{
-    global final String Query;
+public class ContactHashUpdateBatch implements Database.Batchable<sObject>{
+    public final String query;
     
-    global ContactHashUpdateBatch(){
-        Query = 'SELECT Id, HashContactId__c FROM Contact';
+    public ContactHashUpdateBatch(){
+        query = 'SELECT Id, HashContactId__c FROM Contact WHERE HashContactId__c = null';
     }
     
-    global Database.QueryLocator start(Database.BatchableContext BC){
+    public Database.QueryLocator start(Database.BatchableContext BC){
         return Database.getQueryLocator(query);
     }
     
-    global void execute(Database.BatchableContext BC, List<sObject> scope) {
-        List<Contact> cList = (List<Contact>) scope;
-        for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashContactId__c = hashId(cList[i].Id);
-        }     
+    public void execute(Database.BatchableContext BC, List<sObject> scope) {
+        for (Contact thisContact : (List<Contact>) scope) {
+            thisContact.HashContactId__c = ContactHandler.hashId(thisContact.Id);
+        }
         update scope;
     }
     
-    global void finish(Database.BatchableContext BC){
+    public void finish(Database.BatchableContext BC){
         
-    }
-    
-    global String hashId(String subIdIn) {
-        Blob blobId = Blob.valueOf(subIdIn);
-        Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-        String stringId = EncodingUtil.base64Encode((digestId));
-        String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-        return encodedId;
     }
 }

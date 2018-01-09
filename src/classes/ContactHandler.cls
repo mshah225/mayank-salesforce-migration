@@ -217,7 +217,7 @@ public without sharing class ContactHandler implements ITrigger
         if (Trigger.IsInsert) {
             // Create a list to store our Business Card Contact IDs
             List<Id> bizcardContactIds = new List<Id>();
-			List<Id> conIDList = new List<Id>();
+            List<Id> conIDList = new List<Id>();
             // For each triggering sObject...
             for (SObject so : Trigger.New) {
                 // Store the sObject as a Contact
@@ -368,10 +368,11 @@ public without sharing class ContactHandler implements ITrigger
 
     @future (callout=true)
     static void SetMarketingCloudSubStatus(String subscriberKey, Boolean subStatus) {
-        if (!subStatus)
+        if (!subStatus) {
             et4ae5.jsButtonMethods.performUnsub(subscriberKey,'contact');
-        else
+        } else {
             et4ae5.jsButtonMethods.performResub(subscriberKey,'contact');
+        }
     }
     
     @future
@@ -384,7 +385,7 @@ public without sharing class ContactHandler implements ITrigger
         update conList;
     }
     
-    private static String hashId(String IdIn) {
+    public static String hashId(String IdIn) {
         Blob blobId = Blob.valueOf(IdIn);
         Blob digestId = Crypto.generateDigest('SHA-512', blobId);
         String stringId = EncodingUtil.base64Encode((digestId));

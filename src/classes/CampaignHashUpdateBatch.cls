@@ -1,31 +1,20 @@
-global class CampaignHashUpdateBatch implements Database.Batchable<sObject>{
-    global final String Query;
+public class CampaignHashUpdateBatch implements Database.Batchable<sObject> {
+    public final String query;
     
-    global CampaignHashUpdateBatch(){
-        Query = 'SELECT Id, HashCampaignId__c FROM Campaign';
+    public CampaignHashUpdateBatch() {
+        query = 'SELECT Id, HashCampaignId__c FROM Campaign WHERE HashCampaignId__c = null';
     }
     
-    global Database.QueryLocator start(Database.BatchableContext BC){
+    public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(query);
     }
     
-    global void execute(Database.BatchableContext BC, List<sObject> scope) {
-        List<Campaign> cList = (List<Campaign>) scope;
-        for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashCampaignId__c = hashId(cList[i].Id);
-        }     
+    public void execute(Database.BatchableContext bc, List<sObject> scope) {
+        for (Campaign thisCampaign : (List<Campaign>) scope) {
+            thisCampaign.HashCampaignId__c = CampaignService.hashId(thisCampaign.HashCampaignId__c);
+        }
         update scope;
     }
     
-    global void finish(Database.BatchableContext BC){
-        
-    }
-    
-    global String hashId(String subIdIn) {
-        Blob blobId = Blob.valueOf(subIdIn);
-        Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-        String stringId = EncodingUtil.base64Encode((digestId));
-        String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-        return encodedId;
-    }
+    public void finish(Database.BatchableContext bc) {}
 }

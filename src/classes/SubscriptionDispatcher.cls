@@ -1,17 +1,21 @@
 public with sharing class SubscriptionDispatcher implements IDispatch {
-    private static final boolean debug = false; // Toggle debug error reporting
-    private static Map<Id,Subscription__c> newAttachments; // trigger.new
-    private static Map<Id,Subscription__c> oldAttachments; // trigger.oldMap
-    private static Map<Id,Case> casesToUpdate; // Map of cases that need to be updated based on business logic
+    private List<Subscription__c> newList;
+    private Map<Id,Subscription__c> newMap;
+    private List<Subscription__c> oldList;
+    private Map<Id,Subscription__c> oldMap;
     
-    public SubscriptionDispatcher (Map<Id,Subscription__c> newMap, Map<Id,Subscription__c> oldMap) {
-        newAttachments = newMap;
-        oldAttachments = oldMap;
+    public SubscriptionDispatcher (List<Subscription__c> newList, Map<Id,Subscription__c> newMap, 
+        List<Subscription__c> oldList, Map<Id,Subscription__c> oldMap
+    ) {
+        this.newList = newList;
+        this.newMap = newMap;
+        this.oldList = oldList;
+        this.oldMap = oldMap;
     }
     
     public void afterInsert() { 
     	List<Id> subId = new List<Id>();
-        for(sObject s : Trigger.New) {
+        for(Subscription__c s : newList) {
             subId.add(s.Id);
         }
         SubscriptionService.setHashId(subId);
@@ -23,5 +27,4 @@ public with sharing class SubscriptionDispatcher implements IDispatch {
     public void afterUpdate() { }
     public void afterUndelete() { }
     public void afterDelete() { }
-
 }

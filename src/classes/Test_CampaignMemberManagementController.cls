@@ -159,8 +159,7 @@ private class Test_CampaignMemberManagementController {
 
         // Add test Subscription records
         List<Subscription__c> subscriptions = TestDataFactory.createTestSubscriptions(5);
-        for (Subscription__c subscription: subscriptions)
-        {
+        for (Subscription__c subscription : subscriptions) {
             subscription.Subscriber_Private_in_Salesforce__c = false;
         }
         insert subscriptions;
@@ -171,22 +170,21 @@ private class Test_CampaignMemberManagementController {
 
         // Add test Business Units (Marketing Cloud)
         List<et4ae5__Business_Unit__c> buList = TestDataFactory.createBusinessUnits(1);
-        for (et4ae5__Business_Unit__c bu: buList)
-        {
+        for (et4ae5__Business_Unit__c bu : buList) {
             bu.IER_Private_in_Salesforce__c = false;
         }
         insert buList;
 
         // Add test Email Send Definitions (Marketing Cloud)
         List<et4ae5__SendDefinition__c> sdList = TestDataFactory.createEmailSends(5, 'Send Definition');
-        for (et4ae5__SendDefinition__c sd: sdList)
-        {
+        for (et4ae5__SendDefinition__c sd : sdList) {
             sd.et4ae5__Business_Unit__c = buList[0].Id;
         }
         insert sdList;
 
         // Add test Individual Email Results (Marketing Cloud)
-        List<et4ae5__IndividualEmailResult__c> ierList = TestDataFactory.createTestIERs(new List<Contact>{testContact}, sdList);
+        List<et4ae5__IndividualEmailResult__c> ierList = 
+            TestDataFactory.createTestIERs(new List<Contact>{testContact}, sdList);
         insert ierList;
 
     }

@@ -3,7 +3,7 @@
  * the contained values in a nested List of Strings.
  *
  */
-public class CSVReader {
+public class CsvReader {
 
 	/**
      * Comma String as defined by IETF RFC 4180.
@@ -71,46 +71,43 @@ public class CSVReader {
      * @return      the List<List<String>> containing values read from the
      *              CSV file
      */
-    public static List<List<String>> readCSVFile(Blob file) {
+    public static List<List<String>> readCsvFile(Blob file) {
         String fileString = file.toString();
 
         if (!fileString.endsWith(CR)) {
-          fileString = fileString + CR;
+            fileString = fileString + CR;
         }
 
         List<List<String>> fileValues = new List<List<String>>();
         List<String> rowValues = new List<String>();
-        CSVValue csvValue = new CSVValue();
+        CsvValue csvValue = new CsvValue();
 
         Boolean eod = false;  // Whether end of CSV data is reached
         while (!eod) {
-          System.debug(fileString);
+            //System.debug(fileString);
 
-            csvValue = readCSVValue(fileString);
+            csvValue = readValue(fileString);
 
             rowValues.add(csvValue.value);
 
             if (csvValue.delimiter == CR) {
-              fileValues.add(rowValues);
+                fileValues.add(rowValues);
 
-              System.debug(rowValues);
+                System.debug(rowValues);
 
-              if (fileValues.size() > 0) {
-                System.assertEquals(fileValues.get(0).size(),
-                      rowValues.size());
-              }
+                if (fileValues.size() > 0) {
+                    System.assertEquals(fileValues.get(0).size(), rowValues.size());
+                }
 
-              rowValues = new List<String>();
+                rowValues = new List<String>();
             }
 
             if (csvValue.biteSize() == fileString.length()) {
-              eod = true;
-            }
-            else {
-              fileString = fileString.substring(csvValue.biteSize());
+                eod = true;
+            } else {
+                fileString = fileString.substring(csvValue.biteSize());
             }
         }
-
         return fileValues;
     }
 
@@ -124,10 +121,10 @@ public class CSVReader {
      * @return      the first CSV value read from <code>data</code>.
      *              null is returned if no value is discerned.
      */
-    public static CSVValue readCSVValue(String data) {
+    public static CsvValue readValue(String data) {
         System.assert(data.endsWith(CR));
 
-        CSVValue csvValue = new CSVValue();
+        CsvValue csvValue = new CsvValue();
 
         if (data.startsWith(DQUOTE)) {
           csvValue.enclosed = true;
@@ -141,36 +138,31 @@ public class CSVReader {
             while (!closerFound) {
                 dquoteIndex = data.indexOf(DQUOTE, searchIndex);
 
-                dquotesIndex = data.indexOf(DQUOTEDQUOTE,
-                        searchIndex);
+                dquotesIndex = data.indexOf(DQUOTEDQUOTE, searchIndex);
 
                 System.assert(dquoteIndex != -1);
 
                 if (dquoteIndex == dquotesIndex) {
-                    searchIndex = dquotesIndex
-                            + DQUOTEDQUOTE.length();
-                }
-                else {
+                    searchIndex = dquotesIndex + DQUOTEDQUOTE.length();
+                } else {
                     closerFound = true;
                 }
             }
 
             csvValue.value = data.substring(
-                    DQUOTE.length(), dquoteIndex)
-                            .replaceAll(DQUOTEDQUOTE, DQUOTE);
+                DQUOTE.length(), dquoteIndex)
+                .replaceAll(DQUOTEDQUOTE, DQUOTE);
 
             Integer commaIndex = data.indexOf(COMMA, dquoteIndex);
             Integer crlfIndex = data.indexOf(CR, dquoteIndex);
 
             if (commaIndex != -1 && commaIndex < crlfIndex) {
                 csvValue.delimiter = COMMA;
-            }
-            else {
+            } else {
                 csvValue.delimiter = CR;
             }
-        }
-        else {
-          csvValue.enclosed = false;
+        } else {
+            csvValue.enclosed = false;
 
             Integer commaIndex = data.indexOf(COMMA);
             Integer crlfIndex = data.indexOf(CR);
@@ -178,8 +170,7 @@ public class CSVReader {
             if (commaIndex != -1 && commaIndex < crlfIndex) {
                 csvValue.value = data.substring(0, commaIndex);
                 csvValue.delimiter = COMMA;
-            }
-            else {
+            } else {
                 csvValue.value = data.substring(0, crlfIndex);
                 csvValue.delimiter = CR;
             }
@@ -195,7 +186,7 @@ public class CSVReader {
      * value that was read from a CSV file, including such information as
      * whether the value was encapsulated in double-quotes.
      */
-    private class CSVValue {
+    private class CsvValue {
         /**
          * The field value that was read from the CSV file.
          */
@@ -214,7 +205,7 @@ public class CSVReader {
         /**
          * Default constructor, setting all members to null.
          */
-        public CSVValue() {
+        public CsvValue() {
             this(null, null, null);
         }
 
@@ -226,7 +217,7 @@ public class CSVReader {
          * @param delimiter the delimiter that identified the end
          *                  of the CSV value
          */
-        public CSVValue(String value, Boolean enclosed, String delimiter) {
+        public CsvValue(String value, Boolean enclosed, String delimiter) {
             this.value = value;
             this.enclosed = enclosed;
             this.delimiter = delimiter;
@@ -238,37 +229,37 @@ public class CSVReader {
          * value in the data String.
          */
         public Integer biteSize() {
-          Integer biteSize = value
-                 .replaceAll(DQUOTE, DQUOTEDQUOTE).length()
-                         + delimiter.length();
+            Integer biteSize = value
+                .replaceAll(DQUOTE, DQUOTEDQUOTE).length()
+                + delimiter.length();
 
-          if (enclosed) {
-            biteSize += DQUOTE.length() * 2;
-          }
+            if (enclosed) {
+                biteSize += DQUOTE.length() * 2;
+            }
 
-          System.debug('biteSize: ' + biteSize);
+            System.debug('biteSize: ' + biteSize);
 
-          return biteSize;
+            return biteSize;
         }
 
         /**
          * Returns whether a CSVValue has the same <code>value</code> and
          * <code>enclosed</code> as another CSVValue.
          */
-        public Boolean equals(CSVValue compCSVValue) {
-            return this.value.equals(compCSVValue.value)
-                    && this.enclosed == compCSVValue.enclosed
-                            && this.delimiter == compCSVValue.delimiter;
+        public Boolean equals(CsvValue compCsvValue) {
+            return this.value.equals(compCsvValue.value)
+                && this.enclosed == compCsvValue.enclosed
+                && this.delimiter == compCsvValue.delimiter;
         }
 
         /**
          * Asserts that two <code>CSVValue</code> instances have the same
          * <code>value</code> and <code>enclosed</code>.
          */
-        public void assertEquals(CSVValue compCSVValue) {
-            System.assertEquals(value, compCSVValue.value);
-            System.assertEquals(enclosed, compCSVValue.enclosed);
-            System.assertEquals(delimiter, compCSVValue.delimiter);
+        public void assertEquals(CsvValue compCsvValue) {
+            System.assertEquals(value, compCsvValue.value);
+            System.assertEquals(enclosed, compCsvValue.enclosed);
+            System.assertEquals(delimiter, compCsvValue.delimiter);
         }
     }
 

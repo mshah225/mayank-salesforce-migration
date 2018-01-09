@@ -1,25 +1,21 @@
 @RestResource(urlMapping='/MCSMSOptIn')
 global with sharing class MCSMSOptInController  {
-
     static String errorMessage = '';
 
     @HttpPost
-    global static OptInResult optIn(String subscriberKey, String mobileNumber, String shortCode, String messageText, String asurite, String emplid,
-                                    String firstname, String lastName, String middlename, String email, String birthdate, String street,
-                                    String city, String statecode, String postalcode, String countrycode)
-    {
-
+    global static OptInResult optIn(String subscriberKey, String mobileNumber, String shortCode, String messageText, 
+        String asurite, String emplid, String firstname, String lastName, String middlename, String email, 
+        String birthdate, String street, String city, String statecode, String postalcode, String countrycode
+    ) {
         OptInResult oir = new OptInResult();
         Boolean errorEncountered = false;
 
-        if (String.isBlank(mobileNumber) || String.isBlank(shortCode) || String.isBlank(messageText))
-        {
+        if (String.isBlank(mobileNumber) || String.isBlank(shortCode) || String.isBlank(messageText)) {
             errorEncountered = true;
             errorMessage = 'mobilenumber, shortCode, and messageText/keyword are required';
         }
 
-        if (!errorEncountered && String.isBlank(subscriberKey))
-        {
+        if (!errorEncountered && String.isBlank(subscriberKey)) {
             Map<String, String> parmMap = new Map<String, String>();
             if (!String.isBlank(mobileNumber))
                 parmMap.put('phone', mobileNumber);
@@ -49,141 +45,105 @@ global with sharing class MCSMSOptInController  {
                 parmMap.put('countrycode', countrycode);
 
             String contactId = getContact(parmMap);
-            if (String.isBlank(contactId))
-            {
+            if (String.isBlank(contactId)) {
                 errorEncountered = true;
                 errorMessage = 'There was a problem retrieving a Subscriber Key/Contact ID';
-            }
-            else
-            {
+            } else {
                 subscriberKey = contactId;
             }
         }
 
-        if (!errorEncountered)
-        {
+        if (!errorEncountered) {
             // Send opt-in message via queueMO
             HTTPRestService_MarketingCloud mc = new HTTPRestService_MarketingCloud();
             String mcResponse = mc.queueMO(subscriberKey, mobileNumber, shortCode, messageText);
-            if (String.isBlank(mcResponse))
-            {
+            if (String.isBlank(mcResponse)) {
                 errorEncountered = true;
                 errorMessage = 'There was a problem calling the Marketing Cloud API';
             }
         }
 
-        if (!errorEncountered)
-        {
+        if (!errorEncountered) {
             oir.success= true;
             oir.message = 'Opted in with Subscriber Key ' + subscriberKey;
-        }
-        else
-        {
+        } else {
             oir.success = false;
             oir.message = errorMessage;
         }
         return oir;
     }
 
-    private static String getContact(Map<String, String> parmMap)
-    {
-        if (parmMap.size() > 0)
-        {
+    private static String getContact(Map<String, String> parmMap) {
+        if (parmMap.size() > 0) {
             String response;
             ContactResponse conResponse;
             ContactPostResponse conPostResponse;
 
-            try
-            {
+            try {
                 HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
                 response = contactService.get(parmMap);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 errorMessage = 'Error calling Contact service: ' + e.getMessage();
                 return null;
             }
-            if (!String.isBlank(response))
-            {
+            if (!String.isBlank(response)) {
                 // Id is a reserved word, so let's change it
                 response = response.replace('"id":', '"contactId":');
                 response = response.replace('"contact"','"contactDetails"');
-                try
-                {
+                try {
                     conResponse = (ContactResponse)JSON.deserialize(response, ContactResponse.class);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     errorMessage = 'Error parsing Contact service response: ' + e.getMessage();
                     return null;
                 }
 
-                if (conResponse.contactDetails != null && conResponse.contactDetails.size() > 0)
-                {
-                    if (!String.isBlank(conResponse.contactDetails[0].contactId))
-                    {
+                if (conResponse.contactDetails != null && conResponse.contactDetails.size() > 0) {
+                    if (!String.isBlank(conResponse.contactDetails[0].contactId)) {
                         return conResponse.contactDetails[0].contactId;
-                    }
-                    else
-                    {
+                    } else {
                         errorMessage = 'Contact ID was not returned by Contact service';
                         return null;
                     }
-                }
-                else
-                {
+                } else {
                     // Contact was not found; call POST method to create
-                    try
-                    {
+                    try {
                         HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
                         response = contactService.post(parmMap);
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         errorMessage = 'Error calling Contact POST service: ' + e.getMessage();
                         return null;
                     }
-                    if (!String.isBlank(response))
-                    {
+                    if (!String.isBlank(response)) {
                         response = response.replace('"id":', '"contactId":');
-                        try
-                        {
+                        try {
                             conPostResponse = (ContactPostResponse)JSON.deserialize(response, ContactPostResponse.class);
-                        }
-                        catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             errorMessage = 'Error parsing Contact POST service response: ' + e.getMessage();
                             return null;
                         }
-                        if (conPostResponse.upsertResults != null && !String.isBlank(conPostResponse.upsertResults[0].contactId))
-                        {
+                        if (conPostResponse.upsertResults != null && 
+                            !String.isBlank(conPostResponse.upsertResults[0].contactId)
+                        ) {
                             return conPostResponse.upsertResults[0].contactId;
-                        }
-                        else
-                        {
+                        } else {
                             errorMessage = 'Error calling Contact Creation service';
                             return null;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         errorMessage = 'Error calling Contact Creation service';
                         return null;
                     }
 
                 }
             }
-        }
-        else
-        {
+        } else {
             errorMessage = 'No Contact matching fields found';
             return null;
         }
         return null;
     }
 
-    global class OptInRequest
-    {
+    global class OptInRequest {
         public String subscriberKey {get; set;}
         public String mobileNumber {get; set;}
         public String shortCode {get; set;}
@@ -203,23 +163,19 @@ global with sharing class MCSMSOptInController  {
         public String countrycode {get; set;}
     }
 
-    global class OptInResult
-    {
+    global class OptInResult {
         public Boolean success {get; set;}
         public String message {get; set;}
     }
 
-    global class ContactResponse
-    {
+    global class ContactResponse {
         public List<ContactDetail> contactDetails;
-        public ContactResponse()
-        {
+        public ContactResponse() {
             contactDetails = new List<ContactDetail>();
         }
     }
 
-    global class ContactDetail
-    {
+    global class ContactDetail {
         public String asurite;
         public String birthdate;
         public String email;
@@ -238,22 +194,18 @@ global with sharing class MCSMSOptInController  {
         public String statecode;
     }
 
-    global class ContactPostResponse
-    {
+    global class ContactPostResponse {
         List<ContactUpsertResult> upsertResults;
 
-        public ContactPostResponse()
-        {
+        public ContactPostResponse() {
             upsertResults = new List<ContactUpsertResult>();
         }
     }
 
-    global class ContactUpsertResult
-    {
+    global class ContactUpsertResult {
         public String created;
         public String contactId;
         public String success;
         public String message;
     }
-
 }

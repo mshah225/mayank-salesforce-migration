@@ -1,31 +1,29 @@
-global class SubscriptionHashUpdateBatch implements Database.Batchable<sObject>{
-	global final String Query;
+public class SubscriptionHashUpdateBatch implements Database.Batchable<sObject> {
+    public final String query;
 
-   global SubscriptionHashUpdateBatch(){
-       Query = 'SELECT Id, HashSubscriptionId__c FROM Subscription__c';
-   }
+    public SubscriptionHashUpdateBatch() {
+        query = 'SELECT Id, HashSubscriptionId__c FROM Subscription__c';
+    }
 
-   global Database.QueryLocator start(Database.BatchableContext BC){
-      return Database.getQueryLocator(query);
-   }
+    public Database.QueryLocator start(Database.BatchableContext bc) {
+        return Database.getQueryLocator(query);
+    }
 
-    global void execute(Database.BatchableContext BC, List<sObject> scope) {
+    public void execute(Database.BatchableContext bc, List<sObject> scope) {
         List<Subscription__c> cList = (List<Subscription__c>) scope;
-        for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashSubscriptionId__c = hashId(cList[i].Id);
-        }     
+        for (Subscription__c subscription : (List<Subscription__c>) scope) {
+            subscription.HashSubscriptionId__c = hashId(subscription.Id);
+        }    
         update scope;
     }
 
-   global void finish(Database.BatchableContext BC){
-
-   }
+    public void finish(Database.BatchableContext bc) { }
     
-   global String hashId(String subIdIn) {
-       Blob blobId = Blob.valueOf(subIdIn);
-       Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-       String stringId = EncodingUtil.base64Encode((digestId));
-       String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-       return encodedId;
-   }
+    public String hashId(String subIdIn) {
+        Blob blobId = Blob.valueOf(subIdIn);
+        Blob digestId = Crypto.generateDigest('SHA-512', blobId);
+        String stringId = EncodingUtil.base64Encode((digestId));
+        String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
+        return encodedId;
+    }
 }

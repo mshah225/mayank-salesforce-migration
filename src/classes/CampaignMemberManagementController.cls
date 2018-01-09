@@ -1,5 +1,4 @@
-public with sharing class CampaignMemberManagementController
-{
+public with sharing class CampaignMemberManagementController {
     private Set<Id> assignedEventIds;
     private Set<Id> assignedIntIds;
     private Map<String, List<CampaignMember>> campaignMemberMap;
@@ -189,102 +188,86 @@ public with sharing class CampaignMemberManagementController
         campaignMemberMap.put('Course', tempCourseList);
     }
 
-    /*
-    public List<Subscriber__c> getSubscriberList()
-    {
-        if (subscriberList == null)
-            subscriberList = SubscriberService.getSubscribers(contactId);
-
-        return subscriberList;
-    }
-    */
-    
-    public List<Subscriber__c> getSubscriberList()
-    {
-        if (subscriberList == null)
-            subscriberList = [SELECT Id, Subscriber_Status__c, Last_Subscribed_Date__c, Last_Unsubscribed_Date__c,
-                                     Subscription__r.Name, Subscription__r.Subscription_Type__c, Subscription__r.Business_Unit__r.Name
-                              FROM Subscriber__c
-                              WHERE Contact__c = :contactId];
+    public List<Subscriber__c> getSubscriberList() {
+        if (subscriberList == null) {
+            subscriberList = [
+                SELECT Id, Subscriber_Status__c, Last_Subscribed_Date__c, Last_Unsubscribed_Date__c, 
+                    Subscription__r.Name, Subscription__r.Subscription_Type__c, Subscription__r.Business_Unit__r.Name
+                FROM Subscriber__c
+                WHERE Contact__c = :contactId];
+        }
 
         return subscriberList;
     }
 
-    public List<Message> getfilteredMessageList()
-    {
+    public List<Message> getfilteredMessageList() {
         List<Message> messageList = new List<Message>();
 
-        for (Message m: allMessageList)
-        {
-            if (commFilterType == 'Sent')
-            {
-                if (commFilterStartDate != null && m.timeSent < commFilterStartDate)
-                {
+        for (Message thisMessage: allMessageList) {
+            if (commFilterType == 'Sent') {
+                if (commFilterStartDate != null && thisMessage.timeSent < commFilterStartDate) {
                     continue;
                 }
-                if (commFilterEndDate != null && m.timeSent > commFilterEndDate.addDays(1))
-                {
+                if (commFilterEndDate != null && thisMessage.timeSent > commFilterEndDate.addDays(1)) {
                     continue;
                 }
-            }
-            else if (commFilterType == 'Opened')
-            {
-                if (commFilterStartDate != null && (m.timeOpened < commFilterStartDate || m.timeOpened == null))
-                {
+            } else if (commFilterType == 'Opened') {
+                if (commFilterStartDate != null && 
+                    (thisMessage.timeOpened < commFilterStartDate || thisMessage.timeOpened == null)
+                ) {
                     continue;
                 }
-                if (commFilterEndDate != null && m.timeOpened > commFilterEndDate.addDays(1) || m.timeOpened == null)
-                {
+                if ((commFilterEndDate != null && thisMessage.timeOpened > commFilterEndDate.addDays(1)) || 
+                    thisMessage.timeOpened == null
+                ) {
                     continue;
                 }
             }
-            messageList.add(m);
+            messageList.add(thisMessage);
         }
 
         return messageList;
     }
 
-    public List<Message> buildCommMessageList()
-    {
-            List<et4ae5__IndividualEmailResult__c> ierList = new List<et4ae5__IndividualEmailResult__c>();
-            // Query for the communication history
-            ierList = [
-                SELECT Id, Name, et4ae5__SubjectLine__c, et4ae5__FromName__c,
-                    et4ae5__FromAddress__c, et4ae5__SoftBounce__c, et4ae5__HardBounce__c,
-                    et4ae5__DateSent__c, et4ae5__DateOpened__c,
-                    et4ae5__NumberOfUniqueClicks__c, et4ae5__Contact__c,
-                    et4ae5__SendDefinition__c,
-                    et4ae5__SendDefinition__r.et4ae5__fBusiness_Unit__c
-                FROM et4ae5__IndividualEmailResult__c
-                WHERE et4ae5__Contact__c = :contactId
-                ORDER BY et4ae5__DateSent__c DESC
-                LIMIT 750
-            ];
+    public List<Message> buildCommMessageList() {
+        List<et4ae5__IndividualEmailResult__c> ierList = new List<et4ae5__IndividualEmailResult__c>();
+        // Query for the communication history
+        ierList = [
+            SELECT Id, Name, et4ae5__SubjectLine__c, et4ae5__FromName__c,
+                et4ae5__FromAddress__c, et4ae5__SoftBounce__c, et4ae5__HardBounce__c,
+                et4ae5__DateSent__c, et4ae5__DateOpened__c,
+                et4ae5__NumberOfUniqueClicks__c, et4ae5__Contact__c,
+                et4ae5__SendDefinition__c,
+                et4ae5__SendDefinition__r.et4ae5__fBusiness_Unit__c
+            FROM et4ae5__IndividualEmailResult__c
+            WHERE et4ae5__Contact__c = :contactId
+            ORDER BY et4ae5__DateSent__c DESC
+            LIMIT 750
+        ];
 
         allMessageList = new List<Message>();
-        for (et4ae5__IndividualEmailResult__c ier: ierList)
-        {
-            Message m = new Message();
-            m.id = ier.Id;
-            m.name = ier.Name;
-            m.subject = ier.et4ae5__SubjectLine__c;
-            m.sender =  (ier.et4ae5__SendDefinition__c == null? ier.et4ae5__FromName__c : ier.et4ae5__SendDefinition__r.et4ae5__fBusiness_Unit__c);
+        for (et4ae5__IndividualEmailResult__c ier : ierList) {
+            Message thisMessage = new Message();
+            thisMessage.id = ier.Id;
+            thisMessage.name = ier.Name;
+            thisMessage.subject = ier.et4ae5__SubjectLine__c;
+            thisMessage.sender =  (ier.et4ae5__SendDefinition__c == null? ier.et4ae5__FromName__c : ier.et4ae5__SendDefinition__r.et4ae5__fBusiness_Unit__c);
 
             // Determine the delivery status of the message based on whether or not it returned a hard or soft bounce
             if (ier.et4ae5__HardBounce__c) {
-                m.deliveryStatus = 'Hard Bounce';
+                thisMessage.deliveryStatus = 'Hard Bounce';
             } else if (ier.et4ae5__SoftBounce__c) {
-                m.deliveryStatus = 'Soft Bounce';
+                thisMessage.deliveryStatus = 'Soft Bounce';
             } else {
-                m.deliveryStatus = 'Delivered';
+                thisMessage.deliveryStatus = 'Delivered';
             }
 
-            m.timeSent = ier.et4ae5__DateSent__c;
+            thisMessage.timeSent = ier.et4ae5__DateSent__c;
 
-            m.timeOpened = ier.et4ae5__DateOpened__c;
-            m.uniqueClicks = String.valueOf(ier.et4ae5__NumberOfUniqueClicks__c);
+            thisMessage.timeOpened = ier.et4ae5__DateOpened__c;
+            thisMessage.uniqueClicks = String.valueOf(ier.et4ae5__NumberOfUniqueClicks__c);
 
-            allMessageList.add(m);
+            allMessageList.add(thisMessage);
         }
 
         return filteredMessageList;
@@ -293,10 +276,8 @@ public with sharing class CampaignMemberManagementController
     // New for Marketing Cloud project
     public List<SelectOption> getCommFilterOptions() {
         List<SelectOption> options = new List<SelectOption>();
-
         options.add(new SelectOption('Sent', 'Date Sent'));
         options.add(new SelectOption('Opened', 'Date Opened'));
-
         return options;
     }
 
@@ -309,10 +290,8 @@ public with sharing class CampaignMemberManagementController
         // Reset the input fields for Start Date and End Date
         this.commFilterStartDate = null;
         this.commFilterEndDate = null;
-
         // Reset the filter type to its default value
         commFilterType = 'Sent';
-
     }
 
     public List<SelectOption> getDepartmentsColleges()
@@ -934,6 +913,7 @@ public with sharing class CampaignMemberManagementController
             );
         }
     }
+
     /*
     * @description: Wrapper class for historical communication
     */
@@ -959,7 +939,6 @@ public with sharing class CampaignMemberManagementController
 
             // Formula using hardbounce/softbounce to determine status
             this.deliverystatus = '';
-
             this.timeSent = timeSent;
             this.timeOpened = timeOpened;
             this.uniqueClicks = uniqueClicks;

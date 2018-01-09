@@ -607,11 +607,9 @@ public class TestDataFactory {
     }
 
     // Create Test Marketing Cloud Business Units (et4ae5__Business_Unit__c)
-    public static List<et4ae5__Business_Unit__c> createBusinessUnits (Integer qty)
-    {
+    public static List<et4ae5__Business_Unit__c> createBusinessUnits (Integer qty) {
         List<et4ae5__Business_Unit__c> buList = new List<et4ae5__Business_Unit__c>();
-        for (Integer i=0; i<qty; i++)
-        {
+        for (Integer i = 0; i < qty; i++) {
             et4ae5__Business_Unit__c bu = new et4ae5__Business_Unit__c(
                 et4ae5__Business_Unit_ID__c = 'T00000' + i,
                 et4ae5__Enabled__c = true,
@@ -623,12 +621,10 @@ public class TestDataFactory {
     }
 
     // Create Test Marketing Cloud Email Send Definitions (et4ae5__SendDefinition__c)
-    public static List<et4ae5__SendDefinition__c> createEmailSends (Integer qty, String recTypeName)
-    {
+    public static List<et4ae5__SendDefinition__c> createEmailSends (Integer qty, String recTypeName) {
         List<et4ae5__SendDefinition__c> sdList = new List<et4ae5__SendDefinition__c>();
         Id recTypeId = [SELECT Id FROM RecordType WHERE SObjectType = 'et4ae5__SendDefinition__c' AND Name = :recTypeName][0].Id;
-        for (Integer i=0; i<qty; i++)
-        {
+        for (Integer i = 0; i < qty; i++) {
             et4ae5__SendDefinition__c sd = new et4ae5__SendDefinition__c(
                 RecordTypeId = recTypeid
             );
@@ -638,8 +634,7 @@ public class TestDataFactory {
     }
 
     // Create Test Subscriptions
-    public static List<Subscription__c> createTestSubscriptions(Integer qty)
-    {
+    public static List<Subscription__c> createTestSubscriptions(Integer qty) {
         List<et4ae5__Business_Unit__c> buList = createBusinessUnits(1);
         insert buList;
 
@@ -653,8 +648,7 @@ public class TestDataFactory {
         insert parentSubscription;
 
         List<Subscription__c> subscriptionList = new List<Subscription__c>();
-        for (Integer i=0; i<qty; i++)
-        {
+        for (Integer i = 0; i < qty; i++) {
             Subscription__c subscription = new Subscription__c(
                 Subscription_Type__c = 'List',
                 Name = 'Sub' + i,
@@ -668,19 +662,16 @@ public class TestDataFactory {
     }
 
     // Create Test Group/Queue
-    public static Group createTestGroupAndQueue(List<String> sObjectTypes)
-    {
+    public static Group createTestGroupAndQueue(List<String> sObjectTypes) {
         List<QueueSObject> queueSObjects = new List<QueueSObject>();
         Group testGroup = new Group(Name = 'TestQueueIER', Type = 'Queue');
         insert testGroup;
 
-        for (String s: sObjectTypes)
-        {
+        for (String s : sObjectTypes) {
             queueSObjects.add(new QueueSObject(QueueId = testGroup.Id, SobjectType = s));
         }
 
-        System.runAs(new User(Id = UserInfo.getUserId()))
-        {
+        System.runAs(new User(Id = UserInfo.getUserId())) {
             insert queueSObjects;
         }
         return testGroup;
@@ -696,22 +687,19 @@ public class TestDataFactory {
     public static List<et4ae5__IndividualEmailResult__c> createTestIERs(
         List<Contact> contactList,
         List<et4ae5__SendDefinition__c> sdList
-    )
-    {
+    ) {
         List<et4ae5__IndividualEmailResult__c> ierList = new List<et4ae5__IndividualEmailResult__c>();
 
-        for (et4ae5__SendDefinition__c sd : sdList)
-        {
-			for (Contact c: contactList)
-			{
-				et4ae5__IndividualEmailResult__c ier = new et4ae5__IndividualEmailResult__c(
-					et4ae5__Contact__c = c.Id,
-					et4ae5__SendDefinition__c = sd.Id,
+        for (et4ae5__SendDefinition__c sd : sdList) {
+            for (Contact c : contactList) {
+                et4ae5__IndividualEmailResult__c ier = new et4ae5__IndividualEmailResult__c(
+                    et4ae5__Contact__c = c.Id,
+                    et4ae5__SendDefinition__c = sd.Id,
                     et4ae5__DateSent__c = Datetime.now().addMinutes(-1),
                     et4ae5__DateOpened__c = Datetime.now()
-				);
-				ierList.add(ier);
-			}
+                );
+                ierList.add(ier);
+            }
         }
         return ierList;
     }
@@ -725,14 +713,11 @@ public class TestDataFactory {
     public static List<Subscriber__c> createTestSubscribers(
         List<Contact> contactList,
         List<Subscription__c> subscriptionList
-    )
-    {
+    ) {
         List<Subscriber__c> subscribers = new List<Subscriber__c>();
 
-        for (Subscription__c subscription : subscriptionList)
-        {
-            for (Contact contact: contactList)
-            {
+        for (Subscription__c subscription : subscriptionList) {
+            for (Contact contact: contactList) {
                 Subscriber__c subscriber = new Subscriber__c(
                     Subscription__c = subscription.Id,
                     Contact__c = contact.Id,
@@ -750,8 +735,8 @@ public class TestDataFactory {
      * @return Exception A simple exception
      */
     public static Exception createException() {
-        return (Exception) new testException('Test Exception');
+        return (Exception) new TestException('Test Exception');
     }
 
-    public class testException extends Exception { }
+    public class TestException extends Exception { }
 }

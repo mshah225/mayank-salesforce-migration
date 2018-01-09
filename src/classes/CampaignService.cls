@@ -62,7 +62,7 @@ public with sharing class CampaignService
         update CampaignList;
     }
     
-    static String hashId(String IdIn) {
+    public static String hashId(String IdIn) {
         Blob blobId = Blob.valueOf(IdIn);
         Blob digestId = Crypto.generateDigest('SHA-512', blobId);
         String stringId = EncodingUtil.base64Encode((digestId));

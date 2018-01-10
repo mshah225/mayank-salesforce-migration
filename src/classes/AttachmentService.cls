@@ -44,7 +44,10 @@ public with sharing class AttachmentService {
 	        // Get all cases for updating from the database
 	        // Make sure to include any fields that might need to be updated later
 	        if (casesToUpdate.size() > 0) {
-	            for (Case c : [SELECT Id, Attachments__c FROM Case WHERE Id IN :casesToUpdate.keySet()]) {
+	            for (Case c : [SELECT Id, Attachments__c, Description FROM Case WHERE Id IN :casesToUpdate.keySet()]) {
+	                if(c.Description == null) {
+	                    c.Description = '-';
+	                }
 	                casesToUpdate.Put(c.Id,c);
 	            }
 	            // Verify that all entries have values before returning

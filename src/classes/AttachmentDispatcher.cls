@@ -24,7 +24,7 @@ public with sharing class AttachmentDispatcher implements IDispatch {
     	        update casesToUpdate.values();
     	    }
 	    } catch (Exception e) {
-	        Trigger.New[0].addError('The case associated with this attachment has this error: ' + ex);
+	        Trigger.New[0].addError('The case associated with this attachment has this error: ' + e);
 	    }
     }
     
@@ -54,7 +54,7 @@ public with sharing class AttachmentDispatcher implements IDispatch {
                 update casesToUpdate.values();
             }
         } catch (Exception e) {
-            Trigger.New[0].addError('The case associated with this attachment has this error: ' + ex);
+            Trigger.New[0].addError('The case associated with this attachment has this error: ' + e);
         }
     }
     

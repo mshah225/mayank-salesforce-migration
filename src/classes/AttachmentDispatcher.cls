@@ -16,11 +16,15 @@ public with sharing class AttachmentDispatcher implements IDispatch {
      * attachments are inserted
      */
     public void afterInsert() {
-	    casesToUpdate = AttachmentService.getCasesFromAttachments(newAttachments.values());
-
-	    if (casesToUpdate.size() > 0 && casesToUpdate != null) {
-	        casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
-	        update casesToUpdate.values();
+        try{
+    	    casesToUpdate = AttachmentService.getCasesFromAttachments(newAttachments.values());
+    
+    	    if (casesToUpdate.size() > 0 && casesToUpdate != null) {
+    	        casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
+    	        update casesToUpdate.values();
+    	    }
+	    } catch (Exception e) {
+	        Trigger.New[0].addError('The case associated with this attachment has this error: ' + ex);
 	    }
     }
     
@@ -42,11 +46,15 @@ public with sharing class AttachmentDispatcher implements IDispatch {
      * attachments are deleted
      */
     public void afterDelete() {
-        casesToUpdate = AttachmentService.getCasesFromAttachments(oldAttachments.values());
-        
-        if (casesToUpdate.size() > 0 && casesToUpdate != null) {
-            casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
-            update casesToUpdate.values();
+        try {
+            casesToUpdate = AttachmentService.getCasesFromAttachments(oldAttachments.values());
+            
+            if (casesToUpdate.size() > 0 && casesToUpdate != null) {
+                casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
+                update casesToUpdate.values();
+            }
+        } catch (Exception e) {
+            Trigger.New[0].addError('The case associated with this attachment has this error: ' + ex);
         }
     }
     

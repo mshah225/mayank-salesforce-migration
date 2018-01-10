@@ -65,6 +65,7 @@ public with sharing class AttachmentService {
             vars.add(ErrorLogger.convertSetToJSON('emailMessages', emailMessages));
             
             ErrorLogger.log(ex, vars, debug);
+            Trigger.New[0].addError('The case associated with this attachment has this error: ' + ex);
             return null;
         }
     }
@@ -114,6 +115,7 @@ public with sharing class AttachmentService {
             vars.add(ErrorLogger.convertMapToJSON('casesToUpdate', casesToUpdate));
             
             ErrorLogger.log(ex, vars, debug);
+            Trigger.New[0].addError('The case associated with this attachment has this error: ' + ex);
             return null;
         }
     }

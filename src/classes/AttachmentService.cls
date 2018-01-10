@@ -46,7 +46,7 @@ public with sharing class AttachmentService {
 	        if (casesToUpdate.size() > 0) {
 	            for (Case c : [SELECT Id, Attachments__c, Description FROM Case WHERE Id IN :casesToUpdate.keySet()]) {
 	                if(c.Description == null) {
-	                    c.Description = '-';
+	                    c.Description = ' Attachment received at ' + Datetime.now().formatLong();
 	                }
 	                casesToUpdate.Put(c.Id,c);
 	            }

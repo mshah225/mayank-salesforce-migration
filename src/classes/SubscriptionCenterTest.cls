@@ -151,12 +151,12 @@ private class SubscriptionCenterTest {
     @isTest
     private static void testLead() {
         SubscriptionCenterController controller;
-        Test.startTest();
         Lead l = TestDataFactory.createLead('Sub');
         l.Email = 'tes9845345t@test.test';
         l.Company = 'None';
         l.Status = 'Prospect';
         l.Contact_Preference__c = 'Email';
+        Test.startTest();
         insert l;
         List<Subscriber__c> subList = new List<Subscriber__c>([SELECT Id, Contact__c, Lead__c FROM Subscriber__c]);
         for (Subscriber__c sub : subList) {
@@ -229,13 +229,13 @@ private class SubscriptionCenterTest {
 
     @isTest
     private static void testDirectUnsubscribeCampaign() {
-        Test.startTest();
         Subscriber__c subscriber = [
             SELECT Id, Subscription__c, Contact__c 
             FROM Subscriber__c 
             WHERE Subscriber_Status__c = 'Subscribed' 
             LIMIT 1
         ];
+        Test.startTest();
         Campaign testCampaign = TestDataFactory.createCampaign(
             'sub', Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Communication').getRecordTypeId());
         testCampaign.Subscription__c = subscriber.Subscription__c;

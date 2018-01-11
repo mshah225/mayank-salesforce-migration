@@ -52,9 +52,9 @@ global class CivitasPersistenceController{
                 startDate = startDate.addDays(22);
             }
             if(startDate >= Date.today()) {
-                endDate = startDate;
-                startDate = [Select Session_A_C_Start_Date__c
-                             FROM Term__c
+                endDate = startDate.addDays(-22);
+                startDate = [Select Session_A_C_Start_Date__c 
+                             FROM Term__c 
                              WHERE PeopleSoft_Code__c =: prevTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startdate.addDays(22);

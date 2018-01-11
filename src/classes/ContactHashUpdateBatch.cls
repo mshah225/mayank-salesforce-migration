@@ -9,10 +9,11 @@ public class ContactHashUpdateBatch implements Database.Batchable<sObject>{
         return Database.getQueryLocator(query);
     }
     
-    public void execute(Database.BatchableContext BC, List<sObject> scope) {
-        for (Contact thisContact : (List<Contact>) scope) {
-            thisContact.HashContactId__c = ContactHandler.hashId(thisContact.Id);
-        }
+    global void execute(Database.BatchableContext BC, List<sObject> scope) {
+        List<Contact> cList = (List<Contact>) scope;
+        for(Integer i = 0; i < cList.size(); i++){
+            cList[i].HashContactId__c = Hasher.hashId(cList[i].Id);
+        }     
         update scope;
     }
     

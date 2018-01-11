@@ -12,7 +12,7 @@ public class SubscriberHashUpdateBatch implements Database.Batchable<sObject>, S
     public void execute(Database.BatchableContext BC, List<sObject> scope) {
         List<Subscriber__c> cList = (List<Subscriber__c>) scope;
         for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashSubscriberId__c = hashId(cList[i].Id);
+            cList[i].HashSubscriberId__c = Hasher.hashId(cList[i].Id);
         }     
         update scope;
     }
@@ -20,17 +20,5 @@ public class SubscriberHashUpdateBatch implements Database.Batchable<sObject>, S
    public void finish(Database.BatchableContext BC){
 
    }
-    
-   public String hashId(String subIdIn) {
-       Blob blobId = Blob.valueOf(subIdIn);
-       Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-       String stringId = EncodingUtil.base64Encode((digestId));
-       String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-       return encodedId;
-   }
-   
-   public void execute(SchedulableContext sc) {
-       BatchApplySubscriberPrivacy b = new BatchApplySubscriberPrivacy();
-       database.executebatch(b, 200);
-   }
+
 }

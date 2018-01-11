@@ -1634,12 +1634,8 @@
                             //document.getElementById("serviceIndicatorsDiv").innerHTML = "";
                             if (result.length != 0) {
                                 
-                                var bDay = new Date("{!theContact.Birthdate}Z");
-                                    bDay = (bDay.getUTCMonth() + 1) + '/' +
-                                        bDay.getUTCDate() + '/' +
-                                        bDay.getUTCFullYear();
-                                
-                                var age = '--';
+                                 var bDay = "{!birthdate}";
+                                var age = "{!age}";
                                 var firstGenFlag = '--';
                                 if(result.AGE_YEARS__c != null && result.AGE_YEARS__c != '' && result.AGE_YEARS__c != undefined) {
                                     age = Math.floor(result.AGE_YEARS__c);

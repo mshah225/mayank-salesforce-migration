@@ -19,13 +19,13 @@ public with sharing class AttachmentService {
         
         try {
 	        // Look through new attachments to check if any of them are on emails or cases
-	        for (Attachment a : newList) {
-	            parentId = (String) a.parentId;
+	        for (Attachment attach : newList) {
+	            parentId = (String) attach.parentId;
 	            
 	            if (parentId.left(3) == casePrefix) {
-	                casesToUpdate.put(a.parentId,null);
+	                casesToUpdate.put(attach.parentId,null);
 	            } else if (parentId.left(3) == emailMessagePrefix) {
-	                emailMessages.add(a.parentId);
+	                emailMessages.add(attach.parentId);
 	            }
 	        }
 	        
@@ -44,11 +44,11 @@ public with sharing class AttachmentService {
 	        // Get all cases for updating from the database
 	        // Make sure to include any fields that might need to be updated later
 	        if (casesToUpdate.size() > 0) {
-	            for (Case c : [SELECT Id, Attachments__c, Description FROM Case WHERE Id IN :casesToUpdate.keySet()]) {
-	                if(c.Description == null) {
-	                    c.Description = ' Attachment received at ' + Datetime.now().formatLong();
+	            for (Case caseUpdate : [SELECT Id, Attachments__c, Description FROM Case WHERE Id IN :casesToUpdate.keySet()]) {
+	                if (caseUpdate.Description == null) {
+	                    caseUpdate.Description = ' Attachment received at ' + Datetime.now().formatLong();
 	                }
-	                casesToUpdate.Put(c.Id,c);
+	                casesToUpdate.Put(caseUpdate.Id,c);
 	            }
 	            // Verify that all entries have values before returning
 	            for (Id i : casesToUpdate.keySet()) {
@@ -68,7 +68,6 @@ public with sharing class AttachmentService {
             vars.add(ErrorLogger.convertSetToJSON('emailMessages', emailMessages));
             
             ErrorLogger.log(ex, vars, debug);
-            Trigger.New[0].addError('The case associated with this attachment has this error: ' + ex);
             return null;
         }
     }
@@ -85,14 +84,14 @@ public with sharing class AttachmentService {
         
         try {
             // Pull cases from database and keep track of direct attachments
-            for (Case C : [SELECT Id, 
+            for (Case caseUpdate : [SELECT Id, 
                 (SELECT Id FROM Attachments), 
                 (SELECT Id FROM EmailMessages) 
                 FROM Case WHERE Id IN :casesToUpdate.keySet()]) {
-                numberOfAttachmentsPerCase.put(c.Id,c.Attachments.size());
+                numberOfAttachmentsPerCase.put(caseUpdate.Id,caseUpdate.Attachments.size());
                 
                 // Gather email message Ids for bulk query
-                for (EmailMessage em : c.EmailMessages) {
+                for (EmailMessage em : caseUpdate.EmailMessages) {
                     emailMessageIds.Add(em.Id);
                 }
             }
@@ -118,7 +117,6 @@ public with sharing class AttachmentService {
             vars.add(ErrorLogger.convertMapToJSON('casesToUpdate', casesToUpdate));
             
             ErrorLogger.log(ex, vars, debug);
-            Trigger.New[0].addError('The case associated with this attachment has this error: ' + ex);
             return null;
         }
     }

@@ -141,6 +141,14 @@ global class CivitasPersistenceController{
         }
 
         if (dataList.size() > 0) {
+            CivitasWrapper tmpEndPoint = dataList[dataList.size()-1];
+            Integer dayValue = tmpEndPoint.day;
+            while (tmpEndPoint.snapDate < endDate) {
+                tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
+                dayValue++;
+                dataList.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel,
+                                                    tmpEndPoint.levelDesc, tmpEndPoint.flag, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
+            }
             Integer startMonth = startDate.month();
             Integer endMonth = endDate.month();
         	persistenceLevel = dataList[dataList.size()-1].outlookLevel;

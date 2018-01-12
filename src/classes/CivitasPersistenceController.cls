@@ -135,7 +135,7 @@ global class CivitasPersistenceController{
                 prevData = trm;
             }
         }
-        
+
         if(rejected.size() > 0){
             return rejected;
         }

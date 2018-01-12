@@ -135,6 +135,11 @@ public class EmailAlertArticleSchedule implements Schedulable {
 		System.assertEquals(3, templateDevNameToTemplate.values().size(),
 			'Knowledge Articles have not been setup for email notifications.');
 
+		if(templateDevNameToTemplate.values().size() != 3) {
+			List<String> vars = new List<String>();
+			vars.add(templateDevBameToTemplate.values());
+			
+		}
 		// Get list of group members
 		knowledgeGroupMembers = [
 			SELECT

@@ -5,6 +5,7 @@ public class EmailAlertArticleSchedule implements Schedulable {
 	private Map<Id, List<String>> articleIdToUserList = new Map<Id, List<String>>();
 	Map<String, List<Id>> groupNameToUserIds = new Map<String, List<Id>>();
 	private Map<Id, User> userMap;
+	private boolean debug = 'false';
 	
 	public void execute(SchedulableContext sc) {
 		dataSetup();
@@ -72,16 +73,19 @@ public class EmailAlertArticleSchedule implements Schedulable {
 		for (FAQ__kav knowledgeArticle : knowledgeArticles) {
 			List<Id> userIds = groupNameToUserIds.get('KB: ' + knowledgeArticle.Functional_Group__c + ' (Approve)');
 			if (userIds == null) {
-				throw new KnowledgeArticleManagmentException('No management group found for ' + knowledgeArticle.Functional_Group__c);
+				List<String> vars = new List<String>();
+				vars.add('No management group found for ' + knowledgeArticle.Functional_Group__c);
+        		ErrorLogger.log(e, vars, debug);
+			} else {
+				List<String> userEmails = new List<String>();
+				for (Id userId : userIds) {
+					userEmails.add(userMap.get(userId).Email);
+				}
+				if (!articleIdToUserList.containsKey(knowledgeArticle.Id)) {
+					articleIdToUserList.put(knowledgeArticle.Id, new List<String>());
+				}
+				articleIdToUserList.get(knowledgeArticle.Id).addAll(userEmails);
 			}
-			List<String> userEmails = new List<String>();
-			for (Id userId : userIds) {
-				userEmails.add(userMap.get(userId).Email);
-			}
-			if (!articleIdToUserList.containsKey(knowledgeArticle.Id)) {
-				articleIdToUserList.put(knowledgeArticle.Id, new List<String>());
-			}
-			articleIdToUserList.get(knowledgeArticle.Id).addAll(userEmails);
 		}
 
 		// Create emails to send out.
@@ -132,46 +136,43 @@ public class EmailAlertArticleSchedule implements Schedulable {
 		]){
 			templateDevNameToTemplate.put(knowledgeEmailTemplate.DeveloperName, knowledgeEmailTemplate);
 		}
-		System.assertEquals(3, templateDevNameToTemplate.values().size(),
-			'Knowledge Articles have not been setup for email notifications.');
-
-		if(templateDevNameToTemplate.values().size() != 3) {
+		
+		if (templateDevNameToTemplate.values().size() != 3) {
 			List<String> vars = new List<String>();
-			vars.add(templateDevBameToTemplate.values());
+			vars.add(templateDevNameToTemplate.values());
+            ErrorLogger.log(e, vars, debug);
+		} else {
+			// Get list of group members
+			knowledgeGroupMembers = [
+				SELECT
+					UserOrGroupId,
+					Group.Name
+				FROM GroupMember
+				WHERE GroupId IN (
+					SELECT Id
+					FROM Group
+					WHERE Type = 'Queue'
+						AND (Name LIKE '%Knowledge%'
+							OR Name LIKE 'KB%')
+					)
+			];
 			
-		}
-		// Get list of group members
-		knowledgeGroupMembers = [
-			SELECT
-				UserOrGroupId,
-				Group.Name
-			FROM GroupMember
-			WHERE GroupId IN (
-				SELECT Id
-				FROM Group
-				WHERE Type = 'Queue'
-					AND (Name LIKE '%Knowledge%'
-						OR Name LIKE 'KB%')
-				)
-		];
-		
-		Set<Id> userIdsToQuery = new Set<Id>();
-		for (GroupMember member : knowledgeGroupMembers) {
-			if (member.UserOrGroupId.getSobjectType() == Schema.User.SObjectType) {
-				userIdsToQuery.add(member.UserOrGroupId);
-				if (!groupNameToUserIds.containsKey(member.Group.Name)) {
-					groupNameToUserIds.put(member.Group.Name, new List<Id>());
+			Set<Id> userIdsToQuery = new Set<Id>();
+			for (GroupMember member : knowledgeGroupMembers) {
+				if (member.UserOrGroupId.getSobjectType() == Schema.User.SObjectType) {
+					userIdsToQuery.add(member.UserOrGroupId);
+					if (!groupNameToUserIds.containsKey(member.Group.Name)) {
+						groupNameToUserIds.put(member.Group.Name, new List<Id>());
+					}
+					groupNameToUserIds.get(member.Group.Name).add(member.UserOrGroupId);
 				}
-				groupNameToUserIds.get(member.Group.Name).add(member.UserOrGroupId);
 			}
+			
+			userMap = new Map<Id, User>([
+				SELECT Id, Email
+				FROM User
+				WHERE Id IN : userIdsToQuery
+			]);
 		}
-		
-		userMap = new Map<Id, User>([
-			SELECT Id, Email
-			FROM User
-			WHERE Id IN : userIdsToQuery
-		]);
 	}
-	
-	public class KnowledgeArticleManagmentException extends Exception {}
 }

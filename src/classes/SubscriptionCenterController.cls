@@ -41,7 +41,7 @@ public without sharing class SubscriptionCenterController {
         subscriberIdParm = ApexPages.currentPage().getParameters().get('subscriberId'); // Id of a Subscriber__c record
 
         if (subscriberKeyParm != null) {
-            if(!Test.isRunningTest()) {
+            if (!Test.isRunningTest()) {
                 subscriberKeyParm = EncodingUtil.urlEncode(subscriberKeyParm, 'UTF-8');
             }
             List<Contact> tmpList = new List<Contact>();

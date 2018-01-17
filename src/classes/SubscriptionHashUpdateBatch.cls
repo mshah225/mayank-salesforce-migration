@@ -1,4 +1,4 @@
-public class SubscriptionHashUpdateBatch implements Database.Batchable<Subscription__c> {
+public class SubscriptionHashUpdateBatch implements Database.Batchable<sObject> {
     public final String query;
 
     public SubscriptionHashUpdateBatch() {
@@ -16,7 +16,7 @@ public class SubscriptionHashUpdateBatch implements Database.Batchable<Subscript
         update scope;
     }
 
-   global void finish(Database.BatchableContext bc) {
+   public void finish(Database.BatchableContext bc) {
 
    }
 }

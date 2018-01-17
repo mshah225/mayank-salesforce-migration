@@ -249,7 +249,7 @@ private class SubscriptionCenterTest {
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('action', 'unsubscribe');
         ApexPages.CurrentPage().getParameters().put('campaignId', testCampaign.HashCampaignId__c);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', Hasher.hashId(subscriber.Contact__c);
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', Hasher.hashId(subscriber.Contact__c));
 
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();

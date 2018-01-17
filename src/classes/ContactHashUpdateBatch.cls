@@ -1,4 +1,4 @@
-public class ContactHashUpdateBatch implements Database.Batchable<Contact> {
+public class ContactHashUpdateBatch implements Database.Batchable<sObject> {
     public final String query;
     
     public ContactHashUpdateBatch() {

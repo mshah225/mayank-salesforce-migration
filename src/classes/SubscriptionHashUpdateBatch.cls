@@ -16,7 +16,7 @@ public class SubscriptionHashUpdateBatch implements Database.Batchable<sObject> 
         update scope;
     }
 
-   global void finish(Database.BatchableContext bc) {
+   public void finish(Database.BatchableContext bc) {
 
    }
 }

@@ -10,20 +10,10 @@ global class CivitasPersistenceController{
     public static string currentTerm{
         get{
             if (currentTerm == null) {
-                JBT_RET_TERMS_VW__x currentTermInfo =
-                [
-                    SELECT  CURR_TERM__c, NEXT_TERM__c, PREV_TERM__c
-                    FROM    JBT_RET_TERMS_VW__x
-                    LIMIT 1
-                ];
-                currentTerm = currentTermInfo.CURR_TERM__c;
-
-                if (currentTerm.length() > 4) {
-                    currentTerm = currentTerm.subString(1, 5);
-                }
-
-                nextTerm = currentTermInfo.NEXT_TERM__c;
-                prevTerm = currentTermInfo.PREV_TERM__c;
+                StudentTerm__c studentTerm = StudentTerm__c.getOrgDefaults();
+                currentTerm = studentTerm.CurrTerm__c;
+                nextTerm = studentTerm.NextTerm__c;
+                prevTerm = studentTerm.PrevTerm__c;
             }
             return currentTerm;
         }

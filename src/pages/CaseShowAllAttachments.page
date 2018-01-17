@@ -16,7 +16,7 @@
     <apex:pageBlock title="All Attachments" >
         <apex:pageBlockButtons location="top">
         <apex:form >
-            <apex:commandButton value="Attach File" onclick="openTab('p/attach/NoteAttach?pid={!Case.Id}&parentname={!Case.CaseNumber}&retURL=%2F{!Case.Id}%3Fisdtp%3Dvw','Attach a File to Case {!Case.CaseNumber}')"/>
+            <input class="btn" type="button" value="Attach File" onClick="openTab('p/attach/NoteAttach?pid={!Case.Id}&parentname={!Case.CaseNumber}&retURL=%2F{!Case.Id}','Attach a File to Case {!Case.CaseNumber}')"/>
         <input value="Download Attachments" class="btn" name="download_attachment" title="Download Attachments" type="button" onclick="openIntegration('{!baseUrlForAttachmentIntegration}/apex/CaseAttachmentList?scontrolCaching=1&id={!Case.Id}', 'height=600,location=no,resizable=yes,toolbar=no,status=no,menubar=no,scrollbars=1', 1)"></input>
         </apex:form>
         </apex:pageBlockButtons>

@@ -1,4 +1,4 @@
-public class LeadHashUpdateBatch implements Database.Batchable<Lead> {
+public class LeadHashUpdateBatch implements Database.Batchable<sObject> {
     public final String query;
     
     public LeadHashUpdateBatch() {

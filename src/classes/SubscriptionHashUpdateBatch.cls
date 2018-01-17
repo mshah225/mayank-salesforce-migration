@@ -1,4 +1,4 @@
-public class SubscriptionHashUpdateBatch implements Database.Batchable<Subscription__c> {
+public class SubscriptionHashUpdateBatch implements Database.Batchable<sObject> {
     public final String query;
 
     public SubscriptionHashUpdateBatch() {

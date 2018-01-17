@@ -1,4 +1,4 @@
-public class CampaignHashUpdateBatch implements Database.Batchable<Campaign> {
+public class CampaignHashUpdateBatch implements Database.Batchable<sObject> {
     public final String query;
     
     public CampaignHashUpdateBatch() {

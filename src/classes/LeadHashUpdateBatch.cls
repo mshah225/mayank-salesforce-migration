@@ -1,31 +1,23 @@
-public class LeadHashUpdateBatch implements Database.Batchable<sObject>{
+public class LeadHashUpdateBatch implements Database.Batchable<sObject> {
     public final String query;
     
-    public LeadHashUpdateBatch(){
+    public LeadHashUpdateBatch() {
         query = 'SELECT Id, HashLeadId__c FROM Lead';
     }
     
-    public Database.QueryLocator start(Database.BatchableContext BC){
+    public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(query);
     }
     
-    public void execute(Database.BatchableContext BC, List<sObject> scope) {
-        List<Lead> cList = (List<Lead>) scope;
-        for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashLeadId__c = hashId(cList[i].Id);
+    public void execute(Database.BatchableContext bc, List<Lead> scope) {
+        for (Lead leadIn : scope) {
+            leadIn.HashLeadId__c = Hasher.hashId(leadIn.Id);
         }     
         update scope;
     }
     
-    public void finish(Database.BatchableContext BC){
+    public void finish(Database.BatchableContext bc) {
         
     }
-    
-    public String hashId(String subIdIn) {
-        Blob blobId = Blob.valueOf(subIdIn);
-        Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-        String stringId = EncodingUtil.base64Encode((digestId));
-        String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-        return encodedId;
-    }
+
 }

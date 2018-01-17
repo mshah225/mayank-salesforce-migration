@@ -9,21 +9,14 @@ public class SubscriptionHashUpdateBatch implements Database.Batchable<sObject> 
         return Database.getQueryLocator(query);
     }
 
-    public void execute(Database.BatchableContext bc, List<sObject> scope) {
-        List<Subscription__c> cList = (List<Subscription__c>) scope;
-        for (Subscription__c subscription : (List<Subscription__c>) scope) {
-            subscription.HashSubscriptionId__c = hashId(subscription.Id);
-        }    
+    public void execute(Database.BatchableContext bc, List<Subscription__c> scope) {
+        for (Subscription__c sub : scope) {
+            sub.HashSubscriptionId__c = Hasher.hashId(sub.Id);
+        }     
         update scope;
     }
 
-    public void finish(Database.BatchableContext bc) { }
-    
-    public String hashId(String subIdIn) {
-        Blob blobId = Blob.valueOf(subIdIn);
-        Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-        String stringId = EncodingUtil.base64Encode((digestId));
-        String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-        return encodedId;
-    }
+   public void finish(Database.BatchableContext bc) {
+
+   }
 }

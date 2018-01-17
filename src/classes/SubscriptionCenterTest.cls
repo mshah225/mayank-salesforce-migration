@@ -1,7 +1,7 @@
 @isTest
 private class SubscriptionCenterTest {
     private static final Integer SUBSCRIBED_COUNT = 5;
-    private static Integer NOT_SUBSCRIBED_COUNT = 10;
+    private static final Integer NOT_SUBSCRIBED_COUNT = 10;
 
     @testSetup
     private static void testSetup() {
@@ -45,11 +45,11 @@ private class SubscriptionCenterTest {
     @isTest
     private static void testMain() {
         SubscriptionCenterController controller;
-        Id subscriber = [SELECT Id FROM Contact LIMIT 1].Id;
+        String subscriber = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', String.valueOf(subscriber));
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber);
 
         controller = new SubscriptionCenterController();
 
@@ -90,11 +90,11 @@ private class SubscriptionCenterTest {
     @isTest
     private static void testUnsubParent() {
         SubscriptionCenterController controller;
-        Id subscriber = [SELECT Id FROM Contact LIMIT 1].Id;
+        String subscriber = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', String.valueOf(subscriber));
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber);
 
         controller = new SubscriptionCenterController();
 
@@ -116,11 +116,11 @@ private class SubscriptionCenterTest {
     @isTest
     private static void testSubParent() {
         SubscriptionCenterController controller;
-        Id subscriber = [SELECT Id FROM Contact LIMIT 1].Id;
+        String subscriber = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', String.valueOf(subscriber));
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber);
 
         controller = new SubscriptionCenterController();
 
@@ -156,6 +156,7 @@ private class SubscriptionCenterTest {
         l.Company = 'None';
         l.Status = 'Prospect';
         l.Contact_Preference__c = 'Email';
+        Test.startTest();
         insert l;
         List<Subscriber__c> subList = new List<Subscriber__c>([SELECT Id, Contact__c, Lead__c FROM Subscriber__c]);
         for (Subscriber__c sub : subList) {
@@ -163,10 +164,11 @@ private class SubscriptionCenterTest {
             sub.Lead__c = l.Id;
         }
         update subList;
-
+        Test.stopTest();
+        String leadHash = [Select HashLeadId__c From Lead LIMIT 1].HashLeadId__c;
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', String.valueOf(l.Id));
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', leadHash);
 
         controller = new SubscriptionCenterController();
 
@@ -207,12 +209,12 @@ private class SubscriptionCenterTest {
     @isTest
     private static void testDirectUnsubscribe() {
         SubscriptionCenterController controller;
-        Id subscriberId = [SELECT Id FROM Subscriber__c WHERE Subscriber_Status__c = 'Subscribed' LIMIT 1].Id;
+        Subscriber__c subscriberIn = [SELECT HashSubscriberId__c FROM Subscriber__c WHERE Subscriber_Status__c = 'Subscribed' LIMIT 1];
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('action', 'unsubscribe');
-        ApexPages.CurrentPage().getParameters().put('subscriberId', String.valueOf(subscriberId));
+        ApexPages.CurrentPage().getParameters().put('subscriberId', subscriberIn.HashSubscriberId__c);
 
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();
@@ -220,7 +222,7 @@ private class SubscriptionCenterTest {
         List<Subscriber__c> subCheck = new List<Subscriber__c>([
             SELECT Id, Subscriber_Status__c 
             FROM Subscriber__c 
-            WHERE Id = :subscriberId
+            WHERE Id = :subscriberIn.Id
         ]);
         System.assertEquals('Unsubscribed', subCheck[0].Subscriber_Status__c);
     }
@@ -233,18 +235,21 @@ private class SubscriptionCenterTest {
             WHERE Subscriber_Status__c = 'Subscribed' 
             LIMIT 1
         ];
+        Test.startTest();
         Campaign testCampaign = TestDataFactory.createCampaign(
             'sub', Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Communication').getRecordTypeId());
         testCampaign.Subscription__c = subscriber.Subscription__c;
         insert testCampaign;
-
+        Test.stopTest();
+        
         SubscriptionCenterController controller;
-
+        
+        testCampaign = [SELECT HashCampaignId__c FROM Campaign LIMIT 1];
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('action', 'unsubscribe');
-        ApexPages.CurrentPage().getParameters().put('campaignId', String.valueOf(testCampaign.Id));
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber.Contact__c);
+        ApexPages.CurrentPage().getParameters().put('campaignId', testCampaign.HashCampaignId__c);
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', Hasher.hashId(subscriber.Contact__c);
 
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();
@@ -271,8 +276,8 @@ private class SubscriptionCenterTest {
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('action', 'unsubscribe');
-        ApexPages.CurrentPage().getParameters().put('subscriptionId', subscriber.Subscription__c);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber.Contact__c);
+        ApexPages.CurrentPage().getParameters().put('subscriptionId', Hasher.hashId(subscriber.Subscription__c));
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', Hasher.hashId(subscriber.Contact__c));
 
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();
@@ -287,11 +292,11 @@ private class SubscriptionCenterTest {
     @isTest
     private static void testOptOut() {
         SubscriptionCenterController controller;
-        Id subscriberId = [SELECT Id FROM Contact LIMIT 1].Id;
+        String subscriberId = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', String.valueOf(subscriberId));
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriberId);
 
         controller = new SubscriptionCenterController();
         controller.toggleOptOut();
@@ -304,7 +309,7 @@ private class SubscriptionCenterTest {
         Boolean contactHasOptedOutOfEmail = [
             SELECT Id, HasOptedOutOfEmail 
             FROM Contact 
-            WHERE Id = :subscriberId
+            WHERE HashContactId__c = :subscriberId
         ].HasOptedOutOfEmail;
         System.assertEquals(0, subCheck.size());
         System.assertEquals(true, contactHasOptedOutOfEmail);
@@ -313,11 +318,11 @@ private class SubscriptionCenterTest {
     @isTest
     private static void testFilterAvailableSubs() {
         SubscriptionCenterController controller;
-        Id subscriberId = [SELECT Id FROM Contact LIMIT 1].Id;
+        String subscriberId = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', String.valueOf(subscriberId));
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriberId);
 
         controller = new SubscriptionCenterController();
 
@@ -344,7 +349,7 @@ private class SubscriptionCenterTest {
     private static void testSubscriberWrapperConstructors() {
         SubscriptionCenterController controller;
         Subscriber__c subscriber = [
-            SELECT Id, Subscription__c, Contact__c, Lead__c, Subscriber_Status__c, 
+            SELECT Id, Subscription__c, Contact__c, Contact__r.HashContactId__c, Lead__c, Subscriber_Status__c, 
                 Subscription__r.Subscription_Center_Description__c, Subscription__r.Name
             FROM Subscriber__c 
             LIMIT 1
@@ -352,7 +357,7 @@ private class SubscriptionCenterTest {
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber.Contact__c);
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber.Contact__r.HashContactId__c);
 
         controller = new SubscriptionCenterController();
         SubscriptionCenterController.SubscriberWrapper sw = 

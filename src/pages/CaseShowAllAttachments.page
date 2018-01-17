@@ -13,7 +13,7 @@
   <apex:pageBlock title="All Attachments" >
   	  <apex:pageBlockButtons location="top">
   	   <apex:form >
-  	  	<apex:commandButton value="Attach File" onclick="openTab('p/attach/NoteAttach?pid={!Case.Id}&parentname={!Case.CaseNumber}&retURL=%2F{!Case.Id}','Attach a File to Case {!Case.CaseNumber}')"/>
+  	  	<input class="btn" type="button" value="Attach File" onClick="openTab('p/attach/NoteAttach?pid={!Case.Id}&parentname={!Case.CaseNumber}&retURL=%2F{!Case.Id}','Attach a File to Case {!Case.CaseNumber}')"/>
   	   </apex:form>
   	  </apex:pageBlockButtons>
 		<apex:pageBlockTable value="{!allAttachments}" var="a">

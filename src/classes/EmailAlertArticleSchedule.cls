@@ -144,7 +144,8 @@ public class EmailAlertArticleSchedule implements Schedulable {
 			}
 			
 			if (templateDevNameToTemplate.values().size() != 3) {
-				throw new KnowledgeArticleManagmentException('Template does not contain three values');
+				throw new KnowledgeArticleManagmentException('Notification Emails required that templates for Knowledge_Article_Expired, ' +
+                                    'Knowledge_Article_Stagnant, and Knowledge_Article_30_Day_Expiration have been created.');
 			} else {
 				// Get list of group members
 				knowledgeGroupMembers = [

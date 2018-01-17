@@ -70,6 +70,8 @@ private class Test_ServiceCenter{
         }
 
         insert testUserList;
+
+        TestDataFactory.createFunctionalGroupWithCategory('Student-Centric Initiatives', 'Knowledge', 'Test');
     }
 
     @testSetup static void setUpEnrolledTestSessionA(){
@@ -126,7 +128,7 @@ private class Test_ServiceCenter{
         insert testOppNotEnrolled;
     }
 
-    @isTest static void testStudentSCPageAC(){   
+    @isTest static void testStudentSCPageAC(){
         Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
             Name = 'The Test Message',
             Displayed__c = true,
@@ -154,7 +156,7 @@ private class Test_ServiceCenter{
 
         Test.startTest();
 
-        System.runAs(testUser){   
+        System.runAs(testUser){
             sc = new ServiceCenter();
             vcc=new viewCaseController();
             scMyCaseBox=new SCMyCasesBoxController();
@@ -167,10 +169,10 @@ private class Test_ServiceCenter{
             vcc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             sc.viewAsUrl = 'www.hankhillgifs.com';
             vcc.viewAsUrl = 'www.hankhillgifs.com';
-            
+
             sc.getMyPin();
             sc.getSource();
-           
+
             vcc.getMyPin();
             vcc.getSource();
 
@@ -214,14 +216,14 @@ private class Test_ServiceCenter{
 
         Test.startTest();
 
-        System.runAs(testUser){   
+        System.runAs(testUser){
             vacc = new ViewAllCasesController();
             vcc=new viewCaseController();
-            
+
             vacc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
-            scMyCaseBox=new SCMyCasesBoxController();   
+            scMyCaseBox=new SCMyCasesBoxController();
             sc = new ServiceCenter();
             sc.oppList = oppList;
             vcc.oppList=oppList;
@@ -250,7 +252,7 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
 
-    @isTest static void testStudentSCNotEnrolled(){   
+    @isTest static void testStudentSCNotEnrolled(){
         User testUser = [
             SELECT Id, ContactId
             FROM User
@@ -277,7 +279,7 @@ private class Test_ServiceCenter{
             sc.oppList = oppList;
             vcc.oppList=oppList;
             scMyCaseBox.oppList=oppList;
-            
+
             System.assertEquals(true, scMyCaseBox.getmyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
             System.assertEquals(true, vcc.getHelpBox());
@@ -286,7 +288,7 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
 
-    @isTest static void testStudentSCNoOpp(){   
+    @isTest static void testStudentSCNoOpp(){
         User testUser = [
             SELECT Id, ContactId
             FROM User
@@ -317,7 +319,7 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
 
-    @isTest static void testStudentSCAlumni(){   
+    @isTest static void testStudentSCAlumni(){
         User testUser = [
             SELECT Id, ContactId
             FROM User
@@ -338,19 +340,19 @@ private class Test_ServiceCenter{
         System.runAs(testUser){
             sc = new ServiceCenter();
             System.assertEquals(true, sc.getHelpBox());
-    
+
             scMyCaseBox=new SCMyCasesBoxController();
 
             scMyCaseBox.oppList=oppList;
 
             System.assertEquals(true, scMyCaseBox.getMyCasesBox());
-            
+
         }
 
         Test.stopTest();
     }
-    
-    @isTest static void testSubmitCase(){   
+
+    @isTest static void testSubmitCase(){
         User testUser = [
             SELECT Id, ContactId
             FROM User
@@ -382,7 +384,7 @@ private class Test_ServiceCenter{
 
         Test.stopTest();
     }
-    
+
     @isTest static void testSuggestAnArticle(){
         User testUser = [
             SELECT Id, ContactId
@@ -398,6 +400,7 @@ private class Test_ServiceCenter{
         System.runAs(testUser){
             sc = new ServiceCenter();
             sc.suggestAnArticle.Description = 'Test submitting a suggestion';
+            sc.strArticleIdea = 'Description';
             PageReference submit = ApexPages.currentPage();
             submit.getParameters().put('Suggest', 'yes');
             System.assertEquals(submit.getURL(), sc.suggestAnArticleSubmit().getURL());
@@ -450,15 +453,31 @@ private class Test_ServiceCenter{
 
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', testCase1.Id);
+        User testUser = [
+            SELECT Id, ContactId
+            FROM User
+            WHERE FirstName = 'Test0'
+        ];
+
+
+        Case testCase = [
+            SELECT Id
+            FROM Case
+            WHERE ContactId = :testUser.ContactId
+            LIMIT 1
+        ];
+
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase.Id);
         Test.setCurrentPage(viewCase);
 
         Test.startTest();
 
-        System.runAs(testUser1){
+        System.runAs(testUser){
             sc = new ServiceCenter();
             sc.viewingAs = true;
             PageReference stop = ApexPages.currentPage();
-            
+
             System.assertEquals(stop.getURL(), sc.changePin().getURL());
             System.assertEquals(stop.getURL(), sc.suggestAnArticleSubmit().getURL());
         }

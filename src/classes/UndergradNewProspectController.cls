@@ -217,7 +217,7 @@ public class UndergradNewProspectController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'After selecting a type of interest, you must select an interest.'));
                 return false;
             }
-            else if (originSelection != '--Select--' && elId == null && c.Functional_Group__c == null) 
+            else if (originSelection != '--Select--' && elId == null && c.CC_Functional_Group__c == null) 
             {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'When selecting an Origin, you must also select a Functional Group.'));
                 return false;

@@ -27,6 +27,8 @@ public with sharing class HelpDeskController
     public String contactName { get; set; }
     public String knowString { get; set; }
 
+    public Boolean savedAndClosed {get; set;}
+
     // This method returns a list of Close statuses for Cases
     public List<SelectOption> getcloseCaseStatusOptions()
     {
@@ -244,6 +246,7 @@ public with sharing class HelpDeskController
                     'There was a problem running the query. Please try again. ' + e.getMessage()
                 )
             );
+
         }
 
     }
@@ -529,6 +532,7 @@ public with sharing class HelpDeskController
                     'You must enter search terms.'
                 )
             );
+
         }
     }
 
@@ -623,10 +627,13 @@ public with sharing class HelpDeskController
             mycase.clear();
         }
 
+        
+        ID functionalTypeId = IDHelper.getRTID('Case_Classification__c', 'Functional_Group');
+        System.debug('FunctionalTypeID: ' + functionalTypeId);
         mycase.ContactId = selectedContactId;
         mycase.Status = 'New';
         mycase.Campus__c = 'Tempe';
-        mycase.Functional_Group__c = 'Help Desk';
+        mycase.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Help Desk' LIMIT 1].Id;
     }
 
     public void newContact()
@@ -676,6 +683,7 @@ public with sharing class HelpDeskController
                 isExistingCaseSelected = false;
             }
         }
+        ApexPages.getMessages().clear();
     }
 
     public void clearContactSearch()
@@ -726,7 +734,7 @@ public with sharing class HelpDeskController
         // query to get open cases for the contact
         casesbase = Database.query(
             'SELECT Id, Subject, Reason, Description, Status, Origin__c, Campus__c, ' +
-                'Affiliation__c, Functional_Group__c, Category__c, Sub_Category__c, Reporting_Category__c, ' +
+                'Affiliation__c, CC_Functional_Group__c, CC_Category__c, CC_Sub_Category__c, Reporting_Category__c, ' +
                 'Private_Note_Help_Desk__c, ClosedDate, CaseNumber, CreatedDate ' +
                 'FROM Case ' +
                 'WHERE ContactId = :selectedContactId ' +
@@ -797,16 +805,33 @@ public with sharing class HelpDeskController
                     'You must enter both a Subject and Description to save the Case.'
                 )
             );
-
             return null;
         }
+        try {
+            upsert mycase;
+            PageReference page = new PageReference('/' + mycase.Id);
+            page.setRedirect(true);
+            return page;
+        }
+        catch(DMLException e) {
+            if(e.getDMLType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('caseSubj',myCase.Subject));
+                vars.add(ErrorLogger.convertStringToJSON('caseDescription', myCase.Description));
+                vars.add(ErrorLogger.convertStringToJSON('Case Contact Id', myCase.ContactId));
+                ErrorLogger.log(e,vars,false);
+            }
+            return null;
 
-        upsert mycase;
-
-        PageReference page = new PageReference('/' + mycase.Id);
-        page.setRedirect(true);
-
-        return page;
+        }
+        catch(Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('caseSubj No DML',myCase.Subject));
+            vars.add(ErrorLogger.convertStringToJSON('caseDescription No DML', myCase.Description));
+            vars.add(ErrorLogger.convertStringToJSON('Case Contact Id No DML', myCase.ContactId));
+            ErrorLogger.log(e,vars,false);
+            return null;
+        }
     }
 
     public void cancelCase()
@@ -814,6 +839,7 @@ public with sharing class HelpDeskController
         isNewCaseSelected = false;
         isExistingCaseSelected = false;
         isKnowledgeSearch = false;
+        ApexPages.getMessages().clear();
     }
 
     public PageReference saveAndTransferCase()
@@ -831,13 +857,34 @@ public with sharing class HelpDeskController
 
             return null;
         }
+        try{
+            upsert mycase;
 
-        upsert mycase;
+            PageReference page = new PageReference('/apex/CaseTransfer?id=' + mycase.Id);
+            page.setRedirect(true);
 
-        PageReference page = new PageReference('/apex/CaseTransfer?id=' + mycase.Id);
-        page.setRedirect(true);
+            return page;
+        }
+        catch(DMLException e) {
+            if(e.getDMLType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('caseSubj',myCase.Subject));
+                vars.add(ErrorLogger.convertStringToJSON('caseDescription', myCase.Description));
+                vars.add(ErrorLogger.convertStringToJSON('Case Contact Id', myCase.ContactId));
+                ErrorLogger.log(e,vars,false);
+            }
+            return null;
 
-        return page;
+        }
+        catch(Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('caseSubj No DML',myCase.Subject));
+            vars.add(ErrorLogger.convertStringToJSON('caseDescription No DML', myCase.Description));
+            vars.add(ErrorLogger.convertStringToJSON('Case Contact Id No DML', myCase.ContactId));
+            ErrorLogger.log(e,vars,false);
+            return null;
+        }
+
     }
 
     // Upsert Case and set bool value to render the close status panel.
@@ -851,13 +898,37 @@ public with sharing class HelpDeskController
                     'You must enter both a Subject and Description to save the Case.'
                 )
             );
-
+            savedAndClosed = false;
             return;
         }
 
         mycase.Status = 'Closed: Resolved';
+        try{
+            upsert mycase;
+            savedAndClosed = true;
+            return;
+        }
+        catch(DMLException e) {
+            savedAndClosed = false;
+            if(e.getDMLType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('caseSubj',myCase.Subject));
+                vars.add(ErrorLogger.convertStringToJSON('caseDescription', myCase.Description));
+                vars.add(ErrorLogger.convertStringToJSON('Case Contact Id', myCase.ContactId));
+                ErrorLogger.log(e,vars,false);
+            }
+            return;
 
-        upsert mycase;
+        }
+        catch(Exception e) {
+            savedAndClosed = false;
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('caseSubj No DML',myCase.Subject));
+            vars.add(ErrorLogger.convertStringToJSON('caseDescription No DML', myCase.Description));
+            vars.add(ErrorLogger.convertStringToJSON('Case Contact Id No DML', myCase.ContactId));
+            ErrorLogger.log(e,vars,false);
+            return;
+        }
     }
 
     public PageReference saveCloseCase()
@@ -875,15 +946,15 @@ public with sharing class HelpDeskController
         try
         {
             upsert mycase;
-
             return null;
         }
         catch (Exception e)
         {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, e.getMessage()));
+            return null;
         }
 
-        return null;
+
     }
 
     public void cancelCloseCase()
@@ -918,7 +989,8 @@ public with sharing class HelpDeskController
             mycontact = new Contact();
             isNewCaseSelected = false;
             isExistingCaseSelected = false;
-            cases.clear();
+            if(cases!=null)
+                cases.clear();
         }
         catch (Exception ex)
         {

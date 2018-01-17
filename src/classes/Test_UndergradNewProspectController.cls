@@ -23,6 +23,12 @@ private class Test_UndergradNewProspectController
             Name = 'ASU Test Interest',
             RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id);
         insert testIntCam;
+        
+        Case_Classification__c cc = new Case_Classification__c();
+        cc.Name = 'Business';
+        cc.Active__c = true;
+        cc.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Functional Group').getRecordTypeId();
+        insert cc;
     } 
 
     private static void setUpController() 
@@ -60,7 +66,7 @@ private class Test_UndergradNewProspectController
         ug.pickSelection = '--Select--';
 
         // Create case
-        ug.c.Functional_Group__c = 'Business';
+        ug.c.CC_Functional_Group__c = [SELECT ID FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true LIMIT 1].ID;
         ug.c.Subject = 'Test Subject';
 
         // Create contact
@@ -94,7 +100,7 @@ private class Test_UndergradNewProspectController
         ug.selectedInterestId = interestTestCam.Id;
 
         // Create case
-        ug.c.Functional_Group__c = 'Business';
+        ug.c.CC_Functional_Group__c = [SELECT ID FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true LIMIT 1].ID;
         ug.c.Subject = 'Test Subject';
 
         // Create contact
@@ -164,7 +170,7 @@ private class Test_UndergradNewProspectController
 
         ug.originSelection = 'Email';
         ug.pickSelection = '--Select--';
-        ug.c.Functional_Group__c = null;
+        ug.c.CC_Functional_Group__c = null;
         ug.elId = null;
         ug.savePage();
         msgs = ApexPages.getMessages();
@@ -186,7 +192,7 @@ private class Test_UndergradNewProspectController
         ug.originSelection = 'Email';
         ug.pickSelection = '--Select--';
 
-        ug.c.Functional_Group__c = 'Business';
+        ug.c.CC_Functional_Group__c = [SELECT ID FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true LIMIT 1].ID;
         ug.c.Subject = 'Test Subject';
 
         ug.contact.FirstName = 'Test';

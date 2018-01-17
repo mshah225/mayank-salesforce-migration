@@ -6,6 +6,7 @@
     standardStylesheets="false"
     docType="HTML-5.0"
     action="{!init}">
+    <apex:includeScript value="/support/console/38.0/integration.js"/>
     <head>
         <title>{!theContact.FirstName}'s Student Profile</title>
         <meta charset="utf-8" />
@@ -45,11 +46,10 @@
             var inConsole = false;
             function setTabTitle() {
                 //Set the current tab's title
-                try {
-                    sforce.console.setTabTitle('{!theContact.FirstName}\'s Student Profile');
-                    inConsole = true;
-                } catch (e) {
-                    console.log('Notice: Tab title can only be set when the Student Profile is opened inside of a Service Console tab! ' + e.message);
+                if (sforce.console.isInConsole() || window.location.href.includes("FrameOrigin")) {
+                	sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
+                	inConsole = true;
+
                 }
             }
             var pageLoad = window.onload;
@@ -163,12 +163,14 @@
                                     </div>
                                     <apex:outputPanel id="photoRerenderPanel" layout="none">
                                         <apex:form >                                     
-                                        <img id="studentPhotoImg2"
-                                             src="
-                                                  {!if(ISBLANK(suncardPhotoURL), URLFOR($Resource.blankAvatar), suncardPhotoURL)}"
+                                        <div id="sundevilImgDiv">
+                                            <img id="studentPhotoImg2" src=" {!if(ISBLANK(suncardPhotoURL), URLFOR($Resource.blankAvatar), suncardPhotoURL)}"
                                              alt="suncard photo"
                                              class="img-responsive intro"
                                              style="max-width:200px;width:100%;"/> 
+                                            <i id="sunImgSpinner" class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' 
+                                               style='position: absolute; top: 50%; left: 42%; text-align:center;'></i>
+                                        </div>
                                         </apex:form>
                                     </apex:outputPanel>
 
@@ -217,7 +219,6 @@
                                             <h4 class="intro">
                                                 <span style="color:#353535;">Sub-Plan:</span>
                                                 &nbsp;{!IF(subPlanString==null, '--', subPlanString)}
-
                                             </h4>
                                             
                                             <h4 class="intro">
@@ -395,7 +396,9 @@
                                                 </div>
                                             </apex:outputPanel>
                                         </div>
-
+										
+                                        <div id="psHousingErrorsGen"></div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -405,45 +408,14 @@
 
                                         <div class="row">
                                             <apex:outputPanel id="generalPersonal">
-                                                <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Gender</th>
-                                                            <td>{!theContact.Gender__c}</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>Ethnicity</th>
-                                                            <td>{!theContact.Ethnicity__c}</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>Age</th>
-                                                            <td>{!IF(ISBLANK(studentDemographic.AGE_YEARS__c), '--', 
-                                                                 FLOOR(VALUE(studentDemographic.AGE_YEARS__c)))}</td>
-                                                            <!--td>{!FLOOR((TODAY() - theContact.BirthDate)/365.2425)}</td-->
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>Birthdate</th>
-                                                            <td>
-                                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
-                                                                    <apex:param value="{!theContact.Birthdate}"/>
-                                                                </apex:outputText>
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <!--Opportunity Object
-                                                            First_Generation__c-->
-                                                            <th>First Generation</th>
-                                                            <td>{!IF(ISBLANK(studentDemographic.FIRST_GEN_FLG__c), '--', 
-                                                                 studentDemographic.FIRST_GEN_FLG__c)}</td>
-                                                        </tr>
-                                                    </table>
+                                                <div id="studentDemographicDiv">
+                                                    
                                                 </div>
-
-                                                <div class="col-sm-6">
+                                                
+                                                <div id="studentProgramDiv">
+                                                    
+                                                </div>
+                                                <!-- <div class="col-sm-6">
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>WUE</th>
@@ -471,17 +443,62 @@
                                                         </tr>
 
                                                         <tr>
-                                                            <!--Financial Aid Package Object
-                                                            EFC_Range__c-->
                                                             <th>Financial Need Level</th>
                                                             <td>{!IF(ISBLANK(studentProgram.FINANCIAL_NEED_LVL__c), '--', 
                                                                  studentProgram.FINANCIAL_NEED_LVL__c)}</td>
                                                         </tr>
                                                     </table>
+                                                </div> -->
+                                            </apex:outputPanel>
+                                        </div>
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;University Housing Information
+                                            </h4>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <apex:outputPanel id="generalResidence">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Residence Hall</th>
+                                                            <td>
+                                                                <span id="residenceFloor">--</span><br />
+                                                                <span id="residenceSection"></span><br />
+                                                                <span id="residenceHall"></span><br />
+                                                                <span id="residenceCampus"></span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Room Check-In Date</th>
+                                                            <td id="checkInDate">--</td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Check-Out Date</th>
+                                                            <td id="checkOutDate"><i id='checkOutSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>
+                                                        </tr>
+                                                        
+                                                        <tr>
+                                                            <th>Room Status</th>
+                                                            <td id="roomStatus">--</td>
+                                                        </tr>
+                                                        
+                                                    </table>
                                                 </div>
                                             </apex:outputPanel>
                                         </div>
-
+                                        
+ 
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -495,59 +512,20 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Current Academic Level</th>
-                                                            <td>{!IF(ISBLANK(profileHeader.COHORT__c), '--', 
-                                                                 profileHeader.COHORT__c)}</td>
+                                                            <td id="profileHeaderTD">--</td>
                                                         </tr>
-
                                                         <tr>
                                                             <th>{!currentTermName} Term Enrolled Hours</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.ENRL_HRS__c), '--', 
-                                                                 FLOOR(studentProgram.ENRL_HRS__c))}</td>
+                                                            <td id="curTermEnrolled"><i id='curTermSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>
                                                         </tr>
-
                                                         <tr>
                                                             <th>{!nextTermName} Term Enrolled Hours</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.ENRL_HRS_PENDING__c), '--', 
-                                                                 FLOOR(studentProgram.ENRL_HRS_PENDING__c))}</td>
+                                                            <td id="nextTermEnrolled">--</td>
                                                         </tr>
                                                     </table>
                                                 </div>
-
-                                                <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Expected Graduation Date</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.EXP_GRAD_TERM__c), '--', 
-                                                                 StudentProgram.EXP_GRAD_TERM__r.Name)}
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>{!currentTermName} Enrollment Appointment</th>
-                                                            <td>
-                                                                <!--
-                                                                <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
-                                                                -->
-                                                                <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT__c))}">
-                                                                    <apex:param value="{!studentProgram.APPT_DT__c}"/>
-                                                                </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT__c)}">--</apex:outputText>
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>{!nextTermName} Enrollment Appointment</th>
-                                                            <td>
-                                                                <!--
-                                                                <c:FormattedDateTime dateTimeValue="{!studentProgram.APPT_DT_PENDING__c}" datetimeFormat="MMMM d','  yyyy h:mm aaa z" />
-                                                                -->
-                                                                <apex:outputText value="{0, date, MMMM d','  yyyy h:mm aaa 'AZ'}" rendered="{!(!ISBLANK(studentProgram.APPT_DT_PENDING__c))}">
-                                                                    <apex:param value="{!studentProgram.APPT_DT_PENDING__c}"/>
-                                                                </apex:outputText>
-                                                                <apex:outputText rendered="{ISBLANK(studentProgram.APPT_DT_PENDING__c)}">--</apex:outputText>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
+                                                <div id="expectedGradDateDiv">
+                                                    
                                                 </div>
                                             </apex:outputPanel>
                                         </div>
@@ -581,11 +559,9 @@
                                                         </apex:outputLink>
                                                     </apex:column>
                                                     <apex:column headerValue="Sub-Plan">
-
                                                         <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
                                                                          value="{!subPlanString}"/>
                                                         <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
-
                                                                          value="--"/>
                                                     </apex:column>
                                                     <apex:column headerValue="Plan Type"
@@ -676,49 +652,9 @@
                                             </div>
                                             <div class="row">
                                                 <apex:outputPanel id="admissionInformation">
-                                                <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Application Admit Type</th>
-                                                            <td>{!IF(ISBLANK(ugStudentProgram.ADMIT_TYPE__c), '--', ugStudentProgram.ADMIT_TYPE__c)}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Applied Program</th>
-                                                            <td>{!IF(ISBLANK(ugStudentProgram.ADM_APPL_PROG__c), '--', ugStudentProgram.ADM_APPL_PROG__c)}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Applied Date</th>
-                                                            <td>
-                                                                <apex:outputText value="{0, date, MMMM d','  yyyy}" rendered="{!(!ISBLANK(ugStudentProgram.ADM_APPL_DT__c))}">
-                                                                    <apex:param value="{!ugStudentProgram.ADM_APPL_DT__c}"/>
-                                                                </apex:outputText>
-                                                                <apex:outputText rendered="{!ISBLANK(ugStudentProgram.ADM_APPL_DT__c)}">--</apex:outputText>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Admit Term</th>
-                                                            <td>{!IF(ISBLANK(ugStudentProgram.ADMIT_TERM__c), '--', ugStudentProgram.ADMIT_TERM__c)}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Enroll Deposit</th>
-                                                            <td>{!IF(ISBLANK(ugStudentProgram.ENRL_DEPOSIT__c), '--', ugStudentProgram.ENRL_DEPOSIT__c)}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Orientation Date</th>
-                                                            <td>
-                                                                <apex:outputText value="{0, date, MMMM d','  yyyy}" rendered="{!(!ISBLANK(ugStudentProgram.ORIENT_DT__c))}">
-                                                                    <apex:param value="{!ugStudentProgram.ORIENT_DT__c}"/>
-                                                                </apex:outputText>
-                                                                <apex:outputText rendered="{!ISBLANK(ugStudentProgram.ORIENT_DT__c)}">--</apex:outputText>
-
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
+                                                    <div id="underGradAcadDiv">
+                                                        
+                                                    </div>
                                                 </apex:outputPanel>
                                             </div>
                                         </div>
@@ -845,52 +781,8 @@
 
                                             <div class="row">
                                                 <apex:outputPanel id="gradAdmissionInformation">
-                                                    <div class="col-sm-6">
-                                                        <table class="table table-striped">
-                                                            <tr>
-                                                                <th>Application Admit Type</th>
-                                                                <td>{!IF(ISBLANK(gradStudentProgram.ADMIT_TYPE__c), '--', gradStudentProgram.ADMIT_TYPE__c)}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Applied Program</th>
-                                                                <td>{!IF(ISBLANK(gradStudentProgram.ADM_APPL_PROG__c), '--', gradStudentProgram.ADM_APPL_PROG__c)}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Applied Date</th>
-                                                                <td>
-                                                                    <apex:outputText value="{0, date, MMMM d','  yyyy}" rendered="{!(!ISBLANK(gradStudentProgram.ADM_APPL_DT__c))}">
-                                                                        <apex:param value="{!gradStudentProgram.ADM_APPL_DT__c}"/>
-                                                                    </apex:outputText>
-                                                                    <apex:outputText rendered="{!ISBLANK(gradStudentProgram.ADM_APPL_DT__c)}">--</apex:outputText>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Admit Term</th>
-                                                                <td>{!IF(ISBLANK(gradStudentProgram.ADMIT_TERM__c), '--', gradStudentProgram.ADMIT_TERM__c)}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Admit Type</th>
-                                                                <td>{!IF(ISBLANK(gradStudentProgram.ADMIT_TYPE__c), '--', gradStudentProgram.ADMIT_TYPE__c)}</td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <table class="table table-striped">
-                                                            <tr>
-                                                                <th>Enroll Deposit</th>
-                                                                <td>{!IF(ISBLANK(gradStudentProgram.ENRL_DEPOSIT__c), '--', gradStudentProgram.ENRL_DEPOSIT__c)}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Orientation Date</th>
-                                                                <td>
-                                                                    <apex:outputText value="{0, date, MMMM d','  yyyy}" rendered="{!(!ISBLANK(gradStudentProgram.ADM_APPL_DT__c))}">
-                                                                        <apex:param value="{!gradStudentProgram.ADM_APPL_DT__c}"/>
-                                                                    </apex:outputText>
-                                                                    <apex:outputText rendered="{!ISBLANK(gradStudentProgram.ADM_APPL_DT__c)}">--</apex:outputText>
-
-                                                                </td>
-                                                            </tr>
-                                                        </table>
+                                                    <div id="gradAcadDiv">
+                                                        
                                                     </div>
                                                 </apex:outputPanel>
                                             </div>
@@ -1019,8 +911,24 @@
                                     </apex:pageBlock>
                                 </div>
 
+                                
+                                
                                 <div role="tabpanel" class="tab-pane" id="UGindicators">
-                                    <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlock mode="maindetail">  
+                                        
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;Persistence Outlook
+                                                <a class='fa fa-question-circle' data-html="true" title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a href="#" onclick="openNewSubtab(&quot;/articles/FAQ/What-is-a-Persistence-Outlook/p&quot;,&quot;Details&quot;);return false">Visit knowledge article.</a>.</span>' data-placement='right' data-trigger='manual'></a>
+                                                </h4>
+                                        </div>
+                                        
+                                        <!-- Transcripts Sent -->
+                                        <div style="overflow:auto; max-height:310px; height: 310px">
+                                            <c:CivitasPersistenceData />
+                                        </div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1335,11 +1243,9 @@
                                             <div id="me3_career_interest_table"/>
                                         </div>
                                         <div id="me3ResponseErrors"/>
+
                                     </apex:pageBlock>
                                 </div>
-
-
-
                             </div>
 
                             <!-- Load up responsive tabs asap to minimize flicker on mobile -->
@@ -1400,6 +1306,70 @@
                                             </a>
                                         </td>
                                     </tr>
+                                    
+                                    <tr>
+                                        <td>
+                                            <a href="#" data-toggle="modal" data-target="#myModal">
+                                                Create New Service Case
+                                            </a>
+                                        </td>
+                                        
+                                        <script>
+                                            function submitCase(){
+                                                var subject = document.getElementById('usrSubject').value;
+                                                var description = document.getElementById('usrDescription').value;
+                                                if(subject.length <= 0 || description.length <= 0){
+                                                    document.getElementById('modalError').innerHTML = 'Please ensure that subject and description are not blank';
+                                                } else { 
+                                                    Visualforce.remoting.Manager.invokeAction(
+                                                    '{!$RemoteAction.StudentProfileController.createCase}',
+                                                    description,
+                                                    subject,
+                                                    '{!theContact.EMPLId__c}',
+                                                    function (result, event) {
+                                                        document.getElementById('usrSubject').value = '';
+                                                        document.getElementById('usrDescription').value = '';
+                                                        document.getElementById('modalError').innerHTML = '';
+                                                        var url = window.location.href;
+                                                        sforce.console.openPrimaryTab(null, './' + result, true);
+                                                        jQuery('#myModal').modal('hide');
+                                                    });
+                                                }
+                                            };
+                                            
+                                            function clearError() {
+                                                document.getElementById('modalError').innerHTML = '';
+                                                document.getElementById('usrSubject').value = '';
+                                                document.getElementById('usrDescription').value = '';
+                                            };
+                                        </script>
+                                        <div class="modal fade" id="myModal" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" onclick="clearError()" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">New Service Case</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div id="modalError" style="color:red"></div>
+                                                        <div class="form-group">
+                                                            <label for="comment">Subject:</label>
+                                                            <input type="text" class="form-control" id="usrSubject" />
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="comment">Description:</label>
+                                                            <textarea class="form-control" rows="5" id="usrDescription"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default"  onclick="submitCase();" >Submit</button>
+                                                        <button type="button" class="btn btn-default" onclick="clearError()" data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </tr>
                                 </table>
                             </div>
 
@@ -1426,7 +1396,7 @@
                                                 cellPadding="10"
                                                 rowClasses="sideBoxTableRow"
                                                 headerClass="sideBoxTableHeader">
-                                    <apex:column headerValue="Date">
+                                    <apex:column headerValue="Last Modified">
                                         <apex:outputText value="{0, date, MM/d/YY}">
                                             <apex:param value="{!oc.LastModifiedDate}" />
                                         </apex:outputText>
@@ -1469,35 +1439,9 @@
                                         </a>
                                     </div>
                                 </div>
-                                <apex:outputPanel id="serviceIndicatorsPanel" layout="none">
-                                    <apex:dataTable rendered="{!sIList.size > 0}"
-                                                    styleClass="table"
-                                                    value="{!sIList}"
-                                                    var="si"
-                                                    cellPadding="10"
-                                                    rowClasses="sideBoxTableRow"
-                                                    headerClass="sideBoxTableHeader">
-                                        <apex:column headerValue="Start Date">
-                                            <apex:outputText value="{0, date, MM/d/YY}">
-                                                <apex:param value="{!si.SRVC_IND_ACTIVE_DT__c}" />
-                                            </apex:outputText>
-                                        </apex:column>
-                                        <apex:column headerValue="Code" value="{!si.SRVC_IND_CD__c}"/>
-                                        <apex:column headerValue="Description">
-                                            <apex:outputText value="{!LEFT(si.DESCR__c, 100)}
-                                        ..."/>
-                                        </apex:column>
-                                        <apex:column styleClass="smallHidden"
-                                                     headerClass="smallHidden"
-                                                     headerValue="Reason"
-                                                     value="{!si.REASON_DESCR__c}"/>
-                                    </apex:dataTable>
-                                    <apex:outputPanel id="innerSIMessageContainer">
-                                        <apex:outputText rendered="{!!(siList.size > 0)}">
-                                            No Service Holds found for {!theContact.FirstName}                                    
-                                        </apex:outputText>                                    
-                                    </apex:outputPanel>
-                                </apex:outputPanel>
+                                <div id="serviceIndicatorsDiv">
+                                    
+                                </div>
                             </div>
 
                             <div class="sideBox">
@@ -1515,7 +1459,6 @@
                                         </a>
                                     </div>
                                 </div>
-
                                 <apex:dataTable rendered="{!sGroupList.size > 0}"
                                                 styleClass="table"
                                                 value="{!sGroupList}"
@@ -1545,7 +1488,6 @@
                 </div>
 <!--
                 </apex:tab>
-
                 <apex:tab label="Contact Profile"
                           rendered="{!IF(theContact.EMPLID__c == null, true, false)}">
                     <div style="font-size:14pt;">
@@ -1566,21 +1508,645 @@
         <apex:includeScript value="{!URLFOR($Resource.bs_responsive_tabs)}"/>
 
         <script>
-            $j = jQuery.noConflict();
+
+        	$j = jQuery.noConflict();
+        	
+        	var timeoutHandle;
+
+            $j('.fa-question-circle').mouseenter(function(){
+                var that = $j(this)
+                that.tooltip('show');
+                window.clearTimeout(timeoutHandle);
+            });
+            
+            $j('.fa-question-circle').mouseleave(function(){
+                    var _this = $j(this);
+                timeoutHandle = window.setTimeout(function(){
+                    _this.tooltip('hide');
+                }, 2000);
+            });
 
             $j("#sunCard").error(function() {
                 $j(this).attr("src", "{!$Resource.blankAvatar}");
             });
         
             $j(document).ready(function() {
-                // $j('.fa-caret-down').hide();    
+                // $j('.fa-caret-down').hide();
+                llProfileHeader();
+                llServiceIndicator();
+                llStudentDemographic();
+                llStudentProgram();
+                llSundevilImg();
+                loadGeneralTab();
             });
+            
+            function llServiceIndicator() {
+                document.getElementById("serviceIndicatorsDiv").innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getServiceIndicators}',
+                    '{!theContact.EMPLID__c}',
+                    function (result, event) {
+                        if (event.status) {
+                            //document.getElementById("serviceIndicatorsDiv").innerHTML = "";
+                            if (result.length != 0) {
+                                var html = "" +
+                                    "<div class='col-sm-12' style='padding:0px;'><div class='table-responsive'>" +
+                                        "<table class='table table-striped table-bordered'> " +
+                                            "<thead>" +
+                                                "<tr>" +
+                                                    "<th>Start Date</th>" +
+                                                    "<th>Code</th>" +
+                                                    "<th>Description</th>" +
+                                                    "<th>Reason</th>" +
+                                                "</tr>" +
+                                            "</thead>" +
+                                            "<tbody>";
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var attDate = new Date(result[i].SRVC_IND_ACTIVE_DT__c);
+                                    attDate = (attDate.getUTCMonth() + 1) + '/' +
+                                                attDate.getUTCDate() + '/' +
+                                                attDate.getUTCFullYear(); 
+                                    var description = result[i].DESCR__c;
+                                    if (description.length > 100)
+                                      description = description.substring(0,100)+'...';
+                                    html += "" +
+                                        "<tr>" +
+                                            "<td>" + attDate + "</td>" +
+                                            "<td>" + result[i].SRVC_IND_CD__c + "</td>" +
+                                            "<td>" + description + "</td>" +
+                                            "<td>" + result[i].REASON_DESCR__c + "</td>" +
+                                        "</tr>";
+                                }
+
+                                html += "</tbody></table></div></div>";
+
+                                document.getElementById('serviceIndicatorsDiv').innerHTML = html;
+                                cleanUpUndefined("serviceIndicatorsDiv");
+                            } else {
+                                document.getElementById("serviceIndicatorsDiv").innerHTML =
+                                    'No Service Holds found for {!theContact.FirstName}';
+                            }
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+             
+            function llStudentDemographic() {
+                var buildInitHtml = "<div class=\"col-sm-6\">" +
+                                        "<table class=\"table table-striped\">" +
+                                            "<tr>" +
+                                                "<th>Gender</th>" +
+                                                "<td>--</td>" +
+                                            "</tr>" +
+                                            "<tr>" +
+                                                "<th>Ethnicity</th>" +
+                                                "<td>--</td>" +
+                                            "</tr>" +
+                                            "<tr>" +
+                                                "<th>Age</th>" +
+                                                "<td id='studentDemoTd'><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
+                                            "</tr>" +
+                                            "<tr>" +
+                                                "<th>BirthDate</th>" +
+                                                "<td>--</td>" +
+                                            "</tr>" +
+                                            "<tr>" +
+                                                "<th>First Generation</th>" +
+                                                "<td>--</td>" +
+                                            "</tr>";
+                    buildInitHtml += "</table></div>";
+                document.getElementById("studentDemographicDiv").innerHTML = buildInitHtml;
+
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getStudentDemographicData}',
+                    '{!theContact.EMPLID__c}',
+                    function (result, event) {
+                        if (event.status) {
+                            //document.getElementById("serviceIndicatorsDiv").innerHTML = "";
+                            if (result.length != 0) {
+                                
+                                var bDay = new Date("{!theContact.Birthdate}Z");
+                                    bDay = (bDay.getUTCMonth() + 1) + '/' +
+                                        bDay.getUTCDate() + '/' +
+                                        bDay.getUTCFullYear();
+                                
+                                var age = '--';
+                                var firstGenFlag = '--';
+                                if(result.AGE_YEARS__c != null && result.AGE_YEARS__c != '' && result.AGE_YEARS__c != undefined) {
+                                    age = Math.floor(result.AGE_YEARS__c);
+                                }
+                                if(result.FIRST_GEN_FLG__c != null && result.FIRST_GEN_FLG__c != '' && result.FIRST_GEN_FLG__c != undefined) {
+                                    firstGenFlag = result.FIRST_GEN_FLG__c;
+                                }
+                                var html = "" +
+                                    "<div class=\"col-sm-6\">" +
+                                        "<table class=\"table table-striped\">" +
+                                            "<tr>" +
+                                                "<th>Gender</th>" +
+                                                "<td>{!theContact.Gender__c}</td>" +
+                                            "</tr>" +
+                                            "<tr>" +
+                                                "<th>Ethnicity</th>" +
+                                                "<td>{!theContact.Ethnicity__c}</td>" +
+                                            "</tr>" +
+                                            "<tr>" +
+                                                "<th>Age</th>" +
+                                                "<td>" + age + "</td>" +
+                                            "</tr>" +
+                                            "<tr>" +
+                                                "<th>BirthDate</th>" +
+                                                "<td>" + bDay + "</td>" +
+                                            "</tr>" +
+                                            "<tr>" +
+                                                "<th>First Generation</th>" +
+                                                "<td>" + firstGenFlag + "</td>" +
+                                            "</tr>";
+                                html += "</table></div>";
+
+                                document.getElementById('studentDemographicDiv').innerHTML = html;
+                                cleanUpUndefined("studentDemographicDiv");
+                            }
+                        } else {
+                            jQuery('#studentDemoTd').empty();
+                            jQuery('#studentDemoTd').html('--');
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+            
+            function llProfileHeader() {
+                
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getProfileHeader}',
+                    '{!theContact.EMPLID__c}',
+                    function (result, event) {
+                        if (event.status) {
+                            if (result.length != 0) {
+                                var cohort = '--';
+                                if(result.COHORT__c != null && result.COHORT__c != '' && result.COHORT__c != undefined) {
+                                    cohort = result.COHORT__c;
+                                }
+                                var html = cohort +'';
+                                document.getElementById('profileHeaderTD').innerHTML = html;
+                                cleanUpUndefined("profileHeaderTD");
+                            }
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+            
+            function llStudentProgram() {
+              var buildInitHtml = "<div class=\"col-sm-6\">" +
+                                      "<table class=\"table table-striped\">" +
+                                          "<tr>" +
+                                              "<th>WUE</th>" +
+                                              "<td>--</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>Residency</th>" +
+                                              "<td>--</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>Country of Citizenship</th>" +
+                                              "<td id='initHtmlTd' ><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>FERPA Level</th>" +
+                                              "<td>--</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>Financial Need Level</th>" +
+                                              "<td>--</td>" +
+                                          "</tr>";
+                  buildInitHtml += "</table></div>";
+              document.getElementById("studentProgramDiv").innerHTML = buildInitHtml;
+            
+              var buildInitGradHtml = "<div class=\"col-sm-6\">" +
+                                      "<table class=\"table table-striped\">" +
+                                          "<tr>" +
+                                              "<th>Expected Graduation Date</th>" +
+                                              "<td>--</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>{!currentTermName} Enrollment Appointment</th>" +
+                                              "<td id='initGradTd'><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>{!nextTermName} Enrollment Appointment</th>" +
+                                              "<td>--</td>" +
+                                          "</tr>";
+              buildInitGradHtml += "</table></div>";
+              document.getElementById("expectedGradDateDiv").innerHTML = buildInitGradHtml;
+              
+              var buldInitUnderAcadHtml = "<div>"+
+                                            "<div class='col-sm-6'>"+
+                                                "<table class='table table-striped'>"+
+                                                    "<tr>"+
+                                                        "<th>Application Admit Type</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<th>Applied Program</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<th>Applied Date</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                "</table>"+
+                                            "</div>"+
+                                            "<div class='col-sm-6'>"+
+                                                "<table class='table table-striped'>"+
+                                                    "<tr>"+
+                                                        "<th>Enroll Deposit</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<th>Orientation Date</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                "</table>"+
+                                            "</div>"+
+                                            "<i id='underGradSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' "+
+                                               "style='top: 50%; left: 42%; text-align:center;'></i>"+
+                                            "</div>";
+              document.getElementById("underGradAcadDiv").innerHTML = buldInitUnderAcadHtml;
+              
+              var buldInitGradAcadHtml = "<div>"+
+                                            "<div class='col-sm-6'>"+
+                                                "<table class='table table-striped'>"+
+                                                    "<tr>"+
+                                                        "<th>Application Admit Type</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<th>Applied Program</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<th>Applied Date</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<th>Admit Term</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                "</table>"+
+                                            "</div>"+
+                                            "<div class='col-sm-6'>"+
+                                                "<table class='table table-striped'>"+
+                                                    "<tr>"+
+                                                        "<th>Enroll Deposit</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<th>Orientation Date</th>"+
+                                                        "<td>--</td>"+
+                                                    "</tr>"+
+                                                "</table>"+
+                                            "</div>"+
+                                            "<i id='gradSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' "+
+                                               "style='top: 50%; left: 42%; text-align:center;'></i>"+
+                                            "</div>";
+              document.getElementById("gradAcadDiv").innerHTML = buldInitGradAcadHtml;
+              
+              Visualforce.remoting.Manager.invokeAction(
+                  '{!$RemoteAction.StudentProfileController.getStudentProgramData}',
+                  '{!theContact.EMPLID__c}',
+                  function (result, event) {
+                      if (event.status) {
+                          //document.getElementById("serviceIndicatorsDiv").innerHTML = "";
+                          if (result.length != 0) {
+                              var studentProgram;
+                              studentProgram = result[0];
+                              
+                              var html = "" +
+                                  "<div class=\"col-sm-6\">" +
+                                      "<table class=\"table table-striped\">" +
+                                          "<tr>" +
+                                              "<th>WUE</th>" +
+                                              "<td>"+studentProgram.WUE__c +"</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>Residency</th>" +
+                                              "<td>"+studentProgram.RESIDENCY__c + "</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>Country of Citizenship</th>" +
+                                              "<td>{!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__r.Name)}</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>FERPA Level</th>" +
+                                              "<td>{!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--', theContact.FERPA_Directory_Hold__c)}</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>Financial Need Level</th>" +
+                                              "<td>" + studentProgram.FINANCIAL_NEED_LVL__c + "</td>" +
+                                          "</tr>";
+                              html += "</table></div>";
+            
+                              document.getElementById('studentProgramDiv').innerHTML = html;
+                              cleanUpUndefined("studentProgramDiv");
+                              
+                              var termName = '--';
+                              if(studentProgram.EXP_GRAD_TERM__c === '-') {
+                                  termName = '--'
+                              } else if(studentProgram.EXP_GRAD_TERM__r.Name != '') {
+                                  termName = studentProgram.EXP_GRAD_TERM__r.Name;
+                              }
+                              
+                              var appointDay = '--';
+                              var nextAppointDay = '--';
+                              if(studentProgram.APPT_DT__c != '' && studentProgram.APPT_DT__c!= null) {
+                                appointDay = new Date(studentProgram.APPT_DT__c);
+                                appointDay = (appointDay.getUTCMonth() + 1) + '/' +
+                                        appointDay.getUTCDate() + '/' +
+                                        appointDay.getUTCFullYear();
+                              }
+                              
+                              if(studentProgram.APPT_DT_PENDING__c != undefined && studentProgram.APPT_DT_PENDING__c != '' && studentProgram.APPT_DT_PENDING__c!= null) {
+                                nextAppointDay = new Date(studentProgram.APPT_DT_PENDING__c);
+                                nextAppointDay = (nextAppointDay.getUTCMonth() + 1) + '/' +
+                                        nextAppointDay.getUTCDate() + '/' +
+                                        nextAppointDay.getUTCFullYear();
+                              }
+                              
+                              var gradHtml = "" +
+                                  "<div class=\"col-sm-6\">" +
+                                      "<table class=\"table table-striped\">" +
+                                          "<tr>" +
+                                              "<th>Expected Graduation Date</th>" +
+                                              "<td>"+ termName +"</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>{!currentTermName} Enrollment Appointment</th>" +
+                                              "<td>" + appointDay +"</td>" +
+                                          "</tr>" +
+                                          "<tr>" +
+                                              "<th>{!nextTermName} Enrollment Appointment</th>" +
+                                              "<td>" + nextAppointDay +"</td>" +
+                                          "</tr>";
+                              gradHtml += "</table></div>";
+                
+                              document.getElementById('expectedGradDateDiv').innerHTML = gradHtml;
+                              cleanUpUndefined("expectedGradDateDiv");
+                              
+                              varCurrentEnrolledHrs = '--';
+                              varNextEntrolledHrs = '--';
+                              
+                              if(studentProgram.ENRL_HRS__c != '' 
+                                  && studentProgram.ENRL_HRS__c != undefined 
+                                  && studentProgram.ENRL_HRS__c != '-'
+                                  && studentProgram.ENRL_HRS__c != null) {
+                                  varCurrentEnrolledHrs = Math.floor(studentProgram.ENRL_HRS__c);
+                              }
+                              var curTermHtml =  varCurrentEnrolledHrs;
+                              document.getElementById('curTermEnrolled').innerHTML = curTermHtml;
+                              cleanUpUndefined("curTermEnrolled");
+                              
+                              if(studentProgram.ENRL_HRS_PENDING__c != '' 
+                                  && studentProgram.ENRL_HRS_PENDING__c != undefined 
+                                  && studentProgram.ENRL_HRS_PENDING__c != '-'
+                                  && studentProgram.ENRL_HRS_PENDING__c != null) {
+                                  varNextEntrolledHrs = Math.floor(studentProgram.ENRL_HRS_PENDING__c);
+                              }
+                              var nextTermHtml = varNextEntrolledHrs;
+                              document.getElementById('nextTermEnrolled').innerHTML = nextTermHtml;
+                              cleanUpUndefined("nextTermEnrolled");
+                              
+                              var ugStudentProgram;
+                              var gradStudentProgram;
+                              
+                              for(var i = 0; i < result.length; i++) {
+                                if(result[i].ACAD_CAREER__c === 'UGRD') {
+                                    ugStudentProgram = result[i];
+                                }
+                                else if (result[i].ACAD_CAREER__c === 'GRAD') {
+                                    gradStudentProgram = result[i];
+                                }
+                              }
+                              
+                              // undergraduate page
+                              var ugApplAdmitType = '--';
+                              var ugAppliedProg = '--';
+                              var ugAdmitTerm = '--';
+                              var ugEntrollDep = '--';
+                              var ugAppDate = '--';
+                              var ugOrientDate = '--';
+                              
+                              if(ugStudentProgram != undefined && ugStudentProgram != '') {
+                                  ugApplAdmitType = checkIfBlank(ugStudentProgram, ugStudentProgram.ADMIT_TYPE__c);
+                                  ugAppliedProg = checkIfBlank(ugStudentProgram, ugStudentProgram.ADM_APPL_PROG__c);
+                                  ugAdmitTerm = checkIfBlank(ugStudentProgram, ugStudentProgram.ADMIT_TERM__c);
+                                  ugEntrollDep = checkIfBlank(ugStudentProgram, ugStudentProgram.ENRL_DEPOSIT__c);
+                                  
+                                  
+                                  var utcUgAppSeconds = checkIfBlank(ugStudentProgram, ugStudentProgram.ADM_APPL_DT__c);
+                                  if(utcUgAppSeconds != '--') {
+                                      ugAppDate = new Date(utcUgAppSeconds);
+                                      ugAppDate = (ugAppDate.getMonth() + 1) + '/' +
+                                                ugAppDate.getDate() + '/' +
+                                                ugAppDate.getFullYear();
+                                  }
+                                  
+                                  var utcUgOrientSeconds = checkIfBlank(ugStudentProgram, ugStudentProgram.ORIENT_DT__c);
+                                  if(utcUgOrientSeconds != '--') {
+                                      ugOrientDate = new Date(utcUgOrientSeconds);
+                                      ugOrientDate = (ugOrientDate.getMonth() + 1) + '/' +
+                                                ugOrientDate.getDate() + '/' +
+                                                ugOrientDate.getFullYear();
+                                  }
+                              }
+                              
+                              var undergradAcadHtml= "<div class='col-sm-6'>"+
+                                                    "<table class='table table-striped'>"+
+                                                        "<tr>"+
+                                                            "<th>Application Admit Type</th>"+
+                                                            "<td>"+ ugApplAdmitType  +"</td>"+
+                                                        "</tr>"+
+                                                        "<tr>"+
+                                                            "<th>Applied Program</th>"+
+                                                            "<td>"+ ugAppliedProg  +"</td>"+
+                                                        "</tr>"+
+                                                        "<tr>"+
+                                                            "<th>Applied Date</th>"+
+                                                            "<td>"+ ugAppDate +"</td>"+
+                                                        "</tr>"+
+                                                        "<tr>"+
+                                                            "<th>Admit Term</th>"+
+                                                            "<td>"+ ugAdmitTerm  +"</td>"+
+                                                        "</tr>"+
+                                                    "</table>"+
+                                                "</div>"+
+                                                "<div class='col-sm-6'>"+
+                                                    "<table class='table table-striped'>"+
+                                                        "<tr>"+
+                                                            "<th>Enroll Deposit</th>"+
+                                                            "<td>"+ ugEntrollDep  +"</td>"+
+                                                        "</tr>"+
+                                                        "<tr>"+
+                                                            "<th>Orientation Date</th>"+
+                                                            "<td>"+ ugOrientDate  +"</td>"+
+                                                        "</tr>"+
+                                                    "</table>"+
+                                                "</div>";
+                              document.getElementById('underGradAcadDiv').innerHTML = undergradAcadHtml;
+                              cleanUpUndefined("underGradAcadDiv");    
+                              
+                              // gradudate page 
+                              var applAdmitType = '--';
+                              var appliedProg = '--';
+                              var admitTerm = '--';
+                              var admitType = '--';
+                              var entrollDep = '--';
+                              var appDate = '--';
+                              var orientDate = '--';
+                              
+                              if(gradStudentProgram != undefined && gradStudentProgram != '') {
+                                  applAdmitType = checkIfBlank(gradStudentProgram, gradStudentProgram.ADMIT_TYPE__c);
+                                  appliedProg = checkIfBlank(gradStudentProgram, gradStudentProgram.ADM_APPL_PROG__c);
+                                  admitTerm = checkIfBlank(gradStudentProgram, gradStudentProgram.ADMIT_TERM__c);
+                                  admitType = checkIfBlank(gradStudentProgram, gradStudentProgram.ADMIT_TYPE__c);
+                                  entrollDep = checkIfBlank(gradStudentProgram, gradStudentProgram.ENRL_DEPOSIT__c);
+                                  appDate = checkIfBlank(gradStudentProgram, gradStudentProgram.ADM_APPL_DT__c);
+                                  orientDate = checkIfBlank(gradStudentProgram, gradStudentProgram.ORIENT_DT__c);
+                                  
+                                  var utcAppSeconds = checkIfBlank(gradStudentProgram, gradStudentProgram.ADM_APPL_DT__c);
+                                  if(utcAppSeconds != '--') {
+                                      appDate = new Date(utcAppSeconds);
+                                      appDate = (appDate.getMonth() + 1) + '/' +
+                                                appDate.getDate() + '/' +
+                                                appDate.getFullYear();
+                                  }
+                                  
+                                  var utcOrientSeconds = checkIfBlank(gradStudentProgram, gradStudentProgram.ORIENT_DT__c);
+                                  if(utcOrientSeconds != '--') {
+                                      orientDate = new Date(utcOrientSeconds);
+                                      orientDate = (orientDate.getMonth() + 1) + '/' +
+                                                orientDate.getDate() + '/' +
+                                                orientDate.getFullYear();
+                                  }
+                              }
+                              
+                              var gradAcadHtml= "<div class='col-sm-6'>"+
+                                                    "<table class='table table-striped'>"+
+                                                        "<tr>"+
+                                                            "<th>Application Admit Type</th>"+
+                                                            "<td>"+ applAdmitType  +"</td>"+
+                                                        "</tr>"+
+                                                        "<tr>"+
+                                                            "<th>Applied Program</th>"+
+                                                            "<td>"+ appliedProg  +"</td>"+
+                                                        "</tr>"+
+                                                        "<tr>"+
+                                                            "<th>Applied Date</th>"+
+                                                            "<td>"+ appDate +"</td>"+
+                                                        "</tr>"+
+                                                        "<tr>"+
+                                                            "<th>Admit Term</th>"+
+                                                            "<td>"+ admitTerm  +"</td>"+
+                                                        "</tr>"+
+                                                        "<tr>"+
+                                                            "<th>Admit Type</th>"+
+                                                            "<td>"+ admitType  +"</td>"+
+                                                        "</tr>"+
+                                                    "</table>"+
+                                                "</div>"+
+                                                "<div class='col-sm-6'>"+
+                                                    "<table class='table table-striped'>"+
+                                                        "<tr>"+
+                                                            "<th>Enroll Deposit</th>"+
+                                                            "<td>"+ entrollDep  +"</td>"+
+                                                        "</tr>"+
+                                                        "<tr>"+
+                                                            "<th>Orientation Date</th>"+
+                                                            "<td>"+ orientDate  +"</td>"+
+                                                        "</tr>"+
+                                                    "</table>"+
+                                                "</div>";
+                                    document.getElementById('gradAcadDiv').innerHTML = gradAcadHtml;
+                                    cleanUpUndefined("gradAcadDiv");
+                          }  else {
+                              jQuery('#initHtmlTd').empty();
+                              jQuery('#initHtmlTd').html('--');
+                              
+                              jQuery('#initGradTd').empty();
+                              jQuery('#initGradTd').html('--');
+                              
+                              jQuery('#curTermSpinner').remove();
+                              jQuery('#underGradSpinner').remove();
+                              jQuery('#gradSpinner').remove();
+                          }
+                      } else {
+                          jQuery('#initHtmlTd').empty();
+                          jQuery('#initHtmlTd').html('--');
+                          
+                          jQuery('#initGradTd').empty();
+                          jQuery('#initGradTd').html('--');
+                          
+                          jQuery('#curTermSpinner').remove();
+                          jQuery('#underGradSpinner').remove()
+                          jQuery('#gradSpinner').remove()
+                      }
+                  },
+                  {escape: true}
+              );
+            }
+            
+            function checkIfBlank(field, fieldValue) {
+                if(field != undefined && field != null && field != '') {
+                    if(fieldValue != undefined && fieldValue != null && fieldValue != '') {
+                        return fieldValue;
+                    } else {
+                        return '--';
+                    }
+                } else {
+                    return '--';
+                }
+            }
+            
+            function llSundevilImg() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getSunCardPhotoRA}',
+                    '{!theContact.ASURite_ID__c}',
+                    '{!theContact.EMPLID__c}',
+                    function (result, event) {
+                        if (event.status) {
+                            if (result.length != 0) {
+                                var onlineStudent = '{!theContact.ASU_Online_Student__c}';
+                                if(onlineStudent === true) {
+                                    result = '{!$Resource.blankAvatar}';
+                                }
+                                var html = '<img id="studentPhotoImg2" src="' + result + '" '+
+                                             ' alt="suncard photo" ' +
+                                             ' class="img-responsive intro" ' +
+                                             ' style="max-width:200px;width:100%;"/>';
+                                document.getElementById('sundevilImgDiv').innerHTML = html;
+                                cleanUpUndefined("sundevilImgDiv");
+                            } else {
+                                jQuery('#sunImgSpinner').remove();
+                            }
+                        } else {
+                            jQuery('#sunImgSpinner').remove();
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+            
             // Arrow Functionality
             $j(".page-header-smaller").click(function() {                                    
                 var container = $j(this);
-                var arrow = $j(this).find('.fa');
-                
+                var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
+                console.log(arrow);
+                console.log(container);
+                console.log(container.next());
                 if (arrow.hasClass('fa-caret-down')) {
                     container.next().slideUp().addClass('hide');
                 } else if (arrow.hasClass('fa-caret-right')) {
@@ -1653,6 +2219,11 @@
             var financialAidData;
     
             // Wrappers
+            
+            function loadGeneralTab() {
+                getHousingInfo();
+            }
+ 
             function loadUGAcademicsTab() {
                 getStdntCarMlstnsUG();
                 getStdntTestComps();
@@ -1727,14 +2298,11 @@
                                         result.FA_INDICATOR__c;
                                     document.getElementById('sr_asr').innerHTML =
                                         result.ASR_INDICATOR__c;
-                                    console.log(result.ENRL_HOLD_COUNT__c);
                                     if (result.ENRL_HOLD_COUNT__c > 0) {
                                         document.getElementById('sr_en_holds').innerHTML =
                                             "<span style='color:red'>" +
                                             result.ENRL_HOLD_COUNT__c +
                                             "</span>";
-                                        console.log(result.ENRL_HOLD_COUNT__c);
-                                        console.log(document.getElementById('sr_en_holds').innerHTML);
                                     } else {
                                         document.getElementById('sr_en_holds').innerHTML =
                                             result.ENRL_HOLD_COUNT__c;
@@ -2004,7 +2572,6 @@
                         {escape: true}
                     );
     
-    
                    Visualforce.remoting.Manager.invokeAction(
                         '{!$RemoteAction.StudentProfileController.getEnrollmentHolds}',
                         '{!theContact.EMPLID__c}',
@@ -2030,7 +2597,6 @@
                                             "</thead>" +
                                         "</table>" +
                                         "<tbody style='font-weight:normal;'>";
-                                    console.log(result)
                                     for (var i = 0; i < result.length; i++) {
     
                                         html += 
@@ -2043,7 +2609,6 @@
                                     }
     
                                     html += "</tbody>";
-                                    console.log(html);
                                     document.getElementById("sr_en_holds_info_table").innerHTML = html;
                                     document.getElementById("sr_en_holds_info_tr").style.display =
                                         "table-row";
@@ -2855,7 +3420,7 @@
                                     document.getElementById('ugap_gpa').innerHTML =
                                     '<a href="https://students.asu.edu/gpa-calculator" target="_blank">' +
                                         result.jbtRetAcadSummaryVw.CUM_GPA__c +
-                                    '</a>';
+                                    '</a> ' + '<a href="https://students.asu.edu/gpa-calculator"  target="_blank" class="fa fa-calculator" aria-hidden="true"></a>';
                                     document.getElementById('ugap_cumulative_hours').innerHTML =
                                         (result.jbtRetAcadSummaryVw.TOT_CUMULATIVE__c == '' ? '--' : result.jbtRetAcadSummaryVw.TOT_CUMULATIVE__c);
                                    /* if (result.STATUS__c > 0) {
@@ -2978,7 +3543,119 @@
                     );
                 }
             }
-    
+            
+            //Method for clicking to sort enrolled classes
+            var ascDirEnrolled = true;
+            var currSortEnrolled = "Term";
+            function sortEnrolledOnClick(name) {
+                if(name == currSortEnrolled){
+                    ascDirEnrolled = !ascDirEnrolled;
+                } else {
+                    ascDirEnrolled = true;
+                    currSortEnrolled = name;
+                }
+                sortEnrolledClassList(name, ascDirEnrolled);
+            }
+            
+            //Method for clicking to sort Dropped Classes
+            var ascDirDropped = true;
+            var currSortDropped = "Term";
+            function sortDroppedOnClick(name) {
+                if(name == currSortDropped){
+                    ascDirDropped = !ascDirDropped;
+                } else {
+                    ascDirDropped = true;
+                    currSortDropped = name;
+                }
+                sortDroppedClassList(name, ascDirDropped);
+            }
+            
+            //Method for clicking to sort Transfer Exams
+            var ascDirExam = true;
+            var currSortExam = "Title";
+            function sortExamOnClick(name) {
+                if(name == currSortExam){
+                    ascDirExam = !ascDirExam;
+                } else {
+                    ascDirExam = true;
+                    currSortExam = name;
+                }
+                sortExamList(name, ascDirExam);
+            }
+            
+            //Method for clicking to sort Transfer Credits
+            var ascDirTransfer = true;
+            var currSortTransfer = "Term";
+            function sortTransferOnClick(name) {
+                if(name == currSortTransfer){
+                    ascDirTransfer = !ascDirTransfer;
+                } else {
+                    ascDirTransfer = true;
+                    currSortTransfer = name;
+                }
+                sortTransferList(name, ascDirTransfer);
+            }
+            
+            // Method to load the Undergraduate Academic Progress 
+            function getHousingInfo() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getHousingInfo}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psHousingErrorsGen").innerHTML = "";
+
+                            if (!result.length == 0 && !Object.getOwnPropertyNames(result).length == 0) {
+                                console.log(result);
+                                $j('#residenceFloor').html(result[0].BOOKING_FLOOR_SUITE__c);
+                                $j('#residenceSection').html(result[0].BOOKING_SECTION__c);
+                                $j('#residenceHall').html(result[0].BOOKING_BUILDING__c);
+                                $j('#residenceCampus').html(result[0].BOOKING_CAMPUS__c);
+                                
+                                var checkInDate = result[0].CHECK_IN_DT__c;
+                                checkInDate = new Date(checkInDate);
+                                checkInDate = (checkInDate.getUTCMonth() + 1) + '/' +
+                                    checkInDate.getUTCDate() + '/' +
+                                    checkInDate.getUTCFullYear();
+                                    
+                                var checkOutDate = result[0].CHECK_OUT_DT__c;
+                                checkOutDate = new Date(checkOutDate);
+                                checkOutDate = (checkOutDate.getUTCMonth() + 1) + '/' +
+                                    checkOutDate.getUTCDate() + '/' +
+                                    checkOutDate.getUTCFullYear();
+                                
+                                $j('#checkInDate').html(checkInDate);
+                                $j('#checkOutDate').html(checkOutDate);
+                                
+                                $j('#roomStatus').html(result[0].BOOKING_STATUS__c);
+                                
+                            } else {
+                                document.getElementById("psHousingErrorsGen").innerHTML +=
+                                    'No housing data found. ';
+                                jQuery('#checkOutSpinner').remove();
+                                document.getElementById("checkOutDate").innerHTML = '--';
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                            jQuery('#checkOutSpinner').remove();
+                                document.getElementById("checkOutDate").innerHTML = '--';
+                        } else {
+                            document.getElementById("psHousingErrorsGen").innerHTML =
+                                event.message;
+                            jQuery('#checkOutSpinner').remove();
+                                document.getElementById("checkOutDate").innerHTML = '--';
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+         
+            var enrolledWrapper;
+            var droppedWrapper;
+            var examWrapper;
+            var transferWrapper;
             // Method to get Enrolled Classes
             function getEnrolledClasses() {
                 if (classesData != null)
@@ -2999,7 +3676,8 @@
                             document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
                                 "";
                             classesData = result;
-    
+                            enrolledWrapper = result.enrolledClasses;
+                            droppedWrapper = result.droppedClasses;
                             var selectHtml = "";
                             if (!Object.getOwnPropertyNames(classesData.classSessions).length == 0) {
                                 selectHtml += "<label for='ps_classes_session_select'>Session:&nbsp;</label><select id='ps_classes_session_select' onchange='filterClasses()'>";
@@ -3034,25 +3712,24 @@
                                     "<div class='table-responsive'>" +
                                         "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
                                             "<thead>" +
-                                                "<tr>" +
-                                                    "<th>Term</th>" +
-                                                    "<th>Session</th>" +
-                                                    "<th>Class</th>" +
-                                                    "<th>Course</th>" +
-                                                    "<th>Title</th>" +
-                                                    "<th>Topic</th>" +
-                                                    "<th>Units</th>" +
-                                                    "<th>Instructor(s)</th>" +
-                                                    "<th>Days</th>" +
-                                                    "<th>Times</th>" +
-                                                    "<th>Dates</th>" +
-                                                    "<th>Location</th>" +
-                                                    "<th>Grade</th>" +
+                                                "<tr style=\"cursor:pointer\">" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
+                                                    "<th onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
                                                     "<th>ASR</th>" +
                                                 "</tr>" +
                                             "</thead>" +
                                             "<tbody>";
-    
                                 for (var i = 0; i < result.enrolledClasses.length; i++) {
                                     var asrValue = '--';
     
@@ -3116,15 +3793,15 @@
                                     "<div class='table-responsive'>" +
                                         "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
                                             "<thead>" +
-                                                "<tr>" +
-                                                    "<th>Term</th>" +
-                                                    "<th>Session</th>" +
-                                                    "<th>Class</th>" +
-                                                    "<th>Course</th>" +
-                                                    "<th>Title</th>" +
-                                                    "<th>Topic</th>" +
-                                                    "<th>Units</th>" +
-                                                    "<th>Status</th>" +
+                                                "<tr style=\"cursor:pointer\">" +
+                                                    "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Sessioj')\">Session</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Course')\">Course</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Topic')\">Topic</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Units')\">Units</th>" +
+                                                    "<th onclick=\"sortDroppedOnClick('Status')\">Status</th>" +
                                                     "<th>ASR</th>" +
                                                 "</tr>" +
                                             "</thead>" +
@@ -3230,6 +3907,142 @@
     
             }
     
+            //Method to Sort Class List
+            function sortEnrolledClassList(paramToSort, direction){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.sortClasses}',
+                    paramToSort,
+                    enrolledWrapper,
+                    direction,
+                    function (result, event) {
+                        document.getElementById("ps_enrolled_classes").style.display = "initial";
+
+                        var html = "" +
+                            "<div class='table-responsive'>" +
+                                "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
+                                    "<thead>" +
+                                        "<tr style=\"cursor:pointer\">" +
+                                            "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
+                                            "<th onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
+                                            "<th>ASR</th>" +
+                                        "</tr>" +
+                                    "</thead>" +
+                                    "<tbody>";
+
+                        for (var i = 0; i < result.length; i++) {
+                            var asrValue = '--';
+                            //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' + 
+                            //                        clas      result.enrolledClasses[i].SESSION_CODE__c + '|' +
+                            //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
+                            //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;UGindicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
+                            //} 
+
+                            html += "" + 
+                                "<tr>" +
+                                    "<td>" + result[i].classInfo.TERM_DESCR30__c + "</td>" +
+                                    "<td>" + result[i].classInfo.SESSION_CODE__c + "</td>" +
+                                    "<td>" + Math.floor(result[i].classInfo.CLASS_NBR__c) + "</td>" +
+                                    "<td>" + result[i].classInfo.SUBJECT__c + " " + result[i].classInfo.CATALOG_NBR__c + "</td>" +
+                                    "<td>" + result[i].classInfo.CLASS_DESCR__c + "</td>" +
+                                    "<td>" + result[i].classInfo.SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                    "<td>" + result[i].classInfo.UNT_TAKEN__c + "</td>" +
+                                    "<td>" + result[i].classInfo.FT_FULL_NAME__c + "</td>" +
+                                    "<td>" + result[i].classInfo.SCH_HTML_DAY1__c + "</td>" +
+                                    "<td>" + result[i].classInfo.SCH_DAILY_TIME__c + "</td>" +
+                                    "<td>" + result[i].classInfo.ASU_SCH_DATES__c + "</td>" +
+                                    "<td>" + result[i].classInfo.SSR_MTG_LOC_LONG__c + "</td>" +
+                                    "<td>" + result[i].classInfo.CRSE_GRADE_OFF__c + "</td>" +
+                                    "<td style='display:none'>" + result[i].classInfo.EARN_CREDIT__c + "" + result[i].classInfo.VALID_ATTEMPT__c + "</td>" + 
+                                    "<td style='display:none'>" + result[i].classInfo.CUR_GPA__c + "</td>" +
+                                    "<td style='display:none'>" + result[i].classInfo.CUM_GPA__c + "</td>" +
+                                    "<td style='display:none'>" + result[i].classInfo.STRM__c + "</td>";
+                            html += "<td>--</td>";
+                            
+                            
+                            html += "</tr>";
+
+                        }
+
+                        html += "</tbody></table></div>";
+
+                        html += "<div style='float:right; font-weight:bold;' id='ps_enrolled_classes_summary'/><br/>";
+                        html += "<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>";
+
+                        document.getElementById('ps_enrolled_classes').innerHTML = html;
+                        filterClasses();
+                        cleanUpUndefined("ps_enrolled_classes");
+                    });
+            }
+            
+            //Method to Sort Dropped Class List
+            function sortDroppedClassList(paramToSort, direction){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.sortClasses}',
+                    paramToSort,
+                    droppedWrapper,
+                    direction,
+                    function (result, event) {
+                        if (result.length > 0) {
+                            document.getElementById("ps_dropped_withdrawn_classes").style.display =
+                                "initial";
+
+                            var html = "" +
+                                "<div class='table-responsive'>" +
+                                    "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
+                                        "<thead>" +
+                                            "<tr style=\"cursor:pointer\">" +
+                                                "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Session')\">Session</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Course')\">Course</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Topic')\">Topic</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Units')\">Units</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Status')\">Status</th>" +
+                                                "<th>ASR</th>" +
+                                            "</tr>" +
+                                        "</thead>" +
+                                        "<tbody>";
+
+                            for (var i = 0; i < result.length; i++) {
+
+                                html += "" +
+                                    "<tr>" +
+                                        "<td>" + result[i].classInfo.TERM_DESCR30__c + "</td>" +
+                                        "<td>" + result[i].classInfo.SESSION_CODE__c + "</td>" +
+                                        "<td>" + Math.floor(result[i].classInfo.CLASS_NBR__c) + "</td>" +
+                                        "<td>" + result[i].classInfo.SUBJECT__c + " " + result[i].classInfo.CATALOG_NBR__c + "</td>" +
+                                        "<td>" + result[i].classInfo.CLASS_DESCR__c + "</td>" +
+                                        "<td>" + result[i].classInfo.SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                        "<td>" + result[i].classInfo.UNT_TAKEN__c + "</td>" +
+                                        "<td>" + result[i].classInfo.ENRL_STATUS_REASON__c + "</td>" +
+                                        "<td>" + "--" + "</td>" +
+                                    "</tr>";
+                            }
+
+                            html += "</tbody></table></div>";
+
+                            document.getElementById('ps_dropped_withdrawn_classes').innerHTML = html;
+                            cleanUpUndefined("ps_dropped_withdrawn_classes");
+                        } else {
+                            document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
+                                'No dropped or withdrawn classes found.';
+                        }
+                        filterClasses();
+                    });
+            }
+            
             // Method to get Credit by Exam 
             function getCreditByExamData() {
                 document.getElementById("psCreditByExamErrors").innerHTML =
@@ -3246,16 +4059,16 @@
                             if (!Object.getOwnPropertyNames(result).length == 0) {
                                 document.getElementById("ps_credit_by_exam_work").style.display =
                                     "initial";
-    
+                                examWrapper = result;
                                 var html = "" +
                                     "<div class='table-responsive'>" +
                                         "<table class='table table-striped table-bordered'> " +
                                             "<thead>" +
-                                                "<tr>" +
-                                                    "<th>Title</th>" +
-                                                    "<th>Course</th>" +
-                                                    "<th>Score</th>" +
-                                                    "<th>Units Transferred</th>" +
+                                                "<tr style=\"cursor:pointer\">" +
+                                                    "<th onclick=\"sortExamOnClick('Title')\">Title</th>" +
+                                                    "<th onclick=\"sortExamOnClick('Course Title')\">Course</th>" +
+                                                    "<th onclick=\"sortExamOnClick('Score')\">Score</th>" +
+                                                    "<th onclick=\"sortExamOnClick('Transfer')\">Units Transferred</th>" +
                                                 "</tr>" +
                                             "</thead>" +
                                             "<tbody>";
@@ -3291,6 +4104,53 @@
                 );
             }
     
+            //Method to Sort Exam List
+            function sortExamList(paramToSort, direction){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.sortExams}',
+                    paramToSort,
+                    examWrapper,
+                    direction,
+                    function (result, event) {
+                        if (result.length > 0) {
+                            document.getElementById("ps_credit_by_exam_work").style.display =
+                                    "initial";
+                                    
+                                var html = "" +
+                                    "<div class='table-responsive'>" +
+                                        "<table class='table table-striped table-bordered'> " +
+                                            "<thead>" +
+                                                "<tr style=\"cursor:pointer\">" +
+                                                    "<th onclick=\"sortExamOnClick('Title')\">Title</th>" +
+                                                    "<th onclick=\"sortExamOnClick('Course Title')\">Course</th>" +
+                                                    "<th onclick=\"sortExamOnClick('Score')\">Score</th>" +
+                                                    "<th onclick=\"sortExamOnClick('Transfer')\">Units Transferred</th>" +
+                                                "</tr>" +
+                                            "</thead>" +
+                                            "<tbody>";
+    
+                                for (var i = 0; i < result.length; i++) {
+    
+                                    html += "" +
+                                        "<tr>" +
+                                            "<td>" + result[i].examInfo.TITLE__c + "</td>" +
+                                            "<td>" + result[i].examInfo.COURSE_TITLE__c + "</td>" +
+                                            "<td>" + result[i].examInfo.SCORE__c + "</td>" +
+                                            "<td>" + result[i].examInfo.UNT_TRNSFR__c + "</td>" +
+                                        "</tr>";
+                                }
+    
+                                html += "</tbody></table></div>";
+    
+                                document.getElementById('ps_credit_by_exam_work').innerHTML = html;
+                                cleanUpUndefined("ps_credit_by_exam_work");
+                        } else {
+                            document.getElementById("psCreditByExamErrors").innerHTML =
+                                'No credit by exam found.';
+                        }
+                    });
+            }
+            
             // Method to get Transfer Work
             function getTransferWork() {
                 document.getElementById("psTransferWorkErrors").innerHTML =
@@ -3307,22 +4167,22 @@
                             if (!Object.getOwnPropertyNames(result).length == 0) {
                                 document.getElementById("ps_transfer_work").style.display =
                                     "initial";
-    
+                                transferWrapper = result;
                                 var html = "" +
                                     "<div class='table-responsive'>" +
                                         "<table class='table table-striped table-bordered'> " +
                                             "<thead>" +
-                                                "<tr>" +
-                                                    "<th>Term</th>" +
-                                                    "<th>Institution</th>" +
-                                                    "<th>Course</th>" +
-                                                    "<th>Title</th>" +
-                                                    "<th>Topic</th>" +
-                                                    "<th>Grade</th>" +
-                                                    "<th>R Credit</th>" +
-                                                    "<th>E Credit</th>" +
-                                                    "<th>GPA Hours</th>" +
-                                                    "<th>GPA Points</th>" +
+                                                "<tr style=\"cursor:pointer\">" +
+                                                    "<th onclick=\"sortTransferOnClick('Term')\">Term</th>" +
+                                                    "<th onclick=\"sortTransferOnClick('Institution')\">Institution</th>" +
+                                                    "<th onclick=\"sortTransferOnClick('Course')\">Course</th>" +
+                                                    "<th onclick=\"sortTransferOnClick('Title')\">Title</th>" +
+                                                    "<th onclick=\"sortTransferOnClick('Topic')\">Topic</th>" +
+                                                    "<th onclick=\"sortTransferOnClick('Grade')\">Grade</th>" +
+                                                    "<th onclick=\"sortTransferOnClick('RCredit')\">R Credit</th>" +
+                                                    "<th onclick=\"sortTransferOnClick('ECredit')\">E Credit</th>" +
+                                                    "<th onclick=\"sortTransferOnClick('Hours')\">GPA Hours</th>" +
+                                                    "<th onclick=\"sortTransferOnClick('Points')\">GPA Points</th>" +
                                                 "</tr>" +
                                             "</thead>" +
                                             "<tbody>";
@@ -3364,6 +4224,65 @@
                 );
             }
     
+            //Method to Sort Dropped Class List
+            function sortTransferList(paramToSort, direction){
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.sortTransfers}',
+                    paramToSort,
+                    transferWrapper,
+                    direction,
+                    function (result, event) {
+                        if (result.length > 0) {
+                            document.getElementById("ps_transfer_work").style.display =
+                                    "initial";
+    
+                            var html = "" +
+                                "<div class='table-responsive'>" +
+                                    "<table class='table table-striped table-bordered'> " +
+                                        "<thead>" +
+                                            "<tr style=\"cursor:pointer\">" +
+                                                "<th onclick=\"sortTransferOnClick('Term')\">Term</th>" +
+                                                "<th onclick=\"sortTransferOnClick('Institution')\">Institution</th>" +
+                                                "<th onclick=\"sortTransferOnClick('Course')\">Course</th>" +
+                                                "<th onclick=\"sortTransferOnClick('Title')\">Title</th>" +
+                                                "<th onclick=\"sortTransferOnClick('Topic')\">Topic</th>" +
+                                                "<th onclick=\"sortTransferOnClick('Grade')\">Grade</th>" +
+                                                "<th onclick=\"sortTransferOnClick('RCredit')\">R Credit</th>" +
+                                                "<th onclick=\"sortTransferOnClick('ECredit')\">E Credit</th>" +
+                                                "<th onclick=\"sortTransferOnClick('Hours')\">GPA Hours</th>" +
+                                                "<th onclick=\"sortTransferOnClick('Points')\">GPA Points</th>" +
+                                            "</tr>" +
+                                        "</thead>" +
+                                        "<tbody>";
+
+                            for (var i = 0; i < result.length; i++) {
+
+                                html += "" +
+                                    "<tr>" +
+                                        "<td>" + result[i].transferInfo.TERM__c + "</td>" +
+                                        "<td>" + result[i].transferInfo.INSTITUTION__c + "</td>" +
+                                        "<td>" + result[i].transferInfo.COURSE__c + "</td>" +
+                                        "<td>" + result[i].transferInfo.TITLE__c + "</td>" +
+                                        "<td>" + result[i].transferInfo.TOPIC__c + "</td>" +
+                                        "<td>" + result[i].transferInfo.GRADE__c + "</td>" +
+                                        "<td>" + result[i].transferInfo.RCREDIT__c + "</td>" +
+                                        "<td>" + result[i].transferInfo.ECREDIT__c + "</td>" +
+                                        "<td>" + result[i].transferInfo.GPAHRS__c + "</td>" +
+                                        "<td>" + result[i].transferInfo.GPAPTS__c + "</td>" +
+                                    "</tr>";
+                            }
+    
+                            html += "</tbody></table></div>";
+
+                            document.getElementById('ps_transfer_work').innerHTML = html;
+                            cleanUpUndefined("ps_transfer_work");
+                        } else {
+                            document.getElementById("psTransferWorkErrors").innerHTML =
+                                'No transfer work found.';
+                        }
+                    });
+            }
+            
             // Method to get Account Balance
             function getAccountBalance() {
                 if (!accountBalanceLoaded) {
@@ -3387,14 +4306,12 @@
                                         "initial";
                                     document.getElementById("psAccountBalanceErrors").style.display =
                                         "none";
-                                    console.log(result.pastDueTIP);
                                     if (result.pastDueTIP) {
                                         document.getElementById('account_balance_past_due_tip').innerHTML =
                                             result.pastDueTIP.toLocaleString(o,s);          
                                     } else {
                                         document.getElementById('account_balance_past_due_tip').innerHTML = '--'
                                     }
-                                    console.log(result.faBalance.DUE_AMT__c);
                                     if (result.faBalance.DUE_AMT__c) {
                                         document.getElementById('account_balance_outstanding').innerHTML =
                                             result.faBalance.DUE_AMT__c.toLocaleString(o,s);
@@ -3594,22 +4511,29 @@
                                      "<div class='table-responsive'>" +
                                         "<table id='career_dev_table' class='table table-striped table-bordered'> " +
                                         "<tbody>";
+                                    if (typeof result.me3_Careers__r != 'undefined') {
+                                      for (var i = 0; i < result.me3_Careers__r.length; i++) {
+                                          if (result.me3_Careers__r[i].Updated_Date__c) {
+                                            var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
+                                            var updatedDate = new Date(cdUtcSeconds);
+                                            updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
+                                                updatedDate.getUTCDate() + '/' +
+                                                updatedDate.getUTCFullYear();
+                                          } else {
+                                            updatedDate == '--';
+                                          }
 
-                                    for (var i = 0; i < result.me3_Careers__r.length; i++) {
-                                        var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
-                                        var updatedDate = new Date(cdUtcSeconds);
-                                        updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
-                                            updatedDate.getUTCDate() + '/' +
-                                            updatedDate.getUTCFullYear();       
-                                        html += "" +
-                                            (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
-                                                "<td>" + updatedDate + "</td>" +
-                                                "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
-                                                "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
-                                                "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
-                                                result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
-                                            "</tr>";
+                                          html += "" +
+                                              (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
+                                                  "<td style='min-width: 75px;'>" + updatedDate + "</td>" +
+                                                  "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
+                                                  "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
+                                                  "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
+                                                  result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
+                                              "</tr>";
+                                      }
                                     }
+
                                     html += "</tbody></table></div>";
                                     document.getElementById('me3_career_interest_table').innerHTML = html;
 
@@ -3617,7 +4541,7 @@
                                     careerDevelopmentTabLoaded = true;
                                 } else {
                                     document.getElementById("me3ResponseErrors").innerHTML =
-                                        'No Me3 results found';
+                                        'No me3 results found';
                                     careerDevelopmentTabLoaded = true;
                                 }
                             } else if (event.type === 'exception') {
@@ -3635,7 +4559,7 @@
         
         <!-- Script to mask Phone Numbers -->
         <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.min.js" />
-        <script>
+        <script> 
             // Mask each phone number in (XXX) XXX-XXXX format
             function maskPhoneNumbers() {
                 $j('.phone').each(function() {                

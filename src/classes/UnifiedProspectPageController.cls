@@ -1,4 +1,4 @@
-public class UnifiedProspectPageController 
+public class UnifiedProspectPageController
 {
 
     private Id eventRecId;
@@ -36,20 +36,8 @@ public class UnifiedProspectPageController
     public String deptColl { get; set; }
 
     public UnifiedProspectPageController() {
-        eventRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Event'
-            AND SobjectType = 'Campaign'
-        ].Id;
-
-        eossRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'EOSS Event'
-            AND SobjectType = 'Campaign'
-        ].Id;
-
+        eventRecId = Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Event').getRecordTypeId();
+        eossRecId =  Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('EOSS Event').getRecordTypeId();
         eventList = new List<Campaign>();
         tempCampaign = new Campaign();
     }
@@ -92,19 +80,9 @@ public class UnifiedProspectPageController
         }
 
         if(career == 'graduate' || career == 'law') {
-            oppRecType = [
-                SELECT Id
-                FROM RecordType
-                WHERE Name = 'Graduate Prospect'
-                LIMIT 1
-            ].Id;
+            oppRecType = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Graduate Prospect').getRecordTypeId();
         } else {
-            oppRecType = [
-                SELECT Id
-                FROM RecordType
-                WHERE Name = 'Undergraduate Prospect'
-                LIMIT 1
-            ].Id;
+            oppRecType = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Undergraduate Prospect').getRecordTypeId();
         }
         opportunity.RecordTypeId = oppRecType;
 
@@ -134,7 +112,7 @@ public class UnifiedProspectPageController
 
         return camMemEvent;
     }
-    
+
     public List<SelectOption> programList {
         get {
             List<Program__c> ProgramTemp = [
@@ -146,7 +124,7 @@ public class UnifiedProspectPageController
 
             programList = new List<SelectOption>();
             programList.add(new SelectOption('0', '-- None --'));
-            
+
             for (Program__c temp : ProgramTemp) {
                 programList.add(new SelectOption(temp.Id, temp.Name));
             }
@@ -160,17 +138,17 @@ public class UnifiedProspectPageController
     public List<SelectOption> planList {
         get {
             planList = new List<SelectOption>();
-            
+
             if (collegeSelected != null && collegeSelected != '0') {
                 List<Plan__c> PlanTemp = [
                     SELECT p.Degree_Search_Name__c, p.Name, p.Id
-                    FROM Plan__c p 
+                    FROM Plan__c p
                     WHERE p.Program__c = :collegeSelected
                     AND p.Available_in_Degree_Search__c = true
                 ];
-                
+
                 planList.add(new SelectOption('0', '-- None --'));
-                
+
                 for(Plan__c temp : PlanTemp) {
                     planList.add(new SelectOption(temp.Id, temp.Degree_Search_Name__c));
                 }
@@ -185,20 +163,12 @@ public class UnifiedProspectPageController
     public Case getCaseC() {
         if (caseC == null) {
             caseC = new Case();
-
-            Id asuAdmissionRecId = [
-                SELECT Id, Name
-                FROM RecordType
-                WHERE Name = 'ASU Admission Services'
-                LIMIT 1
-            ].Id;
-
-            caseC.RecordTypeId = asuAdmissionRecId;
+            caseC.RecordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Admission Services').getRecordTypeId();
         }
 
         return caseC;
     }
-    
+
     public List<Campaign> getEventList() {
         return eventList;
     }
@@ -243,7 +213,7 @@ public class UnifiedProspectPageController
         }
 
         Id location = tempCampaign.Campus_Location__c;
-        
+
         if (tempCampaign.Campus_Location__c != null) {
             sosl += 'AND Campus_Location__c = :location ';
         }
@@ -306,12 +276,12 @@ public class UnifiedProspectPageController
     }
 
     public List<SelectOption> getASULocationIntList() {
-        Id interestRecId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id;
+        Id interestRecId = Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Interest').getRecordTypeId();
 
         List<Campaign> interests = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :interestRecId
+            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest')
             AND Type = 'ASU Location'
             AND IsActive = true
             ORDER BY Name ASC
@@ -323,17 +293,17 @@ public class UnifiedProspectPageController
         for (Campaign i : interests) {
             asuLocationIntList.add(new SelectOption(i.Id , i.Name));
         }
-        
+
         return asuLocationIntList;
     }
 
     public List<SelectOption> getAcademicIntList() {
-        Id interestRecId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id;
+        Id interestRecId = Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Interest').getRecordTypeId();
 
         List<Campaign> interests = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :interestRecId
+            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest')
             AND Type = 'Academic'
             AND IsActive = true
             ORDER BY Name ASC
@@ -350,12 +320,12 @@ public class UnifiedProspectPageController
     }
 
     public List<SelectOption> getASUCollegesIntList() {
-        Id interestRecId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id;
+        Id interestRecId = Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Interest').getRecordTypeId();
 
         List<Campaign> interests = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :interestRecId
+            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest')
             AND Type = 'ASU Colleges'
             AND IsActive = true
             ORDER BY Name ASC
@@ -374,7 +344,7 @@ public class UnifiedProspectPageController
     public Boolean save() {
         getCaseC();
         List<CampaignMember> cams = new List<CampaignMember>();
-
+        Savepoint spException = Database.setSavepoint();
         try {
             error = false;
 
@@ -458,7 +428,7 @@ public class UnifiedProspectPageController
 
             if (originSelection != '--Select--'
                 && elId == null
-                && caseC.Functional_Group__c == null) {
+                && caseC.CC_Functional_Group__c == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -483,7 +453,11 @@ public class UnifiedProspectPageController
             }
 
             if (error) {
-               return false; 
+                system.debug('451');
+                for (ApexPages.Message apm : ApexPages.getMessages()) {
+                    system.debug(string.valueOf(apm));
+                }
+               return false;
             }
 
             //Create Contact
@@ -494,7 +468,7 @@ public class UnifiedProspectPageController
             contact.SF_Last_Name_Updated__c = Datetime.now();
             contact.SF_Mobile__c = contact.MobilePhone;
             Pattern SMSValidate = Pattern.compile('[^0-9]');
-            
+
             if (contact.Email == null && contact.Lead_Email__c != null) {
                 contact.Email = contact.Lead_Email__c;
             }
@@ -521,19 +495,9 @@ public class UnifiedProspectPageController
             opportunity.Id = null;
 
             if (career == 'undergraduate') {
-                opportunity.RecordTypeId = [
-                    SELECT Id
-                    FROM RecordType
-                    WHERE Name = 'Undergraduate Prospect'
-                    LIMIT 1
-                ].Id;
+                opportunity.RecordTypeId = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Undergraduate Prospect').getRecordTypeId();
             } else {
-                opportunity.RecordTypeId = [
-                    SELECT Id
-                    FROM RecordType
-                    WHERE Name = 'Graduate Prospect'
-                    LIMIT 1
-                ].Id;
+                opportunity.RecordTypeId =  Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Graduate Prospect').getRecordTypeId();
             }
 
             Term__c tempTerm = [
@@ -553,13 +517,13 @@ public class UnifiedProspectPageController
             accId = [SELECT AccountId FROM Contact WHERE Id = :Contact.Id][0].AccountId;
             opportunity.AccountId = accId;
             opportunity.StageName = 'Prospect';
-            
+
             if (collegeSelected != null && collegeSelected != '0') {
-               opportunity.College__c = collegeSelected; 
+               opportunity.College__c = collegeSelected;
             }
 
             if (planSelected != null && planSelected != '0') {
-               opportunity.Academic_Plan__c = planSelected; 
+               opportunity.Academic_Plan__c = planSelected;
             }
 
             insert opportunity;
@@ -662,19 +626,22 @@ public class UnifiedProspectPageController
                 }
 
                 insert caseC;
-                
+
                 //Update Opportunity's case with case Id
                 opportunity.Prospect_Case__c = caseC.Id;
 
                 update opportunity;
             } else if (originSelection != '--Select--' && elId != null){
+                system.debug('626');
                 return false;
             } else if (originSelection == '--Select--' && elId == null) {
+                system.debug('629');
                 return false;
             } else {
+                system.debug('632');
                 return false;
             }
-            
+
             //Create CampaignMember Interest
             if (pickSelection != null && pickSelection != '--Select--') {
                 if (selectedInterestId != null) {
@@ -694,6 +661,7 @@ public class UnifiedProspectPageController
                         )
                     );
 
+                    system.debug('655');
                     return false;
                 }
             }
@@ -705,27 +673,38 @@ public class UnifiedProspectPageController
             //Save success, return true.
             return true;
         } catch (Exception e) {
+            // to rollback the insert of Contact/Opportunity/Case in case any
+            // unexpected error occurs in insertion of any of three sObjects
+            Database.rollback(spException);
             ApexPages.addMessages(e);
             return false;
         }
     }
 
     public PageReference savePage() {
+        Savepoint spValidation = Database.setSavepoint();
         if (save()) {
             PageReference save = new PageReference('/' + newOppId);
             save.setRedirect(true);
             return save;
         } else {
+            // to rollback the insert of Contact/Opportunity/Case in case if any
+            // Validation fails and PageMessage is shown
+            Database.rollback(spValidation);
             return null;
         }
     }
 
     public PageReference saveAndNew() {
+        Savepoint spValidation = Database.setSavepoint();
         if (save()) {
             PageReference save = new PageReference('/apex/Unified_Prospect_Page?saved=true');
             save.setRedirect(true);
             return save;
         } else {
+            // to rollback the insert of Contact/Opportunity/Case in case if any
+            // Validation fails and PageMessage is shown
+            Database.rollback(spValidation);
             return null;
         }
     }

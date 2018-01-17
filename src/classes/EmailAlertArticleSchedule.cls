@@ -71,7 +71,7 @@ public class EmailAlertArticleSchedule implements Schedulable {
 		
 		// populate articles to users to notify
 		List<String> vars = new List<String>();
-		try{
+		try {
 			for (FAQ__kav knowledgeArticle : knowledgeArticles) {
 				List<Id> userIds = groupNameToUserIds.get('KB: ' + knowledgeArticle.Functional_Group__c + ' (Approve)');
 				if (userIds == null) {

@@ -1,4 +1,4 @@
-public class SubscriberHashUpdateBatch implements Database.Batchable<sObject>, Schedulable{
+public class SubscriberHashUpdateBatch implements Database.Batchable<Subscriber__c>, Schedulable{
 	public final String query;
 
    public SubscriberHashUpdateBatch(){
@@ -9,10 +9,9 @@ public class SubscriberHashUpdateBatch implements Database.Batchable<sObject>, S
       return Database.getQueryLocator(query);
    }
 
-    public void execute(Database.BatchableContext BC, List<sObject> scope) {
-        List<Subscriber__c> cList = (List<Subscriber__c>) scope;
-        for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashSubscriberId__c = Hasher.hashId(cList[i].Id);
+    public void execute(Database.BatchableContext BC, List<Subscriber__c> scope) {
+        for(Subscriber sub : scope){
+            sub.HashSubscriberId__c = Hasher.hashId(sub.Id);
         }     
         update scope;
     }

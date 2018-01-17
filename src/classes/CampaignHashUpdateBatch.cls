@@ -1,4 +1,4 @@
-public class CampaignHashUpdateBatch implements Database.Batchable<sObject> {
+public class CampaignHashUpdateBatch implements Database.Batchable<Campaign> {
     public final String query;
     
     public CampaignHashUpdateBatch() {
@@ -9,10 +9,9 @@ public class CampaignHashUpdateBatch implements Database.Batchable<sObject> {
         return Database.getQueryLocator(query);
     }
     
-    global void execute(Database.BatchableContext BC, List<sObject> scope) {
-        List<Campaign> cList = (List<Campaign>) scope;
-        for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashCampaignId__c = Hasher.hashId(cList[i].Id);
+    global void execute(Database.BatchableContext BC, List<Campaign> scope) {
+        for(Campaign camp : scope){
+            camp.HashCampaignId__c = Hasher.hashId(camp.Id);
         }     
         update scope;
     }

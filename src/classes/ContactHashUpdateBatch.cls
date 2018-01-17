@@ -1,4 +1,4 @@
-public class ContactHashUpdateBatch implements Database.Batchable<sObject>{
+public class ContactHashUpdateBatch implements Database.Batchable<Contact>{
     public final String query;
     
     public ContactHashUpdateBatch(){
@@ -9,10 +9,9 @@ public class ContactHashUpdateBatch implements Database.Batchable<sObject>{
         return Database.getQueryLocator(query);
     }
     
-    global void execute(Database.BatchableContext BC, List<sObject> scope) {
-        List<Contact> cList = (List<Contact>) scope;
-        for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashContactId__c = Hasher.hashId(cList[i].Id);
+    global void execute(Database.BatchableContext BC, List<Contact> scope) {
+        for(Contact con : scope){
+            con.HashContactId__c = Hasher.hashId(con.Id);
         }     
         update scope;
     }

@@ -1,4 +1,4 @@
-public class LeadHashUpdateBatch implements Database.Batchable<sObject>{
+public class LeadHashUpdateBatch implements Database.Batchable<Lead>{
     public final String query;
     
     public LeadHashUpdateBatch(){
@@ -9,10 +9,9 @@ public class LeadHashUpdateBatch implements Database.Batchable<sObject>{
         return Database.getQueryLocator(query);
     }
     
-    public void execute(Database.BatchableContext BC, List<sObject> scope) {
-        List<Lead> cList = (List<Lead>) scope;
-        for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashLeadId__c = Hasher.hashId(cList[i].Id);
+    public void execute(Database.BatchableContext BC, List<Lead> scope) {
+        for(Lead leadIn : scope){
+            leadIn.HashLeadId__c = Hasher.hashId(leadIn.Id);
         }     
         update scope;
     }

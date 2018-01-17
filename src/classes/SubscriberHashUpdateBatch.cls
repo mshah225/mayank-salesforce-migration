@@ -1,36 +1,23 @@
-public class SubscriberHashUpdateBatch implements Database.Batchable<sObject>, Schedulable{
+public class SubscriberHashUpdateBatch implements Database.Batchable<Subscriber__c>, Schedulable {
 	public final String query;
 
-   public SubscriberHashUpdateBatch(){
+   public SubscriberHashUpdateBatch() {
        query = 'SELECT Id, HashSubscriberId__c FROM Subscriber__c';
    }
 
-   public Database.QueryLocator start(Database.BatchableContext BC){
+   public Database.QueryLocator start(Database.BatchableContext bc) {
       return Database.getQueryLocator(query);
    }
 
-    public void execute(Database.BatchableContext BC, List<sObject> scope) {
-        List<Subscriber__c> cList = (List<Subscriber__c>) scope;
-        for(Integer i = 0; i < cList.size(); i++){
-            cList[i].HashSubscriberId__c = hashId(cList[i].Id);
+    public void execute(Database.BatchableContext bc, List<Subscriber__c> scope) {
+        for (Subscriber sub : scope) {
+            sub.HashSubscriberId__c = Hasher.hashId(sub.Id);
         }     
         update scope;
     }
 
-   public void finish(Database.BatchableContext BC){
+   public void finish(Database.BatchableContext bc) {
 
    }
-    
-   public String hashId(String subIdIn) {
-       Blob blobId = Blob.valueOf(subIdIn);
-       Blob digestId = Crypto.generateDigest('SHA-512', blobId);
-       String stringId = EncodingUtil.base64Encode((digestId));
-       String encodedId = EncodingUtil.urlEncode(stringId, 'UTF-8');
-       return encodedId;
-   }
-   
-   public void execute(SchedulableContext sc) {
-       BatchApplySubscriberPrivacy b = new BatchApplySubscriberPrivacy();
-       database.executebatch(b, 200);
-   }
+
 }

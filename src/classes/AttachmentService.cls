@@ -30,7 +30,7 @@ public with sharing class AttachmentService {
 	        }
 	        
 	        // Look through attachments on emails to find if any of them are for cases
-	        if (emailMessages.Size() > 0) {
+	        if (!emailMessages.isEmpty()) {
 	            for (EmailMessage em : [SELECT ParentId FROM EmailMessage WHERE Id IN :emailMessages]) {
 	                // EmailMessages can only be children of cases so this check is not required
 	                // This check is included in the event that the previous statement becomes false
@@ -43,7 +43,7 @@ public with sharing class AttachmentService {
 	        
 	        // Get all cases for updating from the database
 	        // Make sure to include any fields that might need to be updated later
-	        if (casesToUpdate.size() > 0) {
+	        if (!casesToUpdate.isEmpty()) {
 	            for (Case caseUpdate : [SELECT Id, Attachments__c, Description FROM Case WHERE Id IN :casesToUpdate.keySet()]) {
 	                if (caseUpdate.Description == null) {
 	                    caseUpdate.Description = ' Attachment received at ' + Datetime.now().formatLong();

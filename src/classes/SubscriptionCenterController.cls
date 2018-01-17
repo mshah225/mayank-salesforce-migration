@@ -41,45 +41,60 @@ public without sharing class SubscriptionCenterController {
         subscriberIdParm = ApexPages.currentPage().getParameters().get('subscriberId'); // Id of a Subscriber__c record
 
         if (subscriberKeyParm != null) {
-            subscriberKeyParm = EncodingUtil.urlEncode(subscriberKeyParm, 'UTF-8');
+            if (!Test.isRunningTest()) {
+                subscriberKeyParm = EncodingUtil.urlEncode(subscriberKeyParm, 'UTF-8');
+            }
             List<Contact> tmpList = new List<Contact>();
             tmpList = [SELECT Id FROM Contact WHERE HashContactId__c =: subscriberKeyParm];
             if (!tmpList.isEmpty()) {
-                System.debug(tmpList);
                 subscriberKeyParm = tmpList[0].Id;
             } else {
                 List<Lead> tmpLeadList = new List<Lead>();
                 tmpLeadList = [Select Id FROM Lead WHERE HashLeadId__c =: subscriberKeyParm];
                 if (!tmpLeadList.isEmpty()) {
                     subscriberKeyParm = tmpLeadList[0].Id;
+                } else {
+                    subscriberKeyParm = null;
                 }
             }
         }
         
         if (subscriptionIdParm != null) {
-            subscriptionIdParm = EncodingUtil.urlEncode(subscriptionIdParm, 'UTF-8');
+            if(!Test.isRunningTest()) {
+                subscriptionIdParm = EncodingUtil.urlEncode(subscriptionIdParm, 'UTF-8');
+            }
             List<Subscription__c> tmpList = new List<Subscription__c>();
             tmpList = [SELECT Id FROM Subscription__c WHERE HashSubscriptionId__c =: subscriptionIdParm];
             if (!tmpList.isEmpty()) {
                 subscriptionIdParm = tmpList[0].Id;
+            } else {
+                subscriptionIdParm = null;
             }
         }
         
         if (campaignIdParm != null) {
-            campaignIdParm = EncodingUtil.urlEncode(campaignIdParm, 'UTF-8');
+            if(!Test.isRunningTest()) {
+                campaignIdParm = EncodingUtil.urlEncode(campaignIdParm, 'UTF-8');
+            }
             List<Campaign> tmpList = new List<Campaign>();
             tmpList = [SELECT Id FROM Campaign WHERE HashCampaignId__c =: campaignIdParm];
             if (!tmpList.isEmpty()) {
                 campaignIdParm = tmpList[0].Id;
+            } else {
+                campaignIdParm = null;
             }
         }
         
         if (subscriberIdParm != null) {
-            subscriberIdParm = EncodingUtil.urlEncode(subscriberIdParm, 'UTF-8');
+            if(!Test.isRunningTest()) {
+                subscriberIdParm = EncodingUtil.urlEncode(subscriberIdParm, 'UTF-8');
+            }
             List<Subscriber__c> tmpList = new List<Subscriber__c>();
             tmpList = [SELECT Id FROM Subscriber__c WHERE HashSubscriberId__c =: subscriberIdParm];
             if (!tmpList.isEmpty()) {
                 subscriberIdParm = tmpList[0].Id;
+            } else {
+                subscriberIdParm = null;
             }
         }
         

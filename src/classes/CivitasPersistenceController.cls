@@ -7,13 +7,13 @@ global class CivitasPersistenceController{
     global static Decimal persistenceLevel;
     global static Contact c;
 
-    public static string currentTerm{
+    public static String currentTerm{
         get{
             if (currentTerm == null) {
-                StudentTerm__c studentTerm = StudentTerm__c.getOrgDefaults();
-                currentTerm = studentTerm.CurrTerm__c;
-                nextTerm = studentTerm.NextTerm__c;
-                prevTerm = studentTerm.PrevTerm__c;
+                StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+                currentTerm = currentTermData.CurrTerm__c;
+                nextTerm = currentTermData.NextTerm__c; 
+                prevTerm = currentTermData.PrevTerm__c;
             }
             return currentTerm;
         }
@@ -21,17 +21,10 @@ global class CivitasPersistenceController{
         set;
     }
 
-    public static string nextTerm{
-        get;
+    public static String nextTerm{ get; set;}
 
-        set;
-    }
-
-    public static string prevTerm {
-        get;
-
-        set;
-    }
+    public static String prevTerm { get; set;}
+    
     public static Date startDate{
         get{
             if (startDate == null) {

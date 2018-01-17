@@ -168,8 +168,8 @@ global with sharing class StudentProfileController
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
                 // PeopleSoft only as-needed
-                StudentTerm__c studentTerm = StudentTerm__c.getOrgDefaults();
-                currentTerm = studentTerm.CurrTerm__c;
+                StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+                currentTerm = currentTermData.CurrTerm__c;
                 
             } else {
                 failState = true;

@@ -1,22 +1,22 @@
-public class LeadHashUpdateBatch implements Database.Batchable<Lead>{
+public class LeadHashUpdateBatch implements Database.Batchable<Lead> {
     public final String query;
     
-    public LeadHashUpdateBatch(){
+    public LeadHashUpdateBatch() {
         query = 'SELECT Id, HashLeadId__c FROM Lead';
     }
     
-    public Database.QueryLocator start(Database.BatchableContext BC){
+    public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(query);
     }
     
-    public void execute(Database.BatchableContext BC, List<Lead> scope) {
-        for(Lead leadIn : scope){
+    public void execute(Database.BatchableContext bc, List<Lead> scope) {
+        for (Lead leadIn : scope) {
             leadIn.HashLeadId__c = Hasher.hashId(leadIn.Id);
         }     
         update scope;
     }
     
-    public void finish(Database.BatchableContext BC){
+    public void finish(Database.BatchableContext bc) {
         
     }
 

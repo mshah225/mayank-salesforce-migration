@@ -1,22 +1,22 @@
-public class SubscriberHashUpdateBatch implements Database.Batchable<Subscriber__c>, Schedulable{
+public class SubscriberHashUpdateBatch implements Database.Batchable<Subscriber__c>, Schedulable {
 	public final String query;
 
-   public SubscriberHashUpdateBatch(){
+   public SubscriberHashUpdateBatch() {
        query = 'SELECT Id, HashSubscriberId__c FROM Subscriber__c';
    }
 
-   public Database.QueryLocator start(Database.BatchableContext BC){
+   public Database.QueryLocator start(Database.BatchableContext bc) {
       return Database.getQueryLocator(query);
    }
 
-    public void execute(Database.BatchableContext BC, List<Subscriber__c> scope) {
-        for(Subscriber sub : scope){
+    public void execute(Database.BatchableContext bc, List<Subscriber__c> scope) {
+        for (Subscriber sub : scope) {
             sub.HashSubscriberId__c = Hasher.hashId(sub.Id);
         }     
         update scope;
     }
 
-   public void finish(Database.BatchableContext BC){
+   public void finish(Database.BatchableContext bc) {
 
    }
 

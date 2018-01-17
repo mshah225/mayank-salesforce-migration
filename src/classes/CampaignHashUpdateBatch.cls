@@ -9,14 +9,14 @@ public class CampaignHashUpdateBatch implements Database.Batchable<Campaign> {
         return Database.getQueryLocator(query);
     }
     
-    global void execute(Database.BatchableContext BC, List<Campaign> scope) {
-        for(Campaign camp : scope){
+    public void execute(Database.BatchableContext bc, List<Campaign> scope) {
+        for (Campaign camp : scope) {
             camp.HashCampaignId__c = Hasher.hashId(camp.Id);
         }     
         update scope;
     }
     
-    global void finish(Database.BatchableContext BC){
+    public void finish(Database.BatchableContext bc) {
         
     }
 }

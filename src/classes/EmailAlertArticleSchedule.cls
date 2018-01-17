@@ -5,7 +5,7 @@ public class EmailAlertArticleSchedule implements Schedulable {
 	private Map<Id, List<String>> articleIdToUserList = new Map<Id, List<String>>();
 	Map<String, List<Id>> groupNameToUserIds = new Map<String, List<Id>>();
 	private Map<Id, User> userMap;
-	private boolean debug = 'false';
+	private boolean debug = false;
 	
 	public void execute(SchedulableContext sc) {
 		dataSetup();
@@ -70,54 +70,58 @@ public class EmailAlertArticleSchedule implements Schedulable {
 	public List<Messaging.SingleEmailMessage> createEmails(List<FAQ__kav> knowledgeArticles) {
 		
 		// populate articles to users to notify
-		for (FAQ__kav knowledgeArticle : knowledgeArticles) {
-			List<Id> userIds = groupNameToUserIds.get('KB: ' + knowledgeArticle.Functional_Group__c + ' (Approve)');
-			if (userIds == null) {
-				List<String> vars = new List<String>();
-				vars.add('No management group found for ' + knowledgeArticle.Functional_Group__c);
-        		ErrorLogger.log(e, vars, debug);
-			} else {
-				List<String> userEmails = new List<String>();
-				for (Id userId : userIds) {
-					userEmails.add(userMap.get(userId).Email);
+		List<String> vars = new List<String>();
+		try{
+			for (FAQ__kav knowledgeArticle : knowledgeArticles) {
+				List<Id> userIds = groupNameToUserIds.get('KB: ' + knowledgeArticle.Functional_Group__c + ' (Approve)');
+				if (userIds == null) {
+					vars.add('No management group found for ' + knowledgeArticle.Functional_Group__c);
+				} else {
+					List<String> userEmails = new List<String>();
+					for (Id userId : userIds) {
+						userEmails.add(userMap.get(userId).Email);
+					}
+					if (!articleIdToUserList.containsKey(knowledgeArticle.Id)) {
+						articleIdToUserList.put(knowledgeArticle.Id, new List<String>());
+					}
+					articleIdToUserList.get(knowledgeArticle.Id).addAll(userEmails);
 				}
-				if (!articleIdToUserList.containsKey(knowledgeArticle.Id)) {
-					articleIdToUserList.put(knowledgeArticle.Id, new List<String>());
-				}
-				articleIdToUserList.get(knowledgeArticle.Id).addAll(userEmails);
 			}
-		}
-
-		// Create emails to send out.
-		List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
 		
-		for (FAQ__kav knowledgeArticle: knowledgeArticles) {
-			List<String> usersToEmail = articleIdToUserList.get(knowledgeArticle.Id);
+			// Create emails to send out.
+			List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
 			
-			Integer daysUntouched = knowledgeArticle.LastModifiedDate.date().daysBetween(Date.today());
-
-			//Assign Email Template based on the Article(Expired or Stagnant)
-			EmailTemplate template;
-			if (knowledgeArticle.PublishStatus == 'Draft' && (daysUntouched == 14 || Math.mod((daysUntouched - 14), 7) == 0)) {
-				template = templateDevNameToTemplate.get('Knowledge_Article_Stagnant');
-			} else if (knowledgeArticle.Article_Expiration_Date__c < System.Today()) {
-				template = templateDevNameToTemplate.get('Knowledge_Article_Expired');
-			} else if (knowledgeArticle.Article_Expiration_Date__c == System.Today().addDays(30)) {
-				template = templateDevNameToTemplate.get('Knowledge_Article_30_Day_Expiration');
+			for (FAQ__kav knowledgeArticle: knowledgeArticles) {
+				List<String> usersToEmail = articleIdToUserList.get(knowledgeArticle.Id);
+				
+				Integer daysUntouched = knowledgeArticle.LastModifiedDate.date().daysBetween(Date.today());
+		
+				//Assign Email Template based on the Article(Expired or Stagnant)
+				EmailTemplate template;
+				if (knowledgeArticle.PublishStatus == 'Draft' && (daysUntouched == 14 || Math.mod((daysUntouched - 14), 7) == 0)) {
+					template = templateDevNameToTemplate.get('Knowledge_Article_Stagnant');
+				} else if (knowledgeArticle.Article_Expiration_Date__c < System.Today()) {
+					template = templateDevNameToTemplate.get('Knowledge_Article_Expired');
+				} else if (knowledgeArticle.Article_Expiration_Date__c == System.Today().addDays(30)) {
+					template = templateDevNameToTemplate.get('Knowledge_Article_30_Day_Expiration');
+				}
+		
+				Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+				mail.setToAddresses(usersToEmail);
+				mail.setSubject(template.Subject.replace('{!FAQ__kav.Title}', knowledgeArticle.Title));
+				mail.setHtmlBody(template.HtmlValue
+					.replace('{!FAQ__kav.Title}', knowledgeArticle.Title)
+					.replace('{!FAQ__kav.ArticleNumber}', knowledgeArticle.ArticleNumber)
+					.replace('{!FAQ__kav.Link}', System.Url.getSalesforceBaseUrl().toExternalForm() + 
+						'knowledge/publishing/knowledgePublishingHome.apexp'));
+				emailsToSend.add(mail);
 			}
-
-			Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-			mail.setToAddresses(usersToEmail);
-			mail.setSubject(template.Subject.replace('{!FAQ__kav.Title}', knowledgeArticle.Title));
-			mail.setHtmlBody(template.HtmlValue
-				.replace('{!FAQ__kav.Title}', knowledgeArticle.Title)
-				.replace('{!FAQ__kav.ArticleNumber}', knowledgeArticle.ArticleNumber)
-				.replace('{!FAQ__kav.Link}', System.Url.getSalesforceBaseUrl().toExternalForm() + 
-					'knowledge/publishing/knowledgePublishingHome.apexp'));
-			emailsToSend.add(mail);
+		
+			return emailsToSend;
+		} catch(Exception e) {
+			ErrorLogger.log(e, vars, debug);
+			return null;
 		}
-
-		return emailsToSend;
 	}
 	
 	public void dataSetup() {
@@ -125,54 +129,59 @@ public class EmailAlertArticleSchedule implements Schedulable {
 		for (Knowledge_Functional_Group__c excludedGroup :[SELECT Name, Functional_Group_Name__c FROM Knowledge_Functional_Group__c]) {
 			functionalGroupsToExclude.add(excludedGroup.Name);
 		}
-		
-		// Populate email templates
-		for (EmailTemplate knowledgeEmailTemplate: [
-			SELECT Id, DeveloperName, Subject, HtmlValue
-			FROM EmailTemplate
-			WHERE DeveloperName = 'Knowledge_Article_Expired'
-				OR DeveloperName = 'Knowledge_Article_Stagnant'
-				OR DeveloperName = 'Knowledge_Article_30_Day_Expiration'
-		]){
-			templateDevNameToTemplate.put(knowledgeEmailTemplate.DeveloperName, knowledgeEmailTemplate);
-		}
-		
-		if (templateDevNameToTemplate.values().size() != 3) {
-			List<String> vars = new List<String>();
-			vars.add(templateDevNameToTemplate.values());
-            ErrorLogger.log(e, vars, debug);
-		} else {
-			// Get list of group members
-			knowledgeGroupMembers = [
-				SELECT
-					UserOrGroupId,
-					Group.Name
-				FROM GroupMember
-				WHERE GroupId IN (
-					SELECT Id
-					FROM Group
-					WHERE Type = 'Queue'
-						AND (Name LIKE '%Knowledge%'
-							OR Name LIKE 'KB%')
-					)
-			];
-			
-			Set<Id> userIdsToQuery = new Set<Id>();
-			for (GroupMember member : knowledgeGroupMembers) {
-				if (member.UserOrGroupId.getSobjectType() == Schema.User.SObjectType) {
-					userIdsToQuery.add(member.UserOrGroupId);
-					if (!groupNameToUserIds.containsKey(member.Group.Name)) {
-						groupNameToUserIds.put(member.Group.Name, new List<Id>());
-					}
-					groupNameToUserIds.get(member.Group.Name).add(member.UserOrGroupId);
-				}
+		List<String> vars = new List<String>();
+		try {
+			// Populate email templates
+			for (EmailTemplate knowledgeEmailTemplate: [
+				SELECT Id, DeveloperName, Subject, HtmlValue
+				FROM EmailTemplate
+				WHERE DeveloperName = 'Knowledge_Article_Expired'
+					OR DeveloperName = 'Knowledge_Article_Stagnant'
+					OR DeveloperName = 'Knowledge_Article_30_Day_Expiration'
+			]){
+				templateDevNameToTemplate.put(knowledgeEmailTemplate.DeveloperName, knowledgeEmailTemplate);
+				vars.add(knowledgeEmailTemplate.DeveloperName);
 			}
 			
-			userMap = new Map<Id, User>([
-				SELECT Id, Email
-				FROM User
-				WHERE Id IN : userIdsToQuery
-			]);
+			if (templateDevNameToTemplate.values().size() != 3) {
+				throw new KnowledgeArticleManagmentException('Template does not contain three values');
+			} else {
+				// Get list of group members
+				knowledgeGroupMembers = [
+					SELECT
+						UserOrGroupId,
+						Group.Name
+					FROM GroupMember
+					WHERE GroupId IN (
+						SELECT Id
+						FROM Group
+						WHERE Type = 'Queue'
+							AND (Name LIKE '%Knowledge%'
+								OR Name LIKE 'KB%')
+						)
+				];
+				
+				Set<Id> userIdsToQuery = new Set<Id>();
+				for (GroupMember member : knowledgeGroupMembers) {
+					if (member.UserOrGroupId.getSobjectType() == Schema.User.SObjectType) {
+						userIdsToQuery.add(member.UserOrGroupId);
+						if (!groupNameToUserIds.containsKey(member.Group.Name)) {
+							groupNameToUserIds.put(member.Group.Name, new List<Id>());
+						}
+						groupNameToUserIds.get(member.Group.Name).add(member.UserOrGroupId);
+					}
+				}
+				
+				userMap = new Map<Id, User>([
+					SELECT Id, Email
+					FROM User
+					WHERE Id IN : userIdsToQuery
+				]);
+			}
+		} catch (Exception e) {
+			ErrorLogger.log(e, vars, debug);	
 		}
 	}
+	
+	public class KnowledgeArticleManagmentException extends Exception {}
 }

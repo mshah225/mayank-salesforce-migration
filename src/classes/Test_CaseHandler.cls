@@ -1031,7 +1031,7 @@ public with sharing class Test_CaseHandler {
             WHERE Id = :c.Id LIMIT 1
         ];
 
-        System.assert(stat.Status == 'Closed: Resolved');
+        System.assert(stat.Status == 'Closed: Resolved (Webforms)');
         System.assert(stat.Visible_by_Contact__c == FALSE);
     }
 
@@ -1219,7 +1219,7 @@ public with sharing class Test_CaseHandler {
             LIMIT 1
         ];
 
-        System.assertEquals('Closed: Resolved', c.Status);
+        System.assertEquals('Closed: Resolved (Webforms)', c.Status);
         System.assertEquals('Test Subject', c.Subject);
     }
 

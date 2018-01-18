@@ -1,4 +1,4 @@
-public class SubscriberHashUpdateBatch implements Database.Batchable<sObject>, Schedulable {
+public class SubscriberHashUpdateBatch implements Database.Batchable<sObject> {
 	public final String query;
 
    public SubscriberHashUpdateBatch() {

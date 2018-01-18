@@ -1,5 +1,6 @@
 public with sharing class CaseShowAllAttachmentsControllerExt {
     private final Case theCase;
+    public string attId{get;set;}
     private final String STANDARD_PREFIX = '--c';
     private final String ATTACHMENT_PACKAGE_PREFIX = '--attachmentzip';
     public Attachment[] allAttachments;
@@ -44,5 +45,19 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     private String constructAttachmentPackageUrl() {
         String baseUrl = Url.getSalesforceBaseUrl().toExternalForm();
         return baseUrl.replace(STANDARD_PREFIX, ATTACHMENT_PACKAGE_PREFIX);
+    }
+    
+    public PageReference deleteAttachment(){
+        try{
+            Attachment objAtt = new Attachment(id=attId);
+            delete objAtt;
+        }
+        catch(Exception e){
+            ApexPages.addMessage(
+                new ApexPages.Message(
+                    ApexPages.Severity.ERROR,
+                    'There was a problem deleting the attachment. Please try again or contact the administrator.' ));
+        }
+        return null;
     }
 }

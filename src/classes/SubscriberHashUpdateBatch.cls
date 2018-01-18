@@ -10,7 +10,7 @@ public class SubscriberHashUpdateBatch implements Database.Batchable<sObject> {
    }
 
     public void execute(Database.BatchableContext bc, List<Subscriber__c> scope) {
-        for (Subscriber sub : scope) {
+        for (Subscriber__c sub : scope) {
             sub.HashSubscriberId__c = Hasher.hashId(sub.Id);
         }     
         update scope;

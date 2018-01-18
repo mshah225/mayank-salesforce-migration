@@ -39,3 +39,5 @@ README.md
 workspace/
 /src/package.xml
 workspace
+.codeintel/
+/src/staticresources

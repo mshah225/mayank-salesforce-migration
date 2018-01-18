@@ -21,7 +21,34 @@ private class Test_CaseTransferMassController {
         {
             insert testQueue;
         }
+        
+        Case_Classification__c cc = new Case_Classification__c();
+        cc.Name = 'Engineering';
+        cc.Active__c = true;
+        cc.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Functional Group').getRecordTypeId();
+        insert cc;
+        
+        Case_Classification__c ccURS = new Case_Classification__c();
+        ccURS.Name = 'University Registrar Services';
+        ccURS.Active__c = true;
+        ccURS.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Functional Group').getRecordTypeId();
+        insert ccURS;
+        
+        Case_Classification__c cc1 = new Case_Classification__c();
+        cc1.Name = 'Eng';
+        cc1.Active__c = true;
+        cc1.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Category').getRecordTypeId();
+        cc1.Parent__c = cc.Id;
+        insert cc1;
+        
+        Case_Classification__c cc2 = new Case_Classification__c();
+        cc2.Name = 'SubEng';
+        cc2.Active__c = true;
+        cc2.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Sub Category').getRecordTypeId();
+        cc2.Parent__c = cc1.Id;
+        insert cc2;
 
+        
         List<Case_Assignment_Rule__c> carList = new List<Case_Assignment_Rule__c>();
 
         Case_Assignment_Rule__c one = new Case_Assignment_Rule__c(
@@ -29,10 +56,10 @@ private class Test_CaseTransferMassController {
             CTPGroup__c = 'Engineering',
             CTPVisible__c = true,
             Email_Address__c = 'default@email.com',
-            Functional_Group__c = 'Engineering',
+            CC_Functional_Group__c = cc.Id,
             Label__c = 'Engineering (Default)',
-            Category__c = 'Eng',
-            Sub_Category__c = 'SubEng',
+            CC_Category__c = cc1.Id,
+            CC_Sub_Category__c = cc2.Id,
             Queue_ID__c = String.valueOf(testGroup.Id).substring(0, 15)
         );
 
@@ -41,7 +68,7 @@ private class Test_CaseTransferMassController {
             CTPGroup__c = 'Engineering',
             CTPVisible__c = true,
             Email_Address__c = 'default@email.com',
-            Functional_Group__c = 'Engineering',
+            CC_Functional_Group__c = cc.Id,
             Label__c = 'School of blah blah'
         );
 
@@ -50,7 +77,7 @@ private class Test_CaseTransferMassController {
             CTPGroup__c = 'University Registrar Services',
             CTPVisible__c = true,
             Email_Address__c = 'default@email.com',
-            Functional_Group__c = 'University Registrar Services',
+            CC_Functional_Group__c = ccURS.Id,
             Label__c = 'University Registrar Services (Default)'
         );
 
@@ -59,7 +86,7 @@ private class Test_CaseTransferMassController {
             CTPGroup__c = 'University Registrar Services',
             CTPVisible__c = true,
             Email_Address__c = 'default@email.com',
-            Functional_Group__c = 'University Registrar Services',
+            CC_Functional_Group__c = ccURS.Id,
             Label__c = 'School of blah blah'
         );
 
@@ -117,7 +144,7 @@ private class Test_CaseTransferMassController {
         Test.stopTest();
 
         Case caseToAssert = [
-            SELECT Id, Functional_Group__c, OwnerId
+            SELECT Id, CC_Functional_Group__r.Name, OwnerId
             FROM Case
             WHERE Id = :caseToTest.Id
         ];
@@ -128,7 +155,7 @@ private class Test_CaseTransferMassController {
             WHERE Name = 'Test Group Name'
         ];
 
-        System.assertEquals('Engineering', caseToAssert.Functional_Group__c);
+        System.assertEquals('Engineering', caseToAssert.CC_Functional_Group__r.Name);
         System.assertEquals(groupToAssert.Id, caseToAssert.OwnerId);
     }
 

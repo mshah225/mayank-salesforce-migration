@@ -3,7 +3,19 @@ global class BomgarCreateCaseUtil
     global static String createCase(bomgar__BomgarWebEvent__c bgEvent)
     {
         Map<String, String> dynamicFieldMap = new Map<String, String>();
-
+        // map to store Case Classification name vs Id 
+        // related to Functional Group Help Desk and 
+        // Category records with Help Desk as parent
+        map<String, Id> mapCCNameToId = new map<String, Id>();
+        for (Case_Classification__c caseClass : [SELECT Id, Name 
+                                                 FROM Case_Classification__c 
+                                                 WHERE Active__c = true 
+                                                 AND ((RecordType.Name = 'Functional Group' AND Name = 'Help Desk') 
+                                                 OR (RecordType.Name = 'Category' AND Parent__r.Name = 'Help Desk'))]
+            ) {
+            mapCCNameToId.put(caseClass.Name, caseClass.Id);
+        }
+        
         // Handle special chars in external key
         String jsonObject = bgEvent.bomgar__ExternalKey__c.substring(5)
                                                           .replace('\r\n', '\\r\\n')
@@ -12,22 +24,27 @@ global class BomgarCreateCaseUtil
                                                           .replace('\t', '\\t')
                                                           .replace('\b', '\\b')
                                                           .replace('\f', '\\f');
+        system.debug('jsonObject: ' + jsonObject);
         String.escapeSinglequotes(jsonObject);
-        JSONParser parser = JSON.createParser(jsonObject);
-
-        System.debug(jsonObject);
-
-        while (parser.nextToken() != null)
-        {
-            if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
+        JSONParser parser;
+        try {
+            parser = JSON.createParser(jsonObject);
+            while (parser.nextToken() != null)
             {
-                String key = parser.getText();
-                parser.nextToken();
-                String value = parser.getText();
-                dynamicFieldMap.put(key, value);
+                if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
+                {
+                    String key = parser.getText();
+                    parser.nextToken();
+                    String value = parser.getText();
+                    dynamicFieldMap.put(key, value);
+                }
             }
+        } catch(Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('jsonObject', jsonObject));
+            ErrorLogger.log(ex, vars, false);
         }
-
+        
         Contact contact = null;
         Case c = new Case();
 
@@ -91,17 +108,17 @@ global class BomgarCreateCaseUtil
         c.Description = description;
         c.Priority = 'Normal';
         c.Origin__c = 'Chat';
-        c.Functional_Group__c = 'Help Desk';
-        c.Subject = c.Functional_Group__c + ' Live Chat';
+        c.CC_Functional_Group__c = (mapCCNameToId.containsKey('Help Desk')) ? mapCCNameToId.get('Help Desk') : null;
+        c.Subject = (mapCCNameToId.containsKey('Help Desk')) ? 'Help Desk' : '' + ' Live Chat';
 
         // Check if finance chat and route, if not default to gen
         if (externalKey == 'Finances')
         {
-            c.Category__c = 'Finances (Help Desk)';
+            c.CC_Category__c = (mapCCNameToId.containsKey('Finances (Help Desk)')) ? mapCCNameToId.get('Finances (Help Desk)') : null;
         }
         else
         {
-            c.Category__c = 'General Help Desk';
+            c.CC_Category__c = (mapCCNameToId.containsKey('General Help Desk')) ? mapCCNameToId.get('General Help Desk') : null;
         }
 
         // If contact is still null, try and find contact by asuriteId

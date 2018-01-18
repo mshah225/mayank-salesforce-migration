@@ -34,7 +34,6 @@ public class CampaignMemberManagementController
     public String selectedParentCampaignName { get; set; }
     public String selectedChildCampaignName { get; set; }
     public String renderedTab { get; set; }
-    public String inActivateCMId { get; set; }
     public String eSearchString { get;set; }
     public String iSearchString { get;set; }
     public String deptColl { get; set; }
@@ -103,6 +102,8 @@ public class CampaignMemberManagementController
     public void buildCampaignMemberMap()
     {
         campaignMemberMap = new Map<String, List<CampaignMember>>();
+        activeCRCamMap = new Map<String, List<CampaignMember>>();
+        activeCRCamMap.put(null,new List<CampaignMember>());
         List<CampaignMember> contactCamMems = CampaignMemberService.getCampaignMembers(contactId);
         List<CampaignMember> tempCrActiveList = new List<CampaignMember>();
         List<CampaignMember> tempCrInactiveList = new List<CampaignMember>();
@@ -120,6 +121,12 @@ public class CampaignMemberManagementController
             if ((cm.Campaign.RecordType.Name == 'Corporate Relations')
                 && (cm.Status == 'Active'))
             {
+                if (activeCRCamMap.get(cm.Campaign.Parent.Name) == null) {
+                    activeCRCamMap.put(cm.Campaign.Parent.Name, new List<CampaignMember>());
+                }
+                
+                activeCRCamMap.get(cm.Campaign.Parent.Name).add(cm);
+
                 tempCrActiveList.add(cm);
             }
             else if ((cm.Campaign.RecordType.Name == 'Corporate Relations')
@@ -286,7 +293,7 @@ public class CampaignMemberManagementController
             sosl += 'AND Event_Start_Date__c = :camStartDate ';
         }
 
-        sosl += 'ORDER BY Name ASC)';
+        sosl += 'ORDER BY Name ASC LIMIT 1000)';
 
         List<List<SObject>> sObjects = Search.query(sosl);
 
@@ -526,6 +533,45 @@ public class CampaignMemberManagementController
 
         return activeCrCamMems;
     }
+    
+    public Boolean activeCRCamMapEmpty {
+        get {
+            if (activeCRCamMap.get(null).size() == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        set;
+    }
+    
+    public String activeCRCamPMapKeys {
+        get {
+            activeCRCamPMapKeys = '';
+            
+            for (String s : activeCRCamMap.keySet()) {
+            // Use String.Value of since null is an expected key
+                activeCRCamPMapKeys+=String.ValueOf(s);
+            }
+            
+            return activeCRCamPMapKeys;
+        }
+        
+        set;
+    }
+    
+    public Map<String, List<CampaignMember>> activeCRCamMap {
+        get {
+            if (activeCRCamMap == null) {
+                activeCRCamMap = new Map<String, List<CampaignMember>>();
+            }
+            
+            return activeCRCamMap;
+        }
+        
+        set;
+    }
 
     public void parentCampaignSearch()
     {
@@ -623,55 +669,57 @@ public class CampaignMemberManagementController
         save();
     } 
 
+    public String inActivateCMId {get; set;}
+
+     
     public void inActivateCM() 
     {
-        List<CampaignMember> childKillList = new List<CampaignMember>();
-
         inActivateCamMem = [
-            SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name
-            FROM CampaignMember
-            WHERE Id = :inActivateCMId
-        ];
-
-        User currentUser = [
-            SELECT Id, UserRole.Name
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ];
-
-        if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name)
-        {
-            inActivateCamMem.Status = 'Inactive';
-
-            if (inActivateCamMem.Campaign.ParentId == null)
-            {
-                childKillList = [
-                    SELECT Id, Status
-                    FROM CampaignMember
-                    WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
-                ];
-
-                for (CampaignMember kill: childKillList)
-                {
-                    kill.Status = 'Inactive';
+                SELECT Id, Campaign.ParentId, CampaignId, CreatedBy.UserRole.Name
+                FROM CampaignMember
+                WHERE Id = :inActivateCMId
+            ];
+            
+            User currentUser = [
+                SELECT Id, UserRole.Name
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+            ];
+    
+            if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name) {
+                inActivateCamMem.Status = 'Inactive';
+                
+                if (inActivateCamMem.Campaign.ParentId == null) {
+                    List<CampaignMember> ChildKillList = new List<CampaignMember>();
+                    
+                    for (CampaignMember ck : [
+                        SELECT Id, Status
+                        FROM Campaignmember
+                        WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
+                    ]) {
+                        ck.status = 'Inactive';
+                        ChildKillList.add(ck);
+                    }
+                    
+                    update ChildKillList;
                 }
+                
+                update inActivateCamMem;
+                
+            } else {
+                ApexPages.addmessage(
+                    new ApexPages.message(
+                        ApexPages.severity.ERROR,
+                        'You do not have access to remove this Affiliation, only a ' +
+                            'member of the Department that created it can.'
+                    )
+                );
             }
-
-            update inActivateCamMem;
-            update childKillList;
-        }
-        else
-        {
-            ApexPages.addmessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'You do not have access to remove this Affiliation, only a ' +
-                        'member of the Department that created it can.'
-                )
-            );
-        }
-
-        buildCampaignMemberMap();
+    
+            buildCampaignMemberMap();
+            renderedTab = 'crTab';
+            system.debug(activeCRCamPMapKeys);
+            system.debug(String.ValueOf(activeCRCamMap));
     }
 
     public void save() 
@@ -681,10 +729,11 @@ public class CampaignMemberManagementController
             inactiveCrCamMems = campaignMemberMap.get('Inactive CR');
             Set<String> activeCamMemNameSet = new Set<String>();
             Set<String> inactiveCamMemNameSet = new Set<String>();
-
-            for (CampaignMember c: activeCrCamMems)
-            {
-                activeCamMemNameSet.add(c.Campaign.Name);
+            
+            for (String s : activeCRCamMap.keySet()) {
+                for (CampaignMember acm : activeCRCamMap.get(s)) {
+                    activeCamMemNameSet.add(acm.campaign.name);
+                }
             }
 
             for (CampaignMember ia: inactiveCrCamMems)

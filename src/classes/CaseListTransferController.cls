@@ -28,11 +28,11 @@ public class CaseListTransferController {
         collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
 
         this.cs = [
-            SELECT Subject, Description, Sub_Category__c, Category__c, Functional_Group__c
-            FROM Case 
+            SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c
+            FROM Case
             WHERE Id = :((Case) stdController.getRecord()).Id
         ];
-        
+
         for (Case c : this.cs) {
             if (String.isBlank(c.Subject) || String.isBlank(c.Description)) {
                 ApexPages.addmessage(
@@ -48,7 +48,7 @@ public class CaseListTransferController {
     public CaseListTransferController (ApexPages.StandardSetController stdController) {
         String tstring; // Used to store temporary data
         String selectedIds = fixParameter(apexpages.currentpage().getparameters().get('caseIds'));
-        
+
         List<Id> CaseIds = new List<Id>();
         page = 1;
         isUserPageLoaded = false;
@@ -56,10 +56,10 @@ public class CaseListTransferController {
         userList = new List<User>();
         serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
-        
+
         if (selectedIds != null) {
             Validator.setPrefix(Case.class);
-            
+
             for (String s : selectedIds.split(',')) {
                 if (Validator.validateId(s)) {
                     caseIds.add(s);
@@ -77,8 +77,8 @@ public class CaseListTransferController {
 	            CaseIds.add(so.Id);
 	        }
         }
-        
-        this.cs = [SELECT Subject, Description, Sub_Category__c, Category__c, Functional_Group__c
+
+        this.cs = [SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c
             FROM Case WHERE Id IN :CaseIds];
 
         for (Case c : this.cs) {
@@ -92,7 +92,7 @@ public class CaseListTransferController {
             }
         }
     }
-    
+
     public PageReference page1() {
         page = 1;
 
@@ -312,14 +312,14 @@ public class CaseListTransferController {
     public PageReference transferCase() {
         PageReference nextPage;
         boolean allSubsAndDescsValidated = true;
-        
+
         // Verify that all cases have descriptions and subjects
         for (Case c : this.cs) {
             if (String.isBlank(c.Description) || string.isBlank(c.Subject)) {
                 allSubsAndDescsValidated = false;
             }
         }
-        
+
         if (allSubsAndDescsValidated) {
             for (Case c : this.cs) {
                 /*
@@ -331,15 +331,20 @@ public class CaseListTransferController {
                 } else {
                     Case_Assignment_Rule__c selectedCAR = CARService.getCAR(selectedId);
                     c.OwnerId = selectedCAR.Queue_ID__c;
-                    c.Functional_Group__c = selectedCAR.Functional_Group__c;
-                    c.Category__c = selectedCAR.Category__c;
-                    c.Sub_Category__c = selectedCAR.Sub_Category__c;
+                    c.CC_Functional_Group__c = selectedCAR.CC_Functional_Group__c;
+                    c.CC_Category__c = selectedCAR.CC_Category__c;
+                    c.CC_Sub_Category__c = selectedCAR.CC_Sub_Category__c;
+                    //Nulls them out to prevent erros while transfering
+                    c.Functional_Group__c = null;
+                    c.Category__c = null;
+                    c.Sub_Category__c = null;
                     c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
-                    c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
+                    c.Case_Feed_Email_Template_Id__c = selectedCar.Case_Feed_Email_Template_Id__c;
                     c.Campus__c = selectedCAR.Campus__c;
+                    c.RecordTypeId = selectedCAR.Case_Record_Type_Id__c;
                 }
             }
-            
+
             try {
                 update this.cs;
             } catch (Exception e) {
@@ -366,7 +371,7 @@ public class CaseListTransferController {
 
         return nextPage;
     }
-    
+
     /**
      * Release case ownership back to the queue
      */
@@ -376,38 +381,38 @@ public class CaseListTransferController {
         Boolean allCasesSameGroup;
         String fGroup;
         List<Case_Assignment_Rule__c> selectedCar;
-        
+
         if (this.cs != null) {
             if (this.cs.size() > 0) {
                 allSubsAndDescsValidated = true;
                 allCasesSameGroup = true;
-                
+
                 // Get Car info
-                fGroup = this.cs[0].functional_Group__c;
-                
+                fGroup = this.cs[0].CC_functional_Group__c;
+
                 // Verify that all cases have descriptions and subjects
                 for (Case c : this.cs) {
                     if (String.isBlank(c.Description) || string.isBlank(c.Subject)) {
                         allSubsAndDescsValidated = false;
                     }
-                    
-                    if (c.functional_Group__c != fGroup) {
+
+                    if (c.CC_Functional_Group__c != fGroup) {
                         allCasesSameGroup = false;
                     }
                 }
-                
+
                 if (allSubsAndDescsValidated && allCasesSameGroup) {
-                    selectedCar = new List<Case_Assignment_Rule__c>([SELECT Queue_ID__c 
+                    selectedCar = new List<Case_Assignment_Rule__c>([SELECT Queue_ID__c
                         FROM Case_Assignment_Rule__c
-                        WHERE Functional_Group__c = :fGroup
+                        WHERE CC_Functional_Group__c = :fGroup
                         ORDER BY Priority__c ASC
                         LIMIT 1]);
-                    
+
                     if (selectedCar.size() == 1) {
                         for (Case c : this.cs) {
                             c.ownerId = selectedCar[0].Queue_ID__c;
                         }
-                        
+
                         update cs;
                     } else {
                         ApexPages.addmessage(
@@ -415,7 +420,7 @@ public class CaseListTransferController {
                             ' Please ensure that the functional group, category and sub-category fields are filled out' +
                             ' correctly for all cases.')
                         );
-                        
+
                         return null;
                     }
                 } else {
@@ -426,7 +431,7 @@ public class CaseListTransferController {
                                 'out the missing fields before transferring the case.')
                         );
                     }
-                    
+
                     if (!allCasesSameGroup) {
                         ApexPages.addmessage(
                             new ApexPages.message(ApexPages.severity.ERROR, 'All of the selected cases' +
@@ -435,26 +440,26 @@ public class CaseListTransferController {
                     }
                     return null;
                 }
-                
+
                 if (this.cs.size() == 1) {
                     nextPage = new PageReference('/' + string.ValueOf(this.cs[0].Id));
                 } else {
                     return new ApexPages.action('{!list}').invoke();
                 }
-                
+
                 return nextPage;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Navigate to the previous page
      */
     public pageReference goBack() {
         pageReference lastPage;
-        
+
         if (page == 1) { // Go back to case or list view
             if (this.cs.size() == 1) {
                 lastPage = new PageReference('/' + string.ValueOf(this.cs[0].Id));
@@ -471,10 +476,10 @@ public class CaseListTransferController {
                 page = 3;
             }
         }
-        
+
         return lastPage;
     }
-    
+
     /**
      * Fix the parameters provided by the success portal
      */
@@ -485,7 +490,7 @@ public class CaseListTransferController {
 	        param = param.replace('(','');
 	        param = param.replace(')','');
         }
-        
+
         return param;
     }
 }

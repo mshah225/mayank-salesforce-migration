@@ -45,8 +45,8 @@ public with sharing class FeedbackController
 				c.ContactId = feedbackContact.Id;
 			}
 
-			c.Functional_Group__c = 'Student-Centric Initiatives';
-			c.Category__c = 'Service Center Feedback';
+			c.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Student-Centric Initiatives' AND Parent__c = null LIMIT 1].Id;
+			c.CC_Category__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Service Center Feedback' AND Parent__c =: c.CC_Functional_Group__c LIMIT 1].Id;
 			c.Origin__c = 'My ASU';
 			c.Visible_by_Contact__c = false;
 			insert c;

@@ -27,6 +27,18 @@ global with sharing class apiSSC_CreateChatCaseController {
                  WHERE Student__r.ASURite_ID__c =: studentId LIMIT 1];
          if(student.size()>0)
          {
+             // map to store Case Classification name vs Id 
+            // related to Functional Group 'ASU Coach Outreach' and 
+            // Category records with 'ASU Coach Outreach' as parent
+            map<String, Id> mapCCNameToId = new map<String, Id>();
+            for (Case_Classification__c caseClass : [SELECT Id, Name 
+                                                     FROM Case_Classification__c 
+                                                     WHERE Active__c = true 
+                                                     AND ((RecordType.Name = 'Functional Group' AND Name = 'ASU Coach Outreach') 
+                                                     OR (RecordType.Name = 'Category' AND Parent__r.Name = 'ASU Coach Outreach'))]
+                ) {
+                mapCCNameToId.put(caseClass.Name, caseClass.Id);
+            }
              //get coach        
              List<Success_Resource__c> coach = new List<Success_Resource__c>();
              coach = [SELECT Id, Resource__c 
@@ -36,8 +48,8 @@ global with sharing class apiSSC_CreateChatCaseController {
              {
                  Case newCase = new Case();
                  newCase.RecordTypeId = coachRecordTypeId;
-                 newCase.Functional_Group__c = 'ASU Coach Outreach';
-                 newCase.Category__c = 'Ad Hoc Case';
+                 newCase.CC_Functional_Group__c = (mapCCNameToId.containsKey('ASU Coach Outreach')) ? mapCCNameToId.get('ASU Coach Outreach') : null;//'ASU Coach Outreach';
+                 newCase.CC_Category__c = (mapCCNameToId.containsKey('Ad Hoc')) ? mapCCNameToId.get('Ad Hoc') : null;//'Ad Hoc Case';
                  newCase.Type = 'Coach Initiated';
                  newCase.Subject = 'Case created via Chat';
                  newCase.Description = description!=null?description:'Case from Chat';

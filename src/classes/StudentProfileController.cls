@@ -1,5 +1,5 @@
 global with sharing class StudentProfileController
-{
+{ 
     // Error Logger Variables 
     private static boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
@@ -32,6 +32,12 @@ global with sharing class StudentProfileController
     public String suncardPhotoURL { get; set; }
     public String deceased { get; set; }
     public string contactId {get; set;}
+    public String birthDate {get; set;}
+    public String age {get; set;}
+    global static String paramToSort {get; set;}
+    global static String examParamSort {get; set;}
+    global static String transferParamSort {get; set;}
+    global static boolean sortDirect = true;
     private Set<String> ugTestCodes;
     private Set<String> gradTestCodes;
 
@@ -55,9 +61,7 @@ global with sharing class StudentProfileController
     public StudentProfileController() {
         URLParamsExistAndAreValid = true;
         
-        if (ApexPages.currentPage().getParameters().get('id') != null) {
-            contactId = ApexPages.currentPage().getParameters().get('id');
-        } else if (ApexPages.currentPage().getParameters().get('contactId') != null) {
+        if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
         
@@ -83,6 +87,15 @@ global with sharing class StudentProfileController
      */
     public pageReference init() {
         vars = new List<String>(); // Used to pass variable values to the error logger
+        // Initialize the lists 
+        openCases = new List<Case>();
+        sGroupList = new List<Student_Group__c>();
+        sIList = new List<PS_ASU_SP_SVCIND_V__x>();
+        allProgramPlans = new List<Student_Program_Plan__c>();
+        programPlan = new Student_Program_Plan__c();
+        ugProgramPlans = new List<Student_Program_Plan__c>();
+        gradProgramPlans = new List<Student_Program_Plan__c>();
+        primaryProgramPlan =  new Student_Program_Plan__c();
         
         try {
             if (URLParamsExistAndAreValid) {
@@ -97,36 +110,42 @@ global with sharing class StudentProfileController
                     vars.add(ErrorLogger.convertSObjectToJSON('theContact', theContact));
                     throw new StudentProfileException('Contact missing EMPLId');
                 }
-                
-                // Initialize the lists 
-                openCases = new List<Case>();
-                sGroupList = new List<Student_Group__c>();
-                // saList = new List<Student_Account__c>();
-                // fapList = new List<Financial_Aid_Package__c>();
-                // testScoreList = new List<Test_Score__c>();
-                sIList = new List<PS_ASU_SP_SVCIND_V__x>();
-                allProgramPlans = new List<Student_Program_Plan__c>();
                 deceased = '';
-                
+
+                Date tmpDate = theContact.birthDate;
+                if(tmpDate != null) {
+                    birthDate = tmpDate.month() + '/' + tmpDate.day() + '/' + tmpDate.year();
+                    Date nowDate = Date.Today();
+                    if(nowDate.month() > tmpDate.month()) {
+                        age = '' + (nowDate.year() - tmpDate.year() - 1);
+                    } else if (nowDate.month() < tmpDate.month()) {
+                        age = '' + (nowDate.year() - tmpDate.year());
+                    } else {
+                        if(nowDate.day() > tmpDate.day()) {
+                            age = '' + (nowDate.year() - tmpDate.year());
+                        } else {
+                            age = '' + (nowDate.year() - tmpDate.year() - 1);
+                        }
+                    }
+                }
+
                 // Start populating the lists
                 openCases = CaseService.getAllOpenCases(theContact.Id);
                 sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
-                // fapList = FinancialAidPackageService.getContactFinancialAidPackages(theContact.Id);
-                // testScoreList = TestScoreService.getTestScores(theContact.Id);
-                // sIList = ServiceIndicatorService.getContactSerivceIndicatorss(theContact.Id);
+                
+                getTermInfo();
                 allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-        
+                
                 // TODO: Find out about this list. It may just be a single object.
                 // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
-        
                 /*
                 * Handling for nulls. Get the Objects as Lists from the different services first.
                 * If the list size is greater than expected, use first Object in list.
                 */
                 List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
                     StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
-        
-                programPlan = new Student_Program_Plan__c();
+                
+                
                 if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0)
                 {
                     for (Student_Program_Plan__c spp: studentProgramPlansBeforeToday)
@@ -135,13 +154,11 @@ global with sharing class StudentProfileController
                         {
                             programPlan = spp;
                             break;
-                        }
-                    }                   
+                        } 
+                    }
                 }
                 
-                ugProgramPlans = new List<Student_Program_Plan__c>();
-                gradProgramPlans = new List<Student_Program_Plan__c>();
-                primaryProgramPlan =  new Student_Program_Plan__c();
+                
                 if (allProgramPlans.size() > 0)    
                 {
                     for (Student_Program_Plan__c spp: allProgramPlans)
@@ -155,9 +172,8 @@ global with sharing class StudentProfileController
                             gradProgramPlans.add(spp);
                     }
                 }
-                
                 List<Student_Program_Subplan__c> tmpSubPlanList = [
-                    			  Select Subplan_description__c
+                            Select Subplan_description__c
                                   FROM Student_Program_Subplan__c
                                   WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
                 ];
@@ -168,37 +184,28 @@ global with sharing class StudentProfileController
                     }
                     subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
                 }
-
                 // Temporary solution for beta release; setting currentTerm to a hard-coded value
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
                 // PeopleSoft only as-needed
-                currentTerm = '2171';
-                
-                try {
-                    if (! theContact.ASU_Online_Student__c) {
-                        suncardPhotoURL = getSuncardPhotoURL(theContact.ASURite_ID__c, theContact.EMPLID__c);
-                    }
-                } catch (Exception e) {
-                    System.debug(e.getMessage());
-                }                
+                currentTerm = '2181';
                 
             } else {
                 failState = true;
                 vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
                 throw new StudentProfileException('URL Parameters are missing or invalid');
             }
-        
             return null;
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
             return null;
         }
     }
-
-    public String getSuncardPhotoURL(String asurite, String emplId) {
+    
+    @RemoteAction
+    global static String getSunCardPhotoRA(String asurite, String emplId) {
         String suncardPhotoURL;
-        vars = new List<String>();
+        List<String> vars = new List<String>();
         
         if (! Test.isRunningTest()) {
             try {
@@ -214,11 +221,11 @@ global with sharing class StudentProfileController
 
         return suncardPhotoURL;
     }
-
+    
     private void getTermInfo()
     {
         vars = new List<String>();
-        List<JBT_RET_TERMS_VW__x> termInfoList;
+        List<JBT_RET_TERMS_VW__x> termInfoList = new List<JBT_RET_TERMS_VW__x>();
        
         try {
             termInfoList = 
@@ -267,7 +274,7 @@ global with sharing class StudentProfileController
     global static JBT_RET_PROFILE_HEADER_VW__x getProfileHeader(String emplId)
     {
         vars = new List<String>();
-        List<JBT_RET_PROFILE_HEADER_VW__x> headerlist;
+        List<JBT_RET_PROFILE_HEADER_VW__x> headerlist = new List<JBT_RET_PROFILE_HEADER_VW__x>();
         
         // Build out list to avoid de-reference null object errors.
         try {
@@ -302,7 +309,7 @@ global with sharing class StudentProfileController
     global static ASU_STDNT_RETENTION__x getStudentRetention(String emplId)
     {
         vars = new List<String>();
-        List<ASU_STDNT_RETENTION__x> stdntList;
+        List<ASU_STDNT_RETENTION__x> stdntList = new List<ASU_STDNT_RETENTION__x>();
         
         // Build out list to avoid de-reference null object errors.
         try {
@@ -353,7 +360,7 @@ global with sharing class StudentProfileController
     {
         vars = new List<String>();
         Set<String> testCodes = getTestCodes(career);
-        List<PS_STDNT_TEST_COMP__x> stdntTestComps;
+        List<PS_STDNT_TEST_COMP__x> stdntTestComps = new List<PS_STDNT_TEST_COMP__x>();
 
         // Build out list to avoid de-reference null object errors.
 /*                SELECT DisplayUrl, EMPLID__c, ExternalId, Id, SCORE__c,
@@ -402,7 +409,7 @@ global with sharing class StudentProfileController
     global static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsUG(String emplId)
     {
         vars = new List<String>();
-        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG;
+        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG = new List<PS_STDNT_CAR_MLSTN__x>();
         
  /*
                 SELECT ACAD_PROG__c, ACAD_CAREER__c, ACAD_PLAN__c,  ANTICIPATED_TERM__c,
@@ -459,7 +466,7 @@ global with sharing class StudentProfileController
     global static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsGrad(String emplId)
     {
         vars = new List<String>();
-        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG;
+        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG = new List<PS_STDNT_CAR_MLSTN__x>();
 /*
                 SELECT ACAD_CAREER__c, ACAD_PLAN__c, ACAD_PROG__c, ANTICIPATED_TERM__c,
                     DATE_COMPLETED__c, DESCR__c, DESCRFORMAL__c, DisplayUrl, EFFDT__c,
@@ -513,7 +520,7 @@ global with sharing class StudentProfileController
     // Get student transcript information
     global static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
         vars = new List<String>();
-        List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts;
+        List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts = new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
         
         // Build out the list to avoid 'null de-reference' errors
         // TODO : Limit only to transcripts less than 365 days old
@@ -549,7 +556,7 @@ global with sharing class StudentProfileController
     global static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId)
     {
         vars = new List<String>();
-        List<ASU_STDNT_RETENTION_SNP__x> retention_snps;
+        List<ASU_STDNT_RETENTION_SNP__x> retention_snps = new List<ASU_STDNT_RETENTION_SNP__x>();
             
         // Build out list to avoid de-reference null object errors.
         try {
@@ -595,7 +602,7 @@ global with sharing class StudentProfileController
     global static List<advNoteWrapper> getPSAdvisorNotes(String emplId)
     {
         vars = new List<String>();
-        List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList;
+        List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = new List<PS_ASU_SP_ADNOTE_V__x>();
         
         List<advNoteWrapper> advNoteWrapperList = new List<advNoteWrapper>();
         List<String> advAsuRiteIds = new List<String>();
@@ -666,7 +673,7 @@ global with sharing class StudentProfileController
     global static List<commentWrapper> getComments(String emplId)
     {
         vars = new List<String>();
-        List<PS_ASU_SP_COMMNT_V__x> commentsList;
+        List<PS_ASU_SP_COMMNT_V__x> commentsList = new List<PS_ASU_SP_COMMNT_V__x>();
         
         List<commentWrapper> commentWrapperList = new List<commentWrapper>();
         Set<String> commenterUserIds = new Set<String>();
@@ -731,7 +738,7 @@ global with sharing class StudentProfileController
     global static List<PS_ASU_SP_GUEST_V__x> getGuestAccess(String emplId)
     {
         vars = new List<String>();
-        List<PS_ASU_SP_GUEST_V__x> guestAccessList;
+        List<PS_ASU_SP_GUEST_V__x> guestAccessList = new List<PS_ASU_SP_GUEST_V__x>();
         
         // Build out list to avoid de-reference null object errors.
         try {
@@ -760,7 +767,7 @@ global with sharing class StudentProfileController
     global static List<JBT_RET_GENERAL_RIGHT__x> getStudentProgramData(String emplId)
     {
         vars = new List<String>();
-        List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList;
+        List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList = new List<JBT_RET_GENERAL_RIGHT__x>();
         
         // Temporary while database issues are investigated
         //return new List<JBT_RET_GENERAL_RIGHT__x>();
@@ -798,7 +805,7 @@ global with sharing class StudentProfileController
     global static JBT_RET_GENERAL_LEFT__x getStudentDemographicData(String emplId)
     {
         vars = new List<String>();
-        List<JBT_RET_GENERAL_LEFT__x> studentDemographicDataList;
+        List<JBT_RET_GENERAL_LEFT__x> studentDemographicDataList = new List<JBT_RET_GENERAL_LEFT__x>();
         
         //Temporary
         //return new JBT_RET_GENERAL_LEFT__x();
@@ -840,11 +847,11 @@ global with sharing class StudentProfileController
     global static academicProgressDataWrapper getAcademicProgressData(String emplId, String career)
     {
         vars = new List<String>();
-        List<JBT_RET_ACAD_SUMMARY_VW__x> academicSummaryList;
-        List<JBT_RET_OTH_IND1_VW__x> otherIndicatorList;
-        List<PS_ASU_SP_AC_STNDV__x> academicStandingList;
-        List<PS_ASU_SP_ACAD_ADV__x> academicAdviserList;
-        List<PS_ASU_SR_COL_PLAN__x> gradPlanList;
+        List<JBT_RET_ACAD_SUMMARY_VW__x> academicSummaryList = new List<JBT_RET_ACAD_SUMMARY_VW__x>();
+        List<JBT_RET_OTH_IND1_VW__x> otherIndicatorList = new List<JBT_RET_OTH_IND1_VW__x>();
+        List<PS_ASU_SP_AC_STNDV__x> academicStandingList = new List<PS_ASU_SP_AC_STNDV__x>();
+        List<PS_ASU_SP_ACAD_ADV__x> academicAdviserList = new List<PS_ASU_SP_ACAD_ADV__x>();
+        List<PS_ASU_SR_COL_PLAN__x> gradPlanList = new List<PS_ASU_SR_COL_PLAN__x>();
         
         academicProgressDataWrapper dataWrapper = new academicProgressDataWrapper();
 
@@ -1005,6 +1012,265 @@ global with sharing class StudentProfileController
 
     }
 
+    @RemoteAction
+    global static List<sortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, boolean sortDirection){
+        List<sortableClass> classList = new List<sortableClass>();
+        sortDirect = sortDirection;
+        for (PS_ASU_SP_CLASS_V__x c : listOfClasses) {
+            classList.add(new sortableClass(c));
+        }
+        
+        paramToSort = paramToSortBy;
+        classList.sort();
+        if(!sortDirection) {
+            List<sortableClass> reversedList = new List<sortableClass>();
+            for(sortableClass sc : classList) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            return reversedList;
+        }
+        return classList;
+    }
+    
+    @RemoteAction
+    global static List<sortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, boolean sortDirection){
+        List<sortableCreditByExam> examList = new List<sortableCreditByExam>();
+        sortDirect = sortDirection;
+        for (PS_ASU_SP_TRNSFR_V__x c : listOfExams) {
+            examList.add(new sortableCreditByExam(c));
+        }
+        
+        examParamSort = paramToSortBy;
+        examList.sort();
+        if(!sortDirection) {
+            List<sortableCreditByExam> reversedList = new List<sortableCreditByExam>();
+            for(sortableCreditByExam sc : examList) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            return reversedList;
+        }
+        return examList;
+    }
+    
+    @RemoteAction
+    global static List<sortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, boolean sortDirection){
+        List<sortableTransferWork> transferList = new List<sortableTransferWork>();
+        sortDirect = sortDirection;
+        for (JBT_RET_CLASS_XFER__x c : listOfTransfer) {
+            transferList.add(new sortableTransferWork(c));
+        }
+        
+        transferParamSort = paramToSortBy;
+        transferList.sort();
+        if(!sortDirection) {
+            List<sortableTransferWork> reversedList = new List<sortableTransferWork>();
+            for(sortableTransferWork sc : transferList) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            return reversedList;
+        }
+        return transferList;
+    }
+
+    global class sortableClass implements Comparable{
+        PS_ASU_SP_CLASS_V__x classInfo;
+        
+        
+        public sortableClass(PS_ASU_SP_CLASS_V__x classIn){
+            classInfo = classIn;
+        }
+        
+        global Integer compareTo(Object compareTo) {
+            sortableClass compareToClass = (sortableClass)compareTo;
+            Integer sortDir = 0;
+            if (paramToSort.equals('Session')) {
+                sortDir = compareToClass.classInfo.SESSION_CODE__c.compareTo(this.classInfo.SESSION_CODE__c);
+            } else if (paramToSort.equals('Class')) {
+                sortDir = compareToClass.classInfo.CLASS_NBR__c.compareTo(this.classInfo.CLASS_NBR__c);
+            } else if (paramToSort.equals('Course')) {
+                sortDir = compareToClass.classInfo.CRSE_ID__c.compareTo(this.classInfo.CRSE_ID__c);
+            } else if (paramToSort.equals('Title')) {
+                sortDir = compareToClass.classInfo.CLASS_DESCR__c.compareTo(this.classInfo.CLASS_DESCR__c);
+            } else if (paramToSort.equals('Topic')) {
+                if(compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c != null) {
+                    sortDir = compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c.compareTo(this.classInfo.SSR_CLSTOPIC_DESCR__c);
+                } else if (compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (paramToSort.equals('Units')) {
+                if(compareToClass.classInfo.UNT_TAKEN__c == this.classInfo.UNT_TAKEN__c){
+                    sortDir = 0;
+                } else if (this.classInfo.UNT_TAKEN__c > compareToClass.classInfo.UNT_TAKEN__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (paramToSort.equals('Instructor')) {
+                if(compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c != null) {
+                    sortDir = compareToClass.classInfo.FT_FULL_NAME__c.compareTo(this.classInfo.FT_FULL_NAME__c);
+                } else if (compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (paramToSort.equals('Days')) {
+                if(compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c != null) {
+                    sortDir = compareToClass.classInfo.SCH_HTML_DAY1__c.compareTo(this.classInfo.SCH_HTML_DAY1__c);
+                } else if (compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (paramToSort.equals('Times')) {
+                if(compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c != null) {
+                    sortDir = compareToClass.classInfo.SCH_DAILY_TIME__c.compareTo(this.classInfo.SCH_DAILY_TIME__c);
+                } else if (compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (paramToSort.equals('Dates')) {
+                sortDir = compareToClass.classInfo.ASU_SCH_DATES__c.compareTo(this.classInfo.ASU_SCH_DATES__c);
+            } else if (paramToSort.equals('Location')) {
+                sortDir = compareToClass.classInfo.SSR_MTG_LOC_LONG__c.compareTo(this.classInfo.SSR_MTG_LOC_LONG__c);
+            } else if (paramToSort.equals('Grade')) {
+                if(compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c != null) {
+                    sortDir = compareToClass.classInfo.CRSE_GRADE_OFF__c.compareTo(this.classInfo.CRSE_GRADE_OFF__c);
+                } else if (compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else {
+                sortDir = 0;
+            }
+            
+            return sortDir * -1;
+        }
+    }
+    
+    global class sortableCreditByExam implements Comparable{
+        PS_ASU_SP_TRNSFR_V__x examInfo;
+        
+        
+        public sortableCreditByExam(PS_ASU_SP_TRNSFR_V__x examIn){
+            examInfo = examIn;
+        }
+        
+        global Integer compareTo(Object compareTo) {
+            sortableCreditByExam compareToExam = (sortableCreditByExam)compareTo;
+            Integer sortDir = 0;
+            if (examParamSort.equals('Title')) {
+                sortDir = compareToExam.examInfo.Title__c.compareTo(this.examInfo.TITLE__c );
+            } else if (examParamSort.equals('Course Title')) {
+                sortDir = compareToExam.examInfo.COURSE_TITLE__c.compareTo(this.examInfo.COURSE_TITLE__c );
+            } else if (examParamSort.equals('Score')) {
+                if(compareToExam.examInfo.SCORE__c == this.examInfo.SCORE__c){
+                    sortDir = 0;
+                } else if (this.examInfo.SCORE__c > compareToExam.examInfo.SCORE__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (examParamSort.equals('Transfer')) {
+                if(compareToExam.examInfo.UNT_TRNSFR__c == this.examInfo.UNT_TRNSFR__c){
+                    sortDir = 0;
+                } else if (this.examInfo.UNT_TRNSFR__c > compareToExam.examInfo.UNT_TRNSFR__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else {
+                sortDir = 0;
+            }
+            
+            return sortDir * -1;
+        }
+    }
+    
+    global class sortableTransferWork implements Comparable{
+        JBT_RET_CLASS_XFER__x  transferInfo;
+        
+        
+        public sortableTransferWork(JBT_RET_CLASS_XFER__x  transferIn){
+            transferInfo = transferIn;
+        }
+        
+        global Integer compareTo(Object compareTo) {
+            sortableTransferWork compareToTransfer = (sortableTransferWork)compareTo;
+            Integer sortDir = 0;
+            if (transferParamSort.equals('Term')) {
+                sortDir = compareToTransfer.transferInfo.TERM__c.compareTo(this.transferInfo.TERM__c );
+            } else if (transferParamSort.equals('Institution')) {
+                sortDir = compareToTransfer.transferInfo.INSTITUTION__c.compareTo(this.transferInfo.INSTITUTION__c );
+            } else if (transferParamSort.equals('Course')) {
+                sortDir = compareToTransfer.transferInfo.COURSE__c.compareTo(this.transferInfo.COURSE__c );
+            } else if (transferParamSort.equals('Title')) {
+                sortDir = compareToTransfer.transferInfo.TITLE__c.compareTo(this.transferInfo.TITLE__c );
+            } else if (transferParamSort.equals('Topic')) {
+                if(compareToTransfer.transferInfo.TOPIC__c != null && this.transferInfo.TOPIC__c != null) {
+                    sortDir = compareToTransfer.transferInfo.TOPIC__c.compareTo(this.transferInfo.TOPIC__c);
+                } else if (compareToTransfer.transferInfo.TOPIC__c != null && this.transferInfo.TOPIC__c == null) {
+                    sortDir = -1;
+                } else {
+                    sortDir = 1;
+                }
+            } else if (transferParamSort.equals('Grade')) {
+                sortDir = compareToTransfer.transferInfo.GRADE__c.compareTo(this.transferInfo.GRADE__c );
+            } else if (transferParamSort.equals('RCredit')) {
+                if(compareToTransfer.transferInfo.RCREDIT__c == this.transferInfo.RCREDIT__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.RCREDIT__c > compareToTransfer.transferInfo.RCREDIT__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (transferParamSort.equals('ECredit')) {
+                if(compareToTransfer.transferInfo.ECREDIT__c == this.transferInfo.ECREDIT__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.ECREDIT__c > compareToTransfer.transferInfo.ECREDIT__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (transferParamSort.equals('Hours')) {
+                if(compareToTransfer.transferInfo.GPAHRS__c == this.transferInfo.GPAHRS__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.GPAHRS__c > compareToTransfer.transferInfo.GPAHRS__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else if (transferParamSort.equals('Points')) {
+                if(compareToTransfer.transferInfo.GPAPTS__c == this.transferInfo.GPAPTS__c){
+                    sortDir = 0;
+                } else if (this.transferInfo.GPAPTS__c > compareToTransfer.transferInfo.GPAPTS__c) {
+                    sortDir = 1;
+                } else {
+                    sortDir = -1;
+                }
+            } else {
+                sortDir = 0;
+            }
+            
+            return sortDir * -1;
+        }
+    }
+    
     global class classesWrapper
     {
         //public Map<String, String> classTerms = new Map<String, String>();
@@ -1014,7 +1280,7 @@ global with sharing class StudentProfileController
 
         public List<PS_ASU_SP_CLASS_V__x> enrolledClasses = new List<PS_ASU_SP_CLASS_V__x>();
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
-
+        
     }
 
     @RemoteAction
@@ -1026,7 +1292,7 @@ global with sharing class StudentProfileController
             List<PS_ASU_SP_ASR_CLSV__x> asrList = new List<PS_ASU_SP_ASR_CLSV__x>();
             Set<String> asrClassSet = new Set<String>();
 
-            List<PS_ASU_SP_CLASS_V__x> classList;
+            List<PS_ASU_SP_CLASS_V__x> classList = new List<PS_ASU_SP_CLASS_V__x>();
             
             try {
                 vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
@@ -1079,11 +1345,11 @@ global with sharing class StudentProfileController
 
             for (PS_ASU_SP_CLASS_V__x course: classList)
             {
-                if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL')
+                if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL') {
                     classesData.enrolledClasses.add(course);
-                else
+                } else {
                     classesData.droppedClasses.add(course);
-
+                }
                 classesData.classTerms.add(course.STRM__c+ '|' + course.TERM_DESCR30__c);
                 classesData.classSessions.add(course.SESSION_CODE__c);
             }     
@@ -1092,7 +1358,7 @@ global with sharing class StudentProfileController
                 classesData.classSessions.add('All');
             }
         }
-
+        
         return classesData;
 
     }
@@ -1101,7 +1367,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static LIST<PS_ASU_SP_TRNSFR_V__x> getCreditByExamData(String emplId)
     {
-        List<PS_ASU_SP_TRNSFR_V__x> creditByExamList;
+        List<PS_ASU_SP_TRNSFR_V__x> creditByExamList = new List<PS_ASU_SP_TRNSFR_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1128,7 +1394,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
     {
-        List<JBT_RET_CLASS_XFER__x> transferWorkList;
+        List<JBT_RET_CLASS_XFER__x> transferWorkList = new List<JBT_RET_CLASS_XFER__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1164,7 +1430,7 @@ global with sharing class StudentProfileController
     {
         balancesWrapper wrapper = new balancesWrapper();
 
-        List<PS_ASU_SP_FA_BAL_V__x> balanceList;
+        List<PS_ASU_SP_FA_BAL_V__x> balanceList = new List<PS_ASU_SP_FA_BAL_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1186,7 +1452,6 @@ global with sharing class StudentProfileController
             wrapper.faBalance = balanceList[0];
 
         List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
-        System.debug('Balance: ' + wrapper.faBalance.BALANCE_AMT__c);
         if (!snpRecords.isEmpty())
         {
             wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;
@@ -1198,7 +1463,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
     {
-        List<Financial_Aid_Package__c> financesPackageList;
+        List<Financial_Aid_Package__c> financesPackageList = new List<Financial_Aid_Package__c>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1224,13 +1489,13 @@ global with sharing class StudentProfileController
     } 
 
     @RemoteAction
-    // Get Service Indicators as a list
+    // Get Service Indicators as a list // done
     global static List<PS_ASU_SP_SVCIND_V__x> getServiceIndicators(String emplId)
     {
         //Temporary
         //return new List<PS_ASU_SP_SVCIND_V__x>();
 
-        List<PS_ASU_SP_SVCIND_V__x> serviceIndicatorList;
+        List<PS_ASU_SP_SVCIND_V__x> serviceIndicatorList = new List<PS_ASU_SP_SVCIND_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1248,6 +1513,14 @@ global with sharing class StudentProfileController
                     ORDER BY SRVC_IND_ACTIVE_DT__c ASC, SRVC_IND_CD__c ASC
                 ]
             );
+            Date currentDate = date.today();
+            
+            for(Integer i = serviceIndicatorList.size()-1; i >= 0; i--){
+                Date tempDate = serviceIndicatorList[i].SCC_SI_END_DT__c;
+                if (tempDate < currentDate) {
+                    serviceIndicatorList.remove(i);
+                }
+            }
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
@@ -1315,7 +1588,7 @@ global with sharing class StudentProfileController
     {
         generalIndicatorsWrapper giData = new generalIndicatorsWrapper();
 
-        List<ASU_STDNT_RETENTION__x> asuStdntRetentionList;
+        List<ASU_STDNT_RETENTION__x> asuStdntRetentionList = new List<ASU_STDNT_RETENTION__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1340,7 +1613,7 @@ global with sharing class StudentProfileController
         if (asuStdntRetentionList.size() > 0)
             giData.asuStudentRetention = asuStdntRetentionList[0];
 
-        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList;
+        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList = new List<JBT_RET_FINAID_INDICATORS__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1376,7 +1649,7 @@ global with sharing class StudentProfileController
             ErrorLogger.log(e, vars, debug);
         }
 
-        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList;
+        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList = new List<PS_ASU_SR_INDASR_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1437,7 +1710,7 @@ global with sharing class StudentProfileController
         
         giData.enrollmentHoldCount = giData.enrollmentHoldInformation.size();
 
-        List<JBT_RET_MYASU_ACCESS_CNT_VW__x> jbtRetMyasuAccessCntVwList;
+        List<JBT_RET_MYASU_ACCESS_CNT_VW__x> jbtRetMyasuAccessCntVwList = new List<JBT_RET_MYASU_ACCESS_CNT_VW__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1466,7 +1739,7 @@ global with sharing class StudentProfileController
     global static JBT_RET_FINAID_INDICATORS__x getFinAidIndicator(String emplid)
     {
 
-        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList;
+        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList = new List<JBT_RET_FINAID_INDICATORS__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1490,7 +1763,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static List<JBT_RET_FINAID_UNRESOLVED__x> getFinAidUnresolved(String emplid, String currentTerm)
     {
-        List<JBT_RET_FINAID_UNRESOLVED__x> jbtRetFinaidUnresolvedList;
+        List<JBT_RET_FINAID_UNRESOLVED__x> jbtRetFinaidUnresolvedList = new List<JBT_RET_FINAID_UNRESOLVED__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1516,7 +1789,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static PS_ASU_SR_INDASR_V__x getAsrIndicator(String emplid, String currentTerm)
     {
-        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList;
+        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList = new List<PS_ASU_SR_INDASR_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1542,7 +1815,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static List<PS_ASU_SR_ASR_INDV__x> getAsrInformation(String emplid, String currentTerm)
     {
-        List<PS_ASU_SR_ASR_INDV__x> asrInformationList;
+        List<PS_ASU_SR_ASR_INDV__x> asrInformationList = new List<PS_ASU_SR_ASR_INDV__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1569,7 +1842,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static List<PS_ASU_SP_ENRHLD_V__x> getEnrollmentHolds(String emplid, String currentTerm)
     {
-        List<PS_ASU_SP_ENRHLD_V__x> enrollmentHoldList;
+        List<PS_ASU_SP_ENRHLD_V__x> enrollmentHoldList = new List<PS_ASU_SP_ENRHLD_V__x>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -1595,7 +1868,7 @@ global with sharing class StudentProfileController
     @RemoteAction
     global static me3__c getMe3Results(String contactId)
     {
-        List<me3__c> me3List;
+        List<me3__c> me3List = new List<me3__c>();
         
         try {
             vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
@@ -1623,6 +1896,59 @@ global with sharing class StudentProfileController
         return (me3List.size() > 0? me3List[0] : new me3__c());
     }    
 
+     @RemoteAction
+    global static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
+        List<REZ_HOUSING_BOOKING_VW__x> housingInfoList = new List<REZ_HOUSING_BOOKING_VW__x>();
+
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            
+            if (! Test.isRunningTest()) {
+                housingInfoList =
+                [
+                    SELECT
+                        BOOKING_BUILDING__c, BOOKING_CAMPUS__c,
+                        BOOKING_FLOOR_SUITE__c, BOOKING_SECTION__c,
+                        BOOKING_STATUS__c, CHECK_IN_DT__c, CHECK_OUT_DT__c,
+                        TERM_CD__c
+                    FROM REZ_HOUSING_BOOKING_VW__x
+                    WHERE EMPLID__c = :emplId
+                    AND TERM_CD__c = :currentTerm
+                    ORDER BY CHECK_OUT_DT__c DESC
+                ];
+            }
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        
+        return housingInfoList;
+    }
+    
+    @RemoteAction
+    global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
+        try{
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
+            Id student = [SELECT Id FROM Contact WHERE emplId__c =: emplidIn LIMIT 1].Id;
+            RecordType rt = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
+            Case feedbackCase = new Case(
+                        status = 'New',
+                        RecordType = rt,
+                        contactId = student,
+                        subject = subjectIn,
+                        description = descriptionIn,
+                        Origin__c = 'Student Profile',
+                        IsVisibleInSelfService = false
+            );
+                    
+            insert feedbackCase;
+            
+            return feedbackCase.Id;
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+        return null;
+    }
+    
     public String subPlanString {
         get{
             if(subPlanString == null){
@@ -1630,7 +1956,6 @@ global with sharing class StudentProfileController
             }
             else{
                 return subPlanString;
-
             }
         }
         set;

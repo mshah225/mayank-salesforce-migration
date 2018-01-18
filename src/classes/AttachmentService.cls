@@ -48,7 +48,7 @@ public with sharing class AttachmentService {
 	                if (caseUpdate.Description == null) {
 	                    caseUpdate.Description = ' Attachment received at ' + Datetime.now().formatLong();
 	                }
-	                casesToUpdate.Put(caseUpdate.Id,c);
+	                casesToUpdate.Put(caseUpdate.Id, caseUpdate);
 	            }
 	            // Verify that all entries have values before returning
 	            for (Id i : casesToUpdate.keySet()) {

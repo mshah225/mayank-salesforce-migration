@@ -449,69 +449,69 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
 
-    // @isTest static void testViewCase(){
-    //         User testUser = [
-    //         SELECT Id, ContactId
-    //         FROM User
-    //         WHERE FirstName = 'Test0'
-    //     ];
-	//
-    //     Contact testContact = [
-    //         SELECT Id, Self_Service_PIN__c
-    //         FROM Contact
-    //         WHERE Id = :testUser.ContactId
-    //     ];
-	//
-    //     Case testCase = [
-    //         SELECT Id
-    //         FROM Case
-    //         WHERE ContactId = :testUser.ContactId
-    //         LIMIT 1
-    //     ];
-	//
-    //      List<Opportunity> oppList = [
-    //         SELECT Career__c, Term__c, StageName, Admitted_Session__c
-    //         FROM Opportunity
-    //         WHERE Contact__c = :testUser.ContactId
-    //     ];
-	//
-    //     PageReference viewCase = Page.viewcase;
-    //     viewCase.getParameters().put('id', testCase.Id);
-    //     Test.setCurrentPage(viewCase);
-	//
-    //     Test.startTest();
-	//
-    //     System.runAs(testUser){
-    //         vcc=new viewCaseController();
-    //         vcc.newPin = testContact.Self_Service_PIN__c;
-    //         PageReference error = ApexPages.currentPage();
-    //         error.getParameters().put('PIN', 'error');
-    //         System.assertEquals(error.getURL(), vcc.changePin().getURL());
-	//
-    //         vcc.newPin = 111111;
-    //         PageReference error2 = ApexPages.currentPage();
-    //         error2.getParameters().put('PIN', 'error');
-    //         System.assertEquals(error2.getURL(), vcc.changePin().getURL());
-	//
-    //         vcc.newPin = 574838;
-    //         PageReference submit = ApexPages.currentPage();
-    //         submit.getParameters().put('PIN', 'success');
-    //         System.assertEquals(submit.getURL(), vcc.changePin().getURL());
-    //
-    //         vcc.getCaseDetails();
-    //         vcc.getEmailMessages();
-    //         vcc.getChatMessages();
-    //
-    //         vcc.viewingAs=true;
-    //         vcc.getCaseDetails();
-    //         vcc.getEmailMessages();
-    //         vcc.getChatMessages();
-    //         vcc.changePin();
-    //     }
-	//
-    //     Test.stopTest();
-	//
-    // }
+     @isTest static void testViewCase(){
+             User testUser = [
+             SELECT Id, ContactId
+             FROM User
+             WHERE FirstName = 'Test0'
+         ];
+	
+         Contact testContact = [
+             SELECT Id, Self_Service_PIN__c
+             FROM Contact
+             WHERE Id = :testUser.ContactId
+         ];
+	
+         Case testCase = [
+             SELECT Id
+             FROM Case
+             WHERE ContactId = :testUser.ContactId
+             LIMIT 1
+         ];
+	
+          List<Opportunity> oppList = [
+             SELECT Career__c, Term__c, StageName, Admitted_Session__c
+             FROM Opportunity
+             WHERE Contact__c = :testUser.ContactId
+         ];
+	
+         PageReference viewCase = Page.viewcase;
+         viewCase.getParameters().put('id', testCase.Id);
+         Test.setCurrentPage(viewCase);
+	
+         Test.startTest();
+	
+         System.runAs(testUser){
+             vcc=new viewCaseController();
+             vcc.newPin = testContact.Self_Service_PIN__c;
+             PageReference error = ApexPages.currentPage();
+             error.getParameters().put('PIN', 'error');
+             System.assertEquals(error.getURL(), vcc.changePin().getURL());
+	
+             vcc.newPin = 111111;
+             PageReference error2 = ApexPages.currentPage();
+             error2.getParameters().put('PIN', 'error');
+             System.assertEquals(error2.getURL(), vcc.changePin().getURL());
+	
+             vcc.newPin = 574838;
+             PageReference submit = ApexPages.currentPage();
+             submit.getParameters().put('PIN', 'success');
+             System.assertEquals(submit.getURL(), vcc.changePin().getURL());
+    
+             vcc.getCaseDetails();
+             vcc.getEmailMessages();
+             vcc.getChatMessages();
+    
+             vcc.viewingAs=true;
+             vcc.getCaseDetails();
+             vcc.getEmailMessages();
+             vcc.getChatMessages();
+             vcc.changePin();
+         }
+	
+         Test.stopTest();
+	
+     }
     @isTest static void testErrorSubmitCase(){
         User testUser = [
             SELECT Id, ContactId
@@ -592,5 +592,4 @@ private class Test_ServiceCenter{
         List<Case> lstCase=[Select Id, Subject, Description from Case where Origin__c='Error Logger'];
         System.assertEquals(lstCase.size(),1);
     }
-
 }

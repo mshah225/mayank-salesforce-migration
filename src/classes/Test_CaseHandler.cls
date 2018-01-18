@@ -351,6 +351,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Case_Source__c = camp.Id,
                                Associate_Case_to_Active_Opportunity__c = false,
+                               CC_Functional_Group__c = fg.Id,
+                               CC_Category__c = cat.Id,
                                Subject='Test Subject',
                                Description='Test Desc',
                                Status='In Progress');
@@ -369,7 +371,7 @@ public with sharing class Test_CaseHandler {
         List<Case> newCaseList = new List<Case>([SELECT Id, CC_Category__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
-            //system.assert(ca.CC_Category__c == cat.Id, 'Case Category was not assigned to CAR Category');
+            system.assert(ca.CC_Category__c == cat.Id, 'Case Category was not assigned to CAR Category');
         }
     }
 
@@ -595,10 +597,10 @@ public with sharing class Test_CaseHandler {
         string queueId = String.valueOf(testGroup.Id).substring(0,15);
         string templateId = String.valueOf(e.Id).substring(0,15);
 
-        TestDataFactory.createFunctionalGroupWithCategory('Admission Services - Undergraduate', 'Test Category', 'Test Subcategory');
-        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services - Undergraduate'];
-        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
-        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services', 'Recruitment - Cat', 'Recruitment - Sub Cat');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Recruitment - Cat' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Recruitment - Sub Cat' AND Parent__c =: cat.Id];
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(Email_Address__c='service@test.test',
                                                                   customer_notice_email_from_name__c = 'Test Service',
@@ -658,6 +660,8 @@ public with sharing class Test_CaseHandler {
                                RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
                                Case_Source__c = camp.Id,
                                Associate_Case_to_Active_Opportunity__c = false,
+                               CC_Functional_Group__c = fg.Id,
+                               CC_Category__c = cat.Id,
                                Subject='Test Subject',
                                Description='Test Desc',
                                Status='In Progress');
@@ -676,7 +680,7 @@ public with sharing class Test_CaseHandler {
         List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, OwnerId FROM Case WHERE ContactId IN :contactIds]);
         for (Case ca: newCaseList) {
             system.assert(ca.OwnerId == TMUser.Id, 'Case owner was not assigned to CAR Queue/User');
-            //system.assert(ca.CC_functional_group__c == fg.Id, 'Case Functional Group was not assigned to CAR Functional Group');
+            system.assert(ca.CC_functional_group__c == fg.Id, 'Case Functional Group was not assigned to CAR Functional Group');
         }
     }
 
@@ -1175,5 +1179,201 @@ public with sharing class Test_CaseHandler {
 
         Case stat = [SELECT Status FROM Case WHERE Id = :c.Id LIMIT 1];
         System.assert(stat.Status == 'Processing');
+    }
+
+    static testmethod void TestRejectWebformsCaseReopen()
+    {
+        Id fa_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'Financial Aid (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        User apiDrupalUser = [
+            SELECT Id
+            FROM User
+            WHERE Name = 'API ASU DRUPAL'
+        ];
+
+        Contact con = createContact();
+        Case c = createCase(fa_id, con);
+        c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
+        c.Number_of_Files__c = '3';
+        update c;
+
+        Test.startTest();
+        System.runAs(apiDrupalUser)
+        {
+            c.Subject = 'Test Subject%ASURITE:' + con.EMPLID__c + '%Queue:' + fa_id + '%First:' + con.FirstName + '%Last:' + con.LastName;
+            c.Status = 'Processing';
+            c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
+            update c;
+        }
+        Test.stopTest();
+
+        c = [
+            SELECT Status, Subject
+            FROM Case
+            WHERE Id = :c.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('Closed: Resolved', c.Status);
+        System.assertEquals('Test Subject', c.Subject);
+    }
+
+    private static testMethod void testAssignRTAdOutreach() {
+
+        TestDataFactory.createFunctionalGroupWithCategory('ASU Advisor Outreach', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'ASU Advisor Outreach'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+
+
+        List<Contact> contactList = createContacts(1);
+        insert contactList;
+
+        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
+        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
+
+        List<Case> caseList = new List<Case>();
+        for (Contact c: contactList) {
+            Case ca = new Case(ContactId = c.Id,
+                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
+                               Subject='Test Subject',
+                               CC_functional_group__c = fg.Id,
+                               Description='Test Desc',
+                               Status='In Progress');
+            caseList.add(ca);
+        }
+
+        Test.startTest();
+        LogSuite.activateTestFlowSuite('Test Admissions Case Webform Functional Group Assignment');
+        insert caseList;
+        LogSuite.deactivateTestFlowSuite();
+        Test.stopTest();
+
+        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, RecordTypeId FROM Case ]);
+        for (Case ca: newCaseList) {
+            system.assertEquals(ca.RecordTypeId, CaseRecordTypeInfo.get('(Admin Only) ASU Advisor Outreach').getRecordTypeId());
+        }
+    }
+
+    private static testMethod void testAssignRTCoachOutreach() {
+
+        TestDataFactory.createFunctionalGroupWithCategory('ASU Coach Outreach', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'ASU Coach Outreach'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+
+
+        List<Contact> contactList = createContacts(1);
+        insert contactList;
+
+        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
+        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
+
+        List<Case> caseList = new List<Case>();
+        for (Contact c: contactList) {
+            Case ca = new Case(ContactId = c.Id,
+                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
+                               Subject='Test Subject',
+                               CC_functional_group__c = fg.Id,
+                               Description='Test Desc',
+                               Status='In Progress');
+            caseList.add(ca);
+        }
+
+        Test.startTest();
+        LogSuite.activateTestFlowSuite('Test Admissions Case Webform Functional Group Assignment');
+        insert caseList;
+        LogSuite.deactivateTestFlowSuite();
+        Test.stopTest();
+
+        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, RecordTypeId FROM Case ]);
+        for (Case ca: newCaseList) {
+            system.assertEquals(ca.RecordTypeId, CaseRecordTypeInfo.get('ASU Coach Outreach').getRecordTypeId());
+        }
+    }
+
+    private static testMethod void testAssignRTAdService() {
+
+        TestDataFactory.createFunctionalGroupWithCategory('Admission Services', 'Recruitment', 'Recruitment');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Admission Services'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Recruitment' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Recruitment' AND Parent__c =: cat.Id];
+
+
+        List<Contact> contactList = createContacts(1);
+        insert contactList;
+
+        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
+        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
+
+        List<Case> caseList = new List<Case>();
+        for (Contact c: contactList) {
+            Case ca = new Case(ContactId = c.Id,
+                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
+                               Subject='Test Subject',
+                               CC_functional_group__c = fg.Id,
+                               Description='Test Desc',
+                               Status='In Progress');
+            caseList.add(ca);
+        }
+
+        Test.startTest();
+        LogSuite.activateTestFlowSuite('Test Admissions Case Webform Functional Group Assignment');
+        insert caseList;
+        LogSuite.deactivateTestFlowSuite();
+        Test.stopTest();
+
+        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, RecordTypeId FROM Case ]);
+        for (Case ca: newCaseList) {
+            system.assertEquals(ca.RecordTypeId, CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId());
+        }
+    }
+
+    private static testMethod void testAssignRTService() {
+
+        TestDataFactory.createFunctionalGroupWithCategory('ASU Salesforce Support', 'Test Category', 'Test Subcategory');
+        Case_Classification__c fg = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'ASU Salesforce Support'];
+        Case_Classification__c cat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Category' AND Active__c = true AND Name = 'Test Category' AND Parent__c =: fg.Id];
+        Case_Classification__c subCat = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Sub Category' AND Active__c = true AND Name = 'Test Subcategory' AND Parent__c =: cat.Id];
+
+
+        List<Contact> contactList = createContacts(1);
+        insert contactList;
+
+        Schema.DescribeSObjectResult cfrSchema2 = Schema.SObjectType.Case;
+        Map<String,Schema.RecordTypeInfo> CaseRecordTypeInfo = cfrSchema2.getRecordTypeInfosByName();
+
+        List<Case> caseList = new List<Case>();
+        for (Contact c: contactList) {
+            Case ca = new Case(ContactId = c.Id,
+                               RecordTypeId = CaseRecordTypeInfo.get('ASU Admission Services').getRecordTypeId(),
+                               Subject='Test Subject',
+                               CC_functional_group__c = fg.Id,
+                               CC_Category__c = cat.Id,
+                               CC_Sub_Category__c = subCat.Id,
+                               Description='Test Desc',
+                               Status='In Progress');
+            caseList.add(ca);
+        }
+
+        Test.startTest();
+        LogSuite.activateTestFlowSuite('Test Admissions Case Webform Functional Group Assignment');
+        insert caseList;
+        LogSuite.deactivateTestFlowSuite();
+        Test.stopTest();
+
+        //List<Opportunity> newOppList = new List<Opportunity>([SELECT Id, primary_interest__c FROM Opportunity WHERE Contact__c IN :contactIds]);
+        List<Case> newCaseList = new List<Case>([SELECT Id, CC_functional_group__c, RecordTypeId FROM Case ]);
+        for (Case ca: newCaseList) {
+            system.assertEquals(ca.RecordTypeId, CaseRecordTypeInfo.get('ASU Service').getRecordTypeId());
+        }
     }
 }

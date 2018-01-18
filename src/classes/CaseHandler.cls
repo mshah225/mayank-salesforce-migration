@@ -4,6 +4,13 @@ public without sharing class CaseHandler implements ITrigger {
     Map<Id, String> groupNameMap = new Map<Id, String>();
     List<RecordType> recruitmentCaseRT;
     Savepoint sp;
+    public Map<Id, String> mapCCIdToName;
+
+    public final String RT_ADMIN_ONLY_ASU_ADVISOR_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('(Admin Only) ASU Advisor Outreach').getRecordTypeId();
+    public final String RT_ASU_COACH_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Coach Outreach').getRecordTypeId();
+    public final String RT_ASU_ADMISSION_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Admission Services').getRecordTypeId();
+    public final String RT_ASU_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Service').getRecordTypeId();
+    public final String RT_ASU_STUDENT_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Student Outreach').getRecordTypeId();
 
     /**
     * bulkBefore
@@ -17,6 +24,7 @@ public without sharing class CaseHandler implements ITrigger {
         groupNameMap = GroupService.mapGroupIdToName();
 		Set<String> caseClassificationsToQuery = new Set<String>();
 		List<CaseClassifier> casesToClassify = new List<CaseClassifier>();
+		Set<Id> setOfCaseClassficationId = new Set<Id>();
 
         if (Trigger.isInsert) {
             LogSuite.log('query', 'Calling recruitment case RT query');
@@ -44,6 +52,10 @@ public without sharing class CaseHandler implements ITrigger {
 					caseClassificationsToQuery.addAll(classifier.getMissingClassifications());
 					casesToClassify.add(classifier);
 				}
+				// populate CaseClassification Ids into list for a bulk query
+				setOfCaseClassficationId.add(c.CC_Functional_Group__c);
+				setOfCaseClassficationId.add(c.CC_Category__c);
+				setOfCaseClassficationId.add(c.CC_Sub_Category__c);
 			}
 
             LogSuite.log('query', 'Calling related contact map query');
@@ -51,18 +63,21 @@ public without sharing class CaseHandler implements ITrigger {
 
             if (campaignIdSet.size() > 0) {
                 LogSuite.log('query', 'Calling source map query');
-                sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.Category__c, Case_Assignment_Rule__r.Sub_Category__c, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.Functional_Group__c, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
+                sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.CC_Category__c, Case_Assignment_Rule__r.CC_Category__r.Name, Case_Assignment_Rule__r.CC_Sub_Category__c, Case_Assignment_Rule__r.CC_Sub_Category__r.Name, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.CC_Functional_Group__c, Case_Assignment_Rule__r.CC_Functional_Group__r.Name, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN :campaignIdSet]);
             }
 
-			if (!casesToClassify.isEmpty()) {
-				List<Case_Classification__c> classifications = [
-					SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
-					FROM Case_Classification__c
-					WHERE Name IN :caseClassificationsToQuery
-					AND Active__c = TRUE
-				];
-				Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
-				for (Case_Classification__c classification : classifications) {
+            // SFE-11309 - Refactor, needs this query to be run atleast once
+			List<Case_Classification__c> classifications = [
+				SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
+				FROM Case_Classification__c
+				WHERE (Name IN :caseClassificationsToQuery AND Active__c = TRUE)
+					OR (ID IN: setOfCaseClassficationId)
+			];
+			Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
+			mapCCIdToName = new Map<Id, String>();
+			for (Case_Classification__c classification : classifications) {
+				// If check to sort based on if caseClassificationsToQuery or lstCaseClassfication
+				if(!setOfCaseClassficationId.contains(classification.Id)) {
 					String classificationName = CaseClassifier.getClassificationUniqueName(
 						classification.Name,
 						classification.Parent__c == null ? '' : classification.Parent__r.Name,
@@ -70,14 +85,29 @@ public without sharing class CaseHandler implements ITrigger {
 						classification.RecordType.Name);
 					nameToClassification.put(classificationName, classification);
 				}
-
-				for (CaseClassifier caseToClassify : casesToclassify) {
-					caseToClassify.classifyCase(nameToClassification);
-				}
+				mapCCIdToName.put(classification.Id, classification.Name);
 			}
+
+			for (CaseClassifier caseToClassify : casesToclassify) {
+				caseToClassify.classifyCase(nameToClassification);
+			}
+
+            // classification has been completed, so we can update the old values as per new values
+            // SFE-11309; Update the Old CC fields as per new CC field values
+            for (Case caseRecord : (List<Case>)Trigger.new) {
+                caseRecord.Functional_Group__c = mapCCIdToName.get(caseRecord.CC_Functional_Group__c);
+                caseRecord.Category__c =  mapCCIdToName.get(caseRecord.CC_Category__c);
+                caseRecord.Sub_Category__c = mapCCIdToName.get(caseRecord.CC_Sub_Category__c);
+                if(caseRecord.Original_Functional_Group__c == null) {
+                    caseRecord.Original_Functional_Group__c = caseRecord.Functional_Group__c;
+                    caseRecord.Original_Category__c = caseRecord.Category__c;
+                }
+                assignRecordType(caseRecord);
+            }
+
         }
         else if (Trigger.isUpdate) {
-            //Handles Webform cases (webforms.asu.edu)
+			//Handles Webform cases (webforms.asu.edu)
             for (Case c : (List<Case>)Trigger.new) {
                 if (c.Status == 'Processing' && c.Deep_Links__c != NULL) {
                     List<String> links = c.Deep_Links__c.split('Click Here');
@@ -121,29 +151,48 @@ public without sharing class CaseHandler implements ITrigger {
 					caseClassificationsToQuery.addAll(classifier.getMissingClassifications());
 					casesToClassify.add(classifier);
 				}
+				// after classification has been done, populate CaseClassification Ids into list for a bulk query
+				setOfCaseClassficationId.add(c.CC_Functional_Group__c);
+				setOfCaseClassficationId.add(c.CC_Category__c);
+				setOfCaseClassficationId.add(c.CC_Sub_Category__c);
             }
 
-			if (!casesToClassify.isEmpty()) {
-				List<Case_Classification__c> classifications = [
-					SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
-					FROM Case_Classification__c
-					WHERE Name IN :caseClassificationsToQuery
-					AND Active__c = TRUE
-				];
-				Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
-				for (Case_Classification__c classification : classifications) {
-					String classificationName = CaseClassifier.getClassificationUniqueName(
+            // SFE-11309 - Refactor, needs this query to be run atleast once
+			List<Case_Classification__c> classifications = [
+				SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
+				FROM Case_Classification__c
+				WHERE (Name IN :caseClassificationsToQuery AND Active__c = TRUE)
+					OR (ID IN: setOfCaseClassficationId)
+			];
+			Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
+			mapCCIdToName = new map<Id, String>();
+
+			for (Case_Classification__c classification : classifications) {
+			    if(!setOfCaseClassficationId.contains(classification.Id)) {
+			        String classificationName = CaseClassifier.getClassificationUniqueName(
 						classification.Name,
 						classification.Parent__c == null ? '' : classification.Parent__r.Name,
 						(classification.Parent__c == null || classification.Parent__r.Parent__c == null) ? '' :  classification.Parent__r.Parent__r.Name,
 						classification.RecordType.Name);
 					nameToClassification.put(classificationName, classification);
-				}
-
-				for (CaseClassifier caseToClassify : casesToclassify) {
-					caseToClassify.classifyCase(nameToClassification);
-				}
+			    }
+			    mapCCIdToName.put(classification.Id, classification.Name);
 			}
+
+			for (CaseClassifier caseToClassify : casesToclassify) {
+				caseToClassify.classifyCase(nameToClassification);
+			}
+
+            // classification has been completed, so we can update the old values as per new values
+            // SFE-11309; Update the Old CC fields as per new CC field values
+            // checks if CC exists and Name is not null
+            for (Case caseRecord : (List<Case>)Trigger.new) {
+                caseRecord.Functional_Group__c = mapCCIdToName.get(caseRecord.CC_Functional_Group__c);
+                caseRecord.Category__c =  mapCCIdToName.get(caseRecord.CC_Category__c);
+                caseRecord.Sub_Category__c = mapCCIdToName.get(caseRecord.CC_Sub_Category__c);
+
+                assignRecordType(caseRecord);
+            }
         }
     }
 
@@ -318,17 +367,17 @@ public without sharing class CaseHandler implements ITrigger {
                         {
                             c.Origin__c = source.Case_Assignment_Rule__r.Origin__c;
                         }
-                        if (source.Case_Assignment_Rule__r.Category__c != null)
+                        if (source.Case_Assignment_Rule__r.CC_Category__c != null)
                         {
-                            c.Category__c = source.Case_Assignment_Rule__r.Category__c;
+                            c.CC_Category__c = source.Case_Assignment_Rule__r.CC_Category__c;
                         }
-                        if (source.Case_Assignment_Rule__r.Sub_Category__c != null)
+                        if (source.Case_Assignment_Rule__r.CC_Sub_Category__c != null)
                         {
-                            c.Sub_Category__c = source.Case_Assignment_Rule__r.Sub_Category__c;
+                            c.CC_Sub_Category__c = source.Case_Assignment_Rule__r.CC_Sub_Category__c;
                         }
-                        if (source.Case_Assignment_Rule__r.Functional_Group__c != null)
+                        if (source.Case_Assignment_Rule__r.CC_Functional_Group__c != null)
                         {
-                            c.Functional_Group__c =source.Case_Assignment_Rule__r.Functional_Group__c;
+                            c.CC_Functional_Group__c =source.Case_Assignment_Rule__r.CC_Functional_Group__c;
                         }
                     }
                     else
@@ -344,7 +393,7 @@ public without sharing class CaseHandler implements ITrigger {
                             if (defaultCAR == null)
                             {
                                 LogSuite.log('query', 'Calling default CAR query');
-                                defaultCar = [SELECT Id, Queue_ID__c, Origin__c, Category__c, Sub_Category__c, Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
+                                defaultCar = [SELECT Id, Queue_ID__c, Origin__c, CC_Category__c, CC_Sub_Category__c, CC_Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
                                 if (!(defaultCAR == null))
                                 {
                                     // SFE-690 Apply TM/EC logic to API users as well as non-API users
@@ -379,17 +428,17 @@ public without sharing class CaseHandler implements ITrigger {
                                         {
                                             c.Origin__c = defaultCAR.Origin__c;
                                         }
-                                        if (defaultCAR.Category__c != null)
+                                        if (defaultCAR.CC_Category__c != null)
                                         {
-                                            c.Category__c = defaultCAR.Category__c;
+                                            c.CC_Category__c = defaultCAR.CC_Category__c;
                                         }
-                                        if (defaultCAR.Sub_Category__c != null)
+                                        if (defaultCAR.CC_Sub_Category__c != null)
                                         {
-                                            c.Sub_Category__c = defaultCAR.Sub_Category__c;
+                                            c.CC_Sub_Category__c = defaultCAR.CC_Sub_Category__c;
                                         }
-                                        if (defaultCAR.Functional_Group__c != null)
+                                        if (defaultCAR.CC_Functional_Group__c != null)
                                         {
-                                            c.Functional_Group__c = defaultCAR.Functional_Group__c;
+                                            c.CC_Functional_Group__c = defaultCAR.CC_Functional_Group__c;
                                         }
                                     }
                                 }
@@ -490,4 +539,37 @@ public without sharing class CaseHandler implements ITrigger {
     */
     public void andFinally() {}
 
+    /**
+    * assignRecordType
+    * @description: processes the case record and assigns a particular record type
+    *               based on various conditions, called in bulkBefore and bulkAfter
+    * @caseRecord: Input case record coming from before and after context
+    */
+    public void assignRecordType(Case caseRecord) {
+        if (mapCCIdToName.containsKey(caseRecord.CC_Functional_Group__c)) {
+            if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Advisor Outreach')) {
+                caseRecord.RecordTypeId = RT_ADMIN_ONLY_ASU_ADVISOR_OUTREACH;
+            } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Coach Outreach')) {
+                caseRecord.RecordTypeId = RT_ASU_COACH_OUTREACH;
+            } else if ((caseRecord.RecordTypeId == RT_ASU_SERVICE && !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Salesforce Support')) &&
+                (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') ||
+                (mapCCIdToName.containsKey(caseRecord.CC_Category__c) && mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment')) ||
+                (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) && mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
+            ) {
+                caseRecord.RecordTypeId = RT_ASU_ADMISSION_SERVICE;
+            } else if (caseRecord.RecordTypeId == RT_ASU_ADMISSION_SERVICE &&
+                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') &&
+                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('External Unit') &&
+                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Disability Resource Center') &&
+                (caseRecord.CC_Category__c == null || (mapCCIdToName.containsKey(caseRecord.CC_Category__c) && !mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment'))) &&
+                (caseRecord.CC_Sub_Category__c == null || (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) && !mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
+            ) {
+                caseRecord.RecordTypeId = RT_ASU_SERVICE;
+            } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Financial Aid') &&
+                mapCCIdToName.containsKey(caseRecord.CC_Category__c) && mapCCIdToName.get(caseRecord.CC_Category__c).equalsIgnoreCase('Outreach')
+            ) {
+                caseRecord.RecordTypeId = RT_ASU_STUDENT_OUTREACH;
+            }
+        }
+    }
 }

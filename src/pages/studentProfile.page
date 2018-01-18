@@ -924,7 +924,6 @@
                                                 </h4>
                                         </div>
                                         
-                                        <!-- Transcripts Sent -->
                                         <div style="overflow:auto; max-height:310px; height: 310px">
                                             <c:CivitasPersistenceData />
                                         </div>
@@ -3078,7 +3077,7 @@
                     );
                 }
             }
-    
+            
             // Method to retention snps.
             function getRetentionSNPs() {
                 if (!indicatorHistoryLoaded) {

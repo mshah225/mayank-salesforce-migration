@@ -102,47 +102,13 @@ public without sharing class CaseHandler implements ITrigger {
                 assignRecordType(caseRecord);
             }
 
-        }
-        else if (Trigger.isUpdate) {
-			//Handles Webform cases (webforms.asu.edu)
-            CaseService.handleClosingWebformsCases();
+        } else if (Trigger.isUpdate) {
             for (Case c : (List<Case>)Trigger.new) {
-                if (c.Status == 'Processing' && c.Deep_Links__c != NULL) {
-                    List<String> links = c.Deep_Links__c.split('Click Here');
-                    if (links.size() == (Integer.valueof(c.Number_of_Files__c) + 1)) {
-                        c.Status = 'New';
-
-                        List<String> subjectSplit = c.Subject.split('%');
-                        if (subjectSplit.size() >= 2) {
-                            String queueId = '';
-                            for (Integer x = 0; x < subjectSplit.size(); x++) {
-                                List<String> tokenSplit = subjectSplit[x].split(':');
-                                if (tokenSplit.size() >= 2 && tokenSplit[0] == 'Queue' && tokenSplit[1] != '') {
-                                    queueId = tokenSplit[1];
-                                    c.OwnerId = queueId;
-                                    System.debug(c.OwnerId);
-                                }
-
-                            }
-                            c.Subject = subjectSplit[0];
-                        }
-
-                        LogSuite.log('query', 'Calling FA case queue query');
-                        Id faCaseQueue = [
-                                SELECT Id
-                                FROM Group
-                                WHERE Name = 'Financial Aid (Case)'
-                                AND Type = 'Queue' LIMIT 1
-                        ].Id;
-
-                        if (c.OwnerId == faCaseQueue) {
-                            c.Visible_By_Contact__c = FALSE;
-                            c.Status = 'Closed: Resolved';
-                            c.IsClosedOnCreate = TRUE;
-                        }
-                    }
-                }
-
+                //Handles Webform cases from webforms.asu.edu
+                Case previousCaseState = (Case) Trigger.oldMap.get(c.Id);
+                CaseWebformCloser closer = new CaseWebformCloser(c, previousCaseState);
+                closer.handleWebformCase();
+                
 				// Check each incoming case for valid classification fields.
 				CaseClassifier classifier = new CaseClassifier(c);
 				if (classifier.hasInvalidCaseClassification()) {

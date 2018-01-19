@@ -1,6 +1,5 @@
 public class CaseService
 {
-    public static Id faCaseQueueId;
 
     /**
     * Returns all the fields on Case in a String
@@ -243,84 +242,6 @@ public class CaseService
         }
 
         return testCases;
-    }
-
-    //Handles Webform cases (webforms.asu.edu)
-    public static void handleClosingWebformsCases() 
-    {
-        for(Integer x = 0; x < Trigger.new.size(); x++) 
-        {
-            Case c = (Case) Trigger.new.get(x);
-            Case oldC = (Case) Trigger.old.get(x);
-
-
-            if (
-                oldC.Status == 'Closed: Resolved (Webforms)' && 
-                oldC.Deep_Links__c != NULL &&
-                oldC.Deep_Links__c.split('Click Here').size() == (Integer.valueof(c.Number_of_Files__c) + 1) &&
-                UserInfo.getName() == 'API ASU DRUPAL'    
-            ) 
-            {
-                c.Status = oldC.Status;
-                c.Deep_Links__c = oldC.Deep_Links__c;
-                c.Subject = oldC.Subject;
-            } 
-            else if (
-                c.Status == 'Processing' && 
-                c.Deep_Links__c != NULL
-            ) 
-            {
-                List<String> deepLinksSplit = c.Deep_Links__c.split('Click Here');
-                List<String> subjectSplit = c.Subject.split('%');
-
-                if (
-                  deepLinksSplit.size() == Integer.valueOf(c.Number_of_Files__c) + 1 &&
-                  subjectSplit.size() >= 2
-                ) 
-                {
-                    c.Status = 'New';
-
-                    for (Integer y = 0; y < subjectSplit.size(); y++) 
-                    {
-                        List<String> tokenSplit = subjectSplit[y].split(':');
-                        if (
-
-                            tokenSplit.size() >= 2 && 
-                            tokenSplit[0] == 'Queue' && 
-                            tokenSplit[1] != ''
-                        ) 
-                        {
-                            c.OwnerId = tokenSplit[1];
-                            break;
-                        }
-                    }
-
-                    c.Subject = subjectSplit[0];
-
-                    if (c.OwnerId == getFACaseQueueId()) 
-                    {
-                        c.Visible_By_Contact__c = FALSE;
-                        c.Status = 'Closed: Resolved (Webforms)';
-                        c.IsClosedOnCreate = TRUE;
-                    }
-                }
-            }
-        } 
-    }
-
-    public static Id getFACaseQueueId() 
-    {
-        if(faCaseQueueId == null) 
-        {
-            faCaseQueueId = [
-                SELECT Id
-                FROM Group
-                WHERE Name = 'Financial Aid (Case)'
-                AND Type = 'Queue' LIMIT 1
-            ].Id;
-        } 
-
-        return faCaseQueueId;
     }
 
     public class CaseServiceException extends Exception {}

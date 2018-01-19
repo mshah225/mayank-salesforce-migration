@@ -55,8 +55,8 @@ global with sharing class apiSSC_CreateChatCaseController {
                  newCase.Subject = 'Case created via Chat';
                  newCase.Description = description!=null?description:'Case from Chat';
 
-                 if (commDetails!=null && commDetails.length()>1){
-                      newCase.Description+='\n\n'+EncodingUtil.urlDecode(commDetails,'UTF-8').unescapeJava();
+                 if (!String.isBlank(commDetails)) {
+                      newCase.Description += '\n\n' + EncodingUtil.urlDecode(commDetails,'UTF-8').unescapeJava();
                  }
 
                  newCase.Status = 'New';
@@ -89,5 +89,4 @@ global with sharing class apiSSC_CreateChatCaseController {
      }
      return retVal;
   }
-
 }

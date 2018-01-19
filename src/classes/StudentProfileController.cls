@@ -4,7 +4,7 @@ global with sharing class StudentProfileController
     private static boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
     
-    private boolean URLParamsExistAndAreValid; // Stores whether or not URL params exist and are valid
+    public boolean UrlParamsExistAndAreValid {get; set;} // Stores whether or not URL params exist and are valid
     private boolean isContactId; // Stores wheter the ID parameter is a contact Id or EMPL Id
     public boolean failState {get; set;} // Used to determine if the page has reached a state where it cannot be rendered
     public static ASU_STDNT_RETENTION__x studentRetention { get; set; }
@@ -59,7 +59,7 @@ global with sharing class StudentProfileController
      * </p>
      */
     public StudentProfileController() {
-        URLParamsExistAndAreValid = true;
+        UrlParamsExistAndAreValid = true;
         
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
@@ -70,7 +70,8 @@ global with sharing class StudentProfileController
         } else if (Validator.validateEMPLId(contactId)) {
             isContactId = false;
         } else {
-            URLParamsExistAndAreValid = false;
+            UrlParamsExistAndAreValid = false;
+            ApexPages.addmessage(new ApexPAges.message(ApexPages.severity.FATAL, 'The EMPLID in the URL is Invalid'));
         }
     }
     
@@ -98,7 +99,7 @@ global with sharing class StudentProfileController
         primaryProgramPlan =  new Student_Program_Plan__c();
         
         try {
-            if (URLParamsExistAndAreValid) {
+            if (UrlParamsExistAndAreValid) {
                 if (isContactId) {
                     theContact = ContactService.getContactInformation(contactId, '');
                 } else {

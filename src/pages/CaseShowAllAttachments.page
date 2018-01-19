@@ -25,9 +25,6 @@
 	  				<a href="/servlet/servlet.FileDownload?file={!a.Id}" target="_blank">View</a>
 	  				&nbsp;|&nbsp;
 				</apex:column>
-	                    <apex:param name="var" value="{!a.Id}" assignTo="{!attId}" />
-	          </apex:commandLink>
-				</apex:column>
 				<apex:column headerValue="File Name">
 	  				<a href="/servlet/servlet.FileDownload?file={!a.Id}" target="_self" download="{!a.Name}">{!a.Name}</a>
 				</apex:column>

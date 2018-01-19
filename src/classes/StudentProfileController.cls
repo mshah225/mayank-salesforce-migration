@@ -57,7 +57,7 @@ global with sharing class StudentProfileController
      * </p>
      */
     public StudentProfileController() {
-        URLParamsExistAndAreValid = true;
+        UrlParamsExistAndAreValid = true;
         
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
@@ -68,7 +68,7 @@ global with sharing class StudentProfileController
         } else if (Validator.validateEMPLId(contactId)) {
             isContactId = false;
         } else {
-            URLParamsExistAndAreValid = false;
+            UrlParamsExistAndAreValid = false;
             ApexPages.addmessage(new ApexPAges.message(ApexPages.severity.FATAL, 'The EMPLID in the URL is Invalid'));
         }
     }
@@ -97,7 +97,7 @@ global with sharing class StudentProfileController
         primaryProgramPlan =  new Student_Program_Plan__c();
         
         try {
-            if (URLParamsExistAndAreValid) {
+            if (UrlParamsExistAndAreValid) {
                 if (isContactId) {
                     theContact = ContactService.getContactInformation(contactId, '');
                 } else {

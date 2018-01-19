@@ -339,7 +339,7 @@
                                             style="color:#fff;background:#990033;padding:5px;width:55px;" reRender="replyBox" />
                                 </apex:form>
                                 <apex:outputPanel id="replyBox">
-                                     <apex:outputPanel rendered="{!boolAllowReply}" >
+                                     <apex:outputPanel rendered="{!allowReply}" >
                                         <apex:form styleClass="detailsForm">
                                             <br />
                                             <br />
@@ -366,6 +366,27 @@
                                 </apex:outputPanel>
                             </div>
                         </div>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!isAtt}" >
+                        <apex:pageBlock >
+                            <div class="row">
+                                <div class="header">
+                                    <h6><b>View Attachments</b></h6>
+                                </div>
+                                <apex:pageBlockTable value="{!listAtt}" rendered="{!isAtt}" var="eachAtt" columns="2">
+                                    <apex:column headerValue="Name">
+                                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAtt.id)}" style="color:#990033;" target="_blank">{!eachAtt.Name}</apex:outputLink>
+                                    </apex:column>
+                                    <apex:column headerValue="Created Date">
+                                        <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}"
+                                            label="Date Opened">
+                                            <apex:param value="{!eachAtt.CreatedDate}"/>
+                                        </apex:outputText>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                            </div>
+                        </apex:pageBlock>
                     </apex:outputPanel>
                     
                     <apex:outputPanel id="chatMessagesBox" rendered="{!IF(chatMessages.empty,false,true)}" >

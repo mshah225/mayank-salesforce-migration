@@ -1,20 +1,21 @@
 @RestResource(urlMapping='/insertEmailMessage/*')
 global class EmailMessageInsert {
     @HttpPost
-    global static String createEmailMessage(String strTextBody, String  strParentId, String strSubject, Boolean boolIncoming, String strFromName, String strFromAddress, String strStatus){
+    global static String createEmailMessage(String emailTextBody, String  parentId, String emailSubject, Boolean isIncoming, String fromName, String fromAddress, String toAddress, String status) {
         EmailMessage response = new EmailMessage();
-        response.TextBody = strTextBody;
-        response.Incoming = boolIncoming;
-        response.ParentId = strParentId;
-        response.Subject = strSubject;
-        response.FromName = strFromName;
-        response.FromAddress = strFromAddress;
-        response.Status = strStatus;
-        try{
+        response.TextBody = emailTextBody;
+        response.Incoming = isIncoming;
+        response.ParentId = parentId;
+        response.Subject = emailSubject;
+        response.FromName = fromName;
+        response.FromAddress = fromAddress;
+        response.ToAddress = toAddress;
+        response.Status = status;
+        try {
             insert response;
             return 'success';
         }
-        catch(Exception e){
+        catch(Exception e) {
             return 'failure';
             
         }

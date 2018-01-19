@@ -87,7 +87,7 @@ global class CivitasPersistenceController{
                 return null;
             }
         }
-        catch (Exception e){ 
+        catch (Exception e) { 
             return null;
         }
         dataList = new List<CivitasWrapper>();

@@ -116,38 +116,41 @@ public class RelationshipService {
             }
             
             if (!recipToSource.isEmpty()) {
-                for (Relationship__c relation : [SELECT Contact__c,  Related_Contact__c, RecordTypeId, Related_Account__c,
-                                          Relationship_Start_Date__c, Active_Relationship__c, Relationship_Type__c,
-                                          Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c, Title__c
-                                          FROM Relationship__c
-                                          WHERE Id IN :recipToSource.keySet()]) {
-                                              rel = recipToSource.get(relation.Id);
-                                              
-                                              // Check for any differences in the fields
-                                              if (relation.contact__c != rel.Related_Contact__c ||
-                                                  relation.Related_Contact__c != rel.Contact__c ||
-                                                  relation.Account__c != rel.Related_Account__c ||
-                                                  relation.Related_Account__c != rel.Account__c ||
-                                                  relation.Active_Relationship__c != rel.Active_Relationship__c ||
-                                                  relation.Relationship_Type__c != settings.get(rel.Relationship_Type__c).Reciprocal__c ||
-                                                  relation.Relationship_Start_Date__c != rel.Relationship_Start_Date__c ||
-                                                  relation.Relationship_End_Date__c != rel.Relationship_End_Date__c ||
-                                                  relation.Reciprocal_Relationship__c != rel.Id ||
-                                                  relation.Title__c != rel.Title__c) {
-                                                      relation.Contact__c = rel.Related_Contact__c;
-                                                      relation.Related_Contact__c = rel.Contact__c;
-                                                      relation.Account__c = rel.Related_Account__c;
-                                                      relation.Related_Account__c = rel.Account__c;
-                                                      relation.Active_Relationship__c = rel.Active_Relationship__c;
-                                                      relation.Relationship_Type__c = settings.get(rel.Relationship_Type__c).Reciprocal__c;
-                                                      relation.Relationship_Start_Date__c = rel.Relationship_Start_Date__c;
-                                                      relation.Relationship_End_Date__c = rel.Relationship_End_Date__c;
-                                                      relation.Reciprocal_Relationship__c = rel.Id;
-                                                      relation.Title__c = rel.Title__c;
-                                                      
-                                                      relsToUpdate.add(relation);
-                                              }
-                                          }
+                for (Relationship__c relation : [
+                    SELECT Contact__c,  Related_Contact__c, RecordTypeId, Related_Account__c,
+                        Relationship_Start_Date__c, Active_Relationship__c, Relationship_Type__c, 
+                        Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c, Title__c
+                    FROM Relationship__c
+                    WHERE Id IN :recipToSource.keySet()
+                ]) {
+                    rel = recipToSource.get(relation.Id);
+                    
+                    // Check for any differences in the fields
+                    if (relation.contact__c != rel.Related_Contact__c ||
+                        relation.Related_Contact__c != rel.Contact__c || 
+                        relation.Account__c != rel.Related_Account__c ||
+                        relation.Related_Account__c != rel.Account__c ||
+                        relation.Active_Relationship__c != rel.Active_Relationship__c ||
+                        relation.Relationship_Type__c != settings.get(rel.Relationship_Type__c).Reciprocal__c ||
+                        relation.Relationship_Start_Date__c != rel.Relationship_Start_Date__c ||
+                        relation.Relationship_End_Date__c != rel.Relationship_End_Date__c ||
+                        relation.Reciprocal_Relationship__c != rel.Id ||
+                        relation.Title__c != rel.Title__c
+                       ) {
+                        relation.Contact__c = rel.Related_Contact__c;
+                        relation.Related_Contact__c = rel.Contact__c;
+                        relation.Account__c = rel.Related_Account__c;
+                        relation.Related_Account__c = rel.Account__c;
+                        relation.Active_Relationship__c = rel.Active_Relationship__c;
+                        relation.Relationship_Type__c = settings.get(rel.Relationship_Type__c).Reciprocal__c;
+                        relation.Relationship_Start_Date__c = rel.Relationship_Start_Date__c;
+                        relation.Relationship_End_Date__c = rel.Relationship_End_Date__c;
+                        relation.Reciprocal_Relationship__c = rel.Id;
+                        relation.Title__c = rel.Title__c;
+
+                        relsToUpdate.add(relation);
+                    }
+                }
                 
                 if (!relsToUpdate.isEmpty()) {
                     update relsToUpdate;

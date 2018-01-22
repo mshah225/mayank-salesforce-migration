@@ -52,9 +52,9 @@ global class CivitasPersistenceController{
                 startDate = startDate.addDays(22);
             }
             if(startDate >= Date.today()) {
-                endDate = startDate;
-                startDate = [Select Session_A_C_Start_Date__c
-                             FROM Term__c
+                endDate = startDate.addDays(-22);
+                startDate = [Select Session_A_C_Start_Date__c 
+                             FROM Term__c 
                              WHERE PeopleSoft_Code__c =: prevTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startdate.addDays(22);
@@ -135,12 +135,20 @@ global class CivitasPersistenceController{
                 prevData = trm;
             }
         }
-        
+
         if(rejected.size() > 0){
             return rejected;
         }
 
         if (dataList.size() > 0) {
+            CivitasWrapper tmpEndPoint = dataList[dataList.size()-1];
+            Integer dayValue = tmpEndPoint.day;
+            while (tmpEndPoint.snapDate < endDate) {
+                tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
+                dayValue++;
+                dataList.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel,
+                                                    tmpEndPoint.levelDesc, tmpEndPoint.flag, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
+            }
             Integer startMonth = startDate.month();
             Integer endMonth = endDate.month();
         	persistenceLevel = dataList[dataList.size()-1].outlookLevel;

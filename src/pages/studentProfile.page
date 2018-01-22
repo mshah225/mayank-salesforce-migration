@@ -1594,29 +1594,34 @@
                     {escape: true}
                 );
             }
-             
+            
+            
             function llStudentDemographic() {
+                
+                var bDay = "{!birthdate}";
+                var age = "{!age}";
+                
                 var buildInitHtml = "<div class=\"col-sm-6\">" +
                                         "<table class=\"table table-striped\">" +
                                             "<tr>" +
                                                 "<th>Gender</th>" +
-                                                "<td>--</td>" +
+                                                "<td>{!theContact.Gender__c}</td>" +
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>Ethnicity</th>" +
-                                                "<td>--</td>" +
+                                                "<td>{!theContact.Ethnicity__c}</td>" +
                                             "</tr>" +
                                             "<tr>" +
-                                                "<th>Age</th>" +
+                                                "<th>First Generation</th>" +
                                                 "<td id='studentDemoTd'><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>BirthDate</th>" +
-                                                "<td>--</td>" +
+                                                "<td>" + bDay + "</td>" +
                                             "</tr>" +
                                             "<tr>" +
-                                                "<th>First Generation</th>" +
-                                                "<td>--</td>" +
+                                                "<th>Age</th>" +
+                                                "<td>" + age + "</td>" +
                                             "</tr>";
                     buildInitHtml += "</table></div>";
                 document.getElementById("studentDemographicDiv").innerHTML = buildInitHtml;
@@ -1629,12 +1634,8 @@
                             //document.getElementById("serviceIndicatorsDiv").innerHTML = "";
                             if (result.length != 0) {
                                 
-                                var bDay = new Date("{!theContact.Birthdate}Z");
-                                    bDay = (bDay.getUTCMonth() + 1) + '/' +
-                                        bDay.getUTCDate() + '/' +
-                                        bDay.getUTCFullYear();
-                                
-                                var age = '--';
+                                 var bDay = "{!birthdate}";
+                                var age = "{!age}";
                                 var firstGenFlag = '--';
                                 if(result.AGE_YEARS__c != null && result.AGE_YEARS__c != '' && result.AGE_YEARS__c != undefined) {
                                     age = Math.floor(result.AGE_YEARS__c);
@@ -1654,16 +1655,16 @@
                                                 "<td>{!theContact.Ethnicity__c}</td>" +
                                             "</tr>" +
                                             "<tr>" +
-                                                "<th>Age</th>" +
-                                                "<td>" + age + "</td>" +
+                                                "<th>First Generation</th>" +
+                                                "<td>" + firstGenFlag + "</td>" +
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>BirthDate</th>" +
                                                 "<td>" + bDay + "</td>" +
                                             "</tr>" +
                                             "<tr>" +
-                                                "<th>First Generation</th>" +
-                                                "<td>" + firstGenFlag + "</td>" +
+                                                "<th>Age</th>" +
+                                                "<td>" + age + "</td>" +
                                             "</tr>";
                                 html += "</table></div>";
 
@@ -4436,7 +4437,12 @@
             }
     
             function filterFinancialAid() {
-                var e = document.getElementById("ps_financial_aid_year_select"); 
+                var e = document.getElementById("ps_financial_aid_year_select");
+                if(e.options[0] == null) {
+                    document.getElementById("ps_financial_aid_year_picklist").innerHTML = '';
+                    document.getElementById('ps_financial_aid_summary').innerHTML = 'No data is currentely available for this student';
+                    return;
+                }
                 var search = e.options[e.selectedIndex].text ;
                 var faTable = document.getElementById('financial_aid_table');
                 var offeredTotal = 0.00;

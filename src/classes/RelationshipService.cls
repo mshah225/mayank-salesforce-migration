@@ -255,7 +255,7 @@ public class RelationshipService {
         
         return validChange;
     }
-    
+  
     public static void updateContacts(List<Relationship__c> relList) {
         List<Id> contactList = new List<Id>();
         for (Relationship__c rel : relList) {

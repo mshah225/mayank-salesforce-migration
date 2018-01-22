@@ -11,7 +11,7 @@ public class RelationshipDispatcher implements IDispatch {
         this.newMap = newMap;
         this.oldMap = oldMap;
     }
-    
+
     /**
      * Contains business logic to process before inserting relationships
      */

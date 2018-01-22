@@ -45,6 +45,7 @@ public class EmailAlertArticleSchedule implements Schedulable {
 				Functional_Group__c,
 				ValidationStatus,
 				Article_Expiration_Date__c,
+				LastModifiedDate,
 				UrlName 
 			FROM FAQ__kav
 			WHERE PublishStatus = 'Online'
@@ -108,6 +109,9 @@ public class EmailAlertArticleSchedule implements Schedulable {
 		
 				Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 				mail.setToAddresses(usersToEmail);
+				if(template == null) {
+					continue;
+				}
 				mail.setSubject(template.Subject.replace('{!FAQ__kav.Title}', knowledgeArticle.Title));
 				mail.setHtmlBody(template.HtmlValue
 					.replace('{!FAQ__kav.Title}', knowledgeArticle.Title)

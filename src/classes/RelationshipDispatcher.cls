@@ -17,8 +17,8 @@ public class RelationshipDispatcher implements IDispatch {
      */
     public void beforeInsert() {
         if (!RelationshipService.verifyTwoPrimary(newList)) {
-            for (Integer i = 0; i < newList.size(); i ++) {
-                newList[i].addError(Label.PrimaryRelationshipError);
+            for (Relationship__c relIter : newList) {
+                relIter.addError(Label.PrimaryRelationshipError);
             }
         }
     }
@@ -35,9 +35,9 @@ public class RelationshipDispatcher implements IDispatch {
      * Contains business logic to process before updating relationships
      */
     public void beforeUpdate() {
-        if (!RelationshipService.checkChanges(oldList, newList)) {
-            for (Integer i = 0; i < newList.size(); i ++) {
-                newList[i].addError(Label.PrimaryRelationshipError);
+        if (!RelationshipService.checkChanges(oldMap, newMap)) {
+            for (Relationship__c relIter : newList) {
+                relIter.addError(Label.PrimaryRelationshipError);
             }    
         }
     }
@@ -55,7 +55,7 @@ public class RelationshipDispatcher implements IDispatch {
      * Contains business logic to process after deleting relationships
      */
     public void afterDelete() {
-        	RelationshipService.removeParent((List<Relationship__c>)oldList);
+        	RelationshipService.removeParent(oldList);
             RelationshipService.deleteReciprocal(oldList);
     }
     

@@ -11,7 +11,7 @@ public class RelationshipService {
      *
      * @param List<SObject> List of newly inserted relationships
      */
-    public static void createReciprocal(List<SObject> newRels) {
+    public static void createReciprocal(List<Relationship__c> newRels) {
         Id contactToAccountRTID; // Id of contact to account record type
         ID accountToContactRTID; // Id of account to contact record type
         Map<Id, Id> recipRTIDMap = new Map<Id, Id>(); // Id of record type to it's reciprocal
@@ -36,8 +36,8 @@ public class RelationshipService {
         recipRTIDMap.put(accountToContactRTID, contactToAccountRTID);
         
         // Create reciprocal relationships
-        for (Relationship__c relation : (List<Relationship__c>) newRels) {
-            if (settings.get(relation.Relationship_Type__c) != null) {
+        for (Relationship__c relation : newRels) {
+            if (settings.containsKey(relation.Relationship_Type__c)) {
                 if (relation.Reciprocal_Relationship__c == null) {
                     rel = new Relationship__c(
                         Contact__c = relation.Related_Contact__c,
@@ -52,7 +52,6 @@ public class RelationshipService {
                         Title__c = relation.Title__c
                     );
                     
-                    // RecordTypeId = r.RecordTypeId,
                     if (recipRTIDMap.get(relation.RecordTypeId) == null) {
                         rel.RecordTypeId = relation.RecordTypeId;
                     } else {
@@ -79,9 +78,9 @@ public class RelationshipService {
             for (Relationship__c relation : [SELECT Id, Reciprocal_Relationship__c 
                                       FROM Relationship__c
                                       WHERE Id IN :sourceToRecipId.keySet()]) {
-                                          relation.Reciprocal_Relationship__c = sourceToRecipId.get(relation.Id);
-                                          relsToUpdate.add(r);
-                                      }
+                relation.Reciprocal_Relationship__c = sourceToRecipId.get(relation.Id);
+                relsToUpdate.add(relation);
+            }
         }
         
         if (!relsToUpdate.isEmpty()) {
@@ -105,11 +104,11 @@ public class RelationshipService {
         Relationship__c rel; // Temporary relationship
         
             for (Relationship__c relation : (List<Relationship__c>) newRels) {
-                if (settings.get(relation.Relationship_Type__c) != null) {
+                if (settings.containsKey(relation.Relationship_Type__c)) {
                     if (relation.Reciprocal_Relationship__c != null) {
-                        recipToSource.put(relation.Reciprocal_Relationship__c, r);
+                        recipToSource.put(relation.Reciprocal_Relationship__c, relation);
                     } else {
-                        relsWithoutRecips.add(r);
+                        relsWithoutRecips.add(relation);
                     }
                 } else {
                     relation.addError('Relationship Type Not Found');   
@@ -125,16 +124,16 @@ public class RelationshipService {
                                               rel = recipToSource.get(relation.Id);
                                               
                                               // Check for any differences in the fields
-                                              if (relation.contact__c != rel.Related_Contact__c
-                                                  || relation.Related_Contact__c != rel.Contact__c
-                                                  || relation.Account__c != rel.Related_Account__c
-                                                  || relation.Related_Account__c != rel.Account__c
-                                                  || relation.Active_Relationship__c != rel.Active_Relationship__c
-                                                  || relation.Relationship_Type__c != settings.get(rel.Relationship_Type__c).Reciprocal__c
-                                                  || relation.Relationship_Start_Date__c != rel.Relationship_Start_Date__c
-                                                  || relation.Relationship_End_Date__c != rel.Relationship_End_Date__c
-                                                  || relation.Reciprocal_Relationship__c != rel.Id
-                                                  || relation.Title__c != rel.Title__c) {
+                                              if (relation.contact__c != rel.Related_Contact__c ||
+                                                  relation.Related_Contact__c != rel.Contact__c ||
+                                                  relation.Account__c != rel.Related_Account__c ||
+                                                  relation.Related_Account__c != rel.Account__c ||
+                                                  relation.Active_Relationship__c != rel.Active_Relationship__c ||
+                                                  relation.Relationship_Type__c != settings.get(rel.Relationship_Type__c).Reciprocal__c ||
+                                                  relation.Relationship_Start_Date__c != rel.Relationship_Start_Date__c ||
+                                                  relation.Relationship_End_Date__c != rel.Relationship_End_Date__c ||
+                                                  relation.Reciprocal_Relationship__c != rel.Id ||
+                                                  relation.Title__c != rel.Title__c) {
                                                       relation.Contact__c = rel.Related_Contact__c;
                                                       relation.Related_Contact__c = rel.Contact__c;
                                                       relation.Account__c = rel.Related_Account__c;
@@ -146,7 +145,7 @@ public class RelationshipService {
                                                       relation.Reciprocal_Relationship__c = rel.Id;
                                                       relation.Title__c = rel.Title__c;
                                                       
-                                                      relsToUpdate.add(r);
+                                                      relsToUpdate.add(relation);
                                               }
                                           }
                 
@@ -165,17 +164,21 @@ public class RelationshipService {
     *
     * @param List<SObject> List of old inserted relationships
     */
-    public static void deleteReciprocal(List<SObject> oldRels) {
+    public static void deleteReciprocal(List<Relationship__c> oldRels) {
         Set<Id> relsToDelete = new Set<Id>();
         
-        for (Relationship__c relation : (List<Relationship__c>) oldRels) {
+        for (Relationship__c relation : oldRels) {
             if (relation.Reciprocal_Relationship__c != null) {
                 relsToDelete.add(relation.Reciprocal_Relationship__c);
             }
         }
         
         if (!relsToDelete.isEmpty()) {
-            delete [SELECT Id FROM Relationship__c WHERE Id IN :relsToDelete];
+            List<Relationship__c> relationsToDelete = new List<Relationship__c>();
+            for (Id idForRel : relsToDelete) {
+                relationsToDelete.add(new Relationship__c(id = idForRel));
+            }
+            delete relationsToDelete;
         }
     }
     
@@ -232,15 +235,15 @@ public class RelationshipService {
     * @param List<Relationship__c> oldRel List of old inserted relationships
     * @return if changes are valid
     */
-    public static boolean checkChanges(List<Relationship__c> relListOld, List<relationship__c> relListNew) {
+    public static boolean checkChanges(Map<Id, Relationship__C> relMapOld, Map<Id, Relationship__C> relMapNew) {
         List<Relationship__c> relListAdded = new List<Relationship__c>();
         List<Relationship__c> relListRemoved = new List<Relationship__c>();
         
-        for (Integer i = 0; i < relListOld.size(); i++) {
-            if (!relListOld.get(i).Primary_Parent__c && relListNew.get(i).Primary_Parent__c) {
-                relListAdded.add(relListNew.get(i));
-            } else if (relListOld.get(i).Primary_Parent__c && !relListNew.get(i).Primary_Parent__c) {
-                relListRemoved.add(relListNew.get(i));
+        for(Id relIds : relMapOld.keySet()) {
+            if (!relMapOld.get(relIds).Primary_Parent__c && relMapNew.get(relIds).Primary_Parent__c) {
+                relListAdded.add(relMapNew.get(relIds));
+            } else if (relMapOld.get(relIds).Primary_Parent__c && !relMapNew.get(relIds).Primary_Parent__c) {
+                relListRemoved.add(relMapNew.get(relIds));
             }
         }
         

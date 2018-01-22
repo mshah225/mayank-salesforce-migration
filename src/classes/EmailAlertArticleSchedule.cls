@@ -106,12 +106,12 @@ public class EmailAlertArticleSchedule implements Schedulable {
 				} else if (knowledgeArticle.Article_Expiration_Date__c == System.Today().addDays(30)) {
 					template = templateDevNameToTemplate.get('Knowledge_Article_30_Day_Expiration');
 				}
+				if (template == null) {
+					continue;
+				}
 		
 				Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 				mail.setToAddresses(usersToEmail);
-				if(template == null) {
-					continue;
-				}
 				mail.setSubject(template.Subject.replace('{!FAQ__kav.Title}', knowledgeArticle.Title));
 				mail.setHtmlBody(template.HtmlValue
 					.replace('{!FAQ__kav.Title}', knowledgeArticle.Title)

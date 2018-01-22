@@ -45,6 +45,7 @@ public class EmailAlertArticleSchedule implements Schedulable {
 				Functional_Group__c,
 				ValidationStatus,
 				Article_Expiration_Date__c,
+				LastModifiedDate,
 				UrlName 
 			FROM FAQ__kav
 			WHERE PublishStatus = 'Online'
@@ -104,6 +105,9 @@ public class EmailAlertArticleSchedule implements Schedulable {
 					template = templateDevNameToTemplate.get('Knowledge_Article_Expired');
 				} else if (knowledgeArticle.Article_Expiration_Date__c == System.Today().addDays(30)) {
 					template = templateDevNameToTemplate.get('Knowledge_Article_30_Day_Expiration');
+				}
+				if (template == null) {
+					continue;
 				}
 		
 				Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();

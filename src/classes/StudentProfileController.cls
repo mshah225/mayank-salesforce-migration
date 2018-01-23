@@ -108,8 +108,10 @@ global with sharing class StudentProfileController
                     theContact = ContactService.getContactInformation('', String.valueOf(contactId));
                 }
                 
-                if (theContact.EMPLID__c == null) {
+                if (theContact == null || theContact.EMPLID__c == null) {
+                    URLParamsExistAndAreValid = false;
                     failState = true;
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, 'The EMPLID in the URL is not associated with a contact!'));
                     vars.add(ErrorLogger.convertSObjectToJSON('theContact', theContact));
                     throw new StudentProfileException('Contact missing EMPLId');
                 }

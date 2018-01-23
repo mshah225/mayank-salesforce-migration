@@ -1,6 +1,5 @@
 public class CaseService
 {
-    private static Id faCaseQueueId;
 
     /**
     * Returns all the fields on Case in a String

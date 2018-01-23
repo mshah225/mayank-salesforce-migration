@@ -106,10 +106,12 @@ public without sharing class CaseHandler implements ITrigger {
             }
 
         } else if (Trigger.isUpdate) {
-			//Handles Webform cases (webforms.asu.edu)
-			CaseService.handleClosingWebformsCases();
-			
             for (Case c : (List<Case>)Trigger.new) {
+                //Handles Webform cases from webforms.asu.edu
+                Case previousCaseState = (Case) Trigger.oldMap.get(c.Id);
+                CaseWebformCloser closer = new CaseWebformCloser(c, previousCaseState);
+                closer.handleWebformCase();
+                
 				// Check each incoming case for valid classification fields.
 				CaseClassifier classifier = new CaseClassifier(c);
 				if (classifier.hasInvalidCaseClassification()) {

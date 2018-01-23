@@ -182,7 +182,6 @@ global class CivitasPersistenceController{
             if(!contactList.isEmpty()) {
             	getInfo = 'Name: ' + c.FirstName + ' ' + c.LastName + ' (' + emplid + ') Persistence Level: No Data Available&contactId=' + c.Id;
             } else {
-            	ApexPages.addmessage(new ApexPAges.message(ApexPages.severity.FATAL, 'The EMPLID in the URL is Invalid')); 
             	getInfo = 'No Data is Available since no EMPLID was provided.'; 
             }
             

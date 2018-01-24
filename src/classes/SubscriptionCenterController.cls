@@ -196,9 +196,7 @@ public without sharing class SubscriptionCenterController {
                 hasOptedOutOfEmail = leadList[0].HasOptedOutOfEmail;
                 subscriberIdParm = leadList[0].Id;
             }
-        } 
-        
-        if (!String.isBlank(subscriberIdParm)) {
+        } if (!String.isBlank(subscriberIdParm)) {
             getAllSubscriptions();
         } else {
             noSubscriber = true;
@@ -330,7 +328,6 @@ public without sharing class SubscriptionCenterController {
         for (String s : availableParentSubIds) {
             availableSubsByParentSubIdMap.put(s, new List<SubscriberWrapper>());
         }
-        
         for (Subscription__c subscription : subscriptionList) {
             if (subscription.Name.containsIgnoreCase(searchTerms) || 
                 (!String.isBlank(subscription.Subscription_Center_Description__c) && 
@@ -362,7 +359,6 @@ public without sharing class SubscriptionCenterController {
                 }
             }
         }
-        
         for (String subId: notSubbedBuSubIdToWrapperMap.keySet()) {
             if (!availableSubsByParentSubIdMap.containsKey(subId)) {
                 continue;
@@ -372,9 +368,7 @@ public without sharing class SubscriptionCenterController {
             } else {
                 availableSubsBUMapKeys.add(subId);
             }
-        } 
-        
-        for (String s : availableParentSubIds) {
+        } for (String s : availableParentSubIds) {
             if (!s.containsIgnoreCase(searchTerms) && availableSubsByParentSubIdMap.get(s).isEmpty()) {
                 availableSubsByParentSubIdMap.remove(s);
             }
@@ -439,7 +433,7 @@ public without sharing class SubscriptionCenterController {
             Boolean parentSubUnsubscribed = false;
             SubscriberWrapper parentSubWrapper = notSubbedBuSubIdToWrapperMap.get(parentSubId);
             
-            if (parentSubWrapper != null && parentSubWrapper.subscriberStatus != NO_PREFERENCE) { // TODO: Not working.
+            if (parentSubWrapper != null && parentSubWrapper.subscriberStatus != NO_PREFERENCE) {
                 parentSubUnsubscribed = (parentSubWrapper.subscriberStatus == UNSUBSCRIBED && parentSubWrapper.dbSubscriberStatus != UNSUBSCRIBED ? true : false);
                 parentSubWrapper.subscriber = new Subscriber__c(Subscription__c = parentSubWrapper.subscription.Id,
                                                   Subscriber_Status__c = parentSubWrapper.subscriberStatus);

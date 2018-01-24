@@ -61,7 +61,7 @@ global with sharing class apiSSC_CreateChatCaseController {
 
                  newCase.Status = 'New';
                  newCase.ContactId = student[0].Student__c;
-                 newCase.Origin__c = 'Resource';
+                 newCase.Origin__c = 'Pitch';
                  newCase.Visible_by_Contact__c = FALSE;
                  insert newCase;
 

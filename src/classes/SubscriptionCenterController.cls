@@ -7,7 +7,8 @@ public without sharing class SubscriptionCenterController {
     private String subscriberIdParm;
     private String campaignIdParm;
     private String subscriptionIdParm;
-    public String subscriberKeyParm { get; set; }
+    private String subscriberKeyParm;
+    public String hashedSubscriberKeyParm { get; set; }
     public String searchTerms { get; set; }
     public String subscriberEmail { get; set; }
     public Boolean hasOptedOutOfEmail { get; set; }
@@ -34,67 +35,52 @@ public without sharing class SubscriptionCenterController {
     public List<String>  availableSubsBUMapKeys { get; set; }
 
     public SubscriptionCenterController() {
-        subscriberKeyParm = ApexPages.currentPage().getParameters().get('subscriberKey'); // Id of a Contact or Lead record
-        subscriptionIdParm = ApexPages.currentPage().getParameters().get('subscriptionId'); // Id of a Subscription__c record
+        hashedSubscriberKeyParm = ApexPages.currentPage().getParameters().get('subscriberKey'); // Id of a Contact or Lead record
+        String hashedSubscriptionIdParm = ApexPages.currentPage().getParameters().get('subscriptionId'); // Id of a Subscription__c record
+        String hashedCampaignIdParm = ApexPages.currentPage().getParameters().get('campaignId'); // Id of a Campaign record
+        String hashedSubscriberIdParm = ApexPages.currentPage().getParameters().get('subscriberId'); // Id of a Subscriber__c record
         actionParm = ApexPages.currentPage().getParameters().get('action'); // String describing what action to take
-        campaignIdParm = ApexPages.currentPage().getParameters().get('campaignId'); // Id of a Campaign record
-        subscriberIdParm = ApexPages.currentPage().getParameters().get('subscriberId'); // Id of a Subscriber__c record
 
-        if (subscriberKeyParm != null) {
-            if(!Test.isRunningTest()) {
-                subscriberKeyParm = EncodingUtil.urlEncode(subscriberKeyParm, 'UTF-8');
-            }
+        if (hashedSubscriberKeyParm != null) {
+            hashedSubscriberKeyParm = EncodingUtil.urlEncode(hashedSubscriberKeyParm, 'UTF-8');
             List<Contact> tmpList = new List<Contact>();
-            tmpList = [SELECT Id FROM Contact WHERE HashContactId__c =: subscriberKeyParm];
+            tmpList = [SELECT Id FROM Contact WHERE HashContactId__c =: hashedSubscriberKeyParm];
             if (!tmpList.isEmpty()) {
+                System.debug(tmpList);
                 subscriberKeyParm = tmpList[0].Id;
             } else {
                 List<Lead> tmpLeadList = new List<Lead>();
-                tmpLeadList = [Select Id FROM Lead WHERE HashLeadId__c =: subscriberKeyParm];
+                tmpLeadList = [Select Id FROM Lead WHERE HashLeadId__c =: hashedSubscriberKeyParm];
                 if (!tmpLeadList.isEmpty()) {
                     subscriberKeyParm = tmpLeadList[0].Id;
-                } else {
-                    subscriberKeyParm = null;
                 }
             }
         }
         
-        if (subscriptionIdParm != null) {
-            if(!Test.isRunningTest()) {
-                subscriptionIdParm = EncodingUtil.urlEncode(subscriptionIdParm, 'UTF-8');
-            }
+        if (hashedSubscriptionIdParm != null) {
+            hashedSubscriptionIdParm = EncodingUtil.urlEncode(hashedSubscriptionIdParm, 'UTF-8');
             List<Subscription__c> tmpList = new List<Subscription__c>();
-            tmpList = [SELECT Id FROM Subscription__c WHERE HashSubscriptionId__c =: subscriptionIdParm];
+            tmpList = [SELECT Id FROM Subscription__c WHERE HashSubscriptionId__c =: hashedSubscriptionIdParm];
             if (!tmpList.isEmpty()) {
                 subscriptionIdParm = tmpList[0].Id;
-            } else {
-                subscriptionIdParm = null;
             }
         }
         
-        if (campaignIdParm != null) {
-            if(!Test.isRunningTest()) {
-                campaignIdParm = EncodingUtil.urlEncode(campaignIdParm, 'UTF-8');
-            }
+        if (hashedCampaignIdParm != null) {
+            hashedCampaignIdParm = EncodingUtil.urlEncode(hashedCampaignIdParm, 'UTF-8');
             List<Campaign> tmpList = new List<Campaign>();
-            tmpList = [SELECT Id FROM Campaign WHERE HashCampaignId__c =: campaignIdParm];
+            tmpList = [SELECT Id FROM Campaign WHERE HashCampaignId__c =: hashedCampaignIdParm];
             if (!tmpList.isEmpty()) {
                 campaignIdParm = tmpList[0].Id;
-            } else {
-                campaignIdParm = null;
             }
         }
         
-        if (subscriberIdParm != null) {
-            if(!Test.isRunningTest()) {
-                subscriberIdParm = EncodingUtil.urlEncode(subscriberIdParm, 'UTF-8');
-            }
+        if (hashedSubscriberIdParm != null) {
+            hashedSubscriberIdParm = EncodingUtil.urlEncode(hashedSubscriberIdParm, 'UTF-8');
             List<Subscriber__c> tmpList = new List<Subscriber__c>();
-            tmpList = [SELECT Id FROM Subscriber__c WHERE HashSubscriberId__c =: subscriberIdParm];
+            tmpList = [SELECT Id FROM Subscriber__c WHERE HashSubscriberId__c =: hashedSubscriberIdParm];
             if (!tmpList.isEmpty()) {
                 subscriberIdParm = tmpList[0].Id;
-            } else {
-                subscriberIdParm = null;
             }
         }
         
@@ -346,50 +332,6 @@ public without sharing class SubscriptionCenterController {
             if (subscription.Name.containsIgnoreCase(searchTerms) || 
                 (!String.isBlank(subscription.Subscription_Center_Description__c) && 
                     subscription.Subscription_Center_Description__c.containsIgnoreCase(searchTerms))
-            ) {
-                subsMatchingFilter.add(subscription.Id);
-            }
-
-            if (subscription.Subscription_Type__c == 'Business Unit') {
-                if (subsByParentSubIdMap.containsKey(subscription.Id)) {
-                    continue;
-                } else {
-                    notSubbedBuSubIdToWrapperMap.put(subscription.Id, new SubscriberWrapper(subscription, null));
-                    availableSubsBUMapKeys.add(subscription.Id);
-                }
-            } else {
-                if (subsByParentSubIdMap.containsKey(subscription.Parent_Subscription__c)) {
-                    continue;
-                } else {
-                    if (subscription.Available_for_Opt_In__c && 
-                        (subscription.Name.containsIgnoreCase(searchTerms) ||
-                            subscription.Parent_Subscription__r.Name.containsIgnoreCase(searchTerms) ||
-                            (!String.isBlank(subscription.Subscription_Center_Description__c) &&
-                            subscription.Subscription_Center_Description__c.containsIgnoreCase(searchTerms)))
-                    ){
-                        availableSubsByParentSubIdMap.get(subscription.Parent_Subscription__c).add(
-                            new SubscriberWrapper(subscription, null));
-                        availableSubsBUMapKeys.add(subscription.Parent_Subscription__c);
-                    }
-                }
-            }
-        }
-    }
-
-    public void filterAvailableSubscriptions2() {
-        updateSuccess = false;
-        notSubbedBuSubIdToWrapperMap.clear();
-        availableSubsByParentSubIdMap.clear();
-        availableSubsBUMapKeys.clear();
-        Set<Id> subsMatchingFilter = new Set<Id>();
-
-        for (String s : availableParentSubIds) {
-            availableSubsByParentSubIdMap.put(s, new List<SubscriberWrapper>());
-        }
-        for (Subscription__c subscription : subscriptionList) {
-            if (subscription.Name.containsIgnoreCase(searchTerms) || 
-                (!String.isBlank(subscription.Subscription_Center_Description__c) && 
-                    subscription.Subscription_Center_Description__c.containsIgnoreCase(searchTerms))
             ){
                 subsMatchingFilter.add(subscription.Id);
             }
@@ -491,7 +433,7 @@ public without sharing class SubscriptionCenterController {
             Boolean parentSubUnsubscribed = false;
             SubscriberWrapper parentSubWrapper = notSubbedBuSubIdToWrapperMap.get(parentSubId);
             
-            if (parentSubWrapper.subscriberStatus != NO_PREFERENCE) {
+            if (parentSubWrapper != null && parentSubWrapper.subscriberStatus != NO_PREFERENCE) {
                 parentSubUnsubscribed = (parentSubWrapper.subscriberStatus == UNSUBSCRIBED && parentSubWrapper.dbSubscriberStatus != UNSUBSCRIBED ? true : false);
                 parentSubWrapper.subscriber = new Subscriber__c(Subscription__c = parentSubWrapper.subscription.Id,
                                                   Subscriber_Status__c = parentSubWrapper.subscriberStatus);

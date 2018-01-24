@@ -196,7 +196,9 @@ public without sharing class SubscriptionCenterController {
                 hasOptedOutOfEmail = leadList[0].HasOptedOutOfEmail;
                 subscriberIdParm = leadList[0].Id;
             }
-        } if (!String.isBlank(subscriberIdParm)) {
+        } 
+        
+        if (!String.isBlank(subscriberIdParm)) {
             getAllSubscriptions();
         } else {
             noSubscriber = true;
@@ -328,50 +330,7 @@ public without sharing class SubscriptionCenterController {
         for (String s : availableParentSubIds) {
             availableSubsByParentSubIdMap.put(s, new List<SubscriberWrapper>());
         }
-        for (Subscription__c subscription : subscriptionList) {
-            if (subscription.Name.containsIgnoreCase(searchTerms) || 
-                (!String.isBlank(subscription.Subscription_Center_Description__c) && 
-                    subscription.Subscription_Center_Description__c.containsIgnoreCase(searchTerms))
-            ) {
-                subsMatchingFilter.add(subscription.Id);
-            }
-
-            if (subscription.Subscription_Type__c == 'Business Unit') {
-                if (subsByParentSubIdMap.containsKey(subscription.Id)) {
-                    continue;
-                } else {
-                    notSubbedBuSubIdToWrapperMap.put(subscription.Id, new SubscriberWrapper(subscription, null));
-                    availableSubsBUMapKeys.add(subscription.Id);
-                }
-            } else {
-                if (subsByParentSubIdMap.containsKey(subscription.Parent_Subscription__c)) {
-                    continue;
-                } else {
-                    if (subscription.Available_for_Opt_In__c && 
-                        (subscription.Name.containsIgnoreCase(searchTerms) ||
-                            subscription.Parent_Subscription__r.Name.containsIgnoreCase(searchTerms) ||
-                            (!String.isBlank(subscription.Subscription_Center_Description__c) &&
-                            subscription.Subscription_Center_Description__c.containsIgnoreCase(searchTerms)))
-                    ){
-                        availableSubsByParentSubIdMap.get(subscription.Parent_Subscription__c).add(
-                            new SubscriberWrapper(subscription, null));
-                        availableSubsBUMapKeys.add(subscription.Parent_Subscription__c);
-                    }
-                }
-            }
-        }
-    }
-
-    public void filterAvailableSubscriptions2() {
-        updateSuccess = false;
-        notSubbedBuSubIdToWrapperMap.clear();
-        availableSubsByParentSubIdMap.clear();
-        availableSubsBUMapKeys.clear();
-        Set<Id> subsMatchingFilter = new Set<Id>();
-
-        for (String s : availableParentSubIds) {
-            availableSubsByParentSubIdMap.put(s, new List<SubscriberWrapper>());
-        }
+        
         for (Subscription__c subscription : subscriptionList) {
             if (subscription.Name.containsIgnoreCase(searchTerms) || 
                 (!String.isBlank(subscription.Subscription_Center_Description__c) && 
@@ -403,6 +362,7 @@ public without sharing class SubscriptionCenterController {
                 }
             }
         }
+        
         for (String subId: notSubbedBuSubIdToWrapperMap.keySet()) {
             if (!availableSubsByParentSubIdMap.containsKey(subId)) {
                 continue;
@@ -412,7 +372,9 @@ public without sharing class SubscriptionCenterController {
             } else {
                 availableSubsBUMapKeys.add(subId);
             }
-        } for (String s : availableParentSubIds) {
+        } 
+        
+        for (String s : availableParentSubIds) {
             if (!s.containsIgnoreCase(searchTerms) && availableSubsByParentSubIdMap.get(s).isEmpty()) {
                 availableSubsByParentSubIdMap.remove(s);
             }

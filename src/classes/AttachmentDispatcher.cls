@@ -18,7 +18,7 @@ public with sharing class AttachmentDispatcher implements IDispatch {
     public void afterInsert() {
 	    casesToUpdate = AttachmentService.getCasesFromAttachments(newAttachments.values());
 
-	    if (casesToUpdate.size() > 0 && casesToUpdate != null) {
+	    if (casesToUpdate != null && !casesToUpdate.isEmpty()) {
 	        casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
 	        update casesToUpdate.values();
 	    }
@@ -44,7 +44,7 @@ public with sharing class AttachmentDispatcher implements IDispatch {
     public void afterDelete() {
         casesToUpdate = AttachmentService.getCasesFromAttachments(oldAttachments.values());
         
-        if (casesToUpdate.size() > 0 && casesToUpdate != null) {
+        if (casesToUpdate != null && !casesToUpdate.isEmpty()) {
             casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
             update casesToUpdate.values();
         }

@@ -62,7 +62,7 @@ global with sharing class StudentProfileController
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
-        if(contactId.length() != 10) {
+        if (contactId.length() != 10) {
             UrlParamsExistAndAreValid = false;
             ApexPages.addmessage(new ApexPAges.message(ApexPages.severity.FATAL, 'The EMPLID in the URL is not assocaited with a contact!')); 
         } else {

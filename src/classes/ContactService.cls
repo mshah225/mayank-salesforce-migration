@@ -219,14 +219,14 @@ public class ContactService
     * @return contactInfo The corresponding Contact
     */
     public static Contact getContactInformation(String contactId, String emplId) {
-        List<Contact> conList = new List<Contact>();
+        List<Contact> contactInformationList = new List<Contact>();
         Contact contactInfo = null;
         String contactFields = contactFieldsToString() + ', Country_of_Citizenship__r.Name ';
         String contactInfoQuery;
 
         // Get the list of cases associated with our set of contacts
         try {
-            if (emplId != '') {
+            if (!String.isBlank(emplId)) {
                 contactInfoQuery = '' +
                     'SELECT ' + contactFields + ' ' +
                     'FROM Contact ' +
@@ -238,10 +238,10 @@ public class ContactService
                     'WHERE Id = :contactId';
             }
 
-            conList = Database.query(contactInfoQuery);
+            contactInformationList = Database.query(contactInfoQuery);
             
-            if (!conList.isEmpty()) {
-                return conList[0]; 
+            if (!contactInformationList.isEmpty()) {
+                return contactInformationList[0]; 
             } else {
                 return null;
             }
@@ -253,7 +253,7 @@ public class ContactService
             );
         }
 
-        return null;
+        return contactInfo;
     }
 
    /**

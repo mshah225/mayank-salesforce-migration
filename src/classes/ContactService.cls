@@ -226,16 +226,13 @@ public class ContactService
 
         // Get the list of cases associated with our set of contacts
         try {
+            contactInfoQuery = '' +
+                'SELECT ' + contactFields + ' ' +
+                'FROM Contact ';
             if (!String.isBlank(emplId)) {
-                contactInfoQuery = '' +
-                    'SELECT ' + contactFields + ' ' +
-                    'FROM Contact ' +
-                    'WHERE EMPLID__c = :emplId';
+                contactInfoQuery += 'WHERE EMPLID__c = :emplId';
             } else {
-                contactInfoQuery = '' +
-                    'SELECT ' + contactFields + ' ' +
-                    'FROM Contact ' +
-                    'WHERE Id = :contactId';
+                contactInfoQuery += 'WHERE Id = :contactId';
             }
 
             contactInformationList = Database.query(contactInfoQuery);

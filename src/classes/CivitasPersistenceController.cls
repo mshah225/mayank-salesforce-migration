@@ -170,7 +170,7 @@ global class CivitasPersistenceController{
             	contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
             }
             if (!contactList.isEmpty()) {
-            	getInfo = 'Name: ' + c.FirstName + ' ' + c.LastName + ' (' + emplid + ') Persistence Level: No Data Available&contactId=' + c.Id;
+            	getInfo = 'Name: ' + contactList[0].FirstName + ' ' + contactList[0].LastName + ' (' + emplid + ') Persistence Level: No Data Available';
             } else {
             	getInfo = Label.CivitasDataMissing; 
             }

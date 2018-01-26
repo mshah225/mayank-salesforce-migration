@@ -1,16 +1,16 @@
 public without sharing class UserHandler implements ITrigger {
 
-    public static Map <String, List <CollaborationGroupMember>> dupeMemberCheckMap;
+    public static Map<String, List<CollaborationGroupMember>> dupeMemberCheckMap;
     public void bulkBefore() {
         if (Trigger.isInsert) {
-            List <User> newUsers = Trigger.new;
+            List<User> newUsers = Trigger.new;
             Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
             Id communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
-            List <String> asurites = new List <String> ();
-            Map <String, Contact> asuritesToContact = new Map <String, Contact> ();
-            Map <String, User> asuritesToUser = new Map <String, User> ();
+            List<String> asurites = new List<String>();
+            Map<String, Contact> asuritesToContact = new Map<String, Contact>();
+            Map<String, User> asuritesToUser = new Map<String, User>();
 
-            for (Integer x = 0; x <newUsers.size(); x++) {
+            for (Integer x = 0; x<newUsers.size(); x++) {
                 User newUser = newUsers.get(0);
 
                 if (newUser.UserPermissionsKnowledgeUser) {
@@ -25,15 +25,15 @@ public without sharing class UserHandler implements ITrigger {
             }
 
             if (asurites.size()> 0) {
-                List <Contact> newUserContactsByASURITE = [SELECT Id, ASURITE_Id__c, CAP__c FROM Contact WHERE ASURITE_Id__c IN :asurites];
-                for (Integer x = 0; x <newUserContactsByASURITE.size(); x++) {
+                List<Contact> newUserContactsByASURITE = [SELECT Id, ASURITE_Id__c, CAP__c FROM Contact WHERE ASURITE_Id__c IN :asurites];
+                for (Integer x = 0; x<newUserContactsByASURITE.size(); x++) {
                     Contact c = newUserContactsByASURITE.get(x);
                     asuritesToContact.put(c.ASURITE_Id__c, c);
                 }
 
-                List <String> asuritesKeys = new List <String> (asuritesToContact.keySet());
+                List<String> asuritesKeys = new List<String>(asuritesToContact.keySet());
 
-                for (Integer x = 0; x <asuritesKeys.size(); x++) {
+                for (Integer x = 0; x<asuritesKeys.size(); x++) {
                     String asurite = asuritesKeys.get(x);
                     Contact c = asuritesToContact.get(asurite);
                     User u = asuritesToUser.get(asurite);
@@ -93,11 +93,11 @@ public without sharing class UserHandler implements ITrigger {
      * @param The userIds which needs to be added to the respective chatter groups based on their roles
      * @return void
      */
-    public static void addToChatterGroup(Set <Id> userIds) {
+    public static void addToChatterGroup(Set<Id> userIds) {
         Id collabGroupId;
-        Map <String, String> chatterSettingsMap = new Map <String, String> (); // map to hold Role vs Group Name from custom setting
-        Map <String, String> roleToEFrequency = new Map <String, String> (); // map to hold Role vs Email Frequency from custom setting
-        Map <String, String> chatterGroupsMap = new Map <String, String> (); // map to store Chatter Group name vs Group Id using SOQL
+        Map<String, String> chatterSettingsMap = new Map<String, String>(); // map to hold Role vs Group Name from custom setting
+        Map<String, String> roleToEFrequency = new Map<String, String>(); // map to hold Role vs Email Frequency from custom setting
+        Map<String, String> chatterGroupsMap = new Map<String, String>(); // map to store Chatter Group name vs Group Id using SOQL
 
         // query string to populate List of users with fields from fieldset and passed from trigger context
         String query = 'SELECT ';
@@ -107,7 +107,7 @@ public without sharing class UserHandler implements ITrigger {
         query += ' Id, UserRole.Name, Profile.Name, isActive FROM User WHERE Id IN : userIds';
 
         // SOQL
-        List <User> userList = Database.query(query);
+        List<User> userList = Database.query(query);
 
         // using Custom Setting method to save SOQL call and using application cache
         // map to hold Role vs Group Name from custom setting
@@ -122,26 +122,25 @@ public without sharing class UserHandler implements ITrigger {
         }
 
         // Populate a map of all the groups and their members for checking duplicates while inserting Chatter group members
-        dupeMemberCheckMap = new Map <String, List <CollaborationGroupMember>> ();
+        dupeMemberCheckMap = new Map<String, List<CollaborationGroupMember>>();
         for (CollaborationGroupMember groupMember : [SELECT MemberId, CollaborationGroup.Name
                 FROM CollaborationGroupMember
                 WHERE CollaborationGroupId IN : chatterGroupsMap.values()
             ]) {
             if (!dupeMemberCheckMap.containsKey(groupMember.CollaborationGroup.Name)) {
-                dupeMemberCheckMap.put(groupMember.CollaborationGroup.Name, new List <CollaborationGroupMember> ());
+                dupeMemberCheckMap.put(groupMember.CollaborationGroup.Name, new List<CollaborationGroupMember>());
             }
             dupeMemberCheckMap.get(groupMember.CollaborationGroup.Name).add(groupMember);
         }
-
+        
+        List<CollaborationGroupMember> collabMembersToInsert = new List<CollaborationGroupMember>(); // list to perform final DML
         /*
          * Loop through the userList to decide which users need to be added to what groups
          * then add them to the main list for insertion.
          */
-
-        List <CollaborationGroupMember> collabMembersToInsert = new List <CollaborationGroupMember> (); // list to perform final DML
         for (User user : userList) {
             if (user.isActive) {
-                Set <String> chatterGroupUsedSet = new Set <String> ();
+                Set<String> chatterGroupUsedSet = new Set<String>();
                 // get all the Fields from the FieldSets to get the Role(s) of User
                 // iterate over above list and get the Chatter groups from chatterSettingsMap and
                 // add collaboration members into one single list for insertion
@@ -151,7 +150,7 @@ public without sharing class UserHandler implements ITrigger {
                         if (chatterSettingsMap.containsKey(fld.getLabel())) { // check if role is in map of custom setting
                             String chatterGrpName = chatterSettingsMap.get(fld.getLabel());
                             // Loop through and add the collab member Ids to a set to check against.
-                            Set <Id> dupeMemberIdSet = collabUserIdsToDupeCheck(chatterGrpName);
+                            Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck(chatterGrpName);
                             // do not create Collaboration member if the dupeSet has the User Id already present
                             // check if group has already been used in this transaction,
                             // as a chatter group can be common for multiple PeopleSoft roles
@@ -175,16 +174,16 @@ public without sharing class UserHandler implements ITrigger {
             try {
                 insert collabMembersToInsert;
             } catch (Exception ex) {
-                ErrorLogger.log(ex, new List <String> (), false);
+                ErrorLogger.log(ex, new List<String>(), false);
             }
         }
     }
 
-    public static Set <Id> collabUserIdsToDupeCheck(String groupName) {
+    public static Set<Id> collabUserIdsToDupeCheck(String groupName) {
         // Loop through and add the collab member Ids to a set to check against.
-        Set <Id> dupeMemberIdSet;
+        Set<Id> dupeMemberIdSet;
         if(dupeMemberCheckMap.get(groupName) != null) {
-            dupeMemberIdSet = new Set <Id> ();
+            dupeMemberIdSet = new Set<Id>();
             for (CollaborationGroupMember cgm : dupeMemberCheckMap.get(groupName)) {
                 dupeMemberIdSet.add(cgm.MemberId);
             }
@@ -194,7 +193,7 @@ public without sharing class UserHandler implements ITrigger {
     }
 
     @future
-    public static void addToChatterGroupFuture(Set <Id> userIds) {
+    public static void addToChatterGroupFuture(Set<Id> userIds) {
         addToChatterGroup(userIds);
     }
 

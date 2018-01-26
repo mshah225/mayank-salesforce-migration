@@ -24,16 +24,16 @@ public without sharing class UserHandler implements ITrigger {
                 }
             }
 
-            if (asurites.size()> 0) {
+            if (asurites.size() > 0) {
                 List<Contact> newUserContactsByASURITE = [SELECT Id, ASURITE_Id__c, CAP__c FROM Contact WHERE ASURITE_Id__c IN :asurites];
-                for (Integer x = 0; x<newUserContactsByASURITE.size(); x++) {
+                for (Integer x = 0; x < newUserContactsByASURITE.size(); x++) {
                     Contact c = newUserContactsByASURITE.get(x);
                     asuritesToContact.put(c.ASURITE_Id__c, c);
                 }
 
                 List<String> asuritesKeys = new List<String>(asuritesToContact.keySet());
 
-                for (Integer x = 0; x<asuritesKeys.size(); x++) {
+                for (Integer x = 0; x < asuritesKeys.size(); x++) {
                     String asurite = asuritesKeys.get(x);
                     Contact c = asuritesToContact.get(asurite);
                     User u = asuritesToUser.get(asurite);

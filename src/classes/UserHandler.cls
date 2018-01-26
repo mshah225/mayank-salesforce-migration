@@ -10,7 +10,7 @@ public without sharing class UserHandler implements ITrigger {
             Map<String, Contact> asuritesToContact = new Map<String, Contact>();
             Map<String, User> asuritesToUser = new Map<String, User>();
 
-            for (Integer x = 0; x<newUsers.size(); x++) {
+            for (Integer x = 0; x < newUsers.size(); x++) {
                 User newUser = newUsers.get(0);
 
                 if (newUser.UserPermissionsKnowledgeUser) {

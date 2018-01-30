@@ -32,6 +32,8 @@ global with sharing class StudentProfileController
     public String suncardPhotoURL { get; set; }
     public String deceased { get; set; }
     public string contactId {get; set;}
+    public String birthDate {get; set;}
+    public String age {get; set;}
     global static String paramToSort {get; set;}
     global static String examParamSort {get; set;}
     global static String transferParamSort {get; set;}
@@ -109,6 +111,24 @@ global with sharing class StudentProfileController
                     throw new StudentProfileException('Contact missing EMPLId');
                 }
                 deceased = '';
+
+                Date tmpDate = theContact.birthDate;
+                if(tmpDate != null) {
+                    birthDate = tmpDate.month() + '/' + tmpDate.day() + '/' + tmpDate.year();
+                    Date nowDate = Date.Today();
+                    if(nowDate.month() > tmpDate.month()) {
+                        age = '' + (nowDate.year() - tmpDate.year() - 1);
+                    } else if (nowDate.month() < tmpDate.month()) {
+                        age = '' + (nowDate.year() - tmpDate.year());
+                    } else {
+                        if(nowDate.day() > tmpDate.day()) {
+                            age = '' + (nowDate.year() - tmpDate.year());
+                        } else {
+                            age = '' + (nowDate.year() - tmpDate.year() - 1);
+                        }
+                    }
+                }
+
                 // Start populating the lists
                 openCases = CaseService.getAllOpenCases(theContact.Id);
                 sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
@@ -168,7 +188,7 @@ global with sharing class StudentProfileController
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
                 // PeopleSoft only as-needed
-                currentTerm = '2177';
+                currentTerm = '2181';
                 
             } else {
                 failState = true;

@@ -3257,7 +3257,6 @@
             }
     
             function refreshComments() {
-                console.log('Button Triggers');
                 commentsLoaded = false;
                 advisorNotesLoaded = false;
                 document.getElementById('ps_advising_notes_section').innerHTML = '';

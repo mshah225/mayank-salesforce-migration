@@ -66,7 +66,7 @@ global with sharing class StudentProfileController
         }
         if (contactId.length() != 10) {
             UrlParamsExistAndAreValid = false;
-            ApexPages.addmessage(new ApexPAges.message(ApexPages.severity.FATAL, 'The EMPLID in the URL is not assocaited with a contact!')); 
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing)); 
         } else {
             if (Validator.validateId(contactId, Contact.class)) {
                 isContactId = true;
@@ -74,7 +74,7 @@ global with sharing class StudentProfileController
                 isContactId = false;
             } else {
                 UrlParamsExistAndAreValid = false;
-                ApexPages.addmessage(new ApexPAges.message(ApexPages.severity.FATAL, 'The EMPLID in the URL is not associated with a contact!'));
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
             }
         }
     }
@@ -113,7 +113,7 @@ global with sharing class StudentProfileController
                 if (theContact == null || theContact.EMPLID__c == null) {
                     URLParamsExistAndAreValid = false;
                     failState = true;
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, 'The EMPLID in the URL is not associated with a contact!'));
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
                     vars.add(ErrorLogger.convertSObjectToJSON('theContact', theContact));
                     throw new StudentProfileException('Contact missing EMPLId');
                 }

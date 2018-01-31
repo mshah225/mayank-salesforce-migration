@@ -168,7 +168,8 @@
                            viewingAs="{!viewingAs}"/>
 
         <script>
-            $(document).ready(function()
+            var $j = jQuery.noConflict();
+            $j(document).ready(function()
             {
                 var showChar = 250;
                 var ellipsestext = "...";
@@ -176,9 +177,9 @@
                 var lesstext = 'Show Less <span class="dropup"><span class="caret"' +
                     'style="margin-bottom:2px;"></span></span>';
 
-                $("[id$=emailMore]").each(function()
+                $j("[id$=emailMore]").each(function()
                 {
-                    var content = $(this).clone().html();
+                    var content = $j(this).clone().html();
                     if (content.indexOf("Inline image") > 0)
                     {
                         content = content.replace(/\[[^\]]+\]/,'');
@@ -193,57 +194,34 @@
                             '&nbsp;</span><span class="morecontent"><span>' + h +
                             '</span>&nbsp;&nbsp;</span><a href="" class="emailToggle">' +
                             moretext + '</a>';
-                        $(this).html(html);
+                        $j(this).html(html);
                     }
                 });
 
-                $(".emailToggle").click(function()
+                $j(".emailToggle").click(function()
                 {
-                    if ($(this).hasClass("less"))
+                    if ($j(this).hasClass("less"))
                     {
-                        $(this).removeClass("less");
-                        $(this).html(moretext);
-                        $(this).prevAll(".moreellipses:first").toggle();
+                        $j(this).removeClass("less");
+                        $j(this).html(moretext);
+                        $j(this).prevAll(".moreellipses:first").toggle();
                     }
                     else
                     {
-                        $(this).addClass("less");
-                        $(this).html(lesstext);
-                        $(this).prevAll(".moreellipses:first").toggle();
+                        $j(this).addClass("less");
+                        $j(this).html(lesstext);
+                        $j(this).prevAll(".moreellipses:first").toggle();
                     }
-                    $(this).prev().toggle();
+                    $j(this).prev().toggle();
                     return false;
                 });
             });
         </script>
-        <script>
-            function validateFile(){
-                var isValid=true;
-                $('input[type=file]').each(function(){
-                    fileName=this.files[0].name;
-                    fileSize=this.files[0].size/1000000;
-                    var validFileTypes=['.doc','.docx','.xls','.xlsx','.jpg', '.jpeg', '.gif', '.png', '.pdf', '.txt'];
-                    var fileExtArr=fileName.split('.');
-                    var fileExtension='.'+fileExtArr[fileExtArr.length-1];                      
-                    if(validFileTypes.indexOf(fileExtension.toLowerCase())==-1 || fileSize>25){
-                        alert('This attachment is not an acceptable file type or exceeds 25MB.\n'+
-                         'The following attachment types are allowed:\n'+
-                         'Microsoft Word (.doc or .docx)\n'+
-                        'Microsoft Excel (.xls or .xlsx)\n'+
-                        'Image (.jpg, .jpeg, .gif, .png)\n'+
-                        'Adobe PDF (.pdf)\n'+
-                        'Text (.txt)');
-    
-                        isValid=false;
-                    }
-                                    
-                });       
-                return isValid;                            
-            }  
-    </script>
+        
     </head>
 
     <body>
+    
     <apex:pageMessages id="message" />
 
     <div id="main-search" class="main-search closed"></div>
@@ -372,50 +350,100 @@
                         </div>
                     </apex:outputPanel>
                     
-                     <apex:outputPanel >
+                     <apex:outputPanel id="replySection">
                         <div class="box">
+                             <div class="header">
+                                    <h6 class="floatleft"><b>Reply to Case or Upload Attachment</b></h6>
+                            </div>
                             <div class="content">
                                 <apex:form styleClass="detailsForm">
-                                    <h3 style="word-wrap: break-word;">Reply To Cases</h3>
-                                    <br />
-                                    <br />
-                                    <apex:pageBlock >
-                                        <!-- Section to Upload New Attachments -->
-                                            <div class="row">
-                                                <div class="header">
-                                                    <h6>
-                                                        <b>For Queries on this Case Click Here</b>
-                                                    </h6>
-                                                </div>
-                                            </div>
-                                    </apex:pageBlock>
-                                    <apex:commandButton action="{!displayReplyBox}"
-                                            value="Reply" styleClass="btn kbbtn"
-                                            style="color:#fff;background:#990033;padding:5px;width:55px;" reRender="replyBox" />
+                                    <apex:outputPanel id="replyButton" >
+                                        <apex:commandButton action="{!displayReplyBox}" rendered="{!showReplyButton}"
+                                            value="Reply Or Add Attachment" styleClass="btn kbbtn"
+                                            style="color:#fff;background:#990033;padding:5px;" reRender="replyButton, replyBox" />
+                                    </apex:outputPanel>
                                 </apex:form>
                                 <apex:outputPanel id="replyBox">
-                                     <apex:outputPanel rendered="{!allowReply}" >
-                                        <apex:form styleClass="detailsForm">
+                                     <apex:outputPanel id="replyPanel" rendered="{!showReplyBox}" >
+                                        <apex:form id="replyForm" styleClass="detailsForm">
+                                            <br />
+                                            <apex:inputTextarea value="{!caseReply}" id="replyText" rows="10" cols="98" style="max-width: 100%; max-height: 100%;"/>
                                             <br />
                                             <br />
-                                            <apex:inputTextarea value="{!strCaseReply}" rows="10" cols="99" />
-                                            <br />
-                                            <br />
-                                            <div class="row">
+                                            <div class="box">
                                                 <div class="header">
                                                     <h6>
                                                         <b>Upload New Attachments (Max size 25MB) </b>
                                                     </h6>
                                                 </div>
                                                 <br />
-                                                <apex:inputFile fileName="{!objAtt.name}" value="{!objAtt.Body}" style="float:left;"/>
+                                                <apex:inputFile fileName="{!replyCaseAttachment.name}" id="replyFile" value="{!replyCaseAttachment.Body}" style="float:left;"/>
+                                                <script>
+                                                    function validateReply() {
+                                                        var filePresent = false;
+                                                        var replyPresent = false;
+                                                        if (document.getElementById('{!$Component.replyFile}').value.length > 0) {
+                                                            filePresent = true;
+                                                        }
+                                                        if (document.getElementById('{!$Component.replyText}').value.trim().length > 0) {
+                                                            replyPresent = true;
+                                                        }
+                                                        if (filePresent) {
+                                                            return validateFile();
+                                                        }
+                                                        if (filePresent || replyPresent) {
+                                                            return true;
+                                                        } else {
+                                                            document.getElementById('errorDiv').innerHTML = 'Error: Please add a reply or an attachment\n';
+                                                        }
+                                                        return false;
+                                                    }
+            
+                                                    function validateFile() {
+                                                        var errorPresent = false;
+                                                        $j('input[type=file]').each(function() {
+                                                            fileName = this.files[0].name;
+                                                            fileSize = this.files[0].size/1000000;
+                                                            var validFileTypes = ['.doc','.docx','.xls','.xlsx','.jpg', '.jpeg', '.gif', '.png', '.pdf', '.txt'];
+                                                            var fileExtensionArray = fileName.split('.');
+                                                            var fileExtension = '.' + fileExtensionArray[fileExtensionArray.length - 1];                      
+    
+                                                            if (validFileTypes.indexOf(fileExtension.toLowerCase()) == -1 ) {
+                                                                document.getElementById('errorDiv').innerHTML = 
+                                                                    'Error: This attachment is not an acceptable file type.\n' +
+                                                                    'The following attachment types are allowed:\n' +
+                                                                    'Microsoft Word (.doc or .docx)\n' +
+                                                                    'Microsoft Excel (.xls or .xlsx)\n' +
+                                                                    'Image (.jpg, .jpeg, .gif, .png)\n' +
+                                                                    'Adobe PDF (.pdf)\n'+
+                                                                    'Text (.txt)\n';
+                                                                errorPresent = true;
+                                                            }
+                                                            
+                                                            if (fileSize > 25) {
+                                                                document.getElementById('errorDiv').innerHTML = 'The attachment exceeds the file size limit of 25 MB\n';
+                                                                errorPresent = true;
+                                                            }
+                                                        });       
+                                                        
+                                                        if (errorPresent)
+                                                            return false;
+                                                        
+                                                        return true;                            
+                                                    }  
+                                                </script>
                                                 <br />
-                                                <div align="center" draggable="false" >
-                                                <apex:commandButton onclick="return validateFile();" action="{!submitReply}"
-                                                value="Submit" styleClass="btn kbbtn"
-                                                style="color:#fff;background:#990033;padding:5px;width:55px;" />
-                                                </div>
                                             </div>
+                                            <div align="center" draggable="false" >
+                                                <apex:commandButton action="{!clearContentsAndCloseBox}" value="Cancel" styleClass="btn kbbtn"
+                                                style="color:#fff;background:#990033;padding:5px;" />
+                                                <div style="width: 10px; display: inline-block;" />
+                                                <apex:commandButton onclick="return validateReply();" action="{!submitReply}"
+                                                value="Submit" styleClass="btn kbbtn"
+                                                style="color:#fff;background:#990033;padding:5px;" />
+                                            </div>
+                                            <br />
+                                            <div class="errorMsg" id="errorDiv" />
                                         </apex:form>
                                     </apex:outputPanel>
                                 </apex:outputPanel>
@@ -423,20 +451,20 @@
                         </div>
                     </apex:outputPanel>
                     
-                    <apex:outputPanel rendered="{!isAtt}" >
+                    <apex:outputPanel rendered="{!showCaseAttachments}" >
                         <apex:pageBlock >
                             <div class="row">
                                 <div class="header">
                                     <h6><b>View Attachments</b></h6>
                                 </div>
-                                <apex:pageBlockTable value="{!listAtt}" rendered="{!isAtt}" var="eachAtt" columns="2">
+                                <apex:pageBlockTable value="{!allCaseAttachments}" rendered="{!showCaseAttachments}" var="eachAttachment" columns="2">
                                     <apex:column headerValue="Name">
-                                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAtt.id)}" style="color:#990033;" target="_blank">{!eachAtt.Name}</apex:outputLink>
+                                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color:#990033;" target="_blank">{!eachAttachment.Name}</apex:outputLink>
                                     </apex:column>
                                     <apex:column headerValue="Created Date">
                                         <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}"
                                             label="Date Opened">
-                                            <apex:param value="{!eachAtt.CreatedDate}"/>
+                                            <apex:param value="{!eachAttachment.CreatedDate}"/>
                                         </apex:outputText>
                                     </apex:column>
                                 </apex:pageBlockTable>
@@ -515,7 +543,7 @@
             var masqCookie = "{!masqScopeIdCookie}";
             var viewingAs = "{!viewingAs}";
             if (masqCookie != "" && viewingAs == "true") {
-                $("a").each(function() {
+                $j("a").each(function() {
                     var href = this.href;
                     if (href.indexOf("force") > -1)
                     {
@@ -525,7 +553,7 @@
                         else {
                             href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
                         }
-                        $(this).attr("href", href);
+                        $j(this).attr("href", href);
                     }
                 });
             }

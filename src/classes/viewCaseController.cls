@@ -1,4 +1,4 @@
-global without sharing class viewCaseController {
+public without sharing class viewCaseController {
 
 
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
@@ -21,17 +21,19 @@ global without sharing class viewCaseController {
     public String viewAsUrl { get; set; }
     public String caseFunctionalGroup { get; set; }
     public List<Opportunity> oppList;
-    public Boolean allowReply { get; set; }
-    public String strCaseReply { get; set; }
-    public Attachment objAtt { get; set; }
-    public List<String> vars { get; set; }
-    public List<Attachment> listAtt { get; set; }
-    public Boolean isAtt { get; set; }
+    public Boolean showReplyBox { get; set; }
+    public Boolean showReplyButton { get; set; }
+    public String caseReply { get; set; }
+    public Attachment replyCaseAttachment { get; set; }
+    public List<String> varsForErrorLogging { get; set; }
+    public List<Attachment> allCaseAttachments { get; set; }
+    public Boolean showCaseAttachments { get; set; }
    
     public viewCaseController() {
         viewingAs = false;
-        allowReply = false;
-        objAtt = new Attachment();
+        showReplyBox = false;
+        showReplyButton = true;
+        replyCaseAttachment = new Attachment();
         checkForViewAs();
         popUserContact();
         popTerms();
@@ -40,16 +42,16 @@ global without sharing class viewCaseController {
     }
     
     public void retrieveAttachmentList() {
-        listAtt = new List<Attachment>([
+        allCaseAttachments = new List<Attachment>([
                 SELECT id, Name, CreatedDate
                 FROM Attachment
-                WHERE ParentId=:caseId ORDER BY  CreatedDate DESC
+                WHERE ParentId = :caseId ORDER BY  CreatedDate DESC
             ]);
-        if (listAtt == null || listAtt.size() == 0) {
-            isAtt = false;    
+        if (allCaseAttachments == null || allCaseAttachments.size() == 0) {
+            showCaseAttachments = false;    
         }
         else {
-            isAtt = true;
+            showCaseAttachments = true;
         }
     }
     
@@ -60,7 +62,7 @@ global without sharing class viewCaseController {
             userAsurite = [
                 SELECT ASURite_Id__c
                 FROM User
-                WHERE Id = :UserInfo.getUserId()
+                WHERE Id= :UserInfo.getUserId()
             ].ASURite_Id__C;
 
             viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
@@ -121,7 +123,7 @@ global without sharing class viewCaseController {
             );
         }
         else {
-            Case returnCase=[
+            Case returnCase = [
                 SELECT Id, CaseNumber, RecordType.Name, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
                     Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
                 FROM Case
@@ -245,8 +247,7 @@ global without sharing class viewCaseController {
             try {
                 update userContact;
                 return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
-            }
-            catch(Exception e) {
+            } catch(Exception e) {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
                 vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
@@ -269,78 +270,101 @@ global without sharing class viewCaseController {
     }
     
     public void displayReplyBox() {
-        allowReply = true;
+        showReplyBox = true;
+        showReplyButton = false;
     }
     
-    public Integer uploadAtt() {
-        Integer result = 0;
-        if(objAtt.Name!=null && objAtt.Body!=null && caseId!=null) {
-                objAtt.ParentId=caseId;
+    public PageReference clearContentsAndCloseBox() {
+        showReplyBox = false;
+        caseReply = '';
+        showReplyButton = true;
+        replyCaseAttachment = new Attachment();
+        return null;
+    }
+    
+    public String uploadAttachment() {
+        if (replyCaseAttachment.Name != null && replyCaseAttachment.Body != null && caseId != null) {
+                replyCaseAttachment.ParentId = caseId;
                 try {
-                    insert objAtt;
-                    result = 1;
+                    insert replyCaseAttachment;
+                    replyCaseAttachment = new Attachment();
+                    return 'success';
                 } catch(Exception e) {
-                    vars = new List<String>();
-                    vars.add(ErrorLogger.convertStringToJSON('name',objAtt.name));
-                    ErrorLogger.log(e,vars,false);
-                    result = -1;
+                    varsForErrorLogging = new List<String>();
+                    varsForErrorLogging.add(ErrorLogger.convertStringToJSON('name', replyCaseAttachment.name));
+                    ErrorLogger.log(e, varsForErrorLogging, false);
+                    replyCaseAttachment = new Attachment();
+                    return 'failure';
                 }
-                objAtt=new Attachment();
         }
-        return result;
+        return 'noattachment';
+    }
+    
+    private String createJSONString() {
+        User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        Case currentCase = [SELECT Id, Owner.Email FROM Case WHERE Id = :caseId LIMIT 1];
+        
+        String ownerEmail = '';
+        if (currentCase.Owner.Email != null) {
+            ownerEmail = currentCase.Owner.Email;
+        }
+        String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
+        String jsonInput = '{';  
+        jsonInput += '"emailTextBody":"' + caseReply + '"' + ',';
+        jsonInput += '"parentId":"' + caseId + '"' + ',';
+        jsonInput += '"emailSubject":"' + emailSubject + '"' + ',';
+        jsonInput += '"isIncoming":"' + 'true' + '"' + ',';
+        jsonInput += '"fromName":"' + currentUser.Name + '"' + ',';
+        jsonInput += '"fromAddress":"' + currentUser.Email + '"' + ',';
+        jsonInput += '"toAddress":"' + ownerEmail + '"' + ',';
+        jsonInput += '"status":"' + '2' + '"';
+        jsonInput += '}' ;
+        
+        return jsonInput;
+    }
+    
+    private String createEmailMessageRestCallout() {
+        Http objHttp = new Http();
+        HttpRequest emailMessageInsertRequest = new HttpRequest();
+            
+        String jsonStringForRestCall = createJSONString();
+        String baseURL = System.URL.getSalesforceBaseURL().toExternalForm();
+        
+        emailMessageInsertRequest.setHeader('Content-Type', 'application/json');
+        emailMessageInsertRequest.setEndpoint(baseURL + '/services/apexrest/EmailMessageInsert');
+        emailMessageInsertRequest.setMethod('POST');
+        emailMessageInsertRequest.setBody(jsonStringForRestCall);
+        HttpResponse response = objHttp.send(emailMessageInsertRequest);
+        String responseMessage = response.getBody();
+
+        return responseMessage;
     }
     
     public PageReference submitReply() {
         Boolean isReplySuccess = true;
-        if(strCaseReply!=null && strCaseReply.trim()!='') {
-            String resMessage;
-            User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-            String baseURL = System.URL.getSalesforceBaseURL().toExternalForm();
-            String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
-            EmailMessage response = new EmailMessage();
-            String jsonInput = '{';  
-            jsonInput += '"emailTextBody":"' + strCaseReply + '"' + ',';
-            jsonInput += '"parentId":"' + caseId + '"' + ',';
-            jsonInput += '"emailSubject":"' + emailSubject + '"' + ',';
-            jsonInput += '"isIncoming":"' + 'true' + '"' + ',';
-            jsonInput += '"fromName":"' + currentUser.Name + '"' + ',';
-            jsonInput += '"fromAddress":"' + currentUser.Email + '"' + ',';
-            jsonInput += '"toAddress":"' + currentUser.Email + '"' + ',';
-            jsonInput += '"status":"' + '2' + '"';
-            jsonInput += '}' ;
-            
-            Http objHttp = new Http();
-            HttpRequest objReq = new HttpRequest();
-
-            objReq.setHeader('Content-Type', 'application/json');
-            objReq.setEndpoint(baseURL + '/services/apexrest/insertEmailMessage');
-            objReq.setMethod('POST');
-            objReq.setBody(jsonInput);
-            HttpResponse res = objHttp.send(objReq);
-            resMessage = res.getBody();
-            
-            if(resMessage == '"success"') {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));        
-            }
-            else {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Could not add response to case. Please try again or contact system admin'));
+        if (!String.isBlank(caseReply)) {
+            String restCallResponse = createEmailMessageRestCallout();
+            if(restCallResponse == '"success"') {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));        
+            } else {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact system admin'));
                 isReplySuccess = false;
             }
-            strCaseReply = '';
+            caseReply = '';
         }
+        
         if(isReplySuccess) {
-            Integer attResponseCode = uploadAtt();
-            if(attResponseCode == -1) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Could not upload attachment, please try again'));
-            }
-            if(attResponseCode == 1) {
-               ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Response to the case was submitted successfully'));
+            String attachmentUploadResponse = uploadAttachment();
+            if (attachmentUploadResponse == 'success') {
+               ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Attachment to Case submitted Successfully'));
                retrieveAttachmentList();     
+            } 
+            if (attachmentUploadResponse == 'failure') {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not upload attachment, please try again'));
             }
         }
-        allowReply = false;
+        showReplyBox = false;
+        showReplyButton = true;
         return null;
     }
-    
-    
 }

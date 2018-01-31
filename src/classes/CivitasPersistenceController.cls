@@ -7,23 +7,13 @@ global class CivitasPersistenceController{
     global static Decimal persistenceLevel;
     global static Contact c;
 
-    public static string currentTerm{
+    public static String currentTerm{
         get{
             if (currentTerm == null) {
-                JBT_RET_TERMS_VW__x currentTermInfo =
-                [
-                    SELECT  CURR_TERM__c, NEXT_TERM__c, PREV_TERM__c
-                    FROM    JBT_RET_TERMS_VW__x
-                    LIMIT 1
-                ];
-                currentTerm = currentTermInfo.CURR_TERM__c;
-
-                if (currentTerm.length() > 4) {
-                    currentTerm = currentTerm.subString(1, 5);
-                }
-
-                nextTerm = currentTermInfo.NEXT_TERM__c;
-                prevTerm = currentTermInfo.PREV_TERM__c;
+                StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+                currentTerm = currentTermData.CurrTerm__c;
+                nextTerm = currentTermData.NextTerm__c; 
+                prevTerm = currentTermData.PrevTerm__c;
             }
             return currentTerm;
         }
@@ -31,17 +21,10 @@ global class CivitasPersistenceController{
         set;
     }
 
-    public static string nextTerm{
-        get;
+    public static String nextTerm{ get; set;}
 
-        set;
-    }
-
-    public static string prevTerm {
-        get;
-
-        set;
-    }
+    public static String prevTerm { get; set;}
+    
     public static Date startDate{
         get{
             if (startDate == null) {

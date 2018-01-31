@@ -67,7 +67,9 @@ public class SummaryListController {
     public String dynamicQuery {
         get {
             // Need to figure out why this is being called 3 times per action.
-
+            if(subject != null) {
+                subject = String.escapeSingleQuotes(subject);
+            }
             dynamicQuery = '' +
                 'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, ' +
                     'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c  ' +

@@ -7,23 +7,13 @@ global class CivitasPersistenceController{
     global static Decimal persistenceLevel;
     global static Contact c;
 
-    public static string currentTerm{
+    public static String currentTerm{
         get{
             if (currentTerm == null) {
-                JBT_RET_TERMS_VW__x currentTermInfo =
-                [
-                    SELECT  CURR_TERM__c, NEXT_TERM__c, PREV_TERM__c
-                    FROM    JBT_RET_TERMS_VW__x
-                    LIMIT 1
-                ];
-                currentTerm = currentTermInfo.CURR_TERM__c;
-
-                if (currentTerm.length() > 4) {
-                    currentTerm = currentTerm.subString(1, 5);
-                }
-
-                nextTerm = currentTermInfo.NEXT_TERM__c;
-                prevTerm = currentTermInfo.PREV_TERM__c;
+                StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+                currentTerm = currentTermData.CurrTerm__c;
+                nextTerm = currentTermData.NextTerm__c; 
+                prevTerm = currentTermData.PrevTerm__c;
             }
             return currentTerm;
         }
@@ -31,17 +21,10 @@ global class CivitasPersistenceController{
         set;
     }
 
-    public static string nextTerm{
-        get;
+    public static String nextTerm{ get; set;}
 
-        set;
-    }
-
-    public static string prevTerm {
-        get;
-
-        set;
-    }
+    public static String prevTerm { get; set;}
+    
     public static Date startDate{
         get{
             if (startDate == null) {
@@ -52,9 +35,9 @@ global class CivitasPersistenceController{
                 startDate = startDate.addDays(22);
             }
             if(startDate >= Date.today()) {
-                endDate = startDate;
-                startDate = [Select Session_A_C_Start_Date__c
-                             FROM Term__c
+                endDate = startDate.addDays(-22);
+                startDate = [Select Session_A_C_Start_Date__c 
+                             FROM Term__c 
                              WHERE PeopleSoft_Code__c =: prevTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startdate.addDays(22);
@@ -83,9 +66,13 @@ global class CivitasPersistenceController{
         try {
             if(emplidIn != null && emplidIn.substring(0,3).equals('003')) {
                 emplidIn = [Select EMPLID__c FROM Contact Where Id =: emplidIn LIMIT 1].EMPLID__c;
+            } else if (emplidIn == null) {
+                return null;
             }
         }
-        catch(Exception e){}
+        catch (Exception e){ 
+            return null;
+        }
         dataList = new List<CivitasWrapper>();
         List<CivitasWrapper> rejected = new List<CivitasWrapper>();
         Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplidIn LIMIT 1];
@@ -135,12 +122,20 @@ global class CivitasPersistenceController{
                 prevData = trm;
             }
         }
-        
+
         if(rejected.size() > 0){
             return rejected;
         }
 
         if (dataList.size() > 0) {
+            CivitasWrapper tmpEndPoint = dataList[dataList.size()-1];
+            Integer dayValue = tmpEndPoint.day;
+            while (tmpEndPoint.snapDate < endDate) {
+                tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
+                dayValue++;
+                dataList.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel,
+                                                    tmpEndPoint.levelDesc, tmpEndPoint.flag, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
+            }
             Integer startMonth = startDate.month();
             Integer endMonth = endDate.month();
         	persistenceLevel = dataList[dataList.size()-1].outlookLevel;
@@ -165,14 +160,22 @@ global class CivitasPersistenceController{
     public String getInfo{
         get{
             emplid = apexpages.currentPage().getparameters().get('contactId');
-            if(emplid.substring(0, 3).equals('003')) {
-                c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE id =: emplid LIMIT 1];
+            if (String.isEmpty(emplid) || emplid.length() != 10) {
+                getInfo = Label.EMPLIDMissing;
+                return getInfo;
             }
-            else {
-            	c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
+            List<Contact> contactList = new List<Contact>();
+            if (emplid.substring(0, 3).equals('003')) {
+                contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE id =: emplid LIMIT 1];
+            } else {
+            	contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
             }
-            getInfo = 'Name: ' + c.FirstName + ' ' + c.LastName + ' (' + emplid + ') Persistence Level: No Data Available&contactId=' + c.Id;
-
+            if (!contactList.isEmpty()) {
+            	getInfo = 'Name: ' + contactList[0].FirstName + ' ' + contactList[0].LastName + ' (' + emplid + ') Persistence Level: No Data Available';
+            } else {
+            	getInfo = Label.EMPLIDMissing; 
+            }
+            
             return getInfo;
         }
 

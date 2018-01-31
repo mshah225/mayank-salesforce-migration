@@ -83,9 +83,13 @@ global class CivitasPersistenceController{
         try {
             if(emplidIn != null && emplidIn.substring(0,3).equals('003')) {
                 emplidIn = [Select EMPLID__c FROM Contact Where Id =: emplidIn LIMIT 1].EMPLID__c;
+            } else if (emplidIn == null) {
+                return null;
             }
         }
-        catch(Exception e){}
+        catch (Exception e){ 
+            return null;
+        }
         dataList = new List<CivitasWrapper>();
         List<CivitasWrapper> rejected = new List<CivitasWrapper>();
         Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplidIn LIMIT 1];
@@ -173,14 +177,22 @@ global class CivitasPersistenceController{
     public String getInfo{
         get{
             emplid = apexpages.currentPage().getparameters().get('contactId');
-            if(emplid.substring(0, 3).equals('003')) {
-                c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE id =: emplid LIMIT 1];
+            if (String.isEmpty(emplid) || emplid.length() != 10) {
+                getInfo = Label.EMPLIDMissing;
+                return getInfo;
             }
-            else {
-            	c = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
+            List<Contact> contactList = new List<Contact>();
+            if (emplid.substring(0, 3).equals('003')) {
+                contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE id =: emplid LIMIT 1];
+            } else {
+            	contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
             }
-            getInfo = 'Name: ' + c.FirstName + ' ' + c.LastName + ' (' + emplid + ') Persistence Level: No Data Available&contactId=' + c.Id;
-
+            if (!contactList.isEmpty()) {
+            	getInfo = 'Name: ' + contactList[0].FirstName + ' ' + contactList[0].LastName + ' (' + emplid + ') Persistence Level: No Data Available';
+            } else {
+            	getInfo = Label.EMPLIDMissing; 
+            }
+            
             return getInfo;
         }
 

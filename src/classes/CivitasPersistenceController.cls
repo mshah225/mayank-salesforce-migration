@@ -170,7 +170,7 @@ global class CivitasPersistenceController{
         get{
             emplid = apexpages.currentPage().getparameters().get('contactId');
             if (String.isEmpty(emplid) || emplid.length() != 10) {
-                getInfo = Label.CivitasDataMissing;
+                getInfo = Label.EMPLIDMissing;
                 return getInfo;
             }
             List<Contact> contactList = new List<Contact>();
@@ -182,7 +182,7 @@ global class CivitasPersistenceController{
             if (!contactList.isEmpty()) {
             	getInfo = 'Name: ' + contactList[0].FirstName + ' ' + contactList[0].LastName + ' (' + emplid + ') Persistence Level: No Data Available';
             } else {
-            	getInfo = Label.CivitasDataMissing; 
+            	getInfo = Label.EMPLIDMissing; 
             }
             
             return getInfo;

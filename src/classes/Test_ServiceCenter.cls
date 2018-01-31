@@ -11,7 +11,7 @@ private class Test_ServiceCenter{
     public static Case testCase1;
     public static List<Opportunity> oppList1;
     
-    static void initVars(){
+    static private void initVars() {
         testUser1 = [
             SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
             FROM User
@@ -453,6 +453,7 @@ private class Test_ServiceCenter{
 
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
         User testUser = [
             SELECT Id, ContactId
             FROM User
@@ -466,10 +467,6 @@ private class Test_ServiceCenter{
             WHERE ContactId = :testUser.ContactId
             LIMIT 1
         ];
-
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase.Id);
-        Test.setCurrentPage(viewCase);
 
         Test.startTest();
 
@@ -485,86 +482,145 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
     
-    @isTest static void testViewCasePinError(){
-        
+    @isTest 
+    private static void originalPinSameAsNewPinError() {
         initVars();
+        
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', testCase1.Id);
         Test.setCurrentPage(viewCase);
         
-        System.runAs(testUser1){   
-            vcc=new viewCaseController();
+        System.runAs(testUser1) {   
+            vcc = new viewCaseController();
             vcc.newPin = testContact1.Self_Service_PIN__c;
-            PageReference error = ApexPages.currentPage();
-            error.getParameters().put('PIN', 'error');
+            PageReference currentPage = ApexPages.currentPage();
+            currentPage.getParameters().put('PIN', 'error');
+            
             Test.startTest();
-            System.assertEquals(error.getURL(), vcc.changePin().getURL());
+            String urlAfterPinChange = vcc.changePin().getURL();
             Test.stopTest();
+            
+            System.assertEquals(currentPage.getURL(), urlAfterpinChange);
         }
 }
        
     
-    @isTest static void testViewCasePinError2(){
-        
+    @isTest 
+    private static void repeatingDigitsError() {
         initVars();
+        
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', testCase1.Id);
         Test.setCurrentPage(viewCase);
         
-        System.runAs(testUser1){   
-            vcc=new viewCaseController();
+        System.runAs(testUser1) {   
+            vcc = new viewCaseController();
             vcc.newPin = 111111;
-            PageReference error2 = ApexPages.currentPage();
-            error2.getParameters().put('PIN', 'error');
+            
             Test.startTest();
-            System.assertEquals(error2.getURL(), vcc.changePin().getURL());
+            String urlAfterPinChange = vcc.changePin().getURL();
             Test.stopTest();
+            
+            PageReference currentPage = ApexPages.currentPage();
+            currentPage.getParameters().put('PIN', 'error');
+            
+            System.assertEquals(currentPage.getURL(), urlAfterPinChange);
         }
     }
     
-     @isTest static void testViewCasePinSuccess(){
-        
+     @isTest 
+     private static void testViewCasePinSuccess() {
         initVars();
+        
+        String urlAfterPinChange;
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', testCase1.Id);
         Test.setCurrentPage(viewCase);
        
-        System.runAs(testUser1){ 
-            vcc=new viewCaseController();
+        System.runAs(testUser1) { 
+            vcc = new viewCaseController();
             vcc.newPin = 574838;
-            PageReference submit = ApexPages.currentPage();
-            submit.getParameters().put('PIN', 'success');
+            
             Test.startTest();
-            System.assertEquals(submit.getURL(), vcc.changePin().getURL());
+            urlAfterPinChange = vcc.changepin().getURL();
             Test.stopTest();
         }
+        
+        PageReference submitPage = ApexPages.currentPage();
+        submitPage.getParameters().put('PIN', 'success');
+        
+        Contact retrieveContact = [Select Id, Self_Service_PIN__c, PIN_Lockout__c FROM Contact WHERE Id = :vcc.UserContact.Id];
+        
+        System.assertEquals(submitPage.getURL(), urlAfterPinChange);
+        System.assertEquals(retrieveContact.Self_service_PIN__c, vcc.newPin);
+        System.assertEquals(retrieveContact.PIN_Lockout__c, false);
     }
     
-    @isTest static void testOtherMethods(){
+    @isTest 
+    private static void testFetchCaseDetails() {
         initVars();
+        
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', testCase1.Id);
         Test.setCurrentPage(viewCase);
         Case checkCase;
+        
         Test.startTest();
-        System.runAs(testUser1){
+        System.runAs(testUser1) {
             vcc = new viewCaseController();
             checkCase = vcc.getCaseDetails();
-            vcc.getEmailMessages();
-            vcc.getChatMessages();
-        
-            vcc.viewingAs=true;
+            
+            vcc.viewingAs = true;
             vcc.getCaseDetails();
-            vcc.getEmailMessages();
-            vcc.getChatMessages();
-            vcc.changePin();
+            
         }
         Test.stopTest();
         System.assertEquals(checkCase.Id, testCase1.Id);
     }
     
+    @isTest
+    private static void testFetchEmailMessages() {
+        initVars();
+        
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
+        Case checkCase;
+        
+        Test.startTest();
+        System.runAs(testUser1) {
+            vcc = new viewCaseController();
+            vcc.getEmailMessages();
+            
+            vcc.viewingAs = true;
+            vcc.getEmailMessages();
+        }
+        Test.stopTest();
+    }
+    
+    @isTest
+    private static void testFetchChatMessages() {
+        initVars();
+        
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
+        Case checkCase;
+        
+        Test.startTest();
+        System.runAs(testUser1) {
+            vcc = new viewCaseController();
+            vcc.getChatMessages();
+            
+            vcc.viewingAs = true;
+            vcc.getChatMessages();
+        }
+        Test.stopTest();
+    }
+    
     @isTest static void testRestCallout(){
         initVars();
+        
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', testCase1.Id);
         Test.setCurrentPage(viewCase);
@@ -572,15 +628,16 @@ private class Test_ServiceCenter{
         System.runAs(testUser1) {
             vcc = new viewCaseController();
             Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
-            vcc.objAtt.Name = 'Test Name';
-            vcc.objAtt.Body = Blob.valueOf('Test Attachment Body');
-            vcc.strCaseReply = 'Test Message';
+            vcc.replyCaseAttachment.Name = 'Test Name';
+            vcc.replyCaseAttachment.Body = Blob.valueOf('Test Attachment Body');
+            vcc.caseReply = 'Test Message';
+            
             Test.startTest();
             vcc.submitReply();  
             Test.stopTest();
         }
-        List<Attachment> lstAttachment = [Select Id from Attachment where ParentId=: testCase1.Id];
-        System.assertEquals(lstAttachment.size(), 1);
+        List<Attachment> testCaseAttachment = [Select Id from Attachment where ParentId = :testCase1.Id];
+        System.assertEquals(testCaseAttachment.size(), 1);
     }
     
 }

@@ -6,8 +6,6 @@
 ******************************************/
 
 public class SuccessRecodingController {
-    private static Set<Id> successStudentContactIds;
-
     public Boolean coachPath { get; set; }
     public Boolean allStudentsChecked { get; set; }
     public Id selectedCoachId { get; set; }
@@ -24,18 +22,6 @@ public class SuccessRecodingController {
     public List<StudentWrapper> studentsResults { get; set; }
     public List<StudentWrapper> selectedStudents { get; set; }
     public List<Contact> contactResults { get; set; }
-
-    static {
-        successStudentContactIds = new Set<Id>();
-        for (Success_Student__c ss : [
-            SELECT Student__c
-            FROM Success_Student__c
-            WHERE Is_Active__c = true
-            AND Coaching_Student__c = true
-        ]) {
-            successStudentContactIds.add(ss.Student__c);
-        }
-    }
 
     public SuccessRecodingController() {
         page = 1;
@@ -72,28 +58,22 @@ public class SuccessRecodingController {
                 'Search terms must be at least 3 characters long.'));
             return;
         }
-
-        List<List<SObject>> results = new List<List<SObject>>();
-        resourceResults = new List<User>();
-
-        String soslString = '' +
-            'FIND \'' + String.escapeSingleQuotes(coachSearchString) + '\' ' +
-            'IN ALL FIELDS ' +
-            'RETURNING User(' +
-                'Name, Alias, ASURITE_Id__c, EMPLID__c, Email ' +
-                'WHERE Profile.Name = \'ASU Service - Success Coach\' ' +
-                'AND IsActive = true';
-
-        if (!String.isEmpty(selectedCoachId)) {
-            soslString += ' AND Id != :selectedCoachId)';
+        resourceResults = searchUsersByCoachSearchString();
+    }
+    
+    private List<User> searchUsersByCoachSearchString() {
+        List<List<SObject>> results = [
+            FIND :String.escapeSingleQuotes(coachSearchString)
+            IN ALL FIELDS
+            RETURNING User(
+                Name, Alias, ASURITE_Id__c, EMPLID__c, Email  
+                WHERE Profile.Name = 'ASU Service - Success Coach'
+                AND IsActive = true
+                AND Id != :selectedCoachId)];
+        if (!results[0].isEmpty()) {
+            return (List<User>) results[0];
         } else {
-            soslString += ')';
-        }
-
-        results = Search.query(soslString);
-
-        if (results[0].size() > 0) {
-            resourceResults = (List<User>) results[0];
+            return new List<User>();
         }
     }
 
@@ -103,23 +83,27 @@ public class SuccessRecodingController {
                 'Search terms must be at least 3 characters long.'));
             return;
         }
-
+        contactResults = searchContactsByStudentSearchString();
+    }
+    
+    private List<Contact> searchContactsByStudentSearchString() {
         List<List<SObject>> results = new List<List<SObject>>();
-        contactResults = new List<Contact>();
-
-        String soslString = '' +
-            'FIND \'' + String.escapeSingleQuotes(studentSearchString) + '\' ' +
-            'IN ALL FIELDS ' +
-            'RETURNING Contact(' +
-                'Name, FirstName, LastName, ASURite_ID__c, EMPLID__c, Email ' +
-                'WHERE Id IN :successStudentContactIds ' +
-                'ORDER BY Name ASC LIMIT 50' +
-            ')';
-
-        results = Search.query(soslString);
-
-        if (results[0].size() > 0) {
-            contactResults = (List<Contact>) results[0];
+        results = [
+            FIND :String.escapeSingleQuotes(studentSearchString)
+            IN ALL FIELDS 
+            RETURNING Contact(
+                Name, FirstName, LastName, ASURite_ID__c, EMPLID__c, Email
+                WHERE Id IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE Is_Active__c = true
+                    AND Coaching_Student__c = true)
+                ORDER BY Name ASC LIMIT 50
+        )];
+        if (!results[0].isEmpty()) {
+            return (List<Contact>) results[0];
+        } else {
+            return new List<Contact>();
         }
     }
 

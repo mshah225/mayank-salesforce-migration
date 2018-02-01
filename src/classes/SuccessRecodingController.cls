@@ -69,7 +69,8 @@ public class SuccessRecodingController {
                 Name, Alias, ASURITE_Id__c, EMPLID__c, Email  
                 WHERE Profile.Name = 'ASU Service - Success Coach'
                 AND IsActive = true
-                AND Id != :selectedCoachId)];
+                AND Id != :selectedCoachId
+        )];
         if (!results[0].isEmpty()) {
             return (List<User>) results[0];
         } else {

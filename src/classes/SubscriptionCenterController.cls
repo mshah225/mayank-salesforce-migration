@@ -312,8 +312,8 @@ public without sharing class SubscriptionCenterController {
                 update unsubList;
             } catch (Exception ex) {
                 List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'doUnsubscribe');
-                vars.add(ErrorLogger.convertListToJSON('unsubList', unsubList);
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'doUnsubscribe'));
+                vars.add(ErrorLogger.convertListToJSON('unsubList', unsubList));
                 ErrorLogger.log(ex, vars, false);
             }
             directUnsubscribeSuccess = true;
@@ -470,8 +470,8 @@ public without sharing class SubscriptionCenterController {
                 updateSuccess = true;
             } catch (Exception ex) {
                 List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscriptions');
-                vars.add(ErrorLogger.convertListToJSON('subsToUpdate', subsToUpdate);
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscriptions'));
+                vars.add(ErrorLogger.convertListToJSON('subsToUpdate', subsToUpdate));
                 ErrorLogger.log(ex, vars, false);
             }
             
@@ -483,8 +483,8 @@ public without sharing class SubscriptionCenterController {
                 updateSuccess = true;
             } catch (Exception ex) {
                 List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscriptions');
-                vars.add(ErrorLogger.convertListToJSON('subsToInsert', subsToInsert);
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscriptions'));
+                vars.add(ErrorLogger.convertListToJSON('subsToInsert', subsToInsert));
                 ErrorLogger.log(ex, vars, false);
             }
         }
@@ -518,8 +518,8 @@ public without sharing class SubscriptionCenterController {
                 update subsToUpdate;
             } catch (Exception ex) {
                 List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscribersToNoPreference');
-                vars.add(ErrorLogger.convertListToJSON('subsToUpdate', subsToUpdate);
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscribersToNoPreference'));
+                vars.add(ErrorLogger.convertListToJSON('subsToUpdate', subsToUpdate));
                 ErrorLogger.log(ex, vars, false);
             }
         }

@@ -1,4 +1,4 @@
-public class SubscriberHashUpdateBatch implements Database.Batchable<sObject>, Schedulable {
+public class SubscriberHashUpdateBatch implements Database.Batchable<sObject> {
 	public final String query;
 
    public SubscriberHashUpdateBatch() {
@@ -10,7 +10,7 @@ public class SubscriberHashUpdateBatch implements Database.Batchable<sObject>, S
    }
 
     public void execute(Database.BatchableContext bc, List<Subscriber__c> scope) {
-        for (Subscriber sub : scope) {
+        for (Subscriber__c sub : scope) {
             sub.HashSubscriberId__c = Hasher.hashId(sub.Id);
         }     
         update scope;

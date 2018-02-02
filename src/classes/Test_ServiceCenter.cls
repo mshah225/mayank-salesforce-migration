@@ -618,7 +618,8 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
     
-    @isTest static void testRestCallout(){
+    @isTest 
+    private static void testRestCallout(){
         initVars();
         
         PageReference viewCase = Page.viewcase;

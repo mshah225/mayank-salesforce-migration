@@ -312,8 +312,11 @@ public without sharing class SubscriptionCenterController {
             unsubList[0].Subscriber_Status__c = UNSUBSCRIBED;
             try {
                 update unsubList;
-            } catch (Exception e) {
-                // TODO: Add logger code
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'doUnsubscribe'));
+                vars.add(ErrorLogger.convertListToJSON('unsubList', unsubList));
+                ErrorLogger.log(ex, vars, false);
             }
             directUnsubscribeSuccess = true;
             unsubscribeMessage = ' has been Unsubscribed';
@@ -464,13 +467,28 @@ public without sharing class SubscriptionCenterController {
             }
         }
         if (!subsToUpdate.isEmpty()) {
-            update subsToUpdate;
-            updateSuccess = true;
+            try {
+                update subsToUpdate;
+                updateSuccess = true;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscriptions'));
+                vars.add(ErrorLogger.convertListToJSON('subsToUpdate', subsToUpdate));
+                ErrorLogger.log(ex, vars, false);
+            }
+            
         }
 
         if (!subsToInsert.isEmpty()) {
-            insert subsToInsert;
-            updateSuccess = true;
+            try {
+                insert subsToInsert;
+                updateSuccess = true;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscriptions'));
+                vars.add(ErrorLogger.convertListToJSON('subsToInsert', subsToInsert));
+                ErrorLogger.log(ex, vars, false);
+            }
         }
 
         getAllSubscriptions();
@@ -498,7 +516,14 @@ public without sharing class SubscriptionCenterController {
             }
         }
         if (!subsToUpdate.isEmpty()) {
-            update subsToUpdate;
+            try {
+                update subsToUpdate;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscribersToNoPreference'));
+                vars.add(ErrorLogger.convertListToJSON('subsToUpdate', subsToUpdate));
+                ErrorLogger.log(ex, vars, false);
+            }
         }
     }
 
@@ -508,16 +533,22 @@ public without sharing class SubscriptionCenterController {
             Contact c = new Contact(Id = subscriberIdParm, HasOptedOutOfEmail = !hasOptedOutOfEmail);
             try {
                 update c;
-            } catch (Exception e) {
-                //TODO: Error handling
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertIdToJSON('Contact_subscriberIdParm', subscriberIdParm));
+                vars.add(ErrorLogger.convertBooleanToJSON('hasOptedOutOfEmail', hasOptedOutOfEmail));
+                ErrorLogger.log(ex, vars, false);
             }
             HasOptedOutOfEmail = !hasOptedOutOfEmail;
         } else {
             Lead l = new Lead(Id = subscriberIdParm, HasOptedOutOfEmail = !hasOptedOutOfEmail);
             try {
                   update l;
-            } catch (Exception e) {
-                // TODO: Error handling
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertIdToJSON('Lead_subscriberIdParm', subscriberIdParm));
+                vars.add(ErrorLogger.convertBooleanToJSON('hasOptedOutOfEmail', hasOptedOutOfEmail));
+                ErrorLogger.log(ex, vars, false);
             }
             HasOptedOutOfEmail = !hasOptedOutOfEmail;
         }

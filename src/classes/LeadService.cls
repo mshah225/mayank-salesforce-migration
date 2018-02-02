@@ -211,22 +211,6 @@ public class LeadService {
             }
         }
 
-        /*
-        List<me3__c> listme3=new List<me3__c>();
-        for(me3__c objMe3: [
-            SELECT id,Contact__c, Lead__c 
-            FROM me3__c 
-            WHERE Lead__c IN: leadList]) {
-            if(leadMap.containsKey(objMe3.Lead__c)) {
-                objMe3.Contact__c=leadMap.get(objMe3.Lead__c).Convert_Contact__c;
-                listme3.add(objMe3);
-            }
-        }
-        
-        if(listme3!=null && listme3.size()>0)
-            update listme3;
-		*/
-		
         List<et4ae5__IndividualEmailResult__c> emailList = new List<et4ae5__IndividualEmailResult__c>();
         for(et4ae5__IndividualEmailResult__c email : [
             Select id, et4ae5__Contact__c, et4ae5__Lead__c 

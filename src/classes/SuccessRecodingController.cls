@@ -70,6 +70,7 @@ public class SuccessRecodingController {
                 WHERE Profile.Name = 'ASU Service - Success Coach'
                 AND IsActive = true
                 AND Id != :selectedCoachId
+                LIMIT 50
         )];
         if (!results[0].isEmpty()) {
             return (List<User>) results[0];
@@ -99,7 +100,8 @@ public class SuccessRecodingController {
                     FROM Success_Student__c
                     WHERE Is_Active__c = true
                     AND Coaching_Student__c = true)
-                ORDER BY Name ASC LIMIT 50
+                ORDER BY Name ASC 
+                LIMIT 50
         )];
         if (!results[0].isEmpty()) {
             return (List<Contact>) results[0];
@@ -117,6 +119,7 @@ public class SuccessRecodingController {
             WHERE Student__r.Id = :selectedContactId
             AND Is_Active__c = true
             AND Coaching_Student__c = true
+            LIMIT 1000
         ]);
 
         studentsResults.add(new StudentWrapper(tempStudents[0]));
@@ -139,6 +142,7 @@ public class SuccessRecodingController {
             WHERE Success_Resource__r.Resource__r.Id = :selectedCoachId
             AND Is_Active__c = true
             AND Coaching_Student__c = true
+            LIMIT 1000
         ]);
 
         for (Success_Student__c ss : tempStudents) {
@@ -192,6 +196,7 @@ public class SuccessRecodingController {
             SELECT Id
             FROM Success_Resource__c
             WHERE Resource__c = :transferToCoachId
+            LIMIT 1
         ]);
 
         if (newResource.size() > 0) {
@@ -208,6 +213,7 @@ public class SuccessRecodingController {
                 WHERE IsClosed = false
                 AND ContactId IN :studentContactIds
                 AND Functional_Group__c = 'ASU Coach Outreach'
+                LIMIT 50000
             ]);
 
             for (Case c : openCases) {

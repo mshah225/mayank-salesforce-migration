@@ -62,19 +62,16 @@ global with sharing class StudentProfileController
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
-        if (contactId.length() != 10) {
-            UrlParamsExistAndAreValid = false;
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing)); 
+        
+        if (Validator.validateId(contactId, Contact.class)) {
+            isContactId = true;
+        } else if (Validator.validateEMPLId(contactId)) {
+            isContactId = false;
         } else {
-            if (Validator.validateId(contactId, Contact.class)) {
-                isContactId = true;
-            } else if (Validator.validateEMPLId(contactId)) {
-                isContactId = false;
-            } else {
-                UrlParamsExistAndAreValid = false;
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
-            }
+            UrlParamsExistAndAreValid = false;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
         }
+        
     }
     
     /**

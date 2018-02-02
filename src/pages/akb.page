@@ -492,6 +492,11 @@
     </script>
 
     <script>
+    
+        jQuery(document).ready(function () {
+            jQuery("table").prop('width', 'auto');
+        });
+        
         getLinks();
 
         function getLinks() {

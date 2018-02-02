@@ -42,7 +42,7 @@ public without sharing class AKBController
             funcGroup = faq.Functional_Group__c;
             artType = faq.ArticleType;
         }
-
+            
         feedbackHelpful = new AKB_Article_Feedback__c(); 
         suggestAnArticle = new Case();
     }

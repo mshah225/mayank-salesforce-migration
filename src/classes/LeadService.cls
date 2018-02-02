@@ -212,32 +212,34 @@ public class LeadService {
         }
 
         List<et4ae5__IndividualEmailResult__c> emailList = new List<et4ae5__IndividualEmailResult__c>();
-        for(et4ae5__IndividualEmailResult__c email : [
-            Select id, et4ae5__Contact__c, et4ae5__Lead__c 
+        for (et4ae5__IndividualEmailResult__c email : [
+            SELECT Id, et4ae5__Contact__c, et4ae5__Lead__c 
             FROM et4ae5__IndividualEmailResult__c 
-            WHERE et4ae5__Lead__c IN: leadList]){  
-                if(leadMap.containsKey(email.et4ae5__Lead__c)){
-                    email.et4ae5__Contact__c = leadMap.get(email.et4ae5__Lead__c).Convert_Contact__c;
-                    emailList.add(email);
-                }
+            WHERE et4ae5__Lead__c IN :leadList
+        ]) {  
+            if (leadMap.containsKey(email.et4ae5__Lead__c)) {
+                email.et4ae5__Contact__c = leadMap.get(email.et4ae5__Lead__c).Convert_Contact__c;
+                emailList.add(email);
+            }
         }
         
-        if(emailList != null && emailList.size() > 0) {
+        if (!emailList.isEmpty()) {
             update emailList;
         }
         
         List<Subscriber__c> subscriberList = new List<Subscriber__c>();
-        for(Subscriber__c sub : [
-            Select Lead__c, contact__c
+        for (Subscriber__c sub : [
+            SELECT Lead__c, Contact__c
             FROM Subscriber__c
-            WHERE Lead__c IN: leadList]){  
-                if(leadMap.containsKey(sub.lead__c)){
-                    sub.Contact__c = leadMap.get(sub.Lead__c).Convert_Contact__c;
-                    subscriberList.add(sub);
-                }
+            WHERE Lead__c IN :leadList
+        ]) {  
+            if (leadMap.containsKey(sub.lead__c)) {
+                sub.Contact__c = leadMap.get(sub.Lead__c).Convert_Contact__c;
+                subscriberList.add(sub);
+            }
         }
         
-        if(subscriberList != null && subscriberList.size() > 0) {
+        if (!subscriberList.isEmpty()) {
             update subscriberList;
         }
 

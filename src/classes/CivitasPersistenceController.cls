@@ -160,7 +160,7 @@ global class CivitasPersistenceController{
     public String getInfo{
         get{
             emplid = apexpages.currentPage().getparameters().get('contactId');
-            if (String.isEmpty(emplid) || emplid.length() != 10) {
+            if (String.isEmpty(emplid)) {
                 getInfo = Label.EMPLIDMissing;
                 return getInfo;
             }

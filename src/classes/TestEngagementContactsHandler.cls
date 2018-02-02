@@ -17,7 +17,15 @@ public without sharing class TestEngagementContactsHandler implements ITrigger
     * This method is called prior to execution of an AFTER trigger. Use this to cache
     * any data required into maps prior execution of the trigger.
     */
-    public void bulkAfter() {}
+    public void bulkAfter() {
+        try {
+            et4ae5.triggerUtility.automate('Test_Engagement_Contacts__c');
+        } catch (Exception shouldOnlyBeInTests) {
+            if (!Test.isRunningTest() &&  shouldOnlyBeInTests.getTypeName() == 'et4ae5.MCBaseException.InvalidParameterException') {
+                throw shouldOnlyBeInTests;
+            }
+        }
+    }
 
     /**
     * beforeInsert

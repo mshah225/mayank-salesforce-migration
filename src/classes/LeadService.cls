@@ -130,7 +130,7 @@ public class LeadService {
             objContact.Phone=strPhone;
         }
         if(strEmail!=NULL){
-            objContact.Email=strEmail;            
+            objContact.Email=strEmail;
         }
         if(strMobPhone!=NULL){
             objContact.MobilePhone=strMobPhone;
@@ -146,10 +146,10 @@ public class LeadService {
      * @param conversionStatus The MasterLabel from a LeadStatus that these leads should be converted to
      * @return leadConvertBatches A map of all the leadConvert objects in batches
      */
-    public static Map<Integer, List<Database.LeadConvert>> generateLeadConvertBatches(List<Lead> leadList, String conversionStatus) {   
+    public static Map<Integer, List<Database.LeadConvert>> generateLeadConvertBatches(List<Lead> leadList, String conversionStatus) {
         Map<Id,Lead> leadMap=new Map<Id,Lead>([
-            SELECT id,FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c 
-            FROM Lead 
+            SELECT id,FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c
+            FROM Lead
             WHERE Id IN: leadList
         ]);
         Map<Id,Contact> leadIdtoContactMap=new Map<Id,Contact>();
@@ -165,7 +165,7 @@ public class LeadService {
                 leadIdToContactMap.put(eachLead.Id, createContact(eachLead.FirstName, eachLead.LastName, eachLead.Phone, eachLead.MobilePhone, eachLead.Email));
             }
         }
-        
+
         try {
             if (leadIdToContactMap!=null && leadIdToContactMap.size()>0) {
                 insert leadIdToContactMap.values();
@@ -187,8 +187,8 @@ public class LeadService {
 
         // Map leads to a single account and track the number of LeadConvert batches we need
         for (Lead thisLead : [
-            SELECT Id,FirstName, LastName, Convert_Contact__c,Convert_Contact_Account_ID__c,Convert_Create_Opportunity__c 
-            FROM Lead 
+            SELECT Id,FirstName, LastName, Convert_Contact__c,Convert_Contact_Account_ID__c,Convert_Create_Opportunity__c
+            FROM Lead
             WHERE Id IN: leadList
         ]) {
             thisLeadsAccount = thisLead.Convert_Contact_Account_ID__c;
@@ -212,33 +212,51 @@ public class LeadService {
         }
 
         List<et4ae5__IndividualEmailResult__c> emailList = new List<et4ae5__IndividualEmailResult__c>();
-        for(et4ae5__IndividualEmailResult__c email : [
-            Select id, et4ae5__Contact__c, et4ae5__Lead__c 
-            FROM et4ae5__IndividualEmailResult__c 
-            WHERE et4ae5__Lead__c IN: leadList]){  
-                if(leadMap.containsKey(email.et4ae5__Lead__c)){
-                    email.et4ae5__Contact__c = leadMap.get(email.et4ae5__Lead__c).Convert_Contact__c;
-                    emailList.add(email);
-                }
+        for (et4ae5__IndividualEmailResult__c email : [
+                SELECT Id, et4ae5__Contact__c, et4ae5__Lead__c 
+                FROM et4ae5__IndividualEmailResult__c 
+                WHERE et4ae5__Lead__c IN :leadList
+            ]) {  
+            if (leadMap.containsKey(email.et4ae5__Lead__c)) {
+                email.et4ae5__Contact__c = leadMap.get(email.et4ae5__Lead__c).Convert_Contact__c;
+                emailList.add(email);
+            }
         }
         
-        if(emailList != null && emailList.size() > 0) {
+        if (!emailList.isEmpty()) {
             update emailList;
         }
         
         List<Subscriber__c> subscriberList = new List<Subscriber__c>();
-        for(Subscriber__c sub : [
-            Select Lead__c, contact__c
+        for (Subscriber__c sub : [
+            SELECT Lead__c, Contact__c
             FROM Subscriber__c
-            WHERE Lead__c IN: leadList]){  
-                if(leadMap.containsKey(sub.lead__c)){
-                    sub.Contact__c = leadMap.get(sub.Lead__c).Convert_Contact__c;
-                    subscriberList.add(sub);
-                }
+            WHERE Lead__c IN :leadList
+        ]){  
+            if (leadMap.containsKey(sub.Lead__c)) {
+                sub.Contact__c = leadMap.get(sub.Lead__c).Convert_Contact__c;
+                subscriberList.add(sub);
+            }
         }
         
-        if(subscriberList != null && subscriberList.size() > 0) {
+        if (!subscriberList.isEmpty()) {
             update subscriberList;
+        }
+
+        List<me3__c> listMe3 = new List<me3__c>();
+        for (me3__c objMe3 : [
+            SELECT Id, Contact__c, Lead__c
+            FROM Me3__c
+            WHERE Lead__c IN: leadList
+        ]) {
+            if (leadMap.containsKey(objMe3.Lead__c)) {
+                objMe3.Contact__c = leadMap.get(objMe3.Lead__c).Convert_Contact__c;
+                listme3.add(objMe3);
+            }
+        }
+
+        if (!listMe3.isEmpty()) {
+            update listMe3;
         }
 
         // Create LeadConvert objects from the leads and batch them up

@@ -218,34 +218,32 @@ public class ContactService
     * @param emplId the contacts EMPLID__c
     * @return contactInfo The corresponding Contact
     */
-    public static Contact getContactInformation(String contactId, String emplId)
-    {
+    public static Contact getContactInformation(String contactId, String emplId) {
+        List<Contact> contactInformationList = new List<Contact>();
         Contact contactInfo = null;
         String contactFields = contactFieldsToString() + ', Country_of_Citizenship__r.Name ';
         String contactInfoQuery;
 
         // Get the list of cases associated with our set of contacts
-        try
-        {
-            if (emplId != '')
-            {
-                contactInfoQuery = '' +
-                    'SELECT ' + contactFields + ' ' +
-                    'FROM Contact ' +
-                    'WHERE EMPLID__c = :emplId';
-            }
-            else
-            {
-                contactInfoQuery = '' +
-                    'SELECT ' + contactFields + ' ' +
-                    'FROM Contact ' +
-                    'WHERE Id = :contactId';
+        try {
+            contactInfoQuery = '' +
+                'SELECT ' + contactFields + ' ' +
+                'FROM Contact ';
+            if (!String.isBlank(emplId)) {
+                contactInfoQuery += 'WHERE EMPLID__c = :emplId';
+            } else {
+                contactInfoQuery += 'WHERE Id = :contactId';
             }
 
-            contactInfo = Database.query(contactInfoQuery);
+            contactInformationList = Database.query(contactInfoQuery);
+            
+            if (!contactInformationList.isEmpty()) {
+                return contactInformationList[0]; 
+            } else {
+                return null;
+            }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new ContactServiceException(
                 '!!!ERROR!!!: An error occurred trying to get the Contact\'s information\n' +
                 e.getMessage()

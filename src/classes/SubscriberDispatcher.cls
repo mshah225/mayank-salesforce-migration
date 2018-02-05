@@ -17,9 +17,9 @@ public with sharing class SubscriberDispatcher implements IDispatch {
         SubscriberService.enforceOwnerPolicies(newList);
     }
 
-     public void beforeUpdate() { }
+    public void beforeUpdate() { }
      
-     public void beforeDelete() { }
+    public void beforeDelete() { }
      
     public void afterInsert() {
         SubscriberService.syncParentSubscribers(newList);
@@ -32,13 +32,13 @@ public with sharing class SubscriberDispatcher implements IDispatch {
         }
      }
      
-     public void afterUpdate() {
-         SubscriberService.syncParentSubscribers(newList);
-     }
+    public void afterUpdate() {
+        SubscriberService.syncParentSubscribers(newList);
+    }
      
-     public void afterDelete() { }
+    public void afterDelete() { }
      
-     public void afterUndelete() {
-         SubscriberService.syncParentSubscribers(newList);
-      }
+    public void afterUndelete() {
+        SubscriberService.syncParentSubscribers(newList);
+    }
 }

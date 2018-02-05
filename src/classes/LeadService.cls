@@ -211,6 +211,38 @@ public class LeadService {
             }
         }
 
+        List<et4ae5__IndividualEmailResult__c> emailList = new List<et4ae5__IndividualEmailResult__c>();
+        for (et4ae5__IndividualEmailResult__c email : [
+            SELECT Id, et4ae5__Contact__c, et4ae5__Lead__c 
+            FROM et4ae5__IndividualEmailResult__c 
+            WHERE et4ae5__Lead__c IN :leadList
+        ]) {  
+            if (leadMap.containsKey(email.et4ae5__Lead__c)) {
+                email.et4ae5__Contact__c = leadMap.get(email.et4ae5__Lead__c).Convert_Contact__c;
+                emailList.add(email);
+            }
+        }
+        
+        if (!emailList.isEmpty()) {
+            update emailList;
+        }
+        
+        List<Subscriber__c> subscriberList = new List<Subscriber__c>();
+        for (Subscriber__c sub : [
+            SELECT Lead__c, Contact__c
+            FROM Subscriber__c
+            WHERE Lead__c IN :leadList
+        ]) {  
+            if (leadMap.containsKey(sub.lead__c)) {
+                sub.Contact__c = leadMap.get(sub.Lead__c).Convert_Contact__c;
+                subscriberList.add(sub);
+            }
+        }
+        
+        if (!subscriberList.isEmpty()) {
+            update subscriberList;
+        }
+
         // Create LeadConvert objects from the leads and batch them up
         for (Integer batchNumber = 0; batchNumber < numberOfBatches; batchNumber++) {
             List<Database.LeadConvert> leadConvertList = new List<Database.LeadConvert>();

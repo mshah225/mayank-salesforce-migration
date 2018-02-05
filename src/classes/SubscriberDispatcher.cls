@@ -21,13 +21,15 @@ public with sharing class SubscriberDispatcher implements IDispatch {
      
      public void beforeDelete() { }
      
-     public void afterInsert() {
-         SubscriberService.syncParentSubscribers(newList);
-         List<Id> subId = new List<Id>();
-         for(sObject s : Trigger.New) {
-             subId.add(s.Id);
-         }
-         SubscriberService.setHashId(subId);
+    public void afterInsert() {
+        SubscriberService.syncParentSubscribers(newList);
+        List<Id> subId = new List<Id>();
+        for(sObject s : Trigger.New) {
+            subId.add(s.Id);
+        }
+        if(System.isBatch() == false && System.isFuture() == false){ 
+            SubscriberService.setHashId(subId); 
+        }
      }
      
      public void afterUpdate() {

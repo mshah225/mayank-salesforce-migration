@@ -4,7 +4,7 @@ global with sharing class StudentProfileController
     private static boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
     
-    public boolean UrlParamsExistAndAreValid {get; set;} // Stores whether or not URL params exist and are valid
+    public boolean URLParamsExistAndAreValid {get; set;} // Stores whether or not URL params exist and are valid
     private boolean isContactId; // Stores wheter the ID parameter is a contact Id or EMPL Id
     public boolean failState {get; set;} // Used to determine if the page has reached a state where it cannot be rendered
     public static ASU_STDNT_RETENTION__x studentRetention { get; set; }
@@ -64,18 +64,13 @@ global with sharing class StudentProfileController
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
-        if (contactId.length() != 10) {
-            UrlParamsExistAndAreValid = false;
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing)); 
+        if (Validator.validateId(contactId, Contact.class)) {
+            isContactId = true;
+        } else if (Validator.validateEMPLId(contactId)) {
+            isContactId = false;
         } else {
-            if (Validator.validateId(contactId, Contact.class)) {
-                isContactId = true;
-            } else if (Validator.validateEMPLId(contactId)) {
-                isContactId = false;
-            } else {
-                UrlParamsExistAndAreValid = false;
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
-            }
+            UrlParamsExistAndAreValid = false;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
         }
     }
     

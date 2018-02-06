@@ -27,9 +27,14 @@ public with sharing class SubscriberDispatcher implements IDispatch {
         for(sObject s : Trigger.New) {
             subId.add(s.Id);
         }
-        if(System.isBatch() == false && System.isFuture() == false){ 
-            SubscriberService.setHashId(subId); 
+        
+        //SubscriberService.setHashId(subId);
+        List<Subscriber__c> subList = new List<Subscriber__c>();
+		for(Id i : subId) {
+            Subscriber__c c = new Subscriber__c(Id = i, HashSubscriberID__c = Hasher.hashId(i));
+            subList.add(c);
         }
+        update subList;
      }
      
     public void afterUpdate() {

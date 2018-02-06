@@ -28,13 +28,8 @@ public with sharing class SubscriberDispatcher implements IDispatch {
             subId.add(s.Id);
         }
         
-        //SubscriberService.setHashId(subId);
-        List<Subscriber__c> subList = new List<Subscriber__c>();
-		for(Id i : subId) {
-            Subscriber__c c = new Subscriber__c(Id = i, HashSubscriberID__c = Hasher.hashId(i));
-            subList.add(c);
-        }
-        update subList;
+        SubscriberService.setHashIdNonFuture(subId);
+        
      }
      
     public void afterUpdate() {

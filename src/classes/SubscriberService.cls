@@ -157,5 +157,18 @@ public without sharing class SubscriberService {
         }
         update subList;
     }
+    
+    /**
+     * Creates a hash from the Subscriber ID and sets it as a unique identifier
+     * @param subID the subscriber Id
+    */
+    public static void setHashIdNonFuture(List<Id> subIdList) {
+        List<Subscriber__c> subList = new List<Subscriber__c>();
+        for(Id i : subIdList) {
+            Subscriber__c c = new Subscriber__c(Id = i, HashSubscriberID__c = Hasher.hashId(i));
+            subList.add(c);
+        }
+        update subList;
+    }
 
 }

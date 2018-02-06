@@ -27,9 +27,7 @@ public with sharing class SubscriberDispatcher implements IDispatch {
         for(sObject s : Trigger.New) {
             subId.add(s.Id);
         }
-        
         SubscriberService.setHashIdNonFuture(subId);
-        
      }
      
     public void afterUpdate() {

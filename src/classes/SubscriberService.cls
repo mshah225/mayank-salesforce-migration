@@ -150,12 +150,7 @@ public without sharing class SubscriberService {
     */ 
     @future
     public static void setHashId(List<Id> subIdList) {
-        List<Subscriber__c> subList = new List<Subscriber__c>();
-        for(Id i : subIdList) {
-            Subscriber__c c = new Subscriber__c(Id = i, HashSubscriberID__c = Hasher.hashId(i));
-            subList.add(c);
-        }
-        update subList;
+        setHashIdNonFuture(subIdList);
     }
     
     /**

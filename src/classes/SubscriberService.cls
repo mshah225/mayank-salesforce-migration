@@ -172,5 +172,4 @@ public without sharing class SubscriberService {
         }
         update subUpdateList;
     }
-
 }

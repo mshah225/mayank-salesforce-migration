@@ -23,11 +23,11 @@ public with sharing class SubscriberDispatcher implements IDispatch {
      
     public void afterInsert() {
         SubscriberService.syncParentSubscribers(newList);
-        List<Id> subId = new List<Id>();
+        List<Subscriber__c> subId = new List<Subscriber__c>();
         for(sObject s : Trigger.New) {
-            subId.add(s.Id);
+            subId.add((Subscriber__c)s);
         }
-        SubscriberService.setHashIdNonFuture(subId);
+        SubscriberService.setHashId(subId);
      }
      
     public void afterUpdate() {

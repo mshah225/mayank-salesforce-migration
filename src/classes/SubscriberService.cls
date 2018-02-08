@@ -146,28 +146,31 @@ public without sharing class SubscriberService {
     
     /**
      * Creates a hash from the Subscriber ID and sets it as a unique identifier
-     * @param subID the subscriber Id
+     * @param subIdList the subscriber Id List
     */ 
     @future
-    public static void setHashId(List<Id> subIdList) {
-        setHashIdNonFuture(subIdList);
+    public static void setHashIdFuture(List<Id> subIdList) {
+        List<Subscriber__c> subList = new List<Subscriber__c>();
+        for(Id id : subIdList) {
+            Subscriber__c subscriber = new Subscriber__c(Id = id, HashSubscriberID__c = null);
+            subList.add(subscriber);
+        }
+        setHashId(subList);
     }
     
     /**
      * Creates a hash from the Subscriber ID and sets it as a unique identifier
-     * @param subIdList the list of subscriber Id
+     * @param subIdList the list of subscribers
     */
-    public static void setHashIdNonFuture(List<Id> subIdList) {
-        List<Subscriber__c> subList = new List<Subscriber__c>();
-        for(Subscriber__c subscriber : [SELECT ID, HashSubscriberID__c 
-                                            FROM Subscriber__c 
-                                            WHERE ID IN :subIdList 
-                                            AND HashSubscriberID__c != null]
-        ) {
-            subscriber.HashSubscriberID__c = Hasher.hashId(subscriber.ID);
-            subList.add(subscriber);
+    public static void setHashId(List<Subscriber__c> subList) {
+        List<Subscriber__c> subUpdateList = new List<Subscriber__c>();
+        for(Subscriber__c subscriber : subList) {
+            if (subscriber.HashSubscriberID__c == null) {
+                subscriber.HashSubscriberID__c = Hasher.hashId(subscriber.ID);
+                subUpdateList.add(subscriber);
+            }
         }
-        update subList;
+        update subUpdateList;
     }
 
 }

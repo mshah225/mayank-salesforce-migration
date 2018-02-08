@@ -130,7 +130,7 @@ global class CivitasPersistenceController{
         if (dataList.size() > 0) {
             CivitasWrapper tmpEndPoint = dataList[dataList.size()-1];
             Integer dayValue = tmpEndPoint.day;
-            while (tmpEndPoint.snapDate < endDate) {
+            while ((endDate < System.today() && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < System.today()) {
                 tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
                 dayValue++;
                 dataList.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel,
@@ -138,6 +138,9 @@ global class CivitasPersistenceController{
             }
             Integer startMonth = startDate.month();
             Integer endMonth = endDate.month();
+            if (endMonth < startMonth) {
+                endMonth += 12;
+            }
         	persistenceLevel = dataList[dataList.size()-1].outlookLevel;
             if(currentTerm.subString(3).equals('1')){
                 dataList[0].termInfo = 'Spring';
@@ -148,7 +151,7 @@ global class CivitasPersistenceController{
             }
 
 
-            for (Integer i = startMonth; i <= endMonth+12; i++) {
+            for (Integer i = startMonth; i <= endMonth; i++) {
                 String textMonth = monthToText(Math.mod(i, 12));
                 months.add(textMonth);
             }

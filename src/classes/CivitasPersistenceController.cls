@@ -129,7 +129,7 @@ public class CivitasPersistenceController{
 
         if (dataList.size() > 0) {
             CivitasWrapper tmpEndPoint = dataList[dataList.size()-1];
-            lastUpdatedDate = dataList[dataList.size()-1].fullDate;
+            String lastUpdatedDate = dataList[dataList.size()-1].fullDate;
             Integer dayValue = tmpEndPoint.day;
             while ((endDate < System.today() && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < System.today()) {
                 tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);

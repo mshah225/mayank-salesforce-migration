@@ -64,7 +64,6 @@ public with sharing class StudentProfileController
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
-        
         if (Validator.validateId(contactId, Contact.class)) {
             isContactId = true;
         } else if (Validator.validateEMPLId(contactId)) {
@@ -73,7 +72,6 @@ public with sharing class StudentProfileController
             UrlParamsExistAndAreValid = false;
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
         }
-        
     }
     
     /**
@@ -100,7 +98,7 @@ public with sharing class StudentProfileController
         primaryProgramPlan =  new Student_Program_Plan__c();
         
         try {
-            if (URLParamsExistAndAreValid) {
+            if (UrlParamsExistAndAreValid) {
                 if (isContactId) {
                     theContact = ContactService.getContactInformation(contactId, '');
                 } else {
@@ -1886,10 +1884,10 @@ public with sharing class StudentProfileController
                         (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
                                 Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
                          FROM   me3_Careers__r
-                         ORDER BY Active__c DESC, Updated_Date__c DESC, Plan_Code__c
+                         ORDER BY Active__c DESC, Updated_Date__c DESC, Position__c, Plan_Code__c
                          LIMIT 10) 
-                 FROM   me3__c
-                 WHERE  Contact__c = :contactId
+                 FROM me3__c
+                 WHERE  Contact__c = :contactId AND Source__c = 'DegreeSearch'
                  ORDER BY Test_Completed_Date__c DESC
                  LIMIT 1 
                 ]

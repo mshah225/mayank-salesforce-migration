@@ -55,7 +55,7 @@ public abstract class TestFactory {
         newObject = template.clone(USE_NEW_RECORD_ID, IS_DEEP_CLONE, RESET_TIMESTAMPS, USE_NEW_AUTONUMBERS);
     }
     
-    private void setNewObjectRelatedObjectFields(Sobject newObject, Integer currentIndex) {
+    private void setNewObjectRelatedObjectFields(Integer currentIndex) {
         for (String fieldName : fieldNameToRelatedObjects.keySet()) {
             List<Sobject> relatedObjects = fieldNameToRelatedObjects.get(fieldName);
             Sobject interleavedRelatedObject = relatedObjects.get(Math.mod(currentIndex, relatedObjects.size()));
@@ -63,7 +63,7 @@ public abstract class TestFactory {
         }
     }
     
-    private void incrementNewObjectFieldsAndCounter(Sobject newObject) {
+    private void incrementNewObjectFieldsAndCounter() {
         for (String fieldName : fieldNamesToIncrement) {
             String incrementedField = newObject.get(fieldName) + '' + incrementingCounter;
             newObject.put(fieldName, incrementedField);

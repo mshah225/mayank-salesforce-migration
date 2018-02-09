@@ -1,11 +1,11 @@
-global class CivitasPersistenceController{
+public class CivitasPersistenceController{
 
-    global static List<String> months = new List<String>();
-	global static Integer dayValue = 0;
-    global static List<CivitasWrapper> dataList {get; set;}
-    global static String emplId {get; set;}
-    global static Decimal persistenceLevel;
-    global static Contact c;
+    public static List<String> months = new List<String>();
+	public static Integer dayValue = 0;
+    public static List<CivitasWrapper> dataList {get; set;}
+    public static String emplId {get; set;}
+    public static Decimal persistenceLevel;
+    public static Contact c;
 
     public static String currentTerm{
         get{
@@ -62,7 +62,7 @@ global class CivitasPersistenceController{
         }
 
     @RemoteAction
-    global static List<CivitasWrapper> getData(String emplidIn){
+    public static List<CivitasWrapper> getData(String emplidIn){
         try {
             if(emplidIn != null && emplidIn.substring(0,3).equals('003')) {
                 emplidIn = [Select EMPLID__c FROM Contact Where Id =: emplidIn LIMIT 1].EMPLID__c;
@@ -128,15 +128,20 @@ global class CivitasPersistenceController{
 
         if (dataList.size() > 0) {
             CivitasWrapper tmpEndPoint = dataList[dataList.size()-1];
+            String lastUpdatedDate = dataList[dataList.size()-1].fullDate;
             Integer dayValue = tmpEndPoint.day;
-            while (tmpEndPoint.snapDate < endDate) {
+            while ((endDate < System.today() && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < System.today()) {
                 tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
                 dayValue++;
                 dataList.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel,
                                                     tmpEndPoint.levelDesc, tmpEndPoint.flag, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
             }
+            dataList[dataList.size()-1].fullDate = lastUpdatedDate;
             Integer startMonth = startDate.month();
             Integer endMonth = endDate.month();
+            if (endMonth < startMonth) {
+                endMonth += 12;
+            }
         	persistenceLevel = dataList[dataList.size()-1].outlookLevel;
             if(currentTerm.subString(3).equals('1')){
                 dataList[0].termInfo = 'Spring';
@@ -147,7 +152,7 @@ global class CivitasPersistenceController{
             }
 
 
-            for (Integer i = startMonth; i <= endMonth+12; i++) {
+            for (Integer i = startMonth; i <= endMonth; i++) {
                 String textMonth = monthToText(Math.mod(i, 12));
                 months.add(textMonth);
             }
@@ -212,7 +217,7 @@ global class CivitasPersistenceController{
         }
     }
 
-    global class CivitasWrapper{
+    public class CivitasWrapper{
         public String empl;
         public String name;
         public Date snapDate;

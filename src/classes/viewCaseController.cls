@@ -49,8 +49,7 @@ public with sharing class viewCaseController {
             ]);
         if (allCaseAttachments == null || allCaseAttachments.size() == 0) {
             showCaseAttachments = false;    
-        }
-        else {
+        } else {
             showCaseAttachments = true;
         }
     }
@@ -99,8 +98,7 @@ public with sharing class viewCaseController {
             userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
             stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
             viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
-        }
-        else {
+        } else {
             userContact = ContactService.getLoggedInContact();
         }
 
@@ -121,8 +119,7 @@ public with sharing class viewCaseController {
             return MyASUViewAs.getViewAsCaseDetails(
                 ApexPages.currentPage().getParameters().get('Id')
             );
-        }
-        else {
+        } else {
             Case returnCase = [
                 SELECT Id, CaseNumber, RecordType.Name, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
                     Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
@@ -140,8 +137,7 @@ public with sharing class viewCaseController {
 
         if (source == null) {
             source = 'studentSC';
-        }
-        else if (source.equals('viewAllCases')) {
+        } else if (source.equals('viewAllCases')) {
             source = 'viewAllCases?source=studentSC';
         }
 

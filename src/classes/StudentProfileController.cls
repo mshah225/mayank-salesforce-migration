@@ -208,7 +208,7 @@ public with sharing class StudentProfileController
     }
     
     @RemoteAction
-    public static String getSunCardPhotoRA(String asurite, String emplId) {
+    global static String getSunCardPhotoRA(String asurite, String emplId) {
         String suncardPhotoURL;
         List<String> vars = new List<String>();
         
@@ -276,7 +276,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get JBT_RET_PROFILE_HEADER_VW__x data
-    public static JBT_RET_PROFILE_HEADER_VW__x getProfileHeader(String emplId)
+    global static JBT_RET_PROFILE_HEADER_VW__x getProfileHeader(String emplId)
     {
         vars = new List<String>();
         List<JBT_RET_PROFILE_HEADER_VW__x> headerlist = new List<JBT_RET_PROFILE_HEADER_VW__x>();
@@ -311,7 +311,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get ASU_STDNT_RETENTION__x data
-    public static ASU_STDNT_RETENTION__x getStudentRetention(String emplId)
+    global static ASU_STDNT_RETENTION__x getStudentRetention(String emplId)
     {
         vars = new List<String>();
         List<ASU_STDNT_RETENTION__x> stdntList = new List<ASU_STDNT_RETENTION__x>();
@@ -361,7 +361,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get PS_STDNT_TEST_COMP__x scores as a list
-    public static List<PS_STDNT_TEST_COMP__x> getStdntTestComps(String emplId, String career)
+    global static List<PS_STDNT_TEST_COMP__x> getStdntTestComps(String emplId, String career)
     {
         vars = new List<String>();
         Set<String> testCodes = getTestCodes(career);
@@ -411,7 +411,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get Undergraduate PS_STDNT_CAR_MLSTN__x milestones as a list
-    public static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsUG(String emplId)
+    global static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsUG(String emplId)
     {
         vars = new List<String>();
         List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG = new List<PS_STDNT_CAR_MLSTN__x>();
@@ -468,7 +468,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get Graduate/Law PS_STDNT_CAR_MLSTN__x milestones as a list
-    public static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsGrad(String emplId)
+    global static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsGrad(String emplId)
     {
         vars = new List<String>();
         List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG = new List<PS_STDNT_CAR_MLSTN__x>();
@@ -523,7 +523,7 @@ public with sharing class StudentProfileController
     
     @RemoteAction
     // Get student transcript information
-    public static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
+    global static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
         vars = new List<String>();
         List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts = new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
         
@@ -558,7 +558,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get ASU_STDNT_RETENTION_SNP__x retention info as a list
-    public static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId)
+    global static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId)
     {
         vars = new List<String>();
         List<ASU_STDNT_RETENTION_SNP__x> retention_snps = new List<ASU_STDNT_RETENTION_SNP__x>();
@@ -604,7 +604,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get PS_ASU_SP_ADNOTE_V__x advising notes as a list
-    public static List<advNoteWrapper> getPSAdvisorNotes(String emplId)
+    global static List<advNoteWrapper> getPSAdvisorNotes(String emplId)
     {
         vars = new List<String>();
         List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = new List<PS_ASU_SP_ADNOTE_V__x>();
@@ -675,7 +675,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get PS_ASU_SP_COMMNT_V__x comments as a list
-    public static List<commentWrapper> getComments(String emplId)
+    global static List<commentWrapper> getComments(String emplId)
     {
         vars = new List<String>();
         List<PS_ASU_SP_COMMNT_V__x> commentsList = new List<PS_ASU_SP_COMMNT_V__x>();
@@ -740,7 +740,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get PS_ASU_SP_GUEST_V__x comments as a list
-    public static List<PS_ASU_SP_GUEST_V__x> getGuestAccess(String emplId)
+    global static List<PS_ASU_SP_GUEST_V__x> getGuestAccess(String emplId)
     {
         vars = new List<String>();
         List<PS_ASU_SP_GUEST_V__x> guestAccessList = new List<PS_ASU_SP_GUEST_V__x>();
@@ -769,7 +769,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get JBT_RET_GENERAL_RIGHT__x data 
-    public static List<JBT_RET_GENERAL_RIGHT__x> getStudentProgramData(String emplId)
+    global static List<JBT_RET_GENERAL_RIGHT__x> getStudentProgramData(String emplId)
     {
         vars = new List<String>();
         List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList = new List<JBT_RET_GENERAL_RIGHT__x>();
@@ -807,7 +807,7 @@ public with sharing class StudentProfileController
    
     @RemoteAction
     // Get JBT_RET_GENERAL_LEFT__x data 
-    public static JBT_RET_GENERAL_LEFT__x getStudentDemographicData(String emplId)
+    global static JBT_RET_GENERAL_LEFT__x getStudentDemographicData(String emplId)
     {
         vars = new List<String>();
         List<JBT_RET_GENERAL_LEFT__x> studentDemographicDataList = new List<JBT_RET_GENERAL_LEFT__x>();
@@ -849,7 +849,7 @@ public with sharing class StudentProfileController
 
      @RemoteAction
     // Get all Academic Progress Data
-    public static academicProgressDataWrapper getAcademicProgressData(String emplId, String career)
+    global static academicProgressDataWrapper getAcademicProgressData(String emplId, String career)
     {
         vars = new List<String>();
         List<JBT_RET_ACAD_SUMMARY_VW__x> academicSummaryList = new List<JBT_RET_ACAD_SUMMARY_VW__x>();
@@ -1018,7 +1018,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static List<sortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, boolean sortDirection){
+    global static List<sortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, boolean sortDirection){
         List<sortableClass> classList = new List<sortableClass>();
         sortDirect = sortDirection;
         for (PS_ASU_SP_CLASS_V__x c : listOfClasses) {
@@ -1042,7 +1042,7 @@ public with sharing class StudentProfileController
     }
     
     @RemoteAction
-    public static List<sortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, boolean sortDirection){
+    global static List<sortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, boolean sortDirection){
         List<sortableCreditByExam> examList = new List<sortableCreditByExam>();
         sortDirect = sortDirection;
         for (PS_ASU_SP_TRNSFR_V__x c : listOfExams) {
@@ -1066,7 +1066,7 @@ public with sharing class StudentProfileController
     }
     
     @RemoteAction
-    public static List<sortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, boolean sortDirection){
+    global static List<sortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, boolean sortDirection){
         List<sortableTransferWork> transferList = new List<sortableTransferWork>();
         sortDirect = sortDirection;
         for (JBT_RET_CLASS_XFER__x c : listOfTransfer) {
@@ -1289,7 +1289,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static classesWrapper getClassesData(String emplid, String strm)
+    global static classesWrapper getClassesData(String emplid, String strm)
     {
         if (classesData == null)
         {
@@ -1370,7 +1370,7 @@ public with sharing class StudentProfileController
 
     // Get Credit by Exam Information
     @RemoteAction
-    public static LIST<PS_ASU_SP_TRNSFR_V__x> getCreditByExamData(String emplId)
+    global static LIST<PS_ASU_SP_TRNSFR_V__x> getCreditByExamData(String emplId)
     {
         List<PS_ASU_SP_TRNSFR_V__x> creditByExamList = new List<PS_ASU_SP_TRNSFR_V__x>();
         
@@ -1397,7 +1397,7 @@ public with sharing class StudentProfileController
 
     // Get Transfer Work Information
     @RemoteAction
-    public static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
+    global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
     {
         List<JBT_RET_CLASS_XFER__x> transferWorkList = new List<JBT_RET_CLASS_XFER__x>();
         
@@ -1431,7 +1431,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static balancesWrapper getFinancesBalanceData(String emplId)
+    global static balancesWrapper getFinancesBalanceData(String emplId)
     {
         balancesWrapper wrapper = new balancesWrapper();
 
@@ -1466,7 +1466,7 @@ public with sharing class StudentProfileController
     } 
 
     @RemoteAction
-    public static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
+    global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
     {
         List<Financial_Aid_Package__c> financesPackageList = new List<Financial_Aid_Package__c>();
         
@@ -1495,7 +1495,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get Service Indicators as a list // done
-    public static List<PS_ASU_SP_SVCIND_V__x> getServiceIndicators(String emplId)
+    global static List<PS_ASU_SP_SVCIND_V__x> getServiceIndicators(String emplId)
     {
         //Temporary
         //return new List<PS_ASU_SP_SVCIND_V__x>();
@@ -1543,7 +1543,7 @@ public with sharing class StudentProfileController
 
     @RemoteAction
     // Get Financial Aid Summary records and return wrapper class
-    public static financialAidWrapper getFinancialSummaryData(String emplId)
+    global static financialAidWrapper getFinancialSummaryData(String emplId)
     {
         financialAidWrapper faData = new financialAidWrapper();
 
@@ -1589,7 +1589,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static generalIndicatorsWrapper getUGIndicatorsNew(String emplid, String currentTerm)
+    global static generalIndicatorsWrapper getUGIndicatorsNew(String emplid, String currentTerm)
     {
         generalIndicatorsWrapper giData = new generalIndicatorsWrapper();
 
@@ -1741,7 +1741,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static JBT_RET_FINAID_INDICATORS__x getFinAidIndicator(String emplid)
+    global static JBT_RET_FINAID_INDICATORS__x getFinAidIndicator(String emplid)
     {
 
         List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList = new List<JBT_RET_FINAID_INDICATORS__x>();
@@ -1766,7 +1766,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static List<JBT_RET_FINAID_UNRESOLVED__x> getFinAidUnresolved(String emplid, String currentTerm)
+    global static List<JBT_RET_FINAID_UNRESOLVED__x> getFinAidUnresolved(String emplid, String currentTerm)
     {
         List<JBT_RET_FINAID_UNRESOLVED__x> jbtRetFinaidUnresolvedList = new List<JBT_RET_FINAID_UNRESOLVED__x>();
         
@@ -1792,7 +1792,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static PS_ASU_SR_INDASR_V__x getAsrIndicator(String emplid, String currentTerm)
+    global static PS_ASU_SR_INDASR_V__x getAsrIndicator(String emplid, String currentTerm)
     {
         List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList = new List<PS_ASU_SR_INDASR_V__x>();
         
@@ -1818,7 +1818,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static List<PS_ASU_SR_ASR_INDV__x> getAsrInformation(String emplid, String currentTerm)
+    global static List<PS_ASU_SR_ASR_INDV__x> getAsrInformation(String emplid, String currentTerm)
     {
         List<PS_ASU_SR_ASR_INDV__x> asrInformationList = new List<PS_ASU_SR_ASR_INDV__x>();
         
@@ -1845,7 +1845,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static List<PS_ASU_SP_ENRHLD_V__x> getEnrollmentHolds(String emplid, String currentTerm)
+    global static List<PS_ASU_SP_ENRHLD_V__x> getEnrollmentHolds(String emplid, String currentTerm)
     {
         List<PS_ASU_SP_ENRHLD_V__x> enrollmentHoldList = new List<PS_ASU_SP_ENRHLD_V__x>();
         
@@ -1871,7 +1871,7 @@ public with sharing class StudentProfileController
     }
 
     @RemoteAction
-    public static me3__c getMe3HSResults(String contactId) {
+    global static me3__c getMe3HSResults(String contactId) {
         List<me3__c> me3List = new List<me3__c>();
         
         try {
@@ -1901,7 +1901,7 @@ public with sharing class StudentProfileController
     }
     
     @RemoteAction
-    public static me3__c getMe3Results(String contactId)
+    global static me3__c getMe3Results(String contactId)
     {
         List<me3__c> me3List = new List<me3__c>();
         
@@ -1932,7 +1932,7 @@ public with sharing class StudentProfileController
     }    
 
      @RemoteAction
-    public static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
+    global static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
         List<REZ_HOUSING_BOOKING_VW__x> housingInfoList = new List<REZ_HOUSING_BOOKING_VW__x>();
 
         try {
@@ -1960,7 +1960,7 @@ public with sharing class StudentProfileController
     }
     
     @RemoteAction
-    public static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
+    global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
         try{
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
             Id student = [SELECT Id FROM Contact WHERE emplId__c =: emplidIn LIMIT 1].Id;

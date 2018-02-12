@@ -62,7 +62,7 @@ public class CivitasPersistenceController{
         }
 
     @RemoteAction
-    public static List<CivitasWrapper> getData(String emplidIn){
+    global static List<CivitasWrapper> getData(String emplidIn){
         try {
             if(emplidIn != null && emplidIn.substring(0,3).equals('003')) {
                 emplidIn = [Select EMPLID__c FROM Contact Where Id =: emplidIn LIMIT 1].EMPLID__c;

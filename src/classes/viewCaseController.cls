@@ -1,6 +1,5 @@
 public with sharing class viewCaseController {
 
-
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
     private Date today;
     private Decimal origPin;

@@ -271,25 +271,37 @@ public with sharing class viewCaseController {
         return null;
     }
     
-    public String uploadAttachment() {
-        if (replyCaseAttachment.Name != null && replyCaseAttachment.Body != null && caseId != null) {
-                replyCaseAttachment.ParentId = caseId;
-                try {
-                    insert replyCaseAttachment;
-                    replyCaseAttachment = new Attachment();
-                    return 'success';
-                } catch (Exception e) {
-                    varsForErrorLogging = new List<String>();
-                    varsForErrorLogging.add(ErrorLogger.convertStringToJSON('name', replyCaseAttachment.name));
-                    ErrorLogger.log(e, varsForErrorLogging, false);
-                    replyCaseAttachment = new Attachment();
-                    return 'failure';
-                }
+    public PageReference submitReply() {
+        Boolean isReplySuccess = true;
+        if (!String.isBlank(caseReply)) {
+            String jsonEmailMessage = createJsonEmail();
+            HttpRequest emailMessageRequest = createEmailMessageRestCallout(jsonEmailMessage);
+            String restCallResponse = sendEmailMessageRestCallout(emailMessageRequest);
+            if(restCallResponse == '"success"') {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));        
+            } else {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact system admin'));
+                isReplySuccess = false;
+            }
+            caseReply = '';
         }
-        return 'noattachment';
+        
+        if(isReplySuccess) {
+            String attachmentUploadResponse = uploadAttachment();
+            if (attachmentUploadResponse == 'success') {
+               ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Attachment to Case submitted Successfully'));
+               retrieveAttachmentList();     
+            } 
+            if (attachmentUploadResponse == 'failure') {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not upload attachment, please try again'));
+            }
+        }
+        showReplyBox = false;
+        showReplyButton = true;
+        return null;
     }
     
-    private String createJsonEmail() {
+     private String createJsonEmail() {
         User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         Case currentCase = [SELECT Id, Owner.Email FROM Case WHERE Id = :caseId LIMIT 1];
         
@@ -341,35 +353,21 @@ public with sharing class viewCaseController {
         return responseMessage;
     }
     
-    public PageReference submitReply() {
-        Boolean isReplySuccess = true;
-        if (!String.isBlank(caseReply)) {
-            String jsonEmailMessage = createJsonEmail();
-            HttpRequest emailMessageRequest = createEmailMessageRestCallout(jsonEmailMessage);
-            String restCallResponse = sendEmailMessageRestCallout(emailMessageRequest);
-            if(restCallResponse == '"success"') {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));        
-            } else {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact system admin'));
-                isReplySuccess = false;
-            }
-            caseReply = '';
+    private String uploadAttachment() {
+        if (replyCaseAttachment.Name != null && replyCaseAttachment.Body != null && caseId != null) {
+                replyCaseAttachment.ParentId = caseId;
+                try {
+                    insert replyCaseAttachment;
+                    replyCaseAttachment = new Attachment();
+                    return 'success';
+                } catch (Exception e) {
+                    varsForErrorLogging = new List<String>();
+                    varsForErrorLogging.add(ErrorLogger.convertStringToJSON('name', replyCaseAttachment.name));
+                    ErrorLogger.log(e, varsForErrorLogging, false);
+                    replyCaseAttachment = new Attachment();
+                    return 'failure';
+                }
         }
-        
-        if(isReplySuccess) {
-            String attachmentUploadResponse = uploadAttachment();
-            if (attachmentUploadResponse == 'success') {
-               ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Attachment to Case submitted Successfully'));
-               retrieveAttachmentList();     
-            } 
-            if (attachmentUploadResponse == 'failure') {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not upload attachment, please try again'));
-            }
-        }
-        showReplyBox = false;
-        showReplyButton = true;
-        return null;
+        return 'noattachment';
     }
-    
-    
 }

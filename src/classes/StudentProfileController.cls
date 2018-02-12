@@ -1,4 +1,4 @@
-public with sharing class StudentProfileController
+global with sharing class StudentProfileController
 { 
     // Error Logger Variables 
     private static boolean debug = false; // Used to determine if error logger is in debug mode or not
@@ -596,7 +596,7 @@ public with sharing class StudentProfileController
         }
     }
 
-    public class advNoteWrapper
+    global class advNoteWrapper
     {
         public PS_ASU_SP_ADNOTE_V__x note {get; set;}
         public String advUserId {get; set;}
@@ -667,7 +667,7 @@ public with sharing class StudentProfileController
         return (advNoteWrapperList.size() > 0 ? advNoteWrapperList : new List<advNoteWrapper>());
     }
 
-    public class commentWrapper
+    global class commentWrapper
     {
         public PS_ASU_SP_COMMNT_V__x comment {get; set;}
         public String commenterUserId {get; set;}
@@ -838,7 +838,7 @@ public with sharing class StudentProfileController
 
 
     // Inner wrapper class for Academic Progress Data
-    public class academicProgressDataWrapper
+    global class academicProgressDataWrapper
     {
         public JBT_RET_ACAD_SUMMARY_VW__x jbtRetAcadSummaryVw;
         public PS_ASU_SP_AC_STNDV__x psAsuSpAcStndv;
@@ -1089,7 +1089,7 @@ public with sharing class StudentProfileController
         return transferList;
     }
 
-    public class sortableClass implements Comparable{
+    global class sortableClass implements Comparable{
         PS_ASU_SP_CLASS_V__x classInfo;
         
         
@@ -1168,7 +1168,7 @@ public with sharing class StudentProfileController
         }
     }
     
-    public class sortableCreditByExam implements Comparable{
+    global class sortableCreditByExam implements Comparable{
         PS_ASU_SP_TRNSFR_V__x examInfo;
         
         
@@ -1207,7 +1207,7 @@ public with sharing class StudentProfileController
         }
     }
     
-    public class sortableTransferWork implements Comparable{
+    global class sortableTransferWork implements Comparable{
         JBT_RET_CLASS_XFER__x  transferInfo;
         
         
@@ -1276,7 +1276,7 @@ public with sharing class StudentProfileController
         }
     }
     
-    public class classesWrapper
+    global class classesWrapper
     {
         //public Map<String, String> classTerms = new Map<String, String>();
         public Set<String> classTerms = new Set<String>();
@@ -1424,7 +1424,7 @@ public with sharing class StudentProfileController
 
     }
 
-    public class balancesWrapper
+    global class balancesWrapper
     {
         PS_ASU_SP_FA_BAL_V__x faBalance = new PS_ASU_SP_FA_BAL_V__x();
         Decimal pastDueTIP;
@@ -1534,7 +1534,7 @@ public with sharing class StudentProfileController
     }    
 
     // Wrapper for financial aid data
-    public class financialAidWrapper
+    global class financialAidWrapper
     {
         public Set<String> aidYears = new Set<String>();
         public List<PS_ASU_SP_FA_SUM_V__x> summaryRecords = new List<PS_ASU_SP_FA_SUM_V__x>();
@@ -1576,7 +1576,7 @@ public with sharing class StudentProfileController
         return faData;
     }      
 
-    public class generalIndicatorsWrapper
+    global class generalIndicatorsWrapper
     {
         public ASU_STDNT_RETENTION__x asuStudentRetention = new ASU_STDNT_RETENTION__x();
         public JBT_RET_FINAID_INDICATORS__x finAidIndicators = new JBT_RET_FINAID_INDICATORS__x();

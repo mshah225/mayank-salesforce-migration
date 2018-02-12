@@ -10,7 +10,6 @@ private class EmailMessageInsertTest {
         
         testCases = CaseService.createTestCases(1, testContact);
         insert testCases;
-        
     }
     
     @isTest
@@ -26,7 +25,9 @@ private class EmailMessageInsertTest {
         String emailStatus = '2';   
         
         Test.startTest();
-        EmailMessageInsert.createEmailMessage(emailBody, parentId, emailSubject, isIncoming, fromName, fromEmailAddress, toEmailAddress, emailStatus);
+        EmailMessageInsert.createEmailMessage(emailBody, parentId, emailSubject, 
+                                              isIncoming, fromName, fromEmailAddress, 
+                                              toEmailAddress, emailStatus);
         Test.stopTest();
         
         List<EmailMessage> retrieveEmailMessage = [SELECT Id, ParentId, TextBody, FromAddress FROM EmailMessage LIMIT 1];
@@ -49,7 +50,9 @@ private class EmailMessageInsertTest {
         
         String returnMessage;
         Test.startTest();
-        returnMessage = EmailMessageInsert.createEmailMessage(emailBody, parentId, emailSubject, isIncoming, fromName, fromEmailAddress, toEmailAddress, emailStatus);
+        returnMessage = EmailMessageInsert.createEmailMessage(emailBody, parentId, emailSubject, 
+                                                              isIncoming, fromName, fromEmailAddress, 
+                                                              toEmailAddress, emailStatus);
         Test.stopTest();
         
         System.assertEquals(returnMessage, 'failure');

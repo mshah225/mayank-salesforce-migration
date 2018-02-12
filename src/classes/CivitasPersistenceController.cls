@@ -1,4 +1,4 @@
-public class CivitasPersistenceController{
+global class CivitasPersistenceController{
 
     public static List<String> months = new List<String>();
 	public static Integer dayValue = 0;
@@ -217,7 +217,7 @@ public class CivitasPersistenceController{
         }
     }
 
-    public class CivitasWrapper{
+    global class CivitasWrapper{
         public String empl;
         public String name;
         public Date snapDate;

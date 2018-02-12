@@ -6,12 +6,12 @@ private class Test_ServiceCenter{
     private static viewCaseController vcc;
     private static ViewAllCasesController vacc;
     private static SCMyCasesBoxController scMyCaseBox;
-    public static User testUser1;
-    public static Contact testContact1;
-    public static Case testCase1;
-    public static List<Opportunity> oppList1;
+    private static User testUser1;
+    private static Contact testContact1;
+    private static Case testCase1;
+    private static List<Opportunity> oppList1;
     
-    static private void initVars() {
+    private static void initVars() {
         testUser1 = [
             SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
             FROM User
@@ -72,12 +72,11 @@ private class Test_ServiceCenter{
         insert testUserList;
 
         TestDataFactory.createFunctionalGroupWithCategory('Student-Centric Initiatives', 'Knowledge', 'Test');
-
     }
 
     @testSetup static void setUpEnrolledTestSessionA(){
         Contact testContEnrolledA = [
-            SELECT Id, AccountId
+            SELECT Id, AccountId, Email
             FROM Contact
             WHERE FirstName = 'Test0'
         ];
@@ -91,13 +90,32 @@ private class Test_ServiceCenter{
 
         List<Case> openCases = CaseService.createTestCases(1, testContEnrolledA);
         insert openCases;
-
+        
+        EmailMessage emailOnCase = new EmailMessage(FromAddress = 'test0@test.com', Incoming = False, 
+                                        ToAddress= testContEnrolledA.Email, Subject = 'Test email', TextBody = '23456 ', ParentId = openCases[0].Id);
+        
+        insert emailonCase;
+        
         List<Case> closedCases = CaseService.createTestCases(10, testContEnrolledA);
 
         for (Case c : closedCases){
             c.Status = 'Closed: Resolved';
         }
         insert closedCases;
+        
+        bomgar__BomgarSession__c bomgarSession = new bomgar__BomgarSession__c();
+        bomgarSession.bomgar__RelatedCase__c = openCases[0].Id;
+        insert bomgarSession;
+        
+        datetime bomgarEventTime = datetime.now();
+        bomgar__Event__c bomgarEvent = new bomgar__Event__c();
+        bomgarEvent.bomgar__BomgarSession__c = bomgarSession.Id;
+        bomgarEvent.bomgar__DestinationValue__c = 'everyone';
+        bomgarEvent.bomgar__EventDateTime__c = bomgarEventTime;
+        bomgarEvent.bomgar__EventType__c = 'representative';
+        bomgarEvent.bomgar__Text__c = 'Test Text';
+        insert bomgarEvent;
+        
     }
 
     @testSetup static void setUpEnrolledTestSessionB(){
@@ -563,7 +581,7 @@ private class Test_ServiceCenter{
     }
     
     @isTest 
-    private static void testFetchCaseDetails() {
+    private static void fetchCaseDetailsWithoutMyASUViewAs() {
         initVars();
         
         PageReference viewCase = Page.viewcase;
@@ -585,7 +603,7 @@ private class Test_ServiceCenter{
     }
     
     @isTest
-    private static void testFetchEmailMessages() {
+    private static void fetchCaseDetailsWithMyASUViewAs() {
         initVars();
         
         PageReference viewCase = Page.viewcase;
@@ -596,12 +614,55 @@ private class Test_ServiceCenter{
         Test.startTest();
         System.runAs(testUser1) {
             vcc = new viewCaseController();
-            vcc.getEmailMessages();
-            
             vcc.viewingAs = true;
-            vcc.getEmailMessages();
+            checkCase = vcc.getCaseDetails();
+            
         }
         Test.stopTest();
+        System.assertEquals(checkCase.Id, testCase1.Id);
+        
+        
+    }
+    
+    @isTest
+    private static void fetchEmailMessagesWithoutMyASUViewAs() {
+        initVars();
+        
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
+        Case checkCase;
+        List<EmailMessage> retrieveEmailMsgs;
+        
+        Test.startTest();
+        System.runAs(testUser1) {
+            vcc = new viewCaseController();
+            retrieveEmailMsgs = vcc.getEmailMessages();
+        }
+        Test.stopTest();
+        EmailMessage emailMsgWithParentId = [SELECT Id, ParentId FROM EmailMessage WHERE ParentId = :testCase1.Id];
+        System.assertEquals(emailMsgWithParentId.ParentId, testCase1.Id);
+    }
+    
+    @isTest
+    private static void fetchEmailMessagesWithMyASUViewAs() {
+        initVars();
+        
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
+        Case checkCase;
+        List<EmailMessage> retrieveEmailMsgs;
+        
+        Test.startTest();
+        System.runAs(testUser1) {
+            vcc = new viewCaseController();
+            vcc.viewingAs = true;
+            retrieveEmailMsgs = vcc.getEmailMessages();
+        }
+        Test.stopTest();
+        EmailMessage emailMsgWithParentId = [SELECT Id, ParentId FROM EmailMessage WHERE ParentId = :testCase1.Id];
+        System.assertEquals(emailMsgWithParentId.ParentId, testCase1.Id);
     }
     
     @isTest
@@ -612,16 +673,57 @@ private class Test_ServiceCenter{
         viewCase.getParameters().put('id', testCase1.Id);
         Test.setCurrentPage(viewCase);
         Case checkCase;
+        List<bomgar__Event__c> fetchedBomgarEvent;
+        Test.startTest();
+        System.runAs(testUser1) {
+            vcc = new viewCaseController();
+            fetchedBomgarEvent = vcc.getChatMessages();
+        }
+        Test.stopTest();
+        List<bomgar__Event__c> bomgarForAssert = [SELECT Id, bomgar__BomgarSession__r.bomgar__relatedcase__c from bomgar__Event__c LIMIT 1];
+        System.assertEquals(bomgarForAssert[0].bomgar__BomgarSession__r.bomgar__relatedcase__c, testCase1.Id);
+    }
+    
+    @isTest
+    private static void testDisplayReplyBox() {
+        initVars();
+        
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
         
         Test.startTest();
         System.runAs(testUser1) {
             vcc = new viewCaseController();
-            vcc.getChatMessages();
-            
-            vcc.viewingAs = true;
-            vcc.getChatMessages();
+            vcc.showReplyBox = false;
+            vcc.showReplyButton = true;
+            vcc.displayReplyBox();
         }
         Test.stopTest();
+        System.assertEquals(vcc.showReplyBox, true);
+        System.assertEquals(vcc.showReplyButton, false);
+    }
+    
+    @isTest
+    private static void testCancelFunctionality() {
+        initVars();
+        
+        PageReference viewCase = Page.viewcase;
+        viewCase.getParameters().put('id', testCase1.Id);
+        Test.setCurrentPage(viewCase);
+        
+        Test.startTest();
+        System.runAs(testUser1) {
+            vcc = new viewCaseController();
+            vcc.showReplyBox = true;
+            vcc.caseReply = 'Test Reply';
+            vcc.showReplyButton = false;
+            vcc.clearContentsAndCloseBox();
+        }
+        Test.stopTest();
+        System.assertEquals(vcc.showReplyBox, false);
+        System.assertEquals(vcc.caseReply.length(), 0);
+        System.assertEquals(vcc.showReplyButton, true);
     }
     
     @isTest 

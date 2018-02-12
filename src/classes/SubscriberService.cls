@@ -163,7 +163,6 @@ public without sharing class SubscriberService {
      * @param subIdList the list of subscribers
     */
     public static void setHashIdNotFuture(List<Subscriber__c> subList) {
-        system.debug('Limits.getDMLStatements()' + Limits.getDMLStatements() +', '+ Limits.getCallouts() +', '+ Limits.getCpuTime());
         List<Subscriber__c> subscribersWithHashes = new List<Subscriber__c>();
         for (Subscriber__c subscriber : [SELECT ID, HashSubscriberID__c FROM Subscriber__c WHERE ID IN :subList]) {
             if (subscriber.HashSubscriberID__c == null) {

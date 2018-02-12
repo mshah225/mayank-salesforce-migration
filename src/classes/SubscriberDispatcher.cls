@@ -24,10 +24,16 @@ public with sharing class SubscriberDispatcher implements IDispatch {
     public void afterInsert() {
         SubscriberService.syncParentSubscribers(newList);
         List<Subscriber__c> subscriberToHash = new List<Subscriber__c>();
+        List<Id> subscriberIdsFuture = new List<Id>();
         for (sObject subscriber : newList) {
             subscriberToHash.add((Subscriber__c)subscriber);
+            subscriberIdsFuture.add(subscriber.Id);
         }
-        SubscriberService.setHashIdNotFuture(subscriberToHash);
+        if (System.isBatch() || System.isFuture()) {
+            SubscriberService.setHashIdNotFuture(subscriberToHash);
+        } else {
+            SubscriberService.setHashId(subscriberIdsFuture);
+        }
      }
      
     public void afterUpdate() {

@@ -97,6 +97,8 @@
         </style>
 
         <script>
+            var $j = jQuery.noConflict();
+            
             function validateReply() {
                 var filePresent = false;
                 var replyPresent = false;
@@ -168,7 +170,6 @@
                            viewingAs="{!viewingAs}"/>
 
         <script>
-            var $j = jQuery.noConflict();
             $j(document).ready(function()
             {
                 var showChar = 250;

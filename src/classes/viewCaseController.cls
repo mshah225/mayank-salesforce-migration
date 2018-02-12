@@ -1,4 +1,4 @@
-public without sharing class viewCaseController {
+public with sharing class viewCaseController {
 
 
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
@@ -62,7 +62,7 @@ public without sharing class viewCaseController {
             userAsurite = [
                 SELECT ASURite_Id__c
                 FROM User
-                WHERE Id= :UserInfo.getUserId()
+                WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
             viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
@@ -162,8 +162,7 @@ public without sharing class viewCaseController {
                 ApexPages.currentPage().getParameters().get('id'),
                 emailAddresses
             );
-        }
-        else {
+        } else {
             return CaseService.getCaseEmailMessages(
                 EMAILVISIBILITYDATE,
                 ApexPages.currentPage().getParameters().get('id'),
@@ -195,20 +194,17 @@ public without sharing class viewCaseController {
         if ((oppList == Null && userContact != null)
             || (oppList.size() == 0 && userContact != null)) {
             return true;
-        }
-        else if ((oppList[0].StageName == 'Enrolled'
+        } else if ((oppList[0].StageName == 'Enrolled'
             && oppList[0].Career__c == 'Undergraduate'
             && oppList[0].Admitted_Session__c == 'A/C')
             && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)) {
             return false;
-        }
-        else if ((oppList[0].StageName == 'Enrolled'
+        } else if ((oppList[0].StageName == 'Enrolled'
             && oppList[0].Career__c == 'Undergraduate'
             && oppList[0].Admitted_Session__c == 'B')
             && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
             return false;
-        }
-        else if (oppList[0].StageName != 'Enrolled'
+        } else if (oppList[0].StageName != 'Enrolled'
             && oppList[0].Career__c == 'Undergraduate'
             && (userContact.Affiliation_Student__c == 'Current'
             || userContact.Affiliation_Alumni__c == 'Current'
@@ -216,8 +212,7 @@ public without sharing class viewCaseController {
             || userContact.Affiliation_Employee__c == 'Current')
             && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -247,7 +242,7 @@ public without sharing class viewCaseController {
             try {
                 update userContact;
                 return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
-            } catch(Exception e) {
+            } catch (Exception e) {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
                 vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
@@ -255,8 +250,7 @@ public without sharing class viewCaseController {
                 ErrorLogger.log(e,vars,false);
                 return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
             }
-        }
-        else {
+        } else {
             return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
         }
 
@@ -289,7 +283,7 @@ public without sharing class viewCaseController {
                     insert replyCaseAttachment;
                     replyCaseAttachment = new Attachment();
                     return 'success';
-                } catch(Exception e) {
+                } catch (Exception e) {
                     varsForErrorLogging = new List<String>();
                     varsForErrorLogging.add(ErrorLogger.convertStringToJSON('name', replyCaseAttachment.name));
                     ErrorLogger.log(e, varsForErrorLogging, false);
@@ -300,7 +294,7 @@ public without sharing class viewCaseController {
         return 'noattachment';
     }
     
-    private String createJSONString() {
+    private String createJsonEmail() {
         User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         Case currentCase = [SELECT Id, Owner.Email FROM Case WHERE Id = :caseId LIMIT 1];
         
@@ -323,27 +317,41 @@ public without sharing class viewCaseController {
         return jsonInput;
     }
     
-    private String createEmailMessageRestCallout() {
-        Http objHttp = new Http();
+    private HttpRequest createEmailMessageRestCallout(String jsonEmailMessage) {
         HttpRequest emailMessageInsertRequest = new HttpRequest();
             
-        String jsonStringForRestCall = createJSONString();
         String baseURL = System.URL.getSalesforceBaseURL().toExternalForm();
         
         emailMessageInsertRequest.setHeader('Content-Type', 'application/json');
         emailMessageInsertRequest.setEndpoint(baseURL + '/services/apexrest/EmailMessageInsert');
         emailMessageInsertRequest.setMethod('POST');
-        emailMessageInsertRequest.setBody(jsonStringForRestCall);
-        HttpResponse response = objHttp.send(emailMessageInsertRequest);
-        String responseMessage = response.getBody();
-
+        emailMessageInsertRequest.setBody(jsonEmailMessage);
+        return emailMessageInsertRequest;
+    }
+    
+    private String sendEmailMessageRestCallout(HttpRequest emailMessageRequest) {
+        Http objHttp = new Http();
+        HttpResponse emailResponse;
+        String responseMessage;
+        try {
+            emailResponse = objHttp.send(emailMessageRequest);
+            responseMessage = emailResponse.getBody();
+        } catch (Exception e) {
+            List<String> errorCaseVariables = new List<String>();
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Case Id: ', caseId));
+            ErrorLogger.log(e,errorCaseVariables,false);
+            responseMessage = 'failure';
+            
+        }
         return responseMessage;
     }
     
     public PageReference submitReply() {
         Boolean isReplySuccess = true;
         if (!String.isBlank(caseReply)) {
-            String restCallResponse = createEmailMessageRestCallout();
+            String jsonEmailMessage = createJsonEmail();
+            HttpRequest emailMessageRequest = createEmailMessageRestCallout(jsonEmailMessage);
+            String restCallResponse = sendEmailMessageRestCallout(emailMessageRequest);
             if(restCallResponse == '"success"') {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));        
             } else {
@@ -367,4 +375,6 @@ public without sharing class viewCaseController {
         showReplyButton = true;
         return null;
     }
+    
+    
 }

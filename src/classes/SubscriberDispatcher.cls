@@ -23,7 +23,6 @@ public with sharing class SubscriberDispatcher implements IDispatch {
      
     public void afterInsert() {
         SubscriberService.syncParentSubscribers(newList);
-        List<Subscriber__c> subscriberToHash = new List<Subscriber__c>();
         List<Id> subscriberIds = new List<Id>();
         for (Subscriber__c subscriber : newList) {
             subscriberIds.add(subscriber.Id);

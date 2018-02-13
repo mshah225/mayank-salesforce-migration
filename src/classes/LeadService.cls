@@ -211,6 +211,10 @@ public class LeadService {
             }
         }
 
+        reparentAndUpdateIndividualEmailResults(leadList, leadMap);
+        reparentAndUpdateSubscribers(leadList, leadMap);
+        reparentAndUpdateMe3s(leadList, leadMap);
+
         // Create LeadConvert objects from the leads and batch them up
         for (Integer batchNumber = 0; batchNumber < numberOfBatches; batchNumber++) {
             List<Database.LeadConvert> leadConvertList = new List<Database.LeadConvert>();
@@ -248,5 +252,59 @@ public class LeadService {
 
         return leadConvertBatches;
     }
+    
+    private static void reparentAndUpdateIndividualEmailResults(List<Lead> leadList, Map<Id,Lead> leadMap) {
+        List<et4ae5__IndividualEmailResult__c> emailList = new List<et4ae5__IndividualEmailResult__c>();
+        for (et4ae5__IndividualEmailResult__c email : [
+                SELECT Id, et4ae5__Contact__c, et4ae5__Lead__c 
+                FROM et4ae5__IndividualEmailResult__c 
+                WHERE et4ae5__Lead__c IN :leadList
+            ]) {  
+            if (leadMap.containsKey(email.et4ae5__Lead__c)) {
+                email.et4ae5__Contact__c = leadMap.get(email.et4ae5__Lead__c).Convert_Contact__c;
+                emailList.add(email);
+            }
+        }
+        
+        if (!emailList.isEmpty()) {
+            update emailList;
+        }
+    }
+    
+    private static void reparentAndUpdateSubscribers(List<Lead> leadList, Map<Id,Lead> leadMap) {
+        List<Subscriber__c> subscriberList = new List<Subscriber__c>();
+        for (Subscriber__c sub : [
+            SELECT Lead__c, Contact__c
+            FROM Subscriber__c
+            WHERE Lead__c IN :leadList
+        ]){  
+            if (leadMap.containsKey(sub.Lead__c)) {
+                sub.Contact__c = leadMap.get(sub.Lead__c).Convert_Contact__c;
+                sub.Lead__c = null;
+                subscriberList.add(sub);
+            }
+        }
+        
+        if (!subscriberList.isEmpty()) {
+            update subscriberList;
+        }
+    }
+    
+    private static void reparentAndUpdateMe3s(List<Lead> leadList, Map<Id,Lead> leadMap) {
+        List<me3__c> listMe3 = new List<me3__c>();
+        for (me3__c objMe3 : [
+            SELECT Id, Contact__c, Lead__c
+            FROM Me3__c
+            WHERE Lead__c IN: leadList
+        ]) {
+            if (leadMap.containsKey(objMe3.Lead__c)) {
+                objMe3.Contact__c = leadMap.get(objMe3.Lead__c).Convert_Contact__c;
+                listme3.add(objMe3);
+            }
+        }
 
+        if (!listMe3.isEmpty()) {
+            update listMe3;
+        }
+    }
 }

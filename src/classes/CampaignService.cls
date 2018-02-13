@@ -51,4 +51,15 @@ public with sharing class CampaignService
 
         return camList;
     }
+    
+    @future
+    public static void setHashId(List<Id> CampaignIdList) {
+        List<Campaign> CampaignList = new List<Campaign>();
+        for(Id i : campaignIdList) {
+            Campaign c = new Campaign(Id = i, HashCampaignID__c = Hasher.hashId(i));
+            CampaignList.add(c);
+        }
+        update CampaignList;
+    }
+
 }

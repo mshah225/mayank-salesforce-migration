@@ -130,7 +130,7 @@ public class LeadService {
             objContact.Phone=strPhone;
         }
         if(strEmail!=NULL){
-            objContact.Email=strEmail;            
+            objContact.Email=strEmail;
         }
         if(strMobPhone!=NULL){
             objContact.MobilePhone=strMobPhone;
@@ -146,10 +146,10 @@ public class LeadService {
      * @param conversionStatus The MasterLabel from a LeadStatus that these leads should be converted to
      * @return leadConvertBatches A map of all the leadConvert objects in batches
      */
-    public static Map<Integer, List<Database.LeadConvert>> generateLeadConvertBatches(List<Lead> leadList, String conversionStatus) {   
+    public static Map<Integer, List<Database.LeadConvert>> generateLeadConvertBatches(List<Lead> leadList, String conversionStatus) {
         Map<Id,Lead> leadMap=new Map<Id,Lead>([
-            SELECT id,FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c 
-            FROM Lead 
+            SELECT id,FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c
+            FROM Lead
             WHERE Id IN: leadList
         ]);
         Map<Id,Contact> leadIdtoContactMap=new Map<Id,Contact>();
@@ -165,7 +165,7 @@ public class LeadService {
                 leadIdToContactMap.put(eachLead.Id, createContact(eachLead.FirstName, eachLead.LastName, eachLead.Phone, eachLead.MobilePhone, eachLead.Email));
             }
         }
-        
+
         try {
             if (leadIdToContactMap!=null && leadIdToContactMap.size()>0) {
                 insert leadIdToContactMap.values();
@@ -187,8 +187,8 @@ public class LeadService {
 
         // Map leads to a single account and track the number of LeadConvert batches we need
         for (Lead thisLead : [
-            SELECT Id,FirstName, LastName, Convert_Contact__c,Convert_Contact_Account_ID__c,Convert_Create_Opportunity__c 
-            FROM Lead 
+            SELECT Id,FirstName, LastName, Convert_Contact__c,Convert_Contact_Account_ID__c,Convert_Create_Opportunity__c
+            FROM Lead
             WHERE Id IN: leadList
         ]) {
             thisLeadsAccount = thisLead.Convert_Contact_Account_ID__c;

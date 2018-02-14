@@ -1,602 +1,621 @@
 public without sharing class SubscriptionCenterController {
-    private Boolean debug = false;
+    private static final String UNSUBSCRIBED = 'Unsubscribed';
+    private static final String SUBSCRIBED = 'Subscribed';
+    private static final String NO_PREFERENCE = 'No Preference';
+
+    private String actionParm;
+    private String subscriberIdParm;
+    private String campaignIdParm;
+    private String subscriptionIdParm;
+    private String subscriberKeyParm;
+    public String hashedSubscriberKeyParm { get; set; }
+    public String searchTerms { get; set; }
+    public String subscriberEmail { get; set; }
+    public Boolean hasOptedOutOfEmail { get; set; }
+    public Boolean noSubscriber { get; set; }
+    public Boolean noSubscriberRecords { get; set; }
+    public Boolean directUnsubscribe { get; set; }
+    public Boolean directUnsubscribeSuccess { get; set; }
+    public Boolean updateSuccess { get; set; }
+    private String directUnsubscribeSubscriberId;
+    public String directUnsubscribeName { get; set; }
+    public String unsubscribeMessage { get; set; }
+    private List<Subscription__c> subscriptionList;
+    private Set<String> parentSubIds;
+    private Set<String> availableParentSubIds;
     private Boolean isContact;
-    private Id subscriptionCenterRecordTypeId;
-    public String subscriberId {get; set;}
-    public Boolean failState {get; set;}
-    public SubscriptionTree subTree {get; set;}
-    public List<Subscription> searchResults {get; set;}
-    public Boolean showSearchResults {get; set;}
-    public String searchInput {get; set;}
-    public Boolean urlParamsExistAndAreValid = true;
-    public string emailAddress {get; set;}
-    
-    /**
-     * Constructor called by VF page
-     * <p>
-     * Note: Error logger cannot create cases during controller constructor. 
-     * As such, the only actions that should be performed are getting/validating
-     * url parameters. All other actions that need to occur on page load should be
-     * placed into the init method to be called using the 'action' attribute of the
-     * <apex:page> tag.
-     * <p>
-     * Note: Null checks on url params are handled by the validator. There is no need
-     * to manually check for null values.
-     */
+
+    public Map<String, List<SubscriberWrapper>> subsByParentSubIdMap { get; set; }
+    public Map<String, List<SubscriberWrapper>> availableSubsByParentSubIdMap { get; set; }
+
+    public Map<String, SubscriberWrapper> subbedBuSubIdToWrapperMap { get; set; }
+    public Map<String, SubscriberWrapper> notSubbedBuSubIdToWrapperMap { get; set; }
+
+    public List<String>  mySubsBUMapKeys { get; set; }
+    public List<String>  availableSubsBUMapKeys { get; set; }
+
     public SubscriptionCenterController() {
-        subscriberId = ApexPages.currentPage().getParameters().get('subId');
-        
-        if (Validator.validateId(subscriberId, contact.class)) {
-            isContact = true;
-        } else if (Validator.validateId(subscriberId, lead.class)) {
-            isContact = false;
-        } else {
-            urlParamsExistAndAreValid = false;
-        }
-    }
-    
-    /**
-     * initialize the page. This method is to be called in the 'action' attribute of the
-     * <apex:page> tag.
-     * <p>
-     * Note: In order to expose local variables to the logger, the must be defined outside
-     * of the try/catch block.
-     * </p>
-     * <p>
-     * Note: First line of the try catch is verifying that URL parameters are valid. An
-     * exception will be thrown to the error logger if the parameters are not set.
-     * </p>
-     * <p>
-     * Note: Variables are not initialized until after URL parameters are checked to avoid
-     * attempting to process data in the event of an exception.
-     * </p>
-     * 
-     * @return pageReference Action methods are required to return a pageReference value.
-     * Returns null under all conditions to prevent the page from redirecting. May consider
-     * returning the generic error page in the event of an error (need to discuss with team)
-     */
-    public pageReference init() {
-        Id subscriptionCenterCampaignMemberRecordTypeId;
-        Map<Id,List<Campaign>> buCatCampaigns;
-        BusinessUnit tempBu;
-        Boolean hasCampaignMember;
-        
-        try {
-            if (urlParamsExistAndAreValid) {
-                failState = false;
-                subscriptionCenterRecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Subscription Center'].Id;
-                subscriptionCenterCampaignMemberRecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Subscription Center Campaign Member'].Id;
-                subTree = new SubscriptionTree();
-                showSearchResults = false;
-                
-                if (isContact) {
-                    emailAddress = [SELECT Email FROM Contact WHERE Id = :subscriberId].email;
-                } else {
-                    emailAddress = [SELECT Email FROM Lead WHERE Id = :subscriberId].email;
-                }
-                
-                //Get all Bu campaigns, their campaign members and their category campaigns
-                for (Campaign bu : [SELECT Id, Name,
-                    (SELECT Id, Name, Subscription_Center_Description__c
-                        FROM ChildCampaigns
-                        WHERE RecordTypeId = :subscriptionCenterRecordTypeId
-                        AND Visible_on_Subscription_Center__c = true
-	                    AND isActive = true),
-                    (SELECT Id, isSubscribed__c
-                        FROM CampaignMembers 
-                        WHERE (contactId = :subscriberId OR leadId = :subscriberId)) 
-                    FROM Campaign 
-                    WHERE RecordTypeId = :subscriptionCenterRecordTypeId
-                    AND Visible_on_Subscription_Center__c = true
-                    AND parentId = null
-                    AND isActive = true]) {
-                    hasCampaignMember = false;
-                    // ToDo: only add BU if the Campaign has a valid subscription
-                    tempBu = new BusinessUnit(new Subscription(bu));
-                    
-                    for (CampaignMember cm : bu.campaignMembers) {
-                        tempBu.sub.addSubscriber(cm);
-                        hasCampaignMember = true;
-                    }
-                    
-                    // If the BU is missing a campaign member, add it and set IsSubscribed = false (defualt value)
-                    if (!hasCampaignMember) {
-                        if (isContact) {
-                            tempBu.sub.addSubscriber(new CampaignMember(CampaignId = bu.Id, contactId = subscriberId));
-                        } else {
-                            tempBu.sub.addSubscriber(new CampaignMember(CampaignId = bu.Id, leadId = subscriberId));
-                        }
-                    }
-	                
-                    for (Campaign cat : bu.childCampaigns) {
-                        tempBu.catSubs.put(cat.Id, new Subscription(cat));
-                    }
-	                
-                    subTree.buSubs.put(bu.Id, tempBu);
-                }
-                
-                for (Campaign cat : [SELECT Id, parentId,
-                    (SELECT Id, isSubscribed__c 
-                        FROM CampaignMembers
-                        WHERE (contactId = :subscriberId OR leadId = :subscriberId))
-                    FROM Campaign
-                    WHERE Id IN :subTree.aggregateCatIds()
-                    AND isActive = true
-                    AND Visible_on_Subscription_Center__c = true
-                    AND RecordTypeId = :subscriptionCenterRecordTypeId]) {
-                    hasCampaignMember = false;
-                    if (subTree.buSubs.get(cat.parentId) != null) {
-                        if (subTree.buSubs.get(cat.parentId).catSubs.get(cat.Id) != null) {
-                            // Add all campaign members to the proper cat
-                            for (CampaignMember cm : cat.campaignMembers) {
-                                subTree.buSubs.get(cat.parentId).catSubs.get(cat.Id).addSubscriber(cm);
-                                hasCampaignMember = true;
-                            }
-                            
-                            if (!hasCampaignMember) {
-                                if (isContact) {
-                                    subTree.buSubs.get(cat.parentId).catSubs.get(cat.Id).addSubscriber(
-                                        new CampaignMember(campaignId = cat.Id, contactId = subscriberId));
-                                } else {
-                                    subTree.buSubs.get(cat.parentId).catSubs.get(cat.Id).addSubscriber(
-                                        new CampaignMember(campaignId = cat.Id, leadId = subscriberId));
-                                }
-                            }
-                        } else {
-                            // WHAT?!
-                        }
-                    } else {
-                        // WHAT?!
-                    }
-                }
-                
-                return null;
+        hashedSubscriberKeyParm = ApexPages.currentPage().getParameters().get('subscriberKey'); // Id of a Contact or Lead record
+        String hashedSubscriptionIdParm = ApexPages.currentPage().getParameters().get('subscriptionId'); // Id of a Subscription__c record
+        String hashedCampaignIdParm = ApexPages.currentPage().getParameters().get('campaignId'); // Id of a Campaign record
+        String hashedSubscriberIdParm = ApexPages.currentPage().getParameters().get('subscriberId'); // Id of a Subscriber__c record
+        actionParm = ApexPages.currentPage().getParameters().get('action'); // String describing what action to take
+
+        if (hashedSubscriberKeyParm != null) {
+            hashedSubscriberKeyParm = EncodingUtil.urlEncode(hashedSubscriberKeyParm, 'UTF-8');
+            List<Contact> tmpList = new List<Contact>();
+            tmpList = [SELECT Id FROM Contact WHERE HashContactId__c =: hashedSubscriberKeyParm];
+            if (!tmpList.isEmpty()) {
+                System.debug(tmpList);
+                subscriberKeyParm = tmpList[0].Id;
             } else {
-                throw new subscribtionCenterException('URL Parameters are missing or invalid');
-            }
-            
-        } catch (Exception ex) {
-            List<String> vars = new List<String>();
-            failState = true;
-            
-            vars.add(ErrorLogger.convertBooleanToJSON('failState', failState));
-            vars.add(ErrorLogger.convertBooleanToJSON('urlParamsExistAndAreValid', urlParamsExistAndAreValid));
-            vars.add(ErrorLogger.convertStringToJSON('subscriberId', subscriberId));
-            vars.add(ErrorLogger.convertBooleanToJSON('isContact', isContact));
-            vars.add(ErrorLogger.convertIdToJSON('subscriptionCenterRecordTypeId', subscriptionCenterRecordTypeId));
-            vars.add(ErrorLogger.convertIdToJSON('subscriptionCenterCampaignMemberRecordTypeId', subscriptionCenterCampaignMemberRecordTypeId));
-            vars.add(ErrorLogger.convertBooleanToJSON('showSearchResults', showSearchResults));
-            vars.add(ErrorLogger.convertStringToJSON('emailAddress', emailAddress));
-            vars.add(ErrorLogger.convertBooleanToJSON('hasCampaignMember', hasCampaignMember));
-            vars.add(string.valueOf(tempBu)); //Custom class used only in this controller
-            vars.add(string.valueOf(subTree)); //Custome class used only in this controller
-            
-            ErrorLogger.log(ex, vars, debug);
-            return null;
-        }
-    }
-    
-    /**
-     * Perform a search for campaigns based on provided keywords.
-     *
-     * @return pageReference Action methods are required to return a pageReference value.
-     * Returns null under all conditions to prevent the page from redirecting. May consider
-     * returning the generic error page in the event of an error (need to discuss with team)
-     */
-    public pageReference doSearch() {
-        Boolean hasCampaignMember; // Determines if a campaign member already exists
-        Subscription tempSubscription; // Used to create new subscriptions
-        Campaign tempCampaign; // Used to create new campaigns?
-        Map<Id, SObject> queryResults; // Used to store sosl/soql query results
-        string searchString; // User input converted into SOSL Search string
-                
-        try {
-	        if (searchInput != null && searchInput != '') {
-	            searchResults = new List<Subscription>();
-	            searchString = '';
-	            showSearchResults = true;
-	            
-	            if (subscriptionCenterRecordTypeId == null) {
-	                subscriptionCenterRecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Subscription Center'].Id;
-	            }
-	            
-	            for (String s : searchInput.split(' ')) {
-	                searchString = '*' + searchString + s + '* or ';
-	            }
-	            
-	            searchString = searchString.left(searchString.length() - 4);
-	            
-	            queryResults = new Map<Id, SObject>([FIND :searchString 
-	                RETURNING Campaign (Id
-	                    WHERE Visible_on_Subscription_Center__c = true 
-	                    AND IsActive = true
-	                    AND RecordTypeId = :subscriptionCenterRecordTypeId)][0]);
-	                    
-                system.debug('SOSl' + queryResults);
-                
-	            queryResults = new Map<Id, SObject>([SELECT Name, Subscription_Center_Description__c,
-                    parentId,
-	                (SELECT Id, isSubscribed__c 
-	                    FROM CampaignMembers 
-	                    WHERE contactId = :subscriberId or leadId = :subscriberId) 
-	                FROM Campaign 
-	                WHERE Id IN :queryResults.keyset()]);
-                
-                system.debug('SOQl' + queryResults);
-	                
-	            for (SObject so : queryResults.values()) {
-	                tempCampaign = (Campaign) so;
-	                tempSubscription = new Subscription(tempCampaign);
-	                hasCampaignMember = false;
-	                
-	                for (CampaignMember cm : tempCampaign.campaignMembers) {
-	                    tempSubscription.addSubscriber(cm);
-	                    hasCampaignMember = true;
-	                }
-	                
-	                if (!hasCampaignMember) {
-	                    if (isContact) {
-	                        tempSubscription.addSubscriber(new CampaignMember(CampaignId = tempCampaign.Id, contactId = subscriberId));
-	                    } else {
-	                        tempSubscription.addSubscriber(new CampaignMember(CampaignId = tempCampaign.Id, leadId = subscriberId));
-	                    }
-	                }
-	                
-	                searchResults.add(tempSubscription);
-	            }
-	            
-	        } else {
-	            showSearchResults = false;
-	        }
-	        
-	        return null;
-        } catch (Exception ex) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertStringToJSON('searchInput', searchInput));
-            vars.add(ErrorLogger.convertBooleanToJSON('showSearchResults', showSearchResults));
-            vars.add(ErrorLogger.convertIdToJSON('subscriptionCenterRecordTypeId', subscriptionCenterRecordTypeId));
-            vars.add(ErrorLogger.convertStringToJSON('searchString', searchString));
-            vars.add(ErrorLogger.convertMapToJSON('queryResults', queryResults));
-            vars.add(ErrorLogger.convertSObjectToJSON('tempCampaign', tempCampaign));
-            vars.add(string.valueOf(tempSubscription)); //Custom class used only in this controller
-            vars.add(ErrorLogger.convertBooleanToJSON('hasCampaignMember', hasCampaignMember));
-            vars.add(string.valueOf(searchResults)); //Custom class used only in this controller
-            
-            ErrorLogger.log(ex, vars, debug);
-            
-            pageReference redirect = Page.error;
-            redirect.setRedirect(true);
-            
-            return redirect;
-        }
-    }
-    
-    /**
-     * Updates the new subscription values into the database.
-     * <p>
-     * Note: Consider moving this under the subtree class
-     * </p>
-     * <p>
-     * Note: Due to a bug in salesforce, we cannot use upsert on campaign member
-     * </p>
-     *
-     * @return pageReference Action methods are required to return a pageReference value.
-     * Returns null under all conditions to prevent the page from redirecting. May consider
-     * returning the generic error page in the event of an error (need to discuss with team)
-     */
-    public pageReference upsertSubTree() {
-        List<CampaignMember> recordsToUpdate;
-        List<CampaignMember> recordsToinsert;
-        
-        try {
-            // Note: Due to bug in software we cannot actually use upsert on campaign members
-            // We need to create 2 seperate lists, 1 for update, 1 for insert
-            recordsToUpdate = new List<CampaignMember>();
-            recordsToInsert = new List<CampaignMember>();
-            
-            for (CampaignMember cm : subTree.getRecordsToUpsert()) {
-                if (cm.Id != null) {
-                    recordsToUpdate.add(cm);
-                } else {
-                    recordsToInsert.add(cm);
+                List<Lead> tmpLeadList = new List<Lead>();
+                tmpLeadList = [Select Id FROM Lead WHERE HashLeadId__c =: hashedSubscriberKeyParm];
+                if (!tmpLeadList.isEmpty()) {
+                    subscriberKeyParm = tmpLeadList[0].Id;
                 }
             }
-            
-            if (recordsToUpdate.size() > 0) {
-                update recordsToUpdate;
-            }
-            
-            if (recordsToInsert.size() > 0) {
-                insert recordsToInsert;
-            }
-            
-            init();
-            
-            return null;
-        } catch (Exception ex) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertListToJSON('recordsToUpdate', recordsToUpdate));
-            vars.add(ErrorLogger.convertListToJSON('recordsToInsert', recordsToInsert));
-            
-            ErrorLogger.log(ex, vars, debug);
-            
-            pageReference redirect = Page.error;
-            redirect.setRedirect(true);
-            
-            return redirect;
         }
-    }
-    
-    /**
-     * Commits subscription modifications made to the search results
-     * <p>
-     * Note: Due to a bug in salesforce, we cannot use upsert on campaign member
-     * </p>
-     */
-    public pageReference upsertSearchResults() {
-        list<SObject> recordsToUpdate;
-        List<SObject> recordsToInsert;
-        List<Id> parentIdsToUpdate;
-        List<CampaignMember> subscriptionsToUpdate;
-        boolean hasCampaignMember;
         
-        //ToDo: check the subscriptions for parents and update them as well
+        if (hashedSubscriptionIdParm != null) {
+            hashedSubscriptionIdParm = EncodingUtil.urlEncode(hashedSubscriptionIdParm, 'UTF-8');
+            List<Subscription__c> tmpList = new List<Subscription__c>();
+            tmpList = [SELECT Id FROM Subscription__c WHERE HashSubscriptionId__c =: hashedSubscriptionIdParm];
+            if (!tmpList.isEmpty()) {
+                subscriptionIdParm = tmpList[0].Id;
+            }
+        }
         
-        try {
-            recordsToUpdate = new List<SObject>();
-            recordsToInsert = new List<SObject>();
-            parentIdsToUpdate = new List<Id>();
-            
-            
-            // Try to find out if there is a parent campaign
-            for (Subscription s : searchResults) {
-                if (s.info.parentId != null && s.subscriber.IsSubscribed__c) {
-                	parentIdsToUpdate.add(s.info.parentId);
-                }
-                
-                if (s.subscriber.Id != null) {
-                    recordsToUpdate.add(s.subscriber);
-                } else {
-                    recordsToInsert.add(s.subscriber);
-                }
+        if (hashedCampaignIdParm != null) {
+            hashedCampaignIdParm = EncodingUtil.urlEncode(hashedCampaignIdParm, 'UTF-8');
+            List<Campaign> tmpList = new List<Campaign>();
+            tmpList = [SELECT Id FROM Campaign WHERE HashCampaignId__c =: hashedCampaignIdParm];
+            if (!tmpList.isEmpty()) {
+                campaignIdParm = tmpList[0].Id;
             }
-            
-            if (recordsToUpdate.size() > 0) {
-                update recordsToUpdate;
+        }
+        
+        if (hashedSubscriberIdParm != null) {
+            hashedSubscriberIdParm = EncodingUtil.urlEncode(hashedSubscriberIdParm, 'UTF-8');
+            List<Subscriber__c> tmpList = new List<Subscriber__c>();
+            tmpList = [SELECT Id FROM Subscriber__c WHERE HashSubscriberId__c =: hashedSubscriberIdParm];
+            if (!tmpList.isEmpty()) {
+                subscriberIdParm = tmpList[0].Id;
             }
-            
-            if (recordsToInsert.size() > 0) {
-                insert recordsToInsert;
-            }
-            
-            system.debug(parentIdsToUpdate);
-            if (parentIdsToUpdate.size() > 0) {
-                subscriptionsToUpdate = new List<CampaignMember>();
-                
-                for (Campaign c : [SELECT Id,
-                    (SELECT Id, IsSubscribed__c
-                        FROM CampaignMembers
-                        WHERE contactId = :subscriberId OR LeadId = :subscriberId)
-                    FROM Campaign
-                    WHERE Id IN :parentIdsToUpdate]) {
-                    hasCampaignMember = false;
-                        
-                    for (CampaignMember cm : c.campaignMembers) {
-                        cm.isSubscribed__c = true;
-                        subscriptionsToUpdate.add(cm);
-                        hasCampaignMember = true;
+        }
+        
+        // switchToStatusMap = new Map<Integer, String>{0 => NO_PREFERENCE, 1 => SUBSCRIBED, 2 => UNSUBSCRIBED};
+        noSubscriber = false;
+
+        if (actionParm == 'unsubscribe') {
+            if (subscriberIdParm != null) {
+                List<Subscriber__c> subList = new List<Subscriber__c>([
+                    SELECT Id, Contact__c, Lead__c, Contact__r.Email, Lead__r.Email, Subscription__r.Name, Subscriber_Status__c
+                    FROM   Subscriber__c
+                    WHERE  Id = :subscriberIdParm
+                ]);
+                if (!subList.isEmpty()) {
+                    if (subList[0].Contact__c != null) {
+                        subscriberKeyParm = subList[0].Contact__c;
+                        subscriberEmail = subList[0].Contact__r.Email;
+                    } else if (subList[0].Lead__c != null) {
+                        subscriberKeyParm = subList[0].Lead__c;
+                        subscriberEmail = subList[0].Lead__r.Email;
                     }
-                    
-                    system.debug(hasCampaignMember);
-                    
-                    if (!hasCampaignMember) {
-                        if (isContact) {
-                            subscriptionsToUpdate.add(
-                                new CampaignMember(
-                                    CampaignId = c.Id,
-                                    ContactId = subscriberId,
-                                    isSubscribed__c = true
-                                )
-                            );
-                        } else {
-                            subscriptionsToUpdate.add(
-                                new CampaignMember(
-                                    CampaignId = c.Id,
-                                    LeadId = subscriberId,
-                                    isSubscribed__c = true
-                                )
-                            );
+                    directUnsubscribeName = subList[0].Subscription__r.Name;
+                    directUnsubscribeSubscriberId = subscriberIdParm;
+                    directUnsubscribe = true;
+                    if (subList[0].Subscriber_Status__c == UNSUBSCRIBED) {
+                        unsubscribeMessage = ' is already Unsubscribed from ' + directUnsubscribeName;
+                        directUnsubscribeSuccess = true;
+                    }
+                } else {
+                    noSubscriber = true;
+                }
+            } else if (campaignIdParm != null && subscriberKeyParm != null) {
+                List<Campaign> campList = new List<Campaign>([
+                    SELECT Id, Subscription__c 
+                    FROM Campaign WHERE Id = :campaignIdParm 
+                        AND Subscription__c != null
+                ]);
+                if (!campList.isEmpty()) {
+                    List<Subscriber__c> subList = new List<Subscriber__c>([
+                        SELECT Id, Contact__c, Contact__r.Email, Lead__r.Email, Lead__c, Subscription__r.Name, Subscriber_Status__c
+                        FROM   Subscriber__c
+                        WHERE  (Contact__c = :subscriberKeyParm OR Lead__c = :subscriberKeyParm)
+                            AND  Subscription__c = :campList[0].Subscription__c
+                    ]);
+                    if (!subList.isEmpty()) {
+                        if (subList[0].Contact__c != null) {
+                            subscriberKeyParm = subList[0].Contact__c;
+                            subscriberEmail = subList[0].Contact__r.Email;
+                        } else if (subList[0].Lead__c != null) {
+                            subscriberKeyParm = subList[0].Lead__c;
+                            subscriberEmail = subList[0].Lead__r.Email;
                         }
-                    }
-                }
-                
-                if (subscriptionsToUpdate.size() > 0) {
-                    system.debug(subscriptionsToUpdate);
-                    update subscriptionsToUpdate;
-                }
-            }
-            
-            init();
-            
-            return null;
-        } catch (Exception ex) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertListToJSON('recordsToUpdate', recordsToUpdate));
-            vars.add(ErrorLogger.convertListToJSON('recordsToInsert', recordsToInsert));
-            
-            
-            ErrorLogger.log(ex, vars, debug);
-            
-            pageReference redirect = Page.error;
-            redirect.setRedirect(true);
-            
-            return redirect;  
-        }
-    }
-    
-    /**
-     * Custom exception to be thrown as needed
-     */
-    private class subscribtionCenterException extends Exception {}
-    
-    /**
-     * Custom class to organize campaigns according to the specified heirarchy.
-     * <p>
-     * Campaigns are organized into 3 tiers: Business Unit, Category, Send. The Business Unit
-     * tier represents a department within ASU such as enrollment or Athletics. Category campaigns
-     * represent groups within a department such as basketball or football. Send campaigns represent
-     * email marketting campaigns that marketting cloud will send to. Send campaigns can be children of
-     * business unit and category campaigns; send campaigns should not appear in the subscription center.
-     * </p>
-     * <p>
-     * Campaign Members exist at both the BU and Cat levels to facilitate granular subscribing.
-     * </p>
-     * <p>
-     * There is talk about organizing Business Units by "topic". To Add Topic Level fitlering, convert
-     * the map to Map<String, Map<id, BusinessUnit>> and Add another apex:repeat tag to page to loop 
-     * through the topics
-     * </p>
-     */
-    public class SubscriptionTree {
-        public Map<Id, BusinessUnit> buSubs {get; set;}
-        public Boolean show {
-            get {
-                //Make sure there is a least 1 campaign member
-                //in the tree that is subscribed
-                for (BusinessUnit bu : buSubs.values()) {
-                    if (bu.sub.subscriber.IsSubscribed__c) {
-                        return true;
+                        directUnsubscribeName = subList[0].Subscription__r.Name;
+                        directUnsubscribeSubscriberId = subList[0].Id;
+                        directUnsubscribe = true;
+                        if (subList[0].Subscriber_Status__c == UNSUBSCRIBED) {
+                            unsubscribeMessage = ' is already Unsubscribed from ' + directUnsubscribeName;
+                            directUnsubscribeSuccess = true;
+                        }
                     } else {
-                        for (Subscription s : bu.catsubs.values()) {
-                            if (s.subscriber.IsSubscribed__c) {
-                                return true;
-                            }
-                        }
+                        noSubscriber = true;
+                    }
+                } else {
+                    noSubscriber = true;
+                }
+
+            } else if (subscriptionIdParm != null && subscriberKeyParm != null) {
+                List<Subscriber__c> subList = new List<Subscriber__c>([
+                    SELECT Id, Contact__c, Lead__c, Subscription__r.Name
+                    FROM   Subscriber__c
+                    WHERE  (Contact__c = :subscriberKeyParm OR Lead__c = :subscriberKeyParm)
+                        AND  Subscription__c = :subscriptionIdParm
+                ]);
+                if (!subList.isEmpty()) {
+                    if (subList[0].Contact__c != null) {
+                        subscriberKeyParm = subList[0].Contact__c;
+                    } else if (subList[0].Lead__c != null) {
+                        subscriberKeyParm = subList[0].Lead__c;
+                    }
+                    directUnsubscribeName = subList[0].Subscription__r.Name;
+                    directUnsubscribeSubscriberId = subList[0].Id;
+                    directUnsubscribe = true;
+                } else {
+                    noSubscriber = true;
+                }
+            } else {
+                // Nothing to do!
+                noSubscriber = true;
+            }
+        }
+
+        if (subscriberKeyParm != null && subscriberKeyParm.left(3) == '003') {
+            isContact = true;
+            List<Contact> contactList = new List<Contact>([
+                SELECT Id, Email, HasOptedOutOfEmail 
+                FROM Contact 
+                WHERE Id = :subscriberKeyParm
+            ]);
+            if (!contactList.isEmpty()) {
+                subscriberEmail = contactList[0].Email;
+                hasOptedOutOfEmail = contactList[0].HasOptedOutOfEmail;
+                subscriberIdParm = contactList[0].Id;
+            }
+        } else if (subscriberKeyParm != null && subscriberKeyParm.left(3) == '00Q') {
+            isContact = false;
+            List<Lead> leadList = new List<Lead>([
+                SELECT Id, Email, HasOptedOutOfEmail 
+                FROM Lead 
+                WHERE Id = :subscriberKeyParm
+            ]);
+            if (!leadList.isEmpty()) {
+                subscriberEmail = leadList[0].Email;
+                hasOptedOutOfEmail = leadList[0].HasOptedOutOfEmail;
+                subscriberIdParm = leadList[0].Id;
+            }
+        } if (!String.isBlank(subscriberIdParm)) {
+            getAllSubscriptions();
+        } else {
+            noSubscriber = true;
+        }
+    }
+
+    private void getAllSubscriptions() {
+        subsByParentSubIdMap = new Map<String, List<SubscriberWrapper>>();
+        availableSubsByParentSubIdMap = new  Map<String, List<SubscriberWrapper>>();
+
+        mySubsBUMapKeys = new List<String>();
+        availableSubsBUMapKeys = new List<String>();
+
+        subbedBuSubIdToWrapperMap = new Map<String, SubscriberWrapper>();
+        notSubbedBuSubIdToWrapperMap = new Map<String, SubscriberWrapper>();
+
+        parentSubIds = new Set<String>();
+        availableParentSubIds = new Set<String>();
+        noSubscriberRecords = false;
+
+        subscriptionList = new List<Subscription__c>([
+            SELECT Id, Name, Available_for_Opt_In__c, Subscription_Center_Description__c, Subscription_Type__c,
+                Always_Show_In_My_Subscriptions__c, Parent_Subscription__c, Parent_Subscription__r.Name,
+                    (SELECT Id, Email__c, Subscriber_Status__c, Subscription__c, Subscription__r.Name,
+                        Subscription__r.Subscription_Center_Description__c
+                    FROM Subscribers__r 
+                    WHERE (Contact__c = :subscriberKeyParm OR Lead__c = :subscriberKeyParm)),
+                        (SELECT Id FROM Subscriptions__r LIMIT 1)
+            FROM   Subscription__c
+            ORDER BY Subscription_Type__c, Parent_Subscription__r.Name, Name]);
+        // Loop through once to set up the Parent Subscription names in order
+        for (Subscription__c subscription : subscriptionList) {
+            if (subscription.Parent_Subscription__c != null) {
+                if (!subscription.Subscribers__r.isEmpty() || subscription.Always_Show_In_My_Subscriptions__c) {
+                    parentSubIds.add(subscription.Parent_Subscription__c);
+                } else {
+                    if (subscription.Available_for_Opt_In__c && !parentSubIds.contains(subscription.Parent_Subscription__c)) {
+                        availableParentSubIds.add(subscription.Parent_Subscription__c);
                     }
                 }
-                
-                return false;
-            }
-            set;
-        }
-        
-        /**
-         * Constructor - initializes BuSubs
-         */
-        public SubscriptionTree() {
-            buSubs = new Map<Id, BusinessUnit>();
-        }
-        
-        /**
-         * Aggregates all of the category Ids into a single list
-         *
-         * @return List<Id> List of aggregate Ids
-         */
-        public List<Id> aggregateCatIds () {
-            List<Id> result = new List<Id>();
-            
-            for (BusinessUnit bu : buSubs.values()) {
-                for (Id catId : bu.catSubs.keySet()) {
-                    result.add(catId);
+            } else {
+                if (!subscription.Subscribers__r.isEmpty() || subscription.Always_Show_In_My_Subscriptions__c) {
+                    parentSubIds.add(subscription.Id);
                 }
             }
-            
-            return result;
         }
-        
-        /**
-         * Aggregates a list of campaign members that will be updated
-         *
-         * @return List<CampaignMembers> Aggregate list of members to be udpated
-         */
-        public List<CampaignMember> getRecordsToUpsert() {
-            List<CampaignMember> recordsToUpsert = new List<CampaignMember>();
-            
-            for (BusinessUnit bu : busubs.values()) {
-                recordsToUpsert.add(bu.sub.subscriber);
-            
-                for (Subscription cat : bu.catSubs.values()) {
-                    recordsToUpsert.add(cat.subscriber);
+
+        // If a Parent Sub ended up in both lists, remove it from the non-subscribed (aka "lower") list
+        for (String subId : availableParentSubIds) {
+            if (parentSubIds.contains(subId)) {
+                availableParentSubIds.remove(subId);
+            }
+        }
+        system.debug('subscriptionList: ' + subscriptionList);
+        system.debug('parentSubIds: ' + parentSubIds);
+        system.debug('availableParentSubIds: ' + availableParentSubIds);
+
+        for (String s : parentSubIds) {
+            subsByParentSubIdMap.put(s, new List<SubscriberWrapper>());
+        }
+        for (String s : availableParentSubIds) {
+            availableSubsByParentSubIdMap.put(s, new List<SubscriberWrapper>());
+        }
+
+        for (Subscription__c subscription : subscriptionList) {
+
+            if (subscription.Subscription_Type__c == 'Business Unit') {
+                if (subsByParentSubIdMap.containsKey(subscription.Id)) {
+                    subbedBuSubIdToWrapperMap.put(subscription.Id, new SubscriberWrapper(
+                        subscription, (!subscription.Subscribers__r.isEmpty() ? subscription.Subscribers__r[0] : null)));
+                    mySubsBUMapKeys.add(subscription.Id);
+                } else if (subscription.Available_for_Opt_In__c) {
+                    notSubbedBuSubIdToWrapperMap.put(subscription.Id, new SubscriberWrapper(subscription, null));
+                    availableSubsBUMapKeys.add(subscription.Id);
+                }
+            } else {
+                if (subsByParentSubIdMap.containsKey(subscription.Parent_Subscription__c)) {
+                    if (!subscription.Subscribers__r.isEmpty()) {
+                        for (Subscriber__c subscriber: subscription.Subscribers__r) {
+                            subsByParentSubIdMap.get(subscription.Parent_Subscription__c).add(
+                                new SubscriberWrapper(subscription, subscriber));
+                        }
+                         // Only show child subs with this flag set to true if they have a sibling sub w/a subscriber record
+                    } else if (subscription.Available_for_Opt_In__c) {
+                        subsByParentSubIdMap.get(subscription.Parent_Subscription__c).add(
+                            new SubscriberWrapper(subscription, null));
+                    }
+                } else {
+                    if (subscription.Available_for_Opt_In__c && subscription.Parent_Subscription__c != null && 
+                        availableSubsByParentSubIdMap.containsKey(subscription.Parent_Subscription__c)
+                    ) {
+                        availableSubsByParentSubIdMap.get(subscription.Parent_Subscription__c).add(
+                            new SubscriberWrapper(subscription, null));
+                    }
                 }
             }
-            
-            return recordsToUpsert;
+        }
+        if (subbedBuSubIdToWrapperMap.isEmpty()) {
+            noSubscriberRecords = true;
         }
     }
-    
-    /**
-     * Represents a business unit campaign. Contains a business unit subscriptions and
-     * a list of child-category subscriptions.
-     */
-    public class BusinessUnit {
-        public Subscription sub {get; set;} // Business Unit Subscription
-        public Map<Id, Subscription> catSubs {get; set;} // List of Category Subscriptions
-        // Determins if the businessUnit should be visible on the visual force page
-        public Boolean Show {
-            get {
-                Boolean result = false;
-	            
-	            // loop through all cats/subscribers to see if this should be shown
-	            for (Subscription s : catSubs.values()) {
-	                if (s.subscriber != null) {
-	                    if (s.subscriber.IsSubscribed__c) {
-	                        result = true;
-	                        break;
-	                    }
-	                }
-	            }
-	            
-	            if (result) {
-	                return true;
-	            } else {
-	                return sub.subscriber.IsSubscribed__c;
-	            }
+
+    public void doUnsubscribe() {
+        List<Subscriber__c> unsubList = new List<Subscriber__c>([
+            SELECT Id, Subscriber_Status__c 
+            FROM Subscriber__c
+            WHERE Id = :directUnsubscribeSubscriberId
+                AND Subscriber_Status__c != :UNSUBSCRIBED
+        ]);
+        if (!unsubList.isEmpty()) {
+            unsubList[0].Subscriber_Status__c = UNSUBSCRIBED;
+            try {
+                update unsubList;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'doUnsubscribe'));
+                vars.add(ErrorLogger.convertListToJSON('unsubList', unsubList));
+                ErrorLogger.log(ex, vars, false);
+            }
+            directUnsubscribeSuccess = true;
+            unsubscribeMessage = ' has been Unsubscribed';
+        }
+    }
+
+    public void filterAvailableSubscriptions() {
+        updateSuccess = false;
+        notSubbedBuSubIdToWrapperMap.clear();
+        availableSubsByParentSubIdMap.clear();
+        availableSubsBUMapKeys.clear();
+        Set<Id> subsMatchingFilter = new Set<Id>();
+
+        for (String s : availableParentSubIds) {
+            availableSubsByParentSubIdMap.put(s, new List<SubscriberWrapper>());
+        }
+        for (Subscription__c subscription : subscriptionList) {
+            if (subscription.Name.containsIgnoreCase(searchTerms) || 
+                (!String.isBlank(subscription.Subscription_Center_Description__c) && 
+                    subscription.Subscription_Center_Description__c.containsIgnoreCase(searchTerms))
+            ){
+                subsMatchingFilter.add(subscription.Id);
+            }
+            
+            if (subscription.Subscription_Type__c == 'Business Unit') {
+                if (subsByParentSubIdMap.containsKey(subscription.Id)) {
+                    continue;
+                } else if (!subscription.Always_Show_In_My_Subscriptions__c) {
+                    notSubbedBuSubIdToWrapperMap.put(subscription.Id, new SubscriberWrapper(subscription, null));
+                }
+            } else {
+                if (subsByParentSubIdMap.containsKey(subscription.Parent_Subscription__c)) {
+                    continue;
+                } else {
+                    if (subscription.Available_for_Opt_In__c &&
+                        !subscription.Always_Show_In_My_Subscriptions__c && 
+                            (subscription.Name.containsIgnoreCase(searchTerms) ||
+                            subscription.Parent_Subscription__r.Name.containsIgnoreCase(searchTerms) ||
+                            (!String.isBlank(subscription.Subscription_Center_Description__c) &&
+                            subscription.Subscription_Center_Description__c.containsIgnoreCase(searchTerms)))
+                    ) {
+                        availableSubsByParentSubIdMap.get(subscription.Parent_Subscription__c).add(
+                            new SubscriberWrapper(subscription, null));
+                    }
+                }
+            }
+        }
+        for (String subId: notSubbedBuSubIdToWrapperMap.keySet()) {
+            if (!availableSubsByParentSubIdMap.containsKey(subId)) {
+                continue;
+            }
+            if (availableSubsByParentSubIdMap.get(subId).isEmpty() && !subsMatchingFilter.contains(subId)) {
+                notSubbedBuSubIdToWrapperMap.remove(subId);
+            } else {
+                availableSubsBUMapKeys.add(subId);
+            }
+        } for (String s : availableParentSubIds) {
+            if (!s.containsIgnoreCase(searchTerms) && availableSubsByParentSubIdMap.get(s).isEmpty()) {
+                availableSubsByParentSubIdMap.remove(s);
+            }
+        }
+    }
+
+    public void updateSubscriptions() {
+        updateSuccess = false;
+        List<Subscriber__c> subsToUpdate = new List<Subscriber__c>();
+        List<Subscriber__c> subsToInsert = new List<Subscriber__c>();
+
+        for (Id parentSubId : subsByParentSubIdMap.keySet()) {
+            Boolean parentSubUnsubscribed = false;
+            SubscriberWrapper parentSubWrapper = subbedBuSubIdToWrapperMap.get(parentSubId);
+
+            if (parentSubWrapper.subscriberStatus != parentSubWrapper.dbSubscriberStatus) {
+                parentSubUnsubscribed = (parentSubWrapper.subscriberStatus == UNSUBSCRIBED && 
+                    parentSubWrapper.dbSubscriberStatus != UNSUBSCRIBED ? true : false);
+                if (parentSubWrapper.subscriber == null) {
+                    parentSubWrapper.subscriber = new Subscriber__c(Subscription__c = parentSubWrapper.subscription.Id,
+                                                      Subscriber_Status__c = parentSubWrapper.subscriberStatus);
+                    if (isContact) {
+                        parentSubWrapper.subscriber.Contact__c = subscriberKeyParm;
+                    } else {
+                        parentSubWrapper.subscriber.Lead__c = subscriberKeyParm;
+                    }
+                    subsToInsert.add(parentSubWrapper.subscriber);
+                } else {
+                    parentSubWrapper.subscriber.Subscriber_Status__c = parentSubWrapper.subscriberStatus;
+                    subsToUpdate.add(parentSubWrapper.subscriber);
+                }
+            }
+
+            for (SubscriberWrapper sw : subsByParentSubIdMap.get(parentSubId)) {
+                system.debug('sw.subscriberStatus: ' + sw.subscriberStatus);
+                system.debug('sw.dbSubscriberStatus: ' + sw.dbSubscriberStatus);
+                system.debug('sw: ' + sw);
+                if (parentSubUnsubscribed && sw.subscriber != null) {
+                    sw.subscriber.Subscriber_Status__c = UNSUBSCRIBED;
+                    subsToUpdate.add(sw.subscriber);
+                    continue;
+                }
+                if (sw.subscriberStatus != NO_PREFERENCE && sw.subscriberStatus != sw.dbSubscriberStatus) {
+                    if (sw.subscriber == null) {
+                        sw.subscriber = new Subscriber__c(Subscription__c = sw.subscription.Id,
+                            Subscriber_Status__c = SUBSCRIBED);
+                        if (isContact) {
+                            sw.subscriber.Contact__c = subscriberKeyParm;
+                        } else {
+                            sw.subscriber.Lead__c = subscriberKeyParm;
+                        }
+                        subsToInsert.add(sw.subscriber);
+                    } else {
+                        sw.subscriber.Subscriber_Status__c = sw.subscriberStatus;
+                        subsToUpdate.add(sw.subscriber);
+                    }
+                }
             }
         }
         
-        /**
-         * Constructor - initializes business unit subscription and category list
-         *
-         * @param Subscription The business unit level subscription
-         */
-        public businessUnit(Subscription businessUnitSubscription) {
-            sub = businessUnitSubscription;
-            catSubs = new Map<Id, Subscription>();
-        }
-    }
-    
-    /**
-     * Represents a subscription to a campaign. Maps out a campaign to a campaign member.
-     */
-    public class Subscription {
-        public Campaign Info {get; set;} // Campaign the subscriber is subscribed to
-        public Id subscriberId {get; set;} // Id of the campaign member that is subscribing
-        public CampaignMember subscriber {get; set;} // The campaign member related to the subscriber
-        // determine if this subscription should be visible to the subscription center
-        public Boolean show {
-            get {
-                return subscriber.IsSubscribed__c;    
+        for (Id parentSubId : availableSubsByParentSubIdMap.keySet()) {
+            Boolean parentSubUnsubscribed = false;
+            SubscriberWrapper parentSubWrapper = notSubbedBuSubIdToWrapperMap.get(parentSubId);
+            
+            if (parentSubWrapper != null && parentSubWrapper.subscriberStatus != NO_PREFERENCE) {
+                parentSubUnsubscribed = (parentSubWrapper.subscriberStatus == UNSUBSCRIBED && parentSubWrapper.dbSubscriberStatus != UNSUBSCRIBED ? true : false);
+                parentSubWrapper.subscriber = new Subscriber__c(Subscription__c = parentSubWrapper.subscription.Id,
+                                                  Subscriber_Status__c = parentSubWrapper.subscriberStatus);
+                if (isContact) {
+                    parentSubWrapper.subscriber.Contact__c = subscriberKeyParm;
+                } else {
+                    parentSubWrapper.subscriber.Lead__c = subscriberKeyParm;
+                }
+                subsToInsert.add(parentSubWrapper.subscriber);
+            }
+            if (parentSubUnsubscribed) {
+                continue;
             }
             
-            set;
+            for (SubscriberWrapper sw: availableSubsByParentSubIdMap.get(parentSubId)) {
+                if (sw.subscriberStatus == SUBSCRIBED) {
+                    sw.subscriber = new Subscriber__c(Subscription__c = sw.subscription.Id,
+                        Subscriber_Status__c = SUBSCRIBED);
+                    if (isContact) {
+                        sw.subscriber.Contact__c = subscriberKeyParm;
+                    } else {
+                        sw.subscriber.Lead__c = subscriberKeyParm;
+                    }
+                    subsToInsert.add(sw.subscriber);
+                }
+            }
+        }
+        if (!subsToUpdate.isEmpty()) {
+            try {
+                update subsToUpdate;
+                updateSuccess = true;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscriptions'));
+                vars.add(ErrorLogger.convertListToJSON('subsToUpdate', subsToUpdate));
+                ErrorLogger.log(ex, vars, false);
+            }
+            
+        }
+
+        if (!subsToInsert.isEmpty()) {
+            try {
+                insert subsToInsert;
+                updateSuccess = true;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscriptions'));
+                vars.add(ErrorLogger.convertListToJSON('subsToInsert', subsToInsert));
+                ErrorLogger.log(ex, vars, false);
+            }
+        }
+
+        getAllSubscriptions();
+    }
+
+    public void updateSubscribersToNoPreference() {
+        updateSuccess = false;
+        List<Subscriber__c> subsToUpdate = new List<Subscriber__c>();
+        
+        for (Id parentSubId : subsByParentSubIdMap.keySet()) {
+            for (SubscriberWrapper sw : subsByParentSubIdMap.get(parentSubId)) {
+                if (sw.subscriberStatus == SUBSCRIBED) {
+                    sw.subscriberStatus = NO_PREFERENCE;
+                    sw.subscriber.Subscriber_Status__c = NO_PREFERENCE;
+                    subsToUpdate.add(sw.subscriber);
+                }
+            }
+        }
+        for (String subId: subbedBuSubIdToWrapperMap.keySet()) {
+            SubscriberWrapper sw = subbedBuSubIdToWrapperMap.get(subId);
+            if (sw.subscriber.Subscriber_Status__c == SUBSCRIBED) {
+                sw.subscriberStatus = NO_PREFERENCE;
+                sw.subscriber.Subscriber_Status__c = NO_PREFERENCE;
+                subsToUpdate.add(sw.subscriber);
+            }
+        }
+        if (!subsToUpdate.isEmpty()) {
+            try {
+                update subsToUpdate;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('MethodName', 'updateSubscribersToNoPreference'));
+                vars.add(ErrorLogger.convertListToJSON('subsToUpdate', subsToUpdate));
+                ErrorLogger.log(ex, vars, false);
+            }
+        }
+    }
+
+    public PageReference toggleOptOut() {
+        updateSuccess = false;
+        if (isContact) {
+            Contact c = new Contact(Id = subscriberIdParm, HasOptedOutOfEmail = !hasOptedOutOfEmail);
+            try {
+                update c;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertIdToJSON('Contact_subscriberIdParm', subscriberIdParm));
+                vars.add(ErrorLogger.convertBooleanToJSON('hasOptedOutOfEmail', hasOptedOutOfEmail));
+                ErrorLogger.log(ex, vars, false);
+            }
+            HasOptedOutOfEmail = !hasOptedOutOfEmail;
+        } else {
+            Lead l = new Lead(Id = subscriberIdParm, HasOptedOutOfEmail = !hasOptedOutOfEmail);
+            try {
+                  update l;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertIdToJSON('Lead_subscriberIdParm', subscriberIdParm));
+                vars.add(ErrorLogger.convertBooleanToJSON('hasOptedOutOfEmail', hasOptedOutOfEmail));
+                ErrorLogger.log(ex, vars, false);
+            }
+            HasOptedOutOfEmail = !hasOptedOutOfEmail;
+        }
+        if (hasOptedOutOfEmail) {
+            updateSubscribersToNoPreference();
         }
         
-        /**
-         * Constructor. Initializes campaign
-         * @param Campaign The campaign the subscription is related to
-         */
-        public subscription(Campaign c) {
-            info = c;
+        getAllSubscriptions();
+        return null;
+    }
+
+    public Class SubscriberWrapper {
+        public Subscriber__c subscriber { get; set; }
+        public String subscriberStatus { get; set; }
+        public String dbSubscriberStatus { get; set; }
+        public Boolean required { get; set; }
+        public Integer multiCheckVal { get; set; } // 1 is subbed, 2 is unsubbed, 0 is no preference
+        public String name { get; set; }
+        public Subscription__c subscription { get; set; }
+        public String desc1 { get; set; }
+
+        public void setSubscriberStatus(String val) {
+            subscriberStatus = val;
         }
-        
-        /**
-         * Relates a subscriber to this subscriptions campaign.
-         *
-         * @param CampaignMember The subscriber to relate to thsi campaign
-         */
-        public void addSubscriber(CampaignMember subscriberToAdd) {
-            subscriberId = subscriberToAdd.Id;
-            subscriber = subscriberToAdd;
+
+        public SubscriberWrapper(Subscriber__c aSubscriber) {
+            subscriber = aSubscriber;
+            subscriberStatus = aSubscriber.Subscriber_Status__c;
+            dbSubscriberStatus = aSubscriber.Subscriber_Status__c;
+            name = aSubscriber.Subscription__r.Name;
+            desc1 = aSubscriber.Subscription__r.Subscription_Center_Description__c;
+
+            subscription = aSubscriber.Subscription__r;
+
+            if (aSubscriber.Subscriber_Status__c == SUBSCRIBED) {
+                multiCheckVal = 1;
+            } else if (aSubscriber.Subscriber_Status__c == NO_PREFERENCE) {
+                multiCheckVal = 0;
+            } else if (aSubscriber.Subscriber_Status__c == UNSUBSCRIBED) {
+                multiCheckVal = 2;
+            }
+        }
+
+        public SubscriberWrapper(Subscription__c aSubscription, Subscriber__c aSubscriber) {
+            subscription = aSubscription;
+            if (aSubscriber != null) {
+                subscriber = aSubscriber;
+                subscriberStatus = aSubscriber.Subscriber_Status__c;
+                dbSubscriberStatus = aSubscriber.Subscriber_Status__c;
+                name = aSubscription.Name;
+                desc1 = aSubscription.Subscription_Center_Description__c;
+
+                if (aSubscriber.Subscriber_Status__c == SUBSCRIBED) {
+                    multiCheckVal = 1;
+                } else if (aSubscriber.Subscriber_Status__c == NO_PREFERENCE) {
+                    multiCheckVal = 0;
+                } else if (aSubscriber.Subscriber_Status__c == UNSUBSCRIBED) {
+                    multiCheckVal = 2;
+                }
+            } else {
+                subscription = aSubscription;
+                required=false;
+                name = aSubscription.Name;
+                desc1 = aSubscription.Subscription_Center_Description__c;
+
+                multiCheckVal = 0;
+                subscriberStatus = NO_PREFERENCE;
+                dbSubscriberStatus = null;
+            }
         }
     }
 }

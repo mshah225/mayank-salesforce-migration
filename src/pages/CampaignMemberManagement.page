@@ -1200,7 +1200,7 @@
                             <!--apex:commandButton styleClass="editBtn" value="New" onclick="openNewViewTab('a1z/e','New Subscriber');" -->
                             <apex:outputLink styleClass="editBtn"
                                              value="#"
-                                             onclick="openNewViewTab('a1z/e?CF00N4B0000010cck={!contact.Name}&CF00N4B0000010cck_lkid={!contactId}','New Subscriber');">
+                                             onclick="openNewViewTab('a27/e?CF00N0W000008yjhW={!contact.Name}&CF00N0W000008yjhW_lkid={!contactId}','New Subscriber');">
                                 New
                             </apex:outputLink>
 

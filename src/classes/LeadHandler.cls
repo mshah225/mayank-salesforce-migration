@@ -33,6 +33,15 @@ public without sharing class LeadHandler implements ITrigger
                 convertedStatus = statusList[0];
             }
         }
+        if (Trigger.IsInsert) {
+            List<Id> leadIdList = new List<Id>();
+            for(sObject s : Trigger.New) {
+                Lead l = (Lead) s;
+                leadIdList.add(l.Id);
+            }
+            System.debug(leadIdList);
+            setHashId(leadIDList);
+        }
     }
 
     /**
@@ -44,6 +53,7 @@ public without sharing class LeadHandler implements ITrigger
     public void beforeInsert(SObject so) {
         Lead newLead = (Lead) so;
         newLead.Lead_Assignment_Number__c = OpportunityService.generateOpportunityAssignmentNumber();
+        
     }
 
     /**
@@ -196,5 +206,15 @@ public without sharing class LeadHandler implements ITrigger
         }
     }
     
+    @future
+    static void setHashId(List<Id> LeadIdList) {
+        List<Lead> leadList = new List<Lead>();
+        for(Id i : leadIdList) {
+            Lead c = new Lead(Id = i, HashLeadID__c = Hasher.hashId(i));
+            leadList.add(c);
+        }
+        update leadList;
+    }
+  
     class LeadConversionException extends Exception {}
 }

@@ -18,8 +18,6 @@ private class Test_CaseShowAllAttachmentsControllerExt {
     }
 
     private static List<Attachment> createEmailMessagesAndAttachments(Integer emails){
-        setUp();
-
         List<EmailMessage> emailsToInsert = new List<EmailMessage>();
         List<Attachment> attachToInsert = new List<Attachment>();
         //Create test email messages
@@ -47,7 +45,8 @@ private class Test_CaseShowAllAttachmentsControllerExt {
         return attachToInsert;
     }
 
-    @isTest static void testConstructor() {
+    @isTest 
+    private static void testConstructor() {
         setUp();
         ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);
         Test.startTest();
@@ -55,7 +54,9 @@ private class Test_CaseShowAllAttachmentsControllerExt {
         Test.stopTest();
     }
     
-    @isTest static void testGetAllAttachments() {
+    @isTest 
+    private static void testGetAllAttachments() {
+        setUp();
         Attachment[] expectedAttachments = createEmailMessagesAndAttachments(10);
         ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);
         Test.startTest();
@@ -67,7 +68,8 @@ private class Test_CaseShowAllAttachmentsControllerExt {
         Test.stopTest();
     }
     
-    @isTest static void testGetContactName() {
+    @isTest 
+    private static void testGetContactName() {
         setUp();
         ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);
         Test.startTest();
@@ -79,6 +81,7 @@ private class Test_CaseShowAllAttachmentsControllerExt {
     
     @isTest 
     private static void deleteAttachmentSuccess() {
+        setUp();
         Attachment[] expectedAttachments = createEmailMessagesAndAttachments(10);
         
         ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);
@@ -95,6 +98,7 @@ private class Test_CaseShowAllAttachmentsControllerExt {
     
     @isTest 
     private static void deleteAttachmentNoId() {
+        setUp();
         Attachment[] expectedAttachments = createEmailMessagesAndAttachments(10);
         
         ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);

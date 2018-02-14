@@ -59,24 +59,32 @@ private class Test_CaseShowAllAttachmentsControllerExt {
         setUp();
         Attachment[] expectedAttachments = createEmailMessagesAndAttachments(10);
         ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);
+        
         Test.startTest();
         CaseShowAllAttachmentsControllerExt testControllerExt = new CaseShowAllAttachmentsControllerExt(stanController);
         Attachment[] allAttachments = testControllerExt.getAllAttachments();
-        for(Integer i = 0; i < allAttachments.size(); i++){
-            System.assertEquals(allAttachments[i].Id, expectedAttachments[i].Id);
-        }
         Test.stopTest();
+        
+        Set<Id> expectedAttachmentIds = new Set<Id>();
+        for (Attachment expectedAttachment : expectedAttachments) {
+            expectedAttachmentIds.add(expectedAttachment.Id);
+        }
+        for (Attachment attachmentToMatch : allAttachments){
+            System.assert(expectedAttachmentIds.contains(attachmentToMatch.Id));
+        }
     }
     
     @isTest 
     private static void testGetContactName() {
         setUp();
         ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);
+        
         Test.startTest();
         CaseShowAllAttachmentsControllerExt testControllerExt = new CaseShowAllAttachmentsControllerExt(stanController);
         String result = testControllerExt.getContactName();
-        System.assertEquals('Test Guy', result);
         Test.stopTest();
+        
+        System.assertEquals('Test Guy', result);
     }
     
     @isTest 

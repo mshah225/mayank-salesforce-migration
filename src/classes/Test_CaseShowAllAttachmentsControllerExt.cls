@@ -63,7 +63,7 @@ private class Test_CaseShowAllAttachmentsControllerExt {
         CaseShowAllAttachmentsControllerExt testControllerExt = new CaseShowAllAttachmentsControllerExt(stanController);
         Attachment[] allAttachments = testControllerExt.getAllAttachments();
         for(Integer i = 0; i < allAttachments.size(); i++){
-            //System.assertEquals(allAttachments[i].Id, expectedAttachments[i].Id);
+            System.assertEquals(allAttachments[i].Id, expectedAttachments[i].Id);
         }
         Test.stopTest();
     }

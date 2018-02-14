@@ -47,16 +47,17 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
         return baseUrl.replace(STANDARD_PREFIX, ATTACHMENT_PACKAGE_PREFIX);
     }
     
-    public PageReference deleteAttachment(){		
-        try{		
-            Attachment objAtt = new Attachment(Id = attId);		
-            delete objAtt;		
-        } catch(Exception e) {		
-            ApexPages.addMessage(		
-                new ApexPages.Message(		
-                    ApexPages.Severity.ERROR,		
-                    'There was a problem deleting the attachment. Please try again or contact the administrator.' ));		
-        }		
-        return null;		
-    }		
+    public PageReference deleteAttachment(){
+        Attachment objAtt = new Attachment(Id = attId);
+        
+        try {
+            delete objAtt;
+        } catch(Exception e) {
+            ApexPages.addMessage(
+                new ApexPages.Message(
+                    ApexPages.Severity.ERROR,
+                    'There was a problem deleting the attachment. Please try again or contact the administrator.' ));
+        }
+        return null;
+    }
 }

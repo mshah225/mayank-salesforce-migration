@@ -17,26 +17,30 @@ public with sharing class SubscriberDispatcher implements IDispatch {
         SubscriberService.enforceOwnerPolicies(newList);
     }
 
-     public void beforeUpdate() { }
+    public void beforeUpdate() { }
      
-     public void beforeDelete() { }
+    public void beforeDelete() { }
      
-     public void afterInsert() {
-         SubscriberService.syncParentSubscribers(newList);
-         List<Id> subId = new List<Id>();
-         for(sObject s : Trigger.New) {
-             subId.add(s.Id);
-         }
-         SubscriberService.setHashId(subId);
+    public void afterInsert() {
+        SubscriberService.syncParentSubscribers(newList);
+        List<Id> subscriberIds = new List<Id>();
+        for (Subscriber__c subscriber : newList) {
+            subscriberIds.add(subscriber.Id);
+        }
+        if (System.isBatch() || System.isFuture()) {
+            SubscriberService.setHashIdNotFuture(subscriberIds);
+        } else {
+            SubscriberService.setHashId(subscriberIds);
+        }
      }
      
-     public void afterUpdate() {
-         SubscriberService.syncParentSubscribers(newList);
-     }
+    public void afterUpdate() {
+        SubscriberService.syncParentSubscribers(newList);
+    }
      
-     public void afterDelete() { }
+    public void afterDelete() { }
      
-     public void afterUndelete() {
-         SubscriberService.syncParentSubscribers(newList);
-      }
+    public void afterUndelete() {
+        SubscriberService.syncParentSubscribers(newList);
+    }
 }

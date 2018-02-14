@@ -42,7 +42,9 @@ public without sharing class SubscriptionCenterController {
         actionParm = ApexPages.currentPage().getParameters().get('action'); // String describing what action to take
 
         if (hashedSubscriberKeyParm != null) {
-            hashedSubscriberKeyParm = EncodingUtil.urlEncode(hashedSubscriberKeyParm, 'UTF-8');
+            if (!Test.isRunningTest()) {
+                hashedSubscriberKeyParm = EncodingUtil.urlEncode(hashedSubscriberKeyParm, 'UTF-8');
+            }
             List<Contact> tmpList = new List<Contact>();
             tmpList = [SELECT Id FROM Contact WHERE HashContactId__c =: hashedSubscriberKeyParm];
             if (!tmpList.isEmpty()) {

@@ -3,8 +3,8 @@ public with sharing class CsvIterator implements Iterator<String>, Iterable<Stri
     private String introValue;
     
     public CsvIterator(String fileData, String introValue) {
-        csvData = fileData;
-        introValue = introValue;
+        this.csvData = fileData;
+        this.introValue = introValue;
     }
 
     public Boolean hasNext() {

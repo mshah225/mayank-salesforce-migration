@@ -215,6 +215,6 @@ public without sharing class LeadHandler implements ITrigger
         }
         update leadList;
     }
-    
+
     class LeadConversionException extends Exception {}
 }

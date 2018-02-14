@@ -1070,6 +1070,67 @@
                 </apex:outputPanel>
             </apex:form>
         </apex:tab>
+
+        <!-- NEW for Marketing Cloud project-->
+        <apex:tab label="Subscriptions"
+                  name="Subscriptions"
+                  id="subscriptionsTab">
+            <apex:form id="viewSubscriptions">
+                <apex:outputPanel layout="block" style="overflow:auto;height:335px;">
+                    <apex:pageBlock title="Subscriptions">
+                        <apex:pageblockButtons location="top">
+                            <!--apex:commandButton styleClass="editBtn" value="New" onclick="openNewViewTab('a1z/e','New Subscriber');" -->
+                            <apex:outputLink styleClass="editBtn"
+                                             value="#"
+                                             onclick="openNewViewTab('a27/e?CF00N0W000008yjhW={!contact.Name}&CF00N0W000008yjhW_lkid={!contactId}','New Subscriber');">
+                                New
+                            </apex:outputLink>
+
+                        </apex:pageblockButtons>
+
+                        <apex:pageBlockTable id="subscriptionList"
+                                             value="{!subscriberList}"
+                                             var="s"
+                                             cellpadding="7"
+                                             width="100%"
+                                             rendered="{!IF(subscriberList.size > 0,true,false)}">
+                            <apex:column headerValue="Actions">
+                                <apex:outputLink styleClass="linkBtn"
+                                                 value="#"
+                                                 onclick="openViewTab('{!s.Id}','{!s.Subscription__r.Name}');">
+                                    View
+                                </apex:outputLink>
+
+                                <apex:outputLink styleClass="editBtn"
+                                                 value="#"
+                                                 onclick="openViewTab('{!s.Id}/e','{!s.Subscription__r.Name}');"
+                                                 rendered="{!IF(NOT(crProfile) || admin,true,false)}">
+                                    Edit
+                                </apex:outputLink>
+                            </apex:column>
+
+                            <apex:column headerValue="Subscription Name"
+                                         value="{!s.Subscription__r.Name}"/>
+                            <apex:column headerValue="Subscription Type"
+                                         value="{!s.Subscription__r.Subscription_Type__c}"/>
+                            <apex:column headerValue="Business Unit"
+                                         value="{!s.Subscription__r.Business_Unit__r.Name}"/>
+                            <apex:column headerValue="Status"
+                                         value="{!s.Subscriber_Status__c}"/>
+                            <apex:column headerValue="Last Subscribed Date"
+                                         value="{!s.Last_Subscribed_Date__c}"/>
+                            <apex:column headerValue="Last Unsubscribed Date"
+                                         value="{!s.Last_Unsubscribed_Date__c}"/>
+                        </apex:pageBlockTable>
+
+                        <apex:outputText rendered="{!IF(subscriberList.size == 0,true,false)}">
+                            No Subscriptions found.
+                        </apex:outputText>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+            </apex:form>
+        </apex:tab>
+
     </apex:tabPanel>
 
     <script>

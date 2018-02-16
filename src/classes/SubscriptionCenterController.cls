@@ -42,7 +42,9 @@ public without sharing class SubscriptionCenterController {
         actionParm = ApexPages.currentPage().getParameters().get('action'); // String describing what action to take
 
         if (hashedSubscriberKeyParm != null) {
-            hashedSubscriberKeyParm = EncodingUtil.urlEncode(hashedSubscriberKeyParm, 'UTF-8');
+            if (!Test.isRunningTest()) {
+                hashedSubscriberKeyParm = EncodingUtil.urlEncode(hashedSubscriberKeyParm, 'UTF-8');
+            }
             List<Contact> tmpList = new List<Contact>();
             tmpList = [SELECT Id FROM Contact WHERE HashContactId__c =: hashedSubscriberKeyParm];
             if (!tmpList.isEmpty()) {
@@ -58,7 +60,9 @@ public without sharing class SubscriptionCenterController {
         }
         
         if (hashedSubscriptionIdParm != null) {
-            hashedSubscriptionIdParm = EncodingUtil.urlEncode(hashedSubscriptionIdParm, 'UTF-8');
+            if (!Test.isRunningTest()) {
+            	hashedSubscriptionIdParm = EncodingUtil.urlEncode(hashedSubscriptionIdParm, 'UTF-8');
+            }
             List<Subscription__c> tmpList = new List<Subscription__c>();
             tmpList = [SELECT Id FROM Subscription__c WHERE HashSubscriptionId__c =: hashedSubscriptionIdParm];
             if (!tmpList.isEmpty()) {
@@ -67,7 +71,9 @@ public without sharing class SubscriptionCenterController {
         }
         
         if (hashedCampaignIdParm != null) {
-            hashedCampaignIdParm = EncodingUtil.urlEncode(hashedCampaignIdParm, 'UTF-8');
+            if (!Test.isRunningTest()) {
+            	hashedCampaignIdParm = EncodingUtil.urlEncode(hashedCampaignIdParm, 'UTF-8');
+            }
             List<Campaign> tmpList = new List<Campaign>();
             tmpList = [SELECT Id FROM Campaign WHERE HashCampaignId__c =: hashedCampaignIdParm];
             if (!tmpList.isEmpty()) {
@@ -76,7 +82,9 @@ public without sharing class SubscriptionCenterController {
         }
         
         if (hashedSubscriberIdParm != null) {
-            hashedSubscriberIdParm = EncodingUtil.urlEncode(hashedSubscriberIdParm, 'UTF-8');
+            if (!Test.isRunningTest()) {
+            	hashedSubscriberIdParm = EncodingUtil.urlEncode(hashedSubscriberIdParm, 'UTF-8');
+            }
             List<Subscriber__c> tmpList = new List<Subscriber__c>();
             tmpList = [SELECT Id FROM Subscriber__c WHERE HashSubscriberId__c =: hashedSubscriberIdParm];
             if (!tmpList.isEmpty()) {

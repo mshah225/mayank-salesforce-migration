@@ -112,8 +112,6 @@ public class Test_StudentProfileController {
         StudentProfileController.getAsrInformation('1203436008', '2177');
         StudentProfileController.getEnrollmentHolds('1203436008', '2177');
         StudentProfileController.getHousingInfo('1203436008', '2177');
-        StudentProfileController.getMe3HSResults('003623467232dd8');
-        StudentProfileController.getMe3Results('003623467232dd8');
         StudentProfileController.getFinAidIndicator('1203436008');
         
         // String nextPage = controller.save().getUrl();

@@ -36,11 +36,16 @@ private class BatchApplyIerPrivacyTest {
         insert contacts;
 
         List<et4ae5__IndividualEmailResult__c> ierList = TestDataFactory.createTestIERs(contacts, sdList);
+        Set<Id> iersUnderTest = new Set<Id>();
+        for (et4ae5__IndividualEmailResult__c ier : ierList) {
+            iersUnderTest.add(ier.Id);
+        }
         insert ierList;
 
         for (et4ae5__IndividualEmailResult__c ier : [
             SELECT Id, OwnerId, Apex_Owner_Should_Be__c 
             FROM et4ae5__IndividualEmailResult__c
+            WHERE Id IN :iersUnderTest
         ]) {
             System.assertEquals(ier.OwnerId, ier.Apex_Owner_Should_Be__c, 'OwnerId was not initially set as expected');
         }
@@ -58,6 +63,7 @@ private class BatchApplyIerPrivacyTest {
         for (et4ae5__IndividualEmailResult__c ier : [
             SELECT Id, OwnerId, Apex_Owner_Should_Be__c 
             FROM et4ae5__IndividualEmailResult__c
+            WHERE Id IN :iersUnderTest
         ]) {
             System.assertEquals(ier.OwnerId, ier.Apex_Owner_Should_Be__c, 'OwnerId was not re-set as expected');
         }

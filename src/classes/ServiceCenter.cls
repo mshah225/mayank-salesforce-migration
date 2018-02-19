@@ -11,6 +11,7 @@ public with sharing class ServiceCenter
     
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
+    public Boolean showNavBar {get; set; }
     public Case suggestAnArticle { get; set; }
     public String suggestedArticleDescription { get; set; }
     public Contact userContact;
@@ -22,12 +23,14 @@ public with sharing class ServiceCenter
     public String stopViewAsUrl { get; set; }
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
+    public String pageHead {get; set; }
     public String userAsurite;
     public String mMessage;
 
     public ServiceCenter(){
         suggestAnArticle = new Case();
         viewingAs = false;
+        showNavBar = false;
         checkForViewAs();
         popUserContact();
         popTerms();       
@@ -46,7 +49,7 @@ public with sharing class ServiceCenter
             viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
         }
     }
-
+    
     public void popUserContact(){
         if (viewingAs){
             userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
@@ -54,15 +57,23 @@ public with sharing class ServiceCenter
             viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
         }
         else{
-            userContact = ContactService.getLoggedInContact();
+            
+            if(userContact==null){
+                userContact = ContactService.getLoggedInContact();
+                pageHead='ASU Knowledge Base';
+            }
         }
-        firstName = userContact.FirstName;
-        lastName = userContact.LastName;
-        emplId = userContact.EMPLID__c;
-        asurite = userContact.ASURite_ID__c;
-        origPin = userContact.Self_Service_PIN__c;
+        if(userContact!=null){
+            firstName = userContact.FirstName;
+            lastName = userContact.LastName;
+            emplId = userContact.EMPLID__c;
+            asurite = userContact.ASURite_ID__c;
+            origPin = userContact.Self_Service_PIN__c;
+            showNavBar=true;
+            pageHead='My ASU';
+        }
     }
-
+    
     public void popTerms(){
         today = date.today();
 
@@ -79,12 +90,13 @@ public with sharing class ServiceCenter
             WHERE session_B_Start_Date__c > :System.today()
             LIMIT 1
         ];
-
-        oppList = [
-            SELECT Career__c, Term__c, StageName, Admitted_Session__c
-            FROM Opportunity
-            WHERE Contact__c = :userContact.Id
-        ];
+        if(userContact!=null){
+            oppList = [
+                SELECT Career__c, Term__c, StageName, Admitted_Session__c
+                FROM Opportunity
+                WHERE Contact__c =: userContact.Id
+            ];
+        }
     }
 
     public String getmMessage(){
@@ -164,46 +176,68 @@ public with sharing class ServiceCenter
     }
 
     public Boolean getNormalPhone(){
-        return (userContact.CAP__c == null) ? true : false;
+        if(userContact!=null){
+            return (userContact.CAP__c == null) ? true : false;
+        }
+        else{
+            return false;
+        }
     }
 
     public Boolean getRoverPhone(){
-        return (userContact.CAP__c != null) ? true : false;
+        if(userContact!=null){
+            return (userContact.CAP__c != null) ? true : false;
+        }
+        else{
+            return false;
+        }
     }
 
     public Boolean getHelpBox(){
-        if ((oppList == Null && userContact != null)
-            || (oppList.size() == 0 && userContact != null)){
-            return true;
-        }
-        else if ((oppList[0].StageName == 'Enrolled'
-            && oppList[0].Career__c == 'Undergraduate'
-            && oppList[0].Admitted_Session__c == 'A/C')
-            && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)){
-            return false;
-        }
-        else if ((oppList[0].StageName == 'Enrolled'
-            && oppList[0].Career__c == 'Undergraduate'
-            && oppList[0].Admitted_Session__c == 'B')
-            && today < date.valueOf(termcB.Session_B_Start_Date__c)){
-            return false;
-        }
-        else if (oppList[0].StageName != 'Enrolled'
-            && oppList[0].Career__c == 'Undergraduate'
-            && (userContact.Affiliation_Student__c == 'Current'
-            || userContact.Affiliation_Alumni__c == 'Current'
-            || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-            || userContact.Affiliation_Employee__c == 'Current')
-            && today < date.valueOf(termcB.Session_B_Start_Date__c)){
-            return false;
+        if(userContact!=null){
+            if ((oppList == Null && userContact != null)
+                || (oppList.size() == 0 && userContact != null)){
+                return true;
+            }
+            else if ((oppList[0].StageName == 'Enrolled'
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'A/C')
+                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)){
+                return false;
+            }
+            else if ((oppList[0].StageName == 'Enrolled'
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'B')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c)){
+                return false;
+            }
+            else if (oppList[0].StageName != 'Enrolled'
+                && oppList[0].Career__c == 'Undergraduate'
+                && (userContact.Affiliation_Student__c == 'Current'
+                || userContact.Affiliation_Alumni__c == 'Current'
+                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                || userContact.Affiliation_Employee__c == 'Current')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c)){
+                return false;
+            }
+            else{
+                return true;
+            }
         }
         else{
-            return true;
+            return false;
         }
     }
 
     public Decimal getMyPin(){
-        return (viewingAs) ? 111111 : userContact.Self_Service_PIN__c;
+        if(viewingAs)
+            return 111111;
+        if(userContact!=null)
+            return userContact.Self_Service_PIN__c;
+        
+        return 111111;
+
+        //return (viewingAs) ? 111111 : userContact.Self_Service_PIN__c;
     }
 
     public PageReference changePin(){
@@ -213,15 +247,21 @@ public with sharing class ServiceCenter
             go.setRedirect(true);
             return go;
         }
+        if(userContact!=null){
+            if (origPin == newPin){
+                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
+            }
 
-        if (origPin == newPin){
-            return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-        }
-
-        if (ContactService.isPinValid(newPin, userContact.Birthdate)){
-            userContact.Self_Service_PIN__c = newPin;
-            if (userContact.PIN_lockout__c == true){
-                userContact.PIN_lockout__c = false;
+            if (ContactService.isPinValid(newPin, userContact.Birthdate)){
+                userContact.Self_Service_PIN__c = newPin;
+                if (userContact.PIN_lockout__c == true){
+                    userContact.PIN_lockout__c = false;
+                }
+                update userContact;
+                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
+            }
+            else{
+                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
             }
             try {
                 update userContact;

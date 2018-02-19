@@ -397,7 +397,6 @@ private class Test_CampaignMemberManagementController {
         Test.stopTest();
 
         System.assertEquals(cm.getSubscriberList().size(), 6);
-
     }
 
 

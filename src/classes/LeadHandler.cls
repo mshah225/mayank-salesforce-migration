@@ -154,7 +154,7 @@ public without sharing class LeadHandler implements ITrigger
 
         Set<Id> convertedLeadIds = new Set<Id>();
         List<String> vars=new List<String>();
-        for (Database.LeadConvertResult lcr : leadConversionResults) {   
+        for (Database.LeadConvertResult lcr : leadConversionResults) {
             try {
                 if (lcr.isSuccess()){
                     convertedLeadIds.add(lcr.getLeadId());
@@ -215,6 +215,6 @@ public without sharing class LeadHandler implements ITrigger
         }
         update leadList;
     }
-  
+
     class LeadConversionException extends Exception {}
 }

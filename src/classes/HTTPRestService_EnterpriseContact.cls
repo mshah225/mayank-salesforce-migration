@@ -43,7 +43,7 @@ public with sharing class HTTPRestService_EnterpriseContact {
         JSONGenerator reqBody = JSON.createGenerator(true);
         reqBody.writeStartObject();
         for (String key : parmMap.keySet()) {
-            reqBody.writeStringField(key, parmMap.get(key));
+            reqBody.writeStringField(key, EncodingUtil.urlDecode(parmMap.get(key), 'UTF-8'));
         }
         
         reqBody.writeEndObject();

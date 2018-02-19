@@ -248,5 +248,57 @@ public class LeadService {
 
         return leadConvertBatches;
     }
+    
+    private static void reparentAndUpdateIndividualEmailResults(List<Lead> leadList, Map<Id,Lead> leadMap) {
+        List<et4ae5__IndividualEmailResult__c> emailsToAddContact = new List<et4ae5__IndividualEmailResult__c>();
+        for (et4ae5__IndividualEmailResult__c leadEmailResult : [
+                SELECT Id, et4ae5__Contact__c, et4ae5__Lead__c 
+                FROM et4ae5__IndividualEmailResult__c 
+                WHERE et4ae5__Lead__c IN :leadList
+            ]) {  
+            if (leadMap.containsKey(leadEmailResult.et4ae5__Lead__c)) {
+                leadEmailResult.et4ae5__Contact__c = leadMap.get(leadEmailResult.et4ae5__Lead__c).Convert_Contact__c;
+                emailsToAddContact.add(leadEmailResult);
+            }
+        }
+        
+        if (!emailsToAddContact.isEmpty()) {
+            update emailsToAddContact;
+        }
+    }
+    
+    private static void reparentAndUpdateSubscribers(List<Lead> leadList, Map<Id,Lead> leadMap) {
+        List<Subscriber__c> subscribersToReparent = new List<Subscriber__c>();
+        for (Subscriber__c leadSubscriber : [
+            SELECT Lead__c, Contact__c
+            FROM Subscriber__c
+            WHERE Lead__c IN :leadList
+        ]){  
+            if (leadMap.containsKey(leadSubscriber.Lead__c)) {
+                leadSubscriber.Contact__c = leadMap.get(leadSubscriber.Lead__c).Convert_Contact__c;
+                subscribersToReparent.add(leadSubscriber);
+            }
+        }
+        try {
+            if (!subscribersToReparent.isEmpty()) {
+                update subscribersToReparent;
+            }
+        } catch(Exception e) {
+            
+        }
+    }
+    
+    private static void reparentAndUpdateMe3s(List<Lead> leadList, Map<Id,Lead> leadMap) {
+        List<Me3__c> me3ToAddContact = new List<Me3__c>();
+        for (Me3__c leadMe3 : [
+            SELECT Id, Contact__c, Lead__c
+            FROM Me3__c
+            WHERE Lead__c IN: leadList
+        ]) {
+            if (leadMap.containsKey(leadMe3.Lead__c)) {
+                leadMe3.Contact__c = leadMap.get(leadMe3.Lead__c).Convert_Contact__c;
+                me3ToAddContact.add(leadMe3);
+            }
+        }
 
 }

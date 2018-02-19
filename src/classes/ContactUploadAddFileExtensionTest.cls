@@ -188,7 +188,6 @@ private with sharing class ContactUploadAddFileExtensionTest {
             List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>([SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c]);
             for (Contact_Upload_Detail__c cud : cudList) {
                 system.assertEquals(cud.Processing_Notes__c, 'Either Subscription or Campaign must be specified');
-                system.assert(cud.Processing_Notes__c.equals('Either Subscription or Campaign must be specified'));
             }
         }
         

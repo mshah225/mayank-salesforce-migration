@@ -1,6 +1,11 @@
 @isTest
 global class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
-    // Implement this interface method
+    
+    /**
+    * Default interface method containing logic to handle GET, POST, etc.
+    * @param The req request from the callout
+    * @return A HTTPResponse containing the contact information from GET/POST
+    */
     global HTTPResponse respond(HTTPRequest request) {
 		HttpResponse fakeResponse = new HttpResponse();
         if (request.getMethod() == 'GET') {
@@ -11,6 +16,11 @@ global class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
         return fakeResponse;
     }
     
+    /**
+    * Generates a mock response for GET request
+    * @param The req request from the callout
+    * @return A HTTPResponse containing the contact information, if present on the system
+    */
     global HTTPResponse callGetResponse(HTTPRequest req) {
         system.assertEquals('callout:Mule_ESB_Contact_Service?birthdate=2017-04-27&city=Tempe&email=TestBulk%40asu.edu.sid&firstname=Mister&lastname=Sidhant&phone=1115556567&postalcode=85281&statecode=AZ', req.getEndpoint());
         // Create a fake response
@@ -49,7 +59,12 @@ global class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
         res.setStatusCode(200);
         return res;
     }
-
+	
+    /**
+    * Generates a mock response for POST request
+    * @param The req request from the callout
+    * @return A HTTPResponse containing the contact information mostly Id
+    */
     global HTTPResponse callPostResponse(HTTPRequest req) {
         
         system.assertEquals('callout:Mule_ESB_Contact_Service',req.getEndpoint());

@@ -45,30 +45,29 @@ private with sharing class ContactUploadAddFileExtensionTest {
     
     @isTest private static void checkUploadAttachment() {
         Test.startTest();
-        setTestData();
-        System.runAs(adminUser) {
-            PageReference pageRef = Page.ContactUploadAddFilePage;
-            Test.setCurrentPage(pageRef);
-            
-            pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
-            ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
-            ContactUploadAddFileExtension testAccPlan = new ContactUploadAddFileExtension(sc);
-            system.assertEquals(1, testAccPlan.attachmentList.size());
-            
-            testAccPlan.newAttachment.Name = 'Second Attachment.csv';
-            string header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
-			header += contASURecord.Id+',,FirstName,LastName,TestBulk2@asu.edu.sid,,'+subscriptions.get(0).Id+' ,2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US ,111-555-6567\n\r';
-            testAccPlan.newAttachment.Body = blob.valueOf(header);
-            testAccPlan.upload();
-            
-            Attachment secondAttachment = [SELECT Id, IsPrivate, ParentId FROM Attachment WHERE Name = 'Second Attachment.csv'];
-            system.assertEquals(true, secondAttachment.IsPrivate);
-            system.assertEquals(conUploadRecord.Id, secondAttachment.ParentId);
-            
-        }
-        
+            setTestData();
+            System.runAs(adminUser) {
+                PageReference pageRef = Page.ContactUploadAddFilePage;
+                Test.setCurrentPage(pageRef);
+                
+                pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
+                ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
+                ContactUploadAddFileExtension testAccPlan = new ContactUploadAddFileExtension(sc);
+                system.assertEquals(1, testAccPlan.attachmentList.size());
+                
+                testAccPlan.newAttachment.Name = 'Second Attachment.csv';
+                string header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
+                header += contASURecord.Id+',,FirstName,LastName,TestBulk2@asu.edu.sid,,'+subscriptions.get(0).Id+' ,2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US ,111-555-6567\n\r';
+                testAccPlan.newAttachment.Body = blob.valueOf(header);
+                testAccPlan.upload();
+                
+                Attachment secondAttachment = [SELECT Id, IsPrivate, ParentId FROM Attachment WHERE Name = 'Second Attachment.csv'];
+                system.assertEquals(true, secondAttachment.IsPrivate);
+                system.assertEquals(conUploadRecord.Id, secondAttachment.ParentId);
+                
+            }
     	Test.stopTest();
-        // assert #1
+        // assert #1 after callout
         List<Contact_Upload_Detail__c> lstCUD = [SELECT ID FROM Contact_Upload_Detail__c];
         system.assertEquals(1, lstCUD.size());
     }
@@ -76,9 +75,9 @@ private with sharing class ContactUploadAddFileExtensionTest {
     @isTest private static void checkCalloutNoContact() {   
         
         Test.startTest();
-        setTestData();
+        	setTestData();
         Test.stopTest();
-        delete contASURecord;
+        delete contASURecord; // to make sure we are able to use DML for POST call written in Batch class.
         System.runAs(adminUser) {
             PageReference pageRef = Page.ContactUploadAddFilePage;
             Test.setCurrentPage(pageRef);
@@ -98,6 +97,11 @@ private with sharing class ContactUploadAddFileExtensionTest {
             Attachment secondAttachment = [SELECT Id, IsPrivate, ParentId FROM Attachment WHERE Name = 'Second Attachment.csv'];
             system.assertEquals(true, secondAttachment.IsPrivate);
             system.assertEquals(conUploadRecord.Id, secondAttachment.ParentId);
+            // assert #2
+            List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>([SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c]);
+            for (Contact_Upload_Detail__c cud : cudList) {
+                system.assert(cud.Processing_Notes__c.contains('Found existing Contact ID: '+contASURecord.Id));
+            }
         }
         
     }
@@ -127,7 +131,7 @@ private with sharing class ContactUploadAddFileExtensionTest {
             // assert #2
             List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>([SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c]);
             for (Contact_Upload_Detail__c cud : cudList) {
-                system.assert(cud.Processing_Notes__c.contains('Found existing Contact ID: '+contASURecord.Id));
+                system.assert(cud.Processing_Notes__c.contains('Created new Contact ID: '+contWPCRecord.Id));
             }
         }
     }
@@ -164,6 +168,7 @@ private with sharing class ContactUploadAddFileExtensionTest {
     }
     
     @isTest private static void checkCampaignRelatedCode() {
+        // check negative, this should throw Id not correct
         Test.startTest();
         setTestData();
         System.runAs(adminUser) {

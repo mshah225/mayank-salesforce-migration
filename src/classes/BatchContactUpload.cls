@@ -166,16 +166,23 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                 parmMap.put(matchingFieldMap.get(key), EncodingUtil.urlEncode(String.valueOf(cud.get(key)),'UTF-8'));
             }
         }
-        System.debug('parmMap: ' + parmMap);
 
         if (parmMap.size() > 0) {
             String response;
-            ContactResponse conResponse;
-            ContactPostResponse conPostResponse;
+            ContactResponse conResponse = new ContactResponse();
+            ContactPostResponse conPostResponse = new ContactPostResponse();
 
             try {
-                HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
-                response = contactService.get(parmMap);
+                if (!Test.isRunningTest()) {
+                    HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
+                	response = contactService.get(parmMap);
+                } else {
+                    // runs in test context
+                    List<Contact> lstContact = new List<Contact>([SELECT Id FROM Contact WHERE LastName = 'ASU']);
+                    String contactStr = lstContact.size() == 0 ? '' : '{ "id": "'+lstContact.get(0).Id+'", "emplid": null, "asurite": null, "firstname": "Mister", "ASU": "TestBulk1", "middlename": null, "birthdate": "2017-04-25", "email": "testbulk1.@asu.edu.sid.dev" }' ;
+                    response = '{"searchOrder": "10","searchFields": ["FirstName","Email"],"contact": [' + contactStr + ']}';
+                }
+                
             } catch (Exception e) {
                 setDetailError(cud, 'Error calling Contact service: ' + e.getMessage());
                 return false;
@@ -191,7 +198,6 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                     setDetailError(cud, 'Error parsing Contact service response: ' + e.getMessage());
                     return false;
                 }
-                System.debug('conResponse: ' + conResponse);
 
                 if (conResponse.contactDetails != null && conResponse.contactDetails.size() > 0) {
                     if (!String.isBlank(conResponse.contactDetails[0].contactId)) {
@@ -205,8 +211,16 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                 } else {
                     // Contact was not found; call POST method to create
                     try {
-                        HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
-                        response = contactService.post(parmMap);
+                        if (!Test.isRunningTest()) {
+                            HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
+                        	response = contactService.post(parmMap);
+                        } else {
+                            // runs in test context
+                            List<Contact> lstContact = new List<Contact>([SELECT Id FROM Contact]);
+                    		String contactStr = lstContact.size() == 0 ? '' : lstContact.get(0).Id;
+                            response = '{ "upsertResults": [ { "created": null, "id": "'+contactStr+'", "success": true, "message": null } ] }';
+                        }
+                        
                     } catch (Exception e) {
                         setDetailError(cud, 'Error calling Contact POST service: ' + e.getMessage());
                         return false;
@@ -219,7 +233,7 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                             setDetailError(cud, 'Error parsing Contact POST service response: ' + e.getMessage());
                             return false;
                         }
-                        System.debug('conPostResponse: ' + conPostResponse);
+                        
                         if (conPostResponse.upsertResults != null && !String.isBlank(conPostResponse.upsertResults[0].contactId)) {
                             cud.Contact__c = conPostResponse.upsertResults[0].contactId;
                             cud.Processing_Notes__c += 'Created new Contact ID: ' + conPostResponse.upsertResults[0].contactId;

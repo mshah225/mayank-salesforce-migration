@@ -21,15 +21,20 @@ private class BatchApplySubscriberPrivacyTest {
         }
 
         Group testGroup = TestDataFactory.createTestGroupAndQueue(new List<String>{'Subscription__c','Subscriber__c'});
+        
+        Set<Id> subscriptionTestIds = new Set<Id>();
         for (Subscription__c subscription : subscriptions) {
             subscription.OwnerId = testGroup.Id;
             subscription.Subscriber_Private_in_Salesforce__c = true;
+            subscriptionTestIds.add(subscription.Id);
         }
         update subscriptions;
 
-        for (Subscription__c subscription : [SELECT Id, Subscriber_Privacy_Changed__c FROM Subscription__c]) {
-            System.assertEquals(
-                true, subscription.Subscriber_Privacy_Changed__c, 'Subscriber_Privacy_Changed__c was not set to true');
+        for (Subscription__c subscription : [
+                SELECT Id, Subscriber_Privacy_Changed__c 
+                FROM Subscription__c 
+                WHERE Id IN :subscriptionTestIds]) {
+            System.assert(subscription.Subscriber_Privacy_Changed__c, 'Subscriber_Privacy_Changed__c was not set to true');
         }
 
         Test.startTest();
@@ -43,7 +48,10 @@ private class BatchApplySubscriberPrivacyTest {
                 'OwnerId was not set as expected by BatchApplySubscriberPrivacy');
         }
 
-        for (Subscription__c subscription : [SELECT Id, Subscriber_Privacy_Changed__c FROM Subscription__c]) {
+        for (Subscription__c subscription : [
+                SELECT Id, Subscriber_Privacy_Changed__c 
+                FROM Subscription__c 
+                WHERE Id IN :subscriptionTestIds]) {
             System.assertEquals(
                 false, subscription.Subscriber_Privacy_Changed__c, 
                 'Subscriber_Privacy_Changed__c was not re-set to false');

@@ -60,7 +60,9 @@ public without sharing class SubscriptionCenterController {
         }
         
         if (hashedSubscriptionIdParm != null) {
-            hashedSubscriptionIdParm = EncodingUtil.urlEncode(hashedSubscriptionIdParm, 'UTF-8');
+            if (!Test.isRunningTest()) {
+            	hashedSubscriptionIdParm = EncodingUtil.urlEncode(hashedSubscriptionIdParm, 'UTF-8');
+            }
             List<Subscription__c> tmpList = new List<Subscription__c>();
             tmpList = [SELECT Id FROM Subscription__c WHERE HashSubscriptionId__c =: hashedSubscriptionIdParm];
             if (!tmpList.isEmpty()) {
@@ -69,7 +71,9 @@ public without sharing class SubscriptionCenterController {
         }
         
         if (hashedCampaignIdParm != null) {
-            hashedCampaignIdParm = EncodingUtil.urlEncode(hashedCampaignIdParm, 'UTF-8');
+            if (!Test.isRunningTest()) {
+            	hashedCampaignIdParm = EncodingUtil.urlEncode(hashedCampaignIdParm, 'UTF-8');
+            }
             List<Campaign> tmpList = new List<Campaign>();
             tmpList = [SELECT Id FROM Campaign WHERE HashCampaignId__c =: hashedCampaignIdParm];
             if (!tmpList.isEmpty()) {
@@ -78,7 +82,9 @@ public without sharing class SubscriptionCenterController {
         }
         
         if (hashedSubscriberIdParm != null) {
-            hashedSubscriberIdParm = EncodingUtil.urlEncode(hashedSubscriberIdParm, 'UTF-8');
+            if (!Test.isRunningTest()) {
+            	hashedSubscriberIdParm = EncodingUtil.urlEncode(hashedSubscriberIdParm, 'UTF-8');
+            }
             List<Subscriber__c> tmpList = new List<Subscriber__c>();
             tmpList = [SELECT Id FROM Subscriber__c WHERE HashSubscriberId__c =: hashedSubscriberIdParm];
             if (!tmpList.isEmpty()) {

@@ -280,13 +280,15 @@ public class LeadService {
         ]){  
             if (leadMap.containsKey(leadSubscriber.Lead__c)) {
                 leadSubscriber.Contact__c = leadMap.get(leadSubscriber.Lead__c).Convert_Contact__c;
-                leadSubscriber.Lead__c = null;
                 subscribersToReparent.add(leadSubscriber);
             }
         }
-        
-        if (!subscribersToReparent.isEmpty()) {
-            update subscribersToReparent;
+        try {
+            if (!subscribersToReparent.isEmpty()) {
+                update subscribersToReparent;
+            }
+        } catch(Exception e) {
+            
         }
     }
     

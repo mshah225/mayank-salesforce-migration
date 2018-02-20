@@ -34,10 +34,10 @@ global with sharing class StudentProfileController
     public string contactId {get; set;}
     public String birthDate {get; set;}
     public String age {get; set;}
-    global static String paramToSort {get; set;}
-    global static String examParamSort {get; set;}
-    global static String transferParamSort {get; set;}
-    global static boolean sortDirect = true;
+    public static String paramToSort {get; set;}
+    public static String examParamSort {get; set;}
+    public static String transferParamSort {get; set;}
+    public static boolean sortDirect = true;
     private Set<String> ugTestCodes;
     private Set<String> gradTestCodes;
 
@@ -64,7 +64,6 @@ global with sharing class StudentProfileController
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
-        
         if (Validator.validateId(contactId, Contact.class)) {
             isContactId = true;
         } else if (Validator.validateEMPLId(contactId)) {
@@ -73,7 +72,6 @@ global with sharing class StudentProfileController
             UrlParamsExistAndAreValid = false;
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
         }
-        
     }
     
     /**
@@ -100,7 +98,7 @@ global with sharing class StudentProfileController
         primaryProgramPlan =  new Student_Program_Plan__c();
         
         try {
-            if (URLParamsExistAndAreValid) {
+            if (UrlParamsExistAndAreValid) {
                 if (isContactId) {
                     theContact = ContactService.getContactInformation(contactId, '');
                 } else {
@@ -350,7 +348,7 @@ global with sharing class StudentProfileController
     }
 
     // Get the allowable test types by Career type
-    global static Set<String> getTestCodes(String career)
+    public static Set<String> getTestCodes(String career)
     {
         if (career == 'UGRD')
             return new Set<String>{'ACT', 'AECP', 'AMPT', 'AP', 'CLEP', 'DSST', 'DSST2', 'GED', 'ALEKSMATH', 'ACCUPLACER2',
@@ -1097,7 +1095,7 @@ global with sharing class StudentProfileController
             classInfo = classIn;
         }
         
-        global Integer compareTo(Object compareTo) {
+        public Integer compareTo(Object compareTo) {
             sortableClass compareToClass = (sortableClass)compareTo;
             Integer sortDir = 0;
             if (paramToSort.equals('Session')) {
@@ -1176,7 +1174,7 @@ global with sharing class StudentProfileController
             examInfo = examIn;
         }
         
-        global Integer compareTo(Object compareTo) {
+        public Integer compareTo(Object compareTo) {
             sortableCreditByExam compareToExam = (sortableCreditByExam)compareTo;
             Integer sortDir = 0;
             if (examParamSort.equals('Title')) {
@@ -1215,7 +1213,7 @@ global with sharing class StudentProfileController
             transferInfo = transferIn;
         }
         
-        global Integer compareTo(Object compareTo) {
+        public Integer compareTo(Object compareTo) {
             sortableTransferWork compareToTransfer = (sortableTransferWork)compareTo;
             Integer sortDir = 0;
             if (transferParamSort.equals('Term')) {
@@ -1871,6 +1869,37 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
+    global static me3__c getMe3HSResults(String contactId) {
+        List<me3__c> me3List = new List<me3__c>();
+        
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
+            
+            me3List =
+            (
+                Test.isRunningTest() ? new List<me3__c>() : 
+                [SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,                 
+                        Source__c, Test_Completed_Date__c, User_Id__c, 
+                        (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
+                                Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
+                         FROM   me3_Careers__r
+                         WHERE Active__c = TRUE
+                         ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
+                         LIMIT 10) 
+                 FROM me3__c
+                 WHERE  Contact__c = :contactId AND Source__c = 'me3hs'
+                 ORDER BY Test_Completed_Date__c DESC
+                 LIMIT 1 
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+
+        return (me3List.size() > 0? me3List[0] : new me3__c());        
+    }
+    
+    @RemoteAction
     global static me3__c getMe3Results(String contactId)
     {
         List<me3__c> me3List = new List<me3__c>();
@@ -1886,10 +1915,11 @@ global with sharing class StudentProfileController
                         (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
                                 Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
                          FROM   me3_Careers__r
-                         ORDER BY Active__c DESC, Updated_Date__c DESC, Plan_Code__c
+                         WHERE Active__c = TRUE
+                         ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
                          LIMIT 10) 
-                 FROM   me3__c
-                 WHERE  Contact__c = :contactId
+                 FROM me3__c
+                 WHERE  Contact__c = :contactId AND Source__c = 'DegreeSearch'
                  ORDER BY Test_Completed_Date__c DESC
                  LIMIT 1 
                 ]

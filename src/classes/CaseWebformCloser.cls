@@ -73,7 +73,6 @@ public class CaseWebformCloser {
         if (currentCase.OwnerId == CaseWebformCloser.FINANCIAL_AID_CASE_QUEUE) {
             currentCase.Visible_By_Contact__c = FALSE;
             currentCase.Status = 'Closed: Resolved';
-            currentCase.IsClosedOnCreate = TRUE;
         }
     }
 }

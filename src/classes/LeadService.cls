@@ -283,12 +283,8 @@ public class LeadService {
                 subscribersToReparent.add(leadSubscriber);
             }
         }
-        try {
-            if (!subscribersToReparent.isEmpty()) {
-                update subscribersToReparent;
-            }
-        } catch(Exception e) {
-            
+        if (!subscribersToReparent.isEmpty()) {
+            Database.update(subscribersToReparent, false);
         }
     }
     

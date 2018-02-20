@@ -1,17 +1,17 @@
 @isTest
-global class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
+public class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
     
     /**
     * Default interface method containing logic to handle GET, POST, etc.
     * @param The req request from the callout
     * @return A HTTPResponse containing the contact information from GET/POST
     */
-    global HTTPResponse respond(HTTPRequest request) {
+    public HTTPResponse respond(HTTPRequest request) {
 		HttpResponse fakeResponse = new HttpResponse();
         if (request.getMethod() == 'GET') {
-            fakeResponse = callGetResponse(request);
+            fakeResponse = callGetResponse();
         } else if (request.getMethod() == 'POST') {
-            fakeResponse = callPostResponse(request);
+            fakeResponse = callPostResponse();
         }
         return fakeResponse;
     }
@@ -21,12 +21,16 @@ global class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
     * @param The req request from the callout
     * @return A HTTPResponse containing the contact information, if present on the system
     */
-    global HTTPResponse callGetResponse(HTTPRequest req) {
-        system.assertEquals('callout:Mule_ESB_Contact_Service?birthdate=2017-04-27&city=Tempe&email=TestBulk%40asu.edu.sid&firstname=Mister&lastname=Sidhant&phone=1115556567&postalcode=85281&statecode=AZ', req.getEndpoint());
-        // Create a fake response
-        HttpResponse res = new HttpResponse();
-        res.setHeader('Content-Type', 'application/json');
-        res.setBody('{'+
+    public HTTPResponse callGetResponse() {
+        List<Contact> contactsForGet = new List<Contact>([SELECT Id FROM Contact WHERE LastName = 'ASU' OR LastName = 'WPC']);
+        HttpResponse fakeGetResponse = new HttpResponse();
+        fakeGetResponse.setHeader('Content-Type', 'application/json');
+        
+        if(contactsForGet.size() > 1) {
+            fakeGetResponse.setStatusCode(500);
+            return fakeGetResponse; // return blank body to test failure
+        } else if(contactsForGet.size() == 1) {
+            fakeGetResponse.setBody('{'+
                     '"searchOrder": "10",'+
                     '"searchFields": ['+
                     +'"FirstName",'+
@@ -34,7 +38,7 @@ global class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
                     '],'+
                     '"contact": ['+
                     '{'+
-                    '"id": "003d000001jLBxeAAG",'+
+                    '"id": "'+contactsForGet.get(0).Id+'",'+
                     '"emplid": null,'+
                     '"asurite": null,'+
                     '"firstname": "Sally",'+
@@ -56,8 +60,16 @@ global class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
                     ']'+
                     '}'
                    );
-        res.setStatusCode(200);
-        return res;
+        } else {
+            fakeGetResponse.setBody('{'+
+                                    '"searchOrder": "10",'+
+                                    '"searchFields": ['+
+                                    '"FirstName",'+
+                                    '"Email"],"contact": []}'
+                                   );
+        }
+        fakeGetResponse.setStatusCode(200);
+        return fakeGetResponse;
     }
 	
     /**
@@ -65,22 +77,33 @@ global class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
     * @param The req request from the callout
     * @return A HTTPResponse containing the contact information mostly Id
     */
-    global HTTPResponse callPostResponse(HTTPRequest req) {
+    public HTTPResponse callPostResponse() {
+        List<Contact> contactsForPost = new List<Contact>([SELECT Id FROM Contact WHERE LastName = 'ASU' OR LastName = 'WPC']);
+        HttpResponse fakePostResponse = new HttpResponse();
+        fakePostResponse.setHeader('Content-Type', 'application/json');
         
-        system.assertEquals('callout:Mule_ESB_Contact_Service',req.getEndpoint());
-        
-        HttpResponse res = new HttpResponse();
-        res.setHeader('Content-Type', 'application/json');
-        res.setBody('{'+
-                      '"upsertResults": ['+
-                        '{'+
-                          '"created": null,'+
-							'"id": "0031h000004v7h6AAA",'+
-                          	'"success": true,'+
-                         	'"message": null'+
-                    	'}]'+
-                    '}');
-        res.setStatusCode(201);
-        return res;
+        if(contactsForPost.size()>0) {
+            fakePostResponse.setBody('{'+
+                                      '"upsertResults": ['+
+                                        '{'+
+                                          '"created": null,'+
+                                            '"id": "'+contactsForPost.get(0).Id+'",'+
+                                            '"success": true,'+
+                                            '"message": null'+
+                                        '}]'+
+                                    '}');
+        } else {
+            fakePostResponse.setBody('{'+
+                                      '"upsertResults": ['+
+                                        '{'+
+                                          '"created": null,'+
+                                            '"id": "null",'+
+                                            '"success": true,'+
+                                            '"message": null'+
+                                        '}]'+
+                                    '}');
+        }
+        fakePostResponse.setStatusCode(201);
+        return fakePostResponse;
     }
 }

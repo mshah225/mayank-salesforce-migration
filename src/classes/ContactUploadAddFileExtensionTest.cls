@@ -1,5 +1,5 @@
 @isTest
-private with sharing class ContactUploadAddFileExtensionTest {
+private class ContactUploadAddFileExtensionTest {
     
     private static Contact contASURecord;
     private static Contact contWPCRecord;
@@ -8,10 +8,10 @@ private with sharing class ContactUploadAddFileExtensionTest {
     private static User adminUser;
     private static List<Subscription__c> subscriptions;
     
-    static void setTestData(){
+    private static void setTestData(){
         
         sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
-        adminUser = TestDataFactory.createUser('Sidhant', sysAdminProfile.Id);
+        adminUser = [SELECT Id FROM User WHERE ProfileId = :sysAdminProfile.Id AND isActive = true LIMIT 1];
         
         contASURecord = TestDataFactory.createContact('ASU');
         insert contASURecord;
@@ -27,117 +27,115 @@ private with sharing class ContactUploadAddFileExtensionTest {
         subscriptions = TestDataFactory.createTestSubscriptions(1);
         insert subscriptions;
         
-    	Attachment attachRecord = TestDataFactory.createAttachment('Test Attachment', conUploadRecord.Id);
+        Attachment attachRecord = TestDataFactory.createAttachment('Test Attachment', conUploadRecord.Id);
         insert attachRecord;
     }
     
-    @isTest private static void checkQueryAttachment() {
+    private static Blob returnCSVBlob(String contactId, String subscribtionId, String campaignId) {
+        String header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
+        String body = contactId+',,FirstName,LastName,TestBulk2@asu.edu.sid,'+campaignId+','+subscribtionId+',2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US,111-555-6567\n\r';
+        return blob.valueOf(header + body);
+    }
+    
+    @isTest 
+    private static void extensionConfirmOneAttachmentPresent() {
         setTestData();
-        Test.startTest();
+        
         PageReference pageRef = Page.ContactUploadAddFilePage;
         Test.setCurrentPage(pageRef);
         pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
         ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
-    	ContactUploadAddFileExtension testAccPlan = new ContactUploadAddFileExtension(sc);
-		system.assertEquals(1, testAccPlan.attachmentList.size());
-    	Test.stopTest();
-    }
-    
-    @isTest private static void checkUploadAttachment() {
-        Test.startTest();
-            setTestData();
-            System.runAs(adminUser) {
-                PageReference pageRef = Page.ContactUploadAddFilePage;
-                Test.setCurrentPage(pageRef);
-                
-                pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
-                ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
-                ContactUploadAddFileExtension testAccPlan = new ContactUploadAddFileExtension(sc);
-                system.assertEquals(1, testAccPlan.attachmentList.size());
-                
-                testAccPlan.newAttachment.Name = 'Second Attachment.csv';
-                string header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
-                header += contASURecord.Id+',,FirstName,LastName,TestBulk2@asu.edu.sid,,'+subscriptions.get(0).Id+' ,2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US ,111-555-6567\n\r';
-                testAccPlan.newAttachment.Body = blob.valueOf(header);
-                testAccPlan.upload();
-                
-                Attachment secondAttachment = [SELECT Id, IsPrivate, ParentId FROM Attachment WHERE Name = 'Second Attachment.csv'];
-                system.assertEquals(true, secondAttachment.IsPrivate);
-                system.assertEquals(conUploadRecord.Id, secondAttachment.ParentId);
-                
-            }
-    	Test.stopTest();
-        // assert #1 after callout
-        List<Contact_Upload_Detail__c> lstCUD = [SELECT ID FROM Contact_Upload_Detail__c];
-        system.assertEquals(1, lstCUD.size());
-    }
-    
-    @isTest private static void checkCalloutNoContact() {   
         
         Test.startTest();
-        	setTestData();
+        ContactUploadAddFileExtension contactUploadExtension = new ContactUploadAddFileExtension(sc);
         Test.stopTest();
-        delete contASURecord; // to make sure we are able to use DML for POST call written in Batch class.
-        System.runAs(adminUser) {
-            PageReference pageRef = Page.ContactUploadAddFilePage;
-            Test.setCurrentPage(pageRef);
-            pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
-            ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
-            ContactUploadAddFileExtension testAccPlan = new ContactUploadAddFileExtension(sc);
-            system.assertEquals(1, testAccPlan.attachmentList.size());
-            
-            testAccPlan.newAttachment.Name = 'Second Attachment.csv';
-            string header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
-			header += ',,FirstName,LastName,TestBulk2@asu.edu.sid,,'+subscriptions.get(0).Id+' ,2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US ,111-555-6567\n\r';
-            testAccPlan.newAttachment.Body = blob.valueOf(header);            
-            
-            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
-            testAccPlan.upload();
-            // assert #1
-            Attachment secondAttachment = [SELECT Id, IsPrivate, ParentId FROM Attachment WHERE Name = 'Second Attachment.csv'];
-            system.assertEquals(true, secondAttachment.IsPrivate);
-            system.assertEquals(conUploadRecord.Id, secondAttachment.ParentId);
-            // assert #2
-            List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>([SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c]);
-            for (Contact_Upload_Detail__c cud : cudList) {
-                system.assert(cud.Processing_Notes__c.contains('Found existing Contact ID: '+contASURecord.Id));
-            }
-        }
         
+        System.assertEquals(1, contactUploadExtension.attachmentList.size());
     }
     
-    @isTest private static void checkCalloutWithContact() {   
+    @isTest 
+    private static void checkUploadAttachment() {
         setTestData();
         System.runAs(adminUser) {
             PageReference pageRef = Page.ContactUploadAddFilePage;
             Test.setCurrentPage(pageRef);
+            
             pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
             ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
-            ContactUploadAddFileExtension testAccPlan = new ContactUploadAddFileExtension(sc);
-            system.assertEquals(1, testAccPlan.attachmentList.size());
+            ContactUploadAddFileExtension contactUploadExtension = new ContactUploadAddFileExtension(sc);
+            System.assertEquals(1, contactUploadExtension.attachmentList.size());
             
-            testAccPlan.newAttachment.Name = 'Second Attachment.csv';
-            string header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
-			header += ',,FirstName,LastName,TestBulk2@asu.edu.sid,,'+subscriptions.get(0).Id+' ,2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US ,111-555-6567\n\r';
-            testAccPlan.newAttachment.Body = blob.valueOf(header);            
+            contactUploadExtension.newAttachment.Name = 'Second Attachment.csv';
+            contactUploadExtension.newAttachment.Body = returnCSVBlob(contASURecord.Id, subscriptions.get(0).Id, '');
+            
             Test.startTest();
-                Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
-                testAccPlan.upload();
+            contactUploadExtension.upload();
             Test.stopTest();
-            // assert #1
+            
             Attachment secondAttachment = [SELECT Id, IsPrivate, ParentId FROM Attachment WHERE Name = 'Second Attachment.csv'];
-            system.assertEquals(true, secondAttachment.IsPrivate);
-            system.assertEquals(conUploadRecord.Id, secondAttachment.ParentId);
-            // assert #2
-            List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>([SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c]);
-            for (Contact_Upload_Detail__c cud : cudList) {
-                system.assert(cud.Processing_Notes__c.contains('Created new Contact ID: '+contWPCRecord.Id));
+            System.assertEquals(true, secondAttachment.IsPrivate);
+            System.assertEquals(conUploadRecord.Id, secondAttachment.ParentId);
+            List<Contact_Upload_Detail__c> lstCUD = [SELECT Id FROM Contact_Upload_Detail__c];
+            System.assertEquals(1, lstCUD.size());
+        }
+    }
+    
+    @isTest 
+    private static void associatedSubscriptionInUploadCheckAlreadyExistingContact() {   
+        Test.startTest();
+        setTestData();
+        Test.stopTest();
+        
+        delete contASURecord;
+        
+        System.runAs(adminUser) {
+            PageReference pageRef = Page.ContactUploadAddFilePage;
+            Test.setCurrentPage(pageRef);
+            pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
+            ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
+            ContactUploadAddFileExtension contactUploadExtension = new ContactUploadAddFileExtension(sc);
+            System.assertEquals(1, contactUploadExtension.attachmentList.size());
+            
+            contactUploadExtension.newAttachment.Name = 'Second Attachment.csv';
+            contactUploadExtension.newAttachment.Body = returnCSVBlob('', subscriptions.get(0).Id, '');
+            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
+            
+            contactUploadExtension.upload();
+            
+            for (Contact_Upload_Detail__c cud : [SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c WHERE Subscriber__c = :subscriptions.get(0).Id]) {
+                System.assert(cud.Processing_Notes__c.contains('Found existing Contact ID: '+contASURecord.Id));
             }
         }
     }
     
-    @isTest private static void checkNoSubscriptionCampaign() {
-        Test.startTest();
+    @isTest 
+    private static void associatedSubscriptionNewContactCreatedInUpload() {
+        sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+        adminUser = [SELECT Id FROM User WHERE ProfileId = :sysAdminProfile.Id AND isActive = true LIMIT 1];
+        System.runAs(adminUser) {
+            setTestData();
+            PageReference pageRef = Page.ContactUploadAddFilePage;
+            Test.setCurrentPage(pageRef);
+            pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
+            ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
+            ContactUploadAddFileExtension contactUploadExtension = new ContactUploadAddFileExtension(sc);
+            contactUploadExtension.newAttachment.Name = 'Second Attachment.csv';
+            contactUploadExtension.newAttachment.Body = returnCSVBlob('', subscriptions.get(0).Id, '');
+            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
+                        
+            Test.startTest();
+            contactUploadExtension.upload();
+            Test.stopTest();
+
+            for (Contact_Upload_Detail__c cud : [SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c WHERE Subscriber__c = :subscriptions.get(0).Id]) {
+                System.assert(cud.Processing_Notes__c.contains('Created new Contact ID: '+contWPCRecord.Id));
+            }
+        }
+    }
+    
+    @isTest 
+    private static void noSubscriptionCampaignCheckErrorMessage() {
+        
         setTestData();
         System.runAs(adminUser) {
             PageReference pageRef = Page.ContactUploadAddFilePage;
@@ -145,31 +143,28 @@ private with sharing class ContactUploadAddFileExtensionTest {
             
             pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
             ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
-            ContactUploadAddFileExtension testAccPlan = new ContactUploadAddFileExtension(sc);
-            system.assertEquals(1, testAccPlan.attachmentList.size());
+            ContactUploadAddFileExtension contactUploadExtension = new ContactUploadAddFileExtension(sc);
+            System.assertEquals(1, contactUploadExtension.attachmentList.size());
             
-            testAccPlan.newAttachment.Name = 'Second Attachment.csv';
-            string header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
-			header += contASURecord.Id+',,FirstName,LastName,TestBulk2@asu.edu.sid,,,2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US ,111-555-6567\n\r';
-            testAccPlan.newAttachment.Body = blob.valueOf(header);
-            testAccPlan.upload();
+            contactUploadExtension.newAttachment.Name = 'Second Attachment.csv';
+            String header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
+            String body = contASURecord.Id+',,FirstName,LastName,TestBulk2@asu.edu.sid,,,2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US,111-555-6567\n\r';
+            contactUploadExtension.newAttachment.Body = returnCSVBlob(contASURecord.Id, '', '');
             
-            Attachment secondAttachment = [SELECT Id, IsPrivate, ParentId FROM Attachment WHERE Name = 'Second Attachment.csv'];
-            system.assertEquals(true, secondAttachment.IsPrivate);
-            system.assertEquals(conUploadRecord.Id, secondAttachment.ParentId);
+            Test.startTest();
+            contactUploadExtension.upload();
+            Test.stopTest();
             
             List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>([SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c]);
             for (Contact_Upload_Detail__c cud : cudList) {
-                system.assert(cud.Processing_Notes__c.equals('Either Subscription or Campaign must be specified'));
+                System.assert(cud.Processing_Notes__c.contains('Either Subscription or Campaign must be specified'));
             }
         }
-        
-    	Test.stopTest();
     }
     
-    @isTest private static void checkCampaignRelatedCode() {
-        // check negative, this should throw Id not correct
-        Test.startTest();
+    @isTest 
+    private static void incorrectIdCheckErrorMessage() {
+        
         setTestData();
         System.runAs(adminUser) {
             PageReference pageRef = Page.ContactUploadAddFilePage;
@@ -177,25 +172,21 @@ private with sharing class ContactUploadAddFileExtensionTest {
             
             pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
             ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
-            ContactUploadAddFileExtension testAccPlan = new ContactUploadAddFileExtension(sc);
-            system.assertEquals(1, testAccPlan.attachmentList.size());
+            ContactUploadAddFileExtension contactUploadExtension = new ContactUploadAddFileExtension(sc);
+            System.assertEquals(1, contactUploadExtension.attachmentList.size());
             
-            testAccPlan.newAttachment.Name = 'Second Attachment.csv';
-            string header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
-			header += contASURecord.Id+',,FirstName,LastName,TestBulk2@asu.edu.sid,7000000000000,,2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US ,111-555-6567\n\r';
-            testAccPlan.newAttachment.Body = blob.valueOf(header);
-            testAccPlan.upload();
+            contactUploadExtension.newAttachment.Name = 'Second Attachment.csv';
+            contactUploadExtension.newAttachment.Body = returnCSVBlob(contASURecord.Id, '', '7000000000000');
             
-            Attachment secondAttachment = [SELECT Id, IsPrivate, ParentId FROM Attachment WHERE Name = 'Second Attachment.csv'];
-            system.assertEquals(true, secondAttachment.IsPrivate);
-            system.assertEquals(conUploadRecord.Id, secondAttachment.ParentId);
+            Test.startTest();
+            contactUploadExtension.upload();
+            Test.stopTest();
             
             List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>([SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c]);
             for (Contact_Upload_Detail__c cud : cudList) {
-                system.assertEquals(cud.Processing_Notes__c, 'Either Subscription or Campaign must be specified');
+                System.assert(cud.Processing_Notes__c.contains('Exception: Invalid id: 7000000000000'));
+                System.assert(cud.Processing_Notes__c.contains('Either Subscription or Campaign must be specified'));
             }
         }
-        
-    	Test.stopTest();
     }
 }

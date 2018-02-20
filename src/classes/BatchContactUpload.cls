@@ -173,16 +173,8 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
             ContactPostResponse conPostResponse = new ContactPostResponse();
 
             try {
-                if (!Test.isRunningTest()) {
-                    HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
-                	response = contactService.get(parmMap);
-                } else {
-                    // runs in test context
-                    List<Contact> lstContact = new List<Contact>([SELECT Id FROM Contact WHERE LastName = 'ASU']);
-                    String contactStr = lstContact.size() == 0 ? '' : '{ "id": "'+lstContact.get(0).Id+'", "emplid": null, "asurite": null, "firstname": "Mister", "ASU": "TestBulk1", "middlename": null, "birthdate": "2017-04-25", "email": "testbulk1.@asu.edu.sid.dev" }' ;
-                    response = '{"searchOrder": "10","searchFields": ["FirstName","Email"],"contact": [' + contactStr + ']}';
-                }
-                
+                HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
+                response = contactService.get(parmMap);
             } catch (Exception e) {
                 setDetailError(cud, 'Error calling Contact service: ' + e.getMessage());
                 return false;
@@ -211,16 +203,8 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                 } else {
                     // Contact was not found; call POST method to create
                     try {
-                        if (!Test.isRunningTest()) {
-                            HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
-                        	response = contactService.post(parmMap);
-                        } else {
-                            // runs in test context
-                            List<Contact> lstContact = new List<Contact>([SELECT Id FROM Contact]);
-                    		String contactStr = lstContact.size() == 0 ? '' : lstContact.get(0).Id;
-                            response = '{ "upsertResults": [ { "created": null, "id": "'+contactStr+'", "success": true, "message": null } ] }';
-                        }
-                        
+                        HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
+                        response = contactService.post(parmMap);
                     } catch (Exception e) {
                         setDetailError(cud, 'Error calling Contact POST service: ' + e.getMessage());
                         return false;

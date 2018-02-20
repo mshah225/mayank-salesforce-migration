@@ -59,10 +59,9 @@ public with sharing class HTTPRestService_EnterpriseContact {
             System.debug('Callout Error: ' + e);
         }
         System.debug(res.getBody());
-        //if (res.getStatusCode() == 200)
-        //{
+        if (res.getStatusCode() == 201) {
             returnValue = res.getBody();
-        //}
+        }
 
         return returnValue;
     }

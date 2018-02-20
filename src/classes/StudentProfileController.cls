@@ -4,7 +4,7 @@ global with sharing class StudentProfileController
     private static boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
     
-    private boolean URLParamsExistAndAreValid; // Stores whether or not URL params exist and are valid
+    public boolean URLParamsExistAndAreValid {get; set;} // Stores whether or not URL params exist and are valid
     private boolean isContactId; // Stores wheter the ID parameter is a contact Id or EMPL Id
     public boolean failState {get; set;} // Used to determine if the page has reached a state where it cannot be rendered
     public static ASU_STDNT_RETENTION__x studentRetention { get; set; }
@@ -32,6 +32,8 @@ global with sharing class StudentProfileController
     public String suncardPhotoURL { get; set; }
     public String deceased { get; set; }
     public string contactId {get; set;}
+    public String birthDate {get; set;}
+    public String age {get; set;}
     global static String paramToSort {get; set;}
     global static String examParamSort {get; set;}
     global static String transferParamSort {get; set;}
@@ -57,7 +59,7 @@ global with sharing class StudentProfileController
      * </p>
      */
     public StudentProfileController() {
-        URLParamsExistAndAreValid = true;
+        UrlParamsExistAndAreValid = true;
         
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
@@ -68,8 +70,10 @@ global with sharing class StudentProfileController
         } else if (Validator.validateEMPLId(contactId)) {
             isContactId = false;
         } else {
-            URLParamsExistAndAreValid = false;
+            UrlParamsExistAndAreValid = false;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
         }
+        
     }
     
     /**
@@ -103,12 +107,32 @@ global with sharing class StudentProfileController
                     theContact = ContactService.getContactInformation('', String.valueOf(contactId));
                 }
                 
-                if (theContact.EMPLID__c == null) {
+                if (theContact == null || theContact.EMPLID__c == null) {
+                    URLParamsExistAndAreValid = false;
                     failState = true;
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
                     vars.add(ErrorLogger.convertSObjectToJSON('theContact', theContact));
                     throw new StudentProfileException('Contact missing EMPLId');
                 }
                 deceased = '';
+
+                Date tmpDate = theContact.birthDate;
+                if(tmpDate != null) {
+                    birthDate = tmpDate.month() + '/' + tmpDate.day() + '/' + tmpDate.year();
+                    Date nowDate = Date.Today();
+                    if(nowDate.month() > tmpDate.month()) {
+                        age = '' + (nowDate.year() - tmpDate.year() - 1);
+                    } else if (nowDate.month() < tmpDate.month()) {
+                        age = '' + (nowDate.year() - tmpDate.year());
+                    } else {
+                        if(nowDate.day() > tmpDate.day()) {
+                            age = '' + (nowDate.year() - tmpDate.year());
+                        } else {
+                            age = '' + (nowDate.year() - tmpDate.year() - 1);
+                        }
+                    }
+                }
+
                 // Start populating the lists
                 openCases = CaseService.getAllOpenCases(theContact.Id);
                 sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
@@ -168,7 +192,8 @@ global with sharing class StudentProfileController
                 // so we have value to work with while the term populates asynchronously; ultimate 
                 // solution will be to store term info in the Salesforce org and update it from 
                 // PeopleSoft only as-needed
-                currentTerm = '2177';
+                StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+                currentTerm = currentTermData.CurrTerm__c;
                 
             } else {
                 failState = true;

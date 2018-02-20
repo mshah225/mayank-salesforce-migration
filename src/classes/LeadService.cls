@@ -300,5 +300,9 @@ public class LeadService {
                 me3ToAddContact.add(leadMe3);
             }
         }
+        
+        if (!me3ToAddContact.isEmpty()) {
+            update me3ToAddContact;
+        }
     }
 }

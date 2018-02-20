@@ -210,6 +210,10 @@ public class LeadService {
                 accountToLeadMap.put(thisLeadsAccount, newListOfLeads);
             }
         }
+        
+        reparentAndUpdateIndividualEmailResults(leadList, leadMap);
+        reparentAndUpdateSubscribers(leadList, leadMap);
+        reparentAndUpdateMe3s(leadList, leadMap);
 
         // Create LeadConvert objects from the leads and batch them up
         for (Integer batchNumber = 0; batchNumber < numberOfBatches; batchNumber++) {

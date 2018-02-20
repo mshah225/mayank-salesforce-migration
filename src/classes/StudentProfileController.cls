@@ -1883,7 +1883,8 @@ global with sharing class StudentProfileController
                         (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
                                 Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
                          FROM   me3_Careers__r
-                         ORDER BY Active__c DESC, Updated_Date__c DESC, Position__c, Plan_Code__c
+                         WHERE Active__c = TRUE
+                         ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
                          LIMIT 10) 
                  FROM me3__c
                  WHERE  Contact__c = :contactId AND Source__c = 'me3hs'
@@ -1914,7 +1915,8 @@ global with sharing class StudentProfileController
                         (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
                                 Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
                          FROM   me3_Careers__r
-                         ORDER BY Active__c DESC, Updated_Date__c DESC, Position__c, Plan_Code__c
+                         WHERE Active__c = TRUE
+                         ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
                          LIMIT 10) 
                  FROM me3__c
                  WHERE  Contact__c = :contactId AND Source__c = 'DegreeSearch'

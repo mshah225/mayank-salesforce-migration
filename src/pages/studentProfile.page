@@ -1234,8 +1234,75 @@
                                             </div>
                                             <div id="me3_career_interest_table"/>
                                         </div>
-                                        <div id="me3ResponseErrors"/>
+                                        <div id="me3ResponseErrors"></div>
 
+                                        <div class="page-header-smaller">
+                                            <h4>
+                                                <i class="fa fa-caret-down"></i>
+                                                &nbsp;me3 High School Results
+                                            </h4>
+                                        </div>
+
+                                        <div id="Me3HSResults"
+                                             style="display:none;width:100%;">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Test Completion Date</th>
+                                                            <td id="me3_hs_completion_date">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                    <div class="col-sm-6">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th style="width: 150px;">Source</th>
+                                                            <td id="me3_hs_source">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Realistic (R) Score</th>
+                                                            <td id="me3_hs_r_score">--</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Investigative (I) Score</th>
+                                                            <td id="me3_hs_i_score">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Artistic (A) Score</th>
+                                                            <td id="me3_hs_a_score">--</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Social (S) Score</th>
+                                                            <td id="me3_hs_s_score">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <table class="table table-striped">
+                                                        <tr>
+                                                            <th>Enterprising (E) Score</th>
+                                                            <td id="me3_hs_e_score">--</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Conventional (C) Score</th>
+                                                            <td id="me3_hs_c_score">--</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div id="me3_hs_career_interest_table"/>
+                                        </div>
+                                        
+                                        <div id="me3HSResponseErrors"></div>
                                     </apex:pageBlock>
                                 </div>
                             </div>

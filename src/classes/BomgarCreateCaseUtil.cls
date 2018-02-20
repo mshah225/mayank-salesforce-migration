@@ -105,7 +105,7 @@ global class BomgarCreateCaseUtil
         // Set case values
 
         c.Status = 'New';
-        c.Description = description;
+        c.Description = String.isEmpty(description) ? 'Case Created from Bomgar' : description;
         c.Priority = 'Normal';
         c.Origin__c = 'Chat';
         c.CC_Functional_Group__c = (mapCCNameToId.containsKey('Help Desk')) ? mapCCNameToId.get('Help Desk') : null;

@@ -210,6 +210,10 @@ public class LeadService {
                 accountToLeadMap.put(thisLeadsAccount, newListOfLeads);
             }
         }
+        
+        reparentAndUpdateIndividualEmailResults(leadList, leadMap);
+        reparentAndUpdateSubscribers(leadList, leadMap);
+        reparentAndUpdateMe3s(leadList, leadMap);
 
         reparentAndUpdateIndividualEmailResults(leadList, leadMap);
         reparentAndUpdateSubscribers(leadList, leadMap);

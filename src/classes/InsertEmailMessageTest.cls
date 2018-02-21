@@ -1,5 +1,5 @@
 @isTest
-private class EmailMessageInsertTest {
+private class InsertEmailMessageTest {
     
     private static List<Case> testCases;
     private static Contact testContact;
@@ -13,7 +13,7 @@ private class EmailMessageInsertTest {
     }
     
     @isTest
-    private static void testEmailMessageInsertionSuccess() {
+    private static void emailMessageInsertionSuccess() {
         createTestData();
         String emailBody = 'Test Email Body'; 
         String  parentId = testCases[0].Id; 
@@ -25,7 +25,7 @@ private class EmailMessageInsertTest {
         String emailStatus = '2';   
         
         Test.startTest();
-        EmailMessageInsert.createEmailMessage(emailBody, parentId, emailSubject, 
+        InsertEmailMessage.createEmailMessage(emailBody, parentId, emailSubject, 
                                               isIncoming, fromName, fromEmailAddress, 
                                               toEmailAddress, emailStatus);
         Test.stopTest();
@@ -37,7 +37,7 @@ private class EmailMessageInsertTest {
     }
     
     @isTest
-    private static void testEmailMessageInsertionFailure() {
+    private static void emailMessageInsertionFailure() {
         createTestData();
         String emailBody = '';
         String  parentId = testCases[0].Id; 
@@ -46,15 +46,17 @@ private class EmailMessageInsertTest {
         String fromName = '';
         String fromEmailAddress = '';
         String toEmailAddress = '';
-        String emailStatus = '-1';   // wrong status code to cover exception block
+        String invalidStatusCode = '-1';
+        String emailStatus = invalidStatusCode;
         
-        String returnMessage;
         Test.startTest();
-        returnMessage = EmailMessageInsert.createEmailMessage(emailBody, parentId, emailSubject, 
+        InsertEmailMessage.createEmailMessage(emailBody, parentId, emailSubject, 
                                                               isIncoming, fromName, fromEmailAddress, 
                                                               toEmailAddress, emailStatus);
         Test.stopTest();
         
-        System.assertEquals(returnMessage, 'failure');
+        List<EmailMessage> retrieveEmailMessage = [SELECT Id, ParentId, TextBody, FromAddress FROM EmailMessage LIMIT 1];
+        
+        System.assertEquals(retrieveEmailMessage.size() , 0);
     }
 }

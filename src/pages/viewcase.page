@@ -115,7 +115,7 @@
                 if (filePresent) {
                     return validateFile();
                 }
-                if (filePresent || replyPresent) {
+                if (replyPresent) {
                     return true;
                 } else {
                     document.getElementById('errorDiv').innerHTML = 'Error: Please add a reply or an attachment\n';
@@ -125,6 +125,7 @@
             
             function validateFile() {
                 var errorPresent = false;
+                document.getElementById('errorDiv').innerHTML = '';
                 $j('input[type=file]').each(function() {
                     fileName = this.files[0].name;
                     fileSize = this.files[0].size/1000000;
@@ -139,11 +140,11 @@
                             'Microsoft Excel (.xls or .xlsx)\n' +
                             'Image (.jpg, .jpeg, .gif, .png)\n' +
                             'Adobe PDF (.pdf)\n'+
-                            'Text (.txt)\n';
+                            'Text (.txt).\n';
                         errorPresent = true;
                     }
                     if (fileSize > 25) {
-                        document.getElementById('errorDiv').innerHTML = 'The attachment exceeds the file size limit of 25 MB\n';
+                        document.getElementById('errorDiv').innerHTML += 'The attachment exceeds the file size limit of 25 MB\n';
                         errorPresent = true;
                     }
                 });       

@@ -1,11 +1,11 @@
 @isTest
-public class MockHttpResponseGenerator implements HttpCalloutMock {
-
+ public class EmailMessageFailureMock implements HttpCalloutMock {
+    
     public HTTPResponse respond(HTTPRequest req) {
-
+        
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
-        res.setBody('"success"');
+        res.setBody('{"status":"failure", "message":"Exception Generated"}');
         res.setStatusCode(200);
         return res;
     }

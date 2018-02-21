@@ -99,7 +99,7 @@ public class EmailAlertArticleSchedule implements Schedulable {
             } else if (knowledgeArticle.Article_Expiration_Date__c < System.Today()) {
                 template = templateDevNameToTemplate.get('Knowledge_Article_Expired');
             } else if (knowledgeArticle.Article_Expiration_Date__c == System.Today().addDays(30)) {
-                template = templateDevNameToTemplate.get('Knowledge_Article_30_Day_Expiration');
+                template = templateDevNameToTemplate.get('Knowledge_Article_X_Day_Expiration');
             }
 
             Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
@@ -128,7 +128,7 @@ public class EmailAlertArticleSchedule implements Schedulable {
             FROM EmailTemplate
             WHERE DeveloperName = 'Knowledge_Article_Expired'
                 OR DeveloperName = 'Knowledge_Article_Stagnant'
-                OR DeveloperName = 'Knowledge_Article_30_Day_Expiration'
+                OR DeveloperName = 'Knowledge_Article_X_Day_Expiration'
         ]){
             templateDevNameToTemplate.put(knowledgeEmailTemplate.DeveloperName, knowledgeEmailTemplate);
         }

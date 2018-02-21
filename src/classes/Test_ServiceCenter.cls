@@ -353,28 +353,33 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
 
-    @isTest static void testSuggestAnArticle(){
+    @isTest 
+    private static void suggestAnArticleReturnsProperUrl(){
         User testUser = [
             SELECT Id, ContactId
             FROM User
             WHERE FirstName = 'Test0'
         ];
-
+        
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
-
-        Test.startTest();
-
+        PageReference submit;
+        String urlReturnedFromSubmit;
+        
         System.runAs(testUser){
             sc = new ServiceCenter();
             sc.suggestAnArticle.Description = 'Test submitting a suggestion';
-            sc.strArticleIdea = 'Description';
-            PageReference submit = ApexPages.currentPage();
+            sc.suggestedArticleDescription = 'Description';
+            submit = ApexPages.currentPage();
             submit.getParameters().put('Suggest', 'yes');
-            System.assertEquals(submit.getURL(), sc.suggestAnArticleSubmit().getURL());
+            
+            Test.startTest();
+                urlReturnedFromSubmit = sc.suggestAnArticleSubmit().getURL();
+            Test.stopTest();
         }
 
-        Test.stopTest();
+        System.assertEquals(submit.getURL(), urlReturnedFromSubmit);
+        System.assertEquals('Description', sc.suggestAnArticle.Description);
     }
 
     @isTest static void testPINChange(){
@@ -538,31 +543,23 @@ private class Test_ServiceCenter{
     }
 
     @isTest static void testSCExceptionCases(){
-            User testUser = [
-            SELECT Id, ContactId
+        User testUser = [
+            SELECT Id, ContactId, Contact.BirthDate, Contact.Self_Service_PIN__c, Contact.FirstName, Contact.LastName
             FROM User
             WHERE FirstName = 'Test0'
         ];
 
-            Contact testContact = [
-            SELECT Id, BirthDate, Self_Service_PIN__c
-            FROM Contact
-            WHERE Id = :testUser.ContactId
-        ];
-
-
-        Test.startTest();
-
         System.runAs(testUser){
-            sc=new ServiceCenter();
-            sc.newPin = testContact.Self_Service_PIN__c+1;
-            sc.UserContact.LastName=null;
+            sc = new ServiceCenter();
+            sc.newPin = testUser.Contact.Self_Service_PIN__c + 1;
+            sc.UserContact.LastName = null;
+            Test.startTest();
             sc.changePin();
+            Test.stopTest();
         }
-
-        Test.stopTest();
-        List<Case> lstCase=[Select Id, Subject, Description from Case where Origin__c='Error Logger'];
-        System.assertEquals(lstCase.size(),1);
+        
+        List<Case> lstCase = [Select Id, Subject, Description from Case where Origin__c = 'Error Logger'];
+        System.assertEquals(1, lstCase.size());
     }
 
     @isTest static void testVCCExceptionCases(){

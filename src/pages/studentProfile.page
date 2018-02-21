@@ -1114,7 +1114,11 @@
                                                 &nbsp;&nbsp;<i class="fa fa-external-link"></i>
                                             </a>
                                         </div>
-
+                                        
+                                        <div class="btn btn-default btn-adjust" onclick="refreshComments()">
+                                            <i class="fa fa-refresh" style="color: #9f2b50;"></i>
+                                        </div>
+                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1126,22 +1130,7 @@
                                             <div class="col-sm-12">
                                                 <div id="ps_advising_notes_section"></div>
 
-                                                <div id="psAdvisingNotesResponseErrors">
-                                                </div>
-
-                                                <!--<div class="comments-nested">-->
-                                                <!--<div class="comments-header">-->
-                                                <!--<h4>Persons Name</h4>-->
-                                                <!--<span class="comments-header-date">-->
-                                                <!--&nbsp;&nbsp;-&nbsp;&nbsp;-->
-                                                <!--Mar 18, 2016-->
-                                                <!--</span>-->
-                                                <!--<div class="pull-right">-->
-                                                <!--<i class="fa fa-envelope"></i>-->
-                                                <!--<i class="fa fa-print"></i>-->
-                                                <!--</div>-->
-                                                <!--</div>-->
-                                                <!--</div>-->
+                                                <div id="psAdvisingNotesResponseErrors"></div>
                                             </div>
                                         </div>
 
@@ -3270,6 +3259,17 @@
                 }
             }
     
+            function refreshComments() {
+                commentsLoaded = false;
+                advisorNotesLoaded = false;
+                document.getElementById('ps_advising_notes_section').innerHTML = '';
+                document.getElementById('ps_comments_section').innerHTML = '';
+                document.getElementById("psAdvisingNotesResponseErrors").style.display = "block";
+                document.getElementById("psCommentsResponseErrors").style.display = "block";
+                getPSAdvisorNotes();
+                getComments();
+            }
+            
             // Method to load the advisor comments.
             function getComments() {
                 if (!commentsLoaded) {

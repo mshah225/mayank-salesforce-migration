@@ -161,6 +161,7 @@
                                             classes="mobile"
                                             betaTag="true" />
                                     </div>
+                                 
                                     <apex:outputPanel id="photoRerenderPanel" layout="none">
                                         <apex:form >                                     
                                         <div id="sundevilImgDiv">
@@ -191,7 +192,7 @@
                                             </apex:outputPanel>
                                         </h2>
                                         
-                                        <h4 class="intro">
+                                        <h4 class="intro" style="{!IF(URLParamsExistAndAreValid, 'display:block', 'display:none')}">
                                             <span style="color:#353535">ID:</span>
                                             &nbsp;{!theContact.EMPLID__c}
                                             <span style="color:#353535">|</span>
@@ -237,6 +238,9 @@
                                 </div>
                             </div>
 
+                            <div style="{!IF(URLParamsExistAndAreValid, 'display: none', 'border-style: solid; border-width: 2px; border-color: #9f2b50; background: #f2f2f2; margin-bottom: 3px; margin-top: 20px')}">
+								<apex:pageMessages ></apex:pageMessages>
+                            </div>
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs responsive" role="tablist">
                                 <li role="presentation" class="active">
@@ -924,7 +928,6 @@
                                                 </h4>
                                         </div>
                                         
-                                        <!-- Transcripts Sent -->
                                         <div style="overflow:auto; max-height:310px; height: 310px">
                                             <c:CivitasPersistenceData />
                                         </div>
@@ -3068,7 +3071,7 @@
                     );
                 }
             }
-    
+            
             // Method to retention snps.
             function getRetentionSNPs() {
                 if (!indicatorHistoryLoaded) {

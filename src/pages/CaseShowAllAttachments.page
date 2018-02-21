@@ -23,10 +23,6 @@
 	  				<a href="#" onClick="openTab('{!a.Id}/e', 'Attached File')">Edit</a>
 	  				&nbsp;|&nbsp;
 	  				<a href="/servlet/servlet.FileDownload?file={!a.Id}" target="_blank">View</a>
-	  				&nbsp;|&nbsp;
-					<apex:commandLink value="Delete" action="{!deleteAttachment}" >
-						<apex:param name="var" value="{!a.Id}" assignTo="{!attId}" />		
-					</apex:commandLink>		
 				</apex:column>
 				<apex:column headerValue="File Name">
 	  				<a href="/servlet/servlet.FileDownload?file={!a.Id}" target="_self" download="{!a.Name}">{!a.Name}</a>
@@ -34,6 +30,11 @@
 				<apex:column value="{! ROUND((a.BodyLength / 1024), 0)} {!'KB'}" headerValue="Size"/>
 				<apex:column value="{!a.LastModifiedDate}" headerValue="Last Modified"/>
 				<apex:column value="{!a.CreatedBy.Name}" headerValue="Created By"/>
+				<apex:column headerValue="Action" width="40px" styleClass="actionColumn">
+					<apex:commandLink value="Delete" onclick="return confirm('Are you sure you wish to delete this attachment?');" action="{!deleteAttachment}" >
+						<apex:param name="var" value="{!a.Id}" assignTo="{!attId}" />		
+					</apex:commandLink>
+				</apex:column>
 			</apex:pageBlockTable>
 		</apex:form>
   </apex:pageBlock>

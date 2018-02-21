@@ -40,7 +40,7 @@ private class EmailAlertArticleScheduleTest {
 
     /*
     Test Method to test Execute Method of EmailAlertArticle Class.
-	Coverage code only. Tests will not send emails.
+    Coverage code only. Tests will not send emails.
     */
     private static testMethod void testExecuteMethod() {
         testSetup();
@@ -56,30 +56,30 @@ private class EmailAlertArticleScheduleTest {
     private static testMethod void testStagnantcreateEmails() {
             Integer noOfEmailsSent;
 
-			FAQ__kav testFAQ1 = new FAQ__kav(Language='en_US', Title = 'Test Article', UrlName='TestArticle');
+            FAQ__kav testFAQ1 = new FAQ__kav(Language='en_US', Title = 'Test Article', UrlName='TestArticle');
             testFAQ1.Functional_Group__c='Academic Technologies';
             insert testFAQ1;
 
             EmailAlertArticleSchedule testCont = new EmailAlertArticleSchedule();
-			testCont.dataSetup();
+            testCont.dataSetup();
 
-			List<FAQ__kav> stagnantQuery = [
-				SELECT 
-					Id, 
-					ArticleNumber, 
-					Title, 
-					PublishStatus, 
-					Functional_Group__c, 
-					ValidationStatus, 
-					Article_Expiration_Date__c, 
-					LastModifiedDate
-	            FROM FAQ__kav
-	            WHERE PublishStatus = 'Draft'
-	                AND Language = 'en_US'
-	                AND (ValidationStatus = 'Draft'
-						OR ValidationStatus = 'Format Review'
-						OR ValidationStatus = 'Content Review')
-			];
+            List<FAQ__kav> stagnantQuery = [
+                SELECT 
+                    Id, 
+                    ArticleNumber, 
+                    Title, 
+                    PublishStatus, 
+                    Functional_Group__c, 
+                    ValidationStatus, 
+                    Article_Expiration_Date__c, 
+                    LastModifiedDate
+                FROM FAQ__kav
+                WHERE PublishStatus = 'Draft'
+                    AND Language = 'en_US'
+                    AND (ValidationStatus = 'Draft'
+                        OR ValidationStatus = 'Format Review'
+                        OR ValidationStatus = 'Content Review')
+            ];
 
             Test.startTest();
             List<Messaging.SingleEmailMessage> emailsToSend = testCont.createEmails(stagnantQuery);
@@ -110,24 +110,24 @@ private class EmailAlertArticleScheduleTest {
             KbManagement.PublishingService.publishArticle(lstArtFAQ[0].KnowledgeArticleId, true);
             KbManagement.PublishingService.publishArticle(lstArtFAQ[1].KnowledgeArticleId, true);
             EmailAlertArticleSchedule testCont = new EmailAlertArticleSchedule();
-			testCont.dataSetup();
+            testCont.dataSetup();
 
-			List<FAQ__kav> expiredQuery = [
-				SELECT 
-					Id,
-					ArticleNumber,
-					Title,
-					PublishStatus, 
-					Functional_Group__c, 
-					ValidationStatus, 
-					Article_Expiration_Date__c, 
-					LastModifiedDate
-	            FROM FAQ__kav
-	            WHERE PublishStatus = 'Online'
-	                AND Language = 'en_US'
-	                AND (Article_Expiration_Date__c < :System.Today()
-						OR Article_Expiration_Date__c = :System.Today().addDays(30))
-			];
+            List<FAQ__kav> expiredQuery = [
+                SELECT 
+                    Id,
+                    ArticleNumber,
+                    Title,
+                    PublishStatus, 
+                    Functional_Group__c, 
+                    ValidationStatus, 
+                    Article_Expiration_Date__c, 
+                    LastModifiedDate
+                FROM FAQ__kav
+                WHERE PublishStatus = 'Online'
+                    AND Language = 'en_US'
+                    AND (Article_Expiration_Date__c < :System.Today()
+                        OR Article_Expiration_Date__c = :System.Today().addDays(30))
+            ];
 
             Test.startTest();
             List<Messaging.SingleEmailMessage> emailsToSend = testCont.createEmails(expiredQuery);

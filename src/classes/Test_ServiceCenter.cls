@@ -1,45 +1,57 @@
 @isTest
-private class Test_ServiceCenter{
+private class Test_ServiceCenter {
     private static Profile ASUComm;
     private static Profile ASUCommCAP;
     private static ServiceCenter sc;
     private static viewCaseController vcc;
     private static ViewAllCasesController vacc;
     private static SCMyCasesBoxController scMyCaseBox;
-    private static User testUser1;
-    private static Contact testContact1;
-    private static Case testCase1;
-    private static List<Opportunity> oppList1;
+    private static Case caseOnTest0User;
+    private static User test0User;
+    private static Contact contactRelatedToTest0User;
+    private static List<Opportunity> oppListForTest0User;
     
-    private static void initVars() {
-        testUser1 = [
+    private static void initTest0User() {
+        test0User = [
             SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
             FROM User
             WHERE FirstName = 'Test0'
         ];
-
-        testContact1 = [
+    }
+    private static void initContactForTest0User() {
+        contactRelatedToTest0User = [
             SELECT Id, Self_Service_PIN__c
             FROM Contact
-            WHERE Id = :testUser1.ContactId
+            WHERE Id = :test0User.ContactId
         ];
-
-        testCase1 = [
-            SELECT Id
+    }
+    
+    private static void initCaseOnTest0User() {
+        caseOnTest0User = [
+            SELECT Id,OwnerId
             FROM Case
-            WHERE ContactId = :testUser1.ContactId
+            WHERE ContactId = :test0User.ContactId
             LIMIT 1
         ];
-
-        oppList1 = [
+    }
+    private static void initTestOpportunityForTest0User() {
+    
+        oppListForTest0User = [
             SELECT Career__c, Term__c, StageName, Admitted_Session__c
             FROM Opportunity
-            WHERE Contact__c = :testUser1.ContactId
+            WHERE Contact__c = :test0User.ContactId
         ];
         
     }
-
-    @testSetup static void setTestData(){
+    
+    private static void initTestData() {
+        initTest0User();
+        initContactForTest0User();
+        initCaseOnTest0User();
+        initTestOpportunityForTest0User();
+    }
+    
+    @testSetup static void setTestData() {
         ASUComm = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
         ASUCommCAP = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
 
@@ -72,13 +84,21 @@ private class Test_ServiceCenter{
         insert testUserList;
 
         TestDataFactory.createFunctionalGroupWithCategory('Student-Centric Initiatives', 'Knowledge', 'Test');
-        
+        setupEnrolledTestSessionA();
+        setUpEnrolledTestSessionB();
+        setUpNonEnrolled();
     }
 
-    @testSetup static void setUpEnrolledTestSessionA(){
+    private static void setUpEnrolledTestSessionA() {
         Contact testContEnrolledA = [
             SELECT Id, AccountId, Email
             FROM Contact
+            WHERE FirstName = 'Test0'
+        ];
+        
+        User userAsCaseOwner = [
+            SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
+            FROM User
             WHERE FirstName = 'Test0'
         ];
 
@@ -90,6 +110,7 @@ private class Test_ServiceCenter{
         insert testOppEnrolledA;
 
         List<Case> openCases = CaseService.createTestCases(1, testContEnrolledA);
+        openCases[0].OwnerId = userAsCaseOwner.Id;
         insert openCases;
         
         EmailMessage emailOnCase = new EmailMessage(FromAddress = 'test0@test.com', Incoming = False, 
@@ -99,7 +120,7 @@ private class Test_ServiceCenter{
         
         List<Case> closedCases = CaseService.createTestCases(10, testContEnrolledA);
 
-        for (Case c : closedCases){
+        for (Case c : closedCases) {
             c.Status = 'Closed: Resolved';
         }
         insert closedCases;
@@ -119,7 +140,7 @@ private class Test_ServiceCenter{
         
     }
 
-    @testSetup static void setUpEnrolledTestSessionB(){
+    private static void setUpEnrolledTestSessionB() {
         Contact testContEnrolledB = [
             SELECT Id, AccountId
             FROM Contact
@@ -134,7 +155,7 @@ private class Test_ServiceCenter{
         insert testOppEnrolledB;
     }
 
-    @testSetup static void setUpNonEnrolled(){
+    private static void setUpNonEnrolled() {
         Contact testNotEnrolled = [
             SELECT Id, AccountId
             FROM Contact
@@ -148,7 +169,8 @@ private class Test_ServiceCenter{
         insert testOppNotEnrolled;
     }
 
-    @isTest static void testStudentSCPageAC(){
+    @isTest 
+    private static void testStudentSCPageAC() {
         Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
             Name = 'The Test Message',
             Displayed__c = true,
@@ -158,17 +180,8 @@ private class Test_ServiceCenter{
         );
         insert scm;
 
-        User testUser = [
-            SELECT Id, ContactId
-            FROM User
-            WHERE FirstName = 'Test0'
-        ];
-
-        List<Opportunity> oppList = [
-            SELECT Career__c, Term__c, StageName, Admitted_Session__c
-            FROM Opportunity
-            WHERE Contact__c = :testUser.ContactId
-        ];
+        initTest0User();
+        initTestOpportunityForTest0User();
 
         PageReference serviceCenter = Page.studentSC;
         serviceCenter.getParameters().put('source', 'viewAllCases');
@@ -176,13 +189,13 @@ private class Test_ServiceCenter{
 
         Test.startTest();
 
-        System.runAs(testUser){
+        System.runAs(test0User){
             sc = new ServiceCenter();
-            vcc=new viewCaseController();
+            vcc = new viewCaseController();
             scMyCaseBox=new SCMyCasesBoxController();
 
-            sc.oppList = oppList;
-            vcc.oppList=oppList;
+            sc.oppList = oppListForTest0User;
+            vcc.oppList = oppListForTest0User;
             scMyCaseBox.getMyCasesBox();
 
             sc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
@@ -209,7 +222,8 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
 
-    @isTest static void testStudentSCPageB(){
+    @isTest 
+    private static void testStudentSCPageB() {
 
         Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
             Name = 'The Test Message',
@@ -218,16 +232,16 @@ private class Test_ServiceCenter{
         );
         insert scm;
 
-        User testUser = [
+        User test1User = [
             SELECT Id, ContactId,ASURite_Id__c
             FROM User
             WHERE FirstName = 'Test1'
         ];
 
-        List<Opportunity> oppList = [
+        List<Opportunity> oppListForTest1User = [
             SELECT Career__c, Term__c, StageName, Admitted_Session__c
             FROM Opportunity
-            WHERE Contact__c = :testUser.ContactId
+            WHERE Contact__c = :test1User.ContactId
         ];
 
         PageReference serviceCenter = Page.studentSC;
@@ -236,25 +250,25 @@ private class Test_ServiceCenter{
 
         Test.startTest();
 
-        System.runAs(testUser){
+        System.runAs(test1User){
             vacc = new ViewAllCasesController();
-            vcc=new viewCaseController();
+            vcc = new viewCaseController();
 
             vacc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
-            scMyCaseBox=new SCMyCasesBoxController();
+            scMyCaseBox = new SCMyCasesBoxController();
             sc = new ServiceCenter();
-            sc.oppList = oppList;
-            vcc.oppList=oppList;
-            scMyCaseBox.oppList=oppList;
+            sc.oppList = oppListForTest1User;
+            vcc.oppList = oppListFortest1User;
+            scMyCaseBox.oppList = oppListForTest1User;
 
             vacc.getMyCases();
             vacc.getAllClosedCases();
             vacc.getSource();
             vacc.viewCase();
 
-            vacc.viewingAs=true;
+            vacc.viewingAs = true;
             vacc.getMyCases();
             vacc.getAllClosedCases();
             vacc.getSource();
@@ -266,23 +280,22 @@ private class Test_ServiceCenter{
             System.assertEquals(false, sc.getHelpBox());
             System.assertEquals(false, vcc.getHelpBox());
             System.assertEquals('There is maintenance forever', sc.getmMessage());
-
         }
-
         Test.stopTest();
     }
 
-    @isTest static void testStudentSCNotEnrolled(){
-        User testUser = [
+    @isTest 
+    private static void testStudentSCNotEnrolled() {
+        User test2User = [
             SELECT Id, ContactId
             FROM User
             WHERE FirstName = 'Test2'
         ];
 
-        List<Opportunity> oppList = [
+        List<Opportunity> oppListForTest2User = [
             SELECT Career__c, Term__c, StageName, Admitted_Session__c
             FROM Opportunity
-            WHERE Contact__c = :testUser.ContactId
+            WHERE Contact__c = :test2User.ContactId
         ];
 
         PageReference serviceCenter = Page.studentSC;
@@ -291,14 +304,14 @@ private class Test_ServiceCenter{
 
         Test.startTest();
 
-        System.runAs(testUser){
+        System.runAs(test2User){
             sc = new ServiceCenter();
-            vcc=new viewCaseController();
-            scMyCaseBox=new SCMyCasesBoxController();
+            vcc = new viewCaseController();
+            scMyCaseBox = new SCMyCasesBoxController();
 
-            sc.oppList = oppList;
-            vcc.oppList=oppList;
-            scMyCaseBox.oppList=oppList;
+            sc.oppList = oppListForTest2User;
+            vcc.oppList = oppListForTest2User;
+            scMyCaseBox.oppList = oppListForTest2User;
 
             System.assertEquals(true, scMyCaseBox.getmyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
@@ -308,17 +321,18 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
 
-    @isTest static void testStudentSCNoOpp(){
-        User testUser = [
+    @isTest 
+    private static void testStudentSCNoOpp() {
+        User test3User = [
             SELECT Id, ContactId
             FROM User
             WHERE FirstName = 'Test3'
         ];
 
-        List<Opportunity> oppList = [
+        List<Opportunity> oppListForTest3User = [
             SELECT Career__c, Term__c, StageName, Admitted_Session__c
             FROM Opportunity
-            WHERE Contact__c = :testUser.ContactId
+            WHERE Contact__c = :test3User.ContactId
         ];
 
         Test.startTest();
@@ -326,30 +340,30 @@ private class Test_ServiceCenter{
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
 
-        System.runAs(testUser){
+        System.runAs(test3User){
             sc = new ServiceCenter();
-            scMyCaseBox=new SCMyCasesBoxController();
+            scMyCaseBox = new SCMyCasesBoxController();
 
-            scMyCaseBox.oppList=oppList;
+            scMyCaseBox.oppList = oppListForTest3User;
 
             System.assertEquals(true, scMyCaseBox.getMyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
         }
-
         Test.stopTest();
     }
 
-    @isTest static void testStudentSCAlumni(){
-        User testUser = [
+    @isTest 
+    private static void testStudentSCAlumni() {
+        User test3User = [
             SELECT Id, ContactId
             FROM User
             WHERE FirstName = 'Test3'
         ];
 
-        List<Opportunity> oppList = [
+        List<Opportunity> oppListForTest3User = [
             SELECT Career__c, Term__c, StageName, Admitted_Session__c
             FROM Opportunity
-            WHERE Contact__c = :testUser.ContactId
+            WHERE Contact__c = :test3User.ContactId
         ];
 
         PageReference serviceCenter = Page.studentSC;
@@ -357,13 +371,13 @@ private class Test_ServiceCenter{
 
         Test.startTest();
 
-        System.runAs(testUser){
+        System.runAs(test3User) {
             sc = new ServiceCenter();
             System.assertEquals(true, sc.getHelpBox());
 
-            scMyCaseBox=new SCMyCasesBoxController();
+            scMyCaseBox = new SCMyCasesBoxController();
 
-            scMyCaseBox.oppList=oppList;
+            scMyCaseBox.oppList = oppListForTest3User;
 
             System.assertEquals(true, scMyCaseBox.getMyCasesBox());
 
@@ -372,20 +386,18 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
 
-    @isTest static void testSubmitCase(){
-        User testUser = [
-            SELECT Id, ContactId
-            FROM User
-            WHERE FirstName = 'Test0'
-        ];
+    @isTest 
+    private static void testSubmitCase() {
+        
+        initTest0User();
 
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
 
         Test.startTest();
 
-        System.runAs(testUser){
-            scMyCaseBox=new SCMyCasesBoxController();
+        System.runAs(test0User){
+            scMyCaseBox = new SCMyCasesBoxController();
             scMyCaseBox.newCase.Subject = 'Test Subject for SC';
             scMyCaseBox.newCase.Description = 'Test Desc';
 
@@ -397,27 +409,24 @@ private class Test_ServiceCenter{
             scMyCaseBox.getMyCases();
             scMyCaseBox.getMyCasesBox();
 
-            scMyCaseBox.viewingAs=true;
-            scMyCaseBox.masqScopeIdCookie='testCookie';
+            scMyCaseBox.viewingAs = true;
+            scMyCaseBox.masqScopeIdCookie = 'testCookie';
             System.assertEquals(scMyCaseBox.submitCase().getURL().contains('masqScopeIdCookie=testCookie'),true);
         }
 
         Test.stopTest();
     }
 
-    @isTest static void testSuggestAnArticle(){
-        User testUser = [
-            SELECT Id, ContactId
-            FROM User
-            WHERE FirstName = 'Test0'
-        ];
-
+    @isTest 
+    private static void testSuggestAnArticle() {
+        initTest0User();
+        
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
 
         Test.startTest();
 
-        System.runAs(testUser){
+        System.runAs(test0User){
             sc = new ServiceCenter();
             sc.suggestAnArticle.Description = 'Test submitting a suggestion';
             sc.strArticleIdea = 'Description';
@@ -429,27 +438,19 @@ private class Test_ServiceCenter{
         Test.stopTest();
     }
 
-    @isTest static void testPINChange(){
-        User testUser = [
-            SELECT Id, ContactId
-            FROM User
-            WHERE FirstName = 'Test0'
-        ];
-
-        Contact testContact = [
-            SELECT Id, Self_Service_PIN__c
-            FROM Contact
-            WHERE Id = :testUser.ContactId
-        ];
-
+    @isTest 
+    private static void testPINChange() {
+        
+        initTest0User();
+        initContactForTest0User();
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
 
         Test.startTest();
 
-        System.runAs(testUser){
+        System.runAs(test0User){
             sc = new ServiceCenter();
-            sc.newPin = testContact.Self_Service_PIN__c;
+            sc.newPin = contactRelatedToTest0User.Self_Service_PIN__c;
             PageReference error = ApexPages.currentPage();
             error.getParameters().put('PIN', 'error');
             System.assertEquals(error.getURL(), sc.changePin().getURL());
@@ -467,30 +468,22 @@ private class Test_ServiceCenter{
 
         Test.stopTest();
     }
-
-    @isTest static void testViewAs(){
-        initVars();
-
+    
+    private static void setCurrentPageAsViewCase() {
+        
         PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
+        viewCase.getParameters().put('id', caseOnTest0User.Id);
         Test.setCurrentPage(viewCase);
-        User testUser = [
-            SELECT Id, ContactId
-            FROM User
-            WHERE FirstName = 'Test0'
-        ];
-
-
-        Case testCase = [
-            SELECT Id
-            FROM Case
-            WHERE ContactId = :testUser.ContactId
-            LIMIT 1
-        ];
-
+    }
+    
+    @isTest 
+    private static void testViewAs(){
+        initTestData();
+        setCurrentPageAsViewCase();
+        
         Test.startTest();
 
-        System.runAs(testUser){
+        System.runAs(test0User){
             sc = new ServiceCenter();
             sc.viewingAs = true;
             PageReference stop = ApexPages.currentPage();
@@ -504,60 +497,53 @@ private class Test_ServiceCenter{
     
     @isTest 
     private static void originalPinSameAsNewPinError() {
-        initVars();
+        initTestData();
+        setCurrentPageAsViewCase();
+        PageReference currentPage;
+        String urlAfterPinChange;
         
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
-        
-        System.runAs(testUser1) {   
+        System.runAs(test0User) {   
             vcc = new viewCaseController();
-            vcc.newPin = testContact1.Self_Service_PIN__c;
-            PageReference currentPage = ApexPages.currentPage();
+            vcc.newPin = contactRelatedToTest0User.Self_Service_PIN__c;
+            currentPage = ApexPages.currentPage();
             currentPage.getParameters().put('PIN', 'error');
             
             Test.startTest();
-            String urlAfterPinChange = vcc.changePin().getURL();
+            urlAfterPinChange = vcc.changePin().getURL();
             Test.stopTest();
-            
-            System.assertEquals(currentPage.getURL(), urlAfterpinChange);
         }
-}
+        System.assertEquals(currentPage.getURL(), urlAfterpinChange);
+    }
        
     
     @isTest 
     private static void repeatingDigitsError() {
-        initVars();
+        initTestData();
+        setCurrentPageAsViewCase();
+        PageReference currentPage;
+        String urlAfterPinChange;
         
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
-        
-        System.runAs(testUser1) {   
+        System.runAs(test0User) {   
             vcc = new viewCaseController();
             vcc.newPin = 111111;
             
             Test.startTest();
-            String urlAfterPinChange = vcc.changePin().getURL();
+            urlAfterPinChange = vcc.changePin().getURL();
             Test.stopTest();
             
-            PageReference currentPage = ApexPages.currentPage();
+            currentPage = ApexPages.currentPage();
             currentPage.getParameters().put('PIN', 'error');
-            
-            System.assertEquals(currentPage.getURL(), urlAfterPinChange);
         }
+        System.assertEquals(currentPage.getURL(), urlAfterPinChange);
     }
     
      @isTest 
      private static void testViewCasePinSuccess() {
-        initVars();
-        
-        String urlAfterPinChange;
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
+        initTestData();
+        setCurrentPageAsViewCase();
        
-        System.runAs(testUser1) { 
+        String urlAfterPinChange;
+        System.runAs(test0User) { 
             vcc = new viewCaseController();
             vcc.newPin = 574838;
             
@@ -578,15 +564,13 @@ private class Test_ServiceCenter{
     
     @isTest 
     private static void fetchCaseDetailsWithoutMyASUViewAs() {
-        initVars();
+        initTestData();
+        setCurrentPageAsViewCase();
         
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
         Case checkCase;
         
         Test.startTest();
-        System.runAs(testUser1) {
+        System.runAs(test0User) {
             vcc = new viewCaseController();
             checkCase = vcc.getCaseDetails();
             
@@ -595,101 +579,81 @@ private class Test_ServiceCenter{
             
         }
         Test.stopTest();
-        System.assertEquals(checkCase.Id, testCase1.Id);
+        System.assertEquals(checkCase.Id, caseOnTest0User.Id);
     }
     
     @isTest
     private static void fetchCaseDetailsWithMyASUViewAs() {
-        initVars();
+        initTestData();
+        setCurrentPageAsViewCase();
         
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
         Case checkCase;
         
         Test.startTest();
-        System.runAs(testUser1) {
+        System.runAs(test0User) {
             vcc = new viewCaseController();
             vcc.viewingAs = true;
             checkCase = vcc.getCaseDetails();
             
         }
         Test.stopTest();
-        System.assertEquals(checkCase.Id, testCase1.Id);
-        
-        
+        System.assertEquals(checkCase.Id, caseOnTest0User.Id);
     }
     
     @isTest
     private static void fetchEmailMessagesWithoutMyASUViewAs() {
-        initVars();
-        
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
-        Case checkCase;
-        List<EmailMessage> retrieveEmailMsgs;
+        initTestData();
+        setCurrentPageAsViewCase();
         
         Test.startTest();
-        System.runAs(testUser1) {
+        System.runAs(test0User) {
             vcc = new viewCaseController();
-            retrieveEmailMsgs = vcc.getEmailMessages();
+            vcc.getEmailMessages();
         }
         Test.stopTest();
-        EmailMessage emailMsgWithParentId = [SELECT Id, ParentId FROM EmailMessage WHERE ParentId = :testCase1.Id];
-        System.assertEquals(emailMsgWithParentId.ParentId, testCase1.Id);
+        EmailMessage emailMsgWithParentId = [SELECT Id, ParentId FROM EmailMessage WHERE ParentId = :caseOnTest0User.Id];
+        System.assertEquals(emailMsgWithParentId.ParentId, caseOnTest0User.Id);
     }
     
     @isTest
     private static void fetchEmailMessagesWithMyASUViewAs() {
-        initVars();
-        
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
-        Case checkCase;
-        List<EmailMessage> retrieveEmailMsgs;
+        initTestData();
+        setCurrentPageAsViewCase();
         
         Test.startTest();
-        System.runAs(testUser1) {
+        System.runAs(test0User) {
             vcc = new viewCaseController();
             vcc.viewingAs = true;
-            retrieveEmailMsgs = vcc.getEmailMessages();
+            vcc.getEmailMessages();
         }
         Test.stopTest();
-        EmailMessage emailMsgWithParentId = [SELECT Id, ParentId FROM EmailMessage WHERE ParentId = :testCase1.Id];
-        System.assertEquals(emailMsgWithParentId.ParentId, testCase1.Id);
+        EmailMessage emailMsgWithParentId = [SELECT Id, ParentId FROM EmailMessage WHERE ParentId = :caseOnTest0User.Id];
+        System.assertEquals(emailMsgWithParentId.ParentId, caseOnTest0User.Id);
     }
     
     @isTest
-    private static void testFetchChatMessages() {
-        initVars();
+    private static void fetchChatMessages() {
+        initTestData();
+        setCurrentPageAsViewCase();
         
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
-        Case checkCase;
         List<bomgar__Event__c> fetchedBomgarEvent;
         Test.startTest();
-        System.runAs(testUser1) {
+        System.runAs(test0User) {
             vcc = new viewCaseController();
             fetchedBomgarEvent = vcc.getChatMessages();
         }
         Test.stopTest();
         List<bomgar__Event__c> bomgarForAssert = [SELECT Id, bomgar__BomgarSession__r.bomgar__relatedcase__c from bomgar__Event__c LIMIT 1];
-        System.assertEquals(bomgarForAssert[0].bomgar__BomgarSession__r.bomgar__relatedcase__c, testCase1.Id);
+        System.assertEquals(bomgarForAssert[0].bomgar__BomgarSession__r.bomgar__relatedcase__c, caseOnTest0User.Id);
     }
     
     @isTest
     private static void testDisplayReplyBox() {
-        initVars();
-        
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
+        initTestData();
+        setCurrentPageAsViewCase();
         
         Test.startTest();
-        System.runAs(testUser1) {
+        System.runAs(test0User) {
             vcc = new viewCaseController();
             vcc.showReplyBox = false;
             vcc.showReplyButton = true;
@@ -702,14 +666,11 @@ private class Test_ServiceCenter{
     
     @isTest
     private static void testCancelFunctionality() {
-        initVars();
-        
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
+        initTestData();
+        setCurrentPageAsViewCase();
         
         Test.startTest();
-        System.runAs(testUser1) {
+        System.runAs(test0User) {
             vcc = new viewCaseController();
             vcc.showReplyBox = true;
             vcc.caseReply = 'Test Reply';
@@ -723,16 +684,13 @@ private class Test_ServiceCenter{
     }
     
     @isTest 
-    private static void testRestCallout(){
-        initVars();
+    private static void testRestCalloutSuccess(){
+        initTestData();
+        setCurrentPageAsViewCase();
         
-        PageReference viewCase = Page.viewcase;
-        viewCase.getParameters().put('id', testCase1.Id);
-        Test.setCurrentPage(viewCase);
-        
-        System.runAs(testUser1) {
+        System.runAs(test0User) {
             vcc = new viewCaseController();
-            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+            Test.setMock(HttpCalloutMock.class, new EmailMessageSuccessMock());
             vcc.replyCaseAttachment.Name = 'Test Name';
             vcc.replyCaseAttachment.Body = Blob.valueOf('Test Attachment Body');
             vcc.caseReply = 'Test Message';
@@ -741,8 +699,25 @@ private class Test_ServiceCenter{
             vcc.submitReply();  
             Test.stopTest();
         }
-        List<Attachment> testCaseAttachment = [Select Id from Attachment where ParentId = :testCase1.Id];
-        System.assertEquals(testCaseAttachment.size(), 1);
+        System.assertEquals(vcc.caseReply, '');
     }
     
+    @isTest 
+    private static void testRestCalloutFailure() {
+        initTestData();
+        setCurrentPageAsViewCase();
+        
+        System.runAs(test0User) {
+            vcc = new viewCaseController();
+            Test.setMock(HttpCalloutMock.class, new EmailMessageFailureMock());
+            vcc.replyCaseAttachment.Name = 'Test Name';
+            vcc.replyCaseAttachment.Body = Blob.valueOf('Test Attachment Body');
+            vcc.caseReply = 'Test Message';
+            
+            Test.startTest();
+            vcc.submitReply();  
+            Test.stopTest();
+        }
+        System.assertEquals(vcc.caseReply, '');
+    }
 }

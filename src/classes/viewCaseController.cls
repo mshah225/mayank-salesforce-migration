@@ -41,12 +41,13 @@ public with sharing class viewCaseController {
     }
     
     public void retrieveAttachmentList() {
-        allCaseAttachments = new List<Attachment>([
-                SELECT id, Name, CreatedDate
-                FROM Attachment
-                WHERE ParentId = :caseId ORDER BY  CreatedDate DESC
-            ]);
-        if (allCaseAttachments == null || allCaseAttachments.size() == 0) {
+        allCaseAttachments = [
+            SELECT Id, Name, CreatedDate
+            FROM Attachment
+            WHERE ParentId = :caseId 
+            ORDER BY  CreatedDate DESC
+        ];
+        if (allCaseAttachments == null || allCaseAttachments.isEmpty()) {
             showCaseAttachments = false;    
         } else {
             showCaseAttachments = true;
@@ -187,25 +188,25 @@ public with sharing class viewCaseController {
 
     public Boolean getHelpBox() {
         if ((oppList == Null && userContact != null)
-            || (oppList.size() == 0 && userContact != null)) {
+                || (oppList.size() == 0 && userContact != null)) {
             return true;
         } else if ((oppList[0].StageName == 'Enrolled'
-            && oppList[0].Career__c == 'Undergraduate'
-            && oppList[0].Admitted_Session__c == 'A/C')
-            && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)) {
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'A/C')
+                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)) {
             return false;
         } else if ((oppList[0].StageName == 'Enrolled'
-            && oppList[0].Career__c == 'Undergraduate'
-            && oppList[0].Admitted_Session__c == 'B')
-            && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'B')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
             return false;
         } else if (oppList[0].StageName != 'Enrolled'
-            && oppList[0].Career__c == 'Undergraduate'
-            && (userContact.Affiliation_Student__c == 'Current'
-            || userContact.Affiliation_Alumni__c == 'Current'
-            || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-            || userContact.Affiliation_Employee__c == 'Current')
-            && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
+                && oppList[0].Career__c == 'Undergraduate'
+                && (userContact.Affiliation_Student__c == 'Current'
+                || userContact.Affiliation_Alumni__c == 'Current'
+                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                || userContact.Affiliation_Employee__c == 'Current')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
             return false;
         } else {
             return true;
@@ -263,45 +264,66 @@ public with sharing class viewCaseController {
         showReplyButton = false;
     }
     
-    public PageReference clearContentsAndCloseBox() {
-        showReplyBox = false;
+    private void clearReplyContents() {
         caseReply = '';
+    }
+    
+    private void closeReplyBox() {
+        showReplyBox = false;
         showReplyButton = true;
+    }
+    
+    private void clearReplyAttachment() {
         replyCaseAttachment = new Attachment();
+    }
+    
+    public PageReference clearContentsAndCloseBox() {
+        clearReplyContents();
+        closeReplyBox();
+        clearReplyAttachment();    
         return null;
     }
     
     public PageReference submitReply() {
-        Boolean isReplySuccess = true;
-        if (!String.isBlank(caseReply)) {
-            String jsonEmailMessage = createJsonEmail();
-            HttpRequest emailMessageRequest = createEmailMessageRestCallout(jsonEmailMessage);
-            String restCallResponse = sendEmailMessageRestCallout(emailMessageRequest);
-            if(restCallResponse == '"success"') {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));        
-            } else {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact system admin'));
-                isReplySuccess = false;
-            }
-            caseReply = '';
-        }
+        submitCaseReply();
+        submitAttachmentReply();
+        closeReplyBox();
         
-        if(isReplySuccess) {
-            String attachmentUploadResponse = uploadAttachment();
-            if (attachmentUploadResponse == 'success') {
-               ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Attachment to Case submitted Successfully'));
-               retrieveAttachmentList();     
-            } 
-            if (attachmentUploadResponse == 'failure') {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not upload attachment, please try again'));
-            }
-        }
-        showReplyBox = false;
-        showReplyButton = true;
         return null;
     }
     
-     private String createJsonEmail() {
+    private void submitCaseReply() {
+        if (!String.isBlank(caseReply)) {
+            RestCallResponse restStatusAndInfo = uploadResponse();
+            if (restStatusAndInfo.isSuccessfull()) {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));        
+            } else {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact system admin'));
+            }
+        }
+        clearReplyContents();
+    }
+    
+    private void submitAttachmentReply() {
+        if (replyCaseAttachment.Name != null && replyCaseAttachment.Body != null && caseId != null) {
+            String attachmentUploadResponse = uploadAttachment();
+            if (attachmentUploadResponse.contains('success')) {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Attachment to Case submitted Successfully'));
+                retrieveAttachmentList();     
+            } else {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not upload attachment, please try again'));
+            }
+        }
+    }
+    
+    private RestCallResponse uploadResponse() {
+        String jsonEmailBody = createJsonEmail();
+        HttpRequest emailMessageRequest = createEmailMessageRequestWithJsonBody(jsonEmailBody);
+        RestCallResponse restStatusAndInfo = sendRequestAndParseResponse(emailMessageRequest);
+        return restStatusAndInfo;
+    }
+    
+    private String createJsonEmail() {
         User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         Case currentCase = [SELECT Id, Owner.Email FROM Case WHERE Id = :caseId LIMIT 1];
         
@@ -310,64 +332,60 @@ public with sharing class viewCaseController {
             ownerEmail = currentCase.Owner.Email;
         }
         String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
-        String jsonInput = '{';  
-        jsonInput += '"emailTextBody":"' + caseReply + '"' + ',';
-        jsonInput += '"parentId":"' + caseId + '"' + ',';
-        jsonInput += '"emailSubject":"' + emailSubject + '"' + ',';
-        jsonInput += '"isIncoming":"' + 'true' + '"' + ',';
-        jsonInput += '"fromName":"' + currentUser.Name + '"' + ',';
-        jsonInput += '"fromAddress":"' + currentUser.Email + '"' + ',';
-        jsonInput += '"toAddress":"' + ownerEmail + '"' + ',';
-        jsonInput += '"status":"' + '2' + '"';
-        jsonInput += '}' ;
-        
-        return jsonInput;
+        InsertEmailMessageCalloutBody emailMessageObjectBody = new InsertEmailMessageCalloutBody(caseReply, caseId,
+                                                            emailSubject, true,
+                                                            currentUser.Name, currentUser.Email,
+                                                            ownerEmail, '2'
+                                                            );
+        String jsonEmailMessageInput = JSON.serialize(emailMessageObjectBody);
+        return jsonEmailMessageInput;
     }
     
-    private HttpRequest createEmailMessageRestCallout(String jsonEmailMessage) {
+    private HttpRequest createEmailMessageRequestWithJsonBody(String jsonEmailMessage) {
         HttpRequest emailMessageInsertRequest = new HttpRequest();
             
         String baseURL = System.URL.getSalesforceBaseURL().toExternalForm();
         
         emailMessageInsertRequest.setHeader('Content-Type', 'application/json');
-        emailMessageInsertRequest.setEndpoint(baseURL + '/services/apexrest/EmailMessageInsert');
+        emailMessageInsertRequest.setEndpoint(baseURL + '/services/apexrest/InsertEmailMessage');
         emailMessageInsertRequest.setMethod('POST');
         emailMessageInsertRequest.setBody(jsonEmailMessage);
         return emailMessageInsertRequest;
     }
     
-    private String sendEmailMessageRestCallout(HttpRequest emailMessageRequest) {
+    private RestCallResponse sendRequestAndParseResponse(HttpRequest emailMessageRequest) {
         Http objHttp = new Http();
-        HttpResponse emailResponse;
-        String responseMessage;
+        HttpResponse httpEmailResponse;
         try {
-            emailResponse = objHttp.send(emailMessageRequest);
-            responseMessage = emailResponse.getBody();
+            httpEmailResponse = objHttp.send(emailMessageRequest);
+            String httpResponseBody = httpEmailResponse.getBody();
+            RestCallResponse restStatusAndInfo = (RestCallResponse) JSON.deserialize(httpResponseBody, RestCallResponse.class);
+            return restStatusAndInfo;
         } catch (Exception e) {
+            String httpResponseBody = httpEmailResponse.getBody();
             List<String> errorCaseVariables = new List<String>();
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Rest Status: ', httpEmailResponse.getStatus()));
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Error Info: ', httpResponseBody));
             errorCaseVariables.add(ErrorLogger.convertStringToJSON('Case Id: ', caseId));
-            ErrorLogger.log(e,errorCaseVariables,false);
-            responseMessage = 'failure';
+            ErrorLogger.log(e, errorCaseVariables, false);
             
+            RestCallResponse restStatusAndInfo = new RestCallResponse(httpEmailResponse.getStatus(), httpResponseBody);
+            return restStatusAndInfo;
         }
-        return responseMessage;
     }
     
     private String uploadAttachment() {
-        if (replyCaseAttachment.Name != null && replyCaseAttachment.Body != null && caseId != null) {
-                replyCaseAttachment.ParentId = caseId;
-                try {
-                    insert replyCaseAttachment;
-                    replyCaseAttachment = new Attachment();
-                    return 'success';
-                } catch (Exception e) {
-                    varsForErrorLogging = new List<String>();
-                    varsForErrorLogging.add(ErrorLogger.convertStringToJSON('name', replyCaseAttachment.name));
-                    ErrorLogger.log(e, varsForErrorLogging, false);
-                    replyCaseAttachment = new Attachment();
-                    return 'failure';
-                }
+        replyCaseAttachment.ParentId = caseId;
+        try {
+            insert replyCaseAttachment;
+            clearReplyAttachment();
+            return 'success attachment Id: ' + replyCaseAttachment.Id;
+        } catch (Exception e) {
+            varsForErrorLogging = new List<String>();
+            varsForErrorLogging.add(ErrorLogger.convertStringToJSON('name', replyCaseAttachment.name));
+            ErrorLogger.log(e, varsForErrorLogging, false);
+            clearReplyAttachment();
+            return 'failure';
         }
-        return 'noattachment';
     }
 }

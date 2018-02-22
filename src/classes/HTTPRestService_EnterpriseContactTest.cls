@@ -47,21 +47,20 @@ private class HTTPRestService_EnterpriseContactTest {
         Contact contWPCRecord = TestDataFactory.createContact('WPC');
         insert contWPCRecord;
         HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
-        Test.startTest();
-        try {
-            String actualResponse = contactService.get(parmMap);
-        } catch (Exception excep) {
-            System.assertEquals(excep.getMessage(), 'System.UnexpectedException: Script-thrown exception');
-            System.assertEquals(1,0);
-        }
         
-        Test.stopTest();
+        try {
+            Test.startTest();
+            String actualResponse = contactService.get(parmMap);
+            Test.stopTest();
+        } catch (CalloutException calloutException) {
+            System.assertEquals(calloutException.getMessage(), 'Throw a callout exception to cover catch block.');
+        }
     }
     
     @isTest
     private static void testPostCalloutNoContactCheckNullId() {
         
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
+        
         String mockResponse = '{'+
             '"upsertResults": ['+
             '{'+
@@ -71,7 +70,7 @@ private class HTTPRestService_EnterpriseContactTest {
             '"message": null'+
             '}]'+
             '}';
-        
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
         createTestData();
         HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
         
@@ -80,5 +79,24 @@ private class HTTPRestService_EnterpriseContactTest {
         Test.stopTest();
         
         System.assertEquals(mockResponse, actualResponse);
+    }
+    
+    @isTest
+    private static void testPostCalloutFailure() {
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
+        createTestData();
+        Contact contASURecord = TestDataFactory.createContact('ASU');
+        insert contASURecord;
+        Contact contWPCRecord = TestDataFactory.createContact('WPC');
+        insert contWPCRecord;
+        HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
+        
+        try {
+            Test.startTest();
+            String actualResponse = contactService.post(parmMap);
+            Test.stopTest();
+        } catch (CalloutException calloutException) {
+            System.assertEquals(calloutException.getMessage(), 'Throw a callout exception to cover catch block.');
+        }
     }
 }

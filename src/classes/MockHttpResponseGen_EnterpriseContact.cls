@@ -27,8 +27,9 @@ public class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
         fakeGetResponse.setHeader('Content-Type', 'application/json');
         
         if(contactsForGet.size() > 1) {
-            fakeGetResponse.setStatusCode(500);
-            return fakeGetResponse; // return blank body to test failure
+            CalloutException e = (CalloutException)CalloutException.class.newInstance();
+            e.setMessage('Throw a callout exception to cover catch block.');
+            throw e;
         } else if(contactsForGet.size() == 1) {
             fakeGetResponse.setBody('{'+
                     '"searchOrder": "10",'+
@@ -82,7 +83,11 @@ public class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
         HttpResponse fakePostResponse = new HttpResponse();
         fakePostResponse.setHeader('Content-Type', 'application/json');
         
-        if(contactsForPost.size()>0) {
+        if(contactsForPost.size() > 1) {
+            CalloutException e = (CalloutException)CalloutException.class.newInstance();
+            e.setMessage('Throw a callout exception to cover catch block.');
+            throw e;
+        } else if(contactsForPost.size() == 1) {
             fakePostResponse.setBody('{'+
                                       '"upsertResults": ['+
                                         '{'+

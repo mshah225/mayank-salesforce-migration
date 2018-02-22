@@ -166,12 +166,11 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                 parmMap.put(matchingFieldMap.get(key), EncodingUtil.urlEncode(String.valueOf(cud.get(key)),'UTF-8'));
             }
         }
-        System.debug('parmMap: ' + parmMap);
 
         if (parmMap.size() > 0) {
             String response;
-            ContactResponse conResponse;
-            ContactPostResponse conPostResponse;
+            ContactResponse conResponse = new ContactResponse();
+            ContactPostResponse conPostResponse = new ContactPostResponse();
 
             try {
                 HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
@@ -191,7 +190,6 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                     setDetailError(cud, 'Error parsing Contact service response: ' + e.getMessage());
                     return false;
                 }
-                System.debug('conResponse: ' + conResponse);
 
                 if (conResponse.contactDetails != null && conResponse.contactDetails.size() > 0) {
                     if (!String.isBlank(conResponse.contactDetails[0].contactId)) {
@@ -219,7 +217,7 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                             setDetailError(cud, 'Error parsing Contact POST service response: ' + e.getMessage());
                             return false;
                         }
-                        System.debug('conPostResponse: ' + conPostResponse);
+                        
                         if (conPostResponse.upsertResults != null && !String.isBlank(conPostResponse.upsertResults[0].contactId)) {
                             cud.Contact__c = conPostResponse.upsertResults[0].contactId;
                             cud.Processing_Notes__c += 'Created new Contact ID: ' + conPostResponse.upsertResults[0].contactId;

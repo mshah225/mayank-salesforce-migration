@@ -28,7 +28,6 @@ public with sharing class HTTPRestService_EnterpriseContact {
             vars.add(ErrorLogger.convertStringToJSON('Callout Exception Message in GET: ', calloutException.getMessage()));
             ErrorLogger.log(calloutException, vars, false);
         }
-        System.debug(res.getBody());
          if (response != null && response.getStatusCode() == 200) {
             returnValue = response.getBody();
         }

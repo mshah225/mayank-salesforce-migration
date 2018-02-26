@@ -1,4 +1,4 @@
-public class RestCallResponse {
+global class RestCallResponse {
         private String status;
         private String message;
         

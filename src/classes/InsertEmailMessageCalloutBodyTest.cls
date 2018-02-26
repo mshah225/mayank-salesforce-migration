@@ -6,8 +6,8 @@ private class InsertEmailMessageCalloutBodyTest {
     private static Boolean testIsIncoming;
     private static String testFromName;
     private static String testFromAddress;
-    private Static String testToAddress;
-    private Static String testStatus;
+    private static String testToAddress;
+    private static String testStatus;
     
     private static void initTestData() {
         testEmailBody = 'Test Email Body';

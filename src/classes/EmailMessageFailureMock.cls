@@ -6,7 +6,7 @@
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
         res.setBody('{"status":"failure", "message":"Exception Generated"}');
-        res.setStatusCode(200);
+        res.setStatusCode(400);
         return res;
     }
 }

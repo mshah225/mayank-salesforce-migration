@@ -134,7 +134,7 @@ private class Test_ServiceCenter {
         bomgarSession.bomgar__RelatedCase__c = openCases[0].Id;
         insert bomgarSession;
         
-        datetime bomgarEventTime = datetime.now();
+        DateTime bomgarEventTime = DateTime.now();
         bomgar__Event__c bomgarEvent = new bomgar__Event__c();
         bomgarEvent.bomgar__BomgarSession__c = bomgarSession.Id;
         bomgarEvent.bomgar__DestinationValue__c = 'everyone';

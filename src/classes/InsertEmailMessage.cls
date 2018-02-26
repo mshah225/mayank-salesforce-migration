@@ -2,7 +2,7 @@
 global class InsertEmailMessage {
 
     @HttpPost
-    global static RestCalloutResult createEmailMessage(
+    global static RestCallResponse createEmailMessage(
             String emailTextBody, 
             String  parentId, 
             String emailSubject, 
@@ -22,25 +22,15 @@ global class InsertEmailMessage {
         emailResponse.Status = status;
         try {
             insert emailResponse;
-            RestCalloutResult restResponseObject = new RestCalloutResult('success', emailResponse.Id);
+            RestCallResponse restResponseObject = new RestCallResponse('success', emailResponse.Id);
             return restResponseObject;
         } catch (Exception e) {
             List<String> errorCaseVariables = new List<String>();
             errorCaseVariables.add(ErrorLogger.convertStringToJSON('Error Info: ', e.getMessage()));
             errorCaseVariables.add(ErrorLogger.convertStringToJSON('Case Id: ', parentId));
             ErrorLogger.log(e, errorCaseVariables, false);
-            RestCalloutResult restResponseObject = new RestCalloutResult('failure', e.getMessage());
+            RestCallResponse restResponseObject = new RestCallResponse('failure', e.getMessage());
             return restResponseObject;        
         } 
-    }
-    
-    global class RestCalloutResult  {
-        global String status;
-        global String message;
-        
-        public RestCalloutResult(String status, String message) {
-            this.status = status;
-            this.message = message;
-        }
     }
 }

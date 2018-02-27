@@ -44,7 +44,7 @@ public with sharing class HTTPRestService_EnterpriseContact {
         JSONGenerator reqBody = JSON.createGenerator(true);
         reqBody.writeStartObject();
         for (String key : parmMap.keySet()) {
-            reqBody.writeStringField(key, parmMap.get(key));
+            reqBody.writeStringField(key, EncodingUtil.urlDecode(parmMap.get(key), 'UTF-8'));
         }
         
         reqBody.writeEndObject();
@@ -61,9 +61,11 @@ public with sharing class HTTPRestService_EnterpriseContact {
             vars.add(ErrorLogger.convertStringToJSON('Callout Exception Message in POST: ', calloutException.getMessage()));
             ErrorLogger.log(calloutException, vars, false);
         }
+
         if (response != null && response.getStatusCode() == 201) {
             returnValue = response.getBody();
         }
+      
         return returnValue;
     }
 }

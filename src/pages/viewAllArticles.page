@@ -29,14 +29,13 @@
                 emplId="{!emplId}"
                 stopViewAsUrl="{!stopViewAsUrl}"
                 viewAsUrl="{!viewAsUrl}"
-                linkList="{!linkList}"
-                showNavBar="{!showNavBar}" 
-                pageHead="{!pageHead}" />
+                linkList="{!linkList}"/>
 
     <div id="asu_content_well">
         <c:SCPageNotifications viewingAs="{!viewingAs}"
                                firstName="{!firstName}"
                                lastName="{!lastName}"/>
+
         <apex:form id="suggestAnArticle">
             <div class="modal fade"
                  id="suggestAnArticle"
@@ -89,12 +88,10 @@
         </apex:form>
 
         <div class="container">
-            <apex:outputPanel rendered="{!userContact!=null}">
             <ol class="breadcrumb">
                 <li><a href="/{!source}">Back</a></li>
                 <li class="active" style="font-size:10pt;">Search for Knowledge Articles</li>
             </ol>
-            </apex:outputPanel>
 
             <div class="row">
                 <div class="col-md-12">
@@ -163,38 +160,20 @@
                                     </apex:actionStatus>
 
                                     <hr style="margin-top:5px;"/>
-                                    <apex:outputPanel rendered="{!userContact!=null}">
-                                        <knowledge:articleList articleVar="article"
-                                                               pageNumber="{!currentPageNumber}"
-                                                               hasMoreVar="false"
-                                                               keyword="{!searchString}"
-                                                               pageSize="{!pageSize}"
-                                                               sortBy="mostViewed">
-                                            <apex:outputLink value="/akb?id={!article.Id}">
-                                                &#8226;&nbsp;{!article.title}
-                                            </apex:outputLink>
-    
-                                            <div style="height:15px;"></div>
-                                        </knowledge:articleList>
-                                    </apex:outputPanel>
-                                    <apex:outputPanel rendered="{!userContact==null}">
-                                        <knowledge:articleList articleVar="article"
-                                                               language="en_US"
-                                                               pageNumber="1"
-                                                               hasMoreVar="false"
-                                                               keyword="{!searchString}"
-                                                               pageSize="25"
-                                                               categories=""
-                                                               sortBy="mostViewed">
-                                            <apex:outputLink value="/akb?id={!article.Id}">
-                                                &#8226;&nbsp;{!article.title}
-                                            </apex:outputLink>
-    
-                                            <div style="height:15px;"></div>
-                                        </knowledge:articleList>
-                                    </apex:outputPanel>
-                                    
-                                    <apex:outputPanel rendered="{!userContact!=null}" >
+
+                                    <knowledge:articleList articleVar="article"
+                                                           pageNumber="{!currentPageNumber}"
+                                                           hasMoreVar="false"
+                                                           keyword="{!searchString}"
+                                                           pageSize="{!pageSize}"
+                                                           sortBy="mostViewed">
+                                        <apex:outputLink value="/akb?id={!article.Id}">
+                                            &#8226;&nbsp;{!article.title}
+                                        </apex:outputLink>
+
+                                        <div style="height:15px;"></div>
+                                    </knowledge:articleList>
+
                                     <div class="row">
                                         <div class="col-md-12">
                                             <ul class="pagination" style="display:inline">
@@ -234,6 +213,7 @@
                                                         <span class="glyphicon glyphicon-step-forward"
                                                               style="color:#990033;"></span>
                                                     </apex:commandLink>
+
                                                     <apex:outputLink rendered="{!IF(nextRequired
                                                             = true, false, true)}"
                                                                      disabled="true"
@@ -251,9 +231,9 @@
                                                         glyphicon-step-forward"
                                                               style="color:#ccc;"></span>
                                                     </apex:outputLink>
-                                                    
                                                 </li>
                                             </ul>
+
                                             <div class="pull-right visible-sm visible-md
                                                                 visible-lg">
                                                 <button class="btn kbbtn"
@@ -262,6 +242,7 @@
                                                     Suggest An Article
                                                 </button>
                                             </div>
+
                                             <div class="pull-left visible-xs"
                                                  style="clear:both;margin-top:20px;">
                                                 <button class="btn kbbtn"
@@ -272,7 +253,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    </apex:outputPanel>
                                 </apex:pageBlock>
                             </apex:form>
                         </div>

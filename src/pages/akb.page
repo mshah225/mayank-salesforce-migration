@@ -115,30 +115,27 @@
     </head>
     <body>
     <div id="main-search" class="main-search closed"></div>
+
     <c:SCHeader firstName="{!firstName}"
                 lastName="{!lastName}"
                 viewingAs="{!viewingAs}"
                 emplId="{!emplId}"
                 stopViewAsUrl="{!stopViewAsUrl}"
                 viewAsUrl="{!viewAsUrl}"
-                linkList="{!linkList}"
-                showNavBar="{!showNavBar}"
-                pageHead="{!pageHead}" />
+                linkList="{!linkList}"/>
+
     <div id="asu_content_well">
-       
         <c:SCPageNotifications viewingAs="{!viewingAs}"
                                firstName="{!firstName}"
                                lastName="{!lastName}"/>
-        
+
         <div class="container">
-            <apex:outputPanel rendered="{!userContact!=null}">
-                <ol class="breadcrumb">
-                    <li><a href="/{!source}">Back</a></li>
-                    <li class="active" style="font-size:10pt;">View Article</li>
-                </ol>
-            </apex:outputPanel>
+            <ol class="breadcrumb">
+                <li><a href="/{!source}">Back</a></li>
+                <li class="active" style="font-size:10pt;">View Article</li>
+            </ol>
             <div class="row">
-                <apex:outputPanel layout="block" styleClass="col-md-7" style="{!IF(userContact!=null,'','width: 100%')}" >
+                <div class="col-md-7">
                     <div class="box">
                         <div class="header">
                             <h6><b>Knowledge Article &#35;{!article.ArticleNumber}</b></h6>
@@ -264,8 +261,7 @@
                             </apex:outputPanel>
 
                             <hr style="margin-top:10px;margin-bottom:10px;" />
-                            
-                            <!--<apex:outputPanel rendered="{!userContact!=null}" >-->
+
                             <h5><b>Article Feedback</b></h5>
                             <br />
                             <br />
@@ -290,9 +286,9 @@
                                     <p>Thanks for the feedback!</p>
                                 </apex:outputPanel>
                             </apex:form>
-                            <!--</apex:outputPanel>-->
-                            <!--<apex:outputPanel rendered="{!userContact!=null}">-->
+
                             <apex:form id="feedbackNoComments">
+                                <!-- Modal -->
                                 <div class="modal fade"
                                      id="feedbackNoComments"
                                      tabindex="-1" role="dialog"
@@ -317,18 +313,10 @@
                                             <div class="modal-body">
                                                 <p>Please tell us how we can make this article more useful.</p>
                                                 <apex:pageBlock mode="maindetail">
-                                                    <apex:outputPanel rendered="{!userContact!=null}">
-                                                        <apex:inputField id="articleFeedback"
+                                                    <apex:inputField id="articleFeedback"
                                                                      required="true"
                                                                      value="{!feedbackHelpful.Comments__c}"
                                                                      style="width:100%;max-width:400px;height:100px;"/>
-                                                    </apex:outputPanel>
-                                                    <apex:outputPanel rendered="{!userContact==null}">
-                                                        <apex:inputField id="pkbArticleFeedback"
-                                                                     required="true"
-                                                                     value="{!feedbackHelpful.Comments__c}"
-                                                                     style="width:100%;max-width:400px;height:100px;"/>
-                                                    </apex:outputPanel>
                                                 </apex:pageBlock>
                                             </div>
                                             <div class="modal-footer">
@@ -350,12 +338,10 @@
                                     </div>
                                 </div>
                             </apex:form>
-                            <!--</apex:outputPanel>-->
-                            
                         </div>
                     </div>
-                </apex:outputPanel>
-                <apex:outputPanel rendered="{!userContact!=null}">
+                </div>
+
                 <div class="col-md-5">
                     <div class="box">
                         <div class="header">
@@ -446,7 +432,6 @@
                             </div>
                         </div>
                     </apex:form>
-                    <apex:outputPanel rendered="{!userContact!=null}" >
                     <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}"
                                                 NormalPhone="{!NormalPhone}"
                                                 RoverPhone="{!RoverPhone}"
@@ -455,9 +440,7 @@
                                                 changePin="{!changePin}"/>
 
                     <c:SCMyCasesBox />
-                    </apex:outputPanel>
                 </div><!-- end col-md-4 -->
-                </apex:outputPanel>
             </div>
         </div><!-- end row -->
     </div><!-- end ASU Content -->
@@ -492,11 +475,6 @@
     </script>
 
     <script>
-    
-        jQuery(document).ready(function () {
-            jQuery("table").prop('width', 'auto');
-        });
-        
         getLinks();
 
         function getLinks() {

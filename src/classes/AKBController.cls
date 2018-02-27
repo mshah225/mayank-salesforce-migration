@@ -42,7 +42,7 @@ public without sharing class AKBController
             funcGroup = faq.Functional_Group__c;
             artType = faq.ArticleType;
         }
-            
+
         feedbackHelpful = new AKB_Article_Feedback__c(); 
         suggestAnArticle = new Case();
     }
@@ -77,22 +77,17 @@ public without sharing class AKBController
 
             return go;
         }
-        if(userContact!=null) {
-            feedbackHelpful.Contact__c = userContact.Id;
-            feedbackHelpful.Is_AKB_Article_Feedback__c = true;
-        }
-        else {
-            feedbackHelpful.Is_AKB_Article_Feedback__c = false;
-        }
+
         feedbackHelpful.Article_Id__c = ApexPages.currentPage().getParameters().get('id');
         feedbackHelpful.Article_Number__c = article.ArticleNumber;
         feedbackHelpful.Article_Title__c = article.Title;
-            
+        feedbackHelpful.Contact__c = userContact.Id;
         feedbackHelpful.Helpful__c = true;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
         feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
         
-        if (article.ArticleType.equals('FAQ__kav')) {
+        if (article.ArticleType.equals('FAQ__kav'))
+        {
             feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
             feedbackHelpful.Type__c = faq.ArticleType;
         }
@@ -117,24 +112,20 @@ public without sharing class AKBController
 
             return go;
         }
-        if(userContact!=null) {
-            feedbackHelpful.Contact__c = userContact.Id;
-            feedbackHelpful.Is_AKB_Article_Feedback__c = true;
-        }
-        else {
-            feedbackHelpful.Is_AKB_Article_Feedback__c = false;
-        }
+
         feedbackHelpful.Article_Id__c = ApexPages.currentPage().getParameters().get('id');
         feedbackHelpful.Article_Number__c = article.ArticleNumber;
         feedbackHelpful.Article_Title__c = article.Title;
+        feedbackHelpful.Contact__c = userContact.Id;
         feedbackHelpful.Helpful__c = false;
         feedbackHelpful.Session_ID__c = UserInfo.getSessionId();
         feedbackHelpful.Comments__c = feedbackHelpful.Comments__c;
         feedbackHelpful.Article_Author__c = article.CreatedBy.Name;
 
-        if (article.ArticleType.equals('FAQ__kav')) {
-                feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
-                feedbackHelpful.Type__c = faq.ArticleType;
+        if (article.ArticleType.equals('FAQ__kav')) 
+        {
+            feedbackHelpful.Functional_Group__c = faq.Functional_Group__c;
+            feedbackHelpful.Type__c = faq.ArticleType;
         }
 
         insert feedbackHelpful;
@@ -149,24 +140,15 @@ public without sharing class AKBController
     
     public Boolean getfeedbackVisible() 
     {
-        if(userContact!=null) {
-            feedbackGiven = [
-                SELECT Article_Id__c
-                FROM AKB_Article_Feedback__c
-                WHERE Article_Id__c = :ApexPages.currentPage().getParameters().get('id')
-                AND Contact__c = :userContact.Id
-            ];
-        }
-        else {
-            if(ApexPages.currentPage().getParameters().get('Feedback')=='yes')
-                return false;
-            return true;
-        }
+        
+        feedbackGiven = [
+            SELECT Article_Id__c
+            FROM AKB_Article_Feedback__c
+            WHERE Article_Id__c = :ApexPages.currentPage().getParameters().get('id')
+            AND Contact__c = :userContact.Id
+        ];
 
-        if(feedbackGiven!=null){
-            return (feedbackGiven.size() > 0) ? false : true;
-        }
-        return true;
+        return (feedbackGiven.size() > 0) ? false : true;
     }
     
     public void changeLink() 

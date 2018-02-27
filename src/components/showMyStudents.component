@@ -19,14 +19,13 @@
     <apex:attribute name="showSearch" type="boolean" description="" default="false" />
     <apex:attribute name="showRefresh" type="boolean" description="" default="false" />
     
-    
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
-        <apex:form id="tableForm">
+        <apex:form >
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group"> 
                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px"
-                                         onclick="checkSeletedCase(this, '{!$Component.tableForm}')" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
+                                         onclick="toggleEmailModal(this)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                     </apex:outputPanel>
                     <apex:outputPanel styleClass="input-group" style="width:100%;max-width:250px; margin-top: 5px;" rendered="{! showSearch}">
                         <apex:inputText id="myStudentsInput"
@@ -71,10 +70,6 @@
                     
                 </div>
                 
-                <div id="divForm" class="toolbar" >
-                    <h5 id="errorMsg" class="divForm" style="color:red;display:none;">Please select at least one student.</h5>
-                </div>
-                
                 <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
                     <apex:commandLink action="{!setCon.previous}" value="<< Prev" rendered="{!setCon.HasPrevious}"
                                       style="float:left;" styleClass="standardLink" reRender="rerenderMe"
@@ -95,6 +90,8 @@
                                       status="ASUAjaxStatus" />
                 </apex:outputPanel>
             </div>
+        </apex:form>
+        <apex:form id="tableForm">
             <div id="studentModal" class="modal fade emailModal" role="dialog">
                 <div class="modal-dialog" role="document" style ="padding-left: 5%;">
                     <apex:outputPanel id="EmailModalContent">

@@ -30,7 +30,7 @@
 	                 id="asu_print_logo"
 	                 src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_mobile_white.png" />
 	
-	            <apex:outputPanel rendered="{! NOT(isUnsubscribeGuestUser)}" >
+	            <apex:outputPanel rendered="{! NOT(isUnsubscribeGuestUser)}">
 		            <div class="f-navicon"
 		                 id="asu_mobile_button"
 		                 onclick="javascript:ASUHeader.toggleASU();">

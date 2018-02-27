@@ -25,96 +25,94 @@
     <apex:attribute name="showSearch" type="boolean" description="" default="false" />
     <apex:attribute name="showRefresh" type="boolean" description="" default="false" />
     <apex:attribute name="showCivitas" type="boolean" description="" default="false"/>
+
     
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
-        <apex:form id="tableForm">
-        <apex:actionRegion >
+        <apex:form >
             <div class="headerFooter">
-            <div class="toolbar" >
-                <apex:outputPanel layout="inline" styleClass="button-group">
-                    <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px; margin-top: 5px;"
-                                     onclick="toggleTransferModal(this, '{!$Component.tableForm}')" rendered="{! showTransfer}">Mass Transfer</apex:outputLink>
-                    <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
-                                     onclick="checkSeletedCase(this, '{!$Component.tableForm}', adjustTextHeight)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
-                    <apex:commandLink styleClass="btn btn-default asu-primary" style="margin-top: 5px;"
-                                      rendered="{!showRefresh}" reRender="rerenderMe" status="ASUAjaxStatus">
-                        <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
-                        <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg "></i>
-                    </apex:commandLink>
-                </apex:outputPanel>
-                <apex:outputPanel layout="block" styleClass="input-group" style="max-width:250px; margin-top: 5px;" rendered="{! showSearch}">
-                    <apex:inputText id="myStudentsInput"
-                                    value="{!searchString}"
-                                    html-placeholder="Filter Students"
-                                    onkeypress="return noenter(event);"
-                                    styleClass="searchBox"
-                                    style="padding:6px 12px;vertical-align:middle;border-radius:4px;border:solid 1px #ccc;max-width:300px;width:100%;font-size:11pt;border-top-right-radius:0;border-bottom-right-radius:0;border-right:none;"/>
-                    <span class="input-group-addon">
-                        <apex:commandLink id="searchStudentsBtn" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                <div class="toolbar" >
+                    <apex:outputPanel layout="inline" styleClass="button-group">
+                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px; margin-top: 5px;"
+                                         onclick="toggleTransferModal(this)" rendered="{! showTransfer}">Mass Transfer</apex:outputLink>
+                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
+                                         onclick="toggleEmailModal(this, adjustTextHeight)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
+                        <apex:commandLink styleClass="btn btn-default asu-primary" style="margin-top: 5px;"
+                                          rendered="{! showRefresh}" reRender="rerenderMe" status="ASUAjaxStatus">
+                            <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
+                            <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg "></i>
                         </apex:commandLink>
-                    </span>
-                    
-                    <script>
-                    function focusSearch() {
-                        var input = document.getElementById('{!$Component.myStudentsInput}');
-                        input.select();
-                        var tmpStr = input.value;
-                        input.value = '';
-                        input.value = tmpStr;
-                    }
-                    
-                    jQuery(document).ready(function(){
-                        var search = document.getElementById('{!$Component.myStudentsInput}');
-                        jQuery(search).keypress(function( event ) {
-                            if ( event.which == 13 ) {
-                                event.preventDefault();
-                                var ele = document.getElementById('{!$Component.searchStudentsBtn}');
-                                ele.click();
-                                focusSearch();
-                            }                          
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" styleClass="input-group" style="max-width:250px; margin-top: 5px;" rendered="{! showSearch}">
+                        <apex:inputText id="myStudentsInput"
+                                        value="{!searchString}"
+                                        html-placeholder="Filter Students"
+                                        onkeypress="return noenter(event);"
+                                        styleClass="searchBox"
+                                        style="padding:6px 12px;vertical-align:middle;border-radius:4px;border:solid 1px #ccc;max-width:300px;width:100%;font-size:11pt;border-top-right-radius:0;border-bottom-right-radius:0;border-right:none;"/>
+                        <span class="input-group-addon">
+                            <apex:commandLink id="searchStudentsBtn" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </apex:commandLink>
+                        </span>
+                        
+                        <script>
+                        function focusSearch() {
+                            var input = document.getElementById('{!$Component.myStudentsInput}');
+                            input.select();
+                            var tmpStr = input.value;
+                            input.value = '';
+                            input.value = tmpStr;
+                        }
+                        
+                        jQuery(document).ready(function(){
+                            var search = document.getElementById('{!$Component.myStudentsInput}');
+                            jQuery(search).keypress(function( event ) {
+                                if ( event.which == 13 ) {
+                                    event.preventDefault();
+                                    var ele = document.getElementById('{!$Component.searchStudentsBtn}');
+                                    ele.click();
+                                    focusSearch();
+                                }                          
+                            });
                         });
-                    });
-                    </script>
+                        </script>
+                        
+                        <span class="input-group-addon">
+                            <apex:commandLink action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;">
+                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                            </apex:commandLink>
+                        </span>
+                    </apex:outputPanel>    
+                </div>
+                <div style="height: 1px; width = 100%">
                     
-                    <span class="input-group-addon">
-                        <apex:commandLink action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;">
-                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                        </apex:commandLink>
-                    </span>
-                </apex:outputPanel>    
+                </div>
+                <div>
+                
+                <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
+                    <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}"
+                                      style="float:left;" styleClass="standardLink" reRender="rerenderMe"
+                                      status="ASUAjaxStatus" />
+                    <apex:outputText value="Page Size " />
+                    <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
+                        <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)"
+                                            status="ASUAjaxStatus" />
+                        <apex:selectOption itemValue="25" itemLabel="25" />
+                        <apex:selectOption itemValue="50" itemLabel="50" />
+                        <apex:selectOption itemValue="100" itemLabel="100" />
+                    </apex:selectList>
+                    <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
+                    <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
+                    <apex:outputText value="{!setCon.ResultSize} Records" />
+                    <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}"
+                                      style="float:right;" styleClass="standardLink" reRender="rerenderMe"
+                                      status="ASUAjaxStatus" />
+                </apex:outputPanel>
+                
+                </div>
             </div>
-    
-            <div id="divForm" class="toolbar" >
-                <h5 id="errorMsg" class="divForm" style="color:red;display:none;">Please select at least one student.</h5>
-            </div>
-            <div>
-            
-            <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
-                <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}"
-                                  style="float:left;" styleClass="standardLink" reRender="rerenderMe"
-                                  status="ASUAjaxStatus" />
-                <apex:outputText value="Page Size " />
-                <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                    <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)"
-                                        status="ASUAjaxStatus" />
-                    <apex:selectOption itemValue="25" itemLabel="25" />
-                    <apex:selectOption itemValue="50" itemLabel="50" />
-                    <apex:selectOption itemValue="100" itemLabel="100" />
-                </apex:selectList>
-                <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
-                <apex:outputText value="{!setCon.ResultSize} Records" />
-                <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}"
-                                  style="float:right;" styleClass="standardLink" reRender="rerenderMe"
-                                  status="ASUAjaxStatus" />
-            </apex:outputPanel>
-            
-            </div>
-        </div>
-        </apex:actionRegion>
-        
-        <apex:actionRegion >
+        </apex:form>
+        <apex:form id="tableForm">
             <apex:dataTable value="{!caseList}" var="c" styleClass="ASUTable">
                 <apex:column headerClass="ASUColumnHead centerText" styleClass="ASUColumn centerText" rendered="{! showSelection}" >
                     <apex:inputCheckbox value="{!c.selected}" styleClass="selectBox" onchange="handleSelectAll(this);" />
@@ -384,9 +382,7 @@
                     </apex:outputPanel>
                 </div>
             </div>
-        </apex:actionRegion>
         </apex:form>
-        
         <apex:form >
             <div class="headerFooter">
                 <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}"

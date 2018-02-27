@@ -189,6 +189,7 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                     setDetailError(cud, 'Error parsing Contact service response: ' + e.getMessage());
                     return false;
                 }
+                System.debug('conResponse: ' + conResponse);
 
                 if (conResponse.contactDetails != null && conResponse.contactDetails.size() > 0) {
                     if (!String.isBlank(conResponse.contactDetails[0].contactId)) {
@@ -216,7 +217,6 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
                             setDetailError(cud, 'Error parsing Contact POST service response: ' + e.getMessage());
                             return false;
                         }
-
                         if (conPostResponse.upsertResults != null && !String.isBlank(conPostResponse.upsertResults[0].contactId)) {
                             cud.Contact__c = conPostResponse.upsertResults[0].contactId;
                             cud.Processing_Notes__c += 'Created new Contact ID: ' + conPostResponse.upsertResults[0].contactId;

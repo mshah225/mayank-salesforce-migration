@@ -1,25 +1,5 @@
 @isTest
 public with sharing class Test_CaseHandler {
-    private static Id registrarQueue;
-    private static Id financialAidQueue;
-
-    private static void setfinancialAidQueue() {
-        financialAidQueue = [
-            SELECT Id
-            FROM Group
-            WHERE Name = 'Financial Aid (Case)'
-            AND Type = 'Queue' LIMIT 1
-        ].Id;
-    }
-    
-    private static void setRegistrarQueue() {
-        registrarQueue = [
-            SELECT Id
-            FROM Group
-            WHERE Name = 'University Registrar Services (Case)'
-            AND Type = 'Queue' LIMIT 1
-        ].Id;
-    }
 
     private static List<Contact> createContacts(Integer qty) {
         List<Contact> contactList = new List<Contact>();
@@ -62,11 +42,13 @@ public with sharing class Test_CaseHandler {
         return newCase;
     }
 
-    private static Contact createContact() {
+    private static Contact createContact()
+    {
         Contact newContact = new Contact(
             LastName = 'Contact',
             EMPLID__c = '9999999999'
         );
+
         insert newContact;
         return newContact;
     }
@@ -1023,174 +1005,222 @@ public with sharing class Test_CaseHandler {
         }
     }
 
-    @isTest
-    private static void financialAidChangeStateWithSufficientLinks() {
-        setfinancialAidQueue();
-        Contact testContact = createContact();
-        Case caseUnderTest = createCase(financialAidQueue, testContact);
-        caseUnderTest.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
-        caseUnderTest.Number_of_Files__c = '3';
+    static testmethod void TestFAChangeStateWithSufficientLinks()
+    {
+        Id fa_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'Financial Aid (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        Contact con = createContact();
+        Case c = createCase(fa_id, con);
+        c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
+        c.Number_of_Files__c = '3';
 
         Test.startTest();
-        update caseUnderTest;
+        LogSuite.activateTestFlowSuite('Test FA Change State With Sufficient Links');
+        update c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
 
-        caseUnderTest = [
+        Case stat = [
             SELECT Status, Visible_by_Contact__c
             FROM Case
-            WHERE Id = :caseUnderTest.Id LIMIT 1
+            WHERE Id = :c.Id LIMIT 1
         ];
-        System.assertEquals('Closed: Resolved', caseUnderTest.Status);
-        System.assertEquals(FALSE, caseUnderTest.Visible_by_Contact__c);
+
+        System.assert(stat.Status == 'Closed: Resolved');
+        System.assert(stat.Visible_by_Contact__c == FALSE);
     }
 
-    @isTest
-    private static void createWebformsCase() {
-        setRegistrarQueue();
-        Contact testContact = createContact();
+    static testmethod void testCreateWebformsCase()
+    {
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        Contact con = createContact();
 
         Test.startTest();
-        Case caseUnderTest = createCase(registrarQueue, testContact);
+        LogSuite.activateTestFlowSuite('Test Create Webforms Case');
+        Case c = createCase(reg_id, con);
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
 
-        caseUnderTest = [
+        Case stat = [
             SELECT ContactId, Status, Visible_by_Contact__c
             FROM Case
-            WHERE Id = :caseUnderTest.Id 
-            LIMIT 1
+            WHERE Id = :c.Id LIMIT 1
         ];
-        System.assertEquals(testContact.Id, caseUnderTest.ContactId);
+
+        System.assert(stat.ContactId == con.Id);
     }
 
-    @isTest
-    private static void createWebformsCaseCreateContact() {
-        setRegistrarQueue();
-        Contact testContact = createContact();
-        Case caseUnderTest = new Case(
-            Subject = 'Test Subject%ASURITE:1234567890%Queue:' + registrarQueue + '%First:Test%Last:Contact',
+    static testmethod void testCreateWebformsCaseCreateContact()
+    {
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        Contact con = createContact();
+        Test.startTest();
+        LogSuite.activateTestFlowSuite('Test Create Webforms Case Create Contact');
+        Case c = new Case(
+            Subject = 'Test Subject%ASURITE:1234567890%Queue:' + reg_id + '%First:Test%Last:Contact',
             Description = 'Test Description',
             Status = 'Processing'
         );
-        
-        Test.startTest();
-        insert caseUnderTest;
+
+        insert c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
-        
-        caseUnderTest = [
+        Case stat = [
             SELECT ContactId, Status, Visible_by_Contact__c
             FROM Case
-            WHERE Id = :caseUnderTest.Id 
-            LIMIT 1
+            WHERE Id = :c.Id LIMIT 1
         ];
-        testContact = [
-            SELECT FirstName, LastName
-            FROM Contact
-            WHERE Id = :caseUnderTest.ContactId 
-            LIMIT 1
-        ];
-        System.assertNotEquals(null, caseUnderTest.ContactId);
-        System.assertEquals('Test', testContact.FirstName);
-        System.assertEquals('Contact', testContact.LastName);
+
+        System.assert(stat.ContactId != null);
+
+        Contact newCon = [SELECT Id, FirstName, LastName FROM Contact WHERE Id = :stat.ContactId LIMIT 1];
+        System.assert(newCon.FirstName == 'Test');
+        System.assert(newCon.LastName == 'Contact');
     }
 
-    @isTest
-    private static void createWebformsCaseNoContact() {
-        setRegistrarQueue();
-        Contact testContact = createContact();
+    static testmethod void testCreateWebformsCaseNoContact()
+    {
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
 
-        Case caseUnderTest = new Case(
-            Subject = 'Test Subject%ASURITE:%Queue:' + registrarQueue + '%First:%Last:',
+        Contact con = createContact();
+
+        Test.startTest();
+        LogSuite.activateTestFlowSuite('Test Create Webforms Case No Contact');
+        Case c = new Case(
+            Subject = 'Test Subject%ASURITE:%Queue:' + reg_id + '%First:%Last:',
             Description = 'Test Description',
             Status = 'Processing'
         );
-            
-        Test.startTest();
-        insert caseUnderTest;
+
+        insert c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
 
-        caseUnderTest = [
+        Case stat = [
             SELECT ContactId, Status, Visible_by_Contact__c
             FROM Case
-            WHERE Id = :caseUnderTest.Id LIMIT 1
+            WHERE Id = :c.Id LIMIT 1
         ];
 
-        System.assertEquals(null, caseUnderTest.ContactId);
+        System.assert(stat.ContactId == null);
     }
 
-    @isTest
-    private static void registrarChangeStateWithSufficientLinks() {
-        setRegistrarQueue();
-        Contact testContact = createContact();
-        Case caseUnderTest = createCase(registrarQueue, testContact);
-        caseUnderTest.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
-        caseUnderTest.Number_of_Files__c = '3';
+    static testmethod void TestRegChangeStateWithSufficientLinks()
+    {
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        Contact con = createContact();
+        Case c = createCase(reg_id, con);
+        c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
+        c.Number_of_Files__c = '3';
 
         Test.startTest();
-        update caseUnderTest;
+        LogSuite.activateTestFlowSuite('Test Reg Change State With Sufficient Links');
+        update c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
 
-        caseUnderTest = [
+        Case stat = [
             SELECT Status, Visible_by_Contact__c
             FROM Case
-            WHERE Id = :caseUnderTest.Id LIMIT 1
+            WHERE Id = :c.Id LIMIT 1
         ];
 
-        System.assertEquals('New', caseUnderTest.Status);
-        System.assertEquals(TRUE, caseUnderTest.Visible_by_Contact__c);
+        System.assert(stat.Status == 'New');
+        System.assert(stat.Visible_by_Contact__c == TRUE);
     }
 
-    @isTest
-    private static void noChangeStateWithoutSufficientLinks() {
-        setRegistrarQueue();
-        Contact testContact = createContact();
-        Case caseUnderTest = createCase(registrarQueue, testContact);
-        caseUnderTest.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
-        caseUnderTest.Number_of_Files__c = '5';
+    static testmethod void TestChangeStateWithoutSufficientLinks()
+    {
+        Id reg_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'University Registrar Services (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
+        Contact con = createContact();
+        Case c = createCase(reg_id, con);
+        c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
+        c.Number_of_Files__c = '5';
 
         Test.startTest();
-        update caseUnderTest;
+        LogSuite.activateTestFlowSuite('Test Change State With Sufficient Links');
+        update c;
+        LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
 
-        caseUnderTest = [SELECT Status FROM Case WHERE Id = :caseUnderTest.Id LIMIT 1];
-        System.assertEquals('Processing', caseUnderTest.Status);
+        Case stat = [SELECT Status FROM Case WHERE Id = :c.Id LIMIT 1];
+        System.assert(stat.Status == 'Processing');
     }
 
-    @isTest
-    private static void rejectWebformsCaseReopen() {
-        setfinancialAidQueue();
+    static testmethod void TestRejectWebformsCaseReopen()
+    {
+        Id fa_id = [
+                SELECT Id
+                FROM Group
+                WHERE Name = 'Financial Aid (Case)'
+                AND Type = 'Queue' LIMIT 1
+        ].Id;
+
         User apiDrupalUser = [
             SELECT Id
             FROM User
             WHERE Name = 'API ASU DRUPAL'
         ];
 
-        Contact testContact = createContact();
-        Case caseUnderTest = createCase(financialAidQueue, testContact);
-        caseUnderTest.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
-        caseUnderTest.Number_of_Files__c = '3';
-        update caseUnderTest;
+        Contact con = createContact();
+        Case c = createCase(fa_id, con);
+        c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
+        c.Number_of_Files__c = '3';
+        update c;
 
-        caseUnderTest.Subject = 'Test Subject%ASURITE:' + testContact.EMPLID__c + 
-            '%Queue:' + financialAidQueue + 
-            '%First:' + testContact.FirstName + 
-            '%Last:' + testContact.LastName;
-        caseUnderTest.Status = 'Processing';
-        caseUnderTest.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
         Test.startTest();
-        System.runAs(apiDrupalUser) {
-            update caseUnderTest;
+        System.runAs(apiDrupalUser)
+        {
+            c.Subject = 'Test Subject%ASURITE:' + con.EMPLID__c + '%Queue:' + fa_id + '%First:' + con.FirstName + '%Last:' + con.LastName;
+            c.Status = 'Processing';
+            c.Deep_Links__c = 'field_1:<a href="http://www.google.com">Click Here</a><br />field_2:<a href="http://www.google.com">Click Here</a><br />field_3:<a href="http://www.google.com">Click Here</a><br />';
+            update c;
         }
         Test.stopTest();
 
-        caseUnderTest = [
+        c = [
             SELECT Status, Subject
             FROM Case
-            WHERE Id = :caseUnderTest.Id
+            WHERE Id = :c.Id
             LIMIT 1
         ];
 
-        System.assertEquals('Closed: Resolved', caseUnderTest.Status);
-        System.assertEquals('Test Subject', caseUnderTest.Subject);
+        System.assertEquals('Closed: Resolved', c.Status);
+        System.assertEquals('Test Subject', c.Subject);
     }
 
     private static testMethod void testAssignRTAdOutreach() {

@@ -138,7 +138,6 @@ public without sharing class  ErrorLogger {
                             newCase.description = newCase.Description + '\n' + s;
                         }
                     }
-                    newCase.description = newCase.description.left(32000);
                     
                     debug(ex, variables);
                     insert newCase;

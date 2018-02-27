@@ -16,19 +16,20 @@ public with sharing class HTTPRestService_EnterpriseContact {
     public String get(String queryString) {
         String returnValue = '';
         HttpRequest req = new HttpRequest();
-        HTTPResponse res;
+        HTTPResponse response;
         String endPointWithParms = 'callout:Mule_ESB_Contact_Service?' + queryString;
         req.setEndpoint(endPointWithParms);
         req.setMethod('GET');
         Http http = new Http();
         try {
-            res = http.send(req);
-        } catch (System.CalloutException e) {
-            System.debug('Callout Error: ' + e);
+            response = http.send(req);
+        } catch (System.CalloutException calloutException) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('Callout Exception Message in GET: ', calloutException.getMessage()));
+            ErrorLogger.log(calloutException, vars, false);
         }
-        System.debug(res.getBody());
-        if (res.getStatusCode() == 200) {
-            returnValue = res.getBody();
+         if (response != null && response.getStatusCode() == 200) {
+            returnValue = response.getBody();
         }
 
         return returnValue;
@@ -37,7 +38,7 @@ public with sharing class HTTPRestService_EnterpriseContact {
     public String post(Map<String, String> parmMap) {
         String returnValue = '';
         HttpRequest req = new HttpRequest();
-        HTTPResponse res;
+        HTTPResponse response;
         String endPoint = 'callout:Mule_ESB_Contact_Service';
 
         JSONGenerator reqBody = JSON.createGenerator(true);
@@ -54,16 +55,15 @@ public with sharing class HTTPRestService_EnterpriseContact {
         req.setBody(reqBody.getAsString());
         Http http = new Http();
         try {
-            res = http.send(req);
-        } catch (System.CalloutException e) {
-            System.debug('Callout Error: ' + e);
+            response = http.send(req);
+        } catch (System.CalloutException calloutException) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('Callout Exception Message in POST: ', calloutException.getMessage()));
+            ErrorLogger.log(calloutException, vars, false);
         }
-        System.debug(res.getBody());
-        //if (res.getStatusCode() == 200)
-        //{
-            returnValue = res.getBody();
-        //}
-
+        if (response != null && response.getStatusCode() == 201) {
+            returnValue = response.getBody();
+        }
         return returnValue;
     }
 }

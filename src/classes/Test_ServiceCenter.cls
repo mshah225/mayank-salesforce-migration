@@ -561,8 +561,10 @@ private class Test_ServiceCenter {
         }
         Test.stopTest();
         System.assertEquals(checkCase.Id, caseOnTestUser.Id);
-
-    @isTest static void testSCExceptionCases(){
+    }
+    
+    @isTest 
+    private static void testSCExceptionCases(){
         User testUser = [
             SELECT Id, ContactId, Contact.BirthDate, Contact.Self_Service_PIN__c, Contact.FirstName, Contact.LastName
             FROM User

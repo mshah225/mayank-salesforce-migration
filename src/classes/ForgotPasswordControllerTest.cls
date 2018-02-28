@@ -1,10 +1,10 @@
 @IsTest 
-public with sharing class ForgotPasswordControllerTest {
+private with sharing class ForgotPasswordControllerTest {
      @IsTest
-     public static void testForgotPasswordController() {
+     private static void testForgotPasswordController() {
         ForgotPasswordController controller = new ForgotPasswordController();
         controller.username = 'test@salesforce.com';     	
     
-        System.assertEquals(controller.forgotPassword(),null); 
+        System.assertEquals(null, controller.forgotPassword()); 
     }
 }

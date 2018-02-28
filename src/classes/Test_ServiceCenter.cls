@@ -535,6 +535,27 @@ private class Test_ServiceCenter {
         System.assertEquals(checkCase.Id, caseOnTestUser.Id);
     }
     
+    @isTest 
+    private static void testSCExceptionCases(){
+        User testUser = [
+            SELECT Id, ContactId, Contact.BirthDate, Contact.Self_Service_PIN__c, Contact.FirstName, Contact.LastName
+            FROM User
+            WHERE FirstName = 'Test0'
+        ];
+
+        System.runAs(testUser){
+            sc = new ServiceCenter();
+            sc.newPin = testUser.Contact.Self_Service_PIN__c + 1;
+            sc.UserContact.LastName = null;
+            Test.startTest();
+            sc.changePin();
+            Test.stopTest();
+        }
+        
+        List<Case> lstCase = [Select Id, Subject, Description from Case where Origin__c = 'Error Logger'];
+        System.assertEquals(1, lstCase.size());
+    }
+    
     @isTest
     private static void fetchEmailMessagesWithoutMyASUViewAs() {
         initTestData('Test0');

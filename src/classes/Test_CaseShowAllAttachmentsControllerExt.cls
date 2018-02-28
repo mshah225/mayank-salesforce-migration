@@ -47,7 +47,8 @@ private class Test_CaseShowAllAttachmentsControllerExt {
 		return attachToInsert;
 	}
 
-	@isTest static void testConstructor() {
+	@isTest 
+	private static void testConstructor() {
 		setUp();
 		ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);
 		Test.startTest();
@@ -55,7 +56,8 @@ private class Test_CaseShowAllAttachmentsControllerExt {
 		Test.stopTest();
 	}
 	
-	@isTest static void testGetAllAttachments() {
+	@isTest 
+	private static void testGetAllAttachments() {
 		Attachment[] expectedAttachments = createEmailMessagesAndAttachments(10);
 		ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);
 		Test.startTest();
@@ -67,13 +69,23 @@ private class Test_CaseShowAllAttachmentsControllerExt {
 		Test.stopTest();
 	}
 	
-	@isTest static void testGetContactName() {
+	@isTest 
+	private static void testGetContactName() {
 		setUp();
 		ApexPages.StandardController stanController = new ApexPages.StandardController(testCase);
 		Test.startTest();
 		CaseShowAllAttachmentsControllerExt testControllerExt = new CaseShowAllAttachmentsControllerExt(stanController);
 		String result = testControllerExt.getContactName();
 		System.assertEquals('Test Guy', result);
+		Test.stopTest();
+	}
+	
+	@isTest
+	private static void retrieveCaseFailure() {
+		setup();
+		ApexPages.StandardController stanController = null;
+		Test.startTest();
+		CaseShowAllAttachmentsControllerExt testControllerExt = new CaseShowAllAttachmentsControllerExt(stanController);
 		Test.stopTest();
 	}
 }

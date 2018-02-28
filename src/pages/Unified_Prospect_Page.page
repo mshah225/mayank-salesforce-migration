@@ -428,7 +428,7 @@
                                         </apex:outputLabel>
                                         <br />
                                         <apex:inputField id="cFuncGroup"
-                                                         value="{!caseC.Functional_Group__c}"/>
+                                                         value="{!caseC.CC_Functional_Group__c}"/>
                                         <br />
                                         <br />
                                         <apex:inputField id="cStatus" 
@@ -437,7 +437,7 @@
 
                                         <apex:outputLabel for="cCate">Category:</apex:outputLabel>
                                         <br />
-                                        <apex:inputField id="cCate" value="{!caseC.Category__c}"/>
+                                        <apex:inputField id="cCate" value="{!caseC.CC_Category__c}"/>
                                         <br />
                                         <br />
                                         <apex:outputLabel for="cSubCate">
@@ -445,7 +445,7 @@
                                         </apex:outputLabel>
                                         <br />
                                         <apex:inputField id="cSubCate"
-                                                         value="{!caseC.Sub_Category__c}"/>
+                                                         value="{!caseC.CC_Sub_Category__c}"/>
                                         <br />
                                         <br />
                                     </td>

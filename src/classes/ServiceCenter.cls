@@ -12,6 +12,7 @@ public with sharing class ServiceCenter
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
     public Case suggestAnArticle { get; set; }
+    public String suggestedArticleDescription { get; set; }
     public Contact userContact;
     public Decimal newPin { get; set; }
     public String firstName { get; set; }
@@ -115,13 +116,27 @@ public with sharing class ServiceCenter
         }
 
         suggestAnArticle.Subject = 'Suggest An Article';
-        suggestAnArticle.Description = suggestAnArticle.Description;
+        suggestAnArticle.Description = suggestedArticleDescription;
         suggestAnArticle.ContactId = userContact.Id;
-        suggestAnArticle.Functional_Group__c = 'Student-Centric Initiatives';
-        suggestAnArticle.Category__c = 'Knowledge';
+        suggestAnArticle.CC_Functional_Group__c = [
+            SELECT Id 
+            FROM Case_Classification__c 
+            WHERE RecordType.Name = 'Functional Group' 
+                AND Active__c = true 
+                AND Name = 'Student-Centric Initiatives' 
+            LIMIT 1
+        ].Id;
+        suggestAnArticle.CC_Category__c = [
+            SELECT Id 
+            FROM Case_Classification__c 
+            WHERE RecordType.Name = 'Category' 
+                AND Active__c = true 
+                AND Name = 'Knowledge' 
+                AND Parent__c =: suggestAnArticle.CC_Functional_Group__c 
+            LIMIT 1
+        ].Id;
         suggestAnArticle.Origin__c = 'My ASU';
         suggestAnArticle.Visible_by_Contact__c = false;
-
         suggestAnArticle.OwnerId = [
             SELECT Id
             FROM Group
@@ -192,29 +207,39 @@ public with sharing class ServiceCenter
     }
 
     public PageReference changePin(){
-        if (viewingAs){
-            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
-            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
-            go.setRedirect(true);
-            return go;
+        if (viewingAs) {
+            return clonePageAndAddMasqScopeCookie();
+        } else {
+            return refreshPageWithPinUpdate();
         }
-
-        if (origPin == newPin){
+    }
+    
+    private PageReference clonePageAndAddMasqScopeCookie() {
+        PageReference copyOfCurrentPage = new PageReference(ApexPages.currentPage().getUrl());
+        return redirectWithParams(copyOfCurrentPage, 'masqScopeIdCookie', masqScopeIdCookie);
+    }
+    
+    private PageReference refreshPageWithPinUpdate() {
+        if (userContact == null || origPin == newPin || !ContactService.isPinValid(newPin, userContact.Birthdate)) {
             return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-        }
-
-        if (ContactService.isPinValid(newPin, userContact.Birthdate)){
+        } else {
             userContact.Self_Service_PIN__c = newPin;
-            if (userContact.PIN_lockout__c == true){
+            if (userContact.PIN_lockout__c == true) {
                 userContact.PIN_lockout__c = false;
             }
-            update userContact;
-            return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
+            
+            try {
+                update userContact;
+                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
+            } catch(Exception e) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
+                vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
+                vars.add(ErrorLogger.convertStringToJSON('Employee Id',userContact.EMPLId__c));
+                ErrorLogger.log(e,vars,false);
+                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
+            }
         }
-        else{
-            return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-        }
-
     }
 
     public PageReference redirectWithParams(PageReference page, String param, String value){

@@ -317,9 +317,9 @@ public with sharing class CaseTransferMassController
             {
                 Case_Assignment_Rule__c selectedCAR = CARService.getCAR(selectedId);
                 c.OwnerId = selectedCAR.Queue_ID__c;
-                c.Functional_Group__c = selectedCAR.Functional_Group__c;
-                c.Category__c = selectedCAR.Category__c;
-                c.Sub_Category__c = selectedCAR.Sub_Category__c;
+                c.CC_Functional_Group__c = selectedCAR.CC_Functional_Group__c;
+                c.CC_Category__c = selectedCAR.CC_Category__c;
+                c.CC_Sub_Category__c = selectedCAR.CC_Sub_Category__c;
                 c.Case_Feed_Email__c = selectedCAR.Email_Address__c;
                 c.Case_Feed_Email_Template_Id__C = selectedCar.Case_Feed_Email_Template_Id__c;
                 c.Campus__c = selectedCAR.Campus__c;

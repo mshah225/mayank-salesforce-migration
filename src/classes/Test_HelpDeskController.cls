@@ -12,6 +12,7 @@ private class Test_HelpDeskController
         testContacts[1].LastName = 'Caller';
 
         insert testContacts;
+		TestDataFactory.createFunctionalGroup('Help Desk');
     }
 
     @isTest static void testCreateContactCreateCaseSaveCase()

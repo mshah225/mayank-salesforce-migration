@@ -658,9 +658,13 @@ a.action:hover,
 
 /* Mats Changes for PKB */
 
-.knowledgeTab .secondaryPalette, .individualPalette .knowledgeBlock .secondaryPalette {
-background-color: #990033;
-border-color: #990033;
+.knowledgeTab .secondaryPalette {
+	background-color: #990033;
+	border-color: #990033;
+}
+
+.individualPalette .knowledgeBlock .secondaryPalette {
+	border-color: #990033;
 }
 
 /*

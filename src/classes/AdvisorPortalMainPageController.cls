@@ -41,8 +41,13 @@ public class AdvisorPortalMainPageController {
                     viewAsOptions.add(new selectOption('', '', true));
                     viewAsOptions.add(new selectOption('', '--My Committees--', true));
                     
+                    List<selectOption> sortableCommittee = new List<selectOption>();
                 	for (Id i : myCommittees.keySet()) {
-                        viewAsOptions.add(new selectOption(i, myCommittees.get(i)));
+                        sortableCommittee.add(new selectOption(i, myCommittees.get(i)));
+                    }
+                    sortableCommittee = sortSelectOptionList(sortableCommittee);
+                    for(Integer i = 0; i < sortableCommittee.size(); i++){
+                        viewAsOptions.add(sortableCommittee[i]);
                     }
             	}
                 
@@ -56,10 +61,15 @@ public class AdvisorPortalMainPageController {
                         viewAsOptions.add(new selectOption('', '--College Committees--', true));
                     }
                     
+                    List<selectOption> sortableCommittee = new List<selectOption>();
                     for (Id i : mySubordinateCommittees.keySet()) {
-                        viewAsOptions.add(new selectOption(i, mySubordinateCommittees.get(i)));
+                        sortableCommittee.add(new selectOption(i, mySubordinateCommittees.get(i)));
                     }
-                }
+                    sortableCommittee = sortSelectOptionList(sortableCommittee);
+                    for(Integer i = 0; i < sortableCommittee.size(); i++){
+                        viewAsOptions.add(sortableCommittee[i]);
+                    }
+                } 
                 
 				// Insert all of the users for all of the comittees for which I am a manager
                 if (mySubordinates.size() > 0) {
@@ -71,8 +81,13 @@ public class AdvisorPortalMainPageController {
                         viewAsOptions.add(new selectOption('', '--College Advisors--', true));
                     }
                     
+                    List<selectOption> sortableAdvisor = new List<selectOption>();
                     for (Id i : mySubordinates.keySet()) {
-                        viewAsOptions.add(new selectOption(i, mySubordinates.get(i)));
+                        sortableAdvisor.add(new selectOption(i, mySubordinates.get(i)));
+                    }
+                    sortableAdvisor = sortSelectOptionList(sortableAdvisor);
+                    for(Integer i = 0; i < sortableAdvisor.size(); i++){
+                        viewAsOptions.add(sortableAdvisor[i]);
                     }
                 }
             }
@@ -84,7 +99,7 @@ public class AdvisorPortalMainPageController {
     }
     
     /*
-     * List of My Committees
+     * List of My Committeess
      */
     public Map<Id, String> myCommittees {
         get {
@@ -213,13 +228,15 @@ public class AdvisorPortalMainPageController {
                     (
                         SELECT Success_Pod__c, Success_Pod__r.OwnerId, Success_Pod__r.Name, Success_Pod__r.Committee__c
                         FROM Success_Resource_Pod_Associations__r
+                        ORDER BY Success_Pod__r.Name
                     )
                 	FROM Success_Resource__c
                 	WHERE Resource__c = :UserInfo.getUserId()
                 	AND IsActive__c = true
                 	AND RecordTypeId = :AdvisorResourceRTID];
+                	
+            System.debug(myResources);
             }
-            
             return myResources;
         }
         
@@ -307,7 +324,7 @@ public class AdvisorPortalMainPageController {
     public String myProactiveQuery {
         get {
             if (ownerId != null) {
-                myProactiveQuery = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c ' +
+                myProactiveQuery = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
@@ -326,14 +343,13 @@ public class AdvisorPortalMainPageController {
     public String myWatchlistQuery {
         get {
             if (ownerId != null) {
-                myWatchlistQuery = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c ' +
+                myWatchlistQuery = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
-                    'AND Category__c = \'Watchlist\'' +
+                    'AND CC_Category__c IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC';
             }
-            
             return myWatchlistQuery;
         }
         
@@ -346,7 +362,8 @@ public class AdvisorPortalMainPageController {
     public String myStudentsQuery {
         get {
             if (ownerId != null) {
-                myStudentsQuery = 'SELECT Student_Name__c, EMPLID__c, Student__c, Student__r.FirstName, Student__r.LastName ' +
+                myStudentsQuery = 'SELECT Student_Name__c, EMPLID__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c, ' 
+                + 'Student__c, Student__r.FirstName, Student__r.LastName ' +
                     'FROM Success_Student__c ' +
                     'WHERE Success_Pod__r.OwnerId = \'' + ownerId + '\' ' +
                         'AND Is_Active__c = true ORDER BY Student_Name__c ASC';
@@ -367,7 +384,7 @@ public class AdvisorPortalMainPageController {
                 mySummaryListQuery = 'SELECT count(Id) total, Subject, Followup_Date__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
-                    'AND Category__c != \'Watchlist\'' +
+                    'AND CC_Category__c NOT IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
                     'AND IsClosed = false ' +
                     'GROUP BY Subject, Followup_Date__c ' +
@@ -392,5 +409,30 @@ public class AdvisorPortalMainPageController {
         }
         
         set;
+    }
+    
+    public List<SelectOption> sortSelectOptionList(List<SelectOption> source)
+    {
+        List<string> sortable = new  List<string>();
+        for(SelectOption so: source)
+        {
+            // replace blank with '_!' so we know the final split will have two components
+            String stringSpliter = (string.isblank(so.getLabel())?'_!':so.getLabel()) + '@!@' + (string.isblank(so.getValue())?'_!':so.getValue());
+            stringSpliter = stringSpliter.toUpperCase() + stringSpliter;
+            sortable.Add(stringSpliter);
+        }
+        // sort the list
+        sortable.sort();
+        //Remove Capital Prefix
+        for(Integer i = 0; i < sortable.size(); i++){
+            sortable[i] = sortable[i].substring(sortable[i].length()/2);
+        }
+        List<SelectOption> targetList = new  List<SelectOption>();
+        // split the value/name components and re create the list
+        for(string s: sortable)
+        {
+            targetList.Add(new  SelectOption(s.split('@!@')[1].replace('_!',''), s.split('@!@')[0].replace('_!','')));
+        }
+        return targetList;
     }
 }

@@ -16,7 +16,7 @@ public class Test_ShowMyCases {
         pod = new List<Success_Pod__c>([SELECT OwnerId FROM Success_Pod__c Limit 1]);
         
         if (pod.size() > 0) {
-            Query = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Subject, Description, Status, FollowUp_Date__c ' +
+            Query = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                 'FROM Case ' +
                 'WHERE OwnerId = \'' + pod[0].ownerId + '\' ' +
                 'AND recordTypeId = \'' + IDHelper.getRTID('Case', 'ASU_Advisor_Outreach') + '\' ' +
@@ -173,9 +173,4 @@ public class Test_ShowMyCases {
         System.assert(!smsc.query.contains('LIKE'));
     }
     
-    public static testmethod void Test_nullQuery(){
-        smsc.query = NULL;
-        List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
-        System.assertEquals(errorList.size(), 1);
-    }
 }

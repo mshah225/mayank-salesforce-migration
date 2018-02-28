@@ -1,27 +1,27 @@
 public class ContactService
 {
-	/**
-	* Returns all the fields on Case in a String
-	* @return A string containing all the Case fields
-	*/
-	public static String contactFieldsToString()
-	{
-		String contactFields = null;
+    /**
+    * Returns all the fields on Case in a String
+    * @return A string containing all the Case fields
+    */
+    public static String contactFieldsToString()
+    {
+        String contactFields = null;
 
-		Map<String, SObjectField> contactFieldMap = ObjectService.getObjectFieldMap('Contact');
+        Map<String, SObjectField> contactFieldMap = ObjectService.getObjectFieldMap('Contact');
 
-		contactFields = ObjectService.objectFieldsToString(contactFieldMap);
+        contactFields = ObjectService.objectFieldsToString(contactFieldMap);
 
-		return contactFields;
-	}
+        return contactFields;
+    }
 
-	/**
+    /**
     * Creates a test contact. Usually for unit testing.
     * @return A test contact object with all required fields.
     */
-	public static Contact createTestContact()
-	{
-		Contact testContact = new Contact();
+    public static Contact createTestContact()
+    {
+        Contact testContact = new Contact();
         testContact.FirstName = 'Test';
         testContact.LastName = 'Contact';
         testContact.MailingPostalCode = '85282';
@@ -31,8 +31,8 @@ public class ContactService
         testContact.PIN_lockout__c = true;
         testContact.ASURite_ID__c = 'testuser';
 
-		return testContact;
-	}
+        return testContact;
+    }
 
     /**
     * Creates a number of test contacts. Usually for unit testing.
@@ -68,11 +68,12 @@ public class ContactService
         Contact loggedInContact = null;
         String EmployeeId;
         List<Contact> lstLoggedInContact;
-		String contactFields = contactFieldsToString();
+        String contactFields = contactFieldsToString() + ', Country_of_Citizenship__r.Name ';
+
         String selectContactInfoByLoggedInUser;
         try
         {
-			
+            
             //Try community user
             loggedInContactId = [
                 SELECT ContactId
@@ -80,7 +81,7 @@ public class ContactService
                 WHERE Id = :UserInfo.getUserId()
             ].ContactId;
 
-			//Try Employee User
+            //Try Employee User
             if(loggedInContactId==null){
                 EmployeeId = [SELECT EmployeeNumber FROM User WHERE Id = :userInfo.getUserId()].EmployeeNumber;
                 if(EmployeeId!=null && EmployeeId!=''){
@@ -93,8 +94,8 @@ public class ContactService
             }
             if(loggedInContactId!=null){
                 selectContactInfoByLoggedInUser = 'SELECT ' + contactFields + ' ' +
-        											 'FROM Contact ' +
-													 'WHERE Id = :loggedInContactId';
+                                                     'FROM Contact ' +
+                                                     'WHERE Id = :loggedInContactId';
 
                 loggedInContact = Database.query(selectContactInfoByLoggedInUser);
             }
@@ -119,7 +120,7 @@ public class ContactService
     {
         //Id viewAsContactId = null;
         Contact viewAsContact = null;
-        String contactFields = contactFieldsToString();
+        String contactFields = contactFieldsToString() + ', Country_of_Citizenship__r.Name ';
         System.debug(asurite);
 
         try
@@ -217,34 +218,32 @@ public class ContactService
     * @param emplId the contacts EMPLID__c
     * @return contactInfo The corresponding Contact
     */
-    public static Contact getContactInformation(String contactId, String emplId)
-    {
+    public static Contact getContactInformation(String contactId, String emplId) {
+        List<Contact> contactInformationList = new List<Contact>();
         Contact contactInfo = null;
-        String contactFields = contactFieldsToString();
+        String contactFields = contactFieldsToString() + ', Country_of_Citizenship__r.Name ';
         String contactInfoQuery;
 
         // Get the list of cases associated with our set of contacts
-        try
-        {
-            if (emplId != '')
-            {
-                contactInfoQuery = '' +
-                    'SELECT ' + contactFields + ' ' +
-                    'FROM Contact ' +
-                    'WHERE EMPLID__c = :emplId';
-            }
-            else
-            {
-                contactInfoQuery = '' +
-                    'SELECT ' + contactFields + ' ' +
-                    'FROM Contact ' +
-                    'WHERE Id = :contactId';
+        try {
+            contactInfoQuery = '' +
+                'SELECT ' + contactFields + ' ' +
+                'FROM Contact ';
+            if (!String.isBlank(emplId)) {
+                contactInfoQuery += 'WHERE EMPLID__c = :emplId';
+            } else {
+                contactInfoQuery += 'WHERE Id = :contactId';
             }
 
-            contactInfo = Database.query(contactInfoQuery);
+            contactInformationList = Database.query(contactInfoQuery);
+            
+            if (!contactInformationList.isEmpty()) {
+                return contactInformationList[0]; 
+            } else {
+                return null;
+            }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new ContactServiceException(
                 '!!!ERROR!!!: An error occurred trying to get the Contact\'s information\n' +
                 e.getMessage()
@@ -266,5 +265,5 @@ public class ContactService
     }
 
 
-	public class ContactServiceException extends Exception {}
+    public class ContactServiceException extends Exception {}
 }

@@ -9,7 +9,7 @@ public class Test_QADefaultHandler {
     static {
         qadh = new QADefaultHandler();
         numberOfPods = 1;
-        numberOfCases = 5;
+        numberOfCases = 3;
         numberOfStudents = 5;
         cases = new List<Case>([SELECT OwnerId, RecordTypeId, Most_Recent_Queue__c
             FROM Case]);

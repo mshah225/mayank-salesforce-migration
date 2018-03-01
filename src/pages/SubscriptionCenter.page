@@ -17,6 +17,8 @@
 		<apex:includeScript value="{!URLFOR($Resource.Subscription_Center, 'sub_center/js/jquery.min.js')}"/>
 		<apex:includeScript value="{!URLFOR($Resource.Subscription_Center, 'sub_center/js/multi-switch.js')}"/>
 		<apex:includeScript value="{!URLFOR($Resource.bootstrap_337, '/bootstrap_337/js/bootstrap.min.js')}"/>
+		<c:Multiswitch/>
+		
 		<script>
 	        $j = jQuery.noConflict();
 

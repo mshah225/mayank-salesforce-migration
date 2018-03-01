@@ -1,45 +1,52 @@
 public with sharing class CaseShowAllAttachmentsControllerExt {
-    private final Case theCase;
-    public string attId{get;set;}
+    
+    public String caseId { get; private set; }
+    private String caseParentId { get; private set; }
+    
+    public String attId { get; set; }
     private final String STANDARD_PREFIX = '--c';
     private final String ATTACHMENT_PACKAGE_PREFIX = '--attachmentzip';
-    public Attachment[] allAttachments;
-    public String baseUrlForAttachmentIntegration {get; private set;}
+
+    public List<Attachment> allAttachmentsOnCaseOrEmailMessageOrCaseParent;
+    public String baseUrlForAttachmentIntegration { get; private set; }
     
     public CaseShowAllAttachmentsControllerExt(ApexPages.StandardController stdController) {
-        this.theCase = [SELECT Id, ParentId, Contact.Name
+        
+        List<Case> currentCaseOnPage = [SELECT Id, ParentId, Contact.Name
             FROM Case 
             WHERE Id = :stdController.getRecord().Id];
         
+        caseId = currentCaseOnPage[0].Id;
+        caseParentId = currentCaseOnPage[0].ParentId;
         baseUrlForAttachmentIntegration = constructAttachmentPackageUrl();
     }
     
-    public Attachment[] getAllAttachments() {
-        Map<Id, SObject> caseEmailMap = new Map<Id, SObject>([
+    public List<Attachment> getAllAttachments() {
+        
+        Set<Id> emailMessageIdsOnCase = new Set<Id>();
+        for (EmailMessage eachEmailMessage : [
             SELECT Id 
             FROM EmailMessage
             WHERE (
-                ParentId = :this.theCase.Id 
-                OR ParentId = :this.theCase.parentId
+                    ParentId = :caseId 
+                    OR ParentId = :caseParentId
             )
-        ]);
+            ]) {
+            emailMessageIdsOnCase.add(eachEmailMessage.Id);
+        }
         
-        allAttachments = [
+        allAttachmentsOnCaseOrEmailMessageOrCaseParent = [
             SELECT Id, Name, LastModifiedDate, CreatedBy.Name, BodyLength
             FROM Attachment
             WHERE (
-                ParentId = :this.theCase.Id 
-                OR ParentId IN :caseEmailMap.keySet() 
-                OR ParentId = :this.theCase.parentId
+                ParentId = :caseId
+                OR ParentId IN :emailMessageIdsOnCase 
+                OR ParentId = :caseParentId
             )
             ORDER BY LastModifiedDate
         ];
         
-        return allAttachments;
-    }
-    
-    public String getContactName() {
-        return this.theCase.Contact.Name;
+        return allAttachmentsOnCaseOrEmailMessageOrCaseParent;
     }
     
     private String constructAttachmentPackageUrl() {
@@ -60,4 +67,5 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
         }
         return null;
     }
+    
 }

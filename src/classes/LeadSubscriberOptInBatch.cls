@@ -39,7 +39,7 @@ public without sharing class LeadSubscriberOptInBatch implements Database.Batcha
                 continue;
             }
             newSubscribers.add(new Subscriber__c(
-                Subscription__c = 'a280W000007iaYX',
+                Subscription__c = 'a271h00000068lr',
                 Lead__c = leadToSubscribe.Id,
                 Subscriber_Status__c = 'Subscribed'
             ));

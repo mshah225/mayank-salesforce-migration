@@ -26,7 +26,7 @@ public without sharing class LeadSubscriberOptInBatch implements Database.Batcha
             SELECT Id, Lead__c
             FROM Subscriber__c
             WHERE Lead__c IN :leadIds
-            AND Subscription__c = 'a271h00000068lr'
+            AND Subscription__c = 'a280W000007iaYX'
         ];
         
         Set<Id> leadWithExistingSubscribers = new Set<Id>();

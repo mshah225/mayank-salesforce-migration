@@ -48,6 +48,14 @@ private class Test_ServiceCenter {
         
     }
     
+    private static void insertQueueForArticleOwner() {
+        Group queueForSuggestedArticleOwner = new Group(Name='Student-Centric Initiatives (Case)', type='Queue');
+        insert queueForSuggestedArticleOwner;
+        
+        QueuesObject suggestedArticleOwnerQueueCaseObjectMapping = new QueueSObject(QueueID = queueForSuggestedArticleOwner.id, SobjectType = 'Case');
+        insert suggestedArticleOwnerQueueCaseObjectMapping;
+    }
+    
     private static void initTestData(String userFirstName) {
         initTestUser(userFirstName);
         initContactForTestUser();
@@ -93,7 +101,7 @@ private class Test_ServiceCenter {
         setUpEnrolledTestSessionB();
         setUpNonEnrolled();
     }
-
+    
     private static void setUpEnrolledTestSessionA() {
         Contact testContEnrolledA = [
             SELECT Id, AccountId, Email
@@ -380,7 +388,7 @@ private class Test_ServiceCenter {
     @isTest 
     private static void suggestAnArticleReturnsProperUrl(){
         initTestUser('Test0');
-        
+        insertQueueForArticleOwner();
         PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
         PageReference submit;

@@ -7,7 +7,7 @@
     <label>viewcase</label>
     <packageVersions>
         <majorNumber>2</majorNumber>
-        <minorNumber>10</minorNumber>
+        <minorNumber>14</minorNumber>
         <namespace>bomgar</namespace>
     </packageVersions>
 </ApexPage>

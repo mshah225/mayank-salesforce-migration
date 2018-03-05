@@ -49,7 +49,7 @@ private class Test_ServiceCenter {
     }
     
     private static void insertQueueForArticleOwner() {
-        Group queueForSuggestedArticleOwner = new Group(Name='Student-Centric Initiatives (Case)', type='Queue');
+        Group queueForSuggestedArticleOwner = new Group(Name = 'Student-Centric Initiatives (Case)', type = 'Queue');
         insert queueForSuggestedArticleOwner;
         
         QueuesObject suggestedArticleOwnerQueueCaseObjectMapping = new QueueSObject(QueueID = queueForSuggestedArticleOwner.id, SobjectType = 'Case');

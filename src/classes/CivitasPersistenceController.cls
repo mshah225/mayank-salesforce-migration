@@ -156,7 +156,7 @@ global class CivitasPersistenceController{
                 dataList[0].termInfo = 'Fall';
             }
 
-            for (Integer i = startMonth; i <= endMonth+1; i++) {
+            for (Integer i = startMonth; i <= endMonth + 1; i++) {
                 String textMonth = monthToText(Math.mod(i, 12));
                 months.add(textMonth);
             }

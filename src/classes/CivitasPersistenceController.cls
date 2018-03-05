@@ -35,6 +35,7 @@ global class CivitasPersistenceController{
                 startDate = startDate.addDays(22);
             }
             if(startDate >= Date.today()) {
+                endMonth = endDate.month();
                 endDate = startDate.addDays(-22);
                 startDate = [Select Session_A_C_Start_Date__c 
                              FROM Term__c 
@@ -42,6 +43,7 @@ global class CivitasPersistenceController{
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startdate.addDays(22);
             }
+            startMonth = startDate.month();
             return startDate;
         }
 
@@ -55,12 +57,16 @@ global class CivitasPersistenceController{
                              FROM Term__c
                              WHERE PeopleSoft_Code__c =: nextTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
+                endMonth = endDate.addDays(22).month();
             }
             return endDate;
         }
         set;
-        }
+    }
 
+    public static Integer startMonth { get; set; }
+    public static Integer endMonth { get; set; }
+    
     @RemoteAction
     global static List<CivitasWrapper> getData(String emplidIn){
         try {
@@ -138,8 +144,6 @@ global class CivitasPersistenceController{
                                                     tmpEndPoint.levelDesc, tmpEndPoint.flag, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
             }
             dataList[dataList.size()-1].fullDate = lastUpdatedDate;
-            Integer startMonth = startDate.month();
-            Integer endMonth = endDate.month();
             if (endMonth < startMonth) {
                 endMonth += 12;
             }
@@ -152,8 +156,7 @@ global class CivitasPersistenceController{
                 dataList[0].termInfo = 'Fall';
             }
 
-
-            for (Integer i = startMonth; i <= endMonth; i++) {
+            for (Integer i = startMonth; i <= endMonth+1; i++) {
                 String textMonth = monthToText(Math.mod(i, 12));
                 months.add(textMonth);
             }

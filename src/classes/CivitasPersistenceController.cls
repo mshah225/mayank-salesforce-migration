@@ -34,7 +34,7 @@ global class CivitasPersistenceController{
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startDate = startDate.addDays(22);
             }
-            if(startDate >= Date.today()) {
+            if (startDate >= Date.today()) {
                 endMonth = endDate.month();
                 endDate = startDate.addDays(-22);
                 startDate = [Select Session_A_C_Start_Date__c 
@@ -51,7 +51,7 @@ global class CivitasPersistenceController{
     }
 
     public static Date endDate{
-        get{
+        get {
             if (endDate == null) {
                 endDate = [Select Session_A_C_Start_Date__c
                              FROM Term__c
@@ -70,7 +70,7 @@ global class CivitasPersistenceController{
     @RemoteAction
     global static List<CivitasWrapper> getData(String emplidIn){
         try {
-            if(emplidIn != null && emplidIn.substring(0,3).equals('003')) {
+            if (emplidIn != null && emplidIn.substring(0,3).equals('003')) {
                 emplidIn = [Select EMPLID__c FROM Contact Where Id =: emplidIn LIMIT 1].EMPLID__c;
             } else if (emplidIn == null) {
                 return null;
@@ -92,16 +92,16 @@ global class CivitasPersistenceController{
             ORDER BY SNAP_DATE__c ASC
         ]) {
             //Checks if it's not in persson OR not an undergrad.
-            if(trm.Snap_Date__c < startDate) {
+            if (trm.Snap_Date__c < startDate) {
                 startSemesterData = trm;
             }
             if (trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate) {
                 if (trm.ONLINE_SEGMENT__c != 'N' || trm.CAREER_SEGMENT__c != 'U') {
                     rejected.add(new CivitasWrapper('Rejected'));
                 } else {
-                    if(trm.Snap_Date__c > startDate && startSemesterData != null) {
+                    if (trm.Snap_Date__c > startDate && startSemesterData != null) {
                         Date tempStart = startDate;
-                        while(tempStart < trm.Snap_Date__c) {
+                        while (tempStart < trm.Snap_Date__c) {
                             dataList.add(new CivitasWrapper(tempStart, startSemesterData.CURR_CONT_PREDICTION_LEVEL__c,
                                          startSemesterData.CURRENT_SEGMENT_DESCR__c, startSemesterData.CHANGE_FLG__c,  c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                             dateIncr++;
@@ -109,12 +109,12 @@ global class CivitasPersistenceController{
                         }
                         startSemesterData = null;
                     }
-                    if(prevData == null) {
+                    if (prevData == null) {
                         prevData = trm;
                     }
                     Date prevDate = prevData.Snap_Date__c;
                     prevDate = prevDate.addDays(1);
-                    while(prevDate < trm.Snap_Date__c) {
+                    while (prevDate < trm.Snap_Date__c) {
                         dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c,
                                                     prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                         dateIncr++;
@@ -129,7 +129,7 @@ global class CivitasPersistenceController{
             }
         }
 
-        if(rejected.size() > 0){
+        if (rejected.size() > 0) {
             return rejected;
         }
 
@@ -148,7 +148,7 @@ global class CivitasPersistenceController{
                 endMonth += 12;
             }
         	persistenceLevel = dataList[dataList.size()-1].outlookLevel;
-            if(currentTerm.subString(3).equals('1')){
+            if (currentTerm.subString(3).equals('1')) {
                 dataList[0].termInfo = 'Spring';
             } else if (currentTerm.subString(3).equals('4')) {
                 dataList[0].termInfo = 'Summer';

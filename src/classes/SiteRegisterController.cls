@@ -6,8 +6,7 @@ public with sharing class SiteRegisterController {
     // you need to add the account owner into the role hierarchy before this will work - please see Customer Portal Setup help for more information.       
     private static Id PORTAL_ACCOUNT_ID = '001x000xxx35tPN';
     
-    public SiteRegisterController () {
-    }
+    public SiteRegisterController () {}
 
     public String username {get; set;}
     public String email {get; set;}
@@ -15,7 +14,7 @@ public with sharing class SiteRegisterController {
     public String confirmPassword {get; set { confirmPassword = value == null ? value : value.trim(); } }
     public String communityNickname {get; set { communityNickname = value == null ? value : value.trim(); } }
       
-    private boolean isValidPassword() {
+    private Boolean isValidPassword() {
         return password == confirmPassword;
     }
     
@@ -26,23 +25,23 @@ public with sharing class SiteRegisterController {
         	ApexPages.addMessage(msg);
             return null;
         }    
-        User u = new User();
-        u.Username = username;
-        u.Email = email;
-        u.CommunityNickname = communityNickname;
+        
+        User portalUser = new User();
+        portalUser.Username = username;
+        portalUser.Email = email;
+        portalUser.CommunityNickname = communityNickname;
         
         String accountId = PORTAL_ACCOUNT_ID;
 
         // lastName is a required field on user, but if it isn't specified, we'll default it to the username
-        String userId = Site.createPortalUser(u, accountId, password);
+        String userId = Site.createPortalUser(portalUser, accountId, password);
         if (userId != null) { 
             if (password != null && password.length() > 1) {
                 return Site.login(username, password, null);
-            }
-            else {
-                PageReference page = System.Page.SiteRegisterConfirm;
-                page.setRedirect(true);
-                return page;
+            } else {
+                PageReference sitePage = System.Page.SiteRegisterConfirm;
+                sitePage.setRedirect(true);
+                return sitePage;
             }
         }
         return null;

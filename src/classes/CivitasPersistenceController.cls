@@ -6,6 +6,7 @@ global class CivitasPersistenceController{
     public static String emplId {get; set;}
     public static Decimal persistenceLevel;
     public static Contact c;
+    public static Date todayDate = System.today();
 
     public static String currentTerm{
         get{
@@ -22,8 +23,10 @@ global class CivitasPersistenceController{
     }
 
     public static String nextTerm{ get; set;}
-
     public static String prevTerm { get; set;}
+    
+    public static Integer startMonth { get; set; }
+    public static Integer endMonth { get; set; }
     
     public static Date startDate{
         get{
@@ -32,21 +35,12 @@ global class CivitasPersistenceController{
                              FROM Term__c
                              WHERE PeopleSoft_Code__c =: currentTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
+                startMonth = startDate.month();
                 startDate = startDate.addDays(22);
+                modifyDatesIfTodayIsBeforeCensusDate();
             }
-            if (startDate >= Date.today()) {
-                endMonth = endDate.month();
-                endDate = startDate.addDays(-22);
-                startDate = [Select Session_A_C_Start_Date__c 
-                             FROM Term__c 
-                             WHERE PeopleSoft_Code__c =: prevTerm
-                             LIMIT 1].Session_A_C_Start_Date__c;
-                startDate = startdate.addDays(22);
-            }
-            startMonth = startDate.month();
             return startDate;
         }
-
         set;
     }
 
@@ -63,9 +57,6 @@ global class CivitasPersistenceController{
         }
         set;
     }
-
-    public static Integer startMonth { get; set; }
-    public static Integer endMonth { get; set; }
     
     @RemoteAction
     global static List<CivitasWrapper> getData(String emplidIn){
@@ -137,7 +128,7 @@ global class CivitasPersistenceController{
             CivitasWrapper tmpEndPoint = dataList[dataList.size()-1];
             String lastUpdatedDate = dataList[dataList.size()-1].fullDate;
             Integer dayValue = tmpEndPoint.day;
-            while ((endDate < System.today() && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < System.today()) {
+            while ((endDate < todayDate && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < todayDate) {
                 tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
                 dayValue++;
                 dataList.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel,
@@ -156,7 +147,8 @@ global class CivitasPersistenceController{
                 dataList[0].termInfo = 'Fall';
             }
 
-            for (Integer i = startMonth; i <= endMonth + 1; i++) {
+            Integer modifiedEndMonthForGraphFormatting = endMonth + 1;
+            for (Integer i = startMonth; i <= modifiedEndMonthForGraphFormatting; i++) {
                 String textMonth = monthToText(Math.mod(i, 12));
                 months.add(textMonth);
             }
@@ -190,7 +182,19 @@ global class CivitasPersistenceController{
         set;
     }
 
-
+    private static void modifyDatesIfTodayIsBeforeCensusDate() {
+        if (startDate >= todayDate) {
+                endMonth = startDate.month();
+                endDate = startDate.addDays(-22);
+                startDate = [Select Session_A_C_Start_Date__c 
+                             FROM Term__c 
+                             WHERE PeopleSoft_Code__c =: prevTerm
+                             LIMIT 1].Session_A_C_Start_Date__c;
+                startMonth = startDate.month();
+                startDate = startdate.addDays(22);
+        }
+    }
+    
     private static string monthToText(Integer month){
         if (month == 1) {
             return 'Jan';

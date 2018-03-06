@@ -7,6 +7,7 @@ global class CivitasPersistenceController{
     public static Decimal persistenceLevel;
     public static Contact c;
     public static Date todayDate = System.today();
+    private final Integer CENSUS_OFFSET = 22;
 
     public static String currentTerm{
         get{
@@ -36,7 +37,7 @@ global class CivitasPersistenceController{
                              WHERE PeopleSoft_Code__c =: currentTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startMonth = startDate.month();
-                startDate = startDate.addDays(22);
+                startDate = startDate.addDays(CENSUS_OFFSET);
                 modifyDatesIfTodayIsBeforeCensusDate();
             }
             return startDate;
@@ -51,7 +52,7 @@ global class CivitasPersistenceController{
                              FROM Term__c
                              WHERE PeopleSoft_Code__c =: nextTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
-                endMonth = endDate.addDays(22).month();
+                endMonth = endDate.addDays(CENSUS_OFFSET).month();
             }
             return endDate;
         }
@@ -185,13 +186,13 @@ global class CivitasPersistenceController{
     private static void modifyDatesIfTodayIsBeforeCensusDate() {
         if (startDate >= todayDate) {
                 endMonth = startDate.month();
-                endDate = startDate.addDays(-22);
+                endDate = startDate.addDays(CENSUS_OFFSET*-1);
                 startDate = [Select Session_A_C_Start_Date__c 
                              FROM Term__c 
                              WHERE PeopleSoft_Code__c =: prevTerm
                              LIMIT 1].Session_A_C_Start_Date__c;
                 startMonth = startDate.month();
-                startDate = startdate.addDays(22);
+                startDate = startdate.addDays(CENSUS_OFFSET);
         }
     }
     

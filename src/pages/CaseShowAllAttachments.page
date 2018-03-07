@@ -18,7 +18,7 @@
                 </apex:form>
           </apex:pageBlockButtons>
                 <apex:form >
-                        <apex:pageBlockTable value="{!allAttachments}" var="eachAttachment">
+                        <apex:pageBlockTable value="{!allAttachmentsOnCaseAndCaseParent}" var="eachAttachment">
                                 <apex:column headerValue="Action" width="80px" styleClass="actionColumn">
                                     <a href="#" onClick="openTab('{!eachAttachment.Id}/e', 'Attached File')">Edit</a>
                                     &nbsp;|&nbsp;
@@ -31,8 +31,8 @@
                                 <apex:column value="{!eachAttachment.LastModifiedDate}" headerValue="Last Modified"/>
                                 <apex:column value="{!eachAttachment.CreatedBy.Name}" headerValue="Created By"/>
                                 <apex:column headerValue="Action" width="40px" styleClass="actionColumn">
-                                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you wish to delete this attachment?');" action="{!deleteAttachment}" >
-                                                <apex:param name="var" value="{!eachAttachment.Id}" assignTo="{!attId}" />      
+                                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you wish to delete this attachment?');" action="{!deleteSelectedAttachmentOnCase}" >
+                                                <apex:param name="var" value="{!eachAttachment.Id}" assignTo="{!attachmentIdOnCase}" />      
                                         </apex:commandLink>
                                 </apex:column>
                         </apex:pageBlockTable>

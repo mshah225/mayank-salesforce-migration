@@ -7,7 +7,7 @@ global class CivitasPersistenceController{
     public static Decimal persistenceLevel;
     public static Contact c;
     public static Date todayDate = System.today();
-    private final Integer CENSUS_OFFSET = 22;
+    private static final Integer CENSUS_OFFSET = 22;
 
     public static String currentTerm{
         get{

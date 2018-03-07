@@ -5,13 +5,12 @@
 private with sharing class CommunitiesLandingControllerTest {
     
     @isTest 
-    public static void testCommunitiesLandingController() {
-        // Instantiate a new controller with all parameters in the page
-        Test.startTest();
+    private static void forwardToStartPageReturnsCorrectUrl() {
         
         CommunitiesLandingController communityController = new CommunitiesLandingController();
+    
+        Test.startTest();
         PageReference startPage = communityController.forwardToStartPage();
-        
         Test.stopTest();
         
         System.assertEquals(startPage.getURL(), '');

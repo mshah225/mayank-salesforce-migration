@@ -1,20 +1,14 @@
 <apex:page showHeader="false" sidebar="false" controller="SCLaunchController" action="{!init}">
-  	<script>
-		var masqCookie = "{!masqScopeIdCookie}";
-		if (masqCookie != "")
-		{
-			if("{!redirectUrl}".indexOf('?') > -1)
-			{
-				window.location.href = "{!redirectUrl}&masqScopeIdCookie=" + masqCookie;
-			}
-			else
-			{
-				window.location.href = "{!redirectUrl}?masqScopeIdCookie=" + masqCookie;
-			}
-		}
-		else
-		{
-			window.location.href = "{!redirectUrl}";
-		}
-	</script>
+    <script>
+        var masqCookie = "{!masqScopeIdCookie}";
+        if (masqCookie != "") {
+            if("{!redirectUrl}".includes('?')) {
+                window.location.href = "{!redirectUrl}&masqScopeIdCookie=" + masqCookie;
+            } else {
+                window.location.href = "{!redirectUrl}?masqScopeIdCookie=" + masqCookie;
+            }
+        } else {
+            window.location.href = "{!redirectUrl}";
+        }
+    </script>
 </apex:page>

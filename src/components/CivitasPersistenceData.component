@@ -95,7 +95,7 @@
                     return;
                 }
                 if (result.length > 0) {
-                    console.log(result);
+                    
                     if(result[0].name == 'Rejected') {
                         document.getElementById("errorMessage").innerHTML =
                             "Persistence Outlook Level data is not available.";
@@ -237,8 +237,7 @@
                     for (var i = 0; i < result[0].allMonths.length; i++) {
                         months.push({v:(i*30), f: result[0].allMonths[i]});        
                     }
-                    console.log(months);
-                    console.log(result[0].allMonths);
+                    months.push({v:(i*30), f: ''});
                     options['hAxis']['ticks'] = months;                    
                     
                     if (result[0].year != result[result.length-1].year) {

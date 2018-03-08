@@ -11,8 +11,8 @@ public with sharing class SiteRegisterController {
     public String username {get; set;}
     public String email {get; set;}
     public String password {get; set {password = value == null ? value : value.trim();}}
-    public String confirmPassword {get; set { confirmPassword = value == null ? value : value.trim();}}
-    public String communityNickname {get; set { communityNickname = value == null ? value : value.trim();}}
+    public String confirmPassword {get; set{confirmPassword = value == null ? value : value.trim();}}
+    public String communityNickname {get; set{communityNickname = value == null ? value : value.trim();}}
       
     private Boolean isValidPassword() {
         return password == confirmPassword;
@@ -21,7 +21,7 @@ public with sharing class SiteRegisterController {
     public PageReference registerUser() {
         // it's okay if password is null - we'll send the user a random password in that case
         if (!isValidPassword()) {
-        	ApexPages.Message msg = new ApexPages.Message(ApexPages.Severity.ERROR, Label.site.passwords_dont_match);
+        	ApexPages.Message msg = new ApexPages.Message(ApexPages.Severity.ERROR, Label.Site.passwords_dont_match);
         	ApexPages.addMessage(msg);
             return null;
         }    

@@ -1040,7 +1040,7 @@ public with sharing class Test_CaseHandler {
             FROM Case
             WHERE Id = :caseUnderTest.Id LIMIT 1
         ];
-        System.assertEquals('Closed: Resolved (Webforms)', caseUnderTest.Status);
+        System.assertEquals(CaseWebformCloser.CASE_CLOSE_WEBFORM_STATUS, caseUnderTest.Status);
         System.assertEquals(FALSE, caseUnderTest.Visible_by_Contact__c);
     }
 
@@ -1189,7 +1189,7 @@ public with sharing class Test_CaseHandler {
             LIMIT 1
         ];
 
-        System.assertEquals('Closed: Resolved (Webforms)', caseUnderTest.Status);
+        System.assertEquals(CaseWebformCloser.CASE_CLOSE_WEBFORM_STATUS, caseUnderTest.Status);
         System.assertEquals('Test Subject', caseUnderTest.Subject);
     }
 

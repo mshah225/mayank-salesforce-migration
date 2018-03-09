@@ -7,7 +7,7 @@ public class CaseFactory {
                 Subject = 'Webform:citizenship_verification%ASURITE:1000815525%Queue:'
                     + CaseWebformCloser.FINANCIAL_AID_CASE_QUEUE + '%First:Keith%Last:Arnold ',
                 Description = 'Form:citizenship_verification. SubmissionID:#00000. UserID:1000815525',
-                Status = 'Closed: Resolved',
+                Status = CaseWebformCloser.CASE_CLOSE_WEBFORM_STATUS,
                 Functional_Group__c = 'Registrar',
                 Category__c = 'Registrar',
                 Priority = 'Normal',

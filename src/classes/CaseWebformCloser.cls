@@ -6,6 +6,8 @@ public class CaseWebformCloser {
             AND Type = 'Queue' 
         LIMIT 1
     ].Id;
+    public static final String CASE_CLOSE_WEBFORM_STATUS = 'Closed: Resolved (Webforms)';
+    
     private Case currentCase;
     private Case previousCaseState;
     private List<String> deepLinksTokens;
@@ -29,7 +31,7 @@ public class CaseWebformCloser {
     }
     
     private Boolean isPreviouslyClosedWebformCaseUpdatedByDrupal() {
-        return previousCaseState.Status == 'Closed: Resolved' && 
+        return previousCaseState.Status == CASE_CLOSE_WEBFORM_STATUS && 
             previousCaseState.Deep_Links__c != NULL &&
             previousCaseState.Deep_Links__c.split('Click Here').size() == (Integer.valueof(currentCase.Number_of_Files__c) + 1) &&
             UserInfo.getName() == 'API ASU DRUPAL';
@@ -72,7 +74,7 @@ public class CaseWebformCloser {
         currentCase.Subject = subjectTokens[0];
         if (currentCase.OwnerId == CaseWebformCloser.FINANCIAL_AID_CASE_QUEUE) {
             currentCase.Visible_By_Contact__c = FALSE;
-            currentCase.Status = 'Closed: Resolved';
+            currentCase.Status = CASE_CLOSE_WEBFORM_STATUS;
         }
     }
 }

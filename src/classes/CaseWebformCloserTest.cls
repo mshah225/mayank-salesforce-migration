@@ -56,7 +56,6 @@ private class CaseWebformCloserTest {
             Test.stopTest();
         }
         
-        reQueryPreviousStateOfCase();
         System.assertEquals(previousStateOfCase.Status, currentCase.Status);
         System.assertEquals(previousStateOfCase.Deep_Links__c, currentCase.Deep_Links__c);
         System.assertEquals(previousStateOfCase.Subject, currentCase.Subject);

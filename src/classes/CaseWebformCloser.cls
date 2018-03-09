@@ -6,7 +6,7 @@ public class CaseWebformCloser {
             AND Type = 'Queue' 
         LIMIT 1
     ].Id;
-    public static final String CASE_CLOSE_WEBFORM_STATUS = 'Closed: Resolved (Webforms)';
+    public static final String CASE_CLOSE_WEBFORM_STATUS = 'Closed: Resolved';
     
     private Case currentCase;
     private Case previousCaseState;
@@ -31,7 +31,7 @@ public class CaseWebformCloser {
     }
     
     private Boolean isPreviouslyClosedWebformCaseUpdatedByDrupal() {
-        return previousCaseState.Status == CASE_CLOSE_WEBFORM_STATUS && 
+        return previousCaseState.IsClosed && 
             previousCaseState.Deep_Links__c != NULL &&
             previousCaseState.Deep_Links__c.split('Click Here').size() == (Integer.valueof(currentCase.Number_of_Files__c) + 1) &&
             UserInfo.getName() == 'API ASU DRUPAL';

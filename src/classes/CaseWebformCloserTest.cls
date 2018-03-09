@@ -6,27 +6,44 @@ private class CaseWebformCloserTest {
     private static User apiAsuDrupalUser;
     
     private static void setupClosedWebformCaseWithEdits() {
-        CaseFactory.ClosedWebformCase caseFactory = new CaseFactory.ClosedWebformCase();
-        List<Case> twoIdenticalWebformCases = caseFactory.create(2);
-        currentCase = twoIdenticalWebformCases[0];
-        previousStateOfCase = twoIdenticalWebformCases[1];
+        createCurrentAndPreviousCases();
         
+        currentCase.Id = previousStateOfCase.Id;
         currentCase.Status = 'New';
         currentCase.Deep_Links__c = 'Revert Me';
         currentCase.Subject = 'Revert Me';
         
         closer = new CaseWebformCloser(currentCase, previousStateOfCase);
+        queryApiAsuDrupalUser();
+    }
+    
+    private static void createCurrentAndPreviousCases() {
+        CaseFactory.ClosedWebformCase caseFactory = new CaseFactory.ClosedWebformCase();
+        List<Case> twoIdenticalWebformCases = caseFactory.create(2);
+        currentCase = twoIdenticalWebformCases[0];
+        previousStateOfCase = twoIdenticalWebformCases[1];
+        insert previousStateOfCase;
+        reQueryPreviousStateOfCase();
+    }
+    
+    private static void reQueryPreviousStateOfCase() {
+        previousStateOfCase = [
+            SELECT Subject, Description, Status, Functional_Group__c, Category__c,
+                Priority, Origin__c, Deep_Links__c, Number_of_Files__c, IsClosed
+            FROM Case
+            WHERE Id = :previousStateOfCase.Id
+        ];
+    }
+    
+    private static void queryApiAsuDrupalUser() {
         apiAsuDrupalUser = [SELECT Id FROM User WHERE Name = 'API ASU DRUPAL' LIMIT 1];
     }
     
     private static void setupWebformCasesForProcessing() {
-        CaseFactory.ProcessingWebformCase caseFactory = new CaseFactory.ProcessingWebformCase();
-        List<Case> twoIdenticalWebformCases = caseFactory.create(2);
-        currentCase = twoIdenticalWebformCases[0];
-        previousStateOfCase = twoIdenticalWebformCases[1];
+        createCurrentAndPreviousCases();
         
         closer = new CaseWebformCloser(currentCase, previousStateOfCase);
-        apiAsuDrupalUser = [SELECT Id FROM User WHERE Name = 'API ASU DRUPAL' LIMIT 1];
+        queryApiAsuDrupalUser();
     }
     
     @isTest
@@ -39,10 +56,10 @@ private class CaseWebformCloserTest {
             Test.stopTest();
         }
         
+        reQueryPreviousStateOfCase();
         System.assertEquals(previousStateOfCase.Status, currentCase.Status);
         System.assertEquals(previousStateOfCase.Deep_Links__c, currentCase.Deep_Links__c);
         System.assertEquals(previousStateOfCase.Subject, currentCase.Subject);
-        System.assert(!currentCase.IsClosed);
     }
     
     @isTest
@@ -56,7 +73,6 @@ private class CaseWebformCloserTest {
         System.assertEquals('New', currentCase.Status);
         System.assertEquals('Revert Me', currentCase.Deep_Links__c);
         System.assertEquals('Revert Me', currentCase.Subject);
-        System.assert(!currentCase.IsClosed);
     }
     
     @isTest
@@ -95,6 +111,5 @@ private class CaseWebformCloserTest {
         System.assertNotEquals(previousStateOfCase.Subject, currentCase.Subject);
         System.assert(previousStateOfCase.Subject.contains(currentCase.Subject));
         System.assert(!currentCase.Visible_By_Contact__c);
-        System.assert(!currentCase.IsClosed);
     }
 }

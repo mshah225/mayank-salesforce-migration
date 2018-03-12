@@ -1,4 +1,4 @@
-global class CivitasPersistenceController{
+global class CivitasPersistenceController {
 
     public static List<String> months = new List<String>();
 	public static Integer dayValue = 0;
@@ -9,8 +9,8 @@ global class CivitasPersistenceController{
     public static Date todayDate = System.today();
     private static final Integer CENSUS_OFFSET = 22;
 
-    public static String currentTerm{
-        get{
+    public static String currentTerm {
+        get {
             if (currentTerm == null) {
                 StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
                 currentTerm = currentTermData.CurrTerm__c;
@@ -23,13 +23,13 @@ global class CivitasPersistenceController{
         set;
     }
 
-    public static String nextTerm{ get; set;}
+    public static String nextTerm { get; set;}
     public static String prevTerm { get; set;}
     
     public static Integer startMonth { get; set; }
     public static Integer endMonth { get; set; }
     
-    public static Date startDate{
+    public static Date startDate {
         get{
             if (startDate == null) {
                 startDate = [Select Session_A_C_Start_Date__c
@@ -45,7 +45,7 @@ global class CivitasPersistenceController{
         set;
     }
 
-    public static Date endDate{
+    public static Date endDate {
         get {
             if (endDate == null) {
                 endDate = [Select Session_A_C_Start_Date__c
@@ -60,7 +60,7 @@ global class CivitasPersistenceController{
     }
     
     @RemoteAction
-    global static List<CivitasWrapper> getData(String emplidIn){
+    global static List<CivitasWrapper> getData(String emplidIn) {
         try {
             if (emplidIn != null && emplidIn.substring(0,3).equals('003')) {
                 emplidIn = [Select EMPLID__c FROM Contact Where Id =: emplidIn LIMIT 1].EMPLID__c;
@@ -68,7 +68,7 @@ global class CivitasPersistenceController{
                 return null;
             }
         }
-        catch (Exception e){ 
+        catch (Exception e) { 
             return null;
         }
         dataList = new List<CivitasWrapper>();
@@ -157,8 +157,8 @@ global class CivitasPersistenceController{
         return dataList;
     }
 
-    public String getInfo{
-        get{
+    public String getInfo {
+        get {
             emplid = apexpages.currentPage().getparameters().get('contactId');
             if (String.isEmpty(emplid)) {
                 getInfo = Label.EMPLIDMissing;
@@ -195,7 +195,7 @@ global class CivitasPersistenceController{
         }
     }
     
-    private static string monthToText(Integer month){
+    private static string monthToText(Integer month) {
         if (month == 1) {
             return 'Jan';
         } else if (month == 2) {
@@ -225,7 +225,7 @@ global class CivitasPersistenceController{
         }
     }
 
-    global class CivitasWrapper{
+    global class CivitasWrapper {
         public String empl;
         public String name;
         public Date snapDate;

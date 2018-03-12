@@ -10,7 +10,7 @@ public with sharing class SiteRegisterController {
 
     public String username {get; set;}
     public String email {get; set;}
-    public String password {get; set {password = value == null ? value : value.trim();}}
+    public String password {get; set{password = value == null ? value : value.trim();}}
     public String confirmPassword {get; set{confirmPassword = value == null ? value : value.trim();}}
     public String communityNickname {get; set{communityNickname = value == null ? value : value.trim();}}
       

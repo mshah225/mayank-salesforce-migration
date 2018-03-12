@@ -31,10 +31,8 @@ public with sharing class SiteRegisterController {
         portalUser.Email = email;
         portalUser.CommunityNickname = communityNickname;
         
-        String accountId = PORTAL_ACCOUNT_ID;
-
         // lastName is a required field on user, but if it isn't specified, we'll default it to the username
-        String userId = Site.createPortalUser(portalUser, accountId, password);
+        String userId = Site.createPortalUser(portalUser, PORTAL_ACCOUNT_ID, password);
         if (userId != null) { 
             if (password != null && password.length() > 1) {
                 return Site.login(username, password, null);

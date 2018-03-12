@@ -6,7 +6,12 @@ private class CaseWebformCloserTest {
     private static User apiAsuDrupalUser;
     
     private static void setupClosedWebformCaseWithEdits() {
-        createCurrentAndPreviousCases();
+        CaseFactory.ClosedWebformCase caseFactory = new CaseFactory.ClosedWebformCase();
+        List<Case> twoIdenticalWebformCases = caseFactory.create(2);
+        currentCase = twoIdenticalWebformCases[0];
+        previousStateOfCase = twoIdenticalWebformCases[1];
+        insert previousStateOfCase;
+        reQueryPreviousStateOfCase();
         
         currentCase.Id = previousStateOfCase.Id;
         currentCase.Status = 'New';
@@ -17,19 +22,10 @@ private class CaseWebformCloserTest {
         queryApiAsuDrupalUser();
     }
     
-    private static void createCurrentAndPreviousCases() {
-        CaseFactory.ClosedWebformCase caseFactory = new CaseFactory.ClosedWebformCase();
-        List<Case> twoIdenticalWebformCases = caseFactory.create(2);
-        currentCase = twoIdenticalWebformCases[0];
-        previousStateOfCase = twoIdenticalWebformCases[1];
-        insert previousStateOfCase;
-        reQueryPreviousStateOfCase();
-    }
-    
     private static void reQueryPreviousStateOfCase() {
         previousStateOfCase = [
             SELECT Subject, Description, Status, Functional_Group__c, Category__c,
-                Priority, Origin__c, Deep_Links__c, Number_of_Files__c, IsClosed
+                Priority, Origin__c, Deep_Links__c, Number_of_Files__c, IsClosed, OwnerId
             FROM Case
             WHERE Id = :previousStateOfCase.Id
         ];
@@ -40,7 +36,12 @@ private class CaseWebformCloserTest {
     }
     
     private static void setupWebformCasesForProcessing() {
-        createCurrentAndPreviousCases();
+        CaseFactory.ProcessingWebformCase caseFactory = new CaseFactory.ProcessingWebformCase();
+        List<Case> twoIdenticalWebformCases = caseFactory.create(2);
+        currentCase = twoIdenticalWebformCases[0];
+        previousStateOfCase = twoIdenticalWebformCases[1];
+        insert previousStateOfCase;
+        reQueryPreviousStateOfCase();
         
         closer = new CaseWebformCloser(currentCase, previousStateOfCase);
         queryApiAsuDrupalUser();

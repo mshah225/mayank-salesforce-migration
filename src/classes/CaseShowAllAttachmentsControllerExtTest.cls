@@ -3,13 +3,14 @@ private class CaseShowAllAttachmentsControllerExtTest {
     
     private static Case testCase;
 
-    private static void setUp(){
-        Contact testContact = (Contact) new ContactFactory.DefaultContact().create()[0];
+    private static void setUp() {
+        List<Contact> testContact = new ContactFactory.DefaultContact().create();
         insert testContact;
         
         CaseFactory.DefaultCase defineDefaultCaseType = new CaseFactory.DefaultCase();
-        defineDefaultCaseType.setRelatedObject('ContactId', testContact);
-        testCase = (Case) defineDefaultCaseType.create()[0];
+        defineDefaultCaseType.setRelatedObject('ContactId', testContact[0]);
+        List<Case> testCaseInList = defineDefaultCaseType.create();
+        testCase = testCaseInList[0];
         insert testCase;
     }
 

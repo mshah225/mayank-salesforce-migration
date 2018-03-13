@@ -163,7 +163,7 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
         Map<String, String> parmMap = new Map<String, String>();
         for (String key : matchingFieldMap.keySet()) {
             if (!String.isBlank(String.valueOf(cud.get(key)))) {
-                parmMap.put(matchingFieldMap.get(key), EncodingUtil.urlEncode(String.valueOf(cud.get(key)),'UTF-8'));
+                parmMap.put(matchingFieldMap.get(key), String.valueOf(cud.get(key)));
             }
         }
 

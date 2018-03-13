@@ -1,36 +1,70 @@
 @isTest
 private class LeadsOperationsForSandBoxRefreshTest {
 
-    private static final Integer LEAD_NUM = 10;
+    private static final Integer LEAD_NUM = 11;
     
-	private static testMethod void test() {
-        
-        //Create Lead Test Data
-        List<Lead> lstLead = TestDataFactory.createLeads(LEAD_NUM);
-        for (Integer i = 0; i < LEAD_NUM; i++) {
-            if (Math.mod(i, 2) == 0) {
-                lstLead[i].Status = 'Closed - Converted';
-            } else {
-                lstLead[i].Status = 'Closed - Converted';
-            }
-            lstLead[i].Email = 'test' + i + '@test.com';
-            lstLead[i].Recruiting_Email__c = 'test' + i + '@test.com';
-            lstLead[i].Secondary_Email__c = 'test' + i + '@test.com';
-            lstLead[i].Date_of_Birth__c = System.today();
-            lstLead[i].LastName = 'Test' + i;
-            lstLead[i].Company = 'Test Pvt Ltd';
+    @testSetup
+    private static void setup() {
+        LeadFactory.DefaultLead leadCreator = new LeadFactory.DefaultLead();
+        List<Lead> leadsCreatedForTest = leadCreator.create(LEAD_NUM);
+        Integer variableNameIterator = 0;
+        for (Lead leadToInsert : leadsCreatedForTest) {
+            leadToInsert.Email = 'test' + variableNameIterator + '@test.com';
+            leadToInsert.Recruiting_Email__c = 'test' + variableNameIterator + '@test.com';
+            leadToInsert.Secondary_Email__c = 'test' + variableNameIterator + '@test.com';
+            leadToInsert.Date_of_Birth__c = System.today();
+            leadToInsert.LastName = 'Test' + variableNameIterator;
+            leadToInsert.Company = 'Test Pvt Ltd ' + variableNameIterator;
+            variableNameIterator++;
         }
+		leadsCreatedForTest[0].Status = 'Closed - Converted';
         
-        insert lstLead;
-        
+        insert leadsCreatedForTest; 
+    }
+    
+    @isTest
+    private static void leadOperationsForUAT() {
+        LeadsOperationsForSandBoxRefresh leadOperator = new LeadsOperationsForSandBoxRefresh();
+        leadOperator.baseUrl = 'https://asu--roger.UAT.cs53.my.salesforce.com';
         Test.startTest();
-            LeadsOperationsForSandBoxRefresh obj = new LeadsOperationsForSandBoxRefresh();
-            obj.baseUrl = 'https://asu--roger.UAT.cs53.my.salesforce.com';
-            DataBase.executeBatch(obj);
-            obj.baseUrl = 'https://asu--roger.QA.cs53.my.salesforce.com';
-            DataBase.executeBatch(obj);
-            obj.baseUrl = 'https://asu--roger.DEV.cs53.my.salesforce.com';
-            DataBase.executeBatch(obj);
+            DataBase.executeBatch(leadOperator);
         Test.stopTest();
+        List<Lead> allScrambledLeads = [Select Email FROM Lead];
+        System.assertEquals(LEAD_NUM - 1, returnCountOfMatchesInString(allScrambledLeads, '.uat'));
+    }
+    
+    @isTest
+    private static void leadOperationsForQA() {
+        
+        LeadsOperationsForSandBoxRefresh leadOperator = new LeadsOperationsForSandBoxRefresh();
+        leadOperator.baseUrl = 'https://asu--roger.QA.cs53.my.salesforce.com';
+        Test.startTest();
+            DataBase.executeBatch(leadOperator);
+        Test.stopTest();
+        List<Lead> allScrambledLeads = [Select Email FROM Lead];
+        System.assertEquals(LEAD_NUM - 1, returnCountOfMatchesInString(allScrambledLeads, '.qa'));
+    }
+    
+    @isTest
+    private static void leadOperationsForDEV() {
+        
+        LeadsOperationsForSandBoxRefresh leadOperator = new LeadsOperationsForSandBoxRefresh();
+        leadOperator.baseUrl = 'https://asu--roger.DEV.cs53.my.salesforce.com';
+        Test.startTest();
+            DataBase.executeBatch(leadOperator);
+        Test.stopTest();
+        List<Lead> allScrambledLeads = [Select Email FROM Lead];
+        System.assertEquals(LEAD_NUM - 1, returnCountOfMatchesInString(allScrambledLeads, '.dev'));
+    }
+    
+    private static Integer returnCountOfMatchesInString(List<Lead> leadsWithModifiedEmails, String wordToSearch) {
+        Integer countOfMatches = 0;
+        for (Lead leadToSearch : leadsWithModifiedEmails) {
+            System.debug(leadToSearch.email);
+            if (leadToSearch.Email.contains(wordToSearch)) {
+                countOfMatches++;
+            }
+        }
+        return countOfMatches;
     }
 }

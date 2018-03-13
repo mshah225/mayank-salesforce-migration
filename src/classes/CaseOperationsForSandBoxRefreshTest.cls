@@ -5,19 +5,23 @@ private class CaseOperationsForSandBoxRefreshTest {
     
 	private static testMethod void test() {
         
-        //Create Case Test Data
-        List<Case> lstCase = TestDataFactory.createCases(CASE_NUM);
-        for (Case caseToAdd : lstCase) {
+        CaseFactory.DefaultCase caseCreator = new CaseFactory.DefaultCase();
+        List<Case> createdTestCases = caseCreator.create(CASE_NUM);
+        for (Case caseToAdd : createdTestCases) {
             caseToAdd.Status ='New'; 
             caseToAdd.Priority = 'Medium';
             caseToAdd.Origin = 'Email';
         } 
         
-        insert lstCase;
+        insert createdTestCases;
     
         Test.startTest();
-            CaseOperationsForSandBoxRefresh obj = new CaseOperationsForSandBoxRefresh();
-            DataBase.executeBatch(obj); 
+            CaseOperationsForSandBoxRefresh caseOperator = new CaseOperationsForSandBoxRefresh();
+            DataBase.executeBatch(caseOperator); 
         Test.stopTest();
+        
+                
+        List<Case> verifyCasesDeleted = [Select Id FROM Case];
+        System.assertEquals(0, verifyCasesDeleted.size());
     }
 }

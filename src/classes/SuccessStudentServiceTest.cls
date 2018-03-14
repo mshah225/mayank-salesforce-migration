@@ -15,7 +15,8 @@ private class SuccessStudentServiceTest {
     private static void testSetup () {
         TestDataFactory.createFunctionalGroupWithCategory('ASU Coach Outreach', 'Ad Hoc', 'N/A');
         
-        List<Contact> newContacts = TestDataFactory.createContacts(COACHING_STUDENTS_TO_CREATE + ADVISING_STUDENTS_TO_CREATE);
+        ContactFactory.DefaultContact defaultContact = new ContactFactory.DefaultContact();
+        List<Contact> newContacts = defaultContact.create(COACHING_STUDENTS_TO_CREATE);
         insert newContacts;
 
         List<User> resourceUsers = [
@@ -26,15 +27,9 @@ private class SuccessStudentServiceTest {
             LIMIT 2
         ];
         
-        List<Success_Resource__c> newResources = new List<Success_Resource__c>();
-        
-        for (User resourceUser : resourceUsers) {
-            newResources.add(new Success_Resource__c(
-            	Resource__c = resourceUser.Id,
-                RecordTypeId = IDHelper.getRTID('Success_Resource__c', 'Coach')
-            ));
-        }
-        
+        CoachingResourceFactory.DefaultCoachingResource DefaultCoachingResource = new CoachingResourceFactory.DefaultCoachingResource();
+        DefaultCoachingResource.setRelatedObject('Resource__c', resourceUsers);
+        List<Success_Resource__c> newResources = DefaultCoachingResource.create(resourceUsers.size());
         insert newResources;
         
         List<Success_Student__c> newSuccessStudents = new List<Success_Student__c>();

@@ -1,4 +1,6 @@
 public class SuccessStudentService {
+    private static final Date TOMORROW = System.today().addDays(1);
+    
     public static List<Success_Student__c> getStudentsRequiringOutreach(Map<Id, Success_Student__c> successStudents, Map<Id, Success_Student__c> oldMap) {
         List<Success_Student__c> studentsRequiringOutreach = new List<Success_Student__c>();
         
@@ -12,7 +14,7 @@ public class SuccessStudentService {
         return studentsRequiringOutreach;
     }
     
-    public static void createOutreachCases (List<Success_Student__c> successStudents) {
+    public static List<Case> createOutreachCases (List<Success_Student__c> successStudents) {
         Id coachCaseRecordTypeId = IDHelper.getRTID('Case', 'ASU_Coach_Outreach');
         List<Case> newCases = new List<Case>();
         
@@ -28,12 +30,15 @@ public class SuccessStudentService {
             LIMIT 1
         ];
         
+        Id functionalGroupid = classification.Id;
+        Id categoryId = classification.Case_Classification__r[0].Id;
+        
         for (Success_Student__c successStudent : successStudents) {
             Case newCase = new Case(
-                CC_Functional_Group__c = classification.Id,
-                CC_Category__c = classification.Case_Classifications__r[0].Id,
+                CC_Functional_Group__c = functionalGroupId,
+                CC_Category__c = categoryId,
                 Description = 'Transferred',
-                Followup_Date__c = Date.today().addDays(1),
+                Followup_Date__c = TOMORROW,
                 Origin__c	= 'Automated',
                 Priority = '3 - Normal Priority',
                 Status = 'New',
@@ -48,6 +53,6 @@ public class SuccessStudentService {
             newCases.add(newCase);
         }
         
-        insert newCases; 	
+        return newCases; 	
     }
 }

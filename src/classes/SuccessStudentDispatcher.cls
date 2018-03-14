@@ -8,7 +8,9 @@ public class SuccessStudentDispatcher implements IDispatch {
     }
     
     public void afterUpdate() {
-        SuccessStudentService.createOutreachCases(SuccessStudentService.getStudentsRequiringOutreach(newMap.values(), oldMap));
+        List<Success_Student__c> studentsRequiringOutreach = SuccessStudentService.getStudentsRequiringOutreach(newMap, oldMap);
+        List<Case> newCases = SuccessStudentService.createOutreachCases(studentsRequiringOutreach);
+        insert newCases;
     }
     
     public void beforeInsert() {}

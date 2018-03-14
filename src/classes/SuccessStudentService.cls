@@ -13,7 +13,7 @@ public class SuccessStudentService {
     }
     
     public static void createOutreachCases (List<Success_Student__c> successStudents) {
-        Id coachCaseRTID = IDHelper.getRTID('Case', 'ASU_Coach_Outreach');
+        Id coachCaseRecordTypeId = IDHelper.getRTID('Case', 'ASU_Coach_Outreach');
         List<Case> newCases = new List<Case>();
         
         Case_Classification__c classification = [

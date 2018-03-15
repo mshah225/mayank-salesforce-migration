@@ -4,12 +4,12 @@ public class LeadFactory {
     public class DefaultLead extends TestFactory {
         public DefaultLead() {
             super(new Lead(
-                firstName = 'Mister',
-                lastName = 'Test',
-                company = 'Test Inc'
+                FirstName = 'Mister',
+                LastName = 'Test',
+                Company = 'Test Inc'
             ));
-            this.addToFieldsToIncrement('lastName');
-            this.addToFieldsToIncrement('company');
+            this.addToFieldsToIncrement('LastName');
+            this.addToFieldsToIncrement('Company');
         }
     }
 }

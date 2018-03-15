@@ -11,21 +11,8 @@ private class ContactOperationsForSandBoxRefreshTest {
         insert accountToLinkToContact;
         Id accountIdForContact = accountToLinkToContact[0].id;
         
-        ContactFactory.DefaultContact contactCreator = new ContactFactory.DefaultContact();
+        ContactFactory.SandBoxRefreshContact contactCreator = new ContactFactory.SandBoxRefreshContact();
         List<Contact> contactsCreatedForTest = contactCreator.create(CONTACT_NUM);
-        for (Contact contactToCustomize : contactsCreatedForTest) {
-            contactToCustomize.AccountId = accountIdForContact;
-            contactToCustomize.LastName = 'Test';
-            contactToCustomize.Corporate_Relations_Email__c = 'Test@Test.com';
-            contactToCustomize.EPO_Email__c = 'Test@Test.com';
-            contactToCustomize.ASU_Email__c = 'Test@Test.com';
-            contactToCustomize.Last_Case_Email_Used__c = 'Test@Test.com';
-            contactToCustomize.Lead_Email__c = 'Test@Test.com';
-            contactToCustomize.Lead_Secondary_Email__c = 'Test@Test.com';
-            contactToCustomize.Parent_Email__c = 'Test@Test.com';
-            contactToCustomize.Personal_Email__c = 'Test@Test.com';
-            contactToCustomize.Birthdate = system.today();
-        } 
         
         insert contactsCreatedForTest;
     }

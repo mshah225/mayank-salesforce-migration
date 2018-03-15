@@ -3,7 +3,8 @@ private class CaseOperationsForSandBoxRefreshTest {
 
     private static final Integer CASE_NUM = 200;
     
-	private static testMethod void test() {
+    @isTest
+	private static void verifyCasesAreBeingDeleted() {
         
         CaseFactory.DefaultCase caseCreator = new CaseFactory.DefaultCase();
         List<Case> createdTestCases = caseCreator.create(CASE_NUM);

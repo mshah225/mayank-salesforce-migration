@@ -18,17 +18,17 @@ public class CaseOperationsForSandBoxRefresh implements Database.Batchable<sObje
 	        baseUrl = 'https://asu--roger.QA.cs53.my.salesforce.com';
 	    }
 	    
-	    Boolean caseShouldBeDeleted = isDevOrQA(baseUrl);
+	    Boolean caseShouldBeDeleted = orgIsQAOrDev(baseUrl);
 
         if (caseShouldBeDeleted) {
             delete scope;
         }
     }
     
-    private String orgIsQAOrDev(String url) {
+    private Boolean orgIsQAOrDev(String url) {
         Boolean isDevOrQA = false;
         if (url.containsIgnoreCase('DEV') || url.containsIgnoreCase('UAT')) {
-            orgType = true;
+            isDevOrQA = true;
         }
         
         return isDevOrQA;

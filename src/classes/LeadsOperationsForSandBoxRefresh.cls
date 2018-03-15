@@ -1,99 +1,67 @@
-global class LeadsOperationsForSandBoxRefresh implements Database.Batchable<sObject> {   
-    global String baseUrl  = '';
+public class LeadsOperationsForSandBoxRefresh implements Database.Batchable<sObject> {   
     
-    global Database.QueryLocator start(Database.BatchableContext BC) {
-        String query = 'SELECT Id, Name, Status, Email, Recruiting_Email__c, Secondary_Email__c, Date_of_Birth__c, silverpop__Silverpop_RecipientID__c FROM Lead';
+    public Database.QueryLocator start(Database.BatchableContext BC) {
+        String query = 'SELECT Id, Name, Status, Email, ' 
+                        + 'Recruiting_Email__c, Secondary_Email__c, Date_of_Birth__c, ' 
+                        + 'silverpop__Silverpop_RecipientID__c' 
+                        + 'FROM Lead';
         return Database.getQueryLocator(query);
     }
 
-    global void execute(Database.BatchableContext BC, List<Lead> scope) {
-
-        List<Lead> convertedLeadsToBeDelete = new List<Lead>();
-        List<Lead> remainingLeads = new List<Lead>();
-        for (Lead l: scope) {
-            if (l.Status == 'Closed - Converted') {
-                convertedLeadsToBeDelete.add(l);   
-            } else {
-                remainingLeads.add(l);
-            }
-        }
+    public void execute(Database.BatchableContext BC, List<Lead> scope) {
+        String baseUrl = System.URL.getSalesforceBaseUrl().toExternalForm();
+        String orgType = SandboxRefreshService.setOrgTypeFromUrl(baseUrl);
         
-        if (!convertedLeadsToBeDelete.isEmpty()) {
-            Delete convertedLeadsToBeDelete;
-        }
+        List<Lead> leadsToUpdated = deleteConvertedLeads(scope);
         
         List<Lead> updateLeads = new List<Lead>();
-        if (!Test.isRunningTest()) {
-            baseUrl = System.URL.getSalesforceBaseUrl().toExternalForm();
-        }
-    
-        String orgType = '';
-        if (baseUrl.containsIgnoreCase('DEV')) {
-            orgType = 'DEV';
-        } else if (baseUrl.containsIgnoreCase('UAT')) {
-            orgType = 'UAT';
-        } else if (baseUrl.containsIgnoreCase('QA')) {
-            orgType = 'QA';
-        }
-        for (Lead l: remainingLeads) {
-            
-            if (orgType == 'DEV') {
-                if (String.isNotBlank(l.Email) && (l.Email.right(4) != '.dev')) {
-                        l.Email = l.email + '.dev';
-                }
+
+        String orgType = SandboxRefreshService.setOrgTypeFromUrl(baseUrl);
+        
+        for (Lead leadToScrub : leadsToUpdated) {
+        
+            if (!String.isEmpty(orgType)) {
+                List<String> fieldList = new List<String> {
+                    'Email', 'Recruiting_Email__c', 'Secondary_Email__c'
+                };
                 
-                if (String.isNotBlank(l.Recruiting_Email__c) && (l.Recruiting_Email__c.right(4) != '.dev')) {
-                    l.Recruiting_Email__c = l.Recruiting_Email__c + '.dev';
-                }
-                
-                if (String.isNotBlank(l.Secondary_Email__c) && (l.Secondary_Email__c.right(4) != '.dev')) {
-                    l.Secondary_Email__c = l.Secondary_Email__c + '.dev';
-                }
+                leadToScrub = SandboxRefreshService.scrambleEmailField(leadToScrub, fieldList);
             }
             
-            
-            if (orgType == 'QA') {
-                    if (String.isNotBlank(l.Email) && (l.Email.right(4) != '.qa')) {
-                            l.Email = l.email+'.qa';
-                    }
-                    
-                    if (String.isNotBlank(l.Recruiting_Email__c) && (l.Recruiting_Email__c.right(4) != '.qa')) {
-                        l.Recruiting_Email__c = l.Recruiting_Email__c + '.qa';
-                    }
-                    
-                    if (String.isNotBlank(l.Secondary_Email__c) && (l.Secondary_Email__c.right(4) != '.qa')) {
-                        l.Secondary_Email__c = l.Secondary_Email__c + '.qa';
-                    }
-            }
-                
-            if (orgType == 'UAT') {
-                if (String.isNotBlank(l.Email) && (l.Email.right(4) != '.uat')) {
-                        l.Email = l.email + '.uat';
-                }
-                
-                if (String.isNotBlank(l.Recruiting_Email__c) && (l.Recruiting_Email__c.right(4) != '.uat')) {
-                    l.Recruiting_Email__c = l.Recruiting_Email__c + '.uat';
-                }
-                
-                if (String.isNotBlank(l.Secondary_Email__c) && (l.Secondary_Email__c.right(4) != '.uat')) {
-                    l.Secondary_Email__c = l.Secondary_Email__c + '.uat';
-                }
+            if (leadToScrub.Date_of_Birth__c != null) {
+                leadToScrub.Date_of_Birth__c = SandboxRefreshService.scrambleBirthday(leadToScrub.Date_of_Birth__c);
             }
             
-            if (l.Date_of_Birth__c != null) {
-                Integer intRandom = Math.round(Math.random()*1000);
-                intRandom = Math.mod(intRandom, 60) - 30;
-                Date birthDate = l.Date_of_Birth__c;
-                l.Date_of_Birth__c = birthDate.addDays(intRandom);
-            }
-            
-            l.silverpop__Silverpop_RecipientID__c = '';
-            updateLeads.add(l);
+            leadToScrub = SandboxRefreshService.removeSilverPopId(leadToScrub);
+            updateLeads.add(leadToScrub);
         }
         
         if (!updateLeads.isEmpty()) {
             update updateLeads;
         }
     }  
-    global void finish (Database.BatchableContext BC) { }
+    
+    private List<Lead> deleteConvertedLeads(List<Lead> leadsToUpDateOrDelete) {
+        List<Lead> leadsToDelete = new List<Lead>();
+        List<Lead> leadsToUpdate = new List<Lead>();
+        for (Lead leadToCheck : leadsToUpDateOrDelete) {
+            if(isConverted(leadToCheck)) {
+                leadsToDelete.add(leadToCheck);
+            } else {
+                leadsToUpdate.add(leadToCheck);
+            }
+        }
+        
+        if (!leadsToDelete.isEmpty()) {
+            delete leadsToDelete;
+        }
+        
+        return leadsToUpdate;
+    }
+    
+    private boolean isConverted(Lead leadToCheck) {
+        return (leadToCheck.Status == 'Closed - Converted');
+    }
+    
+    public void finish (Database.BatchableContext BC) { }
 }

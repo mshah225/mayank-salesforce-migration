@@ -26,10 +26,10 @@ public class ContactOperationsForSandBoxRefresh implements Database.Batchable<sO
             }
              
             if (contactToScrub.Birthdate != null) {
-                contactToScrub.Birthdate = scrambleBirthday(contactToScrub.Birthdate);
+                contactToScrub.Birthdate = SandboxRefreshService.scrambleBirthday(contactToScrub.Birthdate);
             }
             
-            removeSilverPopId(contactToScrub);
+            contactToScrub = SandboxRefreshService.removeSilverPopId(contactToScrub);
             
             contactsToUpdate.add(contactToScrub);
         }
@@ -38,16 +38,6 @@ public class ContactOperationsForSandBoxRefresh implements Database.Batchable<sO
             update contactsToUpdate;
         }
     } 
-    
-    private Date scrambleBirthday(Date originalBirthday) {
-        Integer intRandom = Math.round(Math.random()*1000);
-        intRandom = Math.mod(intRandom, 60) - 30;
-        return originalBirthday.addDays(intRandom);
-    }
-    
-    private void removeSilverPopId(Contact contactToEdit) {
-        contactToEdit.silverpop__Silverpop_RecipientID__c = '';
-    }
     
     public void finish(Database.BatchableContext BC) { }
 }

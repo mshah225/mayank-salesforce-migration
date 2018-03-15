@@ -7,16 +7,6 @@ private class LeadsOperationsForSandBoxRefreshTest {
     private static void setup() {
         LeadFactory.DefaultLead leadCreator = new LeadFactory.DefaultLead();
         List<Lead> leadsCreatedForTest = leadCreator.create(LEAD_NUM);
-        Integer variableNameIterator = 0;
-        for (Lead leadToInsert : leadsCreatedForTest) {
-            leadToInsert.Email = 'test' + variableNameIterator + '@test.com';
-            leadToInsert.Recruiting_Email__c = 'test' + variableNameIterator + '@test.com';
-            leadToInsert.Secondary_Email__c = 'test' + variableNameIterator + '@test.com';
-            leadToInsert.Date_of_Birth__c = System.today();
-            leadToInsert.LastName = 'Test' + variableNameIterator;
-            leadToInsert.Company = 'Test Pvt Ltd ' + variableNameIterator;
-            variableNameIterator++;
-        }
 		leadsCreatedForTest[0].Status = 'Closed - Converted';
         
         insert leadsCreatedForTest; 

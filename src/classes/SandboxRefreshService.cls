@@ -15,7 +15,7 @@ public class SandboxRefreshService {
         return orgType;
     }
     
-    private sObject scrambleEmailField(sObject objectToModify, List<String> fieldList) {
+    public sObject scrambleEmailField(sObject objectToModify, List<String> fieldList) {
         for (String field : fieldList) {
             String originalEmail = objectToModify.get(field);
             if(!String.isEmpty(originalEmail) && originalEmail.right(4) != orgType) {
@@ -24,5 +24,16 @@ public class SandboxRefreshService {
             }
         }
         return objectToModify;
-    } 
+    }
+    
+    public Date scrambleBirthday(Date originalBirthday) {
+        Integer intRandom = Math.round(Math.random()*1000);
+        intRandom = Math.mod(intRandom, 60) - 30;
+        return originalBirthday.addDays(intRandom);
+    }
+    
+    public sObject removeSilverPopId(sObject objectToRemoveField) {
+        objectToRemoveField.put(silverpop__Silverpop_RecipientID__c, '');
+        return objectToRemoveField;
+    }
 }

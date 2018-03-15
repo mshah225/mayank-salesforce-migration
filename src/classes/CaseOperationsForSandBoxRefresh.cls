@@ -10,24 +10,19 @@ public class CaseOperationsForSandBoxRefresh implements Database.Batchable<sObje
     }  
     
     private void deleteAllDevOrQACases(List<Case> scope) {
-        String baseUrl = '';
+        String baseUrl = System.URL.getSalesforceBaseUrl().toExternalForm();
+        String orgType = SandboxRefreshService.setOrgTypeFromUrl(baseUrl);
         
-	    if (!Test.isRunningTest()) {
-	        baseUrl = System.URL.getSalesforceBaseUrl().toExternalForm();
-	    } else {
-	        baseUrl = 'https://asu--roger.QA.cs53.my.salesforce.com';
-	    }
-	    
-	    Boolean caseShouldBeDeleted = orgIsQAOrDev(baseUrl);
+	    Boolean caseShouldBeDeleted = orgIsQAOrDev(orgType);
 
         if (caseShouldBeDeleted) {
             delete scope;
         }
     }
     
-    private Boolean orgIsQAOrDev(String url) {
+    private Boolean orgIsQAOrDev(String orgType) {
         Boolean isDevOrQA = false;
-        if (url.containsIgnoreCase('DEV') || url.containsIgnoreCase('UAT')) {
+        if (orgType.containsIgnoreCase('DEV') || orgType.containsIgnoreCase('QA')) {
             isDevOrQA = true;
         }
         

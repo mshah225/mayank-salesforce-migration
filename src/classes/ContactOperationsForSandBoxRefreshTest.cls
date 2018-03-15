@@ -11,7 +11,7 @@ private class ContactOperationsForSandBoxRefreshTest {
         insert accountToLinkToContact;
         Id accountIdForContact = accountToLinkToContact[0].id;
         
-        ContactFactory.SandBoxRefreshContact contactCreator = new ContactFactory.SandBoxRefreshContact();
+        ContactFactory.SandBoxRefreshContact contactCreator = new ContactFactory.SandBoxRefreshContact(accountIdForContact);
         List<Contact> contactsCreatedForTest = contactCreator.create(CONTACT_NUM);
         
         insert contactsCreatedForTest;
@@ -21,7 +21,7 @@ private class ContactOperationsForSandBoxRefreshTest {
 	private static void contactRefreshUAT() {
         Test.startTest();
             ContactOperationsForSandBoxRefresh contactOperator = new ContactOperationsForSandBoxRefresh();
-            contactOperator.baseUrl = 'https://asu--roger.UAT.cs53.my.salesforce.com';
+			SandboxRefreshService.orgType = '.uat';
             DataBase.executeBatch(contactOperator);
         Test.stopTest();
         List<Contact> allContacts = [Select Email FROM Contact];
@@ -32,7 +32,7 @@ private class ContactOperationsForSandBoxRefreshTest {
 	private static void contactRefreshQA() {
         Test.startTest();
             ContactOperationsForSandBoxRefresh contactOperator = new ContactOperationsForSandBoxRefresh();
-            contactOperator.baseUrl = 'https://asu--roger.QA.cs53.my.salesforce.com';
+            SandboxRefreshService.orgType = '.qa';
             DataBase.executeBatch(contactOperator);
         Test.stopTest();
         List<Contact> allContacts = [Select Email FROM Contact];
@@ -43,7 +43,7 @@ private class ContactOperationsForSandBoxRefreshTest {
 	private static void contactRefreshDEV() {
         Test.startTest();
             ContactOperationsForSandBoxRefresh contactOperator = new ContactOperationsForSandBoxRefresh();
-            contactOperator.baseUrl = 'https://asu--roger.DEV.cs53.my.salesforce.com';
+            SandboxRefreshService.orgType = '.dev';
             DataBase.executeBatch(contactOperator);
         Test.stopTest();
         List<Contact> allContacts = [Select Email FROM Contact];

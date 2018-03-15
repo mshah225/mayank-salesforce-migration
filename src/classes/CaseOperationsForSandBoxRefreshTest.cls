@@ -7,6 +7,7 @@ private class CaseOperationsForSandBoxRefreshTest {
 	private static void verifyCasesAreBeingDeleted() {
         
         CaseFactory.DefaultCase caseCreator = new CaseFactory.DefaultCase();
+        SandboxRefreshService.orgType = '.dev';
         List<Case> createdTestCases = caseCreator.create(CASE_NUM);
         for (Case caseToAdd : createdTestCases) {
             caseToAdd.Status ='New'; 

@@ -27,6 +27,8 @@ public class LeadFactory {
             this.addToFieldsToIncrement('LastName');
             this.addToFieldsToIncrement('Company');
             this.addToFieldsToIncrement('Email');
+            this.addToFieldsToIncrement('Recruiting_Email__c');
+            this.addToFieldsToIncrement('Secondary_Email__c');
         }
     }
 }

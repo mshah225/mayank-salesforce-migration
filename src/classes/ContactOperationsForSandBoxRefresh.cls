@@ -3,7 +3,7 @@ public class ContactOperationsForSandBoxRefresh implements Database.Batchable<sO
 	public Database.QueryLocator start(Database.BatchableContext BC) {
         String query = 'SELECT Id, Name, email, Birthdate, ASU_Email__c, Corporate_Relations_Email__c, ' 
                         + 'EPO_Email__c, Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, ' 
-                        + 'Parent_Email__c, Personal_Email__c, silverpop__Silverpop_RecipientID__c' 
+                        + 'Parent_Email__c, Personal_Email__c, silverpop__Silverpop_RecipientID__c ' 
                         + 'FROM Contact';
         return Database.getQueryLocator(query);
     }
@@ -22,14 +22,14 @@ public class ContactOperationsForSandBoxRefresh implements Database.Batchable<sO
                     'Parent_Email__c', 'Personal_Email__c'
                 };
                 
-                contactToScrub = SandboxRefreshService.scrambleEmailField(contactToScrub, fieldList);
+                contactToScrub = (Contact)SandboxRefreshService.scrambleEmailField(contactToScrub, fieldList);
             }
              
             if (contactToScrub.Birthdate != null) {
                 contactToScrub.Birthdate = SandboxRefreshService.scrambleBirthday(contactToScrub.Birthdate);
             }
             
-            contactToScrub = SandboxRefreshService.removeSilverPopId(contactToScrub);
+            contactToScrub = (Contact)SandboxRefreshService.removeSilverPopId(contactToScrub);
             
             contactsToUpdate.add(contactToScrub);
         }

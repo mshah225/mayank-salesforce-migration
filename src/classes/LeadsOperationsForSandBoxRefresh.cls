@@ -3,7 +3,7 @@ public class LeadsOperationsForSandBoxRefresh implements Database.Batchable<sObj
     public Database.QueryLocator start(Database.BatchableContext BC) {
         String query = 'SELECT Id, Name, Status, Email, ' 
                         + 'Recruiting_Email__c, Secondary_Email__c, Date_of_Birth__c, ' 
-                        + 'silverpop__Silverpop_RecipientID__c' 
+                        + 'silverpop__Silverpop_RecipientID__c ' 
                         + 'FROM Lead';
         return Database.getQueryLocator(query);
     }

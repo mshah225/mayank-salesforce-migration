@@ -1,38 +1,39 @@
-global class CaseOperationsForSandBoxRefresh implements Database.Batchable<sObject> {  
+public class CaseOperationsForSandBoxRefresh implements Database.Batchable<sObject> {  
 
-    global String baseUrl = '';
-    
-	global Database.QueryLocator start(Database.BatchableContext BC) {
+	public Database.QueryLocator start(Database.BatchableContext BC) {
         String query = 'SELECT Id FROM Case';
         return Database.getQueryLocator(query); 
     }
 
-    global void execute(Database.BatchableContext BC, List<Case> scope) {
+    public void execute(Database.BatchableContext BC, List<Case> scope) {
+        deleteAllDevOrQACases(scope);
+    }  
+    
+    private void deleteAllDevOrQACases(List<Case> scope) {
+        String baseUrl = '';
         
-        // Find out Org Type from Base URL.
 	    if (!Test.isRunningTest()) {
 	        baseUrl = System.URL.getSalesforceBaseUrl().toExternalForm();
-	    }
-	    else {
+	    } else {
 	        baseUrl = 'https://asu--roger.QA.cs53.my.salesforce.com';
 	    }
 	    
-	    String orgType = '';
-        System.debug('baseUrl =' + baseUrl);
-        
-        if (baseUrl.containsIgnoreCase('DEV')) {
-            orgType = 'DEV';
-        } else if (baseUrl.containsIgnoreCase('UAT')) {
-            orgType = 'UAT';
-        } else if (baseUrl.containsIgnoreCase('QA')) {
-            orgType = 'QA';
+	    Boolean caseShouldBeDeleted = isDevOrQA(baseUrl);
+
+        if (caseShouldBeDeleted) {
+            delete scope;
         }
-        
-        //Delete All Case Rows
-        if (orgType== 'DEV' || orgType == 'QA' ) {
-            Delete scope;
-        }
-    }  
+    }
     
-    global void finish(Database.BatchableContext BC) { }
+    private String orgIsQAOrDev(String url) {
+        Boolean isDevOrQA = false;
+        if (url.containsIgnoreCase('DEV') || url.containsIgnoreCase('UAT')) {
+            orgType = true;
+        }
+        
+        return isDevOrQA;
+    }
+    
+    
+    public void finish(Database.BatchableContext BC) { }
 }

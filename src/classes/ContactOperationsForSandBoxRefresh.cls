@@ -24,8 +24,8 @@ global class ContactOperationsForSandBoxRefresh implements Database.Batchable<sO
         for (Contact contactToScrub : scope) {
             
              if (orgType == 'DEV') {
-                //Change valid Contact Email address
-                if(String.isNotBlank(contactToScrub.email) && (contactToScrub.Email.right(4) != '.dev')){
+             
+                if (String.isNotBlank(contactToScrub.email) && (contactToScrub.Email.right(4) != '.dev')) {
                     contactToScrub.email = contactToScrub.email + '.dev';
                 }
                 
@@ -168,5 +168,5 @@ global class ContactOperationsForSandBoxRefresh implements Database.Batchable<sO
         }
     } 
     
-    global void finish(Database.BatchableContext BC){ }
+    global void finish(Database.BatchableContext BC) { }
 }

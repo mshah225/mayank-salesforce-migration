@@ -13,8 +13,8 @@ public class LeadFactory {
         }
     }
     
-    public class SandBoxRefreshLead extends TestFactory {
-        public SandBoxRefreshLead() {
+    public class AllEmailAndBirthdayLead extends TestFactory {
+        public AllEmailAndBirthdayLead() {
             super(new Lead(
                 FirstName = 'Mister',
                 LastName = 'Test',

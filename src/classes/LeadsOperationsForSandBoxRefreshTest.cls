@@ -5,7 +5,7 @@ private class LeadsOperationsForSandBoxRefreshTest {
     
     @testSetup
     private static void setup() {
-        LeadFactory.DefaultLead leadCreator = new LeadFactory.DefaultLead();
+        LeadFactory.AllEmailAndBirthdayLead leadCreator = new LeadFactory.AllEmailAndBirthdayLead();
         List<Lead> leadsCreatedForTest = leadCreator.create(LEAD_NUM);
 		leadsCreatedForTest[0].Status = 'Closed - Converted';
         
@@ -15,7 +15,7 @@ private class LeadsOperationsForSandBoxRefreshTest {
     @isTest
     private static void leadOperationsForUAT() {
         LeadsOperationsForSandBoxRefresh leadOperator = new LeadsOperationsForSandBoxRefresh();
-        leadOperator.baseUrl = 'https://asu--roger.UAT.cs53.my.salesforce.com';
+        SandboxRefreshService.orgType = '.uat';
         Test.startTest();
             DataBase.executeBatch(leadOperator);
         Test.stopTest();
@@ -27,7 +27,7 @@ private class LeadsOperationsForSandBoxRefreshTest {
     private static void leadOperationsForQA() {
         
         LeadsOperationsForSandBoxRefresh leadOperator = new LeadsOperationsForSandBoxRefresh();
-        leadOperator.baseUrl = 'https://asu--roger.QA.cs53.my.salesforce.com';
+        SandboxRefreshService.orgType = '.qa';
         Test.startTest();
             DataBase.executeBatch(leadOperator);
         Test.stopTest();
@@ -39,11 +39,12 @@ private class LeadsOperationsForSandBoxRefreshTest {
     private static void leadOperationsForDEV() {
         
         LeadsOperationsForSandBoxRefresh leadOperator = new LeadsOperationsForSandBoxRefresh();
-        leadOperator.baseUrl = 'https://asu--roger.DEV.cs53.my.salesforce.com';
+        SandboxRefreshService.orgType = '.dev';
         Test.startTest();
             DataBase.executeBatch(leadOperator);
         Test.stopTest();
         List<Lead> allScrambledLeads = [Select Email FROM Lead];
+        System.debug(allScrambledLeads);
         System.assertEquals(LEAD_NUM - 1, returnCountOfMatchesInString(allScrambledLeads, '.dev'));
     }
     

@@ -12,8 +12,8 @@ public class ContactFactory {
         }
     }
     
-    public class SandBoxRefreshContact extends TestFactory {
-        public SandBoxRefreshContact(Id accountId) {
+    public class AllEmailCase extends TestFactory {
+        public AllEmailCase(Id accountId) {
             super(new Contact(
                 FirstName = 'Test',
                 LastName = 'Test',

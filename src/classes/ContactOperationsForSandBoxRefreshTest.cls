@@ -11,7 +11,7 @@ private class ContactOperationsForSandBoxRefreshTest {
         insert accountToLinkToContact;
         Id accountIdForContact = accountToLinkToContact[0].id;
         
-        ContactFactory.SandBoxRefreshContact contactCreator = new ContactFactory.SandBoxRefreshContact(accountIdForContact);
+        ContactFactory.AllEmailCase contactCreator = new ContactFactory.AllEmailCase(accountIdForContact);
         List<Contact> contactsCreatedForTest = contactCreator.create(CONTACT_NUM);
         
         insert contactsCreatedForTest;

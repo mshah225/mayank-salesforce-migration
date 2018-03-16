@@ -34,7 +34,7 @@ private class SandboxRefreshServiceTest {
             'Email', 'Recruiting_Email__c', 'Secondary_Email__c'
         };
         
-        LeadFactory.SandBoxRefreshLead leadCreator = new LeadFactory.SandBoxRefreshLead();
+        LeadFactory.AllEmailAndBirthdayLead leadCreator = new LeadFactory.AllEmailAndBirthdayLead();
         List<Lead> createdTestLeads = leadCreator.create(1);
         Lead leadToScramble = createdTestLeads[0];
         List<String> originalEmails = new List<String>{leadToScramble.Email, leadToScramble.Recruiting_Email__c, leadToScramble.Secondary_Email__c};
@@ -55,7 +55,7 @@ private class SandboxRefreshServiceTest {
     
     @isTest 
     private static void removeSilverPopId() {
-    	LeadFactory.SandBoxRefreshLead leadCreator = new LeadFactory.SandBoxRefreshLead();
+    	LeadFactory.AllEmailAndBirthdayLead leadCreator = new LeadFactory.AllEmailAndBirthdayLead();
         List<Lead> createdTestLeads = leadCreator.create(1);
         Lead leadToScramble = createdTestLeads[0];
         leadToScramble.silverpop__Silverpop_RecipientID__c = 'Test';

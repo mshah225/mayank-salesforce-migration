@@ -15,8 +15,6 @@ public class LeadsOperationsForSandBoxRefresh implements Database.Batchable<sObj
         List<Lead> leadsToUpdated = deleteConvertedLeads(scope);
         
         List<Lead> updateLeads = new List<Lead>();
-
-        String orgType = SandboxRefreshService.setOrgTypeFromUrl(baseUrl);
         
         for (Lead leadToScrub : leadsToUpdated) {
         
@@ -25,14 +23,14 @@ public class LeadsOperationsForSandBoxRefresh implements Database.Batchable<sObj
                     'Email', 'Recruiting_Email__c', 'Secondary_Email__c'
                 };
                 
-                leadToScrub = SandboxRefreshService.scrambleEmailField(leadToScrub, fieldList);
+                leadToScrub = (Lead)SandboxRefreshService.scrambleEmailField(leadToScrub, fieldList);
             }
             
             if (leadToScrub.Date_of_Birth__c != null) {
                 leadToScrub.Date_of_Birth__c = SandboxRefreshService.scrambleBirthday(leadToScrub.Date_of_Birth__c);
             }
             
-            leadToScrub = SandboxRefreshService.removeSilverPopId(leadToScrub);
+            leadToScrub = (Lead)SandboxRefreshService.removeSilverPopId(leadToScrub);
             updateLeads.add(leadToScrub);
         }
         

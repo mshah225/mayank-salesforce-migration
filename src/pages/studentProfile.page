@@ -4521,26 +4521,36 @@
                                         "<table id='career_dev_table' class='table table-striped table-bordered'> " +
                                         "<tbody>";
                                     if (typeof result.me3_Careers__r != 'undefined') {
-                                      for (var i = 0; i < result.me3_Careers__r.length; i++) {
-                                          if (result.me3_Careers__r[i].Updated_Date__c) {
-                                            var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
-                                            var updatedDate = new Date(cdUtcSeconds);
-                                            updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
+                                        for (var i = 0; i < result.me3_Careers__r.length; i++) {
+                                            if (result.me3_Careers__r[i].Updated_Date__c) {
+                                                var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
+                                                var updatedDate = new Date(cdUtcSeconds);
+                                                updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
                                                 updatedDate.getUTCDate() + '/' +
                                                 updatedDate.getUTCFullYear();
-                                          } else {
-                                            updatedDate == '--';
-                                          }
+                                            } else {
+                                                updatedDate == '--';
+                                            }
 
-                                          html += "" +
-                                              (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
-                                                  "<td style='min-width: 75px;'>" + updatedDate + "</td>" +
-                                                  "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
-                                                  "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
-                                                  "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
-                                                  result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
-                                              "</tr>";
-                                      }
+                                            html += "" +
+                                                (result.me3_Careers__r[i].Active__c == true ?  
+                                                    ("<tr>" +  
+                                                        "<td style='width: 10%;font-weight:bold'>" + updatedDate + "</td>" +
+                                                        "<td style='font-weight:bold;color:red;width: 2%'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
+                                                        "<td style='width: 37%'>Career Interest: <b>" + result.me3_Careers__r[i].Career_Interest__c + "</b></td>" +
+                                                        "<td>Degree Interest: <b>" + result.me3_Careers__r[i].Degree_Interest__c + " (" +
+                                                            result.me3_Careers__r[i].Plan_Code__c + ")</b>" +
+                                                        "</td>" +
+                                                    "</tr>") : 
+                                                    ("<tr style='font-weight:normal;'>" +
+                                                        "<td style='width: 10%;'>" + updatedDate + "</td>" +
+                                                        "<td style='font-weight:bold;color:red;width: 2%'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
+                                                        "<td style='width: 37%'>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
+                                                        "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
+                                                            result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
+                                                    "</tr>")
+                                                );
+                                        }
                                     }
 
                                     html += "</tbody></table></div>";

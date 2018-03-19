@@ -4537,9 +4537,9 @@
                                                     ("<tr>" +  
                                                         "<td style='width: 10%;font-weight:bold'>" + updatedDate + "</td>" +
                                                         "<td style='font-weight:bold;color:red;width: 2%'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
-                                                        "<td style='width: 37%'>Career Interest: <b>" + result.me3_Careers__r[i].Career_Interest__c + "</b></td>" +
-                                                        "<td>Degree Interest: <b>" + result.me3_Careers__r[i].Degree_Interest__c + " (" +
-                                                            result.me3_Careers__r[i].Plan_Code__c + ")</b>" +
+                                                        "<td style='width: 37%'><b>Career Interest: </b>" + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
+                                                        "<td><b>Degree Interest: </b>" + result.me3_Careers__r[i].Degree_Interest__c + " (" +
+                                                            result.me3_Careers__r[i].Plan_Code__c + ")" +
                                                         "</td>" +
                                                     "</tr>") : 
                                                     ("<tr style='font-weight:normal;'>" +

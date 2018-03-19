@@ -131,6 +131,15 @@
                         document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
                         document.getElementById("levelChangeDate").innerHTML += '<b>Level Change Date: </b> N/A';
                     }
+                    /*
+                    var endPoint = result.length-1;
+                    if(result[endPoint].direction != null && result[endPoint].prevDate != null) {
+                        document.getElementById("change").innerHTML = '<b>Change: </b>' + result[endPoint].direction;
+                        document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[endPoint].prevDate;
+                    } else {
+                        document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
+                        document.getElementById("levelChangeDate").innerHTML += '<b>Level Change Date: </b> N/A';
+                    }*/
                         
                     var container = document.getElementById('chart_div');
                     var data = new google.visualization.DataTable();

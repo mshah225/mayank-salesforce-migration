@@ -1,7 +1,7 @@
 global class CivitasPersistenceController {
 
     public static List<String> months = new List<String>();
-	public static Integer dayValue = 0;
+	  public static Integer dayValue = 0;
     public static List<CivitasWrapper> dataList {get; set;}
     public static String emplId {get; set;}
     public static Decimal persistenceLevel;
@@ -127,7 +127,6 @@ global class CivitasPersistenceController {
 
         if (dataList.size() > 0) {
             CivitasWrapper tmpEndPoint = dataList[dataList.size()-1];
-            String lastUpdatedDate = dataList[dataList.size()-1].fullDate;
             Integer dayValue = tmpEndPoint.day;
             while ((endDate < todayDate && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < todayDate) {
                 tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
@@ -135,10 +134,12 @@ global class CivitasPersistenceController {
                 dataList.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel,
                                                     tmpEndPoint.levelDesc, tmpEndPoint.flag, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
             }
+
             dataList[dataList.size()-1].fullDate = lastUpdatedDate;
             if (endMonth < startMonth) {
                 endMonth += 12;
             }
+          
         	persistenceLevel = dataList[dataList.size()-1].outlookLevel;
             if (currentTerm.subString(3).equals('1')) {
                 dataList[0].termInfo = 'Spring';

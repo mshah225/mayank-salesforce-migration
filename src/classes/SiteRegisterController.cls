@@ -4,9 +4,6 @@ public with sharing class SiteRegisterController {
     private static final Id PORTAL_ACCOUNT_ID = '001x000xxx35tPN';
     private final String UNABLE_TO_CREATE_PORTAL_USER = 'Unable to create Portal User. Please contact your System Administrator if the problem persists.';
     
-    private class CannotCreatePortalUserException extends Exception {}
-    private class PasswordNoMatchException extends Exception {}
-    
     public SiteRegisterController () {}
 
     public String username {get; set;} 
@@ -62,4 +59,7 @@ public with sharing class SiteRegisterController {
             return sitePage;
         }
     }
+    
+    private class CannotCreatePortalUserException extends Exception {}
+    private class PasswordNoMatchException extends Exception {}
 }

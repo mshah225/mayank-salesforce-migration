@@ -25,7 +25,7 @@ public with sharing class SiteRegisterController {
     
     private void throwErrorIfPasswordMismatch() {
         if (passwordIsNotSame()) {
-            throw new PasswordNoMatchException(Label.Site.passwords_dont_match);
+            throw new PasswordNoMatchException(Label.Site.PASSWORDS_DONT_MATCH);
         }
     }
     

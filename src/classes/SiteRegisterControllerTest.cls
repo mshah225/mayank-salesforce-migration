@@ -4,8 +4,6 @@
 @isTest
 public with sharing class SiteRegisterControllerTest {
     
-    private static final String UNABLE_TO_CREATE_PORTAL_USER = 'Unable to create Portal User. Please contact your System Administrator if the problem persists.';
-
     @isTest
     private static void differentPasswordCatchError() {
         
@@ -17,10 +15,10 @@ public with sharing class SiteRegisterControllerTest {
         
         Test.startTest();
         System.assert(controller.registerAndRedirectUser() == null);
+        Test.stopTest();
         
         List<Apexpages.Message> pageMsgs = ApexPages.getMessages();
         System.assert(pageMsgs.get(0).getDetail().contains(Label.Site.passwords_dont_match));
-        Test.stopTest();
     }
     
     @isTest
@@ -32,10 +30,11 @@ public with sharing class SiteRegisterControllerTest {
         controller.confirmPassword = 'asuIasu';
         
         Test.startTest();
-        System.assert(controller.registerAndRedirectUser() == null);
+        controller.registerAndRedirectUser();
+        Test.stopTest();
         
         List<Apexpages.Message> pageMsgs = ApexPages.getMessages();
-        System.assert(pageMsgs.get(0).getDetail().contains(UNABLE_TO_CREATE_PORTAL_USER));
-        Test.stopTest();
+        System.assert(pageMsgs.get(0).getDetail().contains(controller.UNABLE_TO_CREATE_PORTAL_USER));
+    
     }
 }

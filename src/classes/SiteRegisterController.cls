@@ -2,7 +2,7 @@ public with sharing class SiteRegisterController {
     // PORTAL_ACCOUNT_ID is the account on which the contact will be created on and then enabled as a portal user.
     // you need to add the account owner into the role hierarchy before this will work - please see Customer Portal Setup help for more information.
     private static final Id PORTAL_ACCOUNT_ID = '001x000xxx35tPN';
-    private final String UNABLE_TO_CREATE_PORTAL_USER = 'Unable to create Portal User. Please contact your System Administrator if the problem persists.';
+    public final String UNABLE_TO_CREATE_PORTAL_USER = 'Unable to create Portal User. Please contact your System Administrator if the problem persists.';
     
     public SiteRegisterController () {}
 

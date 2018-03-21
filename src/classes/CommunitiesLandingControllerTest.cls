@@ -8,7 +8,6 @@ private with sharing class CommunitiesLandingControllerTest {
     private static void forwardToStartPageReturnsCorrectUrl() {
         
         CommunitiesLandingController communityController = new CommunitiesLandingController();
-    
         Test.startTest();
         PageReference startPage = communityController.forwardToStartPage();
         Test.stopTest();

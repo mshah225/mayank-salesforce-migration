@@ -14,7 +14,7 @@ public class SuccessStudentService {
         return studentsRequiringOutreach;
     }
     
-    public static List<Case> createOutreachCases (List<Success_Student__c> successStudents) {
+    public static List<Case> createOutreachCases(List<Success_Student__c> successStudents) {
         Id coachCaseRecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
         List<Case> newCases = new List<Case>();
         

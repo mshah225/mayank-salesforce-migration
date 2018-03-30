@@ -333,9 +333,8 @@ public with sharing class viewCaseController {
         }
         String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
         InsertEmailMessageCalloutBody emailMessageObjectBody = new InsertEmailMessageCalloutBody(caseReply, caseId,
-                                                            emailSubject, true,
-                                                            currentUser.Name, currentUser.Email,
-                                                            ownerEmail, '2'
+                                                            emailSubject, currentUser.Name, 
+                                                            currentUser.Email, ownerEmail
                                                             );
         String jsonEmailMessageInput = JSON.serialize(emailMessageObjectBody);
         return jsonEmailMessageInput;

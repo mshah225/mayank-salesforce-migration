@@ -711,10 +711,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         insert theEmail;
     }
 
-    private String extractIdRefNew(String searchText)
-    {
-        if (searchtext==null)
-        {
+    private String extractIdRefNew(String searchText) {
+        if (searchtext==null) {
             return null;
         }
 
@@ -722,30 +720,18 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         String patternString;
         String caseId;
 
-        if (searchText.indexOf(':ref') > searchText.indexOf('ref:'))
-        {
+        if (searchText.indexOf(':ref') > searchText.indexOf('ref:')) {
             String caseReference = searchText.substring(searchText.indexOf('ref:') + 4, searchText.indexOf(':ref'));
-
-            if (Test.isRunningTest())
-            {
-                caseId = caseReference;
-            }
-            else
-            {
-                try
-                {
+            try {
                     caseId = Cases.getCaseIdFromEmailThreadId(caseReference);
-                }
-                catch (Exception e)
-                {
+            } catch (Exception e) {
                     return null;
-                }
             }
+    
 
             return caseId;
         }
-        else
-        {
+        else {
             return null;
         }
     }

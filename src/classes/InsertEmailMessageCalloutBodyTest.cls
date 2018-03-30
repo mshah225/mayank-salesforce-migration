@@ -13,11 +13,9 @@ private class InsertEmailMessageCalloutBodyTest {
         testEmailBody = 'Test Email Body';
         testParentId = 'Mock Id';
         testEmailSubject = 'Test Subject';
-        testIsIncoming = true;
         testFromName = 'Test Name';
         testFromAddress = 'testfrom@test.com';
         testToAddress = 'testto@test.com';
-        testStatus = '2';
     }
     
     @isTest
@@ -26,16 +24,14 @@ private class InsertEmailMessageCalloutBodyTest {
         
         Test.startTest();
         InsertEmailMessageCalloutBody testCalloutBody = new InsertEmailMessageCalloutBody(testEmailBody, testParentId,
-                                                                testEmailSubject, testIsIncoming, testFromName,
-                                                                testFromAddress, testToAddress, testStatus);
+                                                                testEmailSubject, testFromName,
+                                                                testFromAddress, testToAddress);
         Test.stopTest();
         System.assertEquals(testCalloutBody.getEmailTextBody(), 'Test Email Body');
         System.assertEquals(testCalloutBody.getParentId(), 'Mock Id');
         System.assertEquals(testCalloutBody.getEmailSubject(), 'Test Subject');
-        System.assertEquals(testCalloutBody.getIsIncoming(), true);
         System.assertEquals(testCalloutBody.getFromName(), 'Test Name');
         System.assertEquals(testCalloutBody.getFromAddress(), 'testfrom@test.com');
         System.assertEquals(testCalloutBody.getToAddress(), 'testto@test.com');
-        System.assertEquals(testCalloutBody.getStatus(), '2');
     }
 }

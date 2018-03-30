@@ -1,36 +1,48 @@
 @RestResource(urlMapping = '/InsertEmailMessage/*')
 global class InsertEmailMessage {
-
+    
     @HttpPost
     global static RestCallResponse createEmailMessage(
             String emailTextBody, 
             String  parentId, 
             String emailSubject, 
-            Boolean isIncoming, 
             String fromName, 
             String fromAddress, 
-            String toAddress, 
-            String status) {
-        EmailMessage emailResponse = new EmailMessage();
-        emailResponse.TextBody = emailTextBody;
-        emailResponse.Incoming = isIncoming;
-        emailResponse.ParentId = parentId;
-        emailResponse.Subject = emailSubject;
-        emailResponse.FromName = fromName;
-        emailResponse.FromAddress = fromAddress;
-        emailResponse.ToAddress = toAddress;
-        emailResponse.Status = status;
+            String toAddress) {
+        Messaging.InboundEmail emailResponse = new Messaging.InboundEmail(); 
+        List<String> toAddressAsList = new List<String>();
+        toAddressAsList.add(toAddress);
+        emailResponse.fromAddress = fromAddress;
+        emailResponse.fromName = fromName;
+        emailResponse.plainTextBody = GenerateReferenceIdOnEmailBody.addReferenceIdToEmailBody(parentId, emailTextBody);
+        emailResponse.toAddresses = toAddressAsList;
+        emailResponse.subject = emailSubject;
+        
+        Messaging.InboundEnvelope emailResponseEnvelope = new Messaging.InboundEnvelope();
+        emailResponseEnvelope.toAddress = toAddress;
+        emailResponseEnvelope.fromAddress = fromAddress;
+        
+        CaseInboundEmailHandler caseInboundEmailObject = new CaseInboundEmailHandler(); 
+        Messaging.InboundEmailResult emailResult;
+        
         try {
-            insert emailResponse;
-            RestCallResponse restResponseObject = new RestCallResponse('success', emailResponse.Id);
-            return restResponseObject;
-        } catch (Exception e) {
+            emailResult = caseInboundEmailObject.handleInboundEmail(emailResponse, emailResponseEnvelope);
+            if (emailResult.success) {
+                RestCallResponse restResponseObject = new RestCallResponse('success', emailResult.message);
+                return restResponseObject;    
+            } else {
+                RestCallResponse restResponseObject = new RestCallResponse('failure', emailResult.message);
+                return restResponseObject;
+            }
+        } catch(Exception e) {
             List<String> errorCaseVariables = new List<String>();
-            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Error Info: ', e.getMessage()));
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Error Info: ', 'Could not send email message from ASU Community'));
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('System Error Message: ', emailResult.message));
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Exception Error Message: ', e.getMessage()));
             errorCaseVariables.add(ErrorLogger.convertStringToJSON('Case Id: ', parentId));
             ErrorLogger.log(e, errorCaseVariables, false);
-            RestCallResponse restResponseObject = new RestCallResponse('failure', e.getMessage());
-            return restResponseObject;        
-        } 
+            RestCallResponse restResponseObject = new RestCallResponse('failure', emailResult.message);
+            return restResponseObject;
+        }
     }
 }

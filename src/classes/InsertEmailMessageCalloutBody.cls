@@ -2,24 +2,19 @@ public class InsertEmailMessageCalloutBody {
         private String emailTextBody;
         private String parentId;
         private String emailSubject;
-        private Boolean isIncoming;
         private String fromName;
         private String fromAddress;
         private String toAddress;
-        private String status;
         
         public InsertEmailMessageCalloutBody(String emailTextBody, String parentId,
-                String emailSubject, Boolean isIncoming,
-                String fromName, String fromAddress,
-                String toAddress, String status) {
+                String emailSubject, String fromName, 
+                String fromAddress, String toAddress) {
             this.emailTextBody = emailTextBody;
             this.parentId = parentId;
             this.emailSubject = emailSubject;
-            this.isIncoming = isIncoming;
             this.fromName = fromName;
             this.fromAddress = fromAddress;
             this.toAddress = toAddress;
-            this.status = status;
         }
         
         public String getEmailTextBody() {
@@ -34,10 +29,6 @@ public class InsertEmailMessageCalloutBody {
             return emailSubject;        
         }
         
-        public Boolean getIsIncoming() {
-            return isIncoming;
-        }
-        
         public String getFromName() {
             return fromName;        
         }
@@ -49,9 +40,4 @@ public class InsertEmailMessageCalloutBody {
         public String getToAddress() {
             return toAddress;
         }
-        
-        public String getStatus() {
-            return status;
-        }
-        
 }

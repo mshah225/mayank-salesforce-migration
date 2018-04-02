@@ -4,8 +4,8 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     public String caseParentId { get; private set; }
     
     public String attachmentIdOnCase { get; set; }
-    private final String DOWNLOAD_AS_ZIP_PREFIX = '--c';
-    private final String ATTACHMENT_PACKAGE_PREFIX = '--attachmentzip';
+    private final String STANDARD_PREFIX = '--c';
+    private final String DOWNLOAD_AS_ZIP_PREFIX = '--attachmentzip';
 
     public List<Attachment> allAttachmentsOnCaseOrEmailMessageOrCaseParent;
     public String baseUrlForAttachmentIntegration { get; private set; }
@@ -55,7 +55,7 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     
     private String getDownloadAllAsZipUrl() {
         String baseUrl = Url.getSalesforceBaseUrl().toExternalForm();
-        return baseUrl.replace(DOWNLOAD_AS_ZIP_PREFIX, ATTACHMENT_PACKAGE_PREFIX);
+        return baseUrl.replace(STANDARD_PREFIX, DOWNLOAD_AS_ZIP_PREFIX);
     }
     
     public PageReference deleteSelectedAttachmentOnCase(){

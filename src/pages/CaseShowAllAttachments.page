@@ -1,5 +1,5 @@
 <apex:page standardController="Case" extensions="CaseShowAllAttachmentsControllerExt">
-    <script src="/support/console/28.0/integration.js" type="text/javascript"></script>
+    <script src="/support/console/42.0/integration.js" type="text/javascript"></script>
     <script>
             function openTab(recid, recname) {
                 if(!sforce.console.isInConsole())

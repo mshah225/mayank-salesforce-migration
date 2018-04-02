@@ -10,23 +10,27 @@ public class NavLinks {
     public String links { get; set; }
     public List<Link> linkList { get; set; }
 
-    public PageReference init() {
-        Cookie linksCookie;
-        String linksJSON = '';
-    
+    private Cookie createCookieFromURL() {
+        Cookie cookieFromURL;
         if (ApexPages.currentPage().getParameters().get('navbar') != null) {
             links = ApexPages.currentPage().getParameters().get('navbar');
             links = links.replace('{"navbarLinks":','');
             if (links != null && links != '') {
                 links = links.substring(0, (links.length()-1));
-                // Write the cookie
-                linksCookie = new Cookie('navbarlinks',links,null,-1,false);
-                ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});
+                cookieFromURL = new Cookie('navbarlinks',links,null,-1,false);
+                return cookieFromURL;
             }
-        } else {
-            linksCookie = ApexPages.currentPage().getCookies().get('navbarlinks');
         }
-
+        return null;
+    }
+    
+    private Cookie getCurrentPageCookie(String cookieName) {
+        Cookie currentPageCookie = ApexPages.currentPage().getCookies().get(cookieName);
+        return currentPageCookie;
+    }
+    
+    private void parseCookieJSONAndPopulateLinks(Cookie linksCookie) {
+        String linksJSON = '';
         if (linksCookie != null) {
             linksJSON = linksCookie.getValue();
         
@@ -49,6 +53,18 @@ public class NavLinks {
                 }
             }
         }
+    }
+    
+    public PageReference init() {
+        Cookie linksCookie;
+        //String linksJSON = '';
+        linksCookie = createCookieFromURL();
+        if (linksCookie != null) {
+            ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});
+        } else {
+            linksCookie = getCurrentPageCookie('navbarlinks');
+        }
+        parseCookieJSONAndPopulateLinks(linksCookie);
         return null;
     }
 }

@@ -1,7 +1,12 @@
 public class CaseOperationsForSandBoxRefresh implements Database.Batchable<sObject> {  
 
-	public Database.QueryLocator start(Database.BatchableContext BC) {
-        String query = 'SELECT Id FROM Case';
+	public String query;
+    
+    public CaseOperationsForSandBoxRefresh() {
+        query = 'SELECT Id FROM Case';
+    }
+
+    public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator(query); 
     }
 

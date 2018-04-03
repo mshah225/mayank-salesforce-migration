@@ -4521,26 +4521,25 @@
                                         "<table id='career_dev_table' class='table table-striped table-bordered'> " +
                                         "<tbody>";
                                     if (typeof result.me3_Careers__r != 'undefined') {
-                                      for (var i = 0; i < result.me3_Careers__r.length; i++) {
-                                          if (result.me3_Careers__r[i].Updated_Date__c) {
-                                            var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
-                                            var updatedDate = new Date(cdUtcSeconds);
-                                            updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
+                                        for (var i = 0; i < result.me3_Careers__r.length; i++) {
+                                            if (result.me3_Careers__r[i].Updated_Date__c) {
+                                                var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
+                                                var updatedDate = new Date(cdUtcSeconds);
+                                                updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
                                                 updatedDate.getUTCDate() + '/' +
                                                 updatedDate.getUTCFullYear();
-                                          } else {
-                                            updatedDate == '--';
-                                          }
-
-                                          html += "" +
-                                              (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
-                                                  "<td style='min-width: 75px;'>" + updatedDate + "</td>" +
-                                                  "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
-                                                  "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
-                                                  "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
-                                                  result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
-                                              "</tr>";
-                                      }
+                                            } else {
+                                                updatedDate == '--';
+                                            }
+                                            html += ("<tr>" +  
+                                                        "<td style='width: 10%'><b>" + updatedDate + "</b></td>" +
+                                                        "<td style='width: 2%'></td>" +
+                                                        "<td style='width: 37%'><b>Career Interest: </b>" +  result.me3_Careers__r[i].Career_Interest__c + "</td>" +
+                                                        "<td>" + "<b>Degree Interest: </b>" + result.me3_Careers__r[i].Degree_Interest__c + " (" +
+                                                            result.me3_Careers__r[i].Plan_Code__c + ")" +
+                                                        "</td>" +
+                                                    "</tr>");
+                                        }
                                     }
 
                                     html += "</tbody></table></div>";

@@ -39,7 +39,7 @@ private class Test_ServiceCenter{
 
         insert testUserList;
 
-        TestDataFactory.createFunctionalGroupWithCategory('Student-Centric Initiatives', 'Knowledge', 'Test');
+        TestDataFactory.createFunctionalGroupWithCategory('Student Success Innovations', 'Knowledge', 'Test');
     }
 
     @testSetup static void setUpEnrolledTestSessionA(){

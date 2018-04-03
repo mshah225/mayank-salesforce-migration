@@ -1,10 +1,15 @@
 public class LeadsOperationsForSandBoxRefresh implements Database.Batchable<sObject> {   
     
-    public Database.QueryLocator start(Database.BatchableContext BC) {
-        String query = 'SELECT Id, Name, Status, Email, ' 
+    public String query;
+    
+    public LeadsOperationsForSandBoxRefresh() {
+        query = 'SELECT Id, Name, Status, Email, ' 
                         + 'Recruiting_Email__c, Secondary_Email__c, Date_of_Birth__c, ' 
                         + 'silverpop__Silverpop_RecipientID__c ' 
                         + 'FROM Lead';
+    }
+    
+    public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator(query);
     }
 
@@ -39,10 +44,10 @@ public class LeadsOperationsForSandBoxRefresh implements Database.Batchable<sObj
         }
     }  
     
-    private List<Lead> deleteConvertedLeads(List<Lead> leadsToUpDateOrDelete) {
+    private List<Lead> deleteConvertedLeads(List<Lead> leadsToUpdateOrDelete) {
         List<Lead> leadsToDelete = new List<Lead>();
         List<Lead> leadsToUpdate = new List<Lead>();
-        for (Lead leadToCheck : leadsToUpDateOrDelete) {
+        for (Lead leadToCheck : leadsToUpdateOrDelete) {
             if(isConverted(leadToCheck)) {
                 leadsToDelete.add(leadToCheck);
             } else {

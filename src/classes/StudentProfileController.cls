@@ -47,6 +47,8 @@ global with sharing class StudentProfileController
     public String nextTerm { get; set; }
     public String nextTermName { get; set; }
     
+    public List<Student_Milestone__c> studentMilestones{ get; set; }
+    
     public static classesWrapper classesData; 
 
     /**
@@ -98,8 +100,10 @@ global with sharing class StudentProfileController
         ugProgramPlans = new List<Student_Program_Plan__c>();
         gradProgramPlans = new List<Student_Program_Plan__c>();
         primaryProgramPlan =  new Student_Program_Plan__c();
+        studentMilestones = new List<Student_Milestone__c>();
         
         try {
+            populateStudentMilestone();
             if (URLParamsExistAndAreValid) {
                 if (isContactId) {
                     theContact = ContactService.getContactInformation(contactId, '');
@@ -205,6 +209,12 @@ global with sharing class StudentProfileController
             ErrorLogger.log(e, vars, debug);
             return null;
         }
+    }
+    
+    private void populateStudentMilestone() {
+        studentMilestones = [SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Plan__c, Milestone__c, Milestone_Complete__c, 
+                                   Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__c
+                             FROM Student_Milestone__c WHERE Contact__c = :theContact.Id];
     }
     
     @RemoteAction

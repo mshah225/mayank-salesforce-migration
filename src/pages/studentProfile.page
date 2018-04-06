@@ -470,10 +470,10 @@
                                                         <tr>
                                                             <th>Residence Hall</th>
                                                             <td>
-                                                                <span id="residenceFloor">--</span><br />
-                                                                <span id="residenceSection"></span><br />
-                                                                <span id="residenceHall"></span><br />
-                                                                <span id="residenceCampus"></span>
+                                                                <span id="residenceFloor">{!theContact.Booking_Floor_Suite__c}</span><br />
+                                                                <span id="residenceSection">{!theContact.Booking_Section__c}</span><br />
+                                                                <span id="residenceHall">{!theContact.Booking_Building__c}</span><br />
+                                                                <span id="residenceCampus">{!theContact.Booking_Campus__c}</span>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -483,17 +483,17 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Room Check-In Date</th>
-                                                            <td id="checkInDate">--</td>
+                                                            <td id="checkInDate">{!theContact.Check_In_Dt__c}</td>
                                                         </tr>
                                                         
                                                         <tr>
                                                             <th>Room Check-Out Date</th>
-                                                            <td id="checkOutDate"><i id='checkOutSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>
+                                                            <td id="checkOutDate">{!theContact.Check_Out_Dt__c}</td>
                                                         </tr>
                                                         
                                                         <tr>
                                                             <th>Room Status</th>
-                                                            <td id="roomStatus">--</td>
+                                                            <td id="roomStatus">{!theContact.Booking_Status__c}</td>
                                                         </tr>
                                                         
                                                     </table>
@@ -1740,7 +1740,7 @@
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>First Generation</th>" +
-                                                "<td id='studentDemoTd'><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
+                                                "<td>{!theContact.First_Generation_Student__c}</td>" +
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>BirthDate</th>" +
@@ -1748,64 +1748,10 @@
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>Age</th>" +
-                                                "<td>" + age + "</td>" +
+                                                "<td>{!theContact.Current_Age__c}</td>" +
                                             "</tr>";
                     buildInitHtml += "</table></div>";
                 document.getElementById("studentDemographicDiv").innerHTML = buildInitHtml;
-
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getStudentDemographicData}',
-                    '{!theContact.EMPLID__c}',
-                    function (result, event) {
-                        if (event.status) {
-                            //document.getElementById("serviceIndicatorsDiv").innerHTML = "";
-                            if (result.length != 0) {
-                                
-                                 var bDay = "{!birthdate}";
-                                var age = "{!age}";
-                                var firstGenFlag = '--';
-                                if(result.AGE_YEARS__c != null && result.AGE_YEARS__c != '' && result.AGE_YEARS__c != undefined) {
-                                    age = Math.floor(result.AGE_YEARS__c);
-                                }
-                                if(result.FIRST_GEN_FLG__c != null && result.FIRST_GEN_FLG__c != '' && result.FIRST_GEN_FLG__c != undefined) {
-                                    firstGenFlag = result.FIRST_GEN_FLG__c;
-                                }
-                                var html = "" +
-                                    "<div class=\"col-sm-6\">" +
-                                        "<table class=\"table table-striped\">" +
-                                            "<tr>" +
-                                                "<th>Gender</th>" +
-                                                "<td>{!theContact.Gender__c}</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>Ethnicity</th>" +
-                                                "<td>{!theContact.Ethnicity__c}</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>First Generation</th>" +
-                                                "<td>" + firstGenFlag + "</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>BirthDate</th>" +
-                                                "<td>" + bDay + "</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>Age</th>" +
-                                                "<td>" + age + "</td>" +
-                                            "</tr>";
-                                html += "</table></div>";
-
-                                document.getElementById('studentDemographicDiv').innerHTML = html;
-                                cleanUpUndefined("studentDemographicDiv");
-                            }
-                        } else {
-                            jQuery('#studentDemoTd').empty();
-                            jQuery('#studentDemoTd').html('--');
-                        }
-                    },
-                    {escape: true}
-                );
-            }
             
             function llProfileHeader() {
                 
@@ -3528,62 +3474,6 @@
                     currSortTransfer = name;
                 }
                 sortTransferList(name, ascDirTransfer);
-            }
-            
-            
-            function getHousingInfo() {
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getHousingInfo}',
-                    '{!theContact.EMPLID__c}',
-                    '{!currentTerm}',
-                    function (result, event) {
-                        if (event.status) {
-                            document.getElementById("psHousingErrorsGen").innerHTML = "";
-
-                            if (!result.length == 0 && !Object.getOwnPropertyNames(result).length == 0) {
-                                console.log(result);
-                                $j('#residenceFloor').html(result[0].BOOKING_FLOOR_SUITE__c);
-                                $j('#residenceSection').html(result[0].BOOKING_SECTION__c);
-                                $j('#residenceHall').html(result[0].BOOKING_BUILDING__c);
-                                $j('#residenceCampus').html(result[0].BOOKING_CAMPUS__c);
-                                
-                                var checkInDate = result[0].CHECK_IN_DT__c;
-                                checkInDate = new Date(checkInDate);
-                                checkInDate = (checkInDate.getUTCMonth() + 1) + '/' +
-                                    checkInDate.getUTCDate() + '/' +
-                                    checkInDate.getUTCFullYear();
-                                    
-                                var checkOutDate = result[0].CHECK_OUT_DT__c;
-                                checkOutDate = new Date(checkOutDate);
-                                checkOutDate = (checkOutDate.getUTCMonth() + 1) + '/' +
-                                    checkOutDate.getUTCDate() + '/' +
-                                    checkOutDate.getUTCFullYear();
-                                
-                                $j('#checkInDate').html(checkInDate);
-                                $j('#checkOutDate').html(checkOutDate);
-                                
-                                $j('#roomStatus').html(result[0].BOOKING_STATUS__c);
-                                
-                            } else {
-                                document.getElementById("psHousingErrorsGen").innerHTML +=
-                                    'No housing data found. ';
-                                jQuery('#checkOutSpinner').remove();
-                                document.getElementById("checkOutDate").innerHTML = '--';
-                            }
-                        } else if (event.type === 'exception') {
-                            document.getElementById("psHousingErrorsGen").innerHTML =
-                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            jQuery('#checkOutSpinner').remove();
-                                document.getElementById("checkOutDate").innerHTML = '--';
-                        } else {
-                            document.getElementById("psHousingErrorsGen").innerHTML =
-                                event.message;
-                            jQuery('#checkOutSpinner').remove();
-                                document.getElementById("checkOutDate").innerHTML = '--';
-                        }
-                    },
-                    {escape: true}
-                );
             }
          
             var enrolledWrapper;

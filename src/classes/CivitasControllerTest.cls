@@ -34,18 +34,19 @@ public class CivitasControllerTest {
         Test.setCurrentPage(pageRef);
         CivitasPersistenceController cpc = new CivitasPersistenceController();
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+        currentTermData.PrevTerm__c = '1111';
+        currentTermData.CurrTerm__c = '2222';
+        currentTermData.NextTerm__c = '3333';
+        upsert currentTermData;
         
         List<Term__c> termstoAdd = new List<Term__c>();
-        termstoAdd.add(new Term__c(Session_A_C_Start_Date__c = Date.today().addDays(-1), PeopleSoft_Code__c = currentTermData.PrevTerm__c, Year__c = '' + Date.today().addDays(-1).year()));
-        termstoAdd.add(new Term__c(Session_A_C_Start_Date__c = Date.today(), PeopleSoft_Code__c = currentTermData.CurrTerm__c, Year__c = '' + Date.today().year()));
-        termstoAdd.add(new Term__c(Session_A_C_Start_Date__c = Date.today().addDays(1), PeopleSoft_Code__c = currentTermData.NextTerm__c, Year__c = '' + Date.today().addDays(1).year()));
+        termstoAdd.add(new Term__c(Session_A_C_Start_Date__c = Date.today().addDays(-1), PeopleSoft_Code__c = '1111', Year__c = '' + Date.today().addDays(-1).year()));
+        termstoAdd.add(new Term__c(Session_A_C_Start_Date__c = Date.today(), PeopleSoft_Code__c = '2222', Year__c = '' + Date.today().year()));
+        termstoAdd.add(new Term__c(Session_A_C_Start_Date__c = Date.today().addDays(1), PeopleSoft_Code__c = '3333', Year__c = '' + Date.today().addDays(1).year()));
         insert termsToAdd;
         
-        System.assertEquals(CivitasPersistenceController.currentTerm, currentTermData.CurrTerm__c);
-        
-        
-        System.assertNotEquals(CivitasPersistenceController.endDate, null);
-       	System.assertNotEquals(CivitasPersistenceController.startDate, null);
-            
+        System.assertEquals(CivitasPersistenceController.currentTerm, currentTermData.CurrTerm__c);     
+        System.assertEquals(Date.Today().addDays(1), CivitasPersistenceController.endDate);
+       	System.assertEquals(CivitasPersistenceController.startDate, Date.Today().addDays(21));            
     }    
 }

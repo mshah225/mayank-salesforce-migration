@@ -1740,7 +1740,7 @@
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>First Generation</th>" +
-                                                "<td id='studentDemoTd'><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
+                                                "<td>{!theContact.First_Generation_Student__c}</td>" +
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>BirthDate</th>" +
@@ -1748,64 +1748,10 @@
                                             "</tr>" +
                                             "<tr>" +
                                                 "<th>Age</th>" +
-                                                "<td>" + age + "</td>" +
+                                                "<td>{!theContact.Current_Age__c}</td>" +
                                             "</tr>";
                     buildInitHtml += "</table></div>";
                 document.getElementById("studentDemographicDiv").innerHTML = buildInitHtml;
-
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getStudentDemographicData}',
-                    '{!theContact.EMPLID__c}',
-                    function (result, event) {
-                        if (event.status) {
-                            //document.getElementById("serviceIndicatorsDiv").innerHTML = "";
-                            if (result.length != 0) {
-                                
-                                 var bDay = "{!birthdate}";
-                                var age = "{!age}";
-                                var firstGenFlag = '--';
-                                if(result.AGE_YEARS__c != null && result.AGE_YEARS__c != '' && result.AGE_YEARS__c != undefined) {
-                                    age = Math.floor(result.AGE_YEARS__c);
-                                }
-                                if(result.FIRST_GEN_FLG__c != null && result.FIRST_GEN_FLG__c != '' && result.FIRST_GEN_FLG__c != undefined) {
-                                    firstGenFlag = result.FIRST_GEN_FLG__c;
-                                }
-                                var html = "" +
-                                    "<div class=\"col-sm-6\">" +
-                                        "<table class=\"table table-striped\">" +
-                                            "<tr>" +
-                                                "<th>Gender</th>" +
-                                                "<td>{!theContact.Gender__c}</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>Ethnicity</th>" +
-                                                "<td>{!theContact.Ethnicity__c}</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>First Generation</th>" +
-                                                "<td>" + firstGenFlag + "</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>BirthDate</th>" +
-                                                "<td>" + bDay + "</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>Age</th>" +
-                                                "<td>" + age + "</td>" +
-                                            "</tr>";
-                                html += "</table></div>";
-
-                                document.getElementById('studentDemographicDiv').innerHTML = html;
-                                cleanUpUndefined("studentDemographicDiv");
-                            }
-                        } else {
-                            jQuery('#studentDemoTd').empty();
-                            jQuery('#studentDemoTd').html('--');
-                        }
-                    },
-                    {escape: true}
-                );
-            }
             
             function llProfileHeader() {
                 

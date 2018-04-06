@@ -470,10 +470,10 @@
                                                         <tr>
                                                             <th>Residence Hall</th>
                                                             <td>
-                                                                <span id="residenceFloor">--</span><br />
-                                                                <span id="residenceSection"></span><br />
-                                                                <span id="residenceHall"></span><br />
-                                                                <span id="residenceCampus"></span>
+                                                                <span id="residenceFloor">{!theContact.Booking_Floor_Suite__c}</span><br />
+                                                                <span id="residenceSection">{!theContact.Booking_Section__c}</span><br />
+                                                                <span id="residenceHall">{!theContact.Booking_Building__c}</span><br />
+                                                                <span id="residenceCampus">{!theContact.Booking_Campus__c}</span>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -483,17 +483,17 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Room Check-In Date</th>
-                                                            <td id="checkInDate">--</td>
+                                                            <td id="checkInDate">{!theContact.Check_In_Dt__c}</td>
                                                         </tr>
                                                         
                                                         <tr>
                                                             <th>Room Check-Out Date</th>
-                                                            <td id="checkOutDate"><i id='checkOutSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>
+                                                            <td id="checkOutDate">{!theContact.Check_Out_Dt__c}</td>
                                                         </tr>
                                                         
                                                         <tr>
                                                             <th>Room Status</th>
-                                                            <td id="roomStatus">--</td>
+                                                            <td id="roomStatus">{!theContact.Booking_Status__c}</td>
                                                         </tr>
                                                         
                                                     </table>
@@ -3474,62 +3474,6 @@
                     currSortTransfer = name;
                 }
                 sortTransferList(name, ascDirTransfer);
-            }
-            
-            
-            function getHousingInfo() {
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getHousingInfo}',
-                    '{!theContact.EMPLID__c}',
-                    '{!currentTerm}',
-                    function (result, event) {
-                        if (event.status) {
-                            document.getElementById("psHousingErrorsGen").innerHTML = "";
-
-                            if (!result.length == 0 && !Object.getOwnPropertyNames(result).length == 0) {
-                                console.log(result);
-                                $j('#residenceFloor').html(result[0].BOOKING_FLOOR_SUITE__c);
-                                $j('#residenceSection').html(result[0].BOOKING_SECTION__c);
-                                $j('#residenceHall').html(result[0].BOOKING_BUILDING__c);
-                                $j('#residenceCampus').html(result[0].BOOKING_CAMPUS__c);
-                                
-                                var checkInDate = result[0].CHECK_IN_DT__c;
-                                checkInDate = new Date(checkInDate);
-                                checkInDate = (checkInDate.getUTCMonth() + 1) + '/' +
-                                    checkInDate.getUTCDate() + '/' +
-                                    checkInDate.getUTCFullYear();
-                                    
-                                var checkOutDate = result[0].CHECK_OUT_DT__c;
-                                checkOutDate = new Date(checkOutDate);
-                                checkOutDate = (checkOutDate.getUTCMonth() + 1) + '/' +
-                                    checkOutDate.getUTCDate() + '/' +
-                                    checkOutDate.getUTCFullYear();
-                                
-                                $j('#checkInDate').html(checkInDate);
-                                $j('#checkOutDate').html(checkOutDate);
-                                
-                                $j('#roomStatus').html(result[0].BOOKING_STATUS__c);
-                                
-                            } else {
-                                document.getElementById("psHousingErrorsGen").innerHTML +=
-                                    'No housing data found. ';
-                                jQuery('#checkOutSpinner').remove();
-                                document.getElementById("checkOutDate").innerHTML = '--';
-                            }
-                        } else if (event.type === 'exception') {
-                            document.getElementById("psHousingErrorsGen").innerHTML =
-                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            jQuery('#checkOutSpinner').remove();
-                                document.getElementById("checkOutDate").innerHTML = '--';
-                        } else {
-                            document.getElementById("psHousingErrorsGen").innerHTML =
-                                event.message;
-                            jQuery('#checkOutSpinner').remove();
-                                document.getElementById("checkOutDate").innerHTML = '--';
-                        }
-                    },
-                    {escape: true}
-                );
             }
          
             var enrolledWrapper;

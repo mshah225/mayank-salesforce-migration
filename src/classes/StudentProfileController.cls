@@ -719,7 +719,7 @@ global with sharing class StudentProfileController
             
         // Build out list to avoid de-reference null object errors.
         try {
-            studentProgramDataList =
+            /*studentProgramDataList =
             (
                 Test.isRunningTest() ? new List<Student_Program_Plan__c>() :
                 [
@@ -731,7 +731,7 @@ global with sharing class StudentProfileController
                     FROM Student_Program_Plan__c
                     WHERE Contact__r.EMPLID__c = :emplId
                 ]
-            );
+            );*/
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
@@ -776,7 +776,7 @@ global with sharing class StudentProfileController
     {
         public Student_Program_Plan__c jbtRetAcadSummaryVw; //
         public PS_ASU_SP_AC_STNDV__x psAsuSpAcStndv; //
-        public List<PS_ASU_SP_ACAD_ADV__x> psAsuSpAcadAdvList;
+        public List<Student_Program_Plan_Advisor__c> psAsuSpAcadAdvList;
         public PS_ASU_SR_COL_PLAN__x psGradPlan; // erqurie
         public JBT_RET_OTH_IND1_VW__x jbtRetOthInd1Vw;
     }
@@ -789,7 +789,7 @@ global with sharing class StudentProfileController
         List<Student_Program_Plan__c> academicSummaryList = new List<Student_Program_Plan__c>();
         List<JBT_RET_OTH_IND1_VW__x> otherIndicatorList = new List<JBT_RET_OTH_IND1_VW__x>();
         List<PS_ASU_SP_AC_STNDV__x> academicStandingList = new List<PS_ASU_SP_AC_STNDV__x>();
-        List<PS_ASU_SP_ACAD_ADV__x> academicAdviserList = new List<PS_ASU_SP_ACAD_ADV__x>();
+        List<Student_Program_Plan_Advisor__c> academicAdviserList = new List<Student_Program_Plan_Advisor__c>();
         List<PS_ASU_SR_COL_PLAN__x> gradPlanList = new List<PS_ASU_SR_COL_PLAN__x>();
         
         academicProgressDataWrapper dataWrapper = new academicProgressDataWrapper();
@@ -885,14 +885,14 @@ global with sharing class StudentProfileController
             
             academicAdviserList =        
             (
-                Test.isRunningTest() ? new List<PS_ASU_SP_ACAD_ADV__x>() : 
+                Test.isRunningTest() ? new List<Student_Program_Plan_Advisor__c>() : 
                 [
-                    select ACAD_CAREER__c, EMAIL_ADDR__c, EMPLID__c, Id, 
-                           NAME_DISPLAY__c, PHONE__c
-                    FROM PS_ASU_SP_ACAD_ADV__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
-                    ORDER BY NAME_DISPLAY__c
+                    SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c, 
+                           Name, Advisor_Phone__c
+                    FROM Student_Program_Plan_Advisor__c
+                    WHERE Student_Program_Plan__c = :academicSummaryList.get(0).Id
+                    AND Student_Program_Plan__r.Career__c IN :careerSet
+                    ORDER BY Name
                 ]
             );
         } catch (Exception e) {
@@ -900,7 +900,7 @@ global with sharing class StudentProfileController
         }
         
 
-        dataWrapper.psAsuSpAcadAdvList = (academicAdviserList.size()>0 ? academicAdviserList : new List<PS_ASU_SP_ACAD_ADV__x>());
+        dataWrapper.psAsuSpAcadAdvList = (academicAdviserList.size()>0 ? academicAdviserList : new List<Student_Program_Plan_Advisor__c>());
 
 /*
                SELECT ACAD_CAREER__c, ACAD_ORG__c, ACAD_PLAN__c, ACAD_PLAN_TYPE__c, ACAD_PROG__c, 

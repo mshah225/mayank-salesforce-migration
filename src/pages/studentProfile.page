@@ -3321,8 +3321,8 @@
                                     if (!result.psAsuSpAcadAdvList.length == 0) {
                                         adviserHtml = '';
                                         for (var i = 0; i < result.psAsuSpAcadAdvList.length; i++) {
-                                            adviserHtml += '<a href="mailto:' + result.psAsuSpAcadAdvList[i].EMAIL_ADDR__c +
-                                                           '">' + result.psAsuSpAcadAdvList[i].NAME_DISPLAY__c + '</a><br>';
+                                            adviserHtml += '<a href="mailto:' + result.psAsuSpAcadAdvList[i].Advisor_Email__c +
+                                                           '">' + result.psAsuSpAcadAdvList[i].Name + '</a><br>';
                                         }
                                     }
                                     document.getElementById('ugap_advisors').innerHTML =
@@ -3397,8 +3397,8 @@
                                     if (!result.psAsuSpAcadAdvList.length == 0) {
                                         adviserHtml = '';
                                         for (var i = 0; i < result.psAsuSpAcadAdvList.length; i++) {
-                                            adviserHtml += '<a href="mailto:' + result.psAsuSpAcadAdvList[i].EMAIL_ADDR__c +
-                                                           '">' + result.psAsuSpAcadAdvList[i].NAME_DISPLAY__c + '</a><br>';
+                                            adviserHtml += '<a href="mailto:' + result.psAsuSpAcadAdvList[i].Advisor_Email__c +
+                                                           '">' + result.psAsuSpAcadAdvList[i].Name + '</a><br>';
                                         }
                                     }
                                     document.getElementById('grad_advisors').innerHTML =

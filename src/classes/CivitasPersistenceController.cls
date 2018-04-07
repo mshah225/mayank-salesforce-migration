@@ -77,12 +77,25 @@ global class CivitasPersistenceController {
         CV_ASU_STDNT_TERM__x prevData;
         Integer dateIncr = startDate.day();
         CV_ASU_STDNT_TERM__x startSemesterData;
-        for (CV_ASU_STDNT_TERM__x trm : [
-            Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c, ONLINE_SEGMENT__c, CAREER_SEGMENT__c
-            FROM CV_ASU_STDNT_TERM__x
-            WHERE Contact__c =: emplIdIn
-            ORDER BY SNAP_DATE__c ASC
+        for (Persistence_Outlook__c outlook : [
+            Select 
+                Change_Date__c, Change_Direction__c,
+                Curr_Cont_Prediction_Level__c, Prev_Cont_Prediction_Level__c, 
+                Career_Segment__c, Current_Flag__c, Current_Level_Descr__c, 
+                Current_Level_Descr__c, Online_Segment__c, Prediction_STRM__c,
+                Snap_Date__c
+            FROM Persistence_Outlook__c
+            WHERE Contact__r.EmplId__c =: emplIdIn
+            ORDER BY Snap_Date__c ASC
         ]) {
+            CV_ASU_STDNT_TERM__x trm = new CV_ASU_STDNT_TERM__x(
+                SNAP_DATE__c = outlook.Snap_Date__c,
+                CURR_CONT_PREDICTION_LEVEL__c = outlook.Curr_Cont_Prediction_Level__c,
+                CURRENT_SEGMENT_DESCR__c = outlook.Current_Level_Descr__c,
+                CHANGE_FLG__c = 'Y',//outlook.,
+                ONLINE_SEGMENT__c = outlook.Online_Segment__c,
+                CAREER_SEGMENT__c = outlook.Career_Segment__c
+            );
             //Checks if it's not in persson OR not an undergrad.
             if (trm.Snap_Date__c < startDate) {
                 startSemesterData = trm;

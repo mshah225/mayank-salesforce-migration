@@ -779,10 +779,10 @@ global with sharing class StudentProfileController
 
     @RemoteAction
     // Get JBT_RET_GENERAL_RIGHT__x data 
-    global static List<JBT_RET_GENERAL_RIGHT__x> getStudentProgramData(String emplId)
+    global static List<Student_Program_Plan__c> getStudentProgramData(String emplId)
     {
         vars = new List<String>();
-        List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList = new List<JBT_RET_GENERAL_RIGHT__x>();
+        List<Student_Program_Plan__c> studentProgramDataList = new List<Student_Program_Plan__c>();
         
         // Temporary while database issues are investigated
         //return new List<JBT_RET_GENERAL_RIGHT__x>();
@@ -791,27 +791,22 @@ global with sharing class StudentProfileController
         try {
             studentProgramDataList =
             (
-                Test.isRunningTest() ? new List<JBT_RET_GENERAL_RIGHT__x>() :
+                Test.isRunningTest() ? new List<Student_Program_Plan__c>() :
                 [
-                 SELECT ACAD_CAREER__c, ADM_APPL_DT__c, ADM_APPL_PROG__c, 
-                           ADMIT_TERM__c, ADMIT_TYPE__c, APPT_DT__c, 
-                           APPT_DT_PENDING__c, ASU_CITZN_COUNTRY__c, CAMPUS__c, 
-                           CURR_ADMIT_TYPE__c, CURR_PLAN__c, CURR_PROG__c, DisplayUrl, 
-                           EMPLID__c, ENRL_DEPOSIT__c, ENRL_HRS__c, ENRL_HRS_PENDING__c, 
-                           ENRL_PENDING__c, ENROLL_OPEN_DT__c, ENROLLED__c, 
-                           EXP_GRAD_TERM__c, EXP_GRAD_TERM__r.Name, 
-                           ExternalId, FERPA_LVL__c, FINANCIAL_NEED_LVL__c, 
-                           Id, PROG_STATUS__c, ORIENT_DT__c, RESIDENCY__c, STRM__c, 
-                           STRM__r.Name, STRM__r.Term_Status__c, SUB_PLAN__c, WUE__c 
-                    FROM JBT_RET_GENERAL_RIGHT__x
-                    WHERE EMPLID__c = :emplId
+                 SELECT Career__c, ADM_APPL_DT__c, ADM_APPL_PROG__c, 
+                           ADMIT_TERM__c, ADMIT_TYPE__c, Appt_Dt__c, 
+                           Appt_Dt_Pending__c, ENRL_DEPOSIT__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
+                           Exp_Grad_Term__c, Exp_Grad_Term__r.Name, 
+                           Id, ORIENT_DT__c, Residency__c
+                    FROM Student_Program_Plan__c
+                    WHERE Contact__r.EMPLID__c = :emplId
                 ]
             );
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
         
-        return (studentProgramDataList.size()>0 ? studentProgramDataList : new List<JBT_RET_GENERAL_RIGHT__x>());
+        return (studentProgramDataList.size()>0 ? studentProgramDataList : new List<Student_Program_Plan__c>());
     }    
 
    
@@ -850,7 +845,7 @@ global with sharing class StudentProfileController
     // Inner wrapper class for Academic Progress Data
     global class academicProgressDataWrapper
     {
-        public JBT_RET_ACAD_SUMMARY_VW__x jbtRetAcadSummaryVw;
+        public Student_Program_Plan__c jbtRetAcadSummaryVw;
         public PS_ASU_SP_AC_STNDV__x psAsuSpAcStndv;
         public List<PS_ASU_SP_ACAD_ADV__x> psAsuSpAcadAdvList;
         public PS_ASU_SR_COL_PLAN__x psGradPlan;
@@ -862,7 +857,7 @@ global with sharing class StudentProfileController
     global static academicProgressDataWrapper getAcademicProgressData(String emplId, String career)
     {
         vars = new List<String>();
-        List<JBT_RET_ACAD_SUMMARY_VW__x> academicSummaryList = new List<JBT_RET_ACAD_SUMMARY_VW__x>();
+        List<Student_Program_Plan__c> academicSummaryList = new List<Student_Program_Plan__c>();
         List<JBT_RET_OTH_IND1_VW__x> otherIndicatorList = new List<JBT_RET_OTH_IND1_VW__x>();
         List<PS_ASU_SP_AC_STNDV__x> academicStandingList = new List<PS_ASU_SP_AC_STNDV__x>();
         List<PS_ASU_SP_ACAD_ADV__x> academicAdviserList = new List<PS_ASU_SP_ACAD_ADV__x>();
@@ -883,23 +878,21 @@ global with sharing class StudentProfileController
             
             academicSummaryList = 
             (
-                Test.isRunningTest() ? new List<JBT_RET_ACAD_SUMMARY_VW__x>() :
+                Test.isRunningTest() ? new List<Student_Program_Plan__c>() :
                 [
-                    SELECT ACAD_CAREER__c, AID_YEAR__c, COLLEGE__c, CUM_GPA__c, EMPLID__c, 
-                           FND_TERM_REMAINA__c, Id, MAJOR__c, SCHOLARSHIP_NAME__c, 
-                           STATUS__c, STRM__c, TOT_CUMULATIVE__c 
-                    FROM JBT_RET_ACAD_SUMMARY_VW__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
-                    ORDER BY STRM__c DESC
+                    SELECT CAREER__c, STATUS__c, CUM_GPA__c, TOT_CUMULATIVE__c 
+                    FROM Student_Program_Plan__c
+                    WHERE Contact__r.EMPLID__c = :emplId
+                    AND CAREER__c IN :careerSet
+                    
                     LIMIT 1
-                ]
+                ]//ORDER BY STRM__c DESC
             );
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
 
-        dataWrapper.jbtRetAcadSummaryVw = (academicSummaryList.size()>0 ? academicSummaryList[0] : new JBT_RET_ACAD_SUMMARY_VW__x());
+        dataWrapper.jbtRetAcadSummaryVw = (academicSummaryList.size()>0 ? academicSummaryList[0] : new Student_Program_Plan__c());
 
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));

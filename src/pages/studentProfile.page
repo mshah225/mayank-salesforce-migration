@@ -1905,7 +1905,7 @@
                                       "<table class=\"table table-striped\">" +
                                           "<tr>" +
                                               "<th>WUE</th>" +
-                                              "<td>"+studentProgram.WUE__c +"</td>" +
+                                              "<td>"+{theContact.WUE__c} +"</td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>Residency</th>" +

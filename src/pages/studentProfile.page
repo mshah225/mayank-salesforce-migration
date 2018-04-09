@@ -516,7 +516,7 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Current Academic Level</th>
-                                                            <td id="profileHeaderTD">--</td>
+                                                            <td id="profileHeaderTD">{!theContact.FTFTF__c}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>{!currentTermName} Term Enrolled Hours</th>
@@ -648,8 +648,6 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>Program</th>
-                                                                <th>Effective Date</th>
-                                                                <th>MS#</th>
                                                                 <th>Milestone</th>
                                                                 <th>Milestone Title</th>
                                                                 <th>Level Descr</th>
@@ -666,19 +664,17 @@
                                                             <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}">
                                                                 <apex:repeat value="{!studentMilestonesUGrad}" var="milestone">
                                                                 <tr>
-                                                                    <td>  {!milestone.Acad_Program__c} </td>
-                                                                    <td>  MILESTONE effDate </td>
-                                                                    <td>  MILESTONE NUMBER </td>
-                                                                    <td>  {!milestone.MILESTONE__c} </td>
-                                                                    <td>  {!milestone.MILESTONE_TITLE__c} </td>
-                                                                    <td>  {!milestone.MILESTONE_LEVEL__c} </td>
-                                                                    <td>  {!milestone.DESCRFORMAL__c} </td>
-                                                                    <td>  {!milestone.ACAD_PLAN__c} </td>
-                                                                    <td>  {!milestone.DESCR__c} </td>
+                                                                    <td>  {!milestone.Acad_Program__r.Name} </td>
+                                                                    <td>  {!milestone.Milestone__c} </td>
+                                                                    <td>  {!milestone.Milestone_Title__c} </td>
+                                                                    <td>  {!milestone.Milestone_Level__c} </td>
+                                                                    <td>  {!milestone.Descrformal__c} </td>
+                                                                    <td>  {!milestone.Acad_Plan__c} </td>
+                                                                    <td>  {!milestone.Descr__c} </td>
                                                                     <td>  {!milestone.Term_Required__r.Name} </td>
-                                                                    <td>  MILESTONE.ANTICIPATED_TERM__c </td>
-                                                                    <td>  MILESTONE attDate </td>
-                                                                    <td>  {!milestone.MILESTONE_COMPLETE__c} </td>
+                                                                    <td>  {!milestone.Anticipated_Term__c} </td>
+                                                                    <td>  {!milestone.Date_Completed__c} </td>
+                                                                    <td>  {!milestone.Milestone_Complete__c} </td>
                                                                 </tr>
                                                             </apex:repeat>
                                                             </apex:outputPanel>
@@ -821,8 +817,6 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>Program</th>
-                                                                <th>Effective Date</th>
-                                                                <th>MS#</th>
                                                                 <th>Milestone</th>
                                                                 <th>Milestone Title</th>
                                                                 <th>Level Descr</th>
@@ -839,19 +833,17 @@
                                                             <apex:outputPanel rendered="{!IF(studentMilestonesGrad.size > 0, true, false)}">
                                                                 <apex:repeat value="{!studentMilestonesGrad}" var="milestone">
                                                                     <tr>
-                                                                        <td>  {!milestone.Acad_Program__c} </td>
-                                                                        <td>  MILESTONE effDate </td>
-                                                                        <td>  MILESTONE NUMBER </td>
-                                                                        <td>  {!milestone.MILESTONE__c} </td>
-                                                                        <td>  {!milestone.MILESTONE_TITLE__c} </td>
-                                                                        <td>  {!milestone.MILESTONE_LEVEL__c} </td>
-                                                                        <td>  {!milestone.DESCRFORMAL__c} </td>
-                                                                        <td>  {!milestone.ACAD_PLAN__c} </td>
-                                                                        <td>  {!milestone.DESCR__c} </td>
+                                                                        <td>  {!milestone.Acad_Program__r.Name} </td>
+                                                                        <td>  {!milestone.Milestone__c} </td>
+                                                                        <td>  {!milestone.Milestone_Title__c} </td>
+                                                                        <td>  {!milestone.Milestone_Level__c} </td>
+                                                                        <td>  {!milestone.Descrformal__c} </td>
+                                                                        <td>  {!milestone.Acad_Plan__c} </td>
+                                                                        <td>  {!milestone.Descr__c} </td>
                                                                         <td>  {!milestone.Term_Required__r.Name} </td>
-                                                                        <td>  MILESTONE.ANTICIPATED_TERM__c </td>
-                                                                        <td>  MILESTONE attDate </td>
-                                                                        <td>  {!milestone.MILESTONE_COMPLETE__c} </td>
+                                                                        <td>  {!milestone.Anticipated_Term__c} </td>
+                                                                        <td>  {!milestone.Date_Completed__c} </td>
+                                                                        <td>  {!milestone.Milestone_Complete__c} </td>
                                                                     </tr>
                                                                 </apex:repeat>
                                                             </apex:outputPanel>
@@ -1659,12 +1651,11 @@
         
             $j(document).ready(function() {
                 // $j('.fa-caret-down').hide();
-                llProfileHeader();
                 llServiceIndicator();
                 llStudentDemographic();
                 llStudentProgram();
                 llSundevilImg();
-                loadGeneralTab();
+                //loadGeneralTab();
             });
             
             function llServiceIndicator() {
@@ -1752,27 +1743,6 @@
                                             "</tr>";
                     buildInitHtml += "</table></div>";
                 document.getElementById("studentDemographicDiv").innerHTML = buildInitHtml;
-            
-            function llProfileHeader() {
-                
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getProfileHeader}',
-                    '{!theContact.EMPLID__c}',
-                    function (result, event) {
-                        if (event.status) {
-                            if (result.length != 0) {
-                                var cohort = '--';
-                                if(result.COHORT__c != null && result.COHORT__c != '' && result.COHORT__c != undefined) {
-                                    cohort = result.COHORT__c;
-                                }
-                                var html = cohort +'';
-                                document.getElementById('profileHeaderTD').innerHTML = html;
-                                cleanUpUndefined("profileHeaderTD");
-                            }
-                        }
-                    },
-                    {escape: true}
-                );
             }
             
             function llStudentProgram() {
@@ -1905,7 +1875,7 @@
                                       "<table class=\"table table-striped\">" +
                                           "<tr>" +
                                               "<th>WUE</th>" +
-                                              "<td>"+{!theContact.WUE__c} +"</td>" +
+                                              "<td>{!theContact.WUE__c}</td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>Residency</th>" +
@@ -2261,8 +2231,8 @@
                     loadFinancesTab();
                 } else if ($j(this).attr('href') === '#collapse-classes') {
                     loadClassesTab();
-                }  
-            })
+                }
+            });
         </script>
 
         <script type="text/javascript">
@@ -2294,9 +2264,9 @@
     
             // Wrappers
             
-            function loadGeneralTab() {
-                getHousingInfo();
-            }
+            // function loadGeneralTab() {
+            //     getHousingInfo();
+            // }
  
             function loadUGAcademicsTab() {
                 getStdntTestComps();
@@ -4175,7 +4145,7 @@
                 var e = document.getElementById("ps_financial_aid_year_select");
                 if(e.options[0] == null) {
                     document.getElementById("ps_financial_aid_year_picklist").innerHTML = '';
-                    document.getElementById('ps_financial_aid_summary').innerHTML = 'No data is currentely available for this student';
+                    //document.getElementById('ps_financial_aid_summary').innerHTML = 'No data is currentely available for this student';
                     return;
                 }
                 var search = e.options[e.selectedIndex].text ;

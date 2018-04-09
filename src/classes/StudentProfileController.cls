@@ -223,38 +223,27 @@ global with sharing class StudentProfileController
     private void populateStudentMilestoneUGrad() {
         // need these fields before I can sign off on this method
         Set<Student_Milestone__c> milestoneSet = new Set<Student_Milestone__c>();
-        for (Student_Milestone__c milestoneRec: [SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Plan__c, Milestone__c, Milestone_Complete__c, 
-                                                       Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name
+        for (Student_Milestone__c milestoneRec: [SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__c, Milestone__c, Milestone_Complete__c, 
+                                                       Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
+                                                       Date_Completed__c, Anticipated_Term__c
                                                   FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
                                                   AND Acad_Career__c = 'UGRD'
-                                                //ORDER BY EFFDT__c DESC, MILESTONE_NBR__c ASC
                                                   ]) {
-            //if (!milestoneSet.contains(milestoneRec.ACAD_PROG__c + milestoneRec.MILESTONE__c + milestoneRec.MILESTONE_NBR__c)) {
-                studentMilestonesUGrad.add(milestoneRec);
-            //    milestoneSet.add(milestoneRec.ACAD_PROG__c + milestoneRec.MILESTONE__c + milestoneRec.MILESTONE_NBR__c);
-            //}
+            studentMilestonesUGrad.add(milestoneRec);
         }
     }
     
     private void populateStudentMilestoneGrad() {
         // TODO: remove comments once EFFDT__c is created.
 		Set<Student_Milestone__c> milestoneSet = new Set<Student_Milestone__c>();
-        for (Student_Milestone__c milestoneRec: [SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Plan__c, Milestone__c, Milestone_Complete__c, 
-                                                       Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name
+        for (Student_Milestone__c milestoneRec: [SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__c, Milestone__c, Milestone_Complete__c, 
+                                                       Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
+                                                       Date_Completed__c, Anticipated_Term__c
                                                   FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
                                                  AND (Acad_Career__c = 'GRAD' OR Acad_Career__c = 'LAW')
-                                                // ORDER BY EFFDT__c DESC
                                                 ]) 
         {
-            if (studentMilestonesUGrad.size() > 0) {
-                /*if (studentMilestonesUGrad.get(0).EFFDT__c == milestoneRec.EFFDT__c) {
-                    studentMilestonesUGrad.add(milestoneRec);
-                } else {
-                    break;
-                }*/
-            } else {
-                studentMilestonesUGrad.add(milestoneRec);
-            }
+            studentMilestonesUGrad.add(milestoneRec);
         }
     }
     
@@ -323,41 +312,6 @@ global with sharing class StudentProfileController
                     nextTermName = term.Name;    
             }            
         }
-    }
-
-    @RemoteAction
-    // Get JBT_RET_PROFILE_HEADER_VW__x data
-    global static JBT_RET_PROFILE_HEADER_VW__x getProfileHeader(String emplId)
-    {
-        vars = new List<String>();
-        List<JBT_RET_PROFILE_HEADER_VW__x> headerlist = new List<JBT_RET_PROFILE_HEADER_VW__x>();
-        
-        // Build out list to avoid de-reference null object errors.
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            headerList = 
-            (
-                Test.isRunningTest() ? new List<JBT_RET_PROFILE_HEADER_VW__x>() : 
-                [
-                    SELECT COHORT__c
-                    FROM JBT_RET_PROFILE_HEADER_VW__x
-                    WHERE ExternalId = :emplId
-                    ORDER BY STRM__c DESC
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        if (headerList.size() > 0)
-        {
-            return headerList[0];
-        }
-        else
-        {
-            return new JBT_RET_PROFILE_HEADER_VW__x();
-        }  
     }
 
     @RemoteAction
@@ -788,8 +742,8 @@ global with sharing class StudentProfileController
         vars = new List<String>();
         List<Student_Program_Plan__c> tempStudentProgramList = new List<Student_Program_Plan__c>();
         List<Student_Program_Plan__c> academicSummaryList = new List<Student_Program_Plan__c>();
-        List<Student_Program_Plan__c> otherIndicatorList = new List<JBT_RET_OTH_IND1_VW__x>();
-        List<Student_Program_Plan__c> academicStandingList = new List<PS_ASU_SP_AC_STNDV__x>();
+        List<Student_Program_Plan__c> otherIndicatorList = new List<Student_Program_Plan__c>();
+        List<Student_Program_Plan__c> academicStandingList = new List<Student_Program_Plan__c>();
         List<Student_Program_Plan_Advisor__c> academicAdviserList = new List<Student_Program_Plan_Advisor__c>();
         List<PS_ASU_SR_COL_PLAN__x> gradPlanList = new List<PS_ASU_SR_COL_PLAN__x>();
         

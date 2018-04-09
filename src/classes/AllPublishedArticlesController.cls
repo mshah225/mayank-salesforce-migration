@@ -1,48 +1,40 @@
 public with sharing class AllPublishedArticlesController {
-	
-	private string urlPrefix = 'https://asu.secure.force.com/kb/articles/';
-	
-	
-	public List<Map<String,String>> lstArticleMap {get;set;}	
+    
+    public List<KnowledgeArticleWrapper> completeListOfArticles { get; set; }
 
-	
-	public AllPublishedArticlesController() {
-		lstArticleMap = new List<Map<String,String>>();
-		lstArticleMap.add(new Map<String,String>());
-		Integer lstSize=lstArticleMap.size();
-		for(KnowledgeArticleVersion kav: [SELECT id,Title, UrlName, KnowledgeArticleId, PublishStatus, language 
-				 						  FROM KnowledgeArticleVersion 
-				   						  WHERE PublishStatus='Online'
-				   						  AND language ='en_US'
-				   						  AND IsVisibleInPkb = true ]) {
-			lstArticleMap[lstSize-1].put(getArticleUrl(kav), kav.title);
-			if(lstArticleMap[lstSize-1].size()==1000) {
-				lstArticleMap.add(new Map<String,String>());
-				lstSize++;
-				
-			}
-				   																   	
-		}
+    public AllPublishedArticlesController() {
+        completeListOfArticles = new List<KnowledgeArticleWrapper>();
+        for (KnowledgeArticleVersion kav : [SELECT id,Title, UrlName, KnowledgeArticleId, PublishStatus, language 
+                                           FROM KnowledgeArticleVersion 
+                                           WHERE PublishStatus='Online'
+                                           AND language ='en_US'
+                                           AND IsVisibleInPkb = true]) {
+                                           
+            completeListOfArticles.add(new KnowledgeArticleWrapper(kav));
+        }
+    }
 
-	}
-	
-	public List<Map<String, String>> getArticleMap() {
-		return lstArticleMap;
-	}
-
-	
-	private string getArticleUrl(KnowledgeArticleVersion kav) {
-       	string articleTypeString;
-       	string articleIdPrefix = String.valueOf(kav.Id).substring(0,3);
-       	if (articleIdPrefix == 'ka1') 
- 			articleTypeString = 'FAQ/';
- 		else if (articleIdPrefix == 'ka2') 
- 			articleTypeString = 'How_To/';
- 		else if (articleIdPrefix == 'ka3') 
- 			articleTypeString = 'Informational/';
- 		else
- 			articleTypeString = articleIdPrefix;
- 		return urlPrefix + articleTypeString + kav.UrlName;
-	}
+    
+    public class KnowledgeArticleWrapper {
+        private String knowledgeBasePrefix = 'https://asu.secure.force.com/kb/articles/';
+        public String articleName {get; set;}
+        public String url {get; set;}
+        
+        public KnowledgeArticleWrapper(KnowledgeArticleVersion kav) {
+            url = getArticleUrl(kav);
+            articleName = kav.title;
+        }
+        
+        private String getArticleUrl(KnowledgeArticleVersion kav) {
+            String articleTypeString;
+            String articleIdPrefix = String.valueOf(kav.Id).substring(0,3);
+            if (articleIdPrefix == 'ka1') {
+                articleTypeString = 'FAQ/';
+            } else {
+                articleTypeString = articleIdPrefix;
+            }
+            return knowledgeBasePrefix + articleTypeString + kav.UrlName;
+        }
+    }
 
 }

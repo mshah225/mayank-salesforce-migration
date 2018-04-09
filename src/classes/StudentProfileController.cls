@@ -774,11 +774,11 @@ global with sharing class StudentProfileController
     // Inner wrapper class for Academic Progress Data
     global class academicProgressDataWrapper
     {
-        public Student_Program_Plan__c jbtRetAcadSummaryVw; //
-        public PS_ASU_SP_AC_STNDV__x psAsuSpAcStndv; //
+        public Student_Program_Plan__c jbtRetAcadSummaryVw;
+        public Student_Program_Plan__c psAsuSpAcStndv;
         public List<Student_Program_Plan_Advisor__c> psAsuSpAcadAdvList;
-        public PS_ASU_SR_COL_PLAN__x psGradPlan; // erqurie
-        public JBT_RET_OTH_IND1_VW__x jbtRetOthInd1Vw;
+        public PS_ASU_SR_COL_PLAN__x psGradPlan; // Need POS GPA
+        public Student_Program_Plan__c jbtRetOthInd1Vw;
     }
 
      @RemoteAction
@@ -786,9 +786,10 @@ global with sharing class StudentProfileController
     global static academicProgressDataWrapper getAcademicProgressData(String emplId, String career)
     {
         vars = new List<String>();
+        List<Student_Program_Plan__c> tempStudentProgramList = new List<Student_Program_Plan__c>();
         List<Student_Program_Plan__c> academicSummaryList = new List<Student_Program_Plan__c>();
-        List<JBT_RET_OTH_IND1_VW__x> otherIndicatorList = new List<JBT_RET_OTH_IND1_VW__x>();
-        List<PS_ASU_SP_AC_STNDV__x> academicStandingList = new List<PS_ASU_SP_AC_STNDV__x>();
+        List<Student_Program_Plan__c> otherIndicatorList = new List<JBT_RET_OTH_IND1_VW__x>();
+        List<Student_Program_Plan__c> academicStandingList = new List<PS_ASU_SP_AC_STNDV__x>();
         List<Student_Program_Plan_Advisor__c> academicAdviserList = new List<Student_Program_Plan_Advisor__c>();
         List<PS_ASU_SR_COL_PLAN__x> gradPlanList = new List<PS_ASU_SR_COL_PLAN__x>();
         
@@ -804,23 +805,17 @@ global with sharing class StudentProfileController
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
             vars.add(ErrorLogger.convertStringToJSON('career', career));
-            
-            academicSummaryList = 
-            (
-                Test.isRunningTest() ? new List<Student_Program_Plan__c>() :
-                [
-                    SELECT CAREER__c, STATUS__c, CUM_GPA__c, TOT_CUMULATIVE__c 
-                    FROM Student_Program_Plan__c
-                    WHERE Contact__r.EMPLID__c = :emplId
-                    AND CAREER__c IN :careerSet
-                    
-                    LIMIT 1
-                ]//ORDER BY STRM__c DESC
-            );
+            tempStudentProgramList = [ SELECT Career__c, Status__c, Cum_GPA__c, Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c
+                                        FROM Student_Program_Plan__c
+                                        WHERE Contact__r.EMPLID__c = :emplId
+                                        AND Career__c IN :careerSet
+                                        LIMIT 1
+                                     ];//ORDER BY STRM__c DESC;
+            academicSummaryList = tempStudentProgramList;
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
-
+        
         dataWrapper.jbtRetAcadSummaryVw = (academicSummaryList.size()>0 ? academicSummaryList[0] : new Student_Program_Plan__c());
 
         try {
@@ -832,22 +827,12 @@ global with sharing class StudentProfileController
                 vars.add(ErrorLogger.convertStringToJSON('--Value: ', s));
             }
             
-            otherIndicatorList = 
-            (
-                Test.isRunningTest() ? new List<JBT_RET_OTH_IND1_VW__x>() :
-                [
-                    SELECT EADVISOR__c 
-                    FROM JBT_RET_OTH_IND1_VW__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
-                    LIMIT 1
-                ]
-            );
+            otherIndicatorList = tempStudentProgramList;
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
 
-        dataWrapper.jbtRetOthInd1Vw = (otherIndicatorList.size()>0 ? otherIndicatorList[0] : new JBT_RET_OTH_IND1_VW__x());
+        dataWrapper.jbtRetOthInd1Vw = (otherIndicatorList.size()>0 ? otherIndicatorList[0] : new Student_Program_Plan__c());
 
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -857,23 +842,12 @@ global with sharing class StudentProfileController
                 vars.add(ErrorLogger.convertStringToJSON('--Value: ', s));
             }
             
-            academicStandingList = 
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_AC_STNDV__x>() :
-                [
-                    SELECT ACAD_CAREER__c, ACAD_STNDNG_ACTN__c, DESCR__c, EMPLID__c, 
-                           Id, STRM__c 
-                    FROM PS_ASU_SP_AC_STNDV__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
-                    LIMIT 1
-                ]
-            );
+            academicStandingList = tempStudentProgramList;
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
 
-        dataWrapper.psAsuSpAcStndv = (academicStandingList.size()>0 ? academicStandingList[0] : new PS_ASU_SP_AC_STNDV__x());
+        dataWrapper.psAsuSpAcStndv = (academicStandingList.size()>0 ? academicStandingList[0] : new Student_Program_Plan__c());
 
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));

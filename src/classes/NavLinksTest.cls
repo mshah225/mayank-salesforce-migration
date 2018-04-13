@@ -12,34 +12,32 @@ private class NavLinksTest {
             FROM Profile
             WHERE Name = 'ASU Community'
         ];
-
+        
+        List<Term__c> lstTerms = new List<Term__c>();
+        
         Term__c termAC = new Term__c();
         Date sessionAStartDate = Date.today().adddays(30);
         termAC.Session_A_C_Start_Date__c = sessionAStartDate;
         termAC.Year__c = '2015';
-
-        insert termAC;
 
         Term__c termB = new Term__c();
         Date sessionBStartDate = Date.today().adddays(40);
         termB.Session_B_Start_Date__c = sessionBStartDate;
         termB.Year__c = '2015';
 
-        insert termB;
+        lstTerms.add(termAC);
+        lstTerms.add(termB);
+        
+        insert lstTerms;
+        
+        List<Contact> listOfTestContacts = (new ContactFactory.DefaultContact()).create();
 
-        Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
-            Name = 'The Test Message',
-            Displayed__c = true,
-            Message__c = 'There is maintenance'
-        );
-
-        insert scm;
-
-        testContact = ContactService.createTestContact();
+        testContact = listOfTestContacts[0];
 
         insert testContact;
 
-        testUser = UserService.createTestUser();
+        List<User> listOfTestUsers = (new UserFactory.DefaultUser()).create();
+        testUser =  listOfTestUsers[0];
         testUser.ProfileId = asuCommunityProfile.Id;
         testUser.ContactId = testContact.Id;
 
@@ -50,7 +48,11 @@ private class NavLinksTest {
     }
 
     private static void setCookie(String cookieData) {
-        Cookie linksCookie = new Cookie('navbarlinks',cookieData,null,-1,false);
+        String nullPath = null;
+        Integer sessionCookie = -1;
+        Boolean insecureCookie = false;
+        
+        Cookie linksCookie = new Cookie('navbarlinks',cookieData,nullPath,sessionCookie,insecureCookie);
         ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});    
     }
     
@@ -64,7 +66,7 @@ private class NavLinksTest {
             nav.init();
         }
         Test.stopTest();
-        System.assertEquals(nav.links, null);
+        System.assertEquals(nav.linkList, null);
     }
 
     @isTest 
@@ -74,10 +76,6 @@ private class NavLinksTest {
         System.runAs(testUser) {
             sc = new ServiceCenter();
             nav = new NavLinks(sc);
-            ApexPages.currentPage().getParameters().put('asuriteId', 'aesanch2');
-            ApexPages.currentPage().getParameters().put('time', '1417811918');
-            ApexPages.currentPage().getParameters().put('signature',
-                'a8539563d36219e592c3376dae079d38887cc9af8374d74929bdf48bb655b93f');
             ApexPages.currentPage().getParameters().put('navbar',
                 '{"navbarLinks":[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
                 '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
@@ -88,10 +86,19 @@ private class NavLinksTest {
         }
         Test.stopTest();
         System.assertEquals(nav.linkList[0].name,'Home');
+        System.assertEquals(nav.linkList[0].url,'https://webapp4-dev.asu.edu/myasu/student');
+        
         System.assertEquals(nav.linkList[1].name,'Finances');
+        System.assertEquals(nav.linkList[1].url,'https://webapp4-dev.asu.edu/myasu/student/finances');
+    
         System.assertEquals(nav.linkList[2].name,'Service Center');
+        System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
+        
         System.assertEquals(nav.linkList[3].name,'Campus Services');
+        System.assertEquals(nav.linkList[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
+        
         System.assertEquals(nav.linkList[4].name,'Profile');
+        System.assertEquals(nav.linkList[4].url, 'https://webapp4-dev.asu.edu/myasu/student/profile');
     }
     
      @isTest
@@ -101,15 +108,11 @@ private class NavLinksTest {
         System.runAs(testUser) {
             sc = new ServiceCenter();
             nav = new NavLinks(sc);
-            ApexPages.currentPage().getParameters().put('asuriteId', 'aesanch2');
-            ApexPages.currentPage().getParameters().put('time', '1417811918');
-            ApexPages.currentPage().getParameters().put('signature',
-                'a8539563d36219e592c3376dae079d38887cc9af8374d74929bdf48bb655b93f');
-            ApexPages.currentPage().getParameters().put('navbar', '{"navbarLinks":');
+            ApexPages.currentPage().getParameters().put('navbar', '{"navbarLinks":[]}');
             nav.init();
         }
         Test.stopTest();
-        System.assertEquals(nav.links, '');
+        System.assertEquals(nav.linkList.isEmpty(), true);
     }
     
     
@@ -120,55 +123,58 @@ private class NavLinksTest {
         System.runAs(testUser) {
             sc = new ServiceCenter();
             nav = new NavLinks(sc);
-            ApexPages.currentPage().getParameters().put('asuriteId', 'aesanch2');
-            ApexPages.currentPage().getParameters().put('time', '1417811918');
-            ApexPages.currentPage().getParameters().put('signature',
-                'a8539563d36219e592c3376dae079d38887cc9af8374d74929bdf48bb655b93f');
-            String links = '[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
+            String links = '{"navbarLinks":' + '[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
                 '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
                 '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/servicecenter"},' +
                 '{"Campus Services":"https://webapp4-dev.asu.edu/myasu/student/campusservices"},' +
-                '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}]';
+                '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}]}';
             setCookie(links);
             nav.init();
         }
         Test.stopTest();
         System.assertEquals(nav.linkList[0].name,'Home');
+        System.assertEquals(nav.linkList[0].url,'https://webapp4-dev.asu.edu/myasu/student');
+        
         System.assertEquals(nav.linkList[1].name,'Finances');
+        System.assertEquals(nav.linkList[1].url,'https://webapp4-dev.asu.edu/myasu/student/finances');
+    
         System.assertEquals(nav.linkList[2].name,'Service Center');
+        System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
+        
         System.assertEquals(nav.linkList[3].name,'Campus Services');
+        System.assertEquals(nav.linkList[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
+        
         System.assertEquals(nav.linkList[4].name,'Profile');
+        System.assertEquals(nav.linkList[4].url, 'https://webapp4-dev.asu.edu/myasu/student/profile');
     }
     
-     @isTest
+    @isTest
     private static void retrieveNullCookieFromPage() {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
             sc = new ServiceCenter();
             nav = new NavLinks(sc);
-            ApexPages.currentPage().getParameters().put('asuriteId', 'aesanch2');
-            ApexPages.currentPage().getParameters().put('time', '1417811918');
-            ApexPages.currentPage().getParameters().put('signature',
-                'a8539563d36219e592c3376dae079d38887cc9af8374d74929bdf48bb655b93f');
             String links = '[]';
             setCookie(links);
             nav.init();
         }
         Test.stopTest();
-        System.assertEquals(nav.linkList.isEmpty(), true);
+        System.assertEquals(nav.linkList, null);
     }
     
-    @isTest 
-    private static void testConstructors() {
+    @isTest
+    private static void incorrectStringAsCookie() {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
             sc = new ServiceCenter();
-            Navlinks scNav = new Navlinks(sc);
-            ApexPages.StandardController stanContoller = new ApexPages.StandardController(testContact);
-            NavLinks standardNav = new Navlinks(stanContoller);
+            nav = new NavLinks(sc);
+            ApexPages.currentPage().getParameters().put('navbar',
+                '{"navbarLinks":');
+            nav.init();
         }
         Test.stopTest();
+        System.assertEquals(nav.linkList, null);
     }
 }

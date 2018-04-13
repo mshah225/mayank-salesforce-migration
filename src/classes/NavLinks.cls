@@ -1,27 +1,17 @@
 public class NavLinks {
-    public NavLinks() {}
-    public NavLinks(ServiceCenter controller) { }
-    public NavLinks(viewCaseController controller){}
-    public NavLinks(AKBController controller) { }
-    public NavLinks(ViewAllCasesController controller) { }
-    public NavLinks(ApexPages.StandardController controller) { }
-    public NavLinks(UnsubscribeController controller) { }
-
-    public String links { get; set; }
+    
+    public Navlinks(Object controller) {}
     public List<Link> linkList { get; set; }
 
     private Cookie createCookieFromURL() {
         Cookie cookieFromURL;
-        if (ApexPages.currentPage().getParameters().get('navbar') != null) {
-            links = ApexPages.currentPage().getParameters().get('navbar');
-            links = links.replace('{"navbarLinks":','');
-            if (links != null && links != '') {
-                links = links.substring(0, (links.length()-1));
-                cookieFromURL = new Cookie('navbarlinks',links,null,-1,false);
-                return cookieFromURL;
-            }
-        }
-        return null;
+        String links;
+        String nullPath = null;
+        Integer sessionCookie = -1;
+        Boolean insecureCookie = false;
+        links = ApexPages.currentPage().getParameters().get('navbar');
+        cookieFromURL = new Cookie('navbarlinks',links,nullPath,sessionCookie,insecureCookie);
+        return cookieFromURL;
     }
     
     private Cookie getCurrentPageCookie(String cookieName) {
@@ -29,37 +19,67 @@ public class NavLinks {
         return currentPageCookie;
     }
     
-    private void parseCookieJSONAndPopulateLinks(Cookie linksCookie) {
-        String linksJSON = '';
+    private String getCookieValue(Cookie linksCookie) {
+        String cookieValue;
         if (linksCookie != null) {
-            linksJSON = linksCookie.getValue();
+            cookieValue = linksCookie.getValue();
+        }
+        return cookieValue;
+    }
+    
+    private String cleanUpHtmlEncoding(String value) {
+        if (!String.isEmpty(value)) {
+            value.replaceAll('&quot;','"');
+            value.replaceAll('&#34;','"');
+        }
+        return value;
+    }
+    
+    private void parseCookieJSONAndPopulateLinks(Cookie linksCookie) {
+        String linksJSON;
+        Map<String, Object> jsonCookieValue;
+        Map<String, Object> linkNameAndURL;
+        List<Object> linkObjectsFromJSON = new List<Object>();
         
-            // Clean up any HTML encoding for quotes
-            linksJSON = linksJSON.replaceAll('&quot;', '"');
-            linksJSON = linksJSON.replaceAll('&#34;', '"');
-            
+        linksJSON = getCookieValue(linksCookie);
+        // Clean up any HTML encoding for quotes
+        linksJSON = cleanUpHtmlEncoding(linksJSON);
+        
+        try {
+            jsonCookieValue = (Map<String, Object>) JSON.deserializeUntyped(linksJSON);
+            linkObjectsFromJSON = (List<Object>) jsonCookieValue.get('navbarLinks');
             linkList = new List<Link>();
-            JSONParser parser = JSON.createParser(linksJSON);
-            while (parser.nextToken() != null) {
-                // If current token is a field name
-                if (parser.getCurrentToken() == JSONToken.FIELD_NAME) {
-                    Link thisLink = new Link();
-                    String fieldName = parser.getText();
-                    thisLink.name = fieldName;
-                    // Move to token after the field name
-                    parser.nextToken();
-                    thisLink.url = parser.getText();
-                    linkList.add(thisLink);
-                }
+        } catch (NullPointerException ex) {
+            List<String> errorVars = new List<String>();
+            errorVars.add(ErrorLogger.convertStringToJSON('Cookie Value', linksJSON));
+            errorVars.add(ErrorLogger.convertStringToJSON('Null Pointer Exception Message', ex.getMessage()));
+            ErrorLogger.log(ex, errorVars, false);    
+        } catch (JSONException ex) {
+            List<String> errorVars = new List<String>();
+            errorVars.add(ErrorLogger.convertStringToJSON('Cookie Value', linksJSON));
+            errorVars.add(ErrorLogger.convertStringToJSON('JSON Exception Message', ex.getMessage()));
+            ErrorLogger.log(ex, errorVars, false);    
+        } catch (TypeException ex) {
+            List<String> errorVars = new List<String>();
+            errorVars.add(ErrorLogger.convertStringToJSON('Cookie Value', linksJSON));
+            errorVars.add(ErrorLogger.convertStringToJSON('Type Exception Message', ex.getMessage()));
+            ErrorLogger.log(ex, errorVars, false);    
+        }
+        for (Object linkObj: linkObjectsFromJSON) {
+            linkNameAndURL = (Map<String, Object>) linkObj;
+            for (String linkName: linkNameAndURL.keySet()) {
+                Link thisLink = new Link();
+                thisLink.name = linkName;
+                thisLink.url = (String) linkNameAndURL.get(linkName);
+                linkList.add(thisLink);
             }
         }
     }
     
     public PageReference init() {
         Cookie linksCookie;
-        //String linksJSON = '';
-        linksCookie = createCookieFromURL();
-        if (linksCookie != null) {
+        if (ApexPages.currentPage().getParameters().get('navbar') != null) {
+            linksCookie = createCookieFromURL();
             ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});
         } else {
             linksCookie = getCurrentPageCookie('navbarlinks');

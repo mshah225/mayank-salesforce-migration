@@ -243,7 +243,7 @@ global with sharing class StudentProfileController
                                                  AND (Acad_Career__c = 'GRAD' OR Acad_Career__c = 'LAW')
                                                 ]) 
         {
-            studentMilestonesUGrad.add(milestoneRec);
+            studentMilestonesGrad.add(milestoneRec);
         }
     }
     
@@ -357,7 +357,7 @@ global with sharing class StudentProfileController
     // Get the allowable test types by Career type
     global static Set<String> getTestCodes(String career)
     {
-        if (career == 'UGRD')
+        if (career == 'Undergraduate')
             return new Set<String>{'ACT', 'AECP', 'AMPT', 'AP', 'CLEP', 'DSST', 'DSST2', 'GED', 'ALEKSMATH', 'ACCUPLACER2',
                                       'HISET', 'IELTS', 'MPT', 'PTE', 'SAT I', 'SAT II', 'TOEFL', 'TOEIC', 'SATII'};
         else
@@ -673,19 +673,19 @@ global with sharing class StudentProfileController
             
         // Build out list to avoid de-reference null object errors.
         try {
-            /*studentProgramDataList =
+            studentProgramDataList =
             (
                 Test.isRunningTest() ? new List<Student_Program_Plan__c>() :
                 [
-                 SELECT Career__c, ADM_APPL_DT__c, ADM_APPL_PROG__c, 
-                           ADMIT_TERM__c, ADMIT_TYPE__c, Appt_Dt__c, 
-                           Appt_Dt_Pending__c, ENRL_DEPOSIT__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
+                 SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c, 
+                           Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c, 
+                           Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
                            Exp_Grad_Term__c, Exp_Grad_Term__r.Name, 
-                           Id, ORIENT_DT__c, Residency__c
+                           Id, Residency__c, Financial_Need_Level__c 
                     FROM Student_Program_Plan__c
                     WHERE Contact__r.EMPLID__c = :emplId
                 ]
-            );*/
+            );
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
@@ -731,7 +731,7 @@ global with sharing class StudentProfileController
         public Student_Program_Plan__c jbtRetAcadSummaryVw;
         public Student_Program_Plan__c psAsuSpAcStndv;
         public List<Student_Program_Plan_Advisor__c> psAsuSpAcadAdvList;
-        public PS_ASU_SR_COL_PLAN__x psGradPlan; // Need POS GPA
+        public Student_Program_Plan__c psGradPlan; // Need POS GPA
         public Student_Program_Plan__c jbtRetOthInd1Vw;
     }
 
@@ -745,15 +745,15 @@ global with sharing class StudentProfileController
         List<Student_Program_Plan__c> otherIndicatorList = new List<Student_Program_Plan__c>();
         List<Student_Program_Plan__c> academicStandingList = new List<Student_Program_Plan__c>();
         List<Student_Program_Plan_Advisor__c> academicAdviserList = new List<Student_Program_Plan_Advisor__c>();
-        List<PS_ASU_SR_COL_PLAN__x> gradPlanList = new List<PS_ASU_SR_COL_PLAN__x>();
+        List<Student_Program_Plan__c> gradPlanList = new List<Student_Program_Plan__c>();
         
         academicProgressDataWrapper dataWrapper = new academicProgressDataWrapper();
 
         Set<String> careerSet;
-        if (career == 'UGRD')
-            careerSet = new Set<String>{'UGRD'};
+        if (career == 'Undergraduate')
+            careerSet = new Set<String>{'Undergraduate'};
         else
-            careerSet = new Set<String>{'GRAD','LAW'};
+            careerSet = new Set<String>{'Graduate','Law'};
 
         // Build out list to avoid de-reference null object errors.
         try {
@@ -858,12 +858,12 @@ global with sharing class StudentProfileController
             
             gradPlanList = 
             (
-                Test.isRunningTest() ? new List<PS_ASU_SR_COL_PLAN__x>() :
+                Test.isRunningTest() ? new List<Student_Program_Plan__c>() :
                 [
-                    SELECT ASU_AA_POS_GPA__c, ASU_AA_OVRL_GPA__c, CUM_GPA__c, ACAD_CAREER__c, EMPLID__c
-                    FROM PS_ASU_SR_COL_PLAN__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
+                    SELECT ASU_AA_POS_GPA__c, ASU_AA_OVRL_GPA__c, Cum_GPA__c, Career__c
+                    FROM Student_Program_Plan__c
+                    WHERE Contact__r.EMPLID__c = :emplId
+                      AND Career__c IN :careerSet
                     LIMIT 1
                 ]
             ); 
@@ -871,7 +871,7 @@ global with sharing class StudentProfileController
             ErrorLogger.log(e, vars, debug);
         }
 
-        dataWrapper.psGradPlan = (gradPlanList.size() > 0? gradPlanList[0] : new PS_ASU_SR_COL_PLAN__x());
+        dataWrapper.psGradPlan = (gradPlanList.size() > 0? gradPlanList[0] : new Student_Program_Plan__c());
 
         return dataWrapper;        
 

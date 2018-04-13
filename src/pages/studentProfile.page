@@ -483,12 +483,20 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Room Check-In Date</th>
-                                                            <td id="checkInDate">{!theContact.Check_In_Dt__c}</td>
+                                                            <td id="checkInDate">
+                                                                <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                    <apex:param value="{!theContact.Check_In_Dt__c}" /> 
+                                                                </apex:outputText>
+                                                            </td>
                                                         </tr>
                                                         
                                                         <tr>
                                                             <th>Room Check-Out Date</th>
-                                                            <td id="checkOutDate">{!theContact.Check_Out_Dt__c}</td>
+                                                            <td id="checkOutDate">
+                                                                <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                    <apex:param value="{!theContact.Check_Out_Dt__c}" /> 
+                                                                </apex:outputText>
+                                                            </td>
                                                         </tr>
                                                         
                                                         <tr>
@@ -516,7 +524,7 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Current Academic Level</th>
-                                                            <td id="profileHeaderTD">{!theContact.FTFTF__c}</td>
+                                                            <td id="profileHeaderTD">{!theContact.FFTF__c}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>{!currentTermName} Term Enrolled Hours</th>
@@ -1879,7 +1887,7 @@
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>Residency</th>" +
-                                              "<td>"+studentProgram.RESIDENCY__c + "</td>" +
+                                              "<td>"+studentProgram.Residency__c + "</td>" +
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>Country of Citizenship</th>" +
@@ -1891,7 +1899,7 @@
                                           "</tr>" +
                                           "<tr>" +
                                               "<th>Financial Need Level</th>" +
-                                              "<td>" + studentProgram.FINANCIAL_NEED_LVL__c + "</td>" +
+                                              "<td>" + studentProgram.Financial_Need_Level__c + "</td>" +
                                           "</tr>";
                               html += "</table></div>";
             
@@ -1899,23 +1907,24 @@
                               cleanUpUndefined("studentProgramDiv");
                               
                               var termName = '--';
-                              if(studentProgram.EXP_GRAD_TERM__c === '-') {
+                              console.log(studentProgram);
+                              if(studentProgram.Exp_Grad_Term__c === null) {
                                   termName = '--'
-                              } else if(studentProgram.EXP_GRAD_TERM__r.Name != '') {
-                                  termName = studentProgram.EXP_GRAD_TERM__r.Name;
+                              } else if(studentProgram.Exp_Grad_Term__r.Name != '') {
+                                  termName = studentProgram.Exp_Grad_Term__r.Name;
                               }
                               
                               var appointDay = '--';
                               var nextAppointDay = '--';
-                              if(studentProgram.APPT_DT__c != '' && studentProgram.APPT_DT__c!= null) {
-                                appointDay = new Date(studentProgram.APPT_DT__c);
+                              if(studentProgram.Appt_Dt__c != '' && studentProgram.Appt_Dt__c!= null) {
+                                appointDay = new Date(studentProgram.Appt_Dt__c);
                                 appointDay = (appointDay.getUTCMonth() + 1) + '/' +
                                         appointDay.getUTCDate() + '/' +
                                         appointDay.getUTCFullYear();
                               }
                               
-                              if(studentProgram.APPT_DT_PENDING__c != undefined && studentProgram.APPT_DT_PENDING__c != '' && studentProgram.APPT_DT_PENDING__c!= null) {
-                                nextAppointDay = new Date(studentProgram.APPT_DT_PENDING__c);
+                              if(studentProgram.Appt_Dt_Pending__c != undefined && studentProgram.Appt_Dt_Pending__c != '' && studentProgram.Appt_Dt_Pending__c!= null) {
+                                nextAppointDay = new Date(studentProgram.Appt_Dt_Pending__c);
                                 nextAppointDay = (nextAppointDay.getUTCMonth() + 1) + '/' +
                                         nextAppointDay.getUTCDate() + '/' +
                                         nextAppointDay.getUTCFullYear();
@@ -1944,21 +1953,21 @@
                               varCurrentEnrolledHrs = '--';
                               varNextEntrolledHrs = '--';
                               
-                              if(studentProgram.ENRL_HRS__c != '' 
-                                  && studentProgram.ENRL_HRS__c != undefined 
-                                  && studentProgram.ENRL_HRS__c != '-'
-                                  && studentProgram.ENRL_HRS__c != null) {
-                                  varCurrentEnrolledHrs = Math.floor(studentProgram.ENRL_HRS__c);
+                              if(studentProgram.Enrl_Hrs__c != '' 
+                                  && studentProgram.Enrl_Hrs__c != undefined 
+                                  && studentProgram.Enrl_Hrs__c != '-'
+                                  && studentProgram.Enrl_Hrs__c != null) {
+                                  varCurrentEnrolledHrs = Math.floor(studentProgram.Enrl_Hrs__c);
                               }
                               var curTermHtml =  varCurrentEnrolledHrs;
                               document.getElementById('curTermEnrolled').innerHTML = curTermHtml;
                               cleanUpUndefined("curTermEnrolled");
                               
-                              if(studentProgram.ENRL_HRS_PENDING__c != '' 
-                                  && studentProgram.ENRL_HRS_PENDING__c != undefined 
-                                  && studentProgram.ENRL_HRS_PENDING__c != '-'
-                                  && studentProgram.ENRL_HRS_PENDING__c != null) {
-                                  varNextEntrolledHrs = Math.floor(studentProgram.ENRL_HRS_PENDING__c);
+                              if(studentProgram.Enrl_Hrs_Pending__c != '' 
+                                  && studentProgram.Enrl_Hrs_Pending__c != undefined 
+                                  && studentProgram.Enrl_Hrs_Pending__c != '-'
+                                  && studentProgram.Enrl_Hrs_Pending__c != null) {
+                                  varNextEntrolledHrs = Math.floor(studentProgram.Enrl_Hrs_Pending__c);
                               }
                               var nextTermHtml = varNextEntrolledHrs;
                               document.getElementById('nextTermEnrolled').innerHTML = nextTermHtml;
@@ -1968,10 +1977,10 @@
                               var gradStudentProgram;
                               
                               for(var i = 0; i < result.length; i++) {
-                                if(result[i].ACAD_CAREER__c === 'UGRD') {
+                                if(result[i].Career__c === 'Undergraduate') {
                                     ugStudentProgram = result[i];
                                 }
-                                else if (result[i].ACAD_CAREER__c === 'GRAD') {
+                                else if (result[i].Career__c === 'Graduate' || result[i].Career__c === 'Law') {
                                     gradStudentProgram = result[i];
                                 }
                               }
@@ -1985,27 +1994,24 @@
                               var ugOrientDate = '--';
                               
                               if(ugStudentProgram != undefined && ugStudentProgram != '') {
-                                  ugApplAdmitType = checkIfBlank(ugStudentProgram, ugStudentProgram.ADMIT_TYPE__c);
-                                  ugAppliedProg = checkIfBlank(ugStudentProgram, ugStudentProgram.ADM_APPL_PROG__c);
-                                  ugAdmitTerm = checkIfBlank(ugStudentProgram, ugStudentProgram.ADMIT_TERM__c);
-                                  ugEntrollDep = checkIfBlank(ugStudentProgram, ugStudentProgram.ENRL_DEPOSIT__c);
+                                  ugApplAdmitType = checkIfBlank(ugStudentProgram, ugStudentProgram.Admit_Type__c);
+                                  ugAppliedProg = checkIfBlank(ugStudentProgram, ugStudentProgram.Adm_Appl_Prog__c);
+                                  if(studentProgram.Admit_Term__c === null) {
+                                      ugAdmitTerm = '--'
+                                  } else if(studentProgram.Admit_Term__r.Name != '') {
+                                      ugAdmitTerm = studentProgram.Admit_Term__r.Name;
+                                  }
+                                  ugEntrollDep = checkIfBlank(ugStudentProgram, ugStudentProgram.Enrl_Deposit__c);
                                   
                                   
-                                  var utcUgAppSeconds = checkIfBlank(ugStudentProgram, ugStudentProgram.ADM_APPL_DT__c);
+                                  var utcUgAppSeconds = checkIfBlank(ugStudentProgram, ugStudentProgram.Adm_Appl_Dt__c);
                                   if(utcUgAppSeconds != '--') {
                                       ugAppDate = new Date(utcUgAppSeconds);
                                       ugAppDate = (ugAppDate.getMonth() + 1) + '/' +
                                                 ugAppDate.getDate() + '/' +
                                                 ugAppDate.getFullYear();
                                   }
-                                  
-                                  var utcUgOrientSeconds = checkIfBlank(ugStudentProgram, ugStudentProgram.ORIENT_DT__c);
-                                  if(utcUgOrientSeconds != '--') {
-                                      ugOrientDate = new Date(utcUgOrientSeconds);
-                                      ugOrientDate = (ugOrientDate.getMonth() + 1) + '/' +
-                                                ugOrientDate.getDate() + '/' +
-                                                ugOrientDate.getFullYear();
-                                  }
+                                  ugOrientDate = '{!theContact.Orient_Dt__c}';
                               }
                               
                               var undergradAcadHtml= "<div class='col-sm-6'>"+
@@ -2036,7 +2042,7 @@
                                                         "</tr>"+
                                                         "<tr>"+
                                                             "<th>Orientation Date</th>"+
-                                                            "<td>"+ ugOrientDate  +"</td>"+
+                                                            "<td>"+ {!theContact.Orient_Dt__c}  +"</td>"+
                                                         "</tr>"+
                                                     "</table>"+
                                                 "</div>";
@@ -2053,15 +2059,18 @@
                               var orientDate = '--';
                               
                               if(gradStudentProgram != undefined && gradStudentProgram != '') {
-                                  applAdmitType = checkIfBlank(gradStudentProgram, gradStudentProgram.ADMIT_TYPE__c);
-                                  appliedProg = checkIfBlank(gradStudentProgram, gradStudentProgram.ADM_APPL_PROG__c);
-                                  admitTerm = checkIfBlank(gradStudentProgram, gradStudentProgram.ADMIT_TERM__c);
-                                  admitType = checkIfBlank(gradStudentProgram, gradStudentProgram.ADMIT_TYPE__c);
-                                  entrollDep = checkIfBlank(gradStudentProgram, gradStudentProgram.ENRL_DEPOSIT__c);
-                                  appDate = checkIfBlank(gradStudentProgram, gradStudentProgram.ADM_APPL_DT__c);
-                                  orientDate = checkIfBlank(gradStudentProgram, gradStudentProgram.ORIENT_DT__c);
+                                  applAdmitType = checkIfBlank(gradStudentProgram, gradStudentProgram.Admit_Type__c);
+                                  appliedProg = checkIfBlank(gradStudentProgram, gradStudentProgram.Adm_Appl_Prog__c);
+                                  if(studentProgram.Admit_Term__c === null) {
+                                      admitTerm = '--'
+                                  } else if(studentProgram.Admit_Term__r.Name != '') {
+                                      admitTerm = studentProgram.Admit_Term__r.Name;
+                                  }
+                                  admitType = checkIfBlank(gradStudentProgram, gradStudentProgram.Admit_Type__c);
+                                  entrollDep = checkIfBlank(gradStudentProgram, gradStudentProgram.Enrl_Deposit__c);
+                                  appDate = checkIfBlank(gradStudentProgram, gradStudentProgram.Adm_Appl_Dt__c);
                                   
-                                  var utcAppSeconds = checkIfBlank(gradStudentProgram, gradStudentProgram.ADM_APPL_DT__c);
+                                  var utcAppSeconds = checkIfBlank(gradStudentProgram, gradStudentProgram.Adm_Appl_Dt__c);
                                   if(utcAppSeconds != '--') {
                                       appDate = new Date(utcAppSeconds);
                                       appDate = (appDate.getMonth() + 1) + '/' +
@@ -2069,13 +2078,7 @@
                                                 appDate.getFullYear();
                                   }
                                   
-                                  var utcOrientSeconds = checkIfBlank(gradStudentProgram, gradStudentProgram.ORIENT_DT__c);
-                                  if(utcOrientSeconds != '--') {
-                                      orientDate = new Date(utcOrientSeconds);
-                                      orientDate = (orientDate.getMonth() + 1) + '/' +
-                                                orientDate.getDate() + '/' +
-                                                orientDate.getFullYear();
-                                  }
+                                  orientDate = '{!theContact.Orient_Dt__c}';
                               }
                               
                               var gradAcadHtml= "<div class='col-sm-6'>"+
@@ -2110,7 +2113,7 @@
                                                         "</tr>"+
                                                         "<tr>"+
                                                             "<th>Orientation Date</th>"+
-                                                            "<td>"+ orientDate  +"</td>"+
+                                                            "<td>"+ {!theContact.Orient_Dt__c}  +"</td>"+
                                                         "</tr>"+
                                                     "</table>"+
                                                 "</div>";
@@ -2686,7 +2689,7 @@
                     Visualforce.remoting.Manager.invokeAction(
                         '{!$RemoteAction.StudentProfileController.getStdntTestComps}',
                         '{!theContact.EMPLID__c}',
-                        'UGRD',
+                        'Undergraduate',
                         function (result, event) {
                             if (event.status) {
                                 document.getElementById("psTestScoreErrorsUG").innerHTML =
@@ -2708,7 +2711,7 @@
                                                     "</tr>" +
                                                 "</thead>" +
                                                 "<tbody>";
-    
+
                                     for (var i = 0; i < result.length; i++) {
                                         var utcSeconds = result[i].Test_Date__c;
                                         var testDate = new Date(utcSeconds);
@@ -2757,7 +2760,7 @@
                     Visualforce.remoting.Manager.invokeAction(
                         '{!$RemoteAction.StudentProfileController.getStdntTestComps}',
                         '{!theContact.EMPLID__c}',
-                        'GRAD',
+                        'Graduate',
                         function (result, event) {
                             if (event.status) {
                                 document.getElementById("psTestScoreErrorsGrad").innerHTML =
@@ -3256,7 +3259,7 @@
                     Visualforce.remoting.Manager.invokeAction(
                         '{!$RemoteAction.StudentProfileController.getAcademicProgressData}',
                         '{!theContact.EMPLID__c}',
-                        'UGRD',
+                        'Undergraduate',
                         function (result, event) {
                             if (event.status) {
                                 document.getElementById("UGacademicProgressErrors").innerHTML =
@@ -3327,7 +3330,7 @@
                     Visualforce.remoting.Manager.invokeAction(
                         '{!$RemoteAction.StudentProfileController.getAcademicProgressData}',
                         '{!theContact.EMPLID__c}',
-                        'GRAD',
+                        'Graduate',
                         function (result, event) {
                             if (event.status) {
                                 document.getElementById("psAcadProgressErrorsGrad").innerHTML =
@@ -3343,9 +3346,9 @@
                                     document.getElementById('grad_grad_gpa').innerHTML =
                                         result.psGradPlan.ASU_AA_OVRL_GPA__c;
                                     document.getElementById('grad_cumulative_gpa').innerHTML =
-                                        result.psGradPlan.CUM_GPA__c;
+                                        result.psGradPlan.Cum_GPA__c;
                                     document.getElementById('grad_cumulative_hours').innerHTML =
-                                        result.jbtRetAcadSummaryVw.TOT_CUMULATIVE__c;
+                                        result.jbtRetAcadSummaryVw.Tot_Cumulative__c;
 
                                    /* if (result.STATUS__c > 0) {
                                         document.getElementById('ugap_eadvisor_status').innerHTML =

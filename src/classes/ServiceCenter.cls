@@ -123,7 +123,7 @@ public with sharing class ServiceCenter
             FROM Case_Classification__c 
             WHERE RecordType.Name = 'Functional Group' 
                 AND Active__c = true 
-                AND Name = 'Student-Centric Initiatives' 
+                AND Name = 'Student Success Innovations' 
             LIMIT 1
         ].Id;
         suggestAnArticle.CC_Category__c = [
@@ -140,7 +140,7 @@ public with sharing class ServiceCenter
         suggestAnArticle.OwnerId = [
             SELECT Id
             FROM Group
-            WHERE Name = 'Student-Centric Initiatives (Case)'
+            WHERE Name = 'Student Success Innovations (Case)'
             AND Type = 'Queue'
         ].Id;
 

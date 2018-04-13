@@ -1,62 +1,73 @@
 public with sharing class CaseShowAllAttachmentsControllerExt {
-    private final Case theCase;
-    public string attId{get;set;}
+    
+    public String caseId { get; private set; }
+    public String caseParentId { get; private set; }
+    
+    public String attachmentIdOnCase { get; set; }
     private final String STANDARD_PREFIX = '--c';
-    private final String ATTACHMENT_PACKAGE_PREFIX = '--attachmentzip';
-    public Attachment[] allAttachments;
-    public String baseUrlForAttachmentIntegration {get; private set;}
+    private final String DOWNLOAD_AS_ZIP_PREFIX = '--attachmentzip';
+
+    public List<Attachment> allAttachmentsOnCaseOrEmailMessageOrCaseParent;
+    public String baseUrlForAttachmentIntegration { get; private set; }
     
     public CaseShowAllAttachmentsControllerExt(ApexPages.StandardController stdController) {
-        this.theCase = [SELECT Id, ParentId, Contact.Name
+        List<Case> currentCaseOnPage = [SELECT Id, ParentId
             FROM Case 
             WHERE Id = :stdController.getRecord().Id];
         
-        baseUrlForAttachmentIntegration = constructAttachmentPackageUrl();
+        if (!currentCaseOnPage.isEmpty()) {
+            caseId = currentCaseOnPage[0].Id;
+            caseParentId = currentCaseOnPage[0].ParentId;
+        }
+        baseUrlForAttachmentIntegration = getDownloadAllAsZipUrl();
     }
     
-    public Attachment[] getAllAttachments() {
-        Map<Id, SObject> caseEmailMap = new Map<Id, SObject>([
+    private Set<Id> retrieveEmailMessageIdsOnCaseAndCaseParent() {
+        Set<Id> emailMessageIdsOnCaseAndCaseParent = new Set<Id>();
+        
+        for (EmailMessage eachEmailMessage : [
             SELECT Id 
             FROM EmailMessage
             WHERE (
-                ParentId = :this.theCase.Id 
-                OR ParentId = :this.theCase.parentId
+                    ParentId = :caseId 
+                    OR ParentId = :caseParentId
             )
-        ]);
+            ]) {
+            emailMessageIdsOnCaseAndCaseParent.add(eachEmailMessage.Id);
+        }
+        return emailMessageIdsOnCaseAndCaseParent;
+    } 
+    
+    public List<Attachment> getAllAttachmentsOnCaseAndCaseParent() {
+        Set<Id> emaiLMessageIdsOnCaseAndCaseParent = retrieveEmailMessageIdsOnCaseAndCaseParent();
         
-        allAttachments = [
+        return allAttachmentsOnCaseOrEmailMessageOrCaseParent = [
             SELECT Id, Name, LastModifiedDate, CreatedBy.Name, BodyLength
             FROM Attachment
             WHERE (
-                ParentId = :this.theCase.Id 
-                OR ParentId IN :caseEmailMap.keySet() 
-                OR ParentId = :this.theCase.parentId
+                ParentId = :caseId
+                OR ParentId IN :emailMessageIdsOnCaseAndCaseParent 
+                OR ParentId = :caseParentId
             )
             ORDER BY LastModifiedDate
         ];
-        
-        return allAttachments;
     }
     
-    public String getContactName() {
-        return this.theCase.Contact.Name;
-    }
-    
-    private String constructAttachmentPackageUrl() {
+    private String getDownloadAllAsZipUrl() {
         String baseUrl = Url.getSalesforceBaseUrl().toExternalForm();
-        return baseUrl.replace(STANDARD_PREFIX, ATTACHMENT_PACKAGE_PREFIX);
+        return baseUrl.replace(STANDARD_PREFIX, DOWNLOAD_AS_ZIP_PREFIX);
     }
     
-    public PageReference deleteAttachment(){
-        Attachment objAtt = new Attachment(Id = attId);
+    public PageReference deleteSelectedAttachmentOnCase(){
+        Attachment attachmentOnCase = new Attachment(Id = attachmentIdOnCase);
         
         try {
-            delete objAtt;
+            delete attachmentOnCase;
         } catch(Exception e) {
             ApexPages.addMessage(
                 new ApexPages.Message(
                     ApexPages.Severity.ERROR,
-                    'There was a problem deleting the attachment. Please try again or contact the administrator.' ));
+                    'There was a problem deleting the attachment. Please try again or contact the administrator.'));
         }
         return null;
     }

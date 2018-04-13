@@ -133,7 +133,6 @@ global class CivitasPersistenceController {
                 prevData = trm;
             }
         }
-
         if (rejected.size() > 0) {
             return rejected;
         }
@@ -145,8 +144,9 @@ global class CivitasPersistenceController {
             while ((endDate < todayDate && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < todayDate) {
                 tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
                 dayValue++;
+                Boolean flagVal = tmpEndPoint.flag == 'Y' ? true : false;
                 dataList.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel,
-                                                    tmpEndPoint.levelDesc, tmpEndPoint.flag, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
+                                                    tmpEndPoint.levelDesc, flagVal, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
             }
             dataList[dataList.size()-1].fullDate = lastUpdatedDate;
             if (endMonth < startMonth) {
@@ -167,6 +167,7 @@ global class CivitasPersistenceController {
             }
             dataList[0].allMonths = months;
         }
+           
         return dataList;
     }
 
@@ -255,11 +256,11 @@ global class CivitasPersistenceController {
         public String prevDate;
         public String contactId;
 
-        public civitasWrapper(String nameIn) {
+        public CivitasWrapper(String nameIn) {
             name = nameIn;
         }
 
-        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn, Integer valueIn, Id contactIdIn){
+        public CivitasWrapper(Date sDate, Decimal oLevel, String description, Boolean flagIn, String fName, String lName, String empIn, Integer valueIn, Id contactIdIn){
             snapDate = sDate;
             empl = empIn;
             outlookLevel = oLevel;
@@ -272,8 +273,8 @@ global class CivitasPersistenceController {
             dayDate = monthToText(snapDate.month()) + ' ' + snapDate.day();
             fullDate =  snapDate.month() + '/' + snapDate.day() + '/' + snapDate.year();
             levelDesc = description;
-
-            flag = flagIn;
+			flag = flagIn == true ? 'Y' : 'N';
+            //flag = flagIn;
         }
 
     }

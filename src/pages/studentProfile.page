@@ -524,7 +524,7 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Current Academic Level</th>
-                                                            <td id="profileHeaderTD">{!theContact.FFTF__c}</td>
+                                                            <td id="profileHeaderTD">{!theContact.FTFTF__c}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>{!currentTermName} Term Enrolled Hours</th>

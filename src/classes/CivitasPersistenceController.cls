@@ -74,28 +74,41 @@ global class CivitasPersistenceController {
         dataList = new List<CivitasWrapper>();
         List<CivitasWrapper> rejected = new List<CivitasWrapper>();
         Contact c = [Select Id, FirstName, LastName FROM Contact WHERE emplid__c =: emplidIn LIMIT 1];
-        CV_ASU_STDNT_TERM__x prevData;
+        Persistence_Outlook__c prevData;
         Integer dateIncr = startDate.day();
-        CV_ASU_STDNT_TERM__x startSemesterData;
-        for (CV_ASU_STDNT_TERM__x trm : [
-            Select SNAP_DATE__c, CURR_CONT_PREDICTION_LEVEL__c,	CURRENT_SEGMENT_DESCR__c, CHANGE_FLG__c, ONLINE_SEGMENT__c, CAREER_SEGMENT__c
-            FROM CV_ASU_STDNT_TERM__x
-            WHERE Contact__c =: emplIdIn
-            ORDER BY SNAP_DATE__c ASC
+        Persistence_Outlook__c startSemesterData;
+        for (Persistence_Outlook__c outlook : [
+            SELECT 
+                Change_Date__c, Change_Direction__c,
+                Curr_Cont_Prediction_Level__c, Prev_Cont_Prediction_Level__c, 
+                Career_Segment__c, Current_Flag__c, Current_Level_Descr__c, 
+                Online_Segment__c, Prediction_STRM__c, Snap_Date__c,
+                Change_Flg__c
+            FROM Persistence_Outlook__c
+            WHERE Contact__r.EmplId__c =: emplIdIn
+            ORDER BY Snap_Date__c ASC
         ]) {
+            Persistence_Outlook__c trm = new Persistence_Outlook__c(
+                Snap_Date__c = outlook.Snap_Date__c,
+                Curr_Cont_Prediction_Level__c = outlook.Curr_Cont_Prediction_Level__c,
+                Current_Level_Descr__c = outlook.Current_Level_Descr__c,
+                Change_Flg__c = outlook.Change_Flg__c,//outlook.,
+                Online_Segment__c = outlook.Online_Segment__c,
+                Career_Segment__c = outlook.Career_Segment__c
+            );
             //Checks if it's not in persson OR not an undergrad.
             if (trm.Snap_Date__c < startDate) {
                 startSemesterData = trm;
             }
-            if (trm.SNAP_DATE__c >= startDate && trm.SNAP_DATE__c <= endDate) {
-                if (trm.ONLINE_SEGMENT__c != 'N' || trm.CAREER_SEGMENT__c != 'U') {
+            if (trm.Snap_Date__c >= startDate && trm.Snap_Date__c <= endDate) {
+                if (trm.Online_Segment__c != 'N' || trm.Career_Segment__c != 'U') {
                     rejected.add(new CivitasWrapper('Rejected'));
                 } else {
                     if (trm.Snap_Date__c > startDate && startSemesterData != null) {
                         Date tempStart = startDate;
                         while (tempStart < trm.Snap_Date__c) {
-                            dataList.add(new CivitasWrapper(tempStart, startSemesterData.CURR_CONT_PREDICTION_LEVEL__c,
-                                         startSemesterData.CURRENT_SEGMENT_DESCR__c, startSemesterData.CHANGE_FLG__c,  c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
+                            dataList.add(new CivitasWrapper(tempStart, startSemesterData.Curr_Cont_Prediction_Level__c,
+                                         startSemesterData.Current_Level_Descr__c, startSemesterData.Change_Flg__c,  c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                             dateIncr++;
                             tempStart = tempStart.addDays(1);
                         }
@@ -107,20 +120,19 @@ global class CivitasPersistenceController {
                     Date prevDate = prevData.Snap_Date__c;
                     prevDate = prevDate.addDays(1);
                     while (prevDate < trm.Snap_Date__c) {
-                        dataList.add(new CivitasWrapper(prevDate, prevData.CURR_CONT_PREDICTION_LEVEL__c,
-                                                    prevData.CURRENT_SEGMENT_DESCR__c, prevData.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
+                        dataList.add(new CivitasWrapper(prevDate, prevData.Curr_Cont_Prediction_Level__c,
+                                                    prevData.Current_Level_Descr__c, prevData.Change_Flg__c, c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                         dateIncr++;
                         prevDate = prevDate.addDays(1);
                     }
-                    dataList.add(new CivitasWrapper(trm.SNAP_DATE__c, trm.CURR_CONT_PREDICTION_LEVEL__c,
-                                                    trm.CURRENT_SEGMENT_DESCR__c, trm.CHANGE_FLG__c, c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
+                    dataList.add(new CivitasWrapper(trm.Snap_Date__c, trm.Curr_Cont_Prediction_Level__c,
+                                                    trm.Current_Level_Descr__c, trm.Change_Flg__c, c.FirstName, c.LastName, emplidIn, dateIncr, c.Id));
                     dateIncr++;
                 }
 
                 prevData = trm;
             }
         }
-
         if (rejected.size() > 0) {
             return rejected;
         }
@@ -132,8 +144,9 @@ global class CivitasPersistenceController {
             while ((endDate < todayDate && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < todayDate) {
                 tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
                 dayValue++;
+                Boolean flagVal = tmpEndPoint.flag == 'Y' ? true : false;
                 dataList.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel,
-                                                    tmpEndPoint.levelDesc, tmpEndPoint.flag, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
+                                                    tmpEndPoint.levelDesc, flagVal, c.FirstName, c.LastName, emplidIn, dayValue, c.Id));
             }
             dataList[dataList.size()-1].fullDate = lastUpdatedDate;
             if (endMonth < startMonth) {
@@ -154,6 +167,7 @@ global class CivitasPersistenceController {
             }
             dataList[0].allMonths = months;
         }
+           
         return dataList;
     }
 
@@ -242,11 +256,11 @@ global class CivitasPersistenceController {
         public String prevDate;
         public String contactId;
 
-        public civitasWrapper(String nameIn) {
+        public CivitasWrapper(String nameIn) {
             name = nameIn;
         }
 
-        public civitasWrapper(Date sDate, Decimal oLevel, String description, String flagIn, String fName, String lName, String empIn, Integer valueIn, Id contactIdIn){
+        public CivitasWrapper(Date sDate, Decimal oLevel, String description, Boolean flagIn, String fName, String lName, String empIn, Integer valueIn, Id contactIdIn){
             snapDate = sDate;
             empl = empIn;
             outlookLevel = oLevel;
@@ -259,8 +273,8 @@ global class CivitasPersistenceController {
             dayDate = monthToText(snapDate.month()) + ' ' + snapDate.day();
             fullDate =  snapDate.month() + '/' + snapDate.day() + '/' + snapDate.year();
             levelDesc = description;
-
-            flag = flagIn;
+			flag = flagIn == true ? 'Y' : 'N';
+            //flag = flagIn;
         }
 
     }

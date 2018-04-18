@@ -276,7 +276,7 @@ public without sharing class SubscriptionCenterController {
                     subbedBuSubIdToWrapperMap.put(subscription.Id, new SubscriberWrapper(
                         subscription, (!subscription.Subscribers__r.isEmpty() ? subscription.Subscribers__r[0] : null)));
                     mySubsBUMapKeys.add(subscription.Id);
-                } else if (subscription.Available_for_Opt_In__c) {
+                } else if (availableSubsByParentSubIdMap.containsKey(subscription.Id) && subscription.Available_for_Opt_In__c) {
                     notSubbedBuSubIdToWrapperMap.put(subscription.Id, new SubscriberWrapper(subscription, null));
                     availableSubsBUMapKeys.add(subscription.Id);
                 }

@@ -259,8 +259,7 @@
                                        role="tab"
                                        data-toggle="tab"
                                        style="padding:5px;text-align:center;"
-                                       class="tabLink"
-                                       onclick="loadUGAcademicsTab();">
+                                       class="tabLink">
                                         Undergraduate Academics
                                     </a>
                                 </li>
@@ -271,8 +270,7 @@
                                        role="tab"
                                        data-toggle="tab"
                                        style="padding:5px;text-align:center;"
-                                       class="tabLink"
-                                       onclick="loadGradAcademicsTab();">
+                                       class="tabLink">
                                         Graduate Academics
                                     </a>
                                 </li>
@@ -282,8 +280,7 @@
                                        aria-controls="classes"
                                        role="tab"
                                        data-toggle="tab"
-                                       class="tabLink"
-                                       onclick="loadClassesTab();">
+                                       class="tabLink">
                                         Classes
                                     </a>
                                 </li>
@@ -293,8 +290,7 @@
                                        aria-controls="finances"
                                        role="tab"
                                        data-toggle="tab"
-                                       class="tabLink"
-                                       onclick="loadFinancesTab();">
+                                       class="tabLink">
                                         Finances
                                     </a>
                                 </li>
@@ -306,8 +302,7 @@
                                        role="tab"
                                        data-toggle="tab"
                                        style="padding:5px;text-align:center;"
-                                       class="tabLink"
-                                       onclick="loadUGIndicatorTab();">
+                                       class="tabLink">
                                         Undergraduate Indicators
                                     </a>
                                 </li>
@@ -317,8 +312,7 @@
                                        aria-controls="comments"
                                        role="tab"
                                        data-toggle="tab"
-                                       class="tabLink"
-                                       onclick="loadCommentsTab();">
+                                       class="tabLink">
                                         Comments
                                     </a>
                                 </li>
@@ -329,8 +323,7 @@
                                        role="tab"
                                        data-toggle="tab"
                                        style="padding:5px;text-align:center;"
-                                       class="tabLink"
-                                       onclick="loadCareerDevelopmentTab();">
+                                       class="tabLink">
                                         Career Development
                                     </a>
                                 </li>
@@ -413,46 +406,63 @@
                                         <div class="row">
                                             <apex:outputPanel id="generalPersonal">
                                                 <div id="studentDemographicDiv">
-                                                    
+                                                    <div class="col-sm-6">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Gender</th>
+                                                                <td>{!IF(ISBLANK(theContact.Gender__c), '--', theContact.Gender__c)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Ethnicity</th>
+                                                                <td>{!IF(ISBLANK(theContact.Ethnicity__c), '--', theContact.Ethnicity__c)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>First Generation</th>
+                                                                <td>{!IF(theContact.First_Generation_Student__c, 'Y', 'N')}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>BirthDate</th>
+                                                                <td>
+                                                                    <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                        <apex:param value="{!theContact.BirthDate}" /> 
+                                                                    </apex:outputText>
+                                                                    {!IF(ISBLANK(theContact.BirthDate), '--', '')}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Age</th>
+                                                                <td>{!IF(ISBLANK(theContact.Current_Age__c), '--', theContact.Current_Age__c)}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                                 
                                                 <div id="studentProgramDiv">
-                                                    
+                                                    <div class="col-sm-6">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>WUE</th>
+                                                                <td>{!IF(theContact.WUE__c, 'Y', 'N')}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Residency</th>
+                                                                <td>{!IF(ISBLANK(studentProgram.Residency__c), '--', studentProgram.Residency__c)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Country of Citizenship</th>
+                                                                <td>{!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__r.Name)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>FERPA Level</th>
+                                                                <td>{!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--', theContact.FERPA_Directory_Hold__c)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Financial Need Level</th>
+                                                                <td>{!IF(ISBLANK(studentProgram.Financial_Need_Level__c), '--', studentProgram.Financial_Need_Level__c)}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
                                                 </div>
-                                                <!-- <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>WUE</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.WUE__c), '--', 
-                                                                 studentProgram.WUE__c)}</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>Residency</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.RESIDENCY__c), '--', 
-                                                                 studentProgram.RESIDENCY__c)}</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>Country of Citizenship</th>
-                                                            <td>{!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__c)}
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>FERPA Level</th>
-                                                            <td>
-                                                                {!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--', theContact.FERPA_Directory_Hold__c)}
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>Financial Need Level</th>
-                                                            <td>{!IF(ISBLANK(studentProgram.FINANCIAL_NEED_LVL__c), '--', 
-                                                                 studentProgram.FINANCIAL_NEED_LVL__c)}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div> -->
                                             </apex:outputPanel>
                                         </div>
                                         
@@ -470,6 +480,7 @@
                                                         <tr>
                                                             <th>Residence Hall</th>
                                                             <td>
+                                                                {!IF(ISBLANK(theContact.Booking_Floor_Suite__c), '--', '')}
                                                                 <span id="residenceFloor">{!theContact.Booking_Floor_Suite__c}</span><br />
                                                                 <span id="residenceSection">{!theContact.Booking_Section__c}</span><br />
                                                                 <span id="residenceHall">{!theContact.Booking_Building__c}</span><br />
@@ -484,6 +495,7 @@
                                                         <tr>
                                                             <th>Room Check-In Date</th>
                                                             <td id="checkInDate">
+                                                                {!IF(ISBLANK(theContact.Check_In_Dt__c), '--', '')}
                                                                 <apex:outputText value="{0,date,MM/dd/yy}"> 
                                                                     <apex:param value="{!theContact.Check_In_Dt__c}" /> 
                                                                 </apex:outputText>
@@ -493,6 +505,7 @@
                                                         <tr>
                                                             <th>Room Check-Out Date</th>
                                                             <td id="checkOutDate">
+                                                                {!IF(ISBLANK(theContact.Check_Out_Dt__c), '--', '')}
                                                                 <apex:outputText value="{0,date,MM/dd/yy}"> 
                                                                     <apex:param value="{!theContact.Check_Out_Dt__c}" /> 
                                                                 </apex:outputText>
@@ -501,7 +514,7 @@
                                                         
                                                         <tr>
                                                             <th>Room Status</th>
-                                                            <td id="roomStatus">{!theContact.Booking_Status__c}</td>
+                                                            <td id="roomStatus">{!IF(ISBLANK(theContact.Booking_Status__c), '--', theContact.Booking_Status__c)}</td>
                                                         </tr>
                                                         
                                                     </table>
@@ -524,20 +537,55 @@
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Current Academic Level</th>
-                                                            <td id="profileHeaderTD">{!theContact.FTFTF__c}</td>
+                                                            <td id="profileHeaderTD">{!IF(ISBLANK(studentProgram.Cohort__c), '--', studentProgram.Cohort__c)}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>{!currentTermName} Term Enrolled Hours</th>
-                                                            <td id="curTermEnrolled"><i id='curTermSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>
+                                                            <td id="currentTermEnrolled">
+                                                                {!IF(ISBLANK(studentProgram.Enrl_Hrs__c), '--', '')} 
+                                                                <apex:outputText value="{0,number,####}"> 
+                                                                    <apex:param value="{!studentProgram.Enrl_Hrs__c}" /> 
+                                                                </apex:outputText>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>{!nextTermName} Term Enrolled Hours</th>
-                                                            <td id="nextTermEnrolled">--</td>
+                                                            <td id="nextTermEnrolled">
+                                                                {!IF(ISBLANK(studentProgram.Enrl_Hrs_Pending__c), '--', '')} 
+                                                                <apex:outputText value="{0,number,####}"> 
+                                                                    <apex:param value="{!studentProgram.Enrl_Hrs_Pending__c}" /> 
+                                                                </apex:outputText>
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </div>
                                                 <div id="expectedGradDateDiv">
-                                                    
+                                                    <div class="col-sm-6">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Expected Graduation Date</th>
+                                                                <td>{!IF(ISBLANK(studentProgram.Exp_Grad_Term__r.Name), '--', studentProgram.Exp_Grad_Term__r.Name)}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>"{!currentTermName}"" Enrollment Appointment</th>
+                                                                <td>
+                                                                    {!IF(ISBLANK(studentProgram.Appt_Dt__c), '--', '')}
+                                                                    <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                        <apex:param value="{!studentProgram.Appt_Dt__c}"/> 
+                                                                    </apex:outputText>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>"{!nextTermName}" Enrollment Appointment</th>
+                                                                <td>
+                                                                    {!IF(ISBLANK(studentProgram.Appt_Dt_Pending__c), '--', '')}
+                                                                    <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                        <apex:param value="{!studentProgram.Appt_Dt_Pending__c}"/> 
+                                                                    </apex:outputText>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>"
                                                 </div>
                                             </apex:outputPanel>
                                         </div>
@@ -558,15 +606,13 @@
                                                 <apex:dataTable styleClass="table table-striped table-bordered"
                                                                 value="{!ugProgramPlans}"
                                                                 var="app"
-                                                                rendered="{!IF(ugProgramPlans.size
-                                                                        > 0,true,false)}">
+                                                                rendered="{!IF(ugProgramPlans.size > 0,true,false)}">
                                                     <apex:column headerValue="Status"
                                                                  value="{!app.Status__c}"/>
                                                     <apex:column headerValue="Program"
                                                                  value="{!app.Program_Description__c}"/>
                                                     <apex:column headerValue="Plan">
-                                                        <apex:outputLink value="/{!app.Id}"
-                                                                         target="_blank">
+                                                        <apex:outputLink value="/{!app.Id}" target="_blank">
                                                             <apex:outputField value="{!app.Plan_Description__c}"/>
                                                         </apex:outputLink>
                                                     </apex:column>
@@ -589,9 +635,7 @@
                                                 </apex:dataTable>
                                             </div>
 
-                                            <apex:outputText rendered="{!IF(allProgramPlans.size
-                                                    == 0,true,false)}" value="No Programs/Plans
-                                                    found."/>
+                                            <apex:outputText rendered="{!IF(ugProgramPlans.size > 0, false, true)}" value="No undergraduate programs/plans found."/>
 
                                             <div class="page-header-smaller">
                                                 <h4>
@@ -599,31 +643,48 @@
                                                     &nbsp;Academic Progress
                                                 </h4>
                                             </div>
- 
-                                            <div id="UGacademicProgress"
-                                                 style="display:none;width:100%;">
+
+                                            <div id="UGacademicProgress" style="width:100%;">
                                                 <div class="row">
                                                     <div class="col-sm-12">
                                                         <table class="table table-striped">
                                                             <tr>
                                                                 <th>Cumulative GPA</th>
-                                                                <td id="ugap_gpa"></td>
+                                                                <td id="ugap_gpa">
+                                                                    <a href="https://students.asu.edu/gpa-calculator" target="_blank">
+                                                                        {!IF(ISBLANK(ugStudentProgram.Cum_GPA__c), '--', '')}
+                                                                        <apex:outputText value="{0,number,####.##}"> 
+                                                                            <apex:param value="{!ugStudentProgram.Cum_GPA__c}" /> 
+                                                                        </apex:outputText>
+                                                                    </a>
+                                                                    <a href="https://students.asu.edu/gpa-calculator"  target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Cumulative Hours</th>
-                                                                <td id="ugap_cumulative_hours"></td>
+                                                                <td id="ugap_cumulative_hours">
+                                                                    {!IF(ISBLANK(ugStudentProgram.Tot_Cumulative__c), '--', '')}
+                                                                    <apex:outputText value="{0,number,####}"> 
+                                                                        <apex:param value="{!ugStudentProgram.Tot_Cumulative__c}" /> 
+                                                                    </apex:outputText>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <th>eAdvisor Status</th>
-                                                                <td id="ugap_eadvisor_status"></td>
+                                                                <td id="ugap_eadvisor_status">{!IF(ISBLANK(ugStudentProgram.eAdvisor__c), '--', ugStudentProgram.eAdvisor__c)}</td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Academic Standing</th>
-                                                                <td id="ugap_academic_standing"></td>
+                                                                <td id="ugap_academic_standing">{!IF(ISBLANK(ugStudentProgram.Academic_Standing__c), '--', ugStudentProgram.Academic_Standing__c)}</td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Advisors</th>
-                                                                <td id="ugap_advisors"></td>
+                                                                <td id="ugap_advisors">
+                                                                    {!IF(ugStudentProgramAdvisors.size > 0, '', '--')}
+                                                                    <apex:repeat value="{!ugStudentProgramAdvisors}" var="advisors">
+                                                                        <a href="mailto:{!advisors.Advisor_Email__c}"> {!advisors.Advisor_Name__c} </a><br/>
+                                                                    </apex:repeat>
+                                                                </td>
                                                             </tr>
                                                         </table>
                                                     </div>
@@ -639,7 +700,37 @@
                                                 </h4>
                                             </div>
 
-                                            <div id="ps_test_score_section_ug" style="display:none;"></div>
+                                            <div id="ps_test_score_section_ug">
+                                                <div class='table-responsive'>
+                                                    <table class='table table-striped table-bordered'> 
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Id</th>
+                                                                <th>Component</th>
+                                                                <th>Score</th>
+                                                                <th>Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <apex:repeat value="{!testUndergradScoreList}" var = "testScore">
+                                                                <tr>
+                                                                    <td>{!testScore.Test_Type__c}</td>
+                                                                    <td>{!testScore.Test_Component__c}</td>
+                                                                    <td>{!testScore.Test_Component_Score__c}</td>
+                                                                    <td>
+                                                                        <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                            <apex:param value="{!testScore.Test_Date__c}" /> 
+                                                                        </apex:outputText>
+                                                                    </td>
+                                                                </tr>
+                                                            </apex:repeat>
+                                                            <apex:outputPanel rendered="{!IF(testUndergradScoreList.size > 0, false, true)}">
+                                                                <div>No undergraduate test scores found.</div>
+                                                            </apex:outputPanel>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                             <div id="psTestScoreErrorsUG"></div>
 
                                             <div class="page-header-smaller">
@@ -653,44 +744,44 @@
                                                 <div class='col-sm-12' style='padding:0px;'>
                                                     <div class='table-responsive'>
                                                     	<table class='table table-striped table-bordered'>
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Program</th>
-                                                                <th>Milestone</th>
-                                                                <th>Milestone Title</th>
-                                                                <th>Level Descr</th>
-                                                                <th>Formal Descr</th>
-                                                                <th>Plan</th>
-                                                                <th>Level</th>
-                                                                <th>Term Req</th>
-                                                                <th>Ant Term</th>
-                                                                <th>Attempt Dt</th>
-                                                                <th>Status</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}">
-                                                                <apex:repeat value="{!studentMilestonesUGrad}" var="milestone">
+                                                            <thead>
                                                                 <tr>
-                                                                    <td>  {!milestone.Acad_Program__r.Name} </td>
-                                                                    <td>  {!milestone.Milestone__c} </td>
-                                                                    <td>  {!milestone.Milestone_Title__c} </td>
-                                                                    <td>  {!milestone.Milestone_Level__c} </td>
-                                                                    <td>  {!milestone.Descrformal__c} </td>
-                                                                    <td>  {!milestone.Acad_Plan__c} </td>
-                                                                    <td>  {!milestone.Descr__c} </td>
-                                                                    <td>  {!milestone.Term_Required__r.Name} </td>
-                                                                    <td>  {!milestone.Anticipated_Term__c} </td>
-                                                                    <td>  {!milestone.Date_Completed__c} </td>
-                                                                    <td>  {!milestone.Milestone_Complete__c} </td>
+                                                                    <th>Program</th>
+                                                                    <th>Milestone</th>
+                                                                    <th>Milestone Title</th>
+                                                                    <th>Level Descr</th>
+                                                                    <th>Formal Descr</th>
+                                                                    <th>Plan</th>
+                                                                    <th>Level</th>
+                                                                    <th>Term Req</th>
+                                                                    <th>Ant Term</th>
+                                                                    <th>Attempt Dt</th>
+                                                                    <th>Status</th>
                                                                 </tr>
-                                                            </apex:repeat>
-                                                            </apex:outputPanel>
-                                                            <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}">
-                                                                <div>No undergraduate milestones found.</div>
-                                                            </apex:outputPanel>
-                                                        </tbody>
-                                                    </table>
+                                                            </thead>
+                                                            <tbody>
+                                                                <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}">
+                                                                    <apex:repeat value="{!studentMilestonesUGrad}" var="milestone">
+                                                                    <tr>
+                                                                        <td>  {!milestone.Acad_Program__r.Name} </td>
+                                                                        <td>  {!milestone.Milestone__c} </td>
+                                                                        <td>  {!milestone.Milestone_Title__c} </td>
+                                                                        <td>  {!milestone.Milestone_Level__c} </td>
+                                                                        <td>  {!milestone.Descrformal__c} </td>
+                                                                        <td>  {!milestone.Acad_Plan__c} </td>
+                                                                        <td>  {!milestone.Descr__c} </td>
+                                                                        <td>  {!milestone.Term_Required__r.Name} </td>
+                                                                        <td>  {!milestone.Anticipated_Term__c} </td>
+                                                                        <td>  {!milestone.Date_Completed__c} </td>
+                                                                        <td>  {!milestone.Milestone_Complete__c} </td>
+                                                                    </tr>
+                                                                </apex:repeat>
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}">
+                                                                    <div>No undergraduate milestones found.</div>
+                                                                </apex:outputPanel>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
@@ -704,7 +795,46 @@
                                             <div class="row">
                                                 <apex:outputPanel id="admissionInformation">
                                                     <div id="underGradAcadDiv">
-                                                        
+                                                        <div>
+                                                          <div class='col-sm-6'>
+                                                              <table class='table table-striped'>
+                                                                  <tr>
+                                                                      <th>Application Admit Type</th>
+                                                                      <td>{!IF(ISBLANK(ugStudentProgram.Admit_Type__c), '--', ugStudentProgram.Admit_Type__c)}</td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                      <th>Applied Program</th>
+                                                                      <td>{!IF(ISBLANK(ugStudentProgram.Adm_Appl_Prog__c), '--', ugStudentProgram.Adm_Appl_Prog__c)}</td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                      <th>Applied Date</th>
+                                                                      <td>
+                                                                          {!IF(ISBLANK(ugStudentProgram.Adm_Appl_Dt__c), '--', '')}
+                                                                          <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                              <apex:param value="{!ugStudentProgram.Adm_Appl_Dt__c}" /> 
+                                                                          </apex:outputText>
+                                                                      </td>
+                                                                  </tr>
+                                                              </table>
+                                                          </div>
+                                                          <div class='col-sm-6'>
+                                                              <table class='table table-striped'>
+                                                                  <tr>
+                                                                      <th>Enroll Deposit</th>
+                                                                      <td>{!IF(ISBLANK(ugStudentProgram.Enrl_Deposit__c), '--', ugStudentProgram.Enrl_Deposit__c)}</td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                      <th>Orientation Date</th>
+                                                                      <td>
+                                                                          {!IF(ISBLANK(theContact.Orient_Dt__c), '--', '')}
+                                                                          <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                              <apex:param value="{!theContact.Orient_Dt__c}" /> 
+                                                                          </apex:outputText>
+                                                                      </td>
+                                                                  </tr>
+                                                              </table>
+                                                          </div>
+                                                      </div>
                                                     </div>
                                                 </apex:outputPanel>
                                             </div>
@@ -725,8 +855,7 @@
                                             <apex:dataTable styleClass="table table-striped table-bordered"
                                                             value="{!gradProgramPlans}"
                                                             var="app"
-                                                            rendered="{!IF(gradProgramPlans.size
-                                                                    > 0,true,false)}">
+                                                            rendered="{!IF(gradProgramPlans.size > 0,true,false)}">
                                                 <apex:column headerValue="Status"
                                                              value="{!app.Status__c}"/>
                                                 <apex:column headerValue="Program"
@@ -756,9 +885,7 @@
                                             </apex:dataTable>
                                         </div>
 
-                                        <apex:outputText rendered="{!IF(allProgramPlans.size
-                                                == 0,true,false)}" value="No Programs/Plans
-                                                    found."/>
+                                        <apex:outputText rendered="{!IF(gradProgramPlans.size > 0, false, true)}" value="No graduate programs/plans found."/>
 
                                         <div class="page-header-smaller">
                                             <h4>
@@ -766,31 +893,57 @@
                                                 &nbsp;Academic Progress
                                             </h4>
                                         </div>
-
-                                        <div id="ps_acad_progress_section_grad"
-                                             style="display:none;">
+                                        
+                                        <div id="ps_acad_progress_section_grad">
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <table class="table table-striped">
                                                         <tr>
                                                             <th>Cumulative GPA</th>
-                                                            <td id="grad_cumulative_gpa"></td>
+                                                            <td id="grad_cumulative_gpa">
+                                                                <a href="https://students.asu.edu/gpa-calculator" target="_blank">
+                                                                    {!IF(ISBLANK(gradStudentProgram.Cum_GPA__c), '--', '')}
+                                                                    <apex:outputText value="{0,number,####.##}"> 
+                                                                        <apex:param value="{!gradStudentProgram.Cum_GPA__c}" /> 
+                                                                    </apex:outputText>
+                                                                </a>
+                                                                <a href="https://students.asu.edu/gpa-calculator"  target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Graduate GPA</th>
-                                                            <td id="grad_grad_gpa"></td>
+                                                            <td id="grad_grad_gpa">
+                                                                {!IF(ISBLANK(gradStudentProgram.ASU_AA_OVRL_GPA__c), '--', '')}
+                                                                <apex:outputText value="{0,number,####.##}"> 
+                                                                    <apex:param value="{!gradStudentProgram.ASU_AA_OVRL_GPA__c}" /> 
+                                                                </apex:outputText>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>iPOS GPA </th>
-                                                            <td id="grad_ipos_gpa"></td>
+                                                            <td id="grad_ipos_gpa">
+                                                                {!IF(ISBLANK(gradStudentProgram.ASU_AA_POS_GPA__c), '--', '')}
+                                                                <apex:outputText value="{0,number,####.##}"> 
+                                                                    <apex:param value="{!gradStudentProgram.ASU_AA_POS_GPA__c}" /> 
+                                                                </apex:outputText>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Cumulative Hours</th>
-                                                            <td id="grad_cumulative_hours"></td>
+                                                            <td id="grad_cumulative_hours">
+                                                                {!IF(ISBLANK(gradStudentProgram.Tot_Cumulative__c), '--', '')}
+                                                                <apex:outputText value="{0,number,####.##}"> 
+                                                                    <apex:param value="{!gradStudentProgram.Tot_Cumulative__c}" /> 
+                                                                </apex:outputText>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Advisors</th>
-                                                            <td id="grad_advisors"></td>
+                                                            <td id="grad_advisors">
+                                                                <apex:repeat value="{!gradStudentProgramAdvisors}" var="advisors">
+                                                                    <a href="mailto:{!advisors.Advisor_Email__c}"> {!advisors.Advisor_Name__c} </a><br/>
+                                                                </apex:repeat>
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -805,9 +958,38 @@
                                                 &nbsp;Test Scores
                                             </h4>
                                         </div>
-
-                                        <div id="ps_test_score_section_grad"
-                                             style="display:none;"></div>
+                                        
+                                        <div id="ps_test_score_section_grad">
+                                            <div class='table-responsive'>
+                                                <table class='table table-striped table-bordered'> 
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Id</th>
+                                                            <th>Component</th>
+                                                            <th>Score</th>
+                                                            <th>Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <apex:repeat value="{!testGradScoreList}" var = "testScore">
+                                                            <tr>
+                                                                <td>{!testScore.Test_Type__c}</td>
+                                                                <td>{!testScore.Test_Component__c}</td>
+                                                                <td>{!testScore.Test_Component_Score__c}</td>
+                                                                <td>
+                                                                    <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                        <apex:param value="{!testScore.Test_Date__c}" /> 
+                                                                    </apex:outputText>
+                                                                </td>
+                                                            </tr>
+                                                        </apex:repeat>
+                                                        <apex:outputPanel rendered="{!IF(testGradScoreList.size > 0, false, true)}">
+                                                            <div>No graduate test scores found.</div>
+                                                        </apex:outputPanel>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
 
                                         <div id="psTestScoreErrorsGrad"></div>
 
@@ -818,7 +1000,7 @@
                                             </h4>
                                         </div>
 
-                                        <div id="ps_milestone_section_grad" style="display:none; width: 100%;">
+                                        <div id="ps_milestone_section_grad" style="width: 100%;">
                                         	<div class='col-sm-12' style='padding:0px;'>
                                                 <div class='table-responsive'>
                                                     <table class='table table-striped table-bordered'>
@@ -856,7 +1038,7 @@
                                                                 </apex:repeat>
                                                             </apex:outputPanel>
                                                             <apex:outputPanel rendered="{!IF(studentMilestonesGrad.size > 0, false, true)}">
-                                                                <div>No Graduate Milestones Found.</div>
+                                                                <div>No graduate milestones found.</div>
                                                             </apex:outputPanel>
                                                         </tbody>
                                                     </table>
@@ -876,7 +1058,50 @@
                                             <div class="row">
                                                 <apex:outputPanel id="gradAdmissionInformation">
                                                     <div id="gradAcadDiv">
-                                                        
+                                                        <div>
+                                                              <div class='col-sm-6'>
+                                                                  <table class='table table-striped'>
+                                                                      <tr>
+                                                                          <th>Application Admit Type</th>
+                                                                          <td>{!IF(ISBLANK(gradStudentProgram.Admit_Type__c), '--', gradStudentProgram.Admit_Type__c)}</td>
+                                                                      </tr>
+                                                                      <tr>
+                                                                          <th>Applied Program</th>
+                                                                          <td>{!IF(ISBLANK(gradStudentProgram.Adm_Appl_Prog__c), '--', gradStudentProgram.Adm_Appl_Prog__c)}</td>
+                                                                      </tr>
+                                                                      <tr>
+                                                                          <th>Applied Date</th>
+                                                                          <td>
+                                                                              {!IF(ISBLANK(gradStudentProgram.Adm_Appl_Dt__c), '--', '')}
+                                                                              <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                                  <apex:param value="{!gradStudentProgram.Adm_Appl_Dt__c}" /> 
+                                                                              </apex:outputText>
+                                                                          </td>
+                                                                      </tr>
+                                                                      <tr>
+                                                                          <th>Admit Term</th>
+                                                                          <td>{!IF(ISBLANK(gradStudentProgram.Admit_Term__r.Name), '--', gradStudentProgram.Admit_Term__r.Name)}</td>
+                                                                      </tr>
+                                                                  </table>
+                                                              </div>
+                                                              <div class='col-sm-6'>
+                                                                  <table class='table table-striped'>
+                                                                      <tr>
+                                                                          <th>Enroll Deposit</th>
+                                                                          <td>{!IF(ISBLANK(gradStudentProgram.Enrl_Deposit__c), '--', gradStudentProgram.Enrl_Deposit__c)}</td>
+                                                                      </tr>
+                                                                      <tr>
+                                                                          <th>Orientation Date</th>
+                                                                          <td>
+                                                                              {!IF(ISBLANK(theContact.Orient_Dt__c), '--', '')}
+                                                                              <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                                  <apex:param value="{!theContact.Orient_Dt__c}" /> 
+                                                                              </apex:outputText>
+                                                                          </td>
+                                                                      </tr>
+                                                                  </table>
+                                                              </div>
+                                                          </div>
                                                     </div>
                                                 </apex:outputPanel>
                                             </div>
@@ -1024,22 +1249,33 @@
 
                                         <div style="overflow:auto;max-height:400px;">
                                             <div id="psAccountBalanceErrors"></div>
-                                            <div id="ps_account_balance"
-                                                 style="display:none;">
+                                            <div id="ps_account_balance">
                                                 <div class="row">
                                                     <div class="col-sm-12">
                                                         <table class="table table-striped">
                                                             <tr>
                                                                 <th>Past Due TIP</th>
-                                                                <td id="account_balance_past_due_tip"></td>
+                                                                <td id="account_balance_past_due_tip">
+                                                                    <apex:outputText value="{0, number, currency}">
+                                                                        <apex:param value="{!studentAccount.Past_Due_Tip__c}" />
+                                                                    </apex:outputText>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Outstanding Account Balance</th>
-                                                                <td id="account_balance_outstanding"></td>
+                                                                <td id="account_balance_outstanding">
+                                                                    <apex:outputText value="{0, number, currency}">
+                                                                        <apex:param value="{!studentAccount.Account_Balance__c}" />
+                                                                    </apex:outputText>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Total Account Balance</th>
-                                                                <td id="account_balance_total"></td>
+                                                                <td id="account_balance_total">
+                                                                    <apex:outputText value="{0, number, currency}">
+                                                                        <apex:param value="{!studentAccount.Future_Balance__c}" />
+                                                                    </apex:outputText>
+                                                                </td>
                                                             </tr>
                                                         </table>
                                                         <b>Note:</b>&nbsp;Account balances are a day old and may not be up to date. Please check MyASU for accurate balances.
@@ -1050,8 +1286,6 @@
                                     </apex:pageBlock>
                                 </div>
 
-                                
-                                
                                 <div role="tabpanel" class="tab-pane" id="UGindicators">
                                     <apex:pageBlock mode="maindetail">  
                                         
@@ -1178,20 +1412,6 @@
 
                                         <div id="stdtRetentionResponseErrors"></div>
 
-                                        <!-- <div class="page-header-smaller">
-                                            <h4>
-                                                <i class="fa fa-caret-down"></i>
-                                                &nbsp;Graph Indicators
-                                            </h4>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                Graph indicator info
-                                                goes here.
-                                            </div>
-                                        </div> -->
-                                        
                                         <div class="page-header-smaller">
                                             <h4>
                                                 <i class="fa fa-caret-down"></i>
@@ -1311,63 +1531,88 @@
                                                 &nbsp;me3@ASU Results
                                             </h4>
                                         </div>
-                                        <div id="Me3Results"
-                                             style="display:none;width:100%;">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Test Completion Date</th>
-                                                            <td id="me3_completion_date">--</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
+                                        
+                                        <div id="Me3Results" style="width:100%;">
+                                            <apex:outputPanel layout="block" rendered="{!NOT(ISNULL(me3Results.Test_Completed_Date__c))}">
+                                                <div class="row">
                                                     <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th style="width: 150px;">Source</th>
-                                                            <td id="me3_source">--</td>
-                                                        </tr>
-                                                    </table>
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Test Completion Date</th>
+                                                                <td id="me3_completion_date">
+                                                                    <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                        <apex:param value="{!me3Results.Test_Completed_Date__c}" /> 
+                                                                    </apex:outputText>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                        <div class="col-sm-6">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th style="width: 150px;">Source</th>
+                                                                <td id="me3_source">{!me3Results.Source__c}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Realistic (R) Score</th>
+                                                                <td id="me3_r_score">{!me3Results.R_Score__c} / 100</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Investigative (I) Score</th>
+                                                                <td id="me3_i_score">{!me3Results.I_Score__c} / 100</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Artistic (A) Score</th>
+                                                                <td id="me3_a_score">{!me3Results.A_Score__c} / 100</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Social (S) Score</th>
+                                                                <td id="me3_s_score">{!me3Results.S_Score__c} / 100</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Enterprising (E) Score</th>
+                                                                <td id="me3_e_score">{!me3Results.E_Score__c} / 100</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Conventional (C) Score</th>
+                                                                <td id="me3_c_score">{!me3Results.C_Score__c} / 100</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
                                                 </div>
-                                                <div class="col-sm-4">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Realistic (R) Score</th>
-                                                            <td id="me3_r_score">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Investigative (I) Score</th>
-                                                            <td id="me3_i_score">--</td>
-                                                        </tr>
-                                                    </table>
+                                                <div id="me3_career_interest_table">
+                                                    <div class='table-responsive'>
+                                                        <table id='career_dev_table' class='table table-striped table-bordered'> 
+                                                            <tbody>
+                                                                <apex:repeat value="{!me3Results.me3_Careers__r}" var="me3Career">
+                                                                    <tr style='font-weight:normal;'>
+                                                                        <td style='min-width: 75px;'>
+                                                                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                                <apex:param value="{!me3Career.Updated_Date__c}" /> 
+                                                                            </apex:outputText>
+                                                                        </td>
+                                                                        <td style='font-weight:bold;color:red;'>{!IF(me3Career.Active__c, 'X', '')}</td>
+                                                                        <td><b>Career Interest:</b>  {!me3Career.Career_Interest__c} </td>
+                                                                        <td><b>Degree Interest:</b>  {!me3Career.Degree_Interest__c}  ({!me3Career.Plan_Code__c})</td>
+                                                                    </tr>
+                                                                </apex:repeat>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
-                                                <div class="col-sm-4">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Artistic (A) Score</th>
-                                                            <td id="me3_a_score">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Social (S) Score</th>
-                                                            <td id="me3_s_score">--</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Enterprising (E) Score</th>
-                                                            <td id="me3_e_score">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Conventional (C) Score</th>
-                                                            <td id="me3_c_score">--</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <div id="me3_career_interest_table"/>
+                                            </apex:outputPanel>
                                         </div>
                                         <div id="me3ResponseErrors"></div>
 
@@ -1378,63 +1623,87 @@
                                             </h4>
                                         </div>
 
-                                        <div id="Me3HSResults"
-                                             style="display:none;width:100%;">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Test Completion Date</th>
-                                                            <td id="me3_hs_completion_date">--</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
+                                        <div id="Me3HighSschoolResults" style="width:100%;">
+                                            <apex:outputPanel layout="block" rendered="{!NOT(ISNULL(me3HighSchoolResults.Test_Completed_Date__c))}">
+                                                <div class="row">
                                                     <div class="col-sm-6">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th style="width: 150px;">Source</th>
-                                                            <td id="me3_hs_source">--</td>
-                                                        </tr>
-                                                    </table>
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Test Completion Date</th>
+                                                                <td id="me3_hs_completion_date">
+                                                                    <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                        <apex:param value="{!me3HighSchoolResults.Test_Completed_Date__c}" /> 
+                                                                    </apex:outputText>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                        <div class="col-sm-6">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th style="width: 150px;">Source</th>
+                                                                <td id="me3_hs_source">{!me3HighSchoolResults.Source__c}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Realistic (R) Score</th>
+                                                                <td id="me3_hs_r_score">{!me3HighSchoolResults.R_Score__c} / 100</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Investigative (I) Score</th>
+                                                                <td id="me3_hs_i_score">{!me3HighSchoolResults.I_Score__c} / 100</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Artistic (A) Score</th>
+                                                                <td id="me3_hs_a_score">{!me3HighSchoolResults.A_Score__c} / 100</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Social (S) Score</th>
+                                                                <td id="me3_hs_s_score">{!me3HighSchoolResults.S_Score__c} / 100</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <table class="table table-striped">
+                                                            <tr>
+                                                                <th>Enterprising (E) Score</th>
+                                                                <td id="me3_hs_e_score">{!me3HighSchoolResults.E_Score__c} / 100</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Conventional (C) Score</th>
+                                                                <td id="me3_hs_c_score">{!me3HighSchoolResults.C_Score__c} / 100</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
                                                 </div>
-                                                <div class="col-sm-4">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Realistic (R) Score</th>
-                                                            <td id="me3_hs_r_score">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Investigative (I) Score</th>
-                                                            <td id="me3_hs_i_score">--</td>
-                                                        </tr>
-                                                    </table>
+                                                <div id="me3_hs_career_interest_table">
+                                                    <div class='table-responsive'>
+                                                        <table id='career_dev_table' class='table table-striped table-bordered'> 
+                                                            <tbody>
+                                                                <apex:repeat value="{!me3HighSchoolResults.me3_Careers__r}" var="me3Career">
+                                                                    <tr style='font-weight:normal;'>
+                                                                        <td style='min-width: 75px;'>
+                                                                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                                <apex:param value="{!me3Career.Updated_Date__c}" /> 
+                                                                            </apex:outputText>
+                                                                        </td>
+                                                                        <td style='font-weight:bold;color:red;'>{!IF(me3Career.Active__c, 'X', '')}</td>
+                                                                        <td><b>Career Interest:</b>  {!me3Career.Career_Interest__c} </td>
+                                                                        <td><b>Degree Interest:</b>  {!me3Career.Degree_Interest__c}  ({!me3Career.Plan_Code__c})</td>
+                                                                    </tr>
+                                                                </apex:repeat>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
-                                                <div class="col-sm-4">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Artistic (A) Score</th>
-                                                            <td id="me3_hs_a_score">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Social (S) Score</th>
-                                                            <td id="me3_hs_s_score">--</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <table class="table table-striped">
-                                                        <tr>
-                                                            <th>Enterprising (E) Score</th>
-                                                            <td id="me3_hs_e_score">--</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Conventional (C) Score</th>
-                                                            <td id="me3_hs_c_score">--</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <div id="me3_hs_career_interest_table"/>
+                                            </apex:outputPanel>
                                         </div>
                                         
                                         <div id="me3HSResponseErrors"></div>
@@ -1575,11 +1844,13 @@
                                         </h3>
                                     </div>
                                     <div class="col-sm-4">
-                                        <a href="#" 
-                                           onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}','Active Cases');return false"
-                                           class="pull-right sideBoxMoreLink">
-                                            see all {!openCases.size}...
-                                        </a>
+                                        <apex:outputPanel rendered="{!openCases.size > 0}">
+                                            <a href="#" 
+                                               onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}','Active Cases');return false"
+                                               class="pull-right sideBoxMoreLink">
+                                                see all {!openCases.size}...
+                                            </a>
+                                        </apex:outputPanel>
                                     </div>
                                 </div>
 
@@ -1614,7 +1885,7 @@
                                 </apex:dataTable>
 
                                 <apex:outputText rendered="{!openCases.size == 0}">
-                                    No Active/Open Cases found for {!theContact.FirstName}
+                                    No active/open cases found for {!theContact.FirstName}
                                 </apex:outputText>
                             </div>
 
@@ -1634,7 +1905,35 @@
                                     </div>
                                 </div>
                                 <div id="serviceIndicatorsDiv">
-                                    
+                                    <div class='col-sm-12' style='padding:0px;'>
+                                        <div class='table-responsive'>
+                                            <apex:outputPanel rendered="{!serviceIndicators.size > 0}">
+                                                <table class='table table-striped table-bordered'> 
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Start Date</th>
+                                                            <th>Code</th>
+                                                            <th>Description</th>
+                                                            <th>Reason</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <apex:repeat value="{!serviceIndicators}" var="indicator">
+                                                            <tr>
+                                                                <td>indicator.SI_Start_Date__c</td>
+                                                                <td>indicator.SI_Code__c</td>
+                                                                <td>indicator.SI_Description__c</td>
+                                                                <td>indicator.SI_Reason__c</td>
+                                                            </tr>
+                                                        </apex:repeat>
+                                                    </tbody>
+                                                </table>
+                                            </apex:outputPanel>
+                                            <apex:outputText rendered="{!serviceIndicators.size == 0}">
+                                                No service holds found for {!theContact.FirstName}
+                                            </apex:outputText>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1646,11 +1945,12 @@
                                         </h3>
                                     </div>
                                     <div class="col-sm-4">
-                                        <!--a href="/a0N?rlid=00Nd0000007tI9X&id={!theContact.Id}" -->
-                                        <a href="#" onclick="openNewSubtab('/a0N?rlid=00Nd0000007tI9X\&id={!theContact.Id}','Student Groups');return false"
-                                           class="pull-right sideBoxMoreLink">
-                                            see all {!sGroupList.size}...
-                                        </a>
+                                        <apex:outputPanel rendered="{!sGroupList.size > 0}">
+                                            <a href="#" onclick="openNewSubtab('/a0N?rlid=00Nd0000007tI9X\&id={!theContact.Id}','Student Groups');return false"
+                                               class="pull-right sideBoxMoreLink">
+                                                see all {!sGroupList.size}...
+                                            </a>
+                                        </apex:outputPanel>
                                     </div>
                                 </div>
                                 <apex:dataTable rendered="{!sGroupList.size > 0}"
@@ -1725,507 +2025,21 @@
             });
         
             $j(document).ready(function() {
-                // $j('.fa-caret-down').hide();
-                llServiceIndicator();
-                llStudentDemographic();
-                llStudentProgram();
-                llSundevilImg();
-                //loadGeneralTab();
+                loadRemoteSunCardPhoto();
+                
+                $j("#btnLoadIndicatorsHistory").click(function(){
+                    getRetentionSNPs(); 
+                });
+                
+                maskPhoneNumbers();
+                filterFinancialAid();
+                
+                loadUGIndicatorTab();
+                loadCommentsTab();
+                loadClassesTab();
             });
             
-            function llServiceIndicator() {
-                document.getElementById("serviceIndicatorsDiv").innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getServiceIndicators}',
-                    '{!theContact.EMPLID__c}',
-                    function (result, event) {
-                        if (event.status) {
-                            //document.getElementById("serviceIndicatorsDiv").innerHTML = "";
-                            if (result.length != 0) {
-                                var html = "" +
-                                    "<div class='col-sm-12' style='padding:0px;'><div class='table-responsive'>" +
-                                        "<table class='table table-striped table-bordered'> " +
-                                            "<thead>" +
-                                                "<tr>" +
-                                                    "<th>Start Date</th>" +
-                                                    "<th>Code</th>" +
-                                                    "<th>Description</th>" +
-                                                    "<th>Reason</th>" +
-                                                "</tr>" +
-                                            "</thead>" +
-                                            "<tbody>";
-
-                                for (var i = 0; i < result.length; i++) {
-                                    var attDate = new Date(result[i].SRVC_IND_ACTIVE_DT__c);
-                                    attDate = (attDate.getUTCMonth() + 1) + '/' +
-                                                attDate.getUTCDate() + '/' +
-                                                attDate.getUTCFullYear(); 
-                                    var description = result[i].DESCR__c;
-                                    if (description.length > 100)
-                                      description = description.substring(0,100)+'...';
-                                    html += "" +
-                                        "<tr>" +
-                                            "<td>" + attDate + "</td>" +
-                                            "<td>" + result[i].SRVC_IND_CD__c + "</td>" +
-                                            "<td>" + description + "</td>" +
-                                            "<td>" + result[i].REASON_DESCR__c + "</td>" +
-                                        "</tr>";
-                                }
-
-                                html += "</tbody></table></div></div>";
-
-                                document.getElementById('serviceIndicatorsDiv').innerHTML = html;
-                                cleanUpUndefined("serviceIndicatorsDiv");
-                            } else {
-                                document.getElementById("serviceIndicatorsDiv").innerHTML =
-                                    'No Service Holds found for {!theContact.FirstName}';
-                            }
-                        }
-                    },
-                    {escape: true}
-                );
-            }
-            
-            
-            function llStudentDemographic() {
-                
-                var bDay = "{!birthdate}";
-                var age = "{!age}";
-                
-                var buildInitHtml = "<div class=\"col-sm-6\">" +
-                                        "<table class=\"table table-striped\">" +
-                                            "<tr>" +
-                                                "<th>Gender</th>" +
-                                                "<td>{!theContact.Gender__c}</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>Ethnicity</th>" +
-                                                "<td>{!theContact.Ethnicity__c}</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>First Generation</th>" +
-                                                "<td>{!theContact.First_Generation_Student__c}</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>BirthDate</th>" +
-                                                "<td>" + bDay + "</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                                "<th>Age</th>" +
-                                                "<td>{!theContact.Current_Age__c}</td>" +
-                                            "</tr>";
-                    buildInitHtml += "</table></div>";
-                document.getElementById("studentDemographicDiv").innerHTML = buildInitHtml;
-            }
-            
-            function llStudentProgram() {
-              var buildInitHtml = "<div class=\"col-sm-6\">" +
-                                      "<table class=\"table table-striped\">" +
-                                          "<tr>" +
-                                              "<th>WUE</th>" +
-                                              "<td>--</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>Residency</th>" +
-                                              "<td>--</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>Country of Citizenship</th>" +
-                                              "<td id='initHtmlTd' ><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>FERPA Level</th>" +
-                                              "<td>--</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>Financial Need Level</th>" +
-                                              "<td>--</td>" +
-                                          "</tr>";
-                  buildInitHtml += "</table></div>";
-              document.getElementById("studentProgramDiv").innerHTML = buildInitHtml;
-            
-              var buildInitGradHtml = "<div class=\"col-sm-6\">" +
-                                      "<table class=\"table table-striped\">" +
-                                          "<tr>" +
-                                              "<th>Expected Graduation Date</th>" +
-                                              "<td>--</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>{!currentTermName} Enrollment Appointment</th>" +
-                                              "<td id='initGradTd'><i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i></td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>{!nextTermName} Enrollment Appointment</th>" +
-                                              "<td>--</td>" +
-                                          "</tr>";
-              buildInitGradHtml += "</table></div>";
-              document.getElementById("expectedGradDateDiv").innerHTML = buildInitGradHtml;
-              
-              var buldInitUnderAcadHtml = "<div>"+
-                                            "<div class='col-sm-6'>"+
-                                                "<table class='table table-striped'>"+
-                                                    "<tr>"+
-                                                        "<th>Application Admit Type</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                    "<tr>"+
-                                                        "<th>Applied Program</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                    "<tr>"+
-                                                        "<th>Applied Date</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                "</table>"+
-                                            "</div>"+
-                                            "<div class='col-sm-6'>"+
-                                                "<table class='table table-striped'>"+
-                                                    "<tr>"+
-                                                        "<th>Enroll Deposit</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                    "<tr>"+
-                                                        "<th>Orientation Date</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                "</table>"+
-                                            "</div>"+
-                                            "<i id='underGradSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' "+
-                                               "style='top: 50%; left: 42%; text-align:center;'></i>"+
-                                            "</div>";
-              document.getElementById("underGradAcadDiv").innerHTML = buldInitUnderAcadHtml;
-              
-              var buldInitGradAcadHtml = "<div>"+
-                                            "<div class='col-sm-6'>"+
-                                                "<table class='table table-striped'>"+
-                                                    "<tr>"+
-                                                        "<th>Application Admit Type</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                    "<tr>"+
-                                                        "<th>Applied Program</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                    "<tr>"+
-                                                        "<th>Applied Date</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                    "<tr>"+
-                                                        "<th>Admit Term</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                "</table>"+
-                                            "</div>"+
-                                            "<div class='col-sm-6'>"+
-                                                "<table class='table table-striped'>"+
-                                                    "<tr>"+
-                                                        "<th>Enroll Deposit</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                    "<tr>"+
-                                                        "<th>Orientation Date</th>"+
-                                                        "<td>--</td>"+
-                                                    "</tr>"+
-                                                "</table>"+
-                                            "</div>"+
-                                            "<i id='gradSpinner' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' "+
-                                               "style='top: 50%; left: 42%; text-align:center;'></i>"+
-                                            "</div>";
-              document.getElementById("gradAcadDiv").innerHTML = buldInitGradAcadHtml;
-              
-              Visualforce.remoting.Manager.invokeAction(
-                  '{!$RemoteAction.StudentProfileController.getStudentProgramData}',
-                  '{!theContact.EMPLID__c}',
-                  function (result, event) {
-                      if (event.status) {
-                          //document.getElementById("serviceIndicatorsDiv").innerHTML = "";
-                          if (result.length != 0) {
-                              var studentProgram;
-                              studentProgram = result[0];
-                              
-                              var html = "" +
-                                  "<div class=\"col-sm-6\">" +
-                                      "<table class=\"table table-striped\">" +
-                                          "<tr>" +
-                                              "<th>WUE</th>" +
-                                              "<td>{!theContact.WUE__c}</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>Residency</th>" +
-                                              "<td>"+studentProgram.Residency__c + "</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>Country of Citizenship</th>" +
-                                              "<td>{!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__r.Name)}</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>FERPA Level</th>" +
-                                              "<td>{!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--', theContact.FERPA_Directory_Hold__c)}</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>Financial Need Level</th>" +
-                                              "<td>" + studentProgram.Financial_Need_Level__c + "</td>" +
-                                          "</tr>";
-                              html += "</table></div>";
-            
-                              document.getElementById('studentProgramDiv').innerHTML = html;
-                              cleanUpUndefined("studentProgramDiv");
-                              
-                              var termName = '--';
-                              console.log(studentProgram);
-                              if(studentProgram.Exp_Grad_Term__c === null) {
-                                  termName = '--'
-                              } else if(studentProgram.Exp_Grad_Term__r.Name != '') {
-                                  termName = studentProgram.Exp_Grad_Term__r.Name;
-                              }
-                              
-                              var appointDay = '--';
-                              var nextAppointDay = '--';
-                              if(studentProgram.Appt_Dt__c != '' && studentProgram.Appt_Dt__c!= null) {
-                                appointDay = new Date(studentProgram.Appt_Dt__c);
-                                appointDay = (appointDay.getUTCMonth() + 1) + '/' +
-                                        appointDay.getUTCDate() + '/' +
-                                        appointDay.getUTCFullYear();
-                              }
-                              
-                              if(studentProgram.Appt_Dt_Pending__c != undefined && studentProgram.Appt_Dt_Pending__c != '' && studentProgram.Appt_Dt_Pending__c!= null) {
-                                nextAppointDay = new Date(studentProgram.Appt_Dt_Pending__c);
-                                nextAppointDay = (nextAppointDay.getUTCMonth() + 1) + '/' +
-                                        nextAppointDay.getUTCDate() + '/' +
-                                        nextAppointDay.getUTCFullYear();
-                              }
-                              
-                              var gradHtml = "" +
-                                  "<div class=\"col-sm-6\">" +
-                                      "<table class=\"table table-striped\">" +
-                                          "<tr>" +
-                                              "<th>Expected Graduation Date</th>" +
-                                              "<td>"+ termName +"</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>{!currentTermName} Enrollment Appointment</th>" +
-                                              "<td>" + appointDay +"</td>" +
-                                          "</tr>" +
-                                          "<tr>" +
-                                              "<th>{!nextTermName} Enrollment Appointment</th>" +
-                                              "<td>" + nextAppointDay +"</td>" +
-                                          "</tr>";
-                              gradHtml += "</table></div>";
-                
-                              document.getElementById('expectedGradDateDiv').innerHTML = gradHtml;
-                              cleanUpUndefined("expectedGradDateDiv");
-                              
-                              varCurrentEnrolledHrs = '--';
-                              varNextEntrolledHrs = '--';
-                              
-                              if(studentProgram.Enrl_Hrs__c != '' 
-                                  && studentProgram.Enrl_Hrs__c != undefined 
-                                  && studentProgram.Enrl_Hrs__c != '-'
-                                  && studentProgram.Enrl_Hrs__c != null) {
-                                  varCurrentEnrolledHrs = Math.floor(studentProgram.Enrl_Hrs__c);
-                              }
-                              var curTermHtml =  varCurrentEnrolledHrs;
-                              document.getElementById('curTermEnrolled').innerHTML = curTermHtml;
-                              cleanUpUndefined("curTermEnrolled");
-                              
-                              if(studentProgram.Enrl_Hrs_Pending__c != '' 
-                                  && studentProgram.Enrl_Hrs_Pending__c != undefined 
-                                  && studentProgram.Enrl_Hrs_Pending__c != '-'
-                                  && studentProgram.Enrl_Hrs_Pending__c != null) {
-                                  varNextEntrolledHrs = Math.floor(studentProgram.Enrl_Hrs_Pending__c);
-                              }
-                              var nextTermHtml = varNextEntrolledHrs;
-                              document.getElementById('nextTermEnrolled').innerHTML = nextTermHtml;
-                              cleanUpUndefined("nextTermEnrolled");
-                              
-                              var ugStudentProgram;
-                              var gradStudentProgram;
-                              
-                              for(var i = 0; i < result.length; i++) {
-                                if(result[i].Career__c === 'Undergraduate') {
-                                    ugStudentProgram = result[i];
-                                }
-                                else if (result[i].Career__c === 'Graduate' || result[i].Career__c === 'Law') {
-                                    gradStudentProgram = result[i];
-                                }
-                              }
-                              
-                              // undergraduate page
-                              var ugApplAdmitType = '--';
-                              var ugAppliedProg = '--';
-                              var ugAdmitTerm = '--';
-                              var ugEntrollDep = '--';
-                              var ugAppDate = '--';
-                              var ugOrientDate = '--';
-                              
-                              if(ugStudentProgram != undefined && ugStudentProgram != '') {
-                                  ugApplAdmitType = checkIfBlank(ugStudentProgram, ugStudentProgram.Admit_Type__c);
-                                  ugAppliedProg = checkIfBlank(ugStudentProgram, ugStudentProgram.Adm_Appl_Prog__c);
-                                  if(studentProgram.Admit_Term__c === null) {
-                                      ugAdmitTerm = '--'
-                                  } else if(studentProgram.Admit_Term__r.Name != '') {
-                                      ugAdmitTerm = studentProgram.Admit_Term__r.Name;
-                                  }
-                                  ugEntrollDep = checkIfBlank(ugStudentProgram, ugStudentProgram.Enrl_Deposit__c);
-                                  
-                                  
-                                  var utcUgAppSeconds = checkIfBlank(ugStudentProgram, ugStudentProgram.Adm_Appl_Dt__c);
-                                  if(utcUgAppSeconds != '--') {
-                                      ugAppDate = new Date(utcUgAppSeconds);
-                                      ugAppDate = (ugAppDate.getMonth() + 1) + '/' +
-                                                ugAppDate.getDate() + '/' +
-                                                ugAppDate.getFullYear();
-                                  }
-                                  ugOrientDate = '{!theContact.Orient_Dt__c}';
-                              }
-                              
-                              var undergradAcadHtml= "<div class='col-sm-6'>"+
-                                                    "<table class='table table-striped'>"+
-                                                        "<tr>"+
-                                                            "<th>Application Admit Type</th>"+
-                                                            "<td>"+ ugApplAdmitType  +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Applied Program</th>"+
-                                                            "<td>"+ ugAppliedProg  +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Applied Date</th>"+
-                                                            "<td>"+ ugAppDate +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Admit Term</th>"+
-                                                            "<td>"+ ugAdmitTerm  +"</td>"+
-                                                        "</tr>"+
-                                                    "</table>"+
-                                                "</div>"+
-                                                "<div class='col-sm-6'>"+
-                                                    "<table class='table table-striped'>"+
-                                                        "<tr>"+
-                                                            "<th>Enroll Deposit</th>"+
-                                                            "<td>"+ ugEntrollDep  +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Orientation Date</th>"+
-                                                            "<td>"+ {!theContact.Orient_Dt__c}  +"</td>"+
-                                                        "</tr>"+
-                                                    "</table>"+
-                                                "</div>";
-                              document.getElementById('underGradAcadDiv').innerHTML = undergradAcadHtml;
-                              cleanUpUndefined("underGradAcadDiv");    
-                              
-                              // gradudate page 
-                              var applAdmitType = '--';
-                              var appliedProg = '--';
-                              var admitTerm = '--';
-                              var admitType = '--';
-                              var entrollDep = '--';
-                              var appDate = '--';
-                              var orientDate = '--';
-                              
-                              if(gradStudentProgram != undefined && gradStudentProgram != '') {
-                                  applAdmitType = checkIfBlank(gradStudentProgram, gradStudentProgram.Admit_Type__c);
-                                  appliedProg = checkIfBlank(gradStudentProgram, gradStudentProgram.Adm_Appl_Prog__c);
-                                  if(studentProgram.Admit_Term__c === null) {
-                                      admitTerm = '--'
-                                  } else if(studentProgram.Admit_Term__r.Name != '') {
-                                      admitTerm = studentProgram.Admit_Term__r.Name;
-                                  }
-                                  admitType = checkIfBlank(gradStudentProgram, gradStudentProgram.Admit_Type__c);
-                                  entrollDep = checkIfBlank(gradStudentProgram, gradStudentProgram.Enrl_Deposit__c);
-                                  appDate = checkIfBlank(gradStudentProgram, gradStudentProgram.Adm_Appl_Dt__c);
-                                  
-                                  var utcAppSeconds = checkIfBlank(gradStudentProgram, gradStudentProgram.Adm_Appl_Dt__c);
-                                  if(utcAppSeconds != '--') {
-                                      appDate = new Date(utcAppSeconds);
-                                      appDate = (appDate.getMonth() + 1) + '/' +
-                                                appDate.getDate() + '/' +
-                                                appDate.getFullYear();
-                                  }
-                                  
-                                  orientDate = '{!theContact.Orient_Dt__c}';
-                              }
-                              
-                              var gradAcadHtml= "<div class='col-sm-6'>"+
-                                                    "<table class='table table-striped'>"+
-                                                        "<tr>"+
-                                                            "<th>Application Admit Type</th>"+
-                                                            "<td>"+ applAdmitType  +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Applied Program</th>"+
-                                                            "<td>"+ appliedProg  +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Applied Date</th>"+
-                                                            "<td>"+ appDate +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Admit Term</th>"+
-                                                            "<td>"+ admitTerm  +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Admit Type</th>"+
-                                                            "<td>"+ admitType  +"</td>"+
-                                                        "</tr>"+
-                                                    "</table>"+
-                                                "</div>"+
-                                                "<div class='col-sm-6'>"+
-                                                    "<table class='table table-striped'>"+
-                                                        "<tr>"+
-                                                            "<th>Enroll Deposit</th>"+
-                                                            "<td>"+ entrollDep  +"</td>"+
-                                                        "</tr>"+
-                                                        "<tr>"+
-                                                            "<th>Orientation Date</th>"+
-                                                            "<td>"+ {!theContact.Orient_Dt__c}  +"</td>"+
-                                                        "</tr>"+
-                                                    "</table>"+
-                                                "</div>";
-                                    document.getElementById('gradAcadDiv').innerHTML = gradAcadHtml;
-                                    cleanUpUndefined("gradAcadDiv");
-                          }  else {
-                              jQuery('#initHtmlTd').empty();
-                              jQuery('#initHtmlTd').html('--');
-                              
-                              jQuery('#initGradTd').empty();
-                              jQuery('#initGradTd').html('--');
-                              
-                              jQuery('#curTermSpinner').remove();
-                              jQuery('#underGradSpinner').remove();
-                              jQuery('#gradSpinner').remove();
-                          }
-                      } else {
-                          jQuery('#initHtmlTd').empty();
-                          jQuery('#initHtmlTd').html('--');
-                          
-                          jQuery('#initGradTd').empty();
-                          jQuery('#initGradTd').html('--');
-                          
-                          jQuery('#curTermSpinner').remove();
-                          jQuery('#underGradSpinner').remove()
-                          jQuery('#gradSpinner').remove()
-                      }
-                  },
-                  {escape: true}
-              );
-            }
-            
-            function checkIfBlank(field, fieldValue) {
-                if(field != undefined && field != null && field != '') {
-                    if(fieldValue != undefined && fieldValue != null && fieldValue != '') {
-                        return fieldValue;
-                    } else {
-                        return '--';
-                    }
-                } else {
-                    return '--';
-                }
-            }
-            
-            function llSundevilImg() {
+            function loadRemoteSunCardPhoto() {
                 Visualforce.remoting.Manager.invokeAction(
                     '{!$RemoteAction.StudentProfileController.getSunCardPhotoRA}',
                     '{!theContact.ASURite_ID__c}',
@@ -2293,26 +2107,12 @@
                     loadUGIndicatorTab();
                 } else if ($j(this).attr('href') === '#collapse-comments') {
                     loadCommentsTab();
-                } else if ($j(this).attr('href') === '#collapse-UGacademics') {
-                    loadUGAcademicsTab();
-                } else if ($j(this).attr('href') === '#collapse-Gacademics') {
-                    loadGradAcademicsTab();
-                } else if ($j(this).attr('href') === '#collapse-finances') {
-                    loadFinancesTab();
                 } else if ($j(this).attr('href') === '#collapse-classes') {
                     loadClassesTab();
                 }
             });
         </script>
 
-        <script type="text/javascript">
-            $j(document).ready(function(){
-                $j("#btnLoadIndicatorsHistory").click(function(){
-                    getRetentionSNPs(); 
-                });
-              });
-        </script>
-        
         <script type="text/javascript">
             var indicatorTabLoaded = false;
             var advisorNotesLoaded = false;
@@ -2336,29 +2136,10 @@
     
             // Wrappers
             
-            // function loadGeneralTab() {
-            //     getHousingInfo();
-            // }
- 
-            function loadUGAcademicsTab() {
-                getStdntTestComps();
-                getUGacademicProgress();
-            }
-    
-            function loadGradAcademicsTab() {
-                getGradAcademicProgress();
-                getGradStdntTestComps();
-            }
-    
             function loadClassesTab() {
                 getEnrolledClasses();
                 getCreditByExamData();
                 getTransferWork();
-            }
-    
-            function loadFinancesTab() {
-                //getFinancialAidSummary();
-                getAccountBalance();
             }
     
             function loadUGIndicatorTab() {
@@ -2374,12 +2155,6 @@
                 getGuestAccess();
             }
 
-            function loadCareerDevelopmentTab() {
-                getMe3Results();
-                getMe3HSResults();
-            }
-
-    
             // Method to replace all undefined/missing fields after callout
             function cleanUpUndefined(elementId) {
                 var element = document.getElementById(elementId);
@@ -2747,154 +2522,6 @@
                 }
             }
     
-    
-    
-    
-            // Method to load test scores.
-            function getStdntTestComps() {
-                if (!testScoresLoaded) {
-                    document.getElementById("psTestScoreErrorsUG").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getStdntTestComps}',
-                        '{!theContact.EMPLID__c}',
-                        'Undergraduate',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("psTestScoreErrorsUG").innerHTML =
-                                    "";
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("ps_test_score_section_ug").style.display =
-                                        "initial";
-    
-                                    var html = "" +
-                                        "<div class='table-responsive'>" +
-                                            "<table class='table table-striped table-bordered'> " +
-                                                "<thead>" +
-                                                    "<tr>" +
-                                                        "<th>Id</th>" +
-                                                        "<th>Component</th>" +
-                                                        "<th>Score</th>" +
-                                                        "<th>Date</th>" +
-                                                    "</tr>" +
-                                                "</thead>" +
-                                                "<tbody>";
-
-                                    for (var i = 0; i < result.length; i++) {
-                                        var utcSeconds = result[i].Test_Date__c;
-                                        var testDate = new Date(utcSeconds);
-                                        testDate = (testDate.getMonth() + 1) + '/' +
-                                                    testDate.getDate() + '/' +
-                                                    testDate.getFullYear();
-    
-                                        html += "" +
-                                            "<tr>" +
-                                                "<td>" + result[i].Test_Type__c + "</td>" +
-                                                "<td>" + result[i].Test_Component__c + "</td>" +
-                                                "<td>" + result[i].Test_Component_Score__c + "</td>" +
-                                                "<td>" + testDate + "</td>" +
-                                            "</tr>";
-                                    }
-    
-                                    html += "</tbody></table></div>";
-    
-                                    document.getElementById('ps_test_score_section_ug').innerHTML = html;
-                                    cleanUpUndefined("ps_test_score_section_ug");
-                                    testScoresLoaded = true;
-                                } else {
-                                    document.getElementById("psTestScoreErrorsUG").innerHTML =
-                                        'No test scores found.';
-                                    testScoresLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("psTestScoreErrorsUG").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("psTestScoreErrorsUG").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {escape: true}
-                    );
-                }
-            }
-    
-            // Method to load test scores.
-            function getGradStdntTestComps() {
-                if (!gradTestScoresLoaded) {
-                    document.getElementById("psTestScoreErrorsGrad").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getStdntTestComps}',
-                        '{!theContact.EMPLID__c}',
-                        'Graduate',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("psTestScoreErrorsGrad").innerHTML =
-                                    "";
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("ps_test_score_section_grad").style
-                                        .display = "initial";
-    
-                                    var html = "" +
-                                        "<div class='table-responsive'>" +
-                                            "<table class='table table-striped table-bordered'> " +
-                                                "<thead>" +
-                                                    "<tr>" +
-                                                        "<th>Id</th>" +
-                                                        "<th>Component</th>" +
-                                                        "<th>Score</th>" +
-                                                        "<th>Date</th>" +
-                                                    "</tr>" +
-                                                "</thead>" +
-                                                "<tbody>";
-    
-                                    for (var i = 0; i < result.length; i++) {
-                                        var utcSeconds = result[i].Test_Date__c;
-                                        var testDate = new Date(utcSeconds);
-                                        testDate = (testDate.getMonth() + 1) + '/' +
-                                                    testDate.getDate() + '/' +
-                                                    testDate.getFullYear();
-    
-                                        html += "" +
-                                            "<tr>" +
-                                                "<td>" + result[i].Test_Type__c + "</td>" +
-                                                "<td>" + result[i].Test_Component__c + "</td>" +
-                                                "<td>" + result[i].Test_Component_Score__c + "</td>" +
-                                                "<td>" + testDate + "</td>" +
-                                            "</tr>";
-                                    }
-    
-                                    html += "</tbody></table></div>";
-    
-                                    document.getElementById('ps_test_score_section_grad').innerHTML =
-                                        html;
-                                    cleanUpUndefined("ps_test_score_section_grad");
-                                    gradTestScoresLoaded = true;
-                                } else {
-                                    document.getElementById("psTestScoreErrorsGrad").innerHTML =
-                                        'No test scores found.';
-                                    gradTestScoresLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("psTestScoreErrorsGrad").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("psTestScoreErrorsGrad").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {escape: true}
-                    );
-                }
-            }
-    
-            
-            
             // Method to get transcripts
             function getTranscripts() {
                 if (!transcriptsLoaded) {
@@ -3312,77 +2939,6 @@
                                     event.message + "<br/>\n<pre>" + event.where + "</pre>";
                             } else {
                                 document.getElementById("psGuestAccessResponseErrors").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {escape: true}
-                    );
-                }
-            }
-    
-            // Method to load the Undergraduate Academic Progress 
-            function getUGacademicProgress() {
-                if (!UGacademicProgressLoaded) {
-                    document.getElementById("UGacademicProgressErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getAcademicProgressData}',
-                        '{!theContact.EMPLID__c}',
-                        'Undergraduate',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("UGacademicProgressErrors").innerHTML =
-                                    "";
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("UGacademicProgress").style.display =
-                                        "initial";
-                                    document.getElementById("UGacademicProgressErrors").style.display =
-                                        "none";
-                                    document.getElementById('ugap_gpa').innerHTML =
-                                    '<a href="https://students.asu.edu/gpa-calculator" target="_blank">' +
-                                        result.jbtRetAcadSummaryVw.Cum_GPA__c +
-                                    '</a> ' + '<a href="https://students.asu.edu/gpa-calculator"  target="_blank" class="fa fa-calculator" aria-hidden="true"></a>';
-                                    document.getElementById('ugap_cumulative_hours').innerHTML =
-                                        (result.jbtRetAcadSummaryVw.Tot_Cumulative__c == '' ? '--' : result.jbtRetAcadSummaryVw.Tot_Cumulative__c);
-                                   /* if (result.STATUS__c > 0) {
-                                        document.getElementById('ugap_eadvisor_status').innerHTML =
-                                            "<span style='color:red'>" +
-                                            result.STATUS__c +
-                                            "</span>";
-                                    } else {
-                                        document.getElementById('ugap_eadvisor_status').innerHTML =
-                                            result.STATUS__c;
-                                    } 
-                                    */
-                                    document.getElementById('ugap_eadvisor_status').innerHTML =
-                                        result.jbtRetOthInd1Vw.eAdvisor__c;
-                                    document.getElementById('ugap_academic_standing').innerHTML =
-                                        result.psAsuSpAcStndv.Academic_Standing__c;
-                                    var adviserHtml = '--';
-                                    if (!result.psAsuSpAcadAdvList.length == 0) {
-                                        adviserHtml = '';
-                                        for (var i = 0; i < result.psAsuSpAcadAdvList.length; i++) {
-                                            adviserHtml += '<a href="mailto:' + result.psAsuSpAcadAdvList[i].Advisor_Email__c +
-                                                           '">' + result.psAsuSpAcadAdvList[i].Name + '</a><br>';
-                                        }
-                                    }
-                                    document.getElementById('ugap_advisors').innerHTML =
-                                        adviserHtml;
-    
-                                    cleanUpUndefined("UGacademicProgress");
-                                    UGacademicProgressLoaded = true;
-                                } else {
-                                    document.getElementById("UGacademicProgressErrors").innerHTML =
-                                        'No academic progress data found.';
-                                    UGacademicProgressLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("UGacademicProgressErrors").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("UGacademicProgressErrors").innerHTML =
                                     event.message;
                             }
                         },
@@ -4149,70 +3705,6 @@
                         }
                     });
             }
-            
-            // Method to get Account Balance
-            function getAccountBalance() {
-                if (!accountBalanceLoaded) {
-                    document.getElementById("psAccountBalanceErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getFinancesBalanceData}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("psAccountBalanceErrors").innerHTML =
-                                    "";
-    
-
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    var o = "en-US";
-                                    var s = { style: "currency", currency: "USD" };
-
-                                    document.getElementById("ps_account_balance").style.display =
-                                        "initial";
-                                    document.getElementById("psAccountBalanceErrors").style.display =
-                                        "none";
-                                    if (result.pastDueTIP) {
-                                        document.getElementById('account_balance_past_due_tip').innerHTML =
-                                            result.pastDueTIP.toLocaleString(o,s);          
-                                    } else {
-                                        document.getElementById('account_balance_past_due_tip').innerHTML = '--'
-                                    }
-                                    if (result.faBalance.Account_Balance__c) {
-                                        document.getElementById('account_balance_outstanding').innerHTML =
-                                            result.faBalance.Account_Balance__c.toLocaleString(o,s);
-                                    } else {
-                                        document.getElementById('account_balance_outstanding').innerHTML = '--';
-                                    }
-                                    
-                                    if (result.faBalance.Future_Balance__c) {
-                                        document.getElementById('account_balance_total').innerHTML =
-                                            result.faBalance.Future_Balance__c.toLocaleString(o,s);
-                                    } else {
-                                        document.getElementById('account_balance_total').innerHTML = '--';   
-                                    }
-    
-                                    cleanUpUndefined("account_balance_table");
-                                    accountBalanceLoaded = true;
-                                } else {
-                                    document.getElementById("psAccountBalanceErrors").innerHTML =
-                                        'No Account Balance data found.';
-                                    accountBalanceLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("psAccountBalanceErrors").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("psAccountBalanceErrors").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {escape: true}
-                    );
-                }
-            }
-    
                
             function filterFinancialAid() {
                 var e = document.getElementById("ps_financial_aid_year_select");
@@ -4249,185 +3741,6 @@
                 document.getElementById('fa_accepted_total').innerHTML = acceptedTotal.toLocaleString(o,s);
                 document.getElementById('fa_disbursed_total').innerHTML = disbursedTotal.toLocaleString(o,s);
             }
-
-            // Method to load me3@asu results
-            function getMe3Results() {
-                if (!me3ResultsLoaded) {
-                    var errorHtml = "";
-    
-                    document.getElementById("me3ResponseErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getMe3Results}',
-                        '{!theContact.Id}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("me3ResponseErrors").innerHTML =
-                                    "";     
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("Me3Results").style.display =
-                                        "initial";
-
-                                    var utcSeconds = result.Test_Completed_Date__c;
-                                    var testDate = new Date(utcSeconds);
-                                    testDate = (testDate.getUTCMonth() + 1) + '/' +
-                                        testDate.getUTCDate() + '/' +
-                                        testDate.getUTCFullYear();
-
-                                    document.getElementById('me3_completion_date').innerHTML =
-                                        testDate;
-                                     document.getElementById('me3_source').innerHTML = result.Source__c;
-                                     document.getElementById('me3_r_score').innerHTML = 
-                                        (result.R_Score__c > 0 ? result.R_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_a_score').innerHTML = 
-                                        (result.A_Score__c > 0 ? result.A_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_i_score').innerHTML = 
-                                        (result.I_Score__c > 0 ? result.I_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_s_score').innerHTML = 
-                                        (result.S_Score__c > 0 ? result.S_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_e_score').innerHTML = 
-                                        (result.E_Score__c > 0 ? result.E_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_c_score').innerHTML = 
-                                        (result.C_Score__c > 0 ? result.C_Score__c : '0') + ' / 100';
-
-                                    var html = 
-                                     "<div class='table-responsive'>" +
-                                        "<table id='career_dev_table' class='table table-striped table-bordered'> " +
-                                        "<tbody>";
-                                    if (typeof result.me3_Careers__r != 'undefined') {
-                                      for (var i = 0; i < result.me3_Careers__r.length; i++) {
-                                          if (result.me3_Careers__r[i].Updated_Date__c) {
-                                            var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
-                                            var updatedDate = new Date(cdUtcSeconds);
-                                            updatedDate = (updatedDate.getUTCMonth() + 1) + '/' +
-                                                updatedDate.getUTCDate() + '/' +
-                                                updatedDate.getUTCFullYear();
-                                          } else {
-                                            updatedDate == '--';
-                                          }
-
-                                          html += "" +
-                                              (result.me3_Careers__r[i].Active__c == true ?  "<tr style='font-weight:bold;'>" : "<tr style='font-weight:normal;'>") +
-                                                  "<td style='min-width: 75px;'>" + updatedDate + "</td>" +
-                                                  "<td style='font-weight:bold;color:red;'>" + (result.me3_Careers__r[i].Active__c == true ? '' : 'X') + "</td>" +
-                                                  "<td>Career Interest: " + result.me3_Careers__r[i].Career_Interest__c + "</td>" +
-                                                  "<td>Degree Interest: " + result.me3_Careers__r[i].Degree_Interest__c + " (" +
-                                                  result.me3_Careers__r[i].Plan_Code__c + ")</td>" +
-                                              "</tr>";
-                                      }
-                                    }
-
-                                    html += "</tbody></table></div>";
-                                    document.getElementById('me3_career_interest_table').innerHTML = html;
-
-                                    cleanUpUndefined("Me3Results");
-                                    me3ResultsLoaded = true;
-                                } else {
-                                    document.getElementById("me3ResponseErrors").innerHTML =
-                                        'No me3 results found';
-                                    careerDevelopmentTabLoaded = true;
-                                    me3ResultsLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                               document.getElementById("me3ResponseErrors").innerHTML = "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("me3ResponseErrors").innerHTML = event.message;
-                            }
-                        },
-                        {escape: true}
-                    );
-                }
-            }
-
-          // Method to load me3hs results
-            function getMe3HSResults() {
-                if (!me3HSResultsLoaded) {
-                    var errorHtml = "";
-    
-                    document.getElementById("me3HSResponseErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getMe3HSResults}',
-                        '{!theContact.Id}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("me3HSResponseErrors").innerHTML =
-                                    "";     
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("Me3HSResults").style.display =
-                                        "initial";
-
-                                    var utcSeconds = result.Test_Completed_Date__c;
-                                    var testDate = new Date(utcSeconds);
-                                    testDate = (testDate.getUTCMonth() + 1) + '/' +
-                                        testDate.getUTCDate() + '/' +
-                                        testDate.getUTCFullYear();
-
-                                    document.getElementById('me3_hs_completion_date').innerHTML =
-                                        testDate;
-                                     document.getElementById('me3_hs_source').innerHTML = result.Source__c;
-                                     document.getElementById('me3_hs_r_score').innerHTML = 
-                                        (result.R_Score__c > 0 ? result.R_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_hs_a_score').innerHTML = 
-                                        (result.A_Score__c > 0 ? result.A_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_hs_i_score').innerHTML = 
-                                        (result.I_Score__c > 0 ? result.I_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_hs_s_score').innerHTML = 
-                                        (result.S_Score__c > 0 ? result.S_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_hs_e_score').innerHTML = 
-                                        (result.E_Score__c > 0 ? result.E_Score__c : '0') + ' / 100';
-                                     document.getElementById('me3_hs_c_score').innerHTML = 
-                                        (result.C_Score__c > 0 ? result.C_Score__c : '0') + ' / 100';
-
-                                    var html = 
-                                     "<div class='table-responsive'>" +
-                                        "<table id='career_dev_table' class='table table-striped table-bordered'> " +
-                                        "<tbody>";
-
-                                    if (typeof result.me3_Careers__r != 'undefined') {
-                                      for (var i = 0; i < result.me3_Careers__r.length; i++) {
-                                          if (result.me3_Careers__r[i].Updated_Date__c) {
-                                            var cdUtcSeconds = result.me3_Careers__r[i].Updated_Date__c;
-                                            var updatedDate = new Date(cdUtcSeconds);
-                                            updatedDate = (updatedDate.getMonth() + 1) + '/' +
-                                                updatedDate.getDate() + '/' +
-                                                updatedDate.getFullYear();
-                                          } else {
-                                            updatedDate == '--';
-                                          }
-                                          html += ("<tr>" +  
-                                                        "<td style='width: 10%'><b>" + updatedDate + "</b></td>" +
-                                                        "<td style='width: 2%'></td>" +
-                                                        "<td style='width: 37%'><b>Career Interest: </b>" +  result.me3_Careers__r[i].Career_Interest__c + "</td>" +
-                                                        "<td>" + "<b>Degree Interest: </b>" + result.me3_Careers__r[i].Degree_Interest__c + " (" +
-                                                            result.me3_Careers__r[i].Plan_Code__c + ")" +
-                                                        "</td>" +
-                                                   "</tr>");
-                                      }
-                                    }
-                                    html += "</tbody></table></div>";
-                                    document.getElementById('me3_hs_career_interest_table').innerHTML = html;
-
-                                    cleanUpUndefined("Me3HSResults");
-                                    me3HSResultsLoaded = true;
-                                } else {
-                                    document.getElementById("me3HSResponseErrors").innerHTML =
-                                        'No me3 high school results found';
-                                    me3HSResultsLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                               document.getElementById("me3HSResponseErrors").innerHTML = "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("me3HSResponseErrors").innerHTML = event.message;
-                            }
-                        },
-                        {escape: true}
-                    );
-                }
-            }
-
         </script>
         
         <!-- Script to mask Phone Numbers -->
@@ -4441,11 +3754,6 @@
                     }
                 });
             }
-        
-            $j(document).ready(function() {
-                maskPhoneNumbers();
-                filterFinancialAid();
-            });
         </script>
     </body>
 </apex:page>

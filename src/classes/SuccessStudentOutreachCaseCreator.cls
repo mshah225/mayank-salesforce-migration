@@ -51,7 +51,7 @@ public class SuccessStudentOutreachCaseCreator {
     
     private void reQueryStudentsRequiringOutreach() {
         studentsRequiringOutreach = [
-            SELECT Student__c, Success_Resource__r.OwnerId, Coaching_Student__c
+            SELECT Student__c, Success_Resource__r.Resource__c, Coaching_Student__c
             FROM Success_Student__c
             WHERE Id IN :outreachStudentIds
         ];
@@ -77,7 +77,7 @@ public class SuccessStudentOutreachCaseCreator {
                 Visible_by_Contact__c = false,
                 ContactId = successStudent.Student__c,
                 RecordTypeId = COACH_CASE_RECORD_TYPE,
-                OwnerId = successStudent.Success_Resource__r.OwnerId
+                OwnerId = successStudent.Success_Resource__r.Resource__c
             );
             outreachCases.add(newCase);
         }

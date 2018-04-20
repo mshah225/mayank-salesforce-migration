@@ -1,25 +1,27 @@
 global with sharing class StudentProfileController
 { 
     // Error Logger Variables 
-    private static boolean debug = false; // Used to determine if error logger is in debug mode or not
+    private static Boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
+    private static String paramToSort;
     
-    public boolean URLParamsExistAndAreValid {get; set;} // Stores whether or not URL params exist and are valid
-    private boolean isContactId; // Stores wheter the ID parameter is a contact Id or EMPL Id
-    public boolean failState {get; set;} // Used to determine if the page has reached a state where it cannot be rendered
-    public static ASU_STDNT_RETENTION__x studentRetention { get; set; }
-
+    public static String examParamSort {get; set;}
+    public static String transferParamSort {get; set;}
+    
+    private Boolean isContactId; // Stores wheter the ID parameter is a contact Id or EMPL Id
+    private List<Student_Program_Plan__c> allProgramPlans;
+    private Student_Program_Subplan__c subProgramPlan;
+    private Student_Program_Plan__c programPlan;
+    private String contactId;
+    
     public Contact theContact { get; set; }
+    public Boolean urlParamsExistAndAreValid {get; set;} // Stores whether or not URL params exist and are valid
     public List<Case> openCases { get; set; }
     public List<Student_Group__c> sGroupList { get; set; }
-    public List<Student_Program_Plan__c> allProgramPlans { get; set; }
     public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
     public List<Student_Program_Plan__c> gradProgramPlans { get; set; }
     public Student_Program_Plan__c primaryProgramPlan { get; set; }
-    public Student_Program_Subplan__c subProgramPlan {get; set;}
-    
     public List<Service_Indicator__c> serviceIndicators { get; set; }
-    public Student_Program_Plan__c programPlan { get; set; }
     public Student_Program_Plan__c studentProgram { get; set; }
     public Student_Program_Plan__c ugStudentProgram { get; set; }
     public Student_Program_Plan__c gradStudentProgram { get; set; }
@@ -28,32 +30,17 @@ global with sharing class StudentProfileController
     public Student_Account__c studentAccount { get; set; }
     public Me3__c me3Results { get; set; }
     public Me3__c me3HighSchoolResults { get; set; }
-    
-    public JBT_RET_PROFILE_HEADER_VW__x profileHeader { get; set; }
-    public JBT_RET_TERMS_VW__x termInfo { get; set; }
-    public String suncardPhotoURL { get; set; }
-    public String deceased { get; set; }
-    public string contactId {get; set;}
-    public String birthDate {get; set;}
-    public String age {get; set;}
-    public static String paramToSort {get; set;}
-    public static String examParamSort {get; set;}
-    public static String transferParamSort {get; set;}
-    public static boolean sortDirect = true;
-    private Set<String> ugTestCodes;
-    private Set<String> gradTestCodes;
-
-    public List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList { get; set; }
-    public String currentTerm { get; set; }
-    public String currentTermName { get; set; }
-    public String nextTerm { get; set; }
-    public String nextTermName { get; set; }
-    
     public List<Student_Milestone__c> studentMilestonesUGrad { get; set; }
     public List<Student_Milestone__c> studentMilestonesGrad { get; set; }
     public FinancialAidWrapper faWrapper { get; set; }
     public List<Test_Score__c> testUndergradScoreList { get; set; }
     public List<Test_Score__c> testGradScoreList { get; set; }
+    public String suncardPhotoURL { get; set; }
+    public String deceased { get; set; }
+    public String currentTerm { get; set; }
+    public String currentTermName { get; set; }
+    public String nextTerm { get; set; }
+    public String nextTermName { get; set; }
     
     public static classesWrapper classesData; 
 
@@ -67,7 +54,7 @@ global with sharing class StudentProfileController
      * </p>
      */
     public StudentProfileController() {
-        UrlParamsExistAndAreValid = true;
+        urlParamsExistAndAreValid = true;
         
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
@@ -78,7 +65,7 @@ global with sharing class StudentProfileController
         } else if (Validator.validateEMPLId(contactId)) {
             isContactId = false;
         } else {
-            UrlParamsExistAndAreValid = false;
+            urlParamsExistAndAreValid = false;
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
         }
         
@@ -108,94 +95,89 @@ global with sharing class StudentProfileController
         studentMilestonesUGrad = new List<Student_Milestone__c>();
         studentMilestonesGrad = new List<Student_Milestone__c>();
         
-        //try {
-            if (URLParamsExistAndAreValid) {
-                if (isContactId) {
-                    theContact = ContactService.getContactInformation(contactId, '');
-                } else {
-                    theContact = ContactService.getContactInformation('', String.valueOf(contactId));
-                }
-                
-                if (theContact == null || theContact.EMPLID__c == null) {
-                    URLParamsExistAndAreValid = false;
-                    failState = true;
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
-                    vars.add(ErrorLogger.convertSObjectToJSON('theContact', theContact));
-                    throw new StudentProfileException('Contact missing EMPLId');
-                }
-                deceased = '';
-              
-				        populateStudentMilestoneUGrad();
-                populateStudentMilestoneGrad();
-                getFinancialSummaryData(theContact);    
-
-                // Start populating the lists
-                openCases = CaseService.getAllOpenCases(theContact.Id);
-                sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
-                
-                getTermInfo();
-                allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-                
-                // TODO: Find out about this list. It may just be a single object.
-                // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
-                /*
-                * Handling for nulls. Get the Objects as Lists from the different services first.
-                * If the list size is greater than expected, use first Object in list.
-                */
-                List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
-                    StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
-                
-                
-                if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0)
-                {
-                    for (Student_Program_Plan__c spp: studentProgramPlansBeforeToday)
-                    {
-                        if (spp.Status__c == 'Active in Program')
-                        {
-                            programPlan = spp;
-                            break;
-                        } 
-                    }
-                }
-                
-                
-                if (allProgramPlans.size() > 0)    
-                {
-                    for (Student_Program_Plan__c spp: allProgramPlans)
-                    {
-                        if (spp.PRIMARY_FLAG__c == true)
-                            primaryProgramPlan = spp;
-                            
-                        if (spp.Career__c == null || spp.Career__c == 'Undergraduate')
-                            ugProgramPlans.add(spp);
-                        else
-                            gradProgramPlans.add(spp);
-                    }
-                }
-                List<Student_Program_Subplan__c> tmpSubPlanList = [
-                            Select Subplan_description__c
-                                  FROM Student_Program_Subplan__c
-                                  WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
-                ];
-                
-                if(tmpSubPlanList.size() > 0){
-                    for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
-                        subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
-                    }
-                    subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
-                }
-                // Temporary solution for beta release; setting currentTerm to a hard-coded value
-                // so we have value to work with while the term populates asynchronously; ultimate 
-                // solution will be to store term info in the Salesforce org and update it from 
-                // PeopleSoft only as-needed
-                StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
-                currentTerm = currentTermData.CurrTerm__c;
-                
+        if (urlParamsExistAndAreValid) {
+            if (isContactId) {
+                theContact = ContactService.getContactInformation(contactId, '');
             } else {
-                failState = true;
-                vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
-                throw new StudentProfileException('URL Parameters are missing or invalid');
+                theContact = ContactService.getContactInformation('', String.valueOf(contactId));
             }
+            
+            if (theContact == null || theContact.EMPLID__c == null) {
+                urlParamsExistAndAreValid = false;
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
+                throw new StudentProfileException('Contact missing EMPLId');
+            }
+            deceased = '';
+          
+            populateStudentMilestoneUGrad();
+            populateStudentMilestoneGrad();
+            getFinancialSummaryData();    
+
+            // Start populating the lists
+            openCases = CaseService.getAllOpenCases(theContact.Id);
+            sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
+            
+            getTermInfo();
+            allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
+            
+            // TODO: Find out about this list. It may just be a single object.
+            // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
+            /*
+            * Handling for nulls. Get the Objects as Lists from the different services first.
+            * If the list size is greater than expected, use first Object in list.
+            */
+            List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
+                StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
+            
+            
+            if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0)
+            {
+                for (Student_Program_Plan__c spp: studentProgramPlansBeforeToday)
+                {
+                    if (spp.Status__c == 'Active in Program')
+                    {
+                        programPlan = spp;
+                        break;
+                    } 
+                }
+            }
+            
+            
+            if (allProgramPlans.size() > 0)    
+            {
+                for (Student_Program_Plan__c spp: allProgramPlans)
+                {
+                    if (spp.PRIMARY_FLAG__c == true)
+                        primaryProgramPlan = spp;
+                        
+                    if (spp.Career__c == null || spp.Career__c == 'Undergraduate')
+                        ugProgramPlans.add(spp);
+                    else
+                        gradProgramPlans.add(spp);
+                }
+            }
+            List<Student_Program_Subplan__c> tmpSubPlanList = [
+                        Select Subplan_description__c
+                              FROM Student_Program_Subplan__c
+                              WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
+            ];
+            
+            if(tmpSubPlanList.size() > 0){
+                for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
+                    subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
+                }
+                subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
+            }
+            // Temporary solution for beta release; setting currentTerm to a hard-coded value
+            // so we have value to work with while the term populates asynchronously; ultimate 
+            // solution will be to store term info in the Salesforce org and update it from 
+            // PeopleSoft only as-needed
+            StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+            currentTerm = currentTermData.CurrTerm__c;
+            
+        } else {
+            throw new StudentProfileException('URL Parameters are missing or invalid');
+        }
         
         serviceIndicators = getServiceIndicators();
         studentProgram = getStudentProgramData();
@@ -908,9 +890,8 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    global static List<sortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, boolean sortDirection){
+    global static List<sortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, Boolean sortDirection){
         List<sortableClass> classList = new List<sortableClass>();
-        sortDirect = sortDirection;
         for (PS_ASU_SP_CLASS_V__x c : listOfClasses) {
             classList.add(new sortableClass(c));
         }
@@ -932,9 +913,8 @@ global with sharing class StudentProfileController
     }
     
     @RemoteAction
-    global static List<sortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, boolean sortDirection){
+    global static List<sortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, Boolean sortDirection){
         List<sortableCreditByExam> examList = new List<sortableCreditByExam>();
-        sortDirect = sortDirection;
         for (PS_ASU_SP_TRNSFR_V__x c : listOfExams) {
             examList.add(new sortableCreditByExam(c));
         }
@@ -956,9 +936,8 @@ global with sharing class StudentProfileController
     }
     
     @RemoteAction
-    global static List<sortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, boolean sortDirection){
+    global static List<sortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, Boolean sortDirection){
         List<sortableTransferWork> transferList = new List<sortableTransferWork>();
-        sortDirect = sortDirection;
         for (JBT_RET_CLASS_XFER__x c : listOfTransfer) {
             transferList.add(new sortableTransferWork(c));
         }
@@ -1381,7 +1360,7 @@ global with sharing class StudentProfileController
         }
     }
 	
-    private void getFinancialSummaryData(Contact theContact) {
+    private void getFinancialSummaryData() {
         faWrapper = new FinancialAidWrapper();
         
         Set<String> tempAidYears = new Set<String>();

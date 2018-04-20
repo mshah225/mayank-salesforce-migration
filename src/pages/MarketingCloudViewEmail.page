@@ -1,0 +1,7 @@
+<apex:page standardController="et4ae5__IndividualEmailResult__c" 
+        extensions="ViewEmailButtonController" 
+        action="{!viewEmailAndStoreLink}">
+    <apex:pageblock >
+       <apex:pageMessages id="showMessage"></apex:pageMessaViewEmailButtonControllerges>
+    </apex:pageblock>
+</apex:page>

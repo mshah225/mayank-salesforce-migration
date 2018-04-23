@@ -2,6 +2,6 @@
         extensions="MarketingCloudViewEmailController" 
         action="{!viewEmailAndStoreLink}">
     <apex:pageblock >
-       <apex:pageMessages id="showMessage"></apex:pageMessaViewEmailButtonControllerges>
+       <apex:pageMessages id="showMessage"></apex:pageMessages>
     </apex:pageblock>
 </apex:page>

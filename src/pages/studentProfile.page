@@ -1882,8 +1882,6 @@
                                      alt="suncard photo"
                                      class="img-responsive intro"
                                      style="max-width:200px;width:100%;"/> 
-                                    <i id="sunImgSpinner" class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom' 
-                                       style='position: absolute; top: 50%; left: 42%; text-align:center;'></i>
                                 </div>
                                 </apex:form>
                             </apex:outputPanel>

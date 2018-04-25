@@ -1,10 +1,17 @@
 /**
  * An apex page controller that exposes the site login functionality
  */
-@IsTest global with sharing class CommunitiesLoginControllerTest {
-    @IsTest(SeeAllData=true) 
-    global static void testCommunitiesLoginController () {
+@isTest 
+private with sharing class CommunitiesLoginControllerTest {
+    @isTest 
+    private static void forwardToAuthPageReturnsCorrectUrl () {
+        
+        PageReference defaultLoginPage;
+        Test.startTest();
      	CommunitiesLoginController controller = new CommunitiesLoginController();
-     	System.assertEquals(null, controller.forwardToAuthPage());       
+     	defaultLoginPage = controller.forwardToAuthPage();
+     	Test.stopTest();
+     	
+     	System.assertEquals(null, defaultLoginPage);       
     }    
 }

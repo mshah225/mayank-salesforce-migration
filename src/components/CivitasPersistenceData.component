@@ -403,11 +403,6 @@
                         document.getElementById("meter").src = "{!URLFOR($Resource.PersistenceChart, 'icon-5.png')}";
                         break;
                 }
-            } else if (event.type === 'exception') {
-                document.getElementById("errorMessage").innerHTML =
-                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                document.getElementById("chart_div").innerHTML = "";
-                document.getElementById("leftID").float = "none";
             } else {
                 document.getElementById("errorMessage").innerHTML =
                     "<b>No Data is Currently Available</b>";

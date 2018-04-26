@@ -201,7 +201,7 @@
                             jQuery('#sunImgSpinner').remove();
                         }
                     },
-                    {escape: true}
+                    {buffer: false, escape: true, timeout: 15000}
                 );
             }
             
@@ -369,7 +369,7 @@
                                     event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
                 }
             }
@@ -438,9 +438,8 @@
                                 errorHtml += event.message;
                             }                            
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
-    
     
                     Visualforce.remoting.Manager.invokeAction(
                         '{!$RemoteAction.StudentProfileController.getFinAidIndicator}',
@@ -459,7 +458,7 @@
                                 errorHtml += event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
     
                     Visualforce.remoting.Manager.invokeAction(
@@ -514,7 +513,7 @@
                                 errorHtml += event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
     
                     Visualforce.remoting.Manager.invokeAction(
@@ -535,7 +534,7 @@
                                 errorHtml += event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
     
                     Visualforce.remoting.Manager.invokeAction(
@@ -593,7 +592,7 @@
                                 errorHtml += event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
     
                    Visualforce.remoting.Manager.invokeAction(
@@ -646,7 +645,7 @@
                             }
                     document.getElementById("stdtRetentionResponseErrors").innerHTML = errorHtml;
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
                     cleanUpUndefined("UGgeneralIndicators");
                 }
@@ -743,7 +742,7 @@
                                     event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
                 }
             }
@@ -863,7 +862,7 @@
                                     event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
                 }
             }
@@ -930,7 +929,7 @@
                                     event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
                 }
             }
@@ -1009,7 +1008,7 @@
                                     event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
                 }
             }
@@ -1072,7 +1071,7 @@
                                     event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
                 }
             }
@@ -1132,7 +1131,7 @@
                                     event.message;
                             }
                         },
-                        {escape: true}
+                        {buffer: false, escape: true, timeout: 15000}
                     );
                 }
             }
@@ -1384,15 +1383,15 @@
                                 event.message;
                         }
                     },
-                    {escape: true}
+                    {buffer: false, escape: true, timeout: 15000}
                 );
             }
     
             function filterClasses() {
                 var termSelect = document.getElementById("ps_classes_term_select");
                 var sessionSelect = document.getElementById("ps_classes_session_select");
-                var searchTerm = termSelect.options[termSelect.selectedIndex].text ;
-                var searchSession = sessionSelect.options[sessionSelect.selectedIndex].text ;
+                var searchTerm = termSelect.options[termSelect.selectedIndex] === undefined ? '' : termSelect.options[termSelect.selectedIndex].text;
+                var searchSession = sessionSelect.options[sessionSelect.selectedIndex] === undefined ? '' : sessionSelect.options[sessionSelect.selectedIndex].text ;
                 var classTable = document.getElementById('enrolled_classes_table');
                 var summaryHtml = "";
                 var earnedUnits = 0;
@@ -1515,7 +1514,9 @@
                         document.getElementById('ps_enrolled_classes').innerHTML = html;
                         filterClasses();
                         cleanUpUndefined("ps_enrolled_classes");
-                    });
+                    }, 
+                    {buffer: false, escape: true, timeout: 15000}
+                );
             }
             
             //Method to Sort Dropped Class List
@@ -1573,7 +1574,9 @@
                                 'No dropped or withdrawn classes found.';
                         }
                         filterClasses();
-                    });
+                    }, 
+                    {buffer: false, escape: true, timeout: 15000}
+                );
             }
             
             // Method to get Credit by Exam 
@@ -1633,7 +1636,7 @@
                                 event.message;
                         }
                     },
-                    {escape: true}
+                    {buffer: false, escape: true, timeout: 15000}
                 );
             }
     
@@ -1681,7 +1684,9 @@
                             document.getElementById("psCreditByExamErrors").innerHTML =
                                 'No credit by exam found.';
                         }
-                    });
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
             }
             
             // Method to get Transfer Work
@@ -1753,7 +1758,7 @@
                                 event.message;
                         }
                     },
-                    {escape: true}
+                    {buffer: false, escape: true, timeout: 15000}
                 );
             }
     
@@ -1813,14 +1818,15 @@
                             document.getElementById("psTransferWorkErrors").innerHTML =
                                 'No transfer work found.';
                         }
-                    });
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
             }
                
             function filterFinancialAid() {
                 var e = document.getElementById("ps_financial_aid_year_select");
                 if(e.options[0] == null) {
                     document.getElementById("ps_financial_aid_year_picklist").innerHTML = '';
-                    //document.getElementById('ps_financial_aid_summary').innerHTML = 'No data is currentely available for this student';
                     return;
                 }
                 var search = e.options[e.selectedIndex].text ;

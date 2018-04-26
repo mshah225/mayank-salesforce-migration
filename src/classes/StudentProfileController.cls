@@ -8,14 +8,13 @@ global with sharing class StudentProfileController
     public static String examParamSort {get; set;}
     public static String transferParamSort {get; set;}
     
-    private Boolean isContactId; // Stores wheter the ID parameter is a contact Id or EMPL Id
+    private Boolean isContactId;
     private List<Student_Program_Plan__c> allProgramPlans;
     private Student_Program_Subplan__c subProgramPlan;
     private Student_Program_Plan__c programPlan;
     private String contactId;
     
     public Contact theContact { get; set; }
-    public Boolean urlParamsExistAndAreValid {get; set;} // Stores whether or not URL params exist and are valid
     public List<Case> openCases { get; set; }
     public List<Student_Group__c> sGroupList { get; set; }
     public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
@@ -54,21 +53,16 @@ global with sharing class StudentProfileController
      * </p>
      */
     public StudentProfileController() {
-        urlParamsExistAndAreValid = true;
-        
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
-        
         if (Validator.validateId(contactId, Contact.class)) {
             isContactId = true;
         } else if (Validator.validateEMPLId(contactId)) {
             isContactId = false;
         } else {
-            urlParamsExistAndAreValid = false;
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
+            throw new StudentProfileException('URL Parameters are missing or invalid');
         }
-        
     }
     
     /**
@@ -95,89 +89,84 @@ global with sharing class StudentProfileController
         studentMilestonesUGrad = new List<Student_Milestone__c>();
         studentMilestonesGrad = new List<Student_Milestone__c>();
         
-        if (urlParamsExistAndAreValid) {
-            if (isContactId) {
-                theContact = ContactService.getContactInformation(contactId, '');
-            } else {
-                theContact = ContactService.getContactInformation('', String.valueOf(contactId));
-            }
-            
-            if (theContact == null || theContact.EMPLID__c == null) {
-                urlParamsExistAndAreValid = false;
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
-                throw new StudentProfileException('Contact missing EMPLId');
-            }
-            deceased = '';
-          
-            populateStudentMilestoneUGrad();
-            populateStudentMilestoneGrad();
-            getFinancialSummaryData();    
-
-            // Start populating the lists
-            openCases = CaseService.getAllOpenCases(theContact.Id);
-            sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
-            
-            getTermInfo();
-            allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-            
-            // TODO: Find out about this list. It may just be a single object.
-            // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
-            /*
-            * Handling for nulls. Get the Objects as Lists from the different services first.
-            * If the list size is greater than expected, use first Object in list.
-            */
-            List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
-                StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
-            
-            
-            if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0)
-            {
-                for (Student_Program_Plan__c spp: studentProgramPlansBeforeToday)
-                {
-                    if (spp.Status__c == 'Active in Program')
-                    {
-                        programPlan = spp;
-                        break;
-                    } 
-                }
-            }
-            
-            
-            if (allProgramPlans.size() > 0)    
-            {
-                for (Student_Program_Plan__c spp: allProgramPlans)
-                {
-                    if (spp.PRIMARY_FLAG__c == true)
-                        primaryProgramPlan = spp;
-                        
-                    if (spp.Career__c == null || spp.Career__c == 'Undergraduate')
-                        ugProgramPlans.add(spp);
-                    else
-                        gradProgramPlans.add(spp);
-                }
-            }
-            List<Student_Program_Subplan__c> tmpSubPlanList = [
-                        Select Subplan_description__c
-                              FROM Student_Program_Subplan__c
-                              WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
-            ];
-            
-            if(tmpSubPlanList.size() > 0){
-                for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
-                    subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
-                }
-                subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
-            }
-            // Temporary solution for beta release; setting currentTerm to a hard-coded value
-            // so we have value to work with while the term populates asynchronously; ultimate 
-            // solution will be to store term info in the Salesforce org and update it from 
-            // PeopleSoft only as-needed
-            StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
-            currentTerm = currentTermData.CurrTerm__c;
-            
+        if (isContactId) {
+            theContact = ContactService.getContactInformation(contactId, '');
         } else {
-            throw new StudentProfileException('URL Parameters are missing or invalid');
+            theContact = ContactService.getContactInformation('', String.valueOf(contactId));
         }
+        
+        if (theContact == null || theContact.EMPLID__c == null) {
+            invalidUrlParameters = true;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
+            throw new StudentProfileException('Contact missing EMPLId');
+        }
+        deceased = '';
+      
+        populateStudentMilestoneUGrad();
+        populateStudentMilestoneGrad();
+        getFinancialSummaryData();    
+
+        // Start populating the lists
+        openCases = CaseService.getAllOpenCases(theContact.Id);
+        sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
+        
+        getTermInfo();
+        allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
+        
+        // TODO: Find out about this list. It may just be a single object.
+        // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
+        /*
+        * Handling for nulls. Get the Objects as Lists from the different services first.
+        * If the list size is greater than expected, use first Object in list.
+        */
+        List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
+            StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
+        
+        
+        if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0)
+        {
+            for (Student_Program_Plan__c spp: studentProgramPlansBeforeToday)
+            {
+                if (spp.Status__c == 'Active in Program')
+                {
+                    programPlan = spp;
+                    break;
+                } 
+            }
+        }
+        
+        
+        if (allProgramPlans.size() > 0)    
+        {
+            for (Student_Program_Plan__c spp: allProgramPlans)
+            {
+                if (spp.PRIMARY_FLAG__c == true)
+                    primaryProgramPlan = spp;
+                    
+                if (spp.Career__c == null || spp.Career__c == 'Undergraduate')
+                    ugProgramPlans.add(spp);
+                else
+                    gradProgramPlans.add(spp);
+            }
+        }
+        List<Student_Program_Subplan__c> tmpSubPlanList = [
+                    Select Subplan_description__c
+                          FROM Student_Program_Subplan__c
+                          WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
+        ];
+        
+        if(tmpSubPlanList.size() > 0){
+            for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
+                subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
+            }
+            subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
+        }
+        // Temporary solution for beta release; setting currentTerm to a hard-coded value
+        // so we have value to work with while the term populates asynchronously; ultimate 
+        // solution will be to store term info in the Salesforce org and update it from 
+        // PeopleSoft only as-needed
+        StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+        currentTerm = currentTermData.CurrTerm__c;
         
         serviceIndicators = getServiceIndicators();
         studentProgram = getStudentProgramData();
@@ -1364,18 +1353,18 @@ global with sharing class StudentProfileController
         faWrapper = new FinancialAidWrapper();
         
         Set<String> tempAidYears = new Set<String>();
-        for (Financial_Aid_Detail__c faRecord: [SELECT Acad_Career__c, Accept_Amount__c, Aid_Year__c, Descr__c, Contact__c,
-                                                       Descr_Category__c, Disbursed_Amount__c, Id, 
-                                                       Offer_Amount__c, Name
-                                              FROM Financial_Aid_Detail__c
-                                              WHERE Contact__c = :theContact.Id
-                                              ORDER BY Aid_Year__c DESC, Descr_Category__c ASC, Name ASC
-                							 ]
-            ) {
+        for (Financial_Aid_Detail__c faRecord: [
+            SELECT Acad_Career__c, Accept_Amount__c, Aid_Year__c, Descr__c, Contact__c,
+                Descr_Category__c, Disbursed_Amount__c, Id, 
+                Offer_Amount__c, Name
+            FROM Financial_Aid_Detail__c
+            WHERE Contact__c = :theContact.Id
+            ORDER BY Aid_Year__c DESC, Descr_Category__c ASC, Name ASC
+         ]) {
                 tempAidYears.add(faRecord.Aid_Year__c);
                 faWrapper.summaryRecords.add(faRecord);
         }
-        if (tempAidYears.size() > 0) {
+        if (!tempAidYears.isEmpty()) {
             faWrapper.aidYears.add('All');
             faWrapper.aidYears.addAll(tempAidYears);
         }

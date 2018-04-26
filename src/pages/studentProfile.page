@@ -163,8 +163,6 @@
             });
         
             $j(document).ready(function() {
-                loadRemoteSunCardPhoto();
-                
                 $j("#btnLoadIndicatorsHistory").click(function(){
                     getRetentionSNPs(); 
                 });
@@ -172,8 +170,9 @@
                 maskPhoneNumbers();
                 filterFinancialAid();
                 
-                loadUGIndicatorTab();
+                loadRemoteSunCardPhoto();
                 loadCommentsTab();
+                loadUGIndicatorTab();
                 loadClassesTab();
             });
             

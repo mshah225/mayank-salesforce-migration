@@ -1908,7 +1908,7 @@
                                     </apex:outputPanel>
                                 </h2>
                                 
-                                <h4 class="intro" style="{!IF(URLParamsExistAndAreValid, 'display:block', 'display:none')}">
+                                <h4 class="intro" style="display:block">
                                     <span style="color:#353535">ID:</span>
                                     &nbsp;{!theContact.EMPLID__c}
                                     <span style="color:#353535">|</span>
@@ -1916,20 +1916,20 @@
                                     &nbsp;{!theContact.ASURite_ID__c}
                                 </h4>
 
-                                <apex:outputPanel rendered="{!IF(primaryProgramPlan.Status__c == 'Active in Program', true, false)}">
+                                <apex:outputPanel rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}">
                                     <h4 class="intro">
                                         <span style="color:#353535;">Academic Level:</span>
-                                        &nbsp;{!primaryProgramPlan.Career__c}
+                                        &nbsp;{!studentProgram.Career__c}
                                     </h4>
 
                                     <h4 class="intro">
                                         <span style="color:#353535;">College:</span>
-                                        &nbsp;{!primaryProgramPlan.Program_Description__c}
+                                        &nbsp;{!studentProgram.Program_Description__c}
                                     </h4>
 
                                     <h4 class="intro">
                                         <span style="color:#353535;">Plan, Degree:</span>
-                                        &nbsp;{!primaryProgramPlan.Plan_Description__c + IF(ISBLANK(primaryProgramPlan.Degree__c),'', ', ' + primaryProgramPlan.Degree__c)}
+                                        &nbsp;{!studentProgram.Plan_Description__c + IF(ISBLANK(studentProgram.Degree__c),'', ', ' + studentProgram.Degree__c)}
                                     </h4>
                                     
                                     <h4 class="intro">
@@ -1939,7 +1939,7 @@
                                     
                                     <h4 class="intro">
                                         <span style="color:#353535;">Campus:</span>
-                                        &nbsp;{!primaryProgramPlan.Campus__r.Name}
+                                        &nbsp;{!studentProgram.Campus__r.Name}
                                     </h4>
                                 </apex:outputPanel>
                             </span>
@@ -1953,9 +1953,6 @@
                         </div>
                     </div>
 
-                    <div style="{!IF(URLParamsExistAndAreValid, 'display: none', 'border-style: solid; border-width: 2px; border-color: #9f2b50; background: #f2f2f2; margin-bottom: 3px; margin-top: 20px')}">
-    					<apex:pageMessages ></apex:pageMessages>
-                    </div>
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs responsive" role="tablist">
                         <li role="presentation" class="active">
@@ -2138,7 +2135,7 @@
                                                     <tr>
                                                         <th>BirthDate</th>
                                                         <td>
-                                                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                            <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                 <apex:param value="{!theContact.BirthDate}" /> 
                                                             </apex:outputText>
                                                             {!IF(ISBLANK(theContact.BirthDate), '--', '')}
@@ -2211,7 +2208,7 @@
                                                     <th>Room Check-In Date</th>
                                                     <td id="checkInDate">
                                                         {!IF(ISBLANK(theContact.Check_In_Dt__c), '--', '')}
-                                                        <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                        <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                             <apex:param value="{!theContact.Check_In_Dt__c}" /> 
                                                         </apex:outputText>
                                                     </td>
@@ -2221,7 +2218,7 @@
                                                     <th>Room Check-Out Date</th>
                                                     <td id="checkOutDate">
                                                         {!IF(ISBLANK(theContact.Check_Out_Dt__c), '--', '')}
-                                                        <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                        <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                             <apex:param value="{!theContact.Check_Out_Dt__c}" /> 
                                                         </apex:outputText>
                                                     </td>
@@ -2285,7 +2282,7 @@
                                                         <th>{!currentTermName} Enrollment Appointment</th>
                                                         <td>
                                                             {!IF(ISBLANK(studentProgram.Appt_Dt__c), '--', '')}
-                                                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                            <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                 <apex:param value="{!studentProgram.Appt_Dt__c}"/> 
                                                             </apex:outputText>
                                                         </td>
@@ -2294,7 +2291,7 @@
                                                         <th>{!nextTermName} Enrollment Appointment</th>
                                                         <td>
                                                             {!IF(ISBLANK(studentProgram.Appt_Dt_Pending__c), '--', '')}
-                                                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                            <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                 <apex:param value="{!studentProgram.Appt_Dt_Pending__c}"/> 
                                                             </apex:outputText>
                                                         </td>
@@ -2431,9 +2428,12 @@
                                                         <tr>
                                                             <td>{!testScore.Test_Type__c}</td>
                                                             <td>{!testScore.Test_Component__c}</td>
-                                                            <td>{!testScore.Test_Component_Score__c}</td>
+                                                            <td><apex:outputText value="{0,number,##.##}"> 
+                                                                <apex:param value="{!testScore.Test_Component_Score__c}" /> 
+                                                                </apex:outputText>
+                                                            </td>
                                                             <td>
-                                                                <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                     <apex:param value="{!testScore.Test_Date__c}" /> 
                                                                 </apex:outputText>
                                                             </td>
@@ -2478,17 +2478,21 @@
                                                         <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}">
                                                             <apex:repeat value="{!studentMilestonesUGrad}" var="milestone">
                                                             <tr>
-                                                                <td>  {!milestone.Acad_Program__r.Name} </td>
-                                                                <td>  {!milestone.Milestone__c} </td>
-                                                                <td>  {!milestone.Milestone_Title__c} </td>
-                                                                <td>  {!milestone.Milestone_Level__c} </td>
-                                                                <td>  {!milestone.Descrformal__c} </td>
-                                                                <td>  {!milestone.Acad_Plan__c} </td>
-                                                                <td>  {!milestone.Descr__c} </td>
-                                                                <td>  {!milestone.Term_Required__r.Name} </td>
-                                                                <td>  {!milestone.Anticipated_Term__c} </td>
-                                                                <td>  {!milestone.Date_Completed__c} </td>
-                                                                <td>  {!milestone.Milestone_Complete__c} </td>
+                                                                <td>{!IF(ISBLANK(milestone.Acad_Program__r.Name), '--', milestone.Acad_Program__r.Name)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Milestone__c), '--', milestone.Milestone__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Milestone_Title__c), '--', milestone.Milestone_Title__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Milestone_Level__c), '--', milestone.Milestone_Level__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Descrformal__c), '--', milestone.Descrformal__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Acad_Plan__r.Name), '--', milestone.Acad_Plan__r.Name)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Descr__c), '--', milestone.Descr__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Term_Required__r.Name), '--', milestone.Term_Required__r.Name)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Anticipated_Term__c), '--', milestone.Anticipated_Term__c)}</td>
+                                                                <td>
+                                                                    <apex:outputText value="{0,date,MM/dd/yyyy}"> 
+                                                                        <apex:param value="{!milestone.Date_Completed__c}" /> 
+                                                                    </apex:outputText>
+                                                                </td>
+                                                                <td>{!IF(milestone.Milestone_Complete__c, 'Y', 'N')}</td>
                                                             </tr>
                                                         </apex:repeat>
                                                         </apex:outputPanel>
@@ -2525,7 +2529,7 @@
                                                               <th>Applied Date</th>
                                                               <td>
                                                                   {!IF(ISBLANK(ugStudentProgram.Adm_Appl_Dt__c), '--', '')}
-                                                                  <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                  <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                       <apex:param value="{!ugStudentProgram.Adm_Appl_Dt__c}" /> 
                                                                   </apex:outputText>
                                                               </td>
@@ -2542,7 +2546,7 @@
                                                               <th>Orientation Date</th>
                                                               <td>
                                                                   {!IF(ISBLANK(theContact.Orient_Dt__c), '--', '')}
-                                                                  <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                  <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                       <apex:param value="{!theContact.Orient_Dt__c}" /> 
                                                                   </apex:outputText>
                                                               </td>
@@ -2690,9 +2694,13 @@
                                                     <tr>
                                                         <td>{!testScore.Test_Type__c}</td>
                                                         <td>{!testScore.Test_Component__c}</td>
-                                                        <td>{!testScore.Test_Component_Score__c}</td>
                                                         <td>
-                                                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                            <apex:outputText value="{0,number,##.##}"> 
+                                                                <apex:param value="{!testScore.Test_Component_Score__c}" /> 
+                                                            </apex:outputText>
+                                                        </td>
+                                                        <td>
+                                                            <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                 <apex:param value="{!testScore.Test_Date__c}" /> 
                                                             </apex:outputText>
                                                         </td>
@@ -2788,7 +2796,7 @@
                                                                   <th>Applied Date</th>
                                                                   <td>
                                                                       {!IF(ISBLANK(gradStudentProgram.Adm_Appl_Dt__c), '--', '')}
-                                                                      <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                      <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                           <apex:param value="{!gradStudentProgram.Adm_Appl_Dt__c}" /> 
                                                                       </apex:outputText>
                                                                   </td>
@@ -2809,7 +2817,7 @@
                                                                   <th>Orientation Date</th>
                                                                   <td>
                                                                       {!IF(ISBLANK(theContact.Orient_Dt__c), '--', '')}
-                                                                      <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                      <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                           <apex:param value="{!theContact.Orient_Dt__c}" /> 
                                                                       </apex:outputText>
                                                                   </td>
@@ -3257,7 +3265,7 @@
                                                     <tr>
                                                         <th>Test Completion Date</th>
                                                         <td id="me3_completion_date">
-                                                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                            <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                 <apex:param value="{!me3Results.Test_Completed_Date__c}" /> 
                                                             </apex:outputText>
                                                         </td>
@@ -3316,7 +3324,7 @@
                                                         <apex:repeat value="{!me3Results.me3_Careers__r}" var="me3Career">
                                                             <tr style='font-weight:normal;'>
                                                                 <td style='min-width: 75px;'>
-                                                                    <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                    <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                         <apex:param value="{!me3Career.Updated_Date__c}" /> 
                                                                     </apex:outputText>
                                                                 </td>
@@ -3350,7 +3358,7 @@
                                                     <tr>
                                                         <th>Test Completion Date</th>
                                                         <td id="me3_hs_completion_date">
-                                                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                            <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                 <apex:param value="{!me3HighSchoolResults.Test_Completed_Date__c}" /> 
                                                             </apex:outputText>
                                                         </td>
@@ -3409,7 +3417,7 @@
                                                         <apex:repeat value="{!me3HighSchoolResults.me3_Careers__r}" var="me3Career">
                                                             <tr style='font-weight:normal;'>
                                                                 <td style='min-width: 75px;'>
-                                                                    <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                                    <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                         <apex:param value="{!me3Career.Updated_Date__c}" /> 
                                                                     </apex:outputText>
                                                                 </td>
@@ -3604,7 +3612,7 @@
                                                 <apex:repeat value="{!serviceIndicators}" var="indicator">
                                                     <tr>
                                                         <td>
-                                                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                                            <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                 <apex:param value="{!indicator.SI_Start_Date__c}" /> 
                                                             </apex:outputText>
                                                         </td>

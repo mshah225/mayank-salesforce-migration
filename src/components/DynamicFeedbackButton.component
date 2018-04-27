@@ -63,10 +63,6 @@
 	</style>
     <a href="./dynamicfeedback?carName={!carName}{!IF(NOT(ISBLANK(miscInformation)),'&misc=' & miscInformation,'')}{!IF(NOT(ISBLANK(contactId)),'&contactId=' & contactId,'')}{!IF(NOT(ISBLANK(retURL)),'&retURL=' & retURL,'')}" 
         class="{!'feedbackButton ' & classes}" target="_blank">
-        <apex:outputPanel layout="none" rendered="{!betaTag}">
-            <img class="betaTag" src="{!URLFOR($Resource.betaTag)}"/>
-            &nbsp;&nbsp;
-        </apex:outputPanel>
         <i class="fa fa-comment"></i> Feedback
     </a>
 </apex:component>

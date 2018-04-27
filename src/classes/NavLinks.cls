@@ -12,7 +12,6 @@ public class NavLinks {
         } else {
             linksCookie = getNavBarCookie();
         }
-        linkList = new List<Link>();
         parseCookieJsonAndPopulateLinks();
         return null;
     }
@@ -41,6 +40,7 @@ public class NavLinks {
         }
         try {
             linkObjectsFromParsedJson = parseCookieJson(linksJson);
+            linkList = new List<Link>();
         } catch (Exception ex) {
             List<String> errorVars = new List<String>();
             errorVars.add(ErrorLogger.convertStringToJson('JSON Value', linksJson));

@@ -4,7 +4,8 @@ public class NavLinks {
     public Navlinks(Object controller) {}
     public List<Link> linkList { get; set; }
     private static Cookie linksCookie;
-     public PageReference init() {
+    
+    public PageReference init() {
         if (ApexPages.currentPage().getParameters().get('navbar') != null) {
             linksCookie = createCookieFromURL();
             ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});
@@ -78,8 +79,4 @@ public class NavLinks {
         }
         return value;
     }
-    
-    
-    
-   
 }

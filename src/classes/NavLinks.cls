@@ -12,18 +12,18 @@ public class NavLinks {
         } else {
             linksCookie = getNavBarCookie();
         }
-        parseCookieJSONAndPopulateLinks();
+        linkList = new List<Link>();
+        parseCookieJsonAndPopulateLinks();
         return null;
     }
     
     private Cookie createCookieFromURL() {
         Cookie cookieFromURL;
-        String links;
         String nullPath = null;
-        Integer sessionCookie = -1;
-        Boolean insecureCookie = false;
-        links = ApexPages.currentPage().getParameters().get('navbar');
-        cookieFromURL = new Cookie('navbarlinks', links, nullPath, sessionCookie, insecureCookie);
+        Integer sessionCookieTimeount = -1;
+        Boolean isInsecureCookie = false;
+        String links = ApexPages.currentPage().getParameters().get('navbar');
+        cookieFromURL = new Cookie('navbarlinks', links, nullPath, sessionCookieTimeount, isInsecureCookie);
         return cookieFromURL;
     }
     
@@ -32,44 +32,22 @@ public class NavLinks {
         return currentPageCookie;
     }
     
-    private void parseCookieJSONAndPopulateLinks() {
-        List<Object> linkObjectsFromParsedJSON = new List<Object>();
-        String linksJSON;
+    private void parseCookieJsonAndPopulateLinks() {
+        List<Object> linkObjectsFromParsedJson = new List<Object>();
+        String linksJson;
         if (linksCookie != null) {
-            linksJSON = linksCookie.getValue();
-            linksJSON = cleanUpHtmlEncoding(linksJSON);
+            linksJson = linksCookie.getValue();
+            linksJson = cleanUpHtmlEncoding(linksJson);
         }
         try {
-            linkObjectsFromParsedJSON = parseCookieJSON(linksJSON);
-            linkList = new List<Link>();
+            linkObjectsFromParsedJson = parseCookieJson(linksJson);
         } catch (Exception ex) {
             List<String> errorVars = new List<String>();
-            errorVars.add(ErrorLogger.convertStringToJSON('Cookie Value', linksJSON));
-            errorVars.add(ErrorLogger.convertStringToJSON('Null Pointer Exception Message', ex.getMessage()));
+            errorVars.add(ErrorLogger.convertStringToJson('JSON Value', linksJson));
+            errorVars.add(ErrorLogger.convertStringToJson('Exception Message', ex.getMessage()));
             ErrorLogger.log(ex, errorVars, false);    
         }
-        populateLinks(linkObjectsFromParsedJSON);
-    }
-    
-    private List<Object> parseCookieJSON(String linksJSON) {
-        Map<String, Object> jsonCookieValue;
-        List<Object> linkObjectsFromJSON = new List<Object>();
-        jsonCookieValue = (Map<String, Object>) JSON.deserializeUntyped(linksJSON);
-        linkObjectsFromJSON = (List<Object>) jsonCookieValue.get('navbarLinks');
-        return linkObjectsFromJSON;
-    }
-    
-    public void populateLinks(List<Object> linkObjectsFromJSON) {
-        Map<String, Object> linkNameAndURL;
-        for (Object linkObj: linkObjectsFromJSON) {
-            linkNameAndURL = (Map<String, Object>) linkObj;
-            for (String linkName: linkNameAndURL.keySet()) {
-                Link thisLink = new Link();
-                thisLink.name = linkName;
-                thisLink.url = (String) linkNameAndURL.get(linkName);
-                linkList.add(thisLink);
-            }
-        }
+        populateLinks(linkObjectsFromParsedJson);
     }
     
     private String cleanUpHtmlEncoding(String value) {
@@ -78,5 +56,26 @@ public class NavLinks {
             value.replaceAll('&#34;','"');
         }
         return value;
+    }
+    
+    private List<Object> parseCookieJson(String linksJson) {
+        Map<String, Object> jsonCookieValue;
+        List<Object> linkObjectsFromJson = new List<Object>();
+        jsonCookieValue = (Map<String, Object>) Json.deserializeUntyped(linksJson);
+        linkObjectsFromJson = (List<Object>) jsonCookieValue.get('navbarLinks');
+        return linkObjectsFromJson;
+    }
+    
+    public void populateLinks(List<Object> linkObjectsFromJson) {
+        Map<String, Object> linkNameAndURL;
+        for (Object linkObj: linkObjectsFromJson) {
+            linkNameAndURL = (Map<String, Object>) linkObj;
+            for (String linkName: linkNameAndURL.keySet()) {
+                Link thisLink = new Link();
+                thisLink.name = linkName;
+                thisLink.url = (String) linkNameAndURL.get(linkName);
+                linkList.add(thisLink);
+            }
+        }
     }
 }

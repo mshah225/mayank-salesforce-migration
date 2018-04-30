@@ -3299,11 +3299,19 @@
                                                 <table class="table table-striped">
                                                     <tr>
                                                         <th>Realistic (R) Score</th>
-                                                        <td id="me3_r_score">{!me3Results.R_Score__c} / 100</td>
+                                                        <td id="me3_r_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3Results.R_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Investigative (I) Score</th>
-                                                        <td id="me3_i_score">{!me3Results.I_Score__c} / 100</td>
+                                                        <td id="me3_i_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3Results.I_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -3311,11 +3319,19 @@
                                                 <table class="table table-striped">
                                                     <tr>
                                                         <th>Artistic (A) Score</th>
-                                                        <td id="me3_a_score">{!me3Results.A_Score__c} / 100</td>
+                                                        <td id="me3_a_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3Results.A_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Social (S) Score</th>
-                                                        <td id="me3_s_score">{!me3Results.S_Score__c} / 100</td>
+                                                        <td id="me3_s_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3Results.S_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -3323,11 +3339,19 @@
                                                 <table class="table table-striped">
                                                     <tr>
                                                         <th>Enterprising (E) Score</th>
-                                                        <td id="me3_e_score">{!me3Results.E_Score__c} / 100</td>
+                                                        <td id="me3_e_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3Results.E_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Conventional (C) Score</th>
-                                                        <td id="me3_c_score">{!me3Results.C_Score__c} / 100</td>
+                                                        <td id="me3_c_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3Results.C_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -3343,7 +3367,7 @@
                                                                         <apex:param value="{!me3Career.Updated_Date__c}" /> 
                                                                     </apex:outputText>
                                                                 </td>
-                                                                <td style='font-weight:bold;color:red;'>{!IF(me3Career.Active__c, 'X', '')}</td>
+                                                                <td style='font-weight:bold;color:green;display:none;'>{!IF(me3Career.Active__c, '✔', '')}</td>
                                                                 <td><b>Career Interest:</b>  {!me3Career.Career_Interest__c} </td>
                                                                 <td><b>Degree Interest:</b>  {!me3Career.Degree_Interest__c}  ({!me3Career.Plan_Code__c})</td>
                                                             </tr>
@@ -3392,11 +3416,19 @@
                                                 <table class="table table-striped">
                                                     <tr>
                                                         <th>Realistic (R) Score</th>
-                                                        <td id="me3_hs_r_score">{!me3HighSchoolResults.R_Score__c} / 100</td>
+                                                        <td id="me3_hs_r_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3HighSchoolResults.R_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Investigative (I) Score</th>
-                                                        <td id="me3_hs_i_score">{!me3HighSchoolResults.I_Score__c} / 100</td>
+                                                        <td id="me3_hs_i_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3HighSchoolResults.I_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -3404,11 +3436,20 @@
                                                 <table class="table table-striped">
                                                     <tr>
                                                         <th>Artistic (A) Score</th>
-                                                        <td id="me3_hs_a_score">{!me3HighSchoolResults.A_Score__c} / 100</td>
+                                                        <td id="me3_hs_a_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3HighSchoolResults.A_Score__c}" /> 
+                                                            </apex:outputText>
+                                                             / 100
+                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Social (S) Score</th>
-                                                        <td id="me3_hs_s_score">{!me3HighSchoolResults.S_Score__c} / 100</td>
+                                                        <td id="me3_hs_s_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3HighSchoolResults.S_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -3416,11 +3457,19 @@
                                                 <table class="table table-striped">
                                                     <tr>
                                                         <th>Enterprising (E) Score</th>
-                                                        <td id="me3_hs_e_score">{!me3HighSchoolResults.E_Score__c} / 100</td>
+                                                        <td id="me3_hs_e_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3HighSchoolResults.E_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Conventional (C) Score</th>
-                                                        <td id="me3_hs_c_score">{!me3HighSchoolResults.C_Score__c} / 100</td>
+                                                        <td id="me3_hs_c_score">
+                                                            <apex:outputText value="{0,number,###}"> 
+                                                                <apex:param value="{!me3HighSchoolResults.C_Score__c}" /> 
+                                                            </apex:outputText> / 100
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -3436,7 +3485,7 @@
                                                                         <apex:param value="{!me3Career.Updated_Date__c}" /> 
                                                                     </apex:outputText>
                                                                 </td>
-                                                                <td style='font-weight:bold;color:red;'>{!IF(me3Career.Active__c, 'X', '')}</td>
+                                                                <td style='font-weight:bold;color:green;display:none;'>{!IF(me3Career.Active__c, '✔', '')}</td>
                                                                 <td><b>Career Interest:</b>  {!me3Career.Career_Interest__c} </td>
                                                                 <td><b>Degree Interest:</b>  {!me3Career.Degree_Interest__c}  ({!me3Career.Plan_Code__c})</td>
                                                             </tr>

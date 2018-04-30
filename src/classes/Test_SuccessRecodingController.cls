@@ -6,6 +6,8 @@
 @IsTest
 private class Test_SuccessRecodingController {
     @testSetup static void setUpTest() {
+        TestDataFactory.createFunctionalGroupWithCategory('ASU Coach Outreach', 'Ad Hoc', 'N/A');
+        
         Profile p = [SELECT Id FROM Profile WHERE Name = 'ASU Service - Success Coach'];
 
         // Test Users

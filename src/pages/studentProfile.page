@@ -239,14 +239,6 @@
                         }, 800);
                     }
                 }
-                // Handling for responsive tabs
-                if ($j(this).attr('href') === '#collapse-UGindicators') {
-                    loadUGIndicatorTab();
-                } else if ($j(this).attr('href') === '#collapse-comments') {
-                    loadCommentsTab();
-                } else if ($j(this).attr('href') === '#collapse-classes') {
-                    loadClassesTab();
-                }
             });
             
             var indicatorTabLoaded = false;

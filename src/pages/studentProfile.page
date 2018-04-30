@@ -2939,12 +2939,24 @@
                                                     
                                                     <apex:repeat value="{!faWrapper.summaryRecords}" var="financialSummary">
                                                         <tr>
-                                                            <td> {!financialSummary.DESCR__c} </td>
-                                                            <td> {!financialSummary.Name} </td>
-                                                            <td> {!financialSummary.DESCR_CATEGORY__c} </td>
-                                                            <td> {!financialSummary.OFFER_AMOUNT__c} </td>
-                                                            <td> {!financialSummary.ACCEPT_AMOUNT__c} </td>
-                                                            <td> {!financialSummary.DISBURSED_AMOUNT__c} </td>
+                                                            <td>{!financialSummary.DESCR__c}</td>
+                                                            <td>{!financialSummary.Name}</td>
+                                                            <td>{!financialSummary.DESCR_CATEGORY__c}</td>
+                                                            <td>
+                                                                <apex:outputText value="{0,number,currency}"> 
+                                                                    <apex:param value="{!financialSummary.OFFER_AMOUNT__c}" />
+                                                                </apex:outputText>
+                                                            </td>
+                                                            <td>
+                                                                <apex:outputText value="{0,number,currency}"> 
+                                                                    <apex:param value="{!financialSummary.ACCEPT_AMOUNT__c}" />
+                                                                </apex:outputText>
+                                                            </td>
+                                                            <td>
+                                                                <apex:outputText value="{0,number,currency}"> 
+                                                                    <apex:param value="{!financialSummary.DISBURSED_AMOUNT__c}" />
+                                                                </apex:outputText>
+                                                            </td>
                                                             <td style='display:none'>{!financialSummary.AID_YEAR__c}</td>
                                                         </tr>
                                                     </apex:repeat>

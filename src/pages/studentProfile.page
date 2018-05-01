@@ -110,6 +110,7 @@
         
             Visualforce.remoting.timeout = 120000;
             (function($) {
+                console.log('responsive tab load');
                 fakewaffle.responsiveTabs(['xs', 'sm']);
             })(jQuery);
             
@@ -2416,7 +2417,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <apex:repeat value="{!testUndergradScoreList}" var = "testScore">
+                                                    <apex:repeat value="{!testUndergradScoreList}" var="testScore">
                                                         <tr>
                                                             <td>{!testScore.Test_Type__c}</td>
                                                             <td>{!testScore.Test_Component__c}</td>
@@ -2685,7 +2686,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <apex:repeat value="{!testGradScoreList}" var = "testScore">
+                                                <apex:repeat value="{!testGradScoreList}" var="testScore">
                                                     <tr>
                                                         <td>{!testScore.Test_Type__c}</td>
                                                         <td>{!testScore.Test_Component__c}</td>
@@ -2931,22 +2932,22 @@
                                                     
                                                     <apex:repeat value="{!faWrapper.summaryRecords}" var="financialSummary">
                                                         <tr>
-                                                            <td>{!financialSummary.DESCR__c}</td>
+                                                            <td>{!financialSummary.Descr__c}</td>
                                                             <td>{!financialSummary.Name}</td>
-                                                            <td>{!financialSummary.DESCR_CATEGORY__c}</td>
+                                                            <td>{!financialSummary.Descr_Category__c}</td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,currency}"> 
-                                                                    <apex:param value="{!financialSummary.OFFER_AMOUNT__c}" />
+                                                                    <apex:param value="{!financialSummary.Offer_Amount__c}" />
                                                                 </apex:outputText>
                                                             </td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,currency}"> 
-                                                                    <apex:param value="{!financialSummary.ACCEPT_AMOUNT__c}" />
+                                                                    <apex:param value="{!financialSummary.Accept_Amount__c}" />
                                                                 </apex:outputText>
                                                             </td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,currency}"> 
-                                                                    <apex:param value="{!financialSummary.DISBURSED_AMOUNT__c}" />
+                                                                    <apex:param value="{!financialSummary.Disbursed_Amount__c}" />
                                                                 </apex:outputText>
                                                             </td>
                                                             <td style='display:none'>{!financialSummary.AID_YEAR__c}</td>
@@ -3595,7 +3596,7 @@
                                     <a href="#" 
                                        onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}','Active Cases');return false"
                                        class="pull-right sideBoxMoreLink">
-                                        see all {!openCases.size}...
+                                        See all {!openCases.size}...
                                     </a>
                                 </apex:outputPanel>
                             </div>
@@ -3647,7 +3648,7 @@
                                 <a href="https://cs.oasis.asu.edu/psp/asucsprd/EMPLOYEE/CAMP/c/MAINTAIN_SERVICE_IND_STDNT.ACTIVE_SRVC_INDICA.GBL?EMPLID={!theContact.EMPLID__c}"
                                    class="pull-right sideBoxMoreLink"
                                    target="_blank">
-                                    manage...
+                                    Manage...
                                 </a>
                             </div>
                         </div>
@@ -3699,7 +3700,7 @@
                                 <apex:outputPanel rendered="{!sGroupList.size > 0}">
                                     <a href="#" onclick="openNewSubtab('/a0N?rlid=00Nd0000007tI9X\&id={!theContact.Id}','Student Groups');return false"
                                        class="pull-right sideBoxMoreLink">
-                                        see all {!sGroupList.size}...
+                                        See all {!sGroupList.size}...
                                     </a>
                                 </apex:outputPanel>
                             </div>

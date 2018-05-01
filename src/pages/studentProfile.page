@@ -32,41 +32,34 @@
                 margin:auto !important;
                 margin-bottom:24px !important;
                 max-width:50% !important;
-            }
-            
+           }
             li.transcriptAddress {
                 list-style: none;
-            }
-            
+           }
             th.transcriptHeader {
                 width: 165px;
-            }
-            
+           }
             @media screen and (max-width:767px) {
                 .browser {
                     display:none;
-                }
-            
+               }
                 .mobile {
                     display:block;
-                }
-            }
-            
+               }
+           }
             @media screen and (min-width:992px) and (max-width:1115px) {
                 .browser {
                     padding:8px !important;
                     font-size:15px !important;
-                }
-            
+               }
                 .browser img {
                     height:36px !important;
                     width:36px !important;
-                }
-            }
-            
+               }
+           }
             .hide {
                 display: none;
-            }
+           }
         </style>
         <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
         <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}"/>

@@ -15,12 +15,6 @@ public class CivitasPersistenceController {
     private String contactEmplId;
     
     public List<CivitasWrapper> civitasData { get; set; }
-    public String civitasDataInJson { get 
-        {
-            return Json.serialize(civitasData, true);
-        }
-        set;
-    }
     
     public CivitasPersistenceController() {
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
@@ -29,7 +23,38 @@ public class CivitasPersistenceController {
         prevTerm = currentTermData.PrevTerm__c;
         contactEmplId = ApexPages.currentPage().getParameters().get('contactId');
         civitasData = getCivitasData();
-        System.debug(civitasData);
+    }
+    
+    public String civitasDataInJson { get 
+        {
+            return Json.serialize(civitasData, true);
+        }
+        set;
+    }
+    
+    public String getInfo {
+        get {
+            emplid = apexpages.currentPage().getparameters().get('contactId');
+            if (String.isEmpty(emplid)) {
+                getInfo = Label.EMPLIDMissing;
+                return getInfo;
+            }
+            List<Contact> contactList = new List<Contact>();
+            if (emplid.substring(0, 3).equals('003')) {
+                contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE id =: emplid LIMIT 1];
+            } else {
+                contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
+            }
+            if (!contactList.isEmpty()) {
+                getInfo = 'Name: ' + contactList[0].FirstName + ' ' + contactList[0].LastName + ' (' + emplid + ') Persistence Level: No Data Available';
+            } else {
+                getInfo = Label.EMPLIDMissing; 
+            }
+            
+            return getInfo;
+        }
+
+        set;
     }
     
     public Date startDate {
@@ -70,7 +95,8 @@ public class CivitasPersistenceController {
                     WHERE PeopleSoft_Code__c =: nextTerm
                     LIMIT 1
                 ].Session_A_C_Start_Date__c;
-                endMonth = endDate.addDays(CENSUS_OFFSET).month();
+                endDate = endDate.addDays(CENSUS_OFFSET);
+                endMonth = endDate.month();
             }
             return endDate;
         }
@@ -139,6 +165,7 @@ public class CivitasPersistenceController {
 
         if (civitasData.size() > 0) {
             CivitasWrapper tmpEndPoint = civitasData[civitasData.size()-1];
+            System.debug(tmpEndPoint.levelDesc);
             String lastUpdatedDate = civitasData[civitasData.size()-1].fullDate;
             Integer dayValue = tmpEndPoint.day;
             while ((endDate < TODAY && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < TODAY) {
@@ -148,9 +175,7 @@ public class CivitasPersistenceController {
                 civitasData.add(new CivitasWrapper(tmpEndPoint.snapDate, tmpEndPoint.outlookLevel, tmpEndPoint.levelDesc, flagVal, thisContact.FirstName, thisContact.LastName, thisContact.EmplId__c, dayValue, thisContact.Id));
             }
             civitasData[civitasData.size()-1].fullDate = lastUpdatedDate;
-            if (endMonth < startMonth) {
-                endMonth += 12;
-            }
+            
             Decimal persistenceLevel = civitasData[civitasData.size()-1].outlookLevel;
             if (currentTerm.subString(3).equals('1')) {
                 civitasData[0].termInfo = 'Spring';
@@ -160,6 +185,9 @@ public class CivitasPersistenceController {
                 civitasData[0].termInfo = 'Fall';
             }
 
+            if (endMonth < startMonth) {
+                endMonth += 12;
+            }
             for (Integer i = startMonth; i <= endMonth; i++) {
                 String textMonth = monthToText(Math.mod(i, 12));
                 months.add(textMonth);
@@ -168,31 +196,6 @@ public class CivitasPersistenceController {
         }
            
         return civitasData;
-    }
-    
-    public String getInfo {
-        get {
-            emplid = apexpages.currentPage().getparameters().get('contactId');
-            if (String.isEmpty(emplid)) {
-                getInfo = Label.EMPLIDMissing;
-                return getInfo;
-            }
-            List<Contact> contactList = new List<Contact>();
-            if (emplid.substring(0, 3).equals('003')) {
-                contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE id =: emplid LIMIT 1];
-            } else {
-            	contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
-            }
-            if (!contactList.isEmpty()) {
-            	getInfo = 'Name: ' + contactList[0].FirstName + ' ' + contactList[0].LastName + ' (' + emplid + ') Persistence Level: No Data Available';
-            } else {
-            	getInfo = Label.EMPLIDMissing; 
-            }
-            
-            return getInfo;
-        }
-
-        set;
     }
     
     private static String monthToText(Integer month) {

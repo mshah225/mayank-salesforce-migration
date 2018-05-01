@@ -1,213 +1,170 @@
-global with sharing class StudentProfileController
+public with sharing class StudentProfileController
 { 
     // Error Logger Variables 
-    private static boolean debug = false; // Used to determine if error logger is in debug mode or not
+    private static Boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
+    private static String paramToSort;
     
-    public boolean URLParamsExistAndAreValid {get; set;} // Stores whether or not URL params exist and are valid
-    private boolean isContactId; // Stores wheter the ID parameter is a contact Id or EMPL Id
-    public boolean failState {get; set;} // Used to determine if the page has reached a state where it cannot be rendered
-    public static ASU_STDNT_RETENTION__x studentRetention { get; set; }
-
-    public Contact theContact { get; set; }
-    public List<Case> openCases { get; set; }
-    // public List<Financial_Aid_Package__c> fapList { get; set; }
-    // public List<Service_Indicator__c> sIList { get; set; }
-    public List<PS_ASU_SP_SVCIND_V__x> sIList { get; set; }
-    // public List<Student_Account__c> saList { get; set; }
-    public List<Student_Group__c> sGroupList { get; set; }
-    public List<Student_Program_Plan__c> allProgramPlans { get; set; }
-    public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
-    public List<Student_Program_Plan__c> gradProgramPlans { get; set; }
-    public Student_Program_Plan__c primaryProgramPlan { get; set; }
-    public Student_Program_Subplan__c subProgramPlan {get; set;}
-    // public List<Test_Score__c> testScoreList { get; set; }
-    public Student_Program_Plan__c programPlan { get; set; }
-    public JBT_RET_GENERAL_RIGHT__x studentProgram { get; set; }
-    public JBT_RET_GENERAL_RIGHT__x ugStudentProgram { get; set; }
-    public JBT_RET_GENERAL_RIGHT__x gradStudentProgram { get; set; }
-    public JBT_RET_GENERAL_LEFT__x studentDemographic { get; set; }
-    public JBT_RET_PROFILE_HEADER_VW__x profileHeader { get; set; }
-    public JBT_RET_TERMS_VW__x termInfo { get; set; }
-    public String suncardPhotoURL { get; set; }
-    public String deceased { get; set; }
-    public string contactId {get; set;}
-    public String birthDate {get; set;}
-    public String age {get; set;}
-    public static String paramToSort {get; set;}
     public static String examParamSort {get; set;}
     public static String transferParamSort {get; set;}
-    public static boolean sortDirect = true;
-    private Set<String> ugTestCodes;
-    private Set<String> gradTestCodes;
-
-    public List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList { get; set; }
+    
+    private Boolean isContactId;
+    private String contactId;
+    
+    public Contact theContact { get; set; }
+    public List<Case> openCases { get; set; }
+    public List<Student_Group__c> sGroupList { get; set; }
+    public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
+    public List<Student_Program_Plan__c> gradProgramPlans { get; set; }
+    public List<Service_Indicator__c> serviceIndicators { get; set; }
+    public Student_Program_Plan__c studentProgram { get; set; }
+    public Student_Program_Plan__c ugStudentProgram { get; set; }
+    public Student_Program_Plan__c gradStudentProgram { get; set; }
+    public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
+    public List<Student_Program_Plan_Advisor__c> gradStudentProgramAdvisors { get; set; }
+    public Student_Account__c studentAccount { get; set; }
+    public Me3__c me3Results { get; set; }
+    public Me3__c me3HighSchoolResults { get; set; }
+    public List<Student_Milestone__c> studentMilestonesUGrad { get; set; }
+    public List<Student_Milestone__c> studentMilestonesGrad { get; set; }
+    public FinancialAidWrapper faWrapper { get; set; }
+    public List<Test_Score__c> testUndergradScoreList { get; set; }
+    public List<Test_Score__c> testGradScoreList { get; set; }
+    public String suncardPhotoURL { get; set; }
+    public String deceased { get; set; }
     public String currentTerm { get; set; }
     public String currentTermName { get; set; }
     public String nextTerm { get; set; }
     public String nextTermName { get; set; }
     
-    public static classesWrapper classesData; 
-
-    /**
-     * Constructor to get and validate URL parameters
-     * <p>
-     * Due to limitations on the ErrorLogger (cannot create cases in constructors)
-     * the constructor should only contain code to grab and validate URL parameters.
-     * Any initilization code has a chance to throw exceptions and should be placed
-     * in the init method below.
-     * </p>
-     */
     public StudentProfileController() {
-        UrlParamsExistAndAreValid = true;
-        
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
-        
         if (Validator.validateId(contactId, Contact.class)) {
             isContactId = true;
         } else if (Validator.validateEMPLId(contactId)) {
             isContactId = false;
         } else {
-            UrlParamsExistAndAreValid = false;
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
+            throw new StudentProfileException('URL Parameters are missing or invalid');
         }
-        
     }
     
-    /**
-     * Method to initialize page, called before page is rendered
-     * <p>
-     * Due to limitations on the error logger (cannot create cases in constructors)
-     * initilization code cannot exist inside the constructor.
-     * </p>
-     * <p>
-     * This method should be invoked by the <apex:page> action attribute:
-     * <apex:page action="{!init}">
-     * </p>
-     */
-    public pageReference init() {
-        vars = new List<String>(); // Used to pass variable values to the error logger
-        // Initialize the lists 
-        openCases = new List<Case>();
-        sGroupList = new List<Student_Group__c>();
-        sIList = new List<PS_ASU_SP_SVCIND_V__x>();
-        allProgramPlans = new List<Student_Program_Plan__c>();
-        programPlan = new Student_Program_Plan__c();
+    public void init() {
+        vars = new List<String>();
+        List<Student_Program_Plan__c> allProgramPlans = new List<Student_Program_Plan__c>();
+        Student_Program_Plan__c programPlan = new Student_Program_Plan__c();
         ugProgramPlans = new List<Student_Program_Plan__c>();
         gradProgramPlans = new List<Student_Program_Plan__c>();
-        primaryProgramPlan =  new Student_Program_Plan__c();
+        studentMilestonesUGrad = new List<Student_Milestone__c>();
+        studentMilestonesGrad = new List<Student_Milestone__c>();
         
-        try {
-            if (URLParamsExistAndAreValid) {
-                if (isContactId) {
-                    theContact = ContactService.getContactInformation(contactId, '');
-                } else {
-                    theContact = ContactService.getContactInformation('', String.valueOf(contactId));
-                }
-                
-                if (theContact == null || theContact.EMPLID__c == null) {
-                    URLParamsExistAndAreValid = false;
-                    failState = true;
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
-                    vars.add(ErrorLogger.convertSObjectToJSON('theContact', theContact));
-                    throw new StudentProfileException('Contact missing EMPLId');
-                }
-                deceased = '';
-                Date tmpDate = theContact.birthDate;
-                if(tmpDate != null) {
-                    birthDate = tmpDate.month() + '/' + tmpDate.day() + '/' + tmpDate.year();
-                    Date nowDate = Date.Today();
-                    if(nowDate.month() > tmpDate.month()) {
-                        age = '' + (nowDate.year() - tmpDate.year() - 1);
-                    } else if (nowDate.month() < tmpDate.month()) {
-                        age = '' + (nowDate.year() - tmpDate.year());
-                    } else {
-                        if(nowDate.day() > tmpDate.day()) {
-                            age = '' + (nowDate.year() - tmpDate.year());
-                        } else {
-                            age = '' + (nowDate.year() - tmpDate.year() - 1);
-                        }
-                    }
-                }
+        if (isContactId) {
+            theContact = ContactService.getContactInformation(contactId, '');
+        } else {
+            theContact = ContactService.getContactInformation('', String.valueOf(contactId));
+        }
+        
+        if (theContact == null || theContact.EMPLID__c == null) {
+            throw new StudentProfileException('Contact missing EMPLId');
+        }
+        deceased = '';
+      
+        populateStudentMilestoneUGrad();
+        populateStudentMilestoneGrad();
+        getFinancialSummaryData();    
 
-                // Start populating the lists
-                openCases = CaseService.getAllOpenCases(theContact.Id);
-                sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
-                
-                getTermInfo();
-                allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-                
-                // TODO: Find out about this list. It may just be a single object.
-                // saList = StudentAccountService.getContactStudentAccounts(theContact.Id);
-                /*
-                * Handling for nulls. Get the Objects as Lists from the different services first.
-                * If the list size is greater than expected, use first Object in list.
-                */
-                List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
-                    StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
-                
-                
-                if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0)
-                {
-                    for (Student_Program_Plan__c spp: studentProgramPlansBeforeToday)
-                    {
-                        if (spp.Status__c == 'Active in Program')
-                        {
-                            programPlan = spp;
-                            break;
-                        } 
-                    }
-                }
-                
-                
-                if (allProgramPlans.size() > 0)    
-                {
-                    for (Student_Program_Plan__c spp: allProgramPlans)
-                    {
-                        if (spp.PRIMARY_FLAG__c == true)
-                            primaryProgramPlan = spp;
-                            
-                        if (spp.Career__c == null || spp.Career__c == 'Undergraduate')
-                            ugProgramPlans.add(spp);
-                        else
-                            gradProgramPlans.add(spp);
-                    }
-                }
-                List<Student_Program_Subplan__c> tmpSubPlanList = [
-                            Select Subplan_description__c
-                                  FROM Student_Program_Subplan__c
-                                  WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
-                ];
-                
-                if(tmpSubPlanList.size() > 0){
-                    for(Integer i = 0; i < tmpSubPlanList.size()-1; i++){
-                        subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
-                    }
-                    subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
-                }
-                // Temporary solution for beta release; setting currentTerm to a hard-coded value
-                // so we have value to work with while the term populates asynchronously; ultimate 
-                // solution will be to store term info in the Salesforce org and update it from 
-                // PeopleSoft only as-needed
-                StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
-                currentTerm = currentTermData.CurrTerm__c;
-                
-            } else {
-                failState = true;
-                vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
-                throw new StudentProfileException('URL Parameters are missing or invalid');
+        // Start populating the lists
+        openCases = CaseService.getAllOpenCases(theContact.Id);
+        sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
+        
+        getTermInfo();
+        allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
+        
+        List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
+            StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
+        
+        
+        if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0) {
+            for (Student_Program_Plan__c spp: studentProgramPlansBeforeToday) {
+                if (spp.Status__c == 'Active in Program') {
+                    programPlan = spp;
+                    break;
+                } 
             }
-            return null;
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-            return null;
+        }
+        
+        Student_Program_Plan__c primaryProgramPlan =  new Student_Program_Plan__c();
+        
+        if (allProgramPlans.size() > 0) {
+            for (Student_Program_Plan__c spp: allProgramPlans) {
+                if (spp.PRIMARY_FLAG__c == true) {
+                    primaryProgramPlan = spp;
+                }
+                if (spp.Career__c == null || spp.Career__c == 'Undergraduate') {
+                    ugProgramPlans.add(spp);
+                } else {
+                    gradProgramPlans.add(spp);
+                }
+            }
+        }
+        List<Student_Program_Subplan__c> tmpSubPlanList = [
+                    Select Subplan_description__c
+                          FROM Student_Program_Subplan__c
+                          WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
+        ];
+        
+        if (tmpSubPlanList.size() > 0) {
+            for (Integer i = 0; i < tmpSubPlanList.size()-1; i++) {
+                subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
+            }
+            subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
+        }
+        
+        StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+        currentTerm = currentTermData.CurrTerm__c;
+        
+        serviceIndicators = getServiceIndicators();
+        studentProgram = getStudentProgramData();
+        ugStudentProgram = getUgStudentProgram();
+        gradStudentProgram = getGradStudentProgram();
+        testUnderGradScoreList = getUndergradStudentTestScores();
+        testGradScoreList = getGraduateStudentTestScores();
+        ugStudentProgramAdvisors = getUndergraduateStudentProgramPlanAdvisor();
+        gradStudentProgramAdvisors = getGraduateStudentProgramPlanAdvisor();
+        studentAccount = getStudentAccount();
+        me3Results = getMe3Results();
+        me3HighSchoolResults = getMe3HighScoolResults();
+    }
+    
+    private void populateStudentMilestoneUGrad() {
+        Set<Student_Milestone__c> milestoneSet = new Set<Student_Milestone__c>();
+        for (Student_Milestone__c milestoneRec: [
+            SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c, 
+                Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
+                Date_Completed__c, Anticipated_Term__c
+            FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
+            AND Acad_Career__c = 'UGRD'
+        ]) {
+            studentMilestonesUGrad.add(milestoneRec);
+        }
+    }
+    
+    private void populateStudentMilestoneGrad() {
+        Set<Student_Milestone__c> milestoneSet = new Set<Student_Milestone__c>();
+        for (Student_Milestone__c milestoneRec: [
+            SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c, 
+                Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
+                Date_Completed__c, Anticipated_Term__c
+            FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
+            AND (Acad_Career__c = 'GRAD' OR Acad_Career__c = 'LAW')
+        ]) {
+            studentMilestonesGrad.add(milestoneRec);
         }
     }
     
     @RemoteAction
-    global static String getSunCardPhotoRA(String asurite, String emplId) {
+    public static String getSunCardPhotoRA(String asurite, String emplId) {
         String suncardPhotoURL;
         List<String> vars = new List<String>();
         
@@ -274,43 +231,7 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    // Get JBT_RET_PROFILE_HEADER_VW__x data
-    global static JBT_RET_PROFILE_HEADER_VW__x getProfileHeader(String emplId)
-    {
-        vars = new List<String>();
-        List<JBT_RET_PROFILE_HEADER_VW__x> headerlist = new List<JBT_RET_PROFILE_HEADER_VW__x>();
-        
-        // Build out list to avoid de-reference null object errors.
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            headerList = 
-            (
-                Test.isRunningTest() ? new List<JBT_RET_PROFILE_HEADER_VW__x>() : 
-                [
-                    SELECT COHORT__c
-                    FROM JBT_RET_PROFILE_HEADER_VW__x
-                    WHERE ExternalId = :emplId
-                    ORDER BY STRM__c DESC
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        if (headerList.size() > 0)
-        {
-            return headerList[0];
-        }
-        else
-        {
-            return new JBT_RET_PROFILE_HEADER_VW__x();
-        }  
-    }
-
-    @RemoteAction
-    // Get ASU_STDNT_RETENTION__x data
-    global static ASU_STDNT_RETENTION__x getStudentRetention(String emplId)
+    public static ASU_STDNT_RETENTION__x getStudentRetention(String emplId)
     {
         vars = new List<String>();
         List<ASU_STDNT_RETENTION__x> stdntList = new List<ASU_STDNT_RETENTION__x>();
@@ -347,190 +268,40 @@ global with sharing class StudentProfileController
         }  
         
     }
-
-    // Get the allowable test types by Career type
-    public static Set<String> getTestCodes(String career)
-    {
-        if (career == 'UGRD')
-            return new Set<String>{'ACT', 'AECP', 'AMPT', 'AP', 'CLEP', 'DSST', 'DSST2', 'GED', 'ALEKSMATH', 'ACCUPLACER2',
-                                      'HISET', 'IELTS', 'MPT', 'PTE', 'SAT I', 'SAT II', 'TOEFL', 'TOEIC', 'SATII'};
-        else
-            return new Set<String>{'GMAT', 'GRE', 'IELTS', 'LSAT', 'MAT', 'MCAT', 'PTE', 'TOEFL', 'TOEIC'};            
-    }
-
-    @RemoteAction
-    // Get PS_STDNT_TEST_COMP__x scores as a list
-    global static List<PS_STDNT_TEST_COMP__x> getStdntTestComps(String emplId, String career)
-    {
-        vars = new List<String>();
-        Set<String> testCodes = getTestCodes(career);
-        List<PS_STDNT_TEST_COMP__x> stdntTestComps = new List<PS_STDNT_TEST_COMP__x>();
-
-        // Build out list to avoid de-reference null object errors.
-/*                SELECT DisplayUrl, EMPLID__c, ExternalId, Id, SCORE__c,
-                    TEST_COMPONENT__c, TEST_DT__c, TEST_ID__c 8
-*/
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('career', career));
-            
-            stdntTestComps = 
-            (
-                Test.isRunningTest() ? new List<PS_STDNT_TEST_COMP__x>() :
-                
-                
-                [
-                    SELECT SCORE__c, TEST_COMPONENT__c, TEST_DT__c, TEST_ID__c
-                    FROM PS_STDNT_TEST_COMP__x
-                    WHERE EMPLID__c = :emplId
-                      AND TEST_ID__c IN :testCodes
-                    ORDER BY TEST_ID__c, TEST_COMPONENT__c, TEST_DT__c DESC
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-
-        if (stdntTestComps.size() > 0)
-        {
-            for (Integer i=stdntTestComps.size(); i>0; i--)
-            {
-                if (!testCodes.contains(stdntTestComps[i-1].TEST_ID__c))
-                    stdntTestComps.remove(i-1);
-            }
-        }
-        else
-        {
-            stdntTestComps = new List<PS_STDNT_TEST_COMP__x>();
-        }
+    
+    private List<Test_Score__c> getUndergradStudentTestScores() {
+        Set<String> testCodes = new Set<String>{'ACT', 'AECP', 'AMPT', 'AP', 'CLEP', 'DSST', 'DSST2', 'GED', 'ALEKSMATH', 'ACCUPLACER2', 'HISET', 'IELTS', 'MPT', 'PTE', 'SAT I', 'SAT II', 'TOEFL', 'TOEIC', 'SATII'};
+        List<Test_Score__c> stdntTestComps = [
+            SELECT Test_Component_Score__c, Test_Component__c , Test_Date__c , Test_Type__c 
+            FROM Test_Score__c
+            WHERE Contact__c = :theContact.Id
+            AND Test_Type__c IN :testCodes
+            AND Integration_Source__c = 'Student Records'
+            ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
+        ];
         
         return stdntTestComps;
     }
-
-    @RemoteAction
-    // Get Undergraduate PS_STDNT_CAR_MLSTN__x milestones as a list
-    global static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsUG(String emplId)
-    {
-        vars = new List<String>();
-        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG = new List<PS_STDNT_CAR_MLSTN__x>();
-        
- /*
-                SELECT ACAD_PROG__c, ACAD_CAREER__c, ACAD_PLAN__c,  ANTICIPATED_TERM__c,
-                    DATE_COMPLETED__c, DESCR__c, DESCRFORMAL__c, DisplayUrl, EFFDT__c,
-                    EMPLID__c, ExternalId, Id, MILESTONE__c, MILESTONE_COMPLETE__c,
-                    MILESTONE_LEVEL__c, MILESTONE_NBR__c, MILESTONE_TITLE__c, TERM_REQUIRED__c
- */
-        // Build out list to avoid de-reference null object errors.
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            stdntCarMlstnsUG = 
-            (
-                Test.isRunningTest() ? new List<PS_STDNT_CAR_MLSTN__x>() :
-                [
-                    SELECT ACAD_PROG__c, ACAD_CAREER__c, ACAD_PLAN__c, DESCR__c,
-                           DESCRFORMAL__c, EFFDT__c, EMPLID__c, Id, MILESTONE__c, 
-                           MILESTONE_LEVEL__c, MILESTONE_NBR__c, MILESTONE_TITLE__c,
-                           MILESTONE_COMPLETE__c, TERM_REQUIRED__c, ANTICIPATED_TERM__c,
-                           DATE_COMPLETED__c
-                    FROM PS_STDNT_CAR_MLSTN__x
-                    WHERE EMPLID__c = :emplId
-                    AND ACAD_CAREER__c = 'UGRD'
-                    ORDER BY EFFDT__c DESC, MILESTONE_NBR__c ASC
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        if (stdntCarMlstnsUG.size() > 0)
-        {
-            // Only return the most recent record for each distinct milestone 
-            List<PS_STDNT_CAR_MLSTN__x> filteredPsStdntCarMlstn = new List<PS_STDNT_CAR_MLSTN__x>();
-            Set<String> milestoneSet = new Set<String>();
-            for (PS_STDNT_CAR_MLSTN__x milestoneRec: stdntCarMlstnsUG)
-            {
-                if (!milestoneSet.contains(milestoneRec.ACAD_PROG__c + milestoneRec.MILESTONE__c + milestoneRec.MILESTONE_NBR__c))
-                {
-                    filteredPsStdntCarMlstn.add(milestoneRec);
-                    milestoneSet.add(milestonerec.ACAD_PROG__c + milestoneRec.MILESTONE__c + milestoneRec.MILESTONE_NBR__c);
-                }
-            }
-            return filteredPsStdntCarMlstn;
-        }
-        else
-        {
-            return new List<PS_STDNT_CAR_MLSTN__x>();
-        }
-    }
-
-    @RemoteAction
-    // Get Graduate/Law PS_STDNT_CAR_MLSTN__x milestones as a list
-    global static List<PS_STDNT_CAR_MLSTN__x> getStdntCarMlstnsGrad(String emplId)
-    {
-        vars = new List<String>();
-        List<PS_STDNT_CAR_MLSTN__x> stdntCarMlstnsUG = new List<PS_STDNT_CAR_MLSTN__x>();
-/*
-                SELECT ACAD_CAREER__c, ACAD_PLAN__c, ACAD_PROG__c, ANTICIPATED_TERM__c,
-                    DATE_COMPLETED__c, DESCR__c, DESCRFORMAL__c, DisplayUrl, EFFDT__c,
-                    EMPLID__c, ExternalId, Id, MILESTONE__c, MILESTONE_COMPLETE__c,
-                    MILESTONE_LEVEL__c, MILESTONE_NBR__c, MILESTONE_TITLE__c, TERM_REQUIRED__c
-*/
-        // Build out list to avoid de-reference null object errors.
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            stdntCarMlstnsUG = 
-            (
-                Test.isRunningTest() ? new List<PS_STDNT_CAR_MLSTN__x>() :
-                [
-                   SELECT ACAD_PROG__c, ACAD_CAREER__c, ACAD_PLAN__c, DESCR__c,
-                           DESCRFORMAL__c, EFFDT__c, EMPLID__c, Id, MILESTONE__c, 
-                           MILESTONE_LEVEL__c, MILESTONE_NBR__c, MILESTONE_TITLE__c,
-                           MILESTONE_COMPLETE__c, TERM_REQUIRED__c, ANTICIPATED_TERM__c,
-                           DATE_COMPLETED__c
-                     FROM PS_STDNT_CAR_MLSTN__x
-                    WHERE EMPLID__c = :emplId
-                    AND (ACAD_CAREER__c = 'GRAD' OR ACAD_CAREER__c = 'LAW')
-                    ORDER BY EFFDT__c DESC
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        if (stdntCarMlstnsUG.size() > 0)
-        {
-            // Only return records with the same Eff Dt as the most recent record
-            List<PS_STDNT_CAR_MLSTN__x> filteredPsStdntCarMlstn = new List<PS_STDNT_CAR_MLSTN__x>();
-            Date maxEffDt = stdntCarMlstnsUG[0].EFFDT__c;
-            for (PS_STDNT_CAR_MLSTN__x milestoneRec: stdntCarMlstnsUG)
-            {
-                if (milestoneRec.EFFDT__C == maxEffDt)
-                    filteredPsStdntCarMlstn.add(milestoneRec);
-                else
-                    break;
-            }
-            return filteredPsStdntCarMlstn;
-        }
-        else
-        {
-            return new List<PS_STDNT_CAR_MLSTN__x>();
-        }
-    }
     
+    private List<Test_Score__c> getGraduateStudentTestScores() {
+        Set<String> testCodes = new Set<String>{'GMAT', 'GRE', 'IELTS', 'LSAT', 'MAT', 'MCAT', 'PTE', 'TOEFL', 'TOEIC'};
+        List<Test_Score__c> stdntTestComps = [
+            SELECT Test_Component_Score__c, Test_Component__c , Test_Date__c , Test_Type__c 
+            FROM Test_Score__c
+            WHERE Contact__c = :theContact.Id
+            AND Test_Type__c IN :testCodes
+            AND Integration_Source__c = 'Student Records'
+            ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
+        ];
+        
+        return stdntTestComps;
+    }
+   
     @RemoteAction
-    // Get student transcript information
-    global static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
+    public static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
         vars = new List<String>();
         List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts = new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
         
-        // Build out the list to avoid 'null de-reference' errors
-        // TODO : Limit only to transcripts less than 365 days old
-        // NOTE: This external object was incorrectly mapped. Even though
-        // we are filtering by Contact__c, we need to pass it an EMPLID,
-        // not a Contact ID, in order for this query to work.
         try {
             transcripts = (
                 Test.isRunningTest() ? new List<JBT_RET_TRANSCRIPT_SENT_VW__x>() : [
@@ -556,13 +327,11 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    // Get ASU_STDNT_RETENTION_SNP__x retention info as a list
-    global static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId)
+    public static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId)
     {
         vars = new List<String>();
         List<ASU_STDNT_RETENTION_SNP__x> retention_snps = new List<ASU_STDNT_RETENTION_SNP__x>();
             
-        // Build out list to avoid de-reference null object errors.
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
             
@@ -595,7 +364,7 @@ global with sharing class StudentProfileController
         }
     }
 
-    global class advNoteWrapper
+    public class advNoteWrapper
     {
         public PS_ASU_SP_ADNOTE_V__x note {get; set;}
         public String advUserId {get; set;}
@@ -603,7 +372,7 @@ global with sharing class StudentProfileController
 
     @RemoteAction
     // Get PS_ASU_SP_ADNOTE_V__x advising notes as a list
-    global static List<advNoteWrapper> getPSAdvisorNotes(String emplId)
+    public static List<advNoteWrapper> getPSAdvisorNotes(String emplId)
     {
         vars = new List<String>();
         List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = new List<PS_ASU_SP_ADNOTE_V__x>();
@@ -666,7 +435,7 @@ global with sharing class StudentProfileController
         return (advNoteWrapperList.size() > 0 ? advNoteWrapperList : new List<advNoteWrapper>());
     }
 
-    global class commentWrapper
+    public class commentWrapper
     {
         public PS_ASU_SP_COMMNT_V__x comment {get; set;}
         public String commenterUserId {get; set;}
@@ -674,7 +443,7 @@ global with sharing class StudentProfileController
 
     @RemoteAction
     // Get PS_ASU_SP_COMMNT_V__x comments as a list
-    global static List<commentWrapper> getComments(String emplId)
+    public static List<commentWrapper> getComments(String emplId)
     {
         vars = new List<String>();
         List<PS_ASU_SP_COMMNT_V__x> commentsList = new List<PS_ASU_SP_COMMNT_V__x>();
@@ -739,7 +508,7 @@ global with sharing class StudentProfileController
 
     @RemoteAction
     // Get PS_ASU_SP_GUEST_V__x comments as a list
-    global static List<PS_ASU_SP_GUEST_V__x> getGuestAccess(String emplId)
+    public static List<PS_ASU_SP_GUEST_V__x> getGuestAccess(String emplId)
     {
         vars = new List<String>();
         List<PS_ASU_SP_GUEST_V__x> guestAccessList = new List<PS_ASU_SP_GUEST_V__x>();
@@ -766,129 +535,130 @@ global with sharing class StudentProfileController
         return (guestAccessList.size() > 0? guestAccessList : new List<PS_ASU_SP_GUEST_V__x>());
     }
 
-    @RemoteAction
-    // Get JBT_RET_GENERAL_RIGHT__x data 
-    global static List<JBT_RET_GENERAL_RIGHT__x> getStudentProgramData(String emplId)
-    {
-        vars = new List<String>();
-        List<JBT_RET_GENERAL_RIGHT__x> studentProgramDataList = new List<JBT_RET_GENERAL_RIGHT__x>();
+    private Student_Program_Plan__c getStudentProgramData() {
+        List<Student_Program_Plan__c> studentProgramDataList = [
+            SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c, 
+                       Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c, 
+                       Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
+                       Exp_Grad_Term__c, Exp_Grad_Term__r.Name, 
+                       Id, Residency__c, Financial_Need_Level__c, Cohort__c, 
+                       Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name
+            FROM Student_Program_Plan__c
+            WHERE Contact__c = :theContact.Id
+            AND Primary_Flag__c = TRUE
+            LIMIT 1
+        ];
         
-        // Temporary while database issues are investigated
-        //return new List<JBT_RET_GENERAL_RIGHT__x>();
-            
-        // Build out list to avoid de-reference null object errors.
-        try {
-            studentProgramDataList =
-            (
-                Test.isRunningTest() ? new List<JBT_RET_GENERAL_RIGHT__x>() :
-                [
-                 SELECT ACAD_CAREER__c, ADM_APPL_DT__c, ADM_APPL_PROG__c, 
-                           ADMIT_TERM__c, ADMIT_TYPE__c, APPT_DT__c, 
-                           APPT_DT_PENDING__c, ASU_CITZN_COUNTRY__c, CAMPUS__c, 
-                           CURR_ADMIT_TYPE__c, CURR_PLAN__c, CURR_PROG__c, DisplayUrl, 
-                           EMPLID__c, ENRL_DEPOSIT__c, ENRL_HRS__c, ENRL_HRS_PENDING__c, 
-                           ENRL_PENDING__c, ENROLL_OPEN_DT__c, ENROLLED__c, 
-                           EXP_GRAD_TERM__c, EXP_GRAD_TERM__r.Name, 
-                           ExternalId, FERPA_LVL__c, FINANCIAL_NEED_LVL__c, 
-                           Id, PROG_STATUS__c, ORIENT_DT__c, RESIDENCY__c, STRM__c, 
-                           STRM__r.Name, STRM__r.Term_Status__c, SUB_PLAN__c, WUE__c 
-                    FROM JBT_RET_GENERAL_RIGHT__x
-                    WHERE EMPLID__c = :emplId
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
+        return (!studentProgramDataList.isEmpty() ? studentProgramDataList[0] : new Student_Program_Plan__c());
+    }
+    
+    private Student_Program_Plan__c getUgStudentProgram() {
+        List<Student_Program_Plan__c> studentProgramDataList = [
+            SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c, 
+                       Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c, 
+                       Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
+                       Exp_Grad_Term__c, Exp_Grad_Term__r.Name, 
+                       Id, Residency__c, Financial_Need_Level__c, Cum_GPA__c, 
+                       Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c,
+                       Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name
+            FROM Student_Program_Plan__c
+            WHERE Contact__c = :theContact.Id
+            AND Career__c = 'Undergraduate'
+            LIMIT 1
+        ];
         
-        return (studentProgramDataList.size()>0 ? studentProgramDataList : new List<JBT_RET_GENERAL_RIGHT__x>());
-    }    
-
-   
-    @RemoteAction
-    // Get JBT_RET_GENERAL_LEFT__x data 
-    global static JBT_RET_GENERAL_LEFT__x getStudentDemographicData(String emplId)
-    {
-        vars = new List<String>();
-        List<JBT_RET_GENERAL_LEFT__x> studentDemographicDataList = new List<JBT_RET_GENERAL_LEFT__x>();
+        return (!studentProgramDataList.isEmpty() ? studentProgramDataList[0] : new Student_Program_Plan__c());
+    }
+    
+    private Student_Program_Plan__c getGradStudentProgram() {
+        List<Student_Program_Plan__c> studentProgramDataList = [
+            SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c, 
+                       Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c, 
+                       Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
+                       Exp_Grad_Term__c, Exp_Grad_Term__r.Name, 
+                       Id, Residency__c, Financial_Need_Level__c, Cum_GPA__c, 
+                       Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c, 
+                       ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c,
+                       Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name
+            FROM Student_Program_Plan__c
+            WHERE Contact__c = :theContact.Id
+            AND (Career__c = 'Graduate'
+                OR Career__c = 'Law')
+            LIMIT 1
+        ];
         
-        //Temporary
-        //return new JBT_RET_GENERAL_LEFT__x();
-
-        // Build out list to avoid de-reference null object errors.
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            studentDemographicDataList =
-            (
-                Test.isRunningTest() ? new List<JBT_RET_GENERAL_LEFT__x>() :
-                [
-                    SELECT AGE_YEARS__c, DisplayUrl, EMPLID__c, ETHNICITY__c, ExternalId, 
-                           FIRST_GEN_FLG__c, Id 
-                    FROM JBT_RET_GENERAL_LEFT__x
-                    WHERE EMPLID__c = :emplId
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        return (studentDemographicDataList.size()>0 ? studentDemographicDataList[0] : new JBT_RET_GENERAL_LEFT__x());
-    }       
-
+        return (!studentProgramDataList.isEmpty() ? studentProgramDataList[0] : new Student_Program_Plan__c());
+    }
 
     // Inner wrapper class for Academic Progress Data
-    global class academicProgressDataWrapper
+    public class academicProgressDataWrapper
     {
-        public JBT_RET_ACAD_SUMMARY_VW__x jbtRetAcadSummaryVw;
-        public PS_ASU_SP_AC_STNDV__x psAsuSpAcStndv;
-        public List<PS_ASU_SP_ACAD_ADV__x> psAsuSpAcadAdvList;
-        public PS_ASU_SR_COL_PLAN__x psGradPlan;
-        public JBT_RET_OTH_IND1_VW__x jbtRetOthInd1Vw;
+        public Student_Program_Plan__c jbtRetAcadSummaryVw;
+        public Student_Program_Plan__c psAsuSpAcStndv;
+        public List<Student_Program_Plan_Advisor__c> psAsuSpAcadAdvList;
+        public Student_Program_Plan__c psGradPlan; // Need POS GPA
+        public Student_Program_Plan__c jbtRetOthInd1Vw;
+    }
+    
+    public List<Student_Program_Plan_Advisor__c> getUndergraduateStudentProgramPlanAdvisor() {
+       return [
+           SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c, 
+                  Name, Advisor_Phone__c, Advisor_Name__c
+           FROM Student_Program_Plan_Advisor__c
+           WHERE Student_Program_Plan__c = :ugStudentProgram.Id
+           AND Student_Program_Plan__r.Career__c = 'Undergraduate'
+           ORDER BY Name
+       ];
+    }
+    
+    public List<Student_Program_Plan_Advisor__c> getGraduateStudentProgramPlanAdvisor() {
+        return [
+            SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c, 
+                Name, Advisor_Phone__c, Advisor_Name__c
+            FROM Student_Program_Plan_Advisor__c
+            WHERE Student_Program_Plan__c = :gradStudentProgram.Id
+            AND (Student_Program_Plan__r.Career__c = 'Graduate'
+                OR Student_Program_Plan__r.Career__c = 'Law')
+            ORDER BY Name
+        ];
     }
 
      @RemoteAction
     // Get all Academic Progress Data
-    global static academicProgressDataWrapper getAcademicProgressData(String emplId, String career)
+    public static academicProgressDataWrapper getAcademicProgressData(String emplId, String career)
     {
         vars = new List<String>();
-        List<JBT_RET_ACAD_SUMMARY_VW__x> academicSummaryList = new List<JBT_RET_ACAD_SUMMARY_VW__x>();
-        List<JBT_RET_OTH_IND1_VW__x> otherIndicatorList = new List<JBT_RET_OTH_IND1_VW__x>();
-        List<PS_ASU_SP_AC_STNDV__x> academicStandingList = new List<PS_ASU_SP_AC_STNDV__x>();
-        List<PS_ASU_SP_ACAD_ADV__x> academicAdviserList = new List<PS_ASU_SP_ACAD_ADV__x>();
-        List<PS_ASU_SR_COL_PLAN__x> gradPlanList = new List<PS_ASU_SR_COL_PLAN__x>();
+        List<Student_Program_Plan__c> tempStudentProgramList = new List<Student_Program_Plan__c>();
+        List<Student_Program_Plan__c> academicSummaryList = new List<Student_Program_Plan__c>();
+        List<Student_Program_Plan__c> otherIndicatorList = new List<Student_Program_Plan__c>();
+        List<Student_Program_Plan__c> academicStandingList = new List<Student_Program_Plan__c>();
+        List<Student_Program_Plan_Advisor__c> academicAdviserList = new List<Student_Program_Plan_Advisor__c>();
+        List<Student_Program_Plan__c> gradPlanList = new List<Student_Program_Plan__c>();
         
         academicProgressDataWrapper dataWrapper = new academicProgressDataWrapper();
 
         Set<String> careerSet;
-        if (career == 'UGRD')
-            careerSet = new Set<String>{'UGRD'};
+        if (career == 'Undergraduate')
+            careerSet = new Set<String>{'Undergraduate'};
         else
-            careerSet = new Set<String>{'GRAD','LAW'};
+            careerSet = new Set<String>{'Graduate','Law'};
 
         // Build out list to avoid de-reference null object errors.
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
             vars.add(ErrorLogger.convertStringToJSON('career', career));
-            
-            academicSummaryList = 
-            (
-                Test.isRunningTest() ? new List<JBT_RET_ACAD_SUMMARY_VW__x>() :
-                [
-                    SELECT ACAD_CAREER__c, AID_YEAR__c, COLLEGE__c, CUM_GPA__c, EMPLID__c, 
-                           FND_TERM_REMAINA__c, Id, MAJOR__c, SCHOLARSHIP_NAME__c, 
-                           STATUS__c, STRM__c, TOT_CUMULATIVE__c 
-                    FROM JBT_RET_ACAD_SUMMARY_VW__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
-                    ORDER BY STRM__c DESC
-                    LIMIT 1
-                ]
-            );
+            tempStudentProgramList = [ SELECT Career__c, Status__c, Cum_GPA__c, Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c
+                                        FROM Student_Program_Plan__c
+                                        WHERE Contact__r.EMPLID__c = :emplId
+                                        AND Career__c IN :careerSet
+                                        LIMIT 1
+                                     ];//ORDER BY STRM__c DESC;
+            academicSummaryList = tempStudentProgramList;
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
-
-        dataWrapper.jbtRetAcadSummaryVw = (academicSummaryList.size()>0 ? academicSummaryList[0] : new JBT_RET_ACAD_SUMMARY_VW__x());
+        
+        dataWrapper.jbtRetAcadSummaryVw = (academicSummaryList.size()>0 ? academicSummaryList[0] : new Student_Program_Plan__c());
 
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -899,22 +669,12 @@ global with sharing class StudentProfileController
                 vars.add(ErrorLogger.convertStringToJSON('--Value: ', s));
             }
             
-            otherIndicatorList = 
-            (
-                Test.isRunningTest() ? new List<JBT_RET_OTH_IND1_VW__x>() :
-                [
-                    SELECT EADVISOR__c 
-                    FROM JBT_RET_OTH_IND1_VW__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
-                    LIMIT 1
-                ]
-            );
+            otherIndicatorList = tempStudentProgramList;
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
 
-        dataWrapper.jbtRetOthInd1Vw = (otherIndicatorList.size()>0 ? otherIndicatorList[0] : new JBT_RET_OTH_IND1_VW__x());
+        dataWrapper.jbtRetOthInd1Vw = (otherIndicatorList.size()>0 ? otherIndicatorList[0] : new Student_Program_Plan__c());
 
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -924,23 +684,12 @@ global with sharing class StudentProfileController
                 vars.add(ErrorLogger.convertStringToJSON('--Value: ', s));
             }
             
-            academicStandingList = 
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_AC_STNDV__x>() :
-                [
-                    SELECT ACAD_CAREER__c, ACAD_STNDNG_ACTN__c, DESCR__c, EMPLID__c, 
-                           Id, STRM__c 
-                    FROM PS_ASU_SP_AC_STNDV__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
-                    LIMIT 1
-                ]
-            );
+            academicStandingList = tempStudentProgramList;
         } catch (Exception e) {
             ErrorLogger.log(e, vars, debug);
         }
 
-        dataWrapper.psAsuSpAcStndv = (academicStandingList.size()>0 ? academicStandingList[0] : new PS_ASU_SP_AC_STNDV__x());
+        dataWrapper.psAsuSpAcStndv = (academicStandingList.size()>0 ? academicStandingList[0] : new Student_Program_Plan__c());
 
         try {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
@@ -952,14 +701,14 @@ global with sharing class StudentProfileController
             
             academicAdviserList =        
             (
-                Test.isRunningTest() ? new List<PS_ASU_SP_ACAD_ADV__x>() : 
+                Test.isRunningTest() ? new List<Student_Program_Plan_Advisor__c>() : 
                 [
-                    select ACAD_CAREER__c, EMAIL_ADDR__c, EMPLID__c, Id, 
-                           NAME_DISPLAY__c, PHONE__c
-                    FROM PS_ASU_SP_ACAD_ADV__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
-                    ORDER BY NAME_DISPLAY__c
+                    SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c, 
+                           Name, Advisor_Phone__c
+                    FROM Student_Program_Plan_Advisor__c
+                    WHERE Student_Program_Plan__c = :academicSummaryList.get(0).Id
+                    AND Student_Program_Plan__r.Career__c IN :careerSet
+                    ORDER BY Name
                 ]
             );
         } catch (Exception e) {
@@ -967,7 +716,7 @@ global with sharing class StudentProfileController
         }
         
 
-        dataWrapper.psAsuSpAcadAdvList = (academicAdviserList.size()>0 ? academicAdviserList : new List<PS_ASU_SP_ACAD_ADV__x>());
+        dataWrapper.psAsuSpAcadAdvList = (academicAdviserList.size()>0 ? academicAdviserList : new List<Student_Program_Plan_Advisor__c>());
 
 /*
                SELECT ACAD_CAREER__c, ACAD_ORG__c, ACAD_PLAN__c, ACAD_PLAN_TYPE__c, ACAD_PROG__c, 
@@ -997,12 +746,12 @@ global with sharing class StudentProfileController
             
             gradPlanList = 
             (
-                Test.isRunningTest() ? new List<PS_ASU_SR_COL_PLAN__x>() :
+                Test.isRunningTest() ? new List<Student_Program_Plan__c>() :
                 [
-                    SELECT ASU_AA_POS_GPA__c, ASU_AA_OVRL_GPA__c, CUM_GPA__c, ACAD_CAREER__c, EMPLID__c
-                    FROM PS_ASU_SR_COL_PLAN__x
-                    WHERE EMPLID__c = :emplId
-                      AND ACAD_CAREER__c IN :careerSet
+                    SELECT ASU_AA_POS_GPA__c, ASU_AA_OVRL_GPA__c, Cum_GPA__c, Career__c
+                    FROM Student_Program_Plan__c
+                    WHERE Contact__r.EMPLID__c = :emplId
+                      AND Career__c IN :careerSet
                     LIMIT 1
                 ]
             ); 
@@ -1010,16 +759,15 @@ global with sharing class StudentProfileController
             ErrorLogger.log(e, vars, debug);
         }
 
-        dataWrapper.psGradPlan = (gradPlanList.size() > 0? gradPlanList[0] : new PS_ASU_SR_COL_PLAN__x());
+        dataWrapper.psGradPlan = (gradPlanList.size() > 0? gradPlanList[0] : new Student_Program_Plan__c());
 
         return dataWrapper;        
 
     }
 
     @RemoteAction
-    global static List<sortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, boolean sortDirection){
+    public static List<sortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, Boolean sortDirection){
         List<sortableClass> classList = new List<sortableClass>();
-        sortDirect = sortDirection;
         for (PS_ASU_SP_CLASS_V__x c : listOfClasses) {
             classList.add(new sortableClass(c));
         }
@@ -1041,9 +789,8 @@ global with sharing class StudentProfileController
     }
     
     @RemoteAction
-    global static List<sortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, boolean sortDirection){
+    public static List<sortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, Boolean sortDirection){
         List<sortableCreditByExam> examList = new List<sortableCreditByExam>();
-        sortDirect = sortDirection;
         for (PS_ASU_SP_TRNSFR_V__x c : listOfExams) {
             examList.add(new sortableCreditByExam(c));
         }
@@ -1065,9 +812,8 @@ global with sharing class StudentProfileController
     }
     
     @RemoteAction
-    global static List<sortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, boolean sortDirection){
+    public static List<sortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, Boolean sortDirection){
         List<sortableTransferWork> transferList = new List<sortableTransferWork>();
-        sortDirect = sortDirection;
         for (JBT_RET_CLASS_XFER__x c : listOfTransfer) {
             transferList.add(new sortableTransferWork(c));
         }
@@ -1088,7 +834,7 @@ global with sharing class StudentProfileController
         return transferList;
     }
 
-    global class sortableClass implements Comparable{
+    public class sortableClass implements Comparable{
         PS_ASU_SP_CLASS_V__x classInfo;
         
         
@@ -1167,7 +913,7 @@ global with sharing class StudentProfileController
         }
     }
     
-    global class sortableCreditByExam implements Comparable{
+    public class sortableCreditByExam implements Comparable{
         PS_ASU_SP_TRNSFR_V__x examInfo;
         
         
@@ -1206,7 +952,7 @@ global with sharing class StudentProfileController
         }
     }
     
-    global class sortableTransferWork implements Comparable{
+    public class sortableTransferWork implements Comparable{
         JBT_RET_CLASS_XFER__x  transferInfo;
         
         
@@ -1275,7 +1021,7 @@ global with sharing class StudentProfileController
         }
     }
     
-    global class classesWrapper
+    public class classesWrapper
     {
         //public Map<String, String> classTerms = new Map<String, String>();
         public Set<String> classTerms = new Set<String>();
@@ -1288,88 +1034,83 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    global static classesWrapper getClassesData(String emplid, String strm)
+    public static ClassesWrapper getClassesData(String emplid, String strm)
     {
-        if (classesData == null)
-        {
-            classesData = new classesWrapper();
-            List<PS_ASU_SP_ASR_CLSV__x> asrList = new List<PS_ASU_SP_ASR_CLSV__x>();
-            Set<String> asrClassSet = new Set<String>();
+        ClassesWrapper classesData = new classesWrapper();
+        List<PS_ASU_SP_ASR_CLSV__x> asrList = new List<PS_ASU_SP_ASR_CLSV__x>();
+        Set<String> asrClassSet = new Set<String>();
 
-            List<PS_ASU_SP_CLASS_V__x> classList = new List<PS_ASU_SP_CLASS_V__x>();
+        List<PS_ASU_SP_CLASS_V__x> classList = new List<PS_ASU_SP_CLASS_V__x>();
+        
+        try {
+            vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
+            vars.add(ErrorLogger.convertStringToJSON('strm', strm));
             
+            classList =
+            (
+                Test.isRunningTest() ? new LIST<PS_ASU_SP_CLASS_V__x>() : 
+                [
+                    SELECT ACAD_CAREER__c, ASU_SCH_DATES__c, CATALOG_NBR__c, CLASS_DESCR__c, 
+                    CLASS_NBR__c, CRSE_GRADE_OFF__c, CRSE_ID__c, CUM_GPA__c, CUR_GPA__c, 
+                    DisplayUrl, EARN_CREDIT__c, EMPLID__c, ENRL_STATUS_REASON__c, ExternalId, 
+                    FT_FULL_NAME__c, Id, SCH_DAILY_TIME__c, SCH_HTML_DAY1__c, SESSION_CODE__c, 
+                    SSR_CLSTOPIC_DESCR__c, SSR_MTG_LOC_LONG__c, STDNT_ENRL_STATUS__c, STRM__c, 
+                    SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c  
+                    FROM PS_ASU_SP_CLASS_V__x 
+                    WHERE EMPLID__c = :emplid 
+                    ORDER BY STRM__c DESC, CLASS_NBR__c ASC
+                ]
+            );
+        } catch (Exception e) {
+            ErrorLogger.log(e, vars, debug);
+        }
+
+        // Build a Set of courses that have the ASR flag for the current term
+        if (classList.size() > 0)
+        {
             try {
                 vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
                 vars.add(ErrorLogger.convertStringToJSON('strm', strm));
                 
-                classList =
-                (
-                    Test.isRunningTest() ? new LIST<PS_ASU_SP_CLASS_V__x>() : 
-                    [
-                        SELECT ACAD_CAREER__c, ASU_SCH_DATES__c, CATALOG_NBR__c, CLASS_DESCR__c, 
-                        CLASS_NBR__c, CRSE_GRADE_OFF__c, CRSE_ID__c, CUM_GPA__c, CUR_GPA__c, 
-                        DisplayUrl, EARN_CREDIT__c, EMPLID__c, ENRL_STATUS_REASON__c, ExternalId, 
-                        FT_FULL_NAME__c, Id, SCH_DAILY_TIME__c, SCH_HTML_DAY1__c, SESSION_CODE__c, 
-                        SSR_CLSTOPIC_DESCR__c, SSR_MTG_LOC_LONG__c, STDNT_ENRL_STATUS__c, STRM__c, 
-                        SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c  
-                        FROM PS_ASU_SP_CLASS_V__x 
-                        WHERE EMPLID__c = :emplid 
-                        ORDER BY STRM__c DESC, CLASS_NBR__c ASC
-                    ]
-                );
+                asrList = 
+                [
+                    SELECT CLASS_NBR__c, SESSION_CODE__c, STRM__c 
+                    FROM   PS_ASU_SP_ASR_CLSV__x
+                    WHERE  EMPLID__c = :emplId 
+                      AND  STRM__c = :strm
+                ];
             } catch (Exception e) {
                 ErrorLogger.log(e, vars, debug);
             }
-
-            // Build a Set of courses that have the ASR flag for the current term
-            if (classList.size() > 0)
-            {
-                try {
-                    vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
-                    vars.add(ErrorLogger.convertStringToJSON('strm', strm));
-                    
-                    asrList = 
-                    [
-                        SELECT CLASS_NBR__c, SESSION_CODE__c, STRM__c 
-                        FROM   PS_ASU_SP_ASR_CLSV__x
-                        WHERE  EMPLID__c = :emplId 
-                          AND  STRM__c = :strm
-                    ];
-                } catch (Exception e) {
-                    ErrorLogger.log(e, vars, debug);
+            
+            if (asrList.size() > 0) {
+                for (PS_ASU_SP_ASR_CLSV__x asr: asrList)
+                {
+                    classesData.asrClasses.add(asr.STRM__c + '|' + asr.SESSION_CODE__c + '|' + asr.CLASS_NBR__c);
                 }
-                
-                if (asrList.size() > 0) {
-                    for (PS_ASU_SP_ASR_CLSV__x asr: asrList)
-                    {
-                        classesData.asrClasses.add(asr.STRM__c + '|' + asr.SESSION_CODE__c + '|' + asr.CLASS_NBR__c);
-                    }
-                }
-            }
-
-            for (PS_ASU_SP_CLASS_V__x course: classList)
-            {
-                if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL') {
-                    classesData.enrolledClasses.add(course);
-                } else {
-                    classesData.droppedClasses.add(course);
-                }
-                classesData.classTerms.add(course.STRM__c+ '|' + course.TERM_DESCR30__c);
-                classesData.classSessions.add(course.SESSION_CODE__c);
-            }     
-            if (classList.size() > 0) {
-                classesData.classTerms.add('All|All');
-                classesData.classSessions.add('All');
             }
         }
-        
-        return classesData;
 
+        for (PS_ASU_SP_CLASS_V__x course: classList)
+        {
+            if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL') {
+                classesData.enrolledClasses.add(course);
+            } else {
+                classesData.droppedClasses.add(course);
+            }
+            classesData.classTerms.add(course.STRM__c+ '|' + course.TERM_DESCR30__c);
+            classesData.classSessions.add(course.SESSION_CODE__c);
+        }     
+        if (classList.size() > 0) {
+            classesData.classTerms.add('All|All');
+            classesData.classSessions.add('All');
+        }
+        return classesData;
     }
 
     // Get Credit by Exam Information
     @RemoteAction
-    global static LIST<PS_ASU_SP_TRNSFR_V__x> getCreditByExamData(String emplId)
+    public static LIST<PS_ASU_SP_TRNSFR_V__x> getCreditByExamData(String emplId)
     {
         List<PS_ASU_SP_TRNSFR_V__x> creditByExamList = new List<PS_ASU_SP_TRNSFR_V__x>();
         
@@ -1396,7 +1137,7 @@ global with sharing class StudentProfileController
 
     // Get Transfer Work Information
     @RemoteAction
-    global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
+    public static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
     {
         List<JBT_RET_CLASS_XFER__x> transferWorkList = new List<JBT_RET_CLASS_XFER__x>();
         
@@ -1422,50 +1163,24 @@ global with sharing class StudentProfileController
         return (transferWorkList.size() > 0? transferWorkList : new List<JBT_RET_CLASS_XFER__x>());
 
     }
-
-    global class balancesWrapper
-    {
-        PS_ASU_SP_FA_BAL_V__x faBalance = new PS_ASU_SP_FA_BAL_V__x();
-        Decimal pastDueTIP;
+    
+    private Student_Account__c getStudentAccount() {
+        List<Student_Account__c> studentAccounts = [
+            SELECT Future_Balance__c, Account_Balance__c, Past_Due_Tip__c
+            FROM Student_Account__c 
+            WHERE Contact__c = :theContact.Id
+            LIMIT 1
+        ];
+        
+        if (!studentAccounts.isEmpty()) {
+            return studentAccounts[0];
+        } else {
+            return new Student_Account__c();
+        }
     }
 
     @RemoteAction
-    global static balancesWrapper getFinancesBalanceData(String emplId)
-    {
-        balancesWrapper wrapper = new balancesWrapper();
-
-        List<PS_ASU_SP_FA_BAL_V__x> balanceList = new List<PS_ASU_SP_FA_BAL_V__x>();
-        
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            balanceList =
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_FA_BAL_V__x>() :
-                [
-                    SELECT BALANCE_AMT__c, DisplayUrl, DUE_AMT__c, EMPLID__c, ExternalId, Id 
-                    FROM PS_ASU_SP_FA_BAL_V__x
-                    WHERE EMPLID__c = :emplid
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        if (!balanceList.isEmpty())
-            wrapper.faBalance = balanceList[0];
-
-        List<ASU_STDNT_RETENTION_SNP__x> snpRecords = getRetentionSNP(emplid);
-        if (!snpRecords.isEmpty())
-        {
-            wrapper.pastDueTIP = snpRecords[0].PAST_DUE_TIP__c;
-        }
-
-        return wrapper;
-    } 
-
-    @RemoteAction
-    global static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
+    public static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
     {
         List<Financial_Aid_Package__c> financesPackageList = new List<Financial_Aid_Package__c>();
         
@@ -1492,90 +1207,54 @@ global with sharing class StudentProfileController
         return (financesPackageList.size() > 0? financesPackageList : new List<Financial_Aid_Package__c>());
     } 
 
-    @RemoteAction
-    // Get Service Indicators as a list // done
-    global static List<PS_ASU_SP_SVCIND_V__x> getServiceIndicators(String emplId)
-    {
-        //Temporary
-        //return new List<PS_ASU_SP_SVCIND_V__x>();
-
-        List<PS_ASU_SP_SVCIND_V__x> serviceIndicatorList = new List<PS_ASU_SP_SVCIND_V__x>();
-        
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            serviceIndicatorList =
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_SVCIND_V__x>() :
-                [
-                    SELECT ACAD_CAREER__c, ADMIT_TERM__c, DESCR__c, DisplayUrl, EMPLID__c, ExternalId, 
-                           Id, POS_SRVC_INDICATOR__c, REASON_DESCR__c, SCC_SI_END_DT__c, SCC_SI_END_TERM__c, 
-                           SRVC_IND_ACT_TERM__c, SRVC_IND_ACTIVE_DT__c, SRVC_IND_CD__c, SRVC_IND_DTTM__c 
-                    FROM PS_ASU_SP_SVCIND_V__x
-                    WHERE EMPLID__c = :emplId
-                      AND POS_SRVC_INDICATOR__c = 'N'
-                    ORDER BY SRVC_IND_ACTIVE_DT__c ASC, SRVC_IND_CD__c ASC
-                ]
-            );
-            Date currentDate = date.today();
-            
-            for(Integer i = serviceIndicatorList.size()-1; i >= 0; i--){
-                Date tempDate = serviceIndicatorList[i].SCC_SI_END_DT__c;
-                if (tempDate < currentDate) {
-                    serviceIndicatorList.remove(i);
-                }
-            }
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        return (serviceIndicatorList.size() > 0? serviceIndicatorList : new List<PS_ASU_SP_SVCIND_V__x>());
-    }    
-
-    // Wrapper for financial aid data
-    global class financialAidWrapper
-    {
-        public Set<String> aidYears = new Set<String>();
-        public List<PS_ASU_SP_FA_SUM_V__x> summaryRecords = new List<PS_ASU_SP_FA_SUM_V__x>();
-
+    public List<Service_Indicator__c> getServiceIndicators() {
+        List<Service_Indicator__c> serviceIndicatorList = [
+            SELECT SI_Code__c, SI_Description__c, SI_Reason__c, SI_Start_Date__c
+            FROM Service_Indicator__c
+            WHERE SI_Contact__c = :theContact.Id
+            AND SI_Positive_Service_Indicator__c = FALSE
+            AND SI_End_Date__c < :Date.today()
+            ORDER BY SI_Start_Date__c ASC, SI_Code__c ASC
+        ];
+        return (!serviceIndicatorList.isEmpty() ? serviceIndicatorList : new List<Service_Indicator__c>());
     }
 
-    @RemoteAction
-    // Get Financial Aid Summary records and return wrapper class
-    global static financialAidWrapper getFinancialSummaryData(String emplId)
-    {
-        financialAidWrapper faData = new financialAidWrapper();
-
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            faData.summaryRecords = 
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_FA_SUM_V__x>() :
-                [
-                    SELECT ACAD_CAREER__c, ACCEPT_AMOUNT__c, AID_YEAR__c, DESCR__c, EMPLID__c,
-                           DESCR_CATEGORY__c, DISBURSED_AMOUNT__c, DisplayUrl, ExternalId, Id, 
-                           OFFER_AMOUNT__c, SFA_CR_AWARD_TYPE__c
-                    FROM PS_ASU_SP_FA_SUM_V__x
-                    WHERE EMPLID__c = :emplId
-                    ORDER BY AID_YEAR__c DESC, DESCR_CATEGORY__c ASC, SFA_CR_AWARD_TYPE__c ASC
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+    // Wrapper for financial aid data
+    public class FinancialAidWrapper {
+        
+        public Set<String> aidYears { get; set; }
+        public List<Financial_Aid_Detail__c> summaryRecords { get; set; }   
+        
+        public FinancialAidWrapper() {
+            aidYears = new Set<String>();
+            summaryRecords = new List<Financial_Aid_Detail__c>();
         }
-
-        for (PS_ASU_SP_FA_SUM_V__x faRecord: faData.summaryRecords)
-        {
-            faData.aidYears.add(faRecord.AID_YEAR__c);
+    }
+	
+    private void getFinancialSummaryData() {
+        faWrapper = new FinancialAidWrapper();
+        
+        Set<String> tempAidYears = new Set<String>();
+        for (Financial_Aid_Detail__c faRecord: [
+            SELECT Acad_Career__c, Accept_Amount__c, Aid_Year__c, Descr__c, Contact__c,
+                Descr_Category__c, Disbursed_Amount__c, Id, 
+                Offer_Amount__c, Name
+            FROM Financial_Aid_Detail__c
+            WHERE Contact__c = :theContact.Id
+            ORDER BY Aid_Year__c DESC, Descr_Category__c ASC, Name ASC
+         ]) {
+                tempAidYears.add(faRecord.Aid_Year__c);
+                faWrapper.summaryRecords.add(faRecord);
         }
-        if (faData.summaryRecords.size() > 0)
-            faData.aidYears.add('All');
+        if (!tempAidYears.isEmpty()) {
+            faWrapper.aidYears.add('All');
+            faWrapper.aidYears.addAll(tempAidYears);
+        }
+    }
+    
+       
 
-        return faData;
-    }      
-
-    global class generalIndicatorsWrapper
+    public class generalIndicatorsWrapper
     {
         public ASU_STDNT_RETENTION__x asuStudentRetention = new ASU_STDNT_RETENTION__x();
         public JBT_RET_FINAID_INDICATORS__x finAidIndicators = new JBT_RET_FINAID_INDICATORS__x();
@@ -1588,7 +1267,7 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    global static generalIndicatorsWrapper getUGIndicatorsNew(String emplid, String currentTerm)
+    public static generalIndicatorsWrapper getUGIndicatorsNew(String emplid, String currentTerm)
     {
         generalIndicatorsWrapper giData = new generalIndicatorsWrapper();
 
@@ -1740,7 +1419,7 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    global static JBT_RET_FINAID_INDICATORS__x getFinAidIndicator(String emplid)
+    public static JBT_RET_FINAID_INDICATORS__x getFinAidIndicator(String emplid)
     {
 
         List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList = new List<JBT_RET_FINAID_INDICATORS__x>();
@@ -1765,7 +1444,7 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    global static List<JBT_RET_FINAID_UNRESOLVED__x> getFinAidUnresolved(String emplid, String currentTerm)
+    public static List<JBT_RET_FINAID_UNRESOLVED__x> getFinAidUnresolved(String emplid, String currentTerm)
     {
         List<JBT_RET_FINAID_UNRESOLVED__x> jbtRetFinaidUnresolvedList = new List<JBT_RET_FINAID_UNRESOLVED__x>();
         
@@ -1791,7 +1470,7 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    global static PS_ASU_SR_INDASR_V__x getAsrIndicator(String emplid, String currentTerm)
+    public static PS_ASU_SR_INDASR_V__x getAsrIndicator(String emplid, String currentTerm)
     {
         List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList = new List<PS_ASU_SR_INDASR_V__x>();
         
@@ -1817,7 +1496,7 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    global static List<PS_ASU_SR_ASR_INDV__x> getAsrInformation(String emplid, String currentTerm)
+    public static List<PS_ASU_SR_ASR_INDV__x> getAsrInformation(String emplid, String currentTerm)
     {
         List<PS_ASU_SR_ASR_INDV__x> asrInformationList = new List<PS_ASU_SR_ASR_INDV__x>();
         
@@ -1844,7 +1523,7 @@ global with sharing class StudentProfileController
     }
 
     @RemoteAction
-    global static List<PS_ASU_SP_ENRHLD_V__x> getEnrollmentHolds(String emplid, String currentTerm)
+    public static List<PS_ASU_SP_ENRHLD_V__x> getEnrollmentHolds(String emplid, String currentTerm)
     {
         List<PS_ASU_SP_ENRHLD_V__x> enrollmentHoldList = new List<PS_ASU_SP_ENRHLD_V__x>();
         
@@ -1868,100 +1547,47 @@ global with sharing class StudentProfileController
 
         return (enrollmentHoldList.size() > 0 ? enrollmentHoldList : new List<PS_ASU_SP_ENRHLD_V__x>());
     }
-
-    @RemoteAction
-    global static me3__c getMe3HSResults(String contactId) {
-        List<me3__c> me3List = new List<me3__c>();
-        
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
-            
-            me3List =
-            (
-                Test.isRunningTest() ? new List<me3__c>() : 
-                [SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,                 
-                        Source__c, Test_Completed_Date__c, User_Id__c, 
-                        (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
-                                Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
-                         FROM   me3_Careers__r
-                         WHERE Active__c = TRUE
-                         ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
-                         LIMIT 10) 
-                 FROM me3__c
-                 WHERE  Contact__c = :contactId AND Source__c = 'me3hs' 
-                 ORDER BY Test_Completed_Date__c DESC
-                 LIMIT 1 
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        return (me3List.size() > 0? me3List[0] : new me3__c());        
-    }
-
-    @RemoteAction
-    global static me3__c getMe3Results(String contactId)
-    {
-        List<me3__c> me3List = new List<me3__c>();
-        
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
-            
-            me3List =
-            (
-                Test.isRunningTest() ? new List<me3__c>() : 
-                [SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,                 
-                        Source__c, Test_Completed_Date__c, User_Id__c, 
-                        (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
-                                Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
-                         FROM   me3_Careers__r
-                         WHERE Active__c = True
-                         ORDER BY Updated_Date__c DESC, Position__c ASC
-                         LIMIT 10) 
-                 FROM   me3__c
-                 WHERE  Contact__c = :contactId AND Source__c = 'DegreeSearch'
-                 ORDER BY Test_Completed_Date__c DESC
-                 LIMIT 1 
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        return (me3List.size() > 0? me3List[0] : new me3__c());
-    }    
-
-     @RemoteAction
-    global static List<REZ_HOUSING_BOOKING_VW__x> getHousingInfo(String emplId, String currentTerm) {
-        List<REZ_HOUSING_BOOKING_VW__x> housingInfoList = new List<REZ_HOUSING_BOOKING_VW__x>();
-
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            if (! Test.isRunningTest()) {
-                housingInfoList =
-                [
-                    SELECT
-                        BOOKING_BUILDING__c, BOOKING_CAMPUS__c,
-                        BOOKING_FLOOR_SUITE__c, BOOKING_SECTION__c,
-                        BOOKING_STATUS__c, CHECK_IN_DT__c, CHECK_OUT_DT__c,
-                        TERM_CD__c
-                    FROM REZ_HOUSING_BOOKING_VW__x
-                    WHERE EMPLID__c = :emplId
-                    AND TERM_CD__c = :currentTerm
-                    ORDER BY CHECK_OUT_DT__c DESC
-                ];
-            }
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-        
-        return housingInfoList;
-    }
     
+    private Me3__c getMe3HighScoolResults() {
+        List<me3__c> me3List = [
+            SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,                 
+                Source__c, Test_Completed_Date__c, User_Id__c, 
+                (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
+                        Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
+                 FROM   Me3_Careers__r
+                 WHERE Active__c = TRUE
+                 ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
+                 LIMIT 10) 
+             FROM Me3__c
+             WHERE  Contact__c = :theContact.Id AND Source__c = 'me3hs' 
+             ORDER BY Test_Completed_Date__c DESC
+             LIMIT 1 
+        ];
+        return (!me3List.isEmpty() ? me3List[0] : new me3__c());
+    }
+
+    private Me3__c getMe3Results() {
+        List<me3__c> me3List = [
+            SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,                 
+                Source__c, Test_Completed_Date__c, User_Id__c, 
+                (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
+                        Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
+                 FROM   Me3_Careers__r
+                 WHERE Active__c = TRUE
+                 ORDER BY Updated_Date__c DESC, Position__c ASC
+                 LIMIT 10) 
+             FROM   Me3__c
+             WHERE  Contact__c = :theContact.Id 
+             AND Source__c = 'DegreeSearch'
+             ORDER BY Test_Completed_Date__c DESC
+             LIMIT 1 
+        ];
+
+        return (!me3List.isEmpty() ? me3List[0] : new Me3__c());
+    }
+
     @RemoteAction
-    global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
+    public static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
         try{
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
             Id student = [SELECT Id FROM Contact WHERE emplId__c =: emplidIn LIMIT 1].Id;

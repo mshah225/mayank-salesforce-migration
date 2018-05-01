@@ -63,7 +63,6 @@
         </style>
     </head>
     <body>
-        
         <div class="mainCont">
             <div class="row" style="margin-top:20px;">
                 <div class="col-md-8">
@@ -75,7 +74,6 @@
                                     miscInformation="{!theContact.FirstName} {!theContact.lastName} Id:{!theContact.EMPLID__c}"
                                     classes="mobile"/>
                             </div>
-                         
                             <apex:outputPanel id="photoRerenderPanel" layout="none">
                                 <apex:form >                                     
                                 <div id="sundevilImgDiv">
@@ -86,7 +84,6 @@
                                 </div>
                                 </apex:form>
                             </apex:outputPanel>
-
                         </div>
 
                         <div class="col-sm-8" style="margin-top:5px;">
@@ -103,7 +100,6 @@
                                         </span>
                                     </apex:outputPanel>
                                 </h2>
-                                
                                 <h4 class="intro" style="display:block">
                                     <span style="color:#353535">ID:</span>
                                     &nbsp;{!theContact.EMPLID__c}

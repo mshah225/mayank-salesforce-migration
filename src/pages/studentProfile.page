@@ -216,8 +216,7 @@
             arrow.toggleClass('fa-caret-down');                    
         });
 
-        // Call load functions when tabs are collpased, and add smooth scroll 
-        // to tab on click for mobile
+        //  add smooth scroll to tab on click for mobile
         $j(document).on('click', "a.tabLink", function() {    
             if ((navigator.userAgent.match(/Android/i)
                 || navigator.userAgent.match(/webOS/i)
@@ -241,12 +240,9 @@
         var guestAccessLoaded = false;
         var indicatorHistoryLoaded = false;
         var transcriptsLoaded = false;
-
         var classesData;
         var financialAidData;
 
-        // Wrappers
-        
         function loadClassesTab() {
             getEnrolledClasses();
             getCreditByExamData();

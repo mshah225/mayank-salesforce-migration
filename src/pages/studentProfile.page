@@ -67,1453 +67,1178 @@
         <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.min.js" />
         <script src="/support/console/37.0/integration.js" type="text/javascript"></script>
         <script type="text/javascript">
-            var inConsole = false;
-            function setTabTitle() {
-                //Set the current tab's title
-                if (sforce.console.isInConsole() || window.location.href.includes("FrameOrigin")) {
-                    sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
-                    inConsole = true;
+        var inConsole = false;
+        function setTabTitle() {
+            //Set the current tab's title
+            if (sforce.console.isInConsole() || window.location.href.includes("FrameOrigin")) {
+                sforce.console.setTabTitle("{!theContact.FirstName}\'s Student Profile");
+                inConsole = true;
 
+            }
+        }
+        var pageLoad = window.onload;
+          window.onload = function() {
+                if (pageLoad) {
+                        pageLoad();
+                }
+                setTabTitle();
+          }
+        function openNewSubtab(subtabUrl, subtabTitle)
+        {
+         
+            var openSubtab = function(result)
+            {
+                  if (subtabTitle != 'null')
+                    sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
+                  else
+                    sforce.console.openSubtab(result.id, subtabUrl, true);
+
+            };
+
+            if (inConsole)
+                  sforce.console.getEnclosingPrimaryTabId(openSubtab);
+            else
+                window.open(subtabUrl);
+         }
+    
+        Visualforce.remoting.timeout = 120000;
+        (function($) {
+            console.log('responsive tab load');
+            fakewaffle.responsiveTabs(['xs', 'sm']);
+        })(jQuery);
+        
+        function submitCase(){
+            var subject = document.getElementById('usrSubject').value;
+            var description = document.getElementById('usrDescription').value;
+            if(subject.length <= 0 || description.length <= 0){
+                document.getElementById('modalError').innerHTML = 'Please ensure that subject and description are not blank';
+            } else { 
+                Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.createCase}',
+                description,
+                subject,
+                '{!theContact.EMPLId__c}',
+                function (result, event) {
+                    document.getElementById('usrSubject').value = '';
+                    document.getElementById('usrDescription').value = '';
+                    document.getElementById('modalError').innerHTML = '';
+                    var url = window.location.href;
+                    sforce.console.openPrimaryTab(null, './' + result, true);
+                    jQuery('#myModal').modal('hide');
+                });
+            }
+        };
+        
+        function clearError() {
+            document.getElementById('modalError').innerHTML = '';
+            document.getElementById('usrSubject').value = '';
+            document.getElementById('usrDescription').value = '';
+        };
+
+        $j = jQuery.noConflict();
+        
+        var timeoutHandle;
+
+        $j('.fa-question-circle').mouseenter(function(){
+            var that = $j(this)
+            that.tooltip('show');
+            window.clearTimeout(timeoutHandle);
+        });
+        
+        $j('.fa-question-circle').mouseleave(function(){
+                var _this = $j(this);
+            timeoutHandle = window.setTimeout(function(){
+                _this.tooltip('hide');
+            }, 2000);
+        });
+
+        $j("#sunCard").error(function() {
+            $j(this).attr("src", "{!$Resource.blankAvatar}");
+        });
+    
+        $j(document).ready(function() {
+            $j("#btnLoadIndicatorsHistory").click(function(){
+                getRetentionSNPs(); 
+            });
+            
+            maskPhoneNumbers();
+            filterFinancialAid();
+            
+            loadRemoteSunCardPhoto();
+            loadCommentsTab();
+            loadUGIndicatorTab();
+            loadClassesTab();
+        });
+        
+        function loadRemoteSunCardPhoto() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getSunCardPhotoRA}',
+                '{!theContact.ASURite_ID__c}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (event.status) {
+                        if (result.length != 0) {
+                            var onlineStudent = '{!theContact.ASU_Online_Student__c}';
+                            if(onlineStudent === true) {
+                                result = '{!$Resource.blankAvatar}';
+                            }
+                            var html = '<img id="studentPhotoImg2" src="' + result + '" '+
+                                         ' alt="suncard photo" ' +
+                                         ' class="img-responsive intro" ' +
+                                         ' style="max-width:200px;width:100%;"/>';
+                            document.getElementById('sundevilImgDiv').innerHTML = html;
+                            cleanUpUndefined("sundevilImgDiv");
+                        } else {
+                            jQuery('#sunImgSpinner').remove();
+                        }
+                    } else {
+                        jQuery('#sunImgSpinner').remove();
+                    }
+                },
+                {buffer: false, escape: true, timeout: 15000}
+            );
+        }
+        
+        // Arrow Functionality
+        $j(".page-header-smaller").click(function() {                                    
+            var container = $j(this);
+            var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
+            console.log(arrow);
+            console.log(container);
+            console.log(container.next());
+            if (arrow.hasClass('fa-caret-down')) {
+                container.next().slideUp().addClass('hide');
+            } else if (arrow.hasClass('fa-caret-right')) {
+                container.next().removeClass('hide').slideDown();
+            }
+            
+            arrow.toggleClass('fa-caret-right');
+            arrow.toggleClass('fa-caret-down');                    
+        });
+
+        // Call load functions when tabs are collpased, and add smooth scroll 
+        // to tab on click for mobile
+        $j(document).on('click', "a.tabLink", function() {    
+            if ((navigator.userAgent.match(/Android/i)
+                || navigator.userAgent.match(/webOS/i)
+                || navigator.userAgent.match(/iPhone/i)
+                || navigator.userAgent.match(/iPad/i)
+                || navigator.userAgent.match(/iPod/i)
+                || navigator.userAgent.match(/BlackBerry/i)
+                || navigator.userAgent.match(/Windows Phone/i)))
+            {
+                if (!$j(this).hasClass("collapsed")) {
+                    $j('html, body').animate({
+                        scrollTop: $j(this).offset().top - 10
+                    }, 800);
                 }
             }
-            var pageLoad = window.onload;
-              window.onload = function() {
-                    if (pageLoad) {
-                            pageLoad();
-                    }
-                    setTabTitle();
-              }
-            function openNewSubtab(subtabUrl, subtabTitle)
-            {
-             
-                var openSubtab = function(result)
-                {
-                      if (subtabTitle != 'null')
-                        sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
-                      else
-                        sforce.console.openSubtab(result.id, subtabUrl, true);
-
-                };
-
-                if (inConsole)
-                      sforce.console.getEnclosingPrimaryTabId(openSubtab);
-                else
-                    window.open(subtabUrl);
-             }
+        });
         
-            Visualforce.remoting.timeout = 120000;
-            (function($) {
-                console.log('responsive tab load');
-                fakewaffle.responsiveTabs(['xs', 'sm']);
-            })(jQuery);
-            
-            function submitCase(){
-                var subject = document.getElementById('usrSubject').value;
-                var description = document.getElementById('usrDescription').value;
-                if(subject.length <= 0 || description.length <= 0){
-                    document.getElementById('modalError').innerHTML = 'Please ensure that subject and description are not blank';
-                } else { 
-                    Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.createCase}',
-                    description,
-                    subject,
-                    '{!theContact.EMPLId__c}',
-                    function (result, event) {
-                        document.getElementById('usrSubject').value = '';
-                        document.getElementById('usrDescription').value = '';
-                        document.getElementById('modalError').innerHTML = '';
-                        var url = window.location.href;
-                        sforce.console.openPrimaryTab(null, './' + result, true);
-                        jQuery('#myModal').modal('hide');
-                    });
-                }
-            };
-            
-            function clearError() {
-                document.getElementById('modalError').innerHTML = '';
-                document.getElementById('usrSubject').value = '';
-                document.getElementById('usrDescription').value = '';
-            };
+        var indicatorTabLoaded = false;
+        var advisorNotesLoaded = false;
+        var commentsLoaded = false;
+        var guestAccessLoaded = false;
+        var indicatorHistoryLoaded = false;
+        var transcriptsLoaded = false;
 
-            $j = jQuery.noConflict();
-            
-            var timeoutHandle;
+        var classesData;
+        var financialAidData;
 
-            $j('.fa-question-circle').mouseenter(function(){
-                var that = $j(this)
-                that.tooltip('show');
-                window.clearTimeout(timeoutHandle);
-            });
-            
-            $j('.fa-question-circle').mouseleave(function(){
-                    var _this = $j(this);
-                timeoutHandle = window.setTimeout(function(){
-                    _this.tooltip('hide');
-                }, 2000);
-            });
-
-            $j("#sunCard").error(function() {
-                $j(this).attr("src", "{!$Resource.blankAvatar}");
-            });
+        // Wrappers
         
-            $j(document).ready(function() {
-                $j("#btnLoadIndicatorsHistory").click(function(){
-                    getRetentionSNPs(); 
-                });
-                
-                maskPhoneNumbers();
-                filterFinancialAid();
-                
-                loadRemoteSunCardPhoto();
-                loadCommentsTab();
-                loadUGIndicatorTab();
-                loadClassesTab();
-            });
+        function loadClassesTab() {
+            getEnrolledClasses();
+            getCreditByExamData();
+            getTransferWork();
+        }
+
+        function loadUGIndicatorTab() {
+            getStudentRetention();
+            getGeneralIndicators();
+            getTranscripts();
+        }
+
+        function loadCommentsTab() {
+            getPSAdvisorNotes();
+            getComments();
+            getGuestAccess();
+        }
+
+        // Method to replace all undefined/missing fields after callout
+        function cleanUpUndefined(elementId) {
+            var element = document.getElementById(elementId);
             
-            function loadRemoteSunCardPhoto() {
+            if (element) {
+                element.innerHTML = element.innerHTML.replace(/undefined/g, '--');
+                element.innerHTML = element.innerHTML.replace(/NaN/g, '--');
+            }
+        }
+
+        // Method to load the Undergraduate Indicators tab
+        function getStudentRetention() {
+           if (!indicatorTabLoaded) {
+                document.getElementById("stdtRetentionResponseErrors").innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
                 Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getSunCardPhotoRA}',
-                    '{!theContact.ASURite_ID__c}',
+                    '{!$RemoteAction.StudentProfileController.getStudentRetention}',
                     '{!theContact.EMPLID__c}',
                     function (result, event) {
                         if (event.status) {
-                            if (result.length != 0) {
-                                var onlineStudent = '{!theContact.ASU_Online_Student__c}';
-                                if(onlineStudent === true) {
-                                    result = '{!$Resource.blankAvatar}';
+                            document.getElementById("stdtRetentionResponseErrors").innerHTML =
+                                "";
+
+                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                                document.getElementById("UGgeneralIndicators").style.display =
+                                    "initial";
+                                document.getElementById("stdtRetentionResponseErrors").style.display =
+                                    "none";
+                                document.getElementById('sr_finAid_issue').innerHTML =
+                                    result.FA_INDICATOR__c;
+                                document.getElementById('sr_asr').innerHTML =
+                                    result.ASR_INDICATOR__c;
+                                if (result.ENRL_HOLD_COUNT__c > 0) {
+                                    document.getElementById('sr_en_holds').innerHTML =
+                                        "<span style='color:red'>" +
+                                        result.ENRL_HOLD_COUNT__c +
+                                        "</span>";
+                                } else {
+                                    document.getElementById('sr_en_holds').innerHTML =
+                                        result.ENRL_HOLD_COUNT__c;
                                 }
-                                var html = '<img id="studentPhotoImg2" src="' + result + '" '+
-                                             ' alt="suncard photo" ' +
-                                             ' class="img-responsive intro" ' +
-                                             ' style="max-width:200px;width:100%;"/>';
-                                document.getElementById('sundevilImgDiv').innerHTML = html;
-                                cleanUpUndefined("sundevilImgDiv");
+                                document.getElementById('sr_ci_index').innerHTML =
+                                    result.CI_INDEX_INDICATOR__c;
+                                document.getElementById('sr_eadvisor').innerHTML =
+                                    result.EADVISOR_INDICATOR__c;
+                                document.getElementById('sr_cum_gpa').innerHTML =
+                                    result.CUM_GPA_INDICATOR__c;
+                                document.getElementById('sr_probation').innerHTML =
+                                    result.PROBATION_INDICATOR__c;
+                                document.getElementById('sr_next_term_enrolled').innerHTML =
+                                    result.NEXT_TERM_ENROLLED__c;
+                                document.getElementById('sr_past_due_tip').innerHTML =
+                                    (typeof result.PAST_DUE_TIP__c=="undefined" ? "--" : "<span style='color:red'>" + "$" + result.PAST_DUE_TIP__c.toFixed(2) + "</span>");
+                                document.getElementById('sr_financial_hold').innerHTML =
+                                    result.FINANCIAL_HOLD__c;
+                                document.getElementById('sr_term_myasu_usage').innerHTML =
+                                    Math.floor(result.TERM_MYASU_USAGE__c);
+                                document.getElementById('sr_term_avg_myasu_usage').innerHTML =
+                                    result.AVG_MYASU_COHORT__c;
+                                document.getElementById('sr_below_mean_myasu_usage').innerHTML =
+                                    Math.floor(0.7 * result.AVG_MYASU_COHORT__c);
+
+                                cleanUpUndefined("UGgeneralIndicators");
+                                indicatorTabLoaded = true;
                             } else {
-                                jQuery('#sunImgSpinner').remove();
+                                document.getElementById("stdtRetentionResponseErrors").innerHTML =
+                                    'No general indicators found.';
+                                document.getElementById("stdtRetentionResponseErrors").style.display =
+                                    "default";
+                                indicatorTabLoaded = true;
                             }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("stdtRetentionResponseErrors").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
                         } else {
-                            jQuery('#sunImgSpinner').remove();
+                            document.getElementById("stdtRetentionResponseErrors").innerHTML =
+                                event.message;
                         }
                     },
                     {buffer: false, escape: true, timeout: 15000}
                 );
             }
-            
-            // Arrow Functionality
-            $j(".page-header-smaller").click(function() {                                    
-                var container = $j(this);
-                var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
-                console.log(arrow);
-                console.log(container);
-                console.log(container.next());
-                if (arrow.hasClass('fa-caret-down')) {
-                    container.next().slideUp().addClass('hide');
-                } else if (arrow.hasClass('fa-caret-right')) {
-                    container.next().removeClass('hide').slideDown();
-                }
-                
-                arrow.toggleClass('fa-caret-right');
-                arrow.toggleClass('fa-caret-down');                    
-            });
+        }
 
-            // Call load functions when tabs are collpased, and add smooth scroll 
-            // to tab on click for mobile
-            $j(document).on('click', "a.tabLink", function() {    
-                if ((navigator.userAgent.match(/Android/i)
-                    || navigator.userAgent.match(/webOS/i)
-                    || navigator.userAgent.match(/iPhone/i)
-                    || navigator.userAgent.match(/iPad/i)
-                    || navigator.userAgent.match(/iPod/i)
-                    || navigator.userAgent.match(/BlackBerry/i)
-                    || navigator.userAgent.match(/Windows Phone/i)))
-                {
-                    if (!$j(this).hasClass("collapsed")) {
-                        $j('html, body').animate({
-                            scrollTop: $j(this).offset().top - 10
-                        }, 800);
-                    }
-                }
-            });
-            
-            var indicatorTabLoaded = false;
-            var advisorNotesLoaded = false;
-            var commentsLoaded = false;
-            var guestAccessLoaded = false;
-            var testScoresLoaded = false;
-            var gradTestScoresLoaded = false;
-            var ugMilestonesLoaded = false;
-            var gradMilestonesLoaded = false;
-            var UGacademicProgressLoaded = false;
-            var gradAcademicProgressLoaded = false;
-            var accountBalanceLoaded = false;
-            var indicatorHistoryLoaded = false;
-            var careerDevelopmentTabLoaded = false;
-            var transcriptsLoaded = false;
-            var me3ResultsLoaded = false;
-            var me3HSResultsLoaded = false;
-    
-            var classesData;
-            var financialAidData;
-    
-            // Wrappers
-            
-            function loadClassesTab() {
-                getEnrolledClasses();
-                getCreditByExamData();
-                getTransferWork();
-            }
-    
-            function loadUGIndicatorTab() {
-                getStudentRetention();
-                getGeneralIndicators();
-                getTranscripts();
-            }
-    
-            function loadCommentsTab() {
-                getPSAdvisorNotes();
-                getComments();
-                getGuestAccess();
-            }
+        // Method to load the Undergraduate Indicators tab
+        function getGeneralIndicators() {
+            if (!indicatorTabLoaded) {
+                var errorHtml = "";
 
-            // Method to replace all undefined/missing fields after callout
-            function cleanUpUndefined(elementId) {
-                var element = document.getElementById(elementId);
-                
-                if (element) {
-                    element.innerHTML = element.innerHTML.replace(/undefined/g, '--');
-                    element.innerHTML = element.innerHTML.replace(/NaN/g, '--');
-                }
-            }
-    
-            // Method to load the Undergraduate Indicators tab
-            function getStudentRetention() {
-               if (!indicatorTabLoaded) {
-                    document.getElementById("stdtRetentionResponseErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getStudentRetention}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("stdtRetentionResponseErrors").innerHTML =
-                                    "";
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("UGgeneralIndicators").style.display =
-                                        "initial";
-                                    document.getElementById("stdtRetentionResponseErrors").style.display =
-                                        "none";
-                                    document.getElementById('sr_finAid_issue').innerHTML =
-                                        result.FA_INDICATOR__c;
-                                    document.getElementById('sr_asr').innerHTML =
-                                        result.ASR_INDICATOR__c;
-                                    if (result.ENRL_HOLD_COUNT__c > 0) {
-                                        document.getElementById('sr_en_holds').innerHTML =
-                                            "<span style='color:red'>" +
-                                            result.ENRL_HOLD_COUNT__c +
-                                            "</span>";
-                                    } else {
-                                        document.getElementById('sr_en_holds').innerHTML =
-                                            result.ENRL_HOLD_COUNT__c;
-                                    }
-                                    document.getElementById('sr_ci_index').innerHTML =
-                                        result.CI_INDEX_INDICATOR__c;
-                                    document.getElementById('sr_eadvisor').innerHTML =
-                                        result.EADVISOR_INDICATOR__c;
-                                    document.getElementById('sr_cum_gpa').innerHTML =
-                                        result.CUM_GPA_INDICATOR__c;
-                                    document.getElementById('sr_probation').innerHTML =
-                                        result.PROBATION_INDICATOR__c;
-                                    document.getElementById('sr_next_term_enrolled').innerHTML =
-                                        result.NEXT_TERM_ENROLLED__c;
-                                    document.getElementById('sr_past_due_tip').innerHTML =
-                                        (typeof result.PAST_DUE_TIP__c=="undefined" ? "--" : "<span style='color:red'>" + "$" + result.PAST_DUE_TIP__c.toFixed(2) + "</span>");
-                                    document.getElementById('sr_financial_hold').innerHTML =
-                                        result.FINANCIAL_HOLD__c;
-                                    document.getElementById('sr_term_myasu_usage').innerHTML =
-                                        Math.floor(result.TERM_MYASU_USAGE__c);
-                                    document.getElementById('sr_term_avg_myasu_usage').innerHTML =
-                                        result.AVG_MYASU_COHORT__c;
-                                    document.getElementById('sr_below_mean_myasu_usage').innerHTML =
-                                        Math.floor(0.7 * result.AVG_MYASU_COHORT__c);
-    
-                                    cleanUpUndefined("UGgeneralIndicators");
-                                    indicatorTabLoaded = true;
-                                } else {
-                                    document.getElementById("stdtRetentionResponseErrors").innerHTML =
-                                        'No general indicators found.';
-                                    document.getElementById("stdtRetentionResponseErrors").style.display =
-                                        "default";
-                                    indicatorTabLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("stdtRetentionResponseErrors").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("stdtRetentionResponseErrors").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-                }
-            }
-    
-            // Method to load the Undergraduate Indicators tab
-            function getGeneralIndicators() {
-                if (!indicatorTabLoaded) {
-                    var errorHtml = "";
-    
-                    document.getElementById("stdtRetentionResponseErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getStudentRetention}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("UGgeneralIndicators").style.display =
-                                        "initial";
-                                    document.getElementById('sr_asr').innerHTML =
-                                        result.ASR_INDICATOR__c;
-                                    if (result.ENRL_HOLD_COUNT__c > 0) {
-                                        document.getElementById('sr_en_holds').innerHTML =
-                                            "<span style='color:red'>" +
-                                            result.ENRL_HOLD_COUNT__c +
-                                            "</span>";
-                                    } else {
-                                        document.getElementById('sr_en_holds').innerHTML =
-                                            result.ENRL_HOLD_COUNT__c;
-                                    }
-                                    document.getElementById('sr_ci_index').innerHTML =
-                                        result.CI_INDEX_INDICATOR__c;
-                                    document.getElementById('sr_eadvisor').innerHTML =
-                                        result.EADVISOR_INDICATOR__c;
-                                    document.getElementById('sr_cum_gpa').innerHTML =
-                                        (result.CUM_GPA_INDICATOR__c > 0 && result.CUM_GPA_INDICATOR__c <= 2.25 ? "<span style='color:red;'>" : "") + 
-                                        result.CUM_GPA_INDICATOR__c +
-                                        (result.CUM_GPA_INDICATOR__c > 0 && result.CUM_GPA_INDICATOR__c <= 2.25 ? "</span>" : ""); 
-                                    document.getElementById('sr_probation').innerHTML =
-                                        result.PROBATION_INDICATOR__c;
-                                    document.getElementById('sr_next_term_enrolled').innerHTML =
-                                        result.NEXT_TERM_ENROLLED__c;
-                                    document.getElementById('sr_past_due_tip').innerHTML =
-                                        (typeof result.PAST_DUE_TIP__c=="undefined" ? "--" : "<span style='color:red'>" + "$" + result.PAST_DUE_TIP__c.toFixed(2) + "</span>");
-                                    document.getElementById('sr_financial_hold').innerHTML =
-                                        result.FINANCIAL_HOLD__c;
-                                    document.getElementById('sr_term_myasu_usage').innerHTML =
-                                        Math.floor(result.TERM_MYASU_USAGE__c);
-                                    document.getElementById('sr_term_avg_myasu_usage').innerHTML =
-                                        result.AVG_MYASU_COHORT__c;
-                                    document.getElementById('sr_below_mean_myasu_usage').innerHTML =
-                                        Math.floor(0.7 * result.AVG_MYASU_COHORT__c);
-    
-                                    cleanUpUndefined("UGgeneralIndicators");
-                                    indicatorTabLoaded = true;
-                                } else {
-                                    document.getElementById("stdtRetentionResponseErrors").innerHTML =
-                                        'No general indicators found.';
-                                    indicatorTabLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                errorHtml += event.message;
-                            }                            
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getFinAidIndicator}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById('sr_finAid_issue').innerHTML =
-                                        "<span style='color:red'>" +
-                                        result.FA_IND__c +
-                                        "</span>";
-                                } 
-                            } else if (event.type === 'exception') {
-                                errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                errorHtml += event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getFinAidUnresolved}',
-                        '{!theContact.EMPLID__c}',
-                        '{!currentTerm}',
-                        function (result, event) {
-                            if (event.status) {
-                                if (result.length > 0) {
-                                    var html = "" +
-                                            "<thead>" +
-                                                "<th>Aid Year</th>" +
-                                                "<th>Checklist Code</th>" +
-                                                "<th>Checklist Item Code</th>" +
-                                                "<th>Description</th>" +
-                                                "<th>Status Date</th>" +
-                                                "<th>Status</th>" +
-                                            "</thead>" +
-                                        "</table>" +
-                                        "<tbody style='font-weight:normal;'>";
-    
-                                    for (var i = 0; i < result.length; i++) {
-    
-                                        var utcSeconds = result[i].STATUS_DT__c;
-                                        var statusDate = new Date(utcSeconds);
-                                        statusDate = (statusDate.getMonth() + 1) + '/' +
-                                                    statusDate.getDate() + '/' +
-                                                    statusDate.getFullYear();
-    
-                                        html += 
-                                            "<tr>" +
-                                                "<td>" + result[i].AID_YEAR__c + "</td>" +
-                                                "<td>" + result[i].CHECKLIST_CD__c + "</td>" +
-                                                "<td>" + result[i].CHKLST_ITEM_CD__c + "</td>" +
-                                                "<td>" + result[i].ACTION__c + "</td>" +
-                                                "<td>" + statusDate + "</td>" +
-                                                "<td>" + result[i].STATUS__c + "</td>" +
-                                            "</tr>";
-                                    }
-    
-                                    html += "</tbody>";
-    
-                                    document.getElementById("sr_finAid_unresolved_table").innerHTML = html;
-                                    document.getElementById("sr_finAid_unresolved_tr").style.display =
-                                        "table-row";
-    
-                                } 
-    
-                            } else if (event.type === 'exception') {
-                                errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                errorHtml += event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getAsrIndicator}',
-                        '{!theContact.EMPLID__c}',
-                        '{!currentTerm}',
-                        function (result, event) {
-                            if (event.status) {
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById('sr_asr').innerHTML =
-                                        "<span style='color:red'>" +
-                                        result.CLASSCOUNT__c
-                                        "</span>";
-                                } 
-                            } else if (event.type === 'exception') {
-                                errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                errorHtml += event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getAsrInformation}',
-                        '{!theContact.EMPLID__c}',
-                        '{!currentTerm}',
-                        function (result, event) {
-                            if (event.status) {
-                                if (result.length > 0) {
-                                    var html = "" +
-                                            "<thead>" +
-                                                "<th>Class</th>" +
-                                                "<th>Course</th>" +
-                                                "<th>Title</th>" +
-                                                "<th>Session</th>" +
-                                                "<th>ASR Rpt No</th>" +
-                                                "<th>ASR Grade</th>" +
-                                                "<th>Enrolled</th>" +
-                                                "<th>Reason</th>" +
-                                                "<th>Action</th>" +
-                                                "<th>Comment</th>" +
-                                            "</thead>" +
-                                        "</table>" +
-                                        "<tbody style='font-weight:normal;'>";
-    
-                                    for (var i = 0; i < result.length; i++) {
-    
-                                        html += 
-                                            "<tr>" +
-                                                "<td>" + Math.floor(result[i].CLASS_NBR__c) + "</td>" +
-                                                "<td>" + result[i].COURSE_SQC__c + "</td>" +
-                                                "<td>" + result[i].COURSE_TITLE__c + "</td>" +
-                                                "<td>" + result[i].SESSION_CODE__c + "</td>" +
-                                                "<td>" + Math.floor(result[i].SEQNUM__c) + "</td>" +
-                                                "<td>" + result[i].CRSE_GRADE_INPUT__c + "</td>" +
-                                                "<td>" + result[i].ENROLLED__c + "</td>" +
-                                                "<td>" + result[i].ASU_GRADE_RSN_LIST__c + "</td>" +
-                                                "<td>" + result[i].ASU_GRADE_INST_LST__c + "</td>" +
-                                                "<td>" + result[i].COMMENT1__c + "</td>" +
-                                            "</tr>";
-                                    }
-    
-                                    html += "</tbody>";
-    
-                                    document.getElementById("sr_asr_info_table").innerHTML = html;
-                                    document.getElementById("sr_asr_info_tr").style.display =
-                                        "table-row";
+                document.getElementById("stdtRetentionResponseErrors").innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
-                                    cleanUpUndefined("sr_asr_info_tr");
-                                } 
-    
-                            } else if (event.type === 'exception') {
-                                errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                errorHtml += event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-    
-                   Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getEnrollmentHolds}',
-                        '{!theContact.EMPLID__c}',
-                        '{!currentTerm}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById('sr_en_holds').innerHTML =
-                                        "<span style='color:black'>" +
-                                        result.length
-                                        "</span>";
-                                if (result.length > 0) {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getStudentRetention}',
+                    '{!theContact.EMPLID__c}',
+                    function (result, event) {
+                        if (event.status) {
+
+                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                                document.getElementById("UGgeneralIndicators").style.display =
+                                    "initial";
+                                document.getElementById('sr_asr').innerHTML =
+                                    result.ASR_INDICATOR__c;
+                                if (result.ENRL_HOLD_COUNT__c > 0) {
                                     document.getElementById('sr_en_holds').innerHTML =
                                         "<span style='color:red'>" +
-                                        result.length
+                                        result.ENRL_HOLD_COUNT__c +
                                         "</span>";
-    
-                                    var html = "" +
-                                            "<thead>" +
-                                                "<th>Code</th>" +
-                                                "<th>Srvc Term</th>" +
-                                                "<th>Reason</th>" +
-                                                "<th>Instructions</th>" +
-                                            "</thead>" +
-                                        "</table>" +
-                                        "<tbody style='font-weight:normal;'>";
-                                    for (var i = 0; i < result.length; i++) {
-    
-                                        html += 
-                                            "<tr>" +
-                                                "<td>" + result[i].SRVC_IND_CD__c + "</td>" +
-                                                "<td>" + result[i].STRM__c + "</td>" +
-                                                "<td>" + result[i].REASON__c + "</td>" +
-                                                "<td>" + result[i].INFO_INSTRUCT1__c + "</td>" +
-                                            "</tr>";
-                                    }
-    
-                                    html += "</tbody>";
-                                    document.getElementById("sr_en_holds_info_table").innerHTML = html;
-                                    document.getElementById("sr_en_holds_info_tr").style.display =
-                                        "table-row";
-    
-                                } 
-    
-                            } else if (event.type === 'exception') {
-                                errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                errorHtml += event.message;
-                            }
-                    document.getElementById("stdtRetentionResponseErrors").innerHTML = errorHtml;
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-                    cleanUpUndefined("UGgeneralIndicators");
-                }
-            }
-    
-            // Method to get transcripts
-            function getTranscripts() {
-                if (!transcriptsLoaded) {
-                    document.getElementById("psTranscriptErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-            
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getTranscripts}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("psTranscriptErrors").innerHTML =
-                                    "";
-                                
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("ps_transcript").style.display =
-                                        "initial";
-            
-                                    var html = "" +
-                                        "<div class='table-responsive'>" +
-                                            "<table id='transcript_table' class='table table-striped table-bordered'> " +
-                                                "<thead>" +
-                                                    "<tr>" +
-                                                        "<th>Sent On</th>" +
-                                                        "<th>Status</th>" +
-                                                        "<th>Recipient</th>" +
-                                                    "</tr>" +
-                                                "</thead>" +
-                                                "<tbody>";
-                                                
-                                    for (var i = 0; i < result.length; i++) {
-                                        var utcSeconds = result[i].REQUEST_OR_SENT_DATE__c;
-                                        var sentDate = new Date(utcSeconds);
-                                        sentDate = (sentDate.getUTCMonth() + 1) + '/' +
-                                            sentDate.getUTCDate() + '/' +
-                                            sentDate.getUTCFullYear();
-                                    
-                                        var status = result[i].STATUS__c;
-                                        var recipient = new Array(
-                                            result[i].SEND_TO_NAME__c,
-                                            result[i].ADDRESS1__c,
-                                            result[i].ADDRESS2__c,
-                                            result[i].ADDRESS3__c,
-                                            result[i].ADDRESS4__c
-                                        );
-
-                                        html += "" +
-                                            "<tr>" +
-                                                "<td>" + sentDate + "</td>" +
-                                                "<td>" + status + "</td>" +
-                                                "<td>" +
-                                                    "<li class='transcriptAddress'>" + recipient[0] + "</li>";
-                                        
-                                                    for (var j = 1; j < recipient.length; j++) {
-                                                        if (recipient[j] != null && recipient[j] != '-') {
-                                                            html += "<li class='transcriptAddress'> " + recipient[j] + "</li>";
-                                                        }
-                                                    }
-                                    
-                                                    html += "<li class='transcriptAddress'>" +
-                                                        result[i].CITY__c + ", " + 
-                                                        result[i].STATE__c + " " +
-                                                        result[i].POSTAL__c + "</li>" + 
-                                                        "<li class='transcriptAddress'> " + result[i].COUNTRY__c +
-                                                    "</li>" +
-                                                "</td>" +
-                                            "</tr>";
-                                    }
-                                    
-                                    html += "" + 
-                                            "</tbody>" +
-                                        "</table>" +
-                                    "</div>";
-                                    
-                                    document.getElementById('ps_transcript').innerHTML = html;
-                                    cleanUpUndefined("ps_transcript");
-                                    transcriptsLoaded = true;
-            
                                 } else {
-                                    document.getElementById("ps_transcript").innerHTML =
-                                        'No transcripts found.';
-                                    transcriptsLoaded = true;
+                                    document.getElementById('sr_en_holds').innerHTML =
+                                        result.ENRL_HOLD_COUNT__c;
                                 }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("psTranscriptErrors").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("psTranscriptErrors").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-                }
-            }
-            
-            // Method to retention snps.
-            function getRetentionSNPs() {
-                if (!indicatorHistoryLoaded) {
-                    document.getElementById("psRetentionSNPErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getRetentionSNP}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("psRetentionSNPErrors").innerHTML =
-                                    "";
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("ps_retention_snp").style.display =
-                                        "initial";
-    
-                                    var html = "" +
-                                        "<div class='table-responsive'>" +
-                                            "<table class='table table-striped table-bordered'> " +
-                                                "<thead>" +
-                                                    "<tr>" +
-                                                        "<th>Date</th>" +
-                                                        "<th>Term</th>" +
-                                                        "<th>FinAid Issue</th>" +
-                                                        "<th>CI Index</th>" +
-                                                        "<th>ASR</th>" +
-                                                        "<th>eAdvisor</th>" +
-                                                        "<th>MyASU Usage</th>" +
-                                                        "<th>Avg MyASU Cohort Usage</th>" +
-                                                        "<th>Cumulative GPA</th>" +
-                                                        "<th>Probation</th>" +
-                                                        "<th>Transcripts Sent</th>" +
-                                                        "<th>Past Due</th>" +
-                                                        "<th>Financial Holds</th>" +
-                                                        "<th>Total Indicators</th>" +
-                                                    "</tr>" +
-                                                "</thead>" +
-                                                "<tbody>";
-    
-                                    for (var i = 0; i < result.length; i++) {
-                                        var utcSeconds = result[i].CREATED_EW_DTTM__c;
-                                        var createdDate = new Date(utcSeconds);
-                                        createdDate = (createdDate.getMonth() + 1) + '/' +
-                                            createdDate.getDate() + '/' +
-                                            createdDate.getFullYear();
+                                document.getElementById('sr_ci_index').innerHTML =
+                                    result.CI_INDEX_INDICATOR__c;
+                                document.getElementById('sr_eadvisor').innerHTML =
+                                    result.EADVISOR_INDICATOR__c;
+                                document.getElementById('sr_cum_gpa').innerHTML =
+                                    (result.CUM_GPA_INDICATOR__c > 0 && result.CUM_GPA_INDICATOR__c <= 2.25 ? "<span style='color:red;'>" : "") + 
+                                    result.CUM_GPA_INDICATOR__c +
+                                    (result.CUM_GPA_INDICATOR__c > 0 && result.CUM_GPA_INDICATOR__c <= 2.25 ? "</span>" : ""); 
+                                document.getElementById('sr_probation').innerHTML =
+                                    result.PROBATION_INDICATOR__c;
+                                document.getElementById('sr_next_term_enrolled').innerHTML =
+                                    result.NEXT_TERM_ENROLLED__c;
+                                document.getElementById('sr_past_due_tip').innerHTML =
+                                    (typeof result.PAST_DUE_TIP__c=="undefined" ? "--" : "<span style='color:red'>" + "$" + result.PAST_DUE_TIP__c.toFixed(2) + "</span>");
+                                document.getElementById('sr_financial_hold').innerHTML =
+                                    result.FINANCIAL_HOLD__c;
+                                document.getElementById('sr_term_myasu_usage').innerHTML =
+                                    Math.floor(result.TERM_MYASU_USAGE__c);
+                                document.getElementById('sr_term_avg_myasu_usage').innerHTML =
+                                    result.AVG_MYASU_COHORT__c;
+                                document.getElementById('sr_below_mean_myasu_usage').innerHTML =
+                                    Math.floor(0.7 * result.AVG_MYASU_COHORT__c);
 
-                                        var totIndicators = 0;
-
-                                        if (typeof result[i].FA_INDICATOR__c == 'string' && result[i].FA_INDICATOR__c != '')
-                                            totIndicators++;                       
-                                        if (result[i].CI_INDEX_INDICATOR__c > 0 && result[i].CI_INDEX_INDICATOR__c <= 93)
-                                            totIndicators++;
-                                        if (result[i].ASR_INDICATOR__c > 0)
-                                            totIndicators++;
-                                        if (typeof result[i].EADVISOR_INDICATOR__c == 'string' && result[i].EADVISOR_INDICATOR__c.startsWith('Off Track'))
-                                            totIndicators++;
-                                        if (result[i].TERM_MYASU_USAGE__c < (0.70 * result[i].AVG_MYASU_COHORT__c))
-                                            totIndicators++;
-                                        if (result[i].CUM_GPA_INDICATOR__c > 0 && result[i].CUM_GPA_INDICATOR__c <= 2.25)
-                                            totIndicators++;
-                                        if (typeof result[i].PROBATION_INDICATOR__c == 'string' && result[i].PROBATION_INDICATOR__c == 'PROB')
-                                            totIndicators++;
-                                        if (result[i].ENRL_HOLD_COUNT__c > 0)
-                                            totIndicators++;
-                                        if (typeof result[i].NEXT_TERM_ENROLLED__c == 'string' && result[i].NEXT_TERM_ENROLLED__c == 'N')
-                                            totIndicators++;
-                                        if (result[i].PAST_DUE_TIP__c > 0)
-                                            totIndicators++;
-                                        if (typeof result[i].FINANCIAL_HOLD__c == 'string' && result[i].FINANCIAL_HOLD__c == 'Y')
-                                            totIndicators++;
-
-                                        if (typeof result[i].PAST_DUE_TIP__c == 'number' && result[i].PAST_DUE_TIP__c != 0)
-                                            result[i].PAST_DUE_TIP__c = "$" + result[i].PAST_DUE_TIP__c;
-
-
-                                        html += "" +
-                                            "<tr>" +
-                                                "<td>" + createdDate + "</td>" +
-                                                "<td>" + result[i].STRM__c + "</td>" +
-                                                "<td>" + result[i].FA_INDICATOR__c + "</td>" +
-                                                "<td>" + result[i].CI_INDEX_INDICATOR__c + "</td>" +
-                                                "<td>" + result[i].ASR_INDICATOR__c + "</td>" +
-                                                "<td>" + result[i].EADVISOR_INDICATOR__c + "</td>" +
-                                                "<td>" + result[i].TERM_MYASU_USAGE__c + "</td>" +
-                                                "<td>" + result[i].AVG_MYASU_COHORT__c + "</td>" +
-                                                "<td>" + result[i].CUM_GPA_INDICATOR__c + "</td>" +
-                                                "<td>" + result[i].PROBATION_INDICATOR__c + "</td>" +
-                                                "<td>" + result[i].TRANSCRIPTS_SENT_COUNT__c + "</td>" +
-                                                "<td>" + result[i].PAST_DUE_TIP__c + "</td>" +
-                                                "<td>" + result[i].FINANCIAL_HOLD__c + "</td>" +
-                                                "<td>" + totIndicators + "</td>" +
-                                            "</tr>";
-                                    }
-    
-                                    html += "</tbody></table></div>";
-    
-                                    document.getElementById('ps_retention_snp').innerHTML =
-                                        html;
-                                    cleanUpUndefined("ps_retention_snp");
-                                    indicatorHistoryLoaded = true;
-                                } else {
-                                    document.getElementById("psRetentionSNPErrors").innerHTML =
-                                        'No indicator history found.';
-                                    indicatorHistoryLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("psRetentionSNPErrors").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                                cleanUpUndefined("UGgeneralIndicators");
+                                indicatorTabLoaded = true;
                             } else {
-                                document.getElementById("psRetentionSNPErrors").innerHTML =
-                                    event.message;
+                                document.getElementById("stdtRetentionResponseErrors").innerHTML =
+                                    'No general indicators found.';
+                                indicatorTabLoaded = true;
                             }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-                }
-            }
-    
-            // Method to load the advisor comments.
-            function getPSAdvisorNotes() {
-                if (!advisorNotesLoaded) {
-                    document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getPSAdvisorNotes}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
-                                    "";
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("psAdvisingNotesResponseErrors").style.display =
-                                        "none";
-                                    var html = "";
-    
-                                    for (var i = 0; i < result.length; i++) {
-                                        var utcSeconds = result[i].note.CREATDTTM__c;
-                                        var commentDate = new Date(utcSeconds);
-                                        commentDate = (commentDate.getMonth() + 1) + '/' +
-                                            commentDate.getDate() + '/' +
-                                            commentDate.getFullYear();
-                                        html += "" +
-                                            "<div class='comments-panel'>" +
-                                                "<div class='comments-header'>" +
-                                                "<h4>" +
-                                                (result[i].advUserId == undefined? "" : "<a href='/_ui/core/userprofile/UserProfilePage?u="+ result[i].advUserId + "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
-                                                  result[i].note.NAME__c + 
-                                                 (result[i].advUserId == undefined? "": "</a>") +
-                                                    "</h4>" +
-                                                    "<span class='comments-header-date'>" +
-                                                    "&nbsp;&nbsp;-&nbsp;&nbsp;" +
-                                                    commentDate +
-                                                    "</span>" +
-                                                "</div>" +
-                                                "<div class='comments-main-comment'" +
-                                                     "id='ps_comments_main'>" +
-                                                    result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />') +
-                                                "</div>" +
-                                            "</div>" +
-                                            "<hr class='comments-hr'/>";
-                                    }
-    
-                                    document.getElementById('ps_advising_notes_section').innerHTML = html;
-                                    cleanUpUndefined("ps_advising_notes_section");
-                                    advisorNotesLoaded = true;
-                                } else {
-                                    document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
-                                        'No advising notes found.';
-                                    advisorNotesLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-                }
-            }
-    
-            function refreshComments() {
-                commentsLoaded = false;
-                advisorNotesLoaded = false;
-                document.getElementById('ps_advising_notes_section').innerHTML = '';
-                document.getElementById('ps_comments_section').innerHTML = '';
-                document.getElementById("psAdvisingNotesResponseErrors").style.display = "block";
-                document.getElementById("psCommentsResponseErrors").style.display = "block";
-                getPSAdvisorNotes();
-                getComments();
-            }
-            
-            // Method to load the advisor comments.
-            function getComments() {
-                if (!commentsLoaded) {
-                    document.getElementById("psCommentsResponseErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getComments}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("psCommentsResponseErrors").innerHTML =
-                                    "";
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("psCommentsResponseErrors").style.display =
-                                        "none";
-                                    var html = "";
-    
-                                    for (var i = 0; i < result.length; i++) {
-                                        var utcSeconds = result[i].comment.COMMENT_DTTM__c;
-                                        var commentDate = new Date(utcSeconds);
-                                        commentDate = (commentDate.getMonth() + 1) + '/' +
-                                            commentDate.getDate() + '/' +
-                                            commentDate.getFullYear();
-    
-                                        html += "" +
-                                            "<div class='comments-panel'>" +
-                                                "<div class='comments-header'>" +
-                                                "<h4>" +
-                                                (result[i].commenterUserId == undefined? "" : "<a href='/_ui/core/userprofile/UserProfilePage?u="+ result[i].commenterUserId + "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
-                                                  result[i].comment.NAME__c + 
-                                                 (result[i].commenterUserId == undefined? "": "</a>") +
-                                                 "</h4>" +
-                                                    "<span class='comments-header-date'>" +
-                                                    "&nbsp;&nbsp;-&nbsp;&nbsp;" +
-                                                    commentDate +
-                                                    "</span>" +
-                                                "</div>" +
-                                                "<div class='comments-main-comment'" +
-                                                     "id='ps_comments_main'>" +
-                                                    result[i].comment.COMMENTS__c +
-                                                "</div>" +
-                                            "</div>" +
-                                            "<hr class='comments-hr'/>";
-                                    }
-    
-                                    document.getElementById('ps_comments_section').innerHTML = html;
-                                    cleanUpUndefined("ps_comments_section");
-                                    commentsLoaded = true;
-                                } else {
-                                    document.getElementById("psCommentsResponseErrors").innerHTML =
-                                        'No comments found.';
-                                    commentsLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("psCommentsResponseErrors").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("psCommentsResponseErrors").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-                }
-            }
-    
-            // Method to load the advisor comments.
-            function getGuestAccess() {
-                if (!guestAccessLoaded) {
-                    document.getElementById("psGuestAccessResponseErrors").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getGuestAccess}',
-                        '{!theContact.EMPLID__c}',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("psGuestAccessResponseErrors").innerHTML =
-                                    "";
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("psGuestAccessResponseErrors").style.display =
-                                        "none";
-                                    var html = "";
-    
-                                    for (var i = 0; i < result.length; i++) {
-                                        var utcSeconds = result[i].COMMENT_DT__c;
-                                        var commentDate = new Date(utcSeconds);
-                                        commentDate = (commentDate.getMonth() + 1) + '/' +
-                                            commentDate.getDate() + '/' +
-                                            commentDate.getFullYear();
-                                        html += "" +
-                                            "<div class='comments-panel'>" +
-                                                "<div class='comments-header'>" +
-                                                    "<h4>" + result[i].AUTHOR__c + "</h4>" +
-                                                    "<span class='comments-header-date'>" +
-                                                    "&nbsp;&nbsp;-&nbsp;&nbsp;" +
-                                                    commentDate +
-                                                    "</span>" +
-                                                "</div>" +
-                                                "<div class='comments-main-comment'" +
-                                                     "id='ps_comments_main'>" +
-                                                    result[i].COMMENTS__c +
-                                                "</div>" +
-                                            "</div>" +
-                                            "<hr class='comments-hr'/>";
-                                    }
-    
-                                    document.getElementById('ps_guest_access_section').innerHTML = html;
-                                    cleanUpUndefined("ps_guest_access_section");
-                                    guestAccessLoaded = true;
-                                } else {
-                                    document.getElementById("psGuestAccessResponseErrors").innerHTML =
-                                        'No guest access data found.';
-                                    guestAccessLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("psGuestAccessResponseErrors").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("psGuestAccessResponseErrors").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-                }
-            }
-    
-            // Method to load the Undergraduate Academic Progress 
-            function getGradAcademicProgress() {
-                if (!gradAcademicProgressLoaded) {
-                    document.getElementById("psAcadProgressErrorsGrad").innerHTML =
-                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                    Visualforce.remoting.Manager.invokeAction(
-                        '{!$RemoteAction.StudentProfileController.getAcademicProgressData}',
-                        '{!theContact.EMPLID__c}',
-                        'Graduate',
-                        function (result, event) {
-                            if (event.status) {
-                                document.getElementById("psAcadProgressErrorsGrad").innerHTML =
-                                    "";
-    
-                                if (!Object.getOwnPropertyNames(result).length == 0) {
-                                    document.getElementById("ps_acad_progress_section_grad").style.display =
-                                        "initial";
-                                    document.getElementById("psAcadProgressErrorsGrad").style.display =
-                                        "none";
-                                    document.getElementById('grad_ipos_gpa').innerHTML =
-                                        result.psGradPlan.ASU_AA_POS_GPA__c;
-                                    document.getElementById('grad_grad_gpa').innerHTML =
-                                        result.psGradPlan.ASU_AA_OVRL_GPA__c;
-                                    document.getElementById('grad_cumulative_gpa').innerHTML =
-                                        result.psGradPlan.Cum_GPA__c;
-                                    document.getElementById('grad_cumulative_hours').innerHTML =
-                                        result.jbtRetAcadSummaryVw.Tot_Cumulative__c;
+                        } else if (event.type === 'exception') {
+                            errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            errorHtml += event.message;
+                        }                            
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
 
-                                    var adviserHtml = '--';
-                                    if (!result.psAsuSpAcadAdvList.length == 0) {
-                                        adviserHtml = '';
-                                        for (var i = 0; i < result.psAsuSpAcadAdvList.length; i++) {
-                                            adviserHtml += '<a href="mailto:' + result.psAsuSpAcadAdvList[i].Advisor_Email__c +
-                                                           '">' + result.psAsuSpAcadAdvList[i].Name + '</a><br>';
-                                        }
-                                    }
-                                    document.getElementById('grad_advisors').innerHTML =
-                                        adviserHtml;
-    
-                                    cleanUpUndefined("ps_acad_progress_section_grad");
-                                    gradAcademicProgressLoaded = true;
-                                } else {
-                                    document.getElementById("psAcadProgressErrorsGrad").innerHTML =
-                                        'No academic progress data found.';
-                                    gradAcademicProgressLoaded = true;
-                                }
-                            } else if (event.type === 'exception') {
-                                document.getElementById("psAcadProgressErrorsGrad").innerHTML =
-                                    event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            } else {
-                                document.getElementById("psAcadProgressErrorsGrad").innerHTML =
-                                    event.message;
-                            }
-                        },
-                        {buffer: false, escape: true, timeout: 15000}
-                    );
-                }
-            }
-            
-            //Method for clicking to sort enrolled classes
-            var ascDirEnrolled = true;
-            var currSortEnrolled = "Term";
-            function sortEnrolledOnClick(name) {
-                if(name == currSortEnrolled){
-                    ascDirEnrolled = !ascDirEnrolled;
-                } else {
-                    ascDirEnrolled = true;
-                    currSortEnrolled = name;
-                }
-                sortEnrolledClassList(name, ascDirEnrolled);
-            }
-            
-            //Method for clicking to sort Dropped Classes
-            var ascDirDropped = true;
-            var currSortDropped = "Term";
-            function sortDroppedOnClick(name) {
-                if(name == currSortDropped){
-                    ascDirDropped = !ascDirDropped;
-                } else {
-                    ascDirDropped = true;
-                    currSortDropped = name;
-                }
-                sortDroppedClassList(name, ascDirDropped);
-            }
-            
-            //Method for clicking to sort Transfer Exams
-            var ascDirExam = true;
-            var currSortExam = "Title";
-            function sortExamOnClick(name) {
-                if(name == currSortExam){
-                    ascDirExam = !ascDirExam;
-                } else {
-                    ascDirExam = true;
-                    currSortExam = name;
-                }
-                sortExamList(name, ascDirExam);
-            }
-            
-            //Method for clicking to sort Transfer Credits
-            var ascDirTransfer = true;
-            var currSortTransfer = "Term";
-            function sortTransferOnClick(name) {
-                if(name == currSortTransfer){
-                    ascDirTransfer = !ascDirTransfer;
-                } else {
-                    ascDirTransfer = true;
-                    currSortTransfer = name;
-                }
-                sortTransferList(name, ascDirTransfer);
-            }
-         
-            var enrolledWrapper;
-            var droppedWrapper;
-            var examWrapper;
-            var transferWrapper;
-            
-            // Method to get Enrolled Classes
-            function getEnrolledClasses() {
-                if (classesData != null)
-                    return;
-                document.getElementById("psEnrolledClassesErrors").innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-                document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
                 Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getClassesData}',
+                    '{!$RemoteAction.StudentProfileController.getFinAidIndicator}',
+                    '{!theContact.EMPLID__c}',
+                    function (result, event) {
+                        if (event.status) {
+                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                                document.getElementById('sr_finAid_issue').innerHTML =
+                                    "<span style='color:red'>" +
+                                    result.FA_IND__c +
+                                    "</span>";
+                            } 
+                        } else if (event.type === 'exception') {
+                            errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            errorHtml += event.message;
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
+
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getFinAidUnresolved}',
                     '{!theContact.EMPLID__c}',
                     '{!currentTerm}',
                     function (result, event) {
                         if (event.status) {
-                            document.getElementById("psEnrolledClassesErrors").innerHTML =
-                                "";
-                            document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
-                                "";
-                            classesData = result;
-                            enrolledWrapper = result.enrolledClasses;
-                            droppedWrapper = result.droppedClasses;
-                            var selectHtml = "";
-                            if (!Object.getOwnPropertyNames(classesData.classSessions).length == 0) {
-                                selectHtml += "<label for='ps_classes_session_select'>Session:&nbsp;</label><select id='ps_classes_session_select' onchange='filterClasses()'>";
-                                for (var i = 0; i < classesData.classSessions.length; i++) {
-                                    selectHtml += "<option ";
-                                    if (classesData.classSessions[i]=='All') {
-                                        selectHtml += " selected='selected' ";
-                                    }
-                                    selectHtml += " value='" + classesData.classSessions[i] + "'>" + 
-                                             classesData.classSessions[i] + "</option>";
-                                }
-                                selectHtml += "</select>&nbsp;&nbsp;";
-                            }
-    
-                            if (!Object.getOwnPropertyNames(classesData.classTerms).length == 0) {
-                                selectHtml += "<label for='ps_classes_term_select'>Term:&nbsp;</label><select id='ps_classes_term_select' onchange='filterClasses()'>";
-                                for (var i = 0; i < classesData.classTerms.length; i++) {
-                                    var parsedTerms = classesData.classTerms[i].split('|');
-                                    selectHtml += "<option value='" + parsedTerms[0] + "'>" + 
-                                             parsedTerms[1] + "</option>";
-                                }
-                                selectHtml += "</select>";
-                            }
-                            document.getElementById('ps_classes_term_picklist').innerHTML = selectHtml;
-                            
-    
-                            if (!Object.getOwnPropertyNames(result.enrolledClasses).length == 0) {
-                                document.getElementById("ps_enrolled_classes").style.display =
-                                    "initial";
-    
+                            if (result.length > 0) {
                                 var html = "" +
-                                    "<div class='table-responsive'>" +
-                                        "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
-                                            "<thead>" +
-                                                "<tr style=\"cursor:pointer\">" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
-                                                    "<th onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
-                                                    "<th>ASR</th>" +
-                                                "</tr>" +
-                                            "</thead>" +
-                                            "<tbody>";
-                                for (var i = 0; i < result.enrolledClasses.length; i++) {
-                                    var asrValue = '--';
-    
-                                    //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' + 
-                                    //                              result.enrolledClasses[i].SESSION_CODE__c + '|' +
-                                    //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
-                                    //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;UGindicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
-                                    //} 
-    
-                                    html += "" +
-                                        "<tr>" +
-                                            "<td>" + result.enrolledClasses[i].TERM_DESCR30__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].SESSION_CODE__c + "</td>" +
-                                            "<td>" + Math.floor(result.enrolledClasses[i].CLASS_NBR__c) + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].SUBJECT__c + " " + result.enrolledClasses[i].CATALOG_NBR__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].CLASS_DESCR__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].SSR_CLSTOPIC_DESCR__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].UNT_TAKEN__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].FT_FULL_NAME__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].SCH_HTML_DAY1__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].SCH_DAILY_TIME__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].ASU_SCH_DATES__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].SSR_MTG_LOC_LONG__c + "</td>" +
-                                            "<td>" + result.enrolledClasses[i].CRSE_GRADE_OFF__c + "</td>" +
-                                            "<td style='display:none'>" + result.enrolledClasses[i].EARN_CREDIT__c + "" + result.enrolledClasses[i].VALID_ATTEMPT__c + "</td>" + 
-                                            "<td style='display:none'>" + result.enrolledClasses[i].CUR_GPA__c + "</td>" +
-                                            "<td style='display:none'>" + result.enrolledClasses[i].CUM_GPA__c + "</td>" +
-                                            "<td style='display:none'>" + result.enrolledClasses[i].STRM__c + "</td>";
+                                        "<thead>" +
+                                            "<th>Aid Year</th>" +
+                                            "<th>Checklist Code</th>" +
+                                            "<th>Checklist Item Code</th>" +
+                                            "<th>Description</th>" +
+                                            "<th>Status Date</th>" +
+                                            "<th>Status</th>" +
+                                        "</thead>" +
+                                    "</table>" +
+                                    "<tbody style='font-weight:normal;'>";
 
-                                    if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' + 
-                                                                  result.enrolledClasses[i].SESSION_CODE__c + '|' +
-                                                                  result.enrolledClasses[i].CLASS_NBR__c) > -1) {
-                                        // ASR link opens Undergraduate Indicators tab when clicked
-                                        html += "<td>" + '<a href="#" onclick="document.getElementById(\x27UGindicatorsLink\x27).click(); return false;">!</a>' + "</td>"
-                                    } else {
-                                        html += "<td>--</td>";
-                                    }
-                                    
-                                    html += "</tr>";
-    
-                                }
-    
-                                html += "</tbody></table></div>";
+                                for (var i = 0; i < result.length; i++) {
 
-                                html += "<div style='float:right; font-weight:bold;' id='ps_enrolled_classes_summary'/><br/>";
-                                html += "<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>";
-    
-                                document.getElementById('ps_enrolled_classes').innerHTML = html;
-                                cleanUpUndefined("ps_enrolled_classes");
-                            } else {
-                                document.getElementById("psEnrolledClassesErrors").innerHTML =
-                                    'No enrolled classes found.';
-                            }
-    
-    
-                            if (!Object.getOwnPropertyNames(result.droppedClasses).length == 0) {
-                                document.getElementById("ps_dropped_withdrawn_classes").style.display =
-                                    "initial";
-    
-                                var html = "" +
-                                    "<div class='table-responsive'>" +
-                                        "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
-                                            "<thead>" +
-                                                "<tr style=\"cursor:pointer\">" +
-                                                    "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
-                                                    "<th onclick=\"sortDroppedOnClick('Sessioj')\">Session</th>" +
-                                                    "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
-                                                    "<th onclick=\"sortDroppedOnClick('Course')\">Course</th>" +
-                                                    "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
-                                                    "<th onclick=\"sortDroppedOnClick('Topic')\">Topic</th>" +
-                                                    "<th onclick=\"sortDroppedOnClick('Units')\">Units</th>" +
-                                                    "<th onclick=\"sortDroppedOnClick('Status')\">Status</th>" +
-                                                    "<th>ASR</th>" +
-                                                "</tr>" +
-                                            "</thead>" +
-                                            "<tbody>";
-    
-                                for (var i = 0; i < result.droppedClasses.length; i++) {
-    
-                                    html += "" +
+                                    var utcSeconds = result[i].STATUS_DT__c;
+                                    var statusDate = new Date(utcSeconds);
+                                    statusDate = (statusDate.getMonth() + 1) + '/' +
+                                                statusDate.getDate() + '/' +
+                                                statusDate.getFullYear();
+
+                                    html += 
                                         "<tr>" +
-                                            "<td>" + result.droppedClasses[i].TERM_DESCR30__c + "</td>" +
-                                            "<td>" + result.droppedClasses[i].SESSION_CODE__c + "</td>" +
-                                            "<td>" + Math.floor(result.droppedClasses[i].CLASS_NBR__c) + "</td>" +
-                                            "<td>" + result.droppedClasses[i].SUBJECT__c + " " + result.droppedClasses[i].CATALOG_NBR__c + "</td>" +
-                                            "<td>" + result.droppedClasses[i].CLASS_DESCR__c + "</td>" +
-                                            "<td>" + result.droppedClasses[i].SSR_CLSTOPIC_DESCR__c + "</td>" +
-                                            "<td>" + result.droppedClasses[i].UNT_TAKEN__c + "</td>" +
-                                            "<td>" + result.droppedClasses[i].ENRL_STATUS_REASON__c + "</td>" +
-                                            "<td>" + "--" + "</td>" +
+                                            "<td>" + result[i].AID_YEAR__c + "</td>" +
+                                            "<td>" + result[i].CHECKLIST_CD__c + "</td>" +
+                                            "<td>" + result[i].CHKLST_ITEM_CD__c + "</td>" +
+                                            "<td>" + result[i].ACTION__c + "</td>" +
+                                            "<td>" + statusDate + "</td>" +
+                                            "<td>" + result[i].STATUS__c + "</td>" +
                                         "</tr>";
                                 }
-    
-                                html += "</tbody></table></div>";
-    
-                                document.getElementById('ps_dropped_withdrawn_classes').innerHTML = html;
-                                cleanUpUndefined("ps_dropped_withdrawn_classes");
-                            } else {
-                                document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
-                                    'No dropped or withdrawn classes found.';
-                            }
-    
-                            filterClasses();
-    
+
+                                html += "</tbody>";
+
+                                document.getElementById("sr_finAid_unresolved_table").innerHTML = html;
+                                document.getElementById("sr_finAid_unresolved_tr").style.display =
+                                    "table-row";
+
+                            } 
+
                         } else if (event.type === 'exception') {
-                            document.getElementById("psEnrolledClassesErrors").innerHTML =
-                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                            document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
+                            errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            errorHtml += event.message;
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
+
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getAsrIndicator}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                                document.getElementById('sr_asr').innerHTML =
+                                    "<span style='color:red'>" +
+                                    result.CLASSCOUNT__c
+                                    "</span>";
+                            } 
+                        } else if (event.type === 'exception') {
+                            errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            errorHtml += event.message;
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
+
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getAsrInformation}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            if (result.length > 0) {
+                                var html = "" +
+                                        "<thead>" +
+                                            "<th>Class</th>" +
+                                            "<th>Course</th>" +
+                                            "<th>Title</th>" +
+                                            "<th>Session</th>" +
+                                            "<th>ASR Rpt No</th>" +
+                                            "<th>ASR Grade</th>" +
+                                            "<th>Enrolled</th>" +
+                                            "<th>Reason</th>" +
+                                            "<th>Action</th>" +
+                                            "<th>Comment</th>" +
+                                        "</thead>" +
+                                    "</table>" +
+                                    "<tbody style='font-weight:normal;'>";
+
+                                for (var i = 0; i < result.length; i++) {
+
+                                    html += 
+                                        "<tr>" +
+                                            "<td>" + Math.floor(result[i].CLASS_NBR__c) + "</td>" +
+                                            "<td>" + result[i].COURSE_SQC__c + "</td>" +
+                                            "<td>" + result[i].COURSE_TITLE__c + "</td>" +
+                                            "<td>" + result[i].SESSION_CODE__c + "</td>" +
+                                            "<td>" + Math.floor(result[i].SEQNUM__c) + "</td>" +
+                                            "<td>" + result[i].CRSE_GRADE_INPUT__c + "</td>" +
+                                            "<td>" + result[i].ENROLLED__c + "</td>" +
+                                            "<td>" + result[i].ASU_GRADE_RSN_LIST__c + "</td>" +
+                                            "<td>" + result[i].ASU_GRADE_INST_LST__c + "</td>" +
+                                            "<td>" + result[i].COMMENT1__c + "</td>" +
+                                        "</tr>";
+                                }
+
+                                html += "</tbody>";
+
+                                document.getElementById("sr_asr_info_table").innerHTML = html;
+                                document.getElementById("sr_asr_info_tr").style.display =
+                                    "table-row";
+
+                                cleanUpUndefined("sr_asr_info_tr");
+                            } 
+
+                        } else if (event.type === 'exception') {
+                            errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            errorHtml += event.message;
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
+
+               Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getEnrollmentHolds}',
+                    '{!theContact.EMPLID__c}',
+                    '{!currentTerm}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById('sr_en_holds').innerHTML =
+                                    "<span style='color:black'>" +
+                                    result.length
+                                    "</span>";
+                            if (result.length > 0) {
+                                document.getElementById('sr_en_holds').innerHTML =
+                                    "<span style='color:red'>" +
+                                    result.length
+                                    "</span>";
+
+                                var html = "" +
+                                        "<thead>" +
+                                            "<th>Code</th>" +
+                                            "<th>Srvc Term</th>" +
+                                            "<th>Reason</th>" +
+                                            "<th>Instructions</th>" +
+                                        "</thead>" +
+                                    "</table>" +
+                                    "<tbody style='font-weight:normal;'>";
+                                for (var i = 0; i < result.length; i++) {
+
+                                    html += 
+                                        "<tr>" +
+                                            "<td>" + result[i].SRVC_IND_CD__c + "</td>" +
+                                            "<td>" + result[i].STRM__c + "</td>" +
+                                            "<td>" + result[i].REASON__c + "</td>" +
+                                            "<td>" + result[i].INFO_INSTRUCT1__c + "</td>" +
+                                        "</tr>";
+                                }
+
+                                html += "</tbody>";
+                                document.getElementById("sr_en_holds_info_table").innerHTML = html;
+                                document.getElementById("sr_en_holds_info_tr").style.display =
+                                    "table-row";
+
+                            } 
+
+                        } else if (event.type === 'exception') {
+                            errorHtml += event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            errorHtml += event.message;
+                        }
+                document.getElementById("stdtRetentionResponseErrors").innerHTML = errorHtml;
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
+                cleanUpUndefined("UGgeneralIndicators");
+            }
+        }
+
+        // Method to get transcripts
+        function getTranscripts() {
+            if (!transcriptsLoaded) {
+                document.getElementById("psTranscriptErrors").innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+        
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getTranscripts}',
+                    '{!theContact.EMPLID__c}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psTranscriptErrors").innerHTML =
+                                "";
+                            
+                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                                document.getElementById("ps_transcript").style.display =
+                                    "initial";
+        
+                                var html = "" +
+                                    "<div class='table-responsive'>" +
+                                        "<table id='transcript_table' class='table table-striped table-bordered'> " +
+                                            "<thead>" +
+                                                "<tr>" +
+                                                    "<th>Sent On</th>" +
+                                                    "<th>Status</th>" +
+                                                    "<th>Recipient</th>" +
+                                                "</tr>" +
+                                            "</thead>" +
+                                            "<tbody>";
+                                            
+                                for (var i = 0; i < result.length; i++) {
+                                    var utcSeconds = result[i].REQUEST_OR_SENT_DATE__c;
+                                    var sentDate = new Date(utcSeconds);
+                                    sentDate = (sentDate.getUTCMonth() + 1) + '/' +
+                                        sentDate.getUTCDate() + '/' +
+                                        sentDate.getUTCFullYear();
+                                
+                                    var status = result[i].STATUS__c;
+                                    var recipient = new Array(
+                                        result[i].SEND_TO_NAME__c,
+                                        result[i].ADDRESS1__c,
+                                        result[i].ADDRESS2__c,
+                                        result[i].ADDRESS3__c,
+                                        result[i].ADDRESS4__c
+                                    );
+
+                                    html += "" +
+                                        "<tr>" +
+                                            "<td>" + sentDate + "</td>" +
+                                            "<td>" + status + "</td>" +
+                                            "<td>" +
+                                                "<li class='transcriptAddress'>" + recipient[0] + "</li>";
+                                    
+                                                for (var j = 1; j < recipient.length; j++) {
+                                                    if (recipient[j] != null && recipient[j] != '-') {
+                                                        html += "<li class='transcriptAddress'> " + recipient[j] + "</li>";
+                                                    }
+                                                }
+                                
+                                                html += "<li class='transcriptAddress'>" +
+                                                    result[i].CITY__c + ", " + 
+                                                    result[i].STATE__c + " " +
+                                                    result[i].POSTAL__c + "</li>" + 
+                                                    "<li class='transcriptAddress'> " + result[i].COUNTRY__c +
+                                                "</li>" +
+                                            "</td>" +
+                                        "</tr>";
+                                }
+                                
+                                html += "" + 
+                                        "</tbody>" +
+                                    "</table>" +
+                                "</div>";
+                                
+                                document.getElementById('ps_transcript').innerHTML = html;
+                                cleanUpUndefined("ps_transcript");
+                                transcriptsLoaded = true;
+        
+                            } else {
+                                document.getElementById("ps_transcript").innerHTML =
+                                    'No transcripts found.';
+                                transcriptsLoaded = true;
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psTranscriptErrors").innerHTML =
                                 event.message + "<br/>\n<pre>" + event.where + "</pre>";
                         } else {
-                            document.getElementById("psEnrolledClassesErrors").innerHTML =
-                                event.message;
-                            document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
+                            document.getElementById("psTranscriptErrors").innerHTML =
                                 event.message;
                         }
                     },
                     {buffer: false, escape: true, timeout: 15000}
                 );
             }
-    
-            function filterClasses() {
-                var termSelect = document.getElementById("ps_classes_term_select");
-                var sessionSelect = document.getElementById("ps_classes_session_select");
-                var searchTerm = termSelect.options[termSelect.selectedIndex] === undefined ? '' : termSelect.options[termSelect.selectedIndex].text;
-                var searchSession = sessionSelect.options[sessionSelect.selectedIndex] === undefined ? '' : sessionSelect.options[sessionSelect.selectedIndex].text ;
-                var classTable = document.getElementById('enrolled_classes_table');
-                var summaryHtml = "";
-                var earnedUnits = 0;
-                var cumGpa = "";
-                var curGpa = "";
-                for (var r = 1; r < classTable.rows.length; r++) {
-                    var termCell = classTable.rows[r].cells[0].innerHTML;
-                    var sessionCell = classTable.rows[r].cells[1].innerHTML;
-                    var displayStyle = 'none';
-                    if ((termCell.indexOf(searchTerm)>=0 || searchTerm=='All') &&
-                        (sessionCell.indexOf(searchSession)>=0 || searchSession=='All')) 
-                    {
-                        displayStyle = 'table-row';
-                        if (curGpa == '' && searchTerm != 'All') curGpa = 'Term GPA: ' + classTable.rows[r].cells[14].innerHTML + '&nbsp;&nbsp;&nbsp';
-                        if (cumGpa == '') cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[15].innerHTML;
-                        if (classTable.rows[r].cells[13].innerHTML == 'YY' && classTable.rows[r].cells[16].innerHTML != '{!currentTerm}')
-                        {
-                            earnedUnits += Number(classTable.rows[r].cells[6].innerHTML);
-                        }
-                    }
-                    else {
-                        displayStyle = 'none';
-                    }
-                    classTable.rows[r].style.display = displayStyle;
-                }
-                summaryHtml = 'Total Earned Units: ' + earnedUnits + '&nbsp;&nbsp;&nbsp' +
-                              curGpa + cumGpa; 
-                var summaryDiv = document.getElementById('ps_enrolled_classes_summary');
-                summaryDiv.innerHTML = summaryHtml;
-                var headerSpan = document.getElementById('enrolled_classes_header');
-                headerSpan.innerHTML = '&nbsp;' + searchTerm + ' Enrolled Classes';
-    
-                classTable = document.getElementById('dropped_classes_table');
-                for (var r = 1; r < classTable.rows.length; r++) {
-                    var termCell = classTable.rows[r].cells[0].innerHTML;
-                    var sessionCell = classTable.rows[r].cells[1].innerHTML;
-                    var displayStyle = 'none';
-                    if ((termCell.indexOf(searchTerm)>=0 || searchTerm=='All') &&
-                        (sessionCell.indexOf(searchSession)>=0 || searchSession=='All')) 
-                    {
-                        displayStyle = 'table-row';
-                    }
-                    else {
-                        displayStyle = 'none';
-                    }
-                    classTable.rows[r].style.display = displayStyle;
-                }
-                headerSpan = document.getElementById('dropped_classes_header');
-                headerSpan.innerHTML = '&nbsp;' + searchTerm + ' Dropped/Withdrawn Classes';
-    
-            }
-    
-            //Method to Sort Class List
-            function sortEnrolledClassList(paramToSort, direction){
+        }
+        
+        // Method to retention snps.
+        function getRetentionSNPs() {
+            if (!indicatorHistoryLoaded) {
+                document.getElementById("psRetentionSNPErrors").innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
                 Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.sortClasses}',
-                    paramToSort,
-                    enrolledWrapper,
-                    direction,
+                    '{!$RemoteAction.StudentProfileController.getRetentionSNP}',
+                    '{!theContact.EMPLID__c}',
                     function (result, event) {
-                        document.getElementById("ps_enrolled_classes").style.display = "initial";
+                        if (event.status) {
+                            document.getElementById("psRetentionSNPErrors").innerHTML =
+                                "";
 
-                        var html = "" +
-                            "<div class='table-responsive'>" +
-                                "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
-                                    "<thead>" +
-                                        "<tr style=\"cursor:pointer\">" +
-                                            "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
-                                            "<th onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
-                                            "<th>ASR</th>" +
-                                        "</tr>" +
-                                    "</thead>" +
-                                    "<tbody>";
+                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                                document.getElementById("ps_retention_snp").style.display =
+                                    "initial";
 
-                        for (var i = 0; i < result.length; i++) {
-                            var asrValue = '--';
+                                var html = "" +
+                                    "<div class='table-responsive'>" +
+                                        "<table class='table table-striped table-bordered'> " +
+                                            "<thead>" +
+                                                "<tr>" +
+                                                    "<th>Date</th>" +
+                                                    "<th>Term</th>" +
+                                                    "<th>FinAid Issue</th>" +
+                                                    "<th>CI Index</th>" +
+                                                    "<th>ASR</th>" +
+                                                    "<th>eAdvisor</th>" +
+                                                    "<th>MyASU Usage</th>" +
+                                                    "<th>Avg MyASU Cohort Usage</th>" +
+                                                    "<th>Cumulative GPA</th>" +
+                                                    "<th>Probation</th>" +
+                                                    "<th>Transcripts Sent</th>" +
+                                                    "<th>Past Due</th>" +
+                                                    "<th>Financial Holds</th>" +
+                                                    "<th>Total Indicators</th>" +
+                                                "</tr>" +
+                                            "</thead>" +
+                                            "<tbody>";
 
-                            html += "" + 
-                                "<tr>" +
-                                    "<td>" + result[i].classInfo.TERM_DESCR30__c + "</td>" +
-                                    "<td>" + result[i].classInfo.SESSION_CODE__c + "</td>" +
-                                    "<td>" + Math.floor(result[i].classInfo.CLASS_NBR__c) + "</td>" +
-                                    "<td>" + result[i].classInfo.SUBJECT__c + " " + result[i].classInfo.CATALOG_NBR__c + "</td>" +
-                                    "<td>" + result[i].classInfo.CLASS_DESCR__c + "</td>" +
-                                    "<td>" + result[i].classInfo.SSR_CLSTOPIC_DESCR__c + "</td>" +
-                                    "<td>" + result[i].classInfo.UNT_TAKEN__c + "</td>" +
-                                    "<td>" + result[i].classInfo.FT_FULL_NAME__c + "</td>" +
-                                    "<td>" + result[i].classInfo.SCH_HTML_DAY1__c + "</td>" +
-                                    "<td>" + result[i].classInfo.SCH_DAILY_TIME__c + "</td>" +
-                                    "<td>" + result[i].classInfo.ASU_SCH_DATES__c + "</td>" +
-                                    "<td>" + result[i].classInfo.SSR_MTG_LOC_LONG__c + "</td>" +
-                                    "<td>" + result[i].classInfo.CRSE_GRADE_OFF__c + "</td>" +
-                                    "<td style='display:none'>" + result[i].classInfo.EARN_CREDIT__c + "" + result[i].classInfo.VALID_ATTEMPT__c + "</td>" + 
-                                    "<td style='display:none'>" + result[i].classInfo.CUR_GPA__c + "</td>" +
-                                    "<td style='display:none'>" + result[i].classInfo.CUM_GPA__c + "</td>" +
-                                    "<td style='display:none'>" + result[i].classInfo.STRM__c + "</td>";
-                            html += "<td>--</td>";
-                            
-                            
-                            html += "</tr>";
+                                for (var i = 0; i < result.length; i++) {
+                                    var utcSeconds = result[i].CREATED_EW_DTTM__c;
+                                    var createdDate = new Date(utcSeconds);
+                                    createdDate = (createdDate.getMonth() + 1) + '/' +
+                                        createdDate.getDate() + '/' +
+                                        createdDate.getFullYear();
 
+                                    var totIndicators = 0;
+
+                                    if (typeof result[i].FA_INDICATOR__c == 'string' && result[i].FA_INDICATOR__c != '')
+                                        totIndicators++;                       
+                                    if (result[i].CI_INDEX_INDICATOR__c > 0 && result[i].CI_INDEX_INDICATOR__c <= 93)
+                                        totIndicators++;
+                                    if (result[i].ASR_INDICATOR__c > 0)
+                                        totIndicators++;
+                                    if (typeof result[i].EADVISOR_INDICATOR__c == 'string' && result[i].EADVISOR_INDICATOR__c.startsWith('Off Track'))
+                                        totIndicators++;
+                                    if (result[i].TERM_MYASU_USAGE__c < (0.70 * result[i].AVG_MYASU_COHORT__c))
+                                        totIndicators++;
+                                    if (result[i].CUM_GPA_INDICATOR__c > 0 && result[i].CUM_GPA_INDICATOR__c <= 2.25)
+                                        totIndicators++;
+                                    if (typeof result[i].PROBATION_INDICATOR__c == 'string' && result[i].PROBATION_INDICATOR__c == 'PROB')
+                                        totIndicators++;
+                                    if (result[i].ENRL_HOLD_COUNT__c > 0)
+                                        totIndicators++;
+                                    if (typeof result[i].NEXT_TERM_ENROLLED__c == 'string' && result[i].NEXT_TERM_ENROLLED__c == 'N')
+                                        totIndicators++;
+                                    if (result[i].PAST_DUE_TIP__c > 0)
+                                        totIndicators++;
+                                    if (typeof result[i].FINANCIAL_HOLD__c == 'string' && result[i].FINANCIAL_HOLD__c == 'Y')
+                                        totIndicators++;
+
+                                    if (typeof result[i].PAST_DUE_TIP__c == 'number' && result[i].PAST_DUE_TIP__c != 0)
+                                        result[i].PAST_DUE_TIP__c = "$" + result[i].PAST_DUE_TIP__c;
+
+
+                                    html += "" +
+                                        "<tr>" +
+                                            "<td>" + createdDate + "</td>" +
+                                            "<td>" + result[i].STRM__c + "</td>" +
+                                            "<td>" + result[i].FA_INDICATOR__c + "</td>" +
+                                            "<td>" + result[i].CI_INDEX_INDICATOR__c + "</td>" +
+                                            "<td>" + result[i].ASR_INDICATOR__c + "</td>" +
+                                            "<td>" + result[i].EADVISOR_INDICATOR__c + "</td>" +
+                                            "<td>" + result[i].TERM_MYASU_USAGE__c + "</td>" +
+                                            "<td>" + result[i].AVG_MYASU_COHORT__c + "</td>" +
+                                            "<td>" + result[i].CUM_GPA_INDICATOR__c + "</td>" +
+                                            "<td>" + result[i].PROBATION_INDICATOR__c + "</td>" +
+                                            "<td>" + result[i].TRANSCRIPTS_SENT_COUNT__c + "</td>" +
+                                            "<td>" + result[i].PAST_DUE_TIP__c + "</td>" +
+                                            "<td>" + result[i].FINANCIAL_HOLD__c + "</td>" +
+                                            "<td>" + totIndicators + "</td>" +
+                                        "</tr>";
+                                }
+
+                                html += "</tbody></table></div>";
+
+                                document.getElementById('ps_retention_snp').innerHTML =
+                                    html;
+                                cleanUpUndefined("ps_retention_snp");
+                                indicatorHistoryLoaded = true;
+                            } else {
+                                document.getElementById("psRetentionSNPErrors").innerHTML =
+                                    'No indicator history found.';
+                                indicatorHistoryLoaded = true;
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psRetentionSNPErrors").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            document.getElementById("psRetentionSNPErrors").innerHTML =
+                                event.message;
                         }
-
-                        html += "</tbody></table></div>";
-
-                        html += "<div style='float:right; font-weight:bold;' id='ps_enrolled_classes_summary'/><br/>";
-                        html += "<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>";
-
-                        document.getElementById('ps_enrolled_classes').innerHTML = html;
-                        filterClasses();
-                        cleanUpUndefined("ps_enrolled_classes");
-                    }, 
+                    },
                     {buffer: false, escape: true, timeout: 15000}
                 );
             }
-            
-            //Method to Sort Dropped Class List
-            function sortDroppedClassList(paramToSort, direction){
+        }
+
+        // Method to load the advisor comments.
+        function getPSAdvisorNotes() {
+            if (!advisorNotesLoaded) {
+                document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
                 Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.sortClasses}',
-                    paramToSort,
-                    droppedWrapper,
-                    direction,
+                    '{!$RemoteAction.StudentProfileController.getPSAdvisorNotes}',
+                    '{!theContact.EMPLID__c}',
                     function (result, event) {
-                        if (result.length > 0) {
+                        if (event.status) {
+                            document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
+                                "";
+
+                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                                document.getElementById("psAdvisingNotesResponseErrors").style.display =
+                                    "none";
+                                var html = "";
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var utcSeconds = result[i].note.CREATDTTM__c;
+                                    var commentDate = new Date(utcSeconds);
+                                    commentDate = (commentDate.getMonth() + 1) + '/' +
+                                        commentDate.getDate() + '/' +
+                                        commentDate.getFullYear();
+                                    html += "" +
+                                        "<div class='comments-panel'>" +
+                                            "<div class='comments-header'>" +
+                                            "<h4>" +
+                                            (result[i].advUserId == undefined? "" : "<a href='/_ui/core/userprofile/UserProfilePage?u="+ result[i].advUserId + "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
+                                              result[i].note.NAME__c + 
+                                             (result[i].advUserId == undefined? "": "</a>") +
+                                                "</h4>" +
+                                                "<span class='comments-header-date'>" +
+                                                "&nbsp;&nbsp;-&nbsp;&nbsp;" +
+                                                commentDate +
+                                                "</span>" +
+                                            "</div>" +
+                                            "<div class='comments-main-comment'" +
+                                                 "id='ps_comments_main'>" +
+                                                result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />') +
+                                            "</div>" +
+                                        "</div>" +
+                                        "<hr class='comments-hr'/>";
+                                }
+
+                                document.getElementById('ps_advising_notes_section').innerHTML = html;
+                                cleanUpUndefined("ps_advising_notes_section");
+                                advisorNotesLoaded = true;
+                            } else {
+                                document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
+                                    'No advising notes found.';
+                                advisorNotesLoaded = true;
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
+                                event.message;
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
+            }
+        }
+
+        function refreshComments() {
+            commentsLoaded = false;
+            advisorNotesLoaded = false;
+            document.getElementById('ps_advising_notes_section').innerHTML = '';
+            document.getElementById('ps_comments_section').innerHTML = '';
+            document.getElementById("psAdvisingNotesResponseErrors").style.display = "block";
+            document.getElementById("psCommentsResponseErrors").style.display = "block";
+            getPSAdvisorNotes();
+            getComments();
+        }
+        
+        // Method to load the advisor comments.
+        function getComments() {
+            if (!commentsLoaded) {
+                document.getElementById("psCommentsResponseErrors").innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getComments}',
+                    '{!theContact.EMPLID__c}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psCommentsResponseErrors").innerHTML =
+                                "";
+
+                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                                document.getElementById("psCommentsResponseErrors").style.display =
+                                    "none";
+                                var html = "";
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var utcSeconds = result[i].comment.COMMENT_DTTM__c;
+                                    var commentDate = new Date(utcSeconds);
+                                    commentDate = (commentDate.getMonth() + 1) + '/' +
+                                        commentDate.getDate() + '/' +
+                                        commentDate.getFullYear();
+
+                                    html += "" +
+                                        "<div class='comments-panel'>" +
+                                            "<div class='comments-header'>" +
+                                            "<h4>" +
+                                            (result[i].commenterUserId == undefined? "" : "<a href='/_ui/core/userprofile/UserProfilePage?u="+ result[i].commenterUserId + "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
+                                              result[i].comment.NAME__c + 
+                                             (result[i].commenterUserId == undefined? "": "</a>") +
+                                             "</h4>" +
+                                                "<span class='comments-header-date'>" +
+                                                "&nbsp;&nbsp;-&nbsp;&nbsp;" +
+                                                commentDate +
+                                                "</span>" +
+                                            "</div>" +
+                                            "<div class='comments-main-comment'" +
+                                                 "id='ps_comments_main'>" +
+                                                result[i].comment.COMMENTS__c +
+                                            "</div>" +
+                                        "</div>" +
+                                        "<hr class='comments-hr'/>";
+                                }
+
+                                document.getElementById('ps_comments_section').innerHTML = html;
+                                cleanUpUndefined("ps_comments_section");
+                                commentsLoaded = true;
+                            } else {
+                                document.getElementById("psCommentsResponseErrors").innerHTML =
+                                    'No comments found.';
+                                commentsLoaded = true;
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psCommentsResponseErrors").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            document.getElementById("psCommentsResponseErrors").innerHTML =
+                                event.message;
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
+            }
+        }
+
+        // Method to load the advisor comments.
+        function getGuestAccess() {
+            if (!guestAccessLoaded) {
+                document.getElementById("psGuestAccessResponseErrors").innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.StudentProfileController.getGuestAccess}',
+                    '{!theContact.EMPLID__c}',
+                    function (result, event) {
+                        if (event.status) {
+                            document.getElementById("psGuestAccessResponseErrors").innerHTML =
+                                "";
+
+                            if (!Object.getOwnPropertyNames(result).length == 0) {
+                                document.getElementById("psGuestAccessResponseErrors").style.display =
+                                    "none";
+                                var html = "";
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var utcSeconds = result[i].COMMENT_DT__c;
+                                    var commentDate = new Date(utcSeconds);
+                                    commentDate = (commentDate.getMonth() + 1) + '/' +
+                                        commentDate.getDate() + '/' +
+                                        commentDate.getFullYear();
+                                    html += "" +
+                                        "<div class='comments-panel'>" +
+                                            "<div class='comments-header'>" +
+                                                "<h4>" + result[i].AUTHOR__c + "</h4>" +
+                                                "<span class='comments-header-date'>" +
+                                                "&nbsp;&nbsp;-&nbsp;&nbsp;" +
+                                                commentDate +
+                                                "</span>" +
+                                            "</div>" +
+                                            "<div class='comments-main-comment'" +
+                                                 "id='ps_comments_main'>" +
+                                                result[i].COMMENTS__c +
+                                            "</div>" +
+                                        "</div>" +
+                                        "<hr class='comments-hr'/>";
+                                }
+
+                                document.getElementById('ps_guest_access_section').innerHTML = html;
+                                cleanUpUndefined("ps_guest_access_section");
+                                guestAccessLoaded = true;
+                            } else {
+                                document.getElementById("psGuestAccessResponseErrors").innerHTML =
+                                    'No guest access data found.';
+                                guestAccessLoaded = true;
+                            }
+                        } else if (event.type === 'exception') {
+                            document.getElementById("psGuestAccessResponseErrors").innerHTML =
+                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            document.getElementById("psGuestAccessResponseErrors").innerHTML =
+                                event.message;
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 15000}
+                );
+            }
+        }
+
+        //Method for clicking to sort enrolled classes
+        var ascDirEnrolled = true;
+        var currSortEnrolled = "Term";
+        function sortEnrolledOnClick(name) {
+            if(name == currSortEnrolled){
+                ascDirEnrolled = !ascDirEnrolled;
+            } else {
+                ascDirEnrolled = true;
+                currSortEnrolled = name;
+            }
+            sortEnrolledClassList(name, ascDirEnrolled);
+        }
+        
+        //Method for clicking to sort Dropped Classes
+        var ascDirDropped = true;
+        var currSortDropped = "Term";
+        function sortDroppedOnClick(name) {
+            if(name == currSortDropped){
+                ascDirDropped = !ascDirDropped;
+            } else {
+                ascDirDropped = true;
+                currSortDropped = name;
+            }
+            sortDroppedClassList(name, ascDirDropped);
+        }
+        
+        //Method for clicking to sort Transfer Exams
+        var ascDirExam = true;
+        var currSortExam = "Title";
+        function sortExamOnClick(name) {
+            if(name == currSortExam){
+                ascDirExam = !ascDirExam;
+            } else {
+                ascDirExam = true;
+                currSortExam = name;
+            }
+            sortExamList(name, ascDirExam);
+        }
+        
+        //Method for clicking to sort Transfer Credits
+        var ascDirTransfer = true;
+        var currSortTransfer = "Term";
+        function sortTransferOnClick(name) {
+            if(name == currSortTransfer){
+                ascDirTransfer = !ascDirTransfer;
+            } else {
+                ascDirTransfer = true;
+                currSortTransfer = name;
+            }
+            sortTransferList(name, ascDirTransfer);
+        }
+     
+        var enrolledWrapper;
+        var droppedWrapper;
+        var examWrapper;
+        var transferWrapper;
+        
+        // Method to get Enrolled Classes
+        function getEnrolledClasses() {
+            if (classesData != null)
+                return;
+            document.getElementById("psEnrolledClassesErrors").innerHTML =
+                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+            document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
+                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getClassesData}',
+                '{!theContact.EMPLID__c}',
+                '{!currentTerm}',
+                function (result, event) {
+                    if (event.status) {
+                        document.getElementById("psEnrolledClassesErrors").innerHTML =
+                            "";
+                        document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
+                            "";
+                        classesData = result;
+                        enrolledWrapper = result.enrolledClasses;
+                        droppedWrapper = result.droppedClasses;
+                        var selectHtml = "";
+                        if (!Object.getOwnPropertyNames(classesData.classSessions).length == 0) {
+                            selectHtml += "<label for='ps_classes_session_select'>Session:&nbsp;</label><select id='ps_classes_session_select' onchange='filterClasses()'>";
+                            for (var i = 0; i < classesData.classSessions.length; i++) {
+                                selectHtml += "<option ";
+                                if (classesData.classSessions[i]=='All') {
+                                    selectHtml += " selected='selected' ";
+                                }
+                                selectHtml += " value='" + classesData.classSessions[i] + "'>" + 
+                                         classesData.classSessions[i] + "</option>";
+                            }
+                            selectHtml += "</select>&nbsp;&nbsp;";
+                        }
+
+                        if (!Object.getOwnPropertyNames(classesData.classTerms).length == 0) {
+                            selectHtml += "<label for='ps_classes_term_select'>Term:&nbsp;</label><select id='ps_classes_term_select' onchange='filterClasses()'>";
+                            for (var i = 0; i < classesData.classTerms.length; i++) {
+                                var parsedTerms = classesData.classTerms[i].split('|');
+                                selectHtml += "<option value='" + parsedTerms[0] + "'>" + 
+                                         parsedTerms[1] + "</option>";
+                            }
+                            selectHtml += "</select>";
+                        }
+                        document.getElementById('ps_classes_term_picklist').innerHTML = selectHtml;
+                        
+
+                        if (!Object.getOwnPropertyNames(result.enrolledClasses).length == 0) {
+                            document.getElementById("ps_enrolled_classes").style.display =
+                                "initial";
+
+                            var html = "" +
+                                "<div class='table-responsive'>" +
+                                    "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
+                                        "<thead>" +
+                                            "<tr style=\"cursor:pointer\">" +
+                                                "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
+                                                "<th onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
+                                                "<th>ASR</th>" +
+                                            "</tr>" +
+                                        "</thead>" +
+                                        "<tbody>";
+                            for (var i = 0; i < result.enrolledClasses.length; i++) {
+                                var asrValue = '--';
+
+                                //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' + 
+                                //                              result.enrolledClasses[i].SESSION_CODE__c + '|' +
+                                //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
+                                //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;UGindicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
+                                //} 
+
+                                html += "" +
+                                    "<tr>" +
+                                        "<td>" + result.enrolledClasses[i].TERM_DESCR30__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].SESSION_CODE__c + "</td>" +
+                                        "<td>" + Math.floor(result.enrolledClasses[i].CLASS_NBR__c) + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].SUBJECT__c + " " + result.enrolledClasses[i].CATALOG_NBR__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].CLASS_DESCR__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].UNT_TAKEN__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].FT_FULL_NAME__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].SCH_HTML_DAY1__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].SCH_DAILY_TIME__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].ASU_SCH_DATES__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].SSR_MTG_LOC_LONG__c + "</td>" +
+                                        "<td>" + result.enrolledClasses[i].CRSE_GRADE_OFF__c + "</td>" +
+                                        "<td style='display:none'>" + result.enrolledClasses[i].EARN_CREDIT__c + "" + result.enrolledClasses[i].VALID_ATTEMPT__c + "</td>" + 
+                                        "<td style='display:none'>" + result.enrolledClasses[i].CUR_GPA__c + "</td>" +
+                                        "<td style='display:none'>" + result.enrolledClasses[i].CUM_GPA__c + "</td>" +
+                                        "<td style='display:none'>" + result.enrolledClasses[i].STRM__c + "</td>";
+
+                                if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' + 
+                                                              result.enrolledClasses[i].SESSION_CODE__c + '|' +
+                                                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
+                                    // ASR link opens Undergraduate Indicators tab when clicked
+                                    html += "<td>" + '<a href="#" onclick="document.getElementById(\x27UGindicatorsLink\x27).click(); return false;">!</a>' + "</td>"
+                                } else {
+                                    html += "<td>--</td>";
+                                }
+                                
+                                html += "</tr>";
+
+                            }
+
+                            html += "</tbody></table></div>";
+
+                            html += "<div style='float:right; font-weight:bold;' id='ps_enrolled_classes_summary'/><br/>";
+                            html += "<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>";
+
+                            document.getElementById('ps_enrolled_classes').innerHTML = html;
+                            cleanUpUndefined("ps_enrolled_classes");
+                        } else {
+                            document.getElementById("psEnrolledClassesErrors").innerHTML =
+                                'No enrolled classes found.';
+                        }
+
+
+                        if (!Object.getOwnPropertyNames(result.droppedClasses).length == 0) {
                             document.getElementById("ps_dropped_withdrawn_classes").style.display =
                                 "initial";
 
@@ -1523,7 +1248,7 @@
                                         "<thead>" +
                                             "<tr style=\"cursor:pointer\">" +
                                                 "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
-                                                "<th onclick=\"sortDroppedOnClick('Session')\">Session</th>" +
+                                                "<th onclick=\"sortDroppedOnClick('Sessioj')\">Session</th>" +
                                                 "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
                                                 "<th onclick=\"sortDroppedOnClick('Course')\">Course</th>" +
                                                 "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
@@ -1535,18 +1260,18 @@
                                         "</thead>" +
                                         "<tbody>";
 
-                            for (var i = 0; i < result.length; i++) {
+                            for (var i = 0; i < result.droppedClasses.length; i++) {
 
                                 html += "" +
                                     "<tr>" +
-                                        "<td>" + result[i].classInfo.TERM_DESCR30__c + "</td>" +
-                                        "<td>" + result[i].classInfo.SESSION_CODE__c + "</td>" +
-                                        "<td>" + Math.floor(result[i].classInfo.CLASS_NBR__c) + "</td>" +
-                                        "<td>" + result[i].classInfo.SUBJECT__c + " " + result[i].classInfo.CATALOG_NBR__c + "</td>" +
-                                        "<td>" + result[i].classInfo.CLASS_DESCR__c + "</td>" +
-                                        "<td>" + result[i].classInfo.SSR_CLSTOPIC_DESCR__c + "</td>" +
-                                        "<td>" + result[i].classInfo.UNT_TAKEN__c + "</td>" +
-                                        "<td>" + result[i].classInfo.ENRL_STATUS_REASON__c + "</td>" +
+                                        "<td>" + result.droppedClasses[i].TERM_DESCR30__c + "</td>" +
+                                        "<td>" + result.droppedClasses[i].SESSION_CODE__c + "</td>" +
+                                        "<td>" + Math.floor(result.droppedClasses[i].CLASS_NBR__c) + "</td>" +
+                                        "<td>" + result.droppedClasses[i].SUBJECT__c + " " + result.droppedClasses[i].CATALOG_NBR__c + "</td>" +
+                                        "<td>" + result.droppedClasses[i].CLASS_DESCR__c + "</td>" +
+                                        "<td>" + result.droppedClasses[i].SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                        "<td>" + result.droppedClasses[i].UNT_TAKEN__c + "</td>" +
+                                        "<td>" + result.droppedClasses[i].ENRL_STATUS_REASON__c + "</td>" +
                                         "<td>" + "--" + "</td>" +
                                     "</tr>";
                             }
@@ -1559,207 +1284,344 @@
                             document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
                                 'No dropped or withdrawn classes found.';
                         }
+
                         filterClasses();
-                    }, 
-                    {buffer: false, escape: true, timeout: 15000}
-                );
+
+                    } else if (event.type === 'exception') {
+                        document.getElementById("psEnrolledClassesErrors").innerHTML =
+                            event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
+                            event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                    } else {
+                        document.getElementById("psEnrolledClassesErrors").innerHTML =
+                            event.message;
+                        document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
+                            event.message;
+                    }
+                },
+                {buffer: false, escape: true, timeout: 15000}
+            );
+        }
+
+        function filterClasses() {
+            var termSelect = document.getElementById("ps_classes_term_select");
+            var sessionSelect = document.getElementById("ps_classes_session_select");
+            var searchTerm = termSelect.options[termSelect.selectedIndex] === undefined ? '' : termSelect.options[termSelect.selectedIndex].text;
+            var searchSession = sessionSelect.options[sessionSelect.selectedIndex] === undefined ? '' : sessionSelect.options[sessionSelect.selectedIndex].text ;
+            var classTable = document.getElementById('enrolled_classes_table');
+            var summaryHtml = "";
+            var earnedUnits = 0;
+            var cumGpa = "";
+            var curGpa = "";
+            for (var r = 1; r < classTable.rows.length; r++) {
+                var termCell = classTable.rows[r].cells[0].innerHTML;
+                var sessionCell = classTable.rows[r].cells[1].innerHTML;
+                var displayStyle = 'none';
+                if ((termCell.indexOf(searchTerm)>=0 || searchTerm=='All') &&
+                    (sessionCell.indexOf(searchSession)>=0 || searchSession=='All')) 
+                {
+                    displayStyle = 'table-row';
+                    if (curGpa == '' && searchTerm != 'All') curGpa = 'Term GPA: ' + classTable.rows[r].cells[14].innerHTML + '&nbsp;&nbsp;&nbsp';
+                    if (cumGpa == '') cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[15].innerHTML;
+                    if (classTable.rows[r].cells[13].innerHTML == 'YY' && classTable.rows[r].cells[16].innerHTML != '{!currentTerm}')
+                    {
+                        earnedUnits += Number(classTable.rows[r].cells[6].innerHTML);
+                    }
+                }
+                else {
+                    displayStyle = 'none';
+                }
+                classTable.rows[r].style.display = displayStyle;
             }
-            
-            // Method to get Credit by Exam 
-            function getCreditByExamData() {
-                document.getElementById("psCreditByExamErrors").innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getCreditByExamData}',
-                    '{!theContact.EMPLID__c}',
-                    function (result, event) {
-                        if (event.status) {
-                            document.getElementById("psCreditByExamErrors").innerHTML =
-                                "";
-    
-                            if (!Object.getOwnPropertyNames(result).length == 0) {
-                                document.getElementById("ps_credit_by_exam_work").style.display =
-                                    "initial";
-                                examWrapper = result;
-                                var html = "" +
-                                    "<div class='table-responsive'>" +
-                                        "<table class='table table-striped table-bordered'> " +
-                                            "<thead>" +
-                                                "<tr style=\"cursor:pointer\">" +
-                                                    "<th onclick=\"sortExamOnClick('Title')\">Title</th>" +
-                                                    "<th onclick=\"sortExamOnClick('Course Title')\">Course</th>" +
-                                                    "<th onclick=\"sortExamOnClick('Score')\">Score</th>" +
-                                                    "<th onclick=\"sortExamOnClick('Transfer')\">Units Transferred</th>" +
-                                                "</tr>" +
-                                            "</thead>" +
-                                            "<tbody>";
-    
-                                for (var i = 0; i < result.length; i++) {
-    
-                                    html += "" +
-                                        "<tr>" +
-                                            "<td>" + result[i].TITLE__c + "</td>" +
-                                            "<td>" + result[i].COURSE_TITLE__c + "</td>" +
-                                            "<td>" + result[i].SCORE__c + "</td>" +
-                                            "<td>" + result[i].UNT_TRNSFR__c + "</td>" +
-                                        "</tr>";
-                                }
-    
-                                html += "</tbody></table></div>";
-    
-                                document.getElementById('ps_credit_by_exam_work').innerHTML = html;
-                                cleanUpUndefined("ps_credit_by_exam_work");
-                            } else {
-                                document.getElementById("psCreditByExamErrors").innerHTML =
-                                    'No credit by exam found.';
-                            }
-                        } else if (event.type === 'exception') {
-                            document.getElementById("psCreditByExamErrors").innerHTML =
-                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                        } else {
-                            document.getElementById("psCreditByExamErrors").innerHTML =
-                                event.message;
+            summaryHtml = 'Total Earned Units: ' + earnedUnits + '&nbsp;&nbsp;&nbsp' +
+                          curGpa + cumGpa; 
+            var summaryDiv = document.getElementById('ps_enrolled_classes_summary');
+            summaryDiv.innerHTML = summaryHtml;
+            var headerSpan = document.getElementById('enrolled_classes_header');
+            headerSpan.innerHTML = '&nbsp;' + searchTerm + ' Enrolled Classes';
+
+            classTable = document.getElementById('dropped_classes_table');
+            for (var r = 1; r < classTable.rows.length; r++) {
+                var termCell = classTable.rows[r].cells[0].innerHTML;
+                var sessionCell = classTable.rows[r].cells[1].innerHTML;
+                var displayStyle = 'none';
+                if ((termCell.indexOf(searchTerm)>=0 || searchTerm=='All') &&
+                    (sessionCell.indexOf(searchSession)>=0 || searchSession=='All')) 
+                {
+                    displayStyle = 'table-row';
+                }
+                else {
+                    displayStyle = 'none';
+                }
+                classTable.rows[r].style.display = displayStyle;
+            }
+            headerSpan = document.getElementById('dropped_classes_header');
+            headerSpan.innerHTML = '&nbsp;' + searchTerm + ' Dropped/Withdrawn Classes';
+
+        }
+
+        //Method to Sort Class List
+        function sortEnrolledClassList(paramToSort, direction){
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.sortClasses}',
+                paramToSort,
+                enrolledWrapper,
+                direction,
+                function (result, event) {
+                    document.getElementById("ps_enrolled_classes").style.display = "initial";
+
+                    var html = "" +
+                        "<div class='table-responsive'>" +
+                            "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
+                                "<thead>" +
+                                    "<tr style=\"cursor:pointer\">" +
+                                        "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
+                                        "<th onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
+                                        "<th>ASR</th>" +
+                                    "</tr>" +
+                                "</thead>" +
+                                "<tbody>";
+
+                    for (var i = 0; i < result.length; i++) {
+                        var asrValue = '--';
+
+                        html += "" + 
+                            "<tr>" +
+                                "<td>" + result[i].classInfo.TERM_DESCR30__c + "</td>" +
+                                "<td>" + result[i].classInfo.SESSION_CODE__c + "</td>" +
+                                "<td>" + Math.floor(result[i].classInfo.CLASS_NBR__c) + "</td>" +
+                                "<td>" + result[i].classInfo.SUBJECT__c + " " + result[i].classInfo.CATALOG_NBR__c + "</td>" +
+                                "<td>" + result[i].classInfo.CLASS_DESCR__c + "</td>" +
+                                "<td>" + result[i].classInfo.SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                "<td>" + result[i].classInfo.UNT_TAKEN__c + "</td>" +
+                                "<td>" + result[i].classInfo.FT_FULL_NAME__c + "</td>" +
+                                "<td>" + result[i].classInfo.SCH_HTML_DAY1__c + "</td>" +
+                                "<td>" + result[i].classInfo.SCH_DAILY_TIME__c + "</td>" +
+                                "<td>" + result[i].classInfo.ASU_SCH_DATES__c + "</td>" +
+                                "<td>" + result[i].classInfo.SSR_MTG_LOC_LONG__c + "</td>" +
+                                "<td>" + result[i].classInfo.CRSE_GRADE_OFF__c + "</td>" +
+                                "<td style='display:none'>" + result[i].classInfo.EARN_CREDIT__c + "" + result[i].classInfo.VALID_ATTEMPT__c + "</td>" + 
+                                "<td style='display:none'>" + result[i].classInfo.CUR_GPA__c + "</td>" +
+                                "<td style='display:none'>" + result[i].classInfo.CUM_GPA__c + "</td>" +
+                                "<td style='display:none'>" + result[i].classInfo.STRM__c + "</td>";
+                        html += "<td>--</td>";
+                        
+                        
+                        html += "</tr>";
+
+                    }
+
+                    html += "</tbody></table></div>";
+
+                    html += "<div style='float:right; font-weight:bold;' id='ps_enrolled_classes_summary'/><br/>";
+                    html += "<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>";
+
+                    document.getElementById('ps_enrolled_classes').innerHTML = html;
+                    filterClasses();
+                    cleanUpUndefined("ps_enrolled_classes");
+                }, 
+                {buffer: false, escape: true, timeout: 15000}
+            );
+        }
+        
+        //Method to Sort Dropped Class List
+        function sortDroppedClassList(paramToSort, direction){
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.sortClasses}',
+                paramToSort,
+                droppedWrapper,
+                direction,
+                function (result, event) {
+                    if (result.length > 0) {
+                        document.getElementById("ps_dropped_withdrawn_classes").style.display =
+                            "initial";
+
+                        var html = "" +
+                            "<div class='table-responsive'>" +
+                                "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
+                                    "<thead>" +
+                                        "<tr style=\"cursor:pointer\">" +
+                                            "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
+                                            "<th onclick=\"sortDroppedOnClick('Session')\">Session</th>" +
+                                            "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
+                                            "<th onclick=\"sortDroppedOnClick('Course')\">Course</th>" +
+                                            "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
+                                            "<th onclick=\"sortDroppedOnClick('Topic')\">Topic</th>" +
+                                            "<th onclick=\"sortDroppedOnClick('Units')\">Units</th>" +
+                                            "<th onclick=\"sortDroppedOnClick('Status')\">Status</th>" +
+                                            "<th>ASR</th>" +
+                                        "</tr>" +
+                                    "</thead>" +
+                                    "<tbody>";
+
+                        for (var i = 0; i < result.length; i++) {
+
+                            html += "" +
+                                "<tr>" +
+                                    "<td>" + result[i].classInfo.TERM_DESCR30__c + "</td>" +
+                                    "<td>" + result[i].classInfo.SESSION_CODE__c + "</td>" +
+                                    "<td>" + Math.floor(result[i].classInfo.CLASS_NBR__c) + "</td>" +
+                                    "<td>" + result[i].classInfo.SUBJECT__c + " " + result[i].classInfo.CATALOG_NBR__c + "</td>" +
+                                    "<td>" + result[i].classInfo.CLASS_DESCR__c + "</td>" +
+                                    "<td>" + result[i].classInfo.SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                    "<td>" + result[i].classInfo.UNT_TAKEN__c + "</td>" +
+                                    "<td>" + result[i].classInfo.ENRL_STATUS_REASON__c + "</td>" +
+                                    "<td>" + "--" + "</td>" +
+                                "</tr>";
                         }
-                    },
-                    {buffer: false, escape: true, timeout: 15000}
-                );
-            }
-    
-            //Method to Sort Exam List
-            function sortExamList(paramToSort, direction){
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.sortExams}',
-                    paramToSort,
-                    examWrapper,
-                    direction,
-                    function (result, event) {
-                        if (result.length > 0) {
+
+                        html += "</tbody></table></div>";
+
+                        document.getElementById('ps_dropped_withdrawn_classes').innerHTML = html;
+                        cleanUpUndefined("ps_dropped_withdrawn_classes");
+                    } else {
+                        document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
+                            'No dropped or withdrawn classes found.';
+                    }
+                    filterClasses();
+                }, 
+                {buffer: false, escape: true, timeout: 15000}
+            );
+        }
+        
+        // Method to get Credit by Exam 
+        function getCreditByExamData() {
+            document.getElementById("psCreditByExamErrors").innerHTML =
+                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getCreditByExamData}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (event.status) {
+                        document.getElementById("psCreditByExamErrors").innerHTML =
+                            "";
+
+                        if (!Object.getOwnPropertyNames(result).length == 0) {
                             document.getElementById("ps_credit_by_exam_work").style.display =
-                                    "initial";
-                                    
-                                var html = "" +
-                                    "<div class='table-responsive'>" +
-                                        "<table class='table table-striped table-bordered'> " +
-                                            "<thead>" +
-                                                "<tr style=\"cursor:pointer\">" +
-                                                    "<th onclick=\"sortExamOnClick('Title')\">Title</th>" +
-                                                    "<th onclick=\"sortExamOnClick('Course Title')\">Course</th>" +
-                                                    "<th onclick=\"sortExamOnClick('Score')\">Score</th>" +
-                                                    "<th onclick=\"sortExamOnClick('Transfer')\">Units Transferred</th>" +
-                                                "</tr>" +
-                                            "</thead>" +
-                                            "<tbody>";
-    
-                                for (var i = 0; i < result.length; i++) {
-    
-                                    html += "" +
-                                        "<tr>" +
-                                            "<td>" + result[i].examInfo.TITLE__c + "</td>" +
-                                            "<td>" + result[i].examInfo.COURSE_TITLE__c + "</td>" +
-                                            "<td>" + result[i].examInfo.SCORE__c + "</td>" +
-                                            "<td>" + result[i].examInfo.UNT_TRNSFR__c + "</td>" +
-                                        "</tr>";
-                                }
-    
-                                html += "</tbody></table></div>";
-    
-                                document.getElementById('ps_credit_by_exam_work').innerHTML = html;
-                                cleanUpUndefined("ps_credit_by_exam_work");
+                                "initial";
+                            examWrapper = result;
+                            var html = "" +
+                                "<div class='table-responsive'>" +
+                                    "<table class='table table-striped table-bordered'> " +
+                                        "<thead>" +
+                                            "<tr style=\"cursor:pointer\">" +
+                                                "<th onclick=\"sortExamOnClick('Title')\">Title</th>" +
+                                                "<th onclick=\"sortExamOnClick('Course Title')\">Course</th>" +
+                                                "<th onclick=\"sortExamOnClick('Score')\">Score</th>" +
+                                                "<th onclick=\"sortExamOnClick('Transfer')\">Units Transferred</th>" +
+                                            "</tr>" +
+                                        "</thead>" +
+                                        "<tbody>";
+
+                            for (var i = 0; i < result.length; i++) {
+
+                                html += "" +
+                                    "<tr>" +
+                                        "<td>" + result[i].TITLE__c + "</td>" +
+                                        "<td>" + result[i].COURSE_TITLE__c + "</td>" +
+                                        "<td>" + result[i].SCORE__c + "</td>" +
+                                        "<td>" + result[i].UNT_TRNSFR__c + "</td>" +
+                                    "</tr>";
+                            }
+
+                            html += "</tbody></table></div>";
+
+                            document.getElementById('ps_credit_by_exam_work').innerHTML = html;
+                            cleanUpUndefined("ps_credit_by_exam_work");
                         } else {
                             document.getElementById("psCreditByExamErrors").innerHTML =
                                 'No credit by exam found.';
                         }
-                    },
-                    {buffer: false, escape: true, timeout: 15000}
-                );
-            }
-            
-            // Method to get Transfer Work
-            function getTransferWork() {
-                document.getElementById("psTransferWorkErrors").innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-    
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.getTransferWorkData}',
-                    '{!theContact.EMPLID__c}',
-                    function (result, event) {
-                        if (event.status) {
-                            document.getElementById("psTransferWorkErrors").innerHTML =
-                                "";
-    
-                            if (!Object.getOwnPropertyNames(result).length == 0) {
-                                document.getElementById("ps_transfer_work").style.display =
-                                    "initial";
-                                transferWrapper = result;
-                                var html = "" +
-                                    "<div class='table-responsive'>" +
-                                        "<table class='table table-striped table-bordered'> " +
-                                            "<thead>" +
-                                                "<tr style=\"cursor:pointer\">" +
-                                                    "<th onclick=\"sortTransferOnClick('Term')\">Term</th>" +
-                                                    "<th onclick=\"sortTransferOnClick('Institution')\">Institution</th>" +
-                                                    "<th onclick=\"sortTransferOnClick('Course')\">Course</th>" +
-                                                    "<th onclick=\"sortTransferOnClick('Title')\">Title</th>" +
-                                                    "<th onclick=\"sortTransferOnClick('Topic')\">Topic</th>" +
-                                                    "<th onclick=\"sortTransferOnClick('Grade')\">Grade</th>" +
-                                                    "<th onclick=\"sortTransferOnClick('RCredit')\">R Credit</th>" +
-                                                    "<th onclick=\"sortTransferOnClick('ECredit')\">E Credit</th>" +
-                                                    "<th onclick=\"sortTransferOnClick('Hours')\">GPA Hours</th>" +
-                                                    "<th onclick=\"sortTransferOnClick('Points')\">GPA Points</th>" +
-                                                "</tr>" +
-                                            "</thead>" +
-                                            "<tbody>";
-    
-                                for (var i = 0; i < result.length; i++) {
-    
-                                    html += "" +
-                                        "<tr>" +
-                                            "<td>" + result[i].TERM__c + "</td>" +
-                                            "<td>" + result[i].INSTITUTION__c + "</td>" +
-                                            "<td>" + result[i].COURSE__c + "</td>" +
-                                            "<td>" + result[i].TITLE__c + "</td>" +
-                                            "<td>" + result[i].TOPIC__c + "</td>" +
-                                            "<td>" + result[i].GRADE__c + "</td>" +
-                                            "<td>" + result[i].RCREDIT__c + "</td>" +
-                                            "<td>" + result[i].ECREDIT__c + "</td>" +
-                                            "<td>" + result[i].GPAHRS__c + "</td>" +
-                                            "<td>" + result[i].GPAPTS__c + "</td>" +
-                                        "</tr>";
-                                }
-    
-                                html += "</tbody></table></div>";
-    
-                                document.getElementById('ps_transfer_work').innerHTML = html;
-                                cleanUpUndefined("ps_transfer_work");
-                            } else {
-                                document.getElementById("psTransferWorkErrors").innerHTML =
-                                    'No transfer work found.';
+                    } else if (event.type === 'exception') {
+                        document.getElementById("psCreditByExamErrors").innerHTML =
+                            event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                    } else {
+                        document.getElementById("psCreditByExamErrors").innerHTML =
+                            event.message;
+                    }
+                },
+                {buffer: false, escape: true, timeout: 15000}
+            );
+        }
+
+        //Method to Sort Exam List
+        function sortExamList(paramToSort, direction){
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.sortExams}',
+                paramToSort,
+                examWrapper,
+                direction,
+                function (result, event) {
+                    if (result.length > 0) {
+                        document.getElementById("ps_credit_by_exam_work").style.display =
+                                "initial";
+                                
+                            var html = "" +
+                                "<div class='table-responsive'>" +
+                                    "<table class='table table-striped table-bordered'> " +
+                                        "<thead>" +
+                                            "<tr style=\"cursor:pointer\">" +
+                                                "<th onclick=\"sortExamOnClick('Title')\">Title</th>" +
+                                                "<th onclick=\"sortExamOnClick('Course Title')\">Course</th>" +
+                                                "<th onclick=\"sortExamOnClick('Score')\">Score</th>" +
+                                                "<th onclick=\"sortExamOnClick('Transfer')\">Units Transferred</th>" +
+                                            "</tr>" +
+                                        "</thead>" +
+                                        "<tbody>";
+
+                            for (var i = 0; i < result.length; i++) {
+
+                                html += "" +
+                                    "<tr>" +
+                                        "<td>" + result[i].examInfo.TITLE__c + "</td>" +
+                                        "<td>" + result[i].examInfo.COURSE_TITLE__c + "</td>" +
+                                        "<td>" + result[i].examInfo.SCORE__c + "</td>" +
+                                        "<td>" + result[i].examInfo.UNT_TRNSFR__c + "</td>" +
+                                    "</tr>";
                             }
-                        } else if (event.type === 'exception') {
-                            document.getElementById("psTransferWorkErrors").innerHTML =
-                                event.message + "<br/>\n<pre>" + event.where + "</pre>";
-                        } else {
-                            document.getElementById("psTransferWorkErrors").innerHTML =
-                                event.message;
-                        }
-                    },
-                    {buffer: false, escape: true, timeout: 15000}
-                );
-            }
-    
-            //Method to Sort Dropped Class List
-            function sortTransferList(paramToSort, direction){
-                Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.sortTransfers}',
-                    paramToSort,
-                    transferWrapper,
-                    direction,
-                    function (result, event) {
-                        if (result.length > 0) {
+
+                            html += "</tbody></table></div>";
+
+                            document.getElementById('ps_credit_by_exam_work').innerHTML = html;
+                            cleanUpUndefined("ps_credit_by_exam_work");
+                    } else {
+                        document.getElementById("psCreditByExamErrors").innerHTML =
+                            'No credit by exam found.';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 15000}
+            );
+        }
+        
+        // Method to get Transfer Work
+        function getTransferWork() {
+            document.getElementById("psTransferWorkErrors").innerHTML =
+                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getTransferWorkData}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (event.status) {
+                        document.getElementById("psTransferWorkErrors").innerHTML =
+                            "";
+
+                        if (!Object.getOwnPropertyNames(result).length == 0) {
                             document.getElementById("ps_transfer_work").style.display =
-                                    "initial";
-    
+                                "initial";
+                            transferWrapper = result;
                             var html = "" +
                                 "<div class='table-responsive'>" +
                                     "<table class='table table-striped table-bordered'> " +
@@ -1783,19 +1645,19 @@
 
                                 html += "" +
                                     "<tr>" +
-                                        "<td>" + result[i].transferInfo.TERM__c + "</td>" +
-                                        "<td>" + result[i].transferInfo.INSTITUTION__c + "</td>" +
-                                        "<td>" + result[i].transferInfo.COURSE__c + "</td>" +
-                                        "<td>" + result[i].transferInfo.TITLE__c + "</td>" +
-                                        "<td>" + result[i].transferInfo.TOPIC__c + "</td>" +
-                                        "<td>" + result[i].transferInfo.GRADE__c + "</td>" +
-                                        "<td>" + result[i].transferInfo.RCREDIT__c + "</td>" +
-                                        "<td>" + result[i].transferInfo.ECREDIT__c + "</td>" +
-                                        "<td>" + result[i].transferInfo.GPAHRS__c + "</td>" +
-                                        "<td>" + result[i].transferInfo.GPAPTS__c + "</td>" +
+                                        "<td>" + result[i].TERM__c + "</td>" +
+                                        "<td>" + result[i].INSTITUTION__c + "</td>" +
+                                        "<td>" + result[i].COURSE__c + "</td>" +
+                                        "<td>" + result[i].TITLE__c + "</td>" +
+                                        "<td>" + result[i].TOPIC__c + "</td>" +
+                                        "<td>" + result[i].GRADE__c + "</td>" +
+                                        "<td>" + result[i].RCREDIT__c + "</td>" +
+                                        "<td>" + result[i].ECREDIT__c + "</td>" +
+                                        "<td>" + result[i].GPAHRS__c + "</td>" +
+                                        "<td>" + result[i].GPAPTS__c + "</td>" +
                                     "</tr>";
                             }
-    
+
                             html += "</tbody></table></div>";
 
                             document.getElementById('ps_transfer_work').innerHTML = html;
@@ -1804,53 +1666,121 @@
                             document.getElementById("psTransferWorkErrors").innerHTML =
                                 'No transfer work found.';
                         }
-                    },
-                    {buffer: false, escape: true, timeout: 15000}
-                );
+                    } else if (event.type === 'exception') {
+                        document.getElementById("psTransferWorkErrors").innerHTML =
+                            event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                    } else {
+                        document.getElementById("psTransferWorkErrors").innerHTML =
+                            event.message;
+                    }
+                },
+                {buffer: false, escape: true, timeout: 15000}
+            );
+        }
+
+        //Method to Sort Dropped Class List
+        function sortTransferList(paramToSort, direction){
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.sortTransfers}',
+                paramToSort,
+                transferWrapper,
+                direction,
+                function (result, event) {
+                    if (result.length > 0) {
+                        document.getElementById("ps_transfer_work").style.display =
+                                "initial";
+
+                        var html = "" +
+                            "<div class='table-responsive'>" +
+                                "<table class='table table-striped table-bordered'> " +
+                                    "<thead>" +
+                                        "<tr style=\"cursor:pointer\">" +
+                                            "<th onclick=\"sortTransferOnClick('Term')\">Term</th>" +
+                                            "<th onclick=\"sortTransferOnClick('Institution')\">Institution</th>" +
+                                            "<th onclick=\"sortTransferOnClick('Course')\">Course</th>" +
+                                            "<th onclick=\"sortTransferOnClick('Title')\">Title</th>" +
+                                            "<th onclick=\"sortTransferOnClick('Topic')\">Topic</th>" +
+                                            "<th onclick=\"sortTransferOnClick('Grade')\">Grade</th>" +
+                                            "<th onclick=\"sortTransferOnClick('RCredit')\">R Credit</th>" +
+                                            "<th onclick=\"sortTransferOnClick('ECredit')\">E Credit</th>" +
+                                            "<th onclick=\"sortTransferOnClick('Hours')\">GPA Hours</th>" +
+                                            "<th onclick=\"sortTransferOnClick('Points')\">GPA Points</th>" +
+                                        "</tr>" +
+                                    "</thead>" +
+                                    "<tbody>";
+
+                        for (var i = 0; i < result.length; i++) {
+
+                            html += "" +
+                                "<tr>" +
+                                    "<td>" + result[i].transferInfo.TERM__c + "</td>" +
+                                    "<td>" + result[i].transferInfo.INSTITUTION__c + "</td>" +
+                                    "<td>" + result[i].transferInfo.COURSE__c + "</td>" +
+                                    "<td>" + result[i].transferInfo.TITLE__c + "</td>" +
+                                    "<td>" + result[i].transferInfo.TOPIC__c + "</td>" +
+                                    "<td>" + result[i].transferInfo.GRADE__c + "</td>" +
+                                    "<td>" + result[i].transferInfo.RCREDIT__c + "</td>" +
+                                    "<td>" + result[i].transferInfo.ECREDIT__c + "</td>" +
+                                    "<td>" + result[i].transferInfo.GPAHRS__c + "</td>" +
+                                    "<td>" + result[i].transferInfo.GPAPTS__c + "</td>" +
+                                "</tr>";
+                        }
+
+                        html += "</tbody></table></div>";
+
+                        document.getElementById('ps_transfer_work').innerHTML = html;
+                        cleanUpUndefined("ps_transfer_work");
+                    } else {
+                        document.getElementById("psTransferWorkErrors").innerHTML =
+                            'No transfer work found.';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 15000}
+            );
+        }
+           
+        function filterFinancialAid() {
+            var e = document.getElementById("ps_financial_aid_year_select");
+            if(e.options[0] == null) {
+                document.getElementById("ps_financial_aid_year_picklist").innerHTML = '';
+                return;
             }
-               
-            function filterFinancialAid() {
-                var e = document.getElementById("ps_financial_aid_year_select");
-                if(e.options[0] == null) {
-                    document.getElementById("ps_financial_aid_year_picklist").innerHTML = '';
-                    return;
+            var search = e.options[e.selectedIndex].text ;
+            var faTable = document.getElementById('financial_aid_table');
+            var offeredTotal = 0.00;
+            var acceptedTotal = 0.00;
+            var disbursedTotal = 0.00;
+            for (var r = 1; r < faTable.rows.length; r++) {
+                var ele = faTable.rows[r].cells[6].innerHTML;
+                var displayStyle = 'none';
+                if (r == (faTable.rows.length -1)) {
+                    displayStyle = 'table-row';
                 }
-                var search = e.options[e.selectedIndex].text ;
-                var faTable = document.getElementById('financial_aid_table');
-                var offeredTotal = 0.00;
-                var acceptedTotal = 0.00;
-                var disbursedTotal = 0.00;
-                for (var r = 1; r < faTable.rows.length; r++) {
-                    var ele = faTable.rows[r].cells[6].innerHTML;
-                    var displayStyle = 'none';
-                    if (r == (faTable.rows.length -1)) {
-                        displayStyle = 'table-row';
-                    }
-                    else if (ele.indexOf(search)>=0 || search=='All') {
-                        displayStyle = 'table-row';
-                        offeredTotal += parseInt(faTable.rows[r].cells[3].innerHTML.replace("$","").replace(",",""));
-                        acceptedTotal += parseInt(faTable.rows[r].cells[4].innerHTML.replace("$","").replace(",",""));
-                        disbursedTotal += parseInt(faTable.rows[r].cells[5].innerHTML.replace("$","").replace(",",""));
-                    }
-                    else {
-                        displayStyle = 'none';
-                    }
-                    faTable.rows[r].style.display = displayStyle;
+                else if (ele.indexOf(search)>=0 || search=='All') {
+                    displayStyle = 'table-row';
+                    offeredTotal += parseInt(faTable.rows[r].cells[3].innerHTML.replace("$","").replace(",",""));
+                    acceptedTotal += parseInt(faTable.rows[r].cells[4].innerHTML.replace("$","").replace(",",""));
+                    disbursedTotal += parseInt(faTable.rows[r].cells[5].innerHTML.replace("$","").replace(",",""));
                 }
-                var o = "en-US";
-                var s = { style: "currency", currency: "USD" };
-                document.getElementById('fa_offered_total').innerHTML = offeredTotal.toLocaleString(o,s);
-                document.getElementById('fa_accepted_total').innerHTML = acceptedTotal.toLocaleString(o,s);
-                document.getElementById('fa_disbursed_total').innerHTML = disbursedTotal.toLocaleString(o,s);
+                else {
+                    displayStyle = 'none';
+                }
+                faTable.rows[r].style.display = displayStyle;
             }
-            
-            function maskPhoneNumbers() {
-                $j('.phone').each(function() {                
-                    if ($j(this).text() != '--') {
-                        $j(this).mask('(000) 000-0000');    
-                    }
-                });
-            }
+            var o = "en-US";
+            var s = { style: "currency", currency: "USD" };
+            document.getElementById('fa_offered_total').innerHTML = offeredTotal.toLocaleString(o,s);
+            document.getElementById('fa_accepted_total').innerHTML = acceptedTotal.toLocaleString(o,s);
+            document.getElementById('fa_disbursed_total').innerHTML = disbursedTotal.toLocaleString(o,s);
+        }
+        
+        function maskPhoneNumbers() {
+            $j('.phone').each(function() {                
+                if ($j(this).text() != '--') {
+                    $j(this).mask('(000) 000-0000');    
+                }
+            });
+        }
         </script>
     </head>
     <body>

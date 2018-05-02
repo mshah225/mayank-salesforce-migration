@@ -53,7 +53,6 @@ public with sharing class StudentProfileController
     public void init() {
         vars = new List<String>();
         List<Student_Program_Plan__c> allProgramPlans = new List<Student_Program_Plan__c>();
-        Student_Program_Plan__c programPlan = new Student_Program_Plan__c();
         ugProgramPlans = new List<Student_Program_Plan__c>();
         gradProgramPlans = new List<Student_Program_Plan__c>();
         studentMilestonesUGrad = new List<Student_Milestone__c>();
@@ -83,16 +82,6 @@ public with sharing class StudentProfileController
         
         List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
             StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
-        
-        
-        if (theContact.Affiliation_Student__c == 'Current' && studentProgramPlansBeforeToday.size() > 0) {
-            for (Student_Program_Plan__c spp: studentProgramPlansBeforeToday) {
-                if (spp.Status__c == 'Active in Program') {
-                    programPlan = spp;
-                    break;
-                } 
-            }
-        }
         
         Student_Program_Plan__c primaryProgramPlan =  new Student_Program_Plan__c();
         
@@ -1213,7 +1202,8 @@ public with sharing class StudentProfileController
             FROM Service_Indicator__c
             WHERE SI_Contact__c = :theContact.Id
             AND SI_Positive_Service_Indicator__c = FALSE
-            AND SI_End_Date__c < :Date.today()
+            AND (SI_End_Date__c < :Date.today()
+                OR SI_End_Date__c = null)
             ORDER BY SI_Start_Date__c ASC, SI_Code__c ASC
         ];
         return (!serviceIndicatorList.isEmpty() ? serviceIndicatorList : new List<Service_Indicator__c>());

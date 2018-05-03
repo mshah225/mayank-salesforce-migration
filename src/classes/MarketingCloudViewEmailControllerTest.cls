@@ -97,20 +97,4 @@ private class MarketingCloudViewEmailControllerTest {
         System.assertEquals(httpsVersionOfLink, returnedEmailUrl);
         System.assertEquals(httpsVersionOfLink, emailUrlStoredOnRecord);
     }
-    
-    @isTest
-    private static void errorReturnsLinkToIerImagePage() {
-        setupTestData();
-        ierForTesting.et4ae5__SendDefinition__c = null;
-        update ierForTesting;
-        
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkMockCallout());
-        MarketingCloudViewEmailController controllerWithoutEnoughData = new MarketingCloudViewEmailController(emailResultController);
-        
-        Test.startTest();
-        PageReference linkToIerImagePage = controllerWithoutEnoughData.viewEmailAndStoreLink();
-        Test.stopTest();
-        
-        System.assertEquals(Page.et4ae5__ierImage.getUrl(), linkToIerImagePage.getUrl());
-    }
 }

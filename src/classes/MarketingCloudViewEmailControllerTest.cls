@@ -101,7 +101,8 @@ private class MarketingCloudViewEmailControllerTest {
     @isTest
     private static void errorReturnsLinkToIerImagePage() {
         setupTestData();
-        ierForTesting.et4ae5__SendDefinition__c = null;
+        ierForTesting.et4ae5__Contact__c = null;
+        ierForTesting.et4ae5__Lead__c = null;
         update ierForTesting;
         
         Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkMockCallout());

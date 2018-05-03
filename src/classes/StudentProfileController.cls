@@ -1,5 +1,4 @@
-public with sharing class StudentProfileController
-{ 
+public with sharing class StudentProfileController { 
     // Error Logger Variables 
     private static Boolean debug = false; // Used to determine if error logger is in debug mode or not
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
@@ -534,7 +533,6 @@ public with sharing class StudentProfileController
                        Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name
             FROM Student_Program_Plan__c
             WHERE Contact__c = :theContact.Id
-            AND Primary_Flag__c = TRUE
             LIMIT 1
         ];
         

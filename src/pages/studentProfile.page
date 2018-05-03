@@ -726,6 +726,7 @@
                                                               </td>
                                                           </tr>
                                                           <tr>
+                                                              <th>Admit Term</th>
                                                               <td>{!IF(ISBLANK(ugStudentProgram.Admit_Term__r.Name), '--', ugStudentProgram.Admit_Term__r.Name)}</td>
                                                           </tr>
                                                       </table>

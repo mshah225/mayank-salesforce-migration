@@ -13,6 +13,7 @@ private class Test_HelpDeskController
 
         insert testContacts;
 		TestDataFactory.createFunctionalGroup('Help Desk');
+		
     }
 
     @isTest static void testCreateContactCreateCaseSaveCase()
@@ -416,5 +417,26 @@ private class Test_HelpDeskController
         ];
 
         System.assertEquals(0, caseArtList.size());
+    }
+    
+    @isTest
+    private static void testCaseClassification() {
+        CaseClassificationFactory ccMaker = new CaseClassificationFactory();
+		ccMaker.createAndInsertSetOfCaseClassification();
+        
+		HelpDeskController hdc = new HelpDeskController();
+		
+		hdc.functionalGroupSelection = 'Test Functional Group1';
+        hdc.categorySelection = 'Test Category1';
+        hdc.subCategorySelection = 'Test Sub Category1';
+		
+		System.assertEquals(1, hdc.functionalGroupOptions.size());
+		System.assertEquals(2, hdc.categoryOptions.size());
+		System.assertEquals(2, hdc.subCategoryOptions.size());
+        
+        hdc.updateCategories();
+        System.assertEquals(1, hdc.functionalGroupOptions.size());
+		System.assertEquals(2, hdc.categoryOptions.size());
+		System.assertEquals(1, hdc.subCategoryOptions.size());
     }
 }

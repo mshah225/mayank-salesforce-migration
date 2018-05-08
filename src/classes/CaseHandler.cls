@@ -186,9 +186,6 @@ public without sharing class CaseHandler implements ITrigger {
         Case c = (Case)so;
 
         // Set system info field for Most Recent Queue
-        System.debug(c.OwnerId);
-        System.debug(groupNameMap);
-        System.debug(groupNameMap.get(c.OwnerId));
         if (groupNameMap.containsKey(c.OwnerId))
         {
             c.Most_Recent_Queue__c = groupNameMap.get(c.OwnerId).Name;

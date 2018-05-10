@@ -490,7 +490,7 @@
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
                                             <apex:actionRegion >
-                                                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!functionalGroupSelection}" size="1">
+                                                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!selectedFunctionalGroup}" size="1">
                                                     <apex:actionSupport event="onchange" action="{!updateCategories}" />
                                                     <apex:selectOptions value="{!functionalGroupOptions}"/>
                                                 </apex:selectList>
@@ -500,7 +500,7 @@
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
                                             <apex:actionRegion >
-                                                <apex:selectList id="categoryOptions" value="{!categorySelection}" size="1">
+                                                <apex:selectList id="categoryOptions" value="{!selectedCategory}" size="1">
                                                     <apex:actionSupport event="onchange" action="{!updateSubCategories}" />
                                                     <apex:selectOptions value="{!categoryOptions}"/>
                                                 </apex:selectList>
@@ -510,7 +510,7 @@
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
                                             <apex:actionRegion >
-                                                <apex:selectList label="Case Sub Category" value="{!subCategorySelection}" size="1">
+                                                <apex:selectList label="Case Sub Category" value="{!selectedSubCategory}" size="1">
                                                     <apex:selectOptions id="subCategoryOptions" value="{!subCategoryOptions}"/>
                                                 </apex:selectList>
                                             </apex:actionRegion>

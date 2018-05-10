@@ -1006,7 +1006,7 @@ public with sharing class HelpDeskController
             
             upsert mycase;
             
-            return redirectPage();
+            return redirectPage(mycase);
         }
         catch(DMLException e) {
             if(e.getDMLType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
@@ -1049,20 +1049,22 @@ public with sharing class HelpDeskController
         Case_Classification__c functionalGroupToAdd = allFunctionalGroups.get(selectedFunctionalGroup);
             
         if(functionalGroupToAdd != null) {
-            mycase.CC_Functional_Group__c = functionalGroupToAdd.Id;
+            caseToModify.CC_Functional_Group__c = functionalGroupToAdd.Id;
             Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(selectedCategory);
             if(categoryToAdd != null) {
-                mycase.CC_Category__c = categoryToAdd.Id; 
+                caseToModify.CC_Category__c = categoryToAdd.Id; 
                 Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Name).get(selectedSubCategory);
                 if(subCategoryToAdd != null) {
-                    mycase.CC_Sub_Category__c = subCategoryToAdd.Id;
+                    caseToModify.CC_Sub_Category__c = subCategoryToAdd.Id;
                 } else {
-                    mycase.CC_Sub_Category__c = null;
+                    caseToModify.CC_Sub_Category__c = null;
                 }
             } else {
-                mycase.CC_Category__c = null; 
+                caseToModify.CC_Category__c = null; 
             }
         }
+        
+        return caseToModify;
     }
     
     private PageReference redirectPage(Case caseToTrasferTo) {

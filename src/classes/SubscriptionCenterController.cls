@@ -396,7 +396,7 @@ public without sharing class SubscriptionCenterController {
             Boolean parentSubUnsubscribed = false;
             SubscriberWrapper parentSubWrapper = subbedBuSubIdToWrapperMap.get(parentSubId);
 
-            if (parentSubWrapper.subscriberStatus != parentSubWrapper.dbSubscriberStatus) {
+            if (parentSubWrapper != null && parentSubWrapper.subscriberStatus != parentSubWrapper.dbSubscriberStatus) {
                 parentSubUnsubscribed = (parentSubWrapper.subscriberStatus == UNSUBSCRIBED && 
                     parentSubWrapper.dbSubscriberStatus != UNSUBSCRIBED ? true : false);
                 if (parentSubWrapper.subscriber == null) {

@@ -992,8 +992,7 @@ public with sharing class HelpDeskController
     
     public PageReference saveCase()
     {
-        if (String.isEmpty(mycase.Subject) || String.isEmpty(mycase.Description))
-        {
+        if (!validCase(mycase)) {
             ApexPages.addMessage(
                 new ApexPages.message(
                     ApexPages.severity.ERROR,
@@ -1003,28 +1002,11 @@ public with sharing class HelpDeskController
             return null;
         }
         try {
-            Case_Classification__c functionalGroupToAdd = allFunctionalGroups.get(selectedFunctionalGroup);
-            
-            if(functionalGroupToAdd != null) {
-                mycase.CC_Functional_Group__c = functionalGroupToAdd.Id;
-                Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(selectedCategory);
-                if(categoryToAdd != null) {
-                    mycase.CC_Category__c = categoryToAdd.Id; 
-                    Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Name).get(selectedSubCategory);
-                    if(subCategoryToAdd != null) {
-                        mycase.CC_Sub_Category__c = subCategoryToAdd.Id;
-                    } else {
-                        mycase.CC_Sub_Category__c = null;
-                    }
-                } else {
-                    mycase.CC_Category__c = null; 
-                }
-            }
+            mycase = addCaseClassificationToCase(mycase);
             
             upsert mycase;
-            PageReference page = new PageReference('/' + mycase.Id);
-            page.setRedirect(true);
-            return page;
+            
+            return redirectPage();
         }
         catch(DMLException e) {
             if(e.getDMLType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
@@ -1033,6 +1015,12 @@ public with sharing class HelpDeskController
                 vars.add(ErrorLogger.convertStringToJSON('caseDescription', myCase.Description));
                 vars.add(ErrorLogger.convertStringToJSON('Case Contact Id', myCase.ContactId));
                 ErrorLogger.log(e,vars,false);
+                ApexPages.addMessage(
+                    new ApexPages.Message(
+                        ApexPages.Severity.ERROR,
+                        'Case has been logged with an admin due to ' + e.getMessage()
+                    )
+                );
             }
             return null;
             
@@ -1043,8 +1031,44 @@ public with sharing class HelpDeskController
             vars.add(ErrorLogger.convertStringToJSON('caseDescription No DML', myCase.Description));
             vars.add(ErrorLogger.convertStringToJSON('Case Contact Id No DML', myCase.ContactId));
             ErrorLogger.log(e,vars,false);
+            ApexPages.addMessage(
+                new ApexPages.Message(
+                    ApexPages.Severity.ERROR,
+                    'Case has been logged with an admin due to ' + e.getMessage()
+                )
+            );
             return null;
         }
+    }
+    
+    private boolean validCase(Case caseToValidate) {
+        return String.isEmpty(caseToValidate.Subject) || String.isEmpty(caseToValidate.Description);
+    }
+    
+    private Case addCaseClassificationToCase(Case caseToModify) {
+        Case_Classification__c functionalGroupToAdd = allFunctionalGroups.get(selectedFunctionalGroup);
+            
+        if(functionalGroupToAdd != null) {
+            mycase.CC_Functional_Group__c = functionalGroupToAdd.Id;
+            Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(selectedCategory);
+            if(categoryToAdd != null) {
+                mycase.CC_Category__c = categoryToAdd.Id; 
+                Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Name).get(selectedSubCategory);
+                if(subCategoryToAdd != null) {
+                    mycase.CC_Sub_Category__c = subCategoryToAdd.Id;
+                } else {
+                    mycase.CC_Sub_Category__c = null;
+                }
+            } else {
+                mycase.CC_Category__c = null; 
+            }
+        }
+    }
+    
+    private PageReference redirectPage(Case caseToTrasferTo) {
+        PageReference page = new PageReference('/' + caseToTrasferTo.Id);
+        page.setRedirect(true);
+        return page;
     }
     
     public void cancelCase()

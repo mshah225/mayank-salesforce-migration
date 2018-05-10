@@ -420,7 +420,7 @@ private class Test_HelpDeskController
     }
     
     @isTest
-    private static void testCaseClassification() {
+    private static void caseClassificationCorrectSelectOptions() {
         CaseClassificationFactory ccMaker = new CaseClassificationFactory();
 		ccMaker.createAndInsertSetOfCaseClassification();
         
@@ -434,7 +434,9 @@ private class Test_HelpDeskController
 		System.assertEquals(2, hdc.categoryOptions.size());
 		System.assertEquals(2, hdc.subCategoryOptions.size());
         
+        Test.startTest();
         hdc.updateCategories();
+        Test.stopTest();
         System.assertEquals(1, hdc.functionalGroupOptions.size());
 		System.assertEquals(2, hdc.categoryOptions.size());
 		System.assertEquals(1, hdc.subCategoryOptions.size());

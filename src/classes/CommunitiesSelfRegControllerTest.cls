@@ -1,20 +1,39 @@
 /**
  * An apex page controller that supports self registration of users in communities that allow self registration
  */
-@IsTest public with sharing class CommunitiesSelfRegControllerTest {
-    @IsTest(SeeAllData=true) 
-    public static void testCommunitiesSelfRegController() {
+@isTest 
+public with sharing class CommunitiesSelfRegControllerTest {
+    @isTest
+    private static void differentPasswordCatchError() {
+        
+        PageReference pageRef = Page.CommunitiesSelfRegConfirm;
+        Test.setCurrentPage(pageRef);
         CommunitiesSelfRegController controller = new CommunitiesSelfRegController();
-        controller.firstName = 'FirstName';
-        controller.lastName = 'LastName';
-        controller.email = 'test@force.com';
-        controller.communityNickname = 'test';
+        controller.password = 'test!23';
+        controller.confirmPassword = 'test123';
         
-        // registerUser will always return null when the page isn't accessed as a guest user
-        System.assert(controller.registerUser() == null);    
+        Test.startTest();
+        System.assert(controller.registerAndRedirectUser() == null);
+        Test.stopTest();
         
-        controller.password = 'abcd1234';
-        controller.confirmPassword = 'abcd123';
-        System.assert(controller.registerUser() == null);  
-    }    
+        List<Apexpages.Message> pageMsgs = ApexPages.getMessages();
+        System.assert(pageMsgs.get(0).getDetail().contains(Label.Site.passwords_dont_match));
+    }
+    
+    @isTest
+    private static void createPortalUserCatchError() {
+        PageReference pageRef = Page.CommunitiesSelfRegConfirm;
+        Test.setCurrentPage(pageRef);
+        CommunitiesSelfRegController controller = new CommunitiesSelfRegController();
+        controller.password = 'asuIasu';
+        controller.confirmPassword = 'asuIasu';
+        
+        Test.startTest();
+        controller.registerAndRedirectUser();
+        Test.stopTest();
+        
+        List<Apexpages.Message> pageMsgs = ApexPages.getMessages();
+        System.assert(pageMsgs.get(0).getDetail().contains(CommunitiesSelfRegController.UNABLE_TO_CREATE_PORTAL_USER));
+    
+    }
 }

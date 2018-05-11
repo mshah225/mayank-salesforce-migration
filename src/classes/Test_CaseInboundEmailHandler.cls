@@ -519,7 +519,7 @@ public with sharing class Test_CaseInboundEmailHandler {
         email.toAddresses = toAddresses;
         email.subject = 'test email';
         email.fromName = 'Last, First';
-        email.plainTextBody = 'ref:' + createdCase.Id + ':ref';
+        email.plainTextBody = 'Test Body' + '\n\n' + GenerateReferenceIdOnEmailBody.addReferenceIdToEmailBody(createdCase.Id);
         email.fromAddress = 'user@acme.com.test';
 
         Test.startTest();

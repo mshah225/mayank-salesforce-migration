@@ -314,19 +314,21 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 {
                     theCase.Associate_Case_to_Active_Opportunity__c = associateCaseToActiveOpportunity;
                 }
-
+                
+                EmailTransformer transformerWithQueriedSuffix = new EmailTransformer();
+                String emailWithoutSuffix = transformerWithQueriedSuffix.restoreOriginalEmail(email.fromAddress);
                 Contact[] contacts = [
                     SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c
                     FROM Contact
-                    WHERE Email = :email.fromAddress
-                    OR ASU_Gmail__c = :email.fromAddress
-                    OR EPO_Email__c = :email.fromAddress
-                    OR ASU_Email__c = :email.fromAddress
-                    OR Lead_Email__c = :email.fromAddress
-                    OR Lead_Secondary_Email__c = :email.fromAddress
-                    OR Personal_Email__c = :email.fromAddress
-                    OR Preferred_Email__c = :email.fromAddress
-                    OR Corporate_Relations_Email__c = :email.fromAddress
+                    WHERE Email = :emailWithoutSuffix
+                    OR ASU_Gmail__c = :emailWithoutSuffix
+                    OR EPO_Email__c = :emailWithoutSuffix
+                    OR ASU_Email__c = :emailWithoutSuffix
+                    OR Lead_Email__c = :emailWithoutSuffix
+                    OR Lead_Secondary_Email__c = :emailWithoutSuffix
+                    OR Personal_Email__c = :emailWithoutSuffix
+                    OR Preferred_Email__c = :emailWithoutSuffix
+                    OR Corporate_Relations_Email__c = :emailWithoutSuffix
                 ];
 
                 if (contacts.size() > 1)
@@ -722,30 +724,15 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         String patternString;
         String caseId;
 
-        if (searchText.indexOf(':ref') > searchText.indexOf('ref:'))
-        {
+        if (searchText.indexOf(':ref') > searchText.indexOf('ref:')) {
             String caseReference = searchText.substring(searchText.indexOf('ref:') + 4, searchText.indexOf(':ref'));
-
-            if (Test.isRunningTest())
-            {
-                caseId = caseReference;
-            }
-            else
-            {
-                try
-                {
+            try {
                     caseId = Cases.getCaseIdFromEmailThreadId(caseReference);
-                }
-                catch (Exception e)
-                {
+            } catch (Exception e) {
                     return null;
-                }
             }
-
             return caseId;
-        }
-        else
-        {
+        } else {
             return null;
         }
     }

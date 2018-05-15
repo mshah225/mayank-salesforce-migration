@@ -315,20 +315,20 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     theCase.Associate_Case_to_Active_Opportunity__c = associateCaseToActiveOpportunity;
                 }
                 
-                EmailTransformer transformerWithQueriedSuffix = new EmailTransformer();
-                String emailWithoutSuffix = transformerWithQueriedSuffix.restoreOriginalEmail(email.fromAddress);
+                EmailTransformer transformer = new EmailTransformer();
+                String cleanFromAddress = transformer.trimReplyFromSuffix(email.fromAddress);
                 Contact[] contacts = [
                     SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c
                     FROM Contact
-                    WHERE Email = :emailWithoutSuffix
-                    OR ASU_Gmail__c = :emailWithoutSuffix
-                    OR EPO_Email__c = :emailWithoutSuffix
-                    OR ASU_Email__c = :emailWithoutSuffix
-                    OR Lead_Email__c = :emailWithoutSuffix
-                    OR Lead_Secondary_Email__c = :emailWithoutSuffix
-                    OR Personal_Email__c = :emailWithoutSuffix
-                    OR Preferred_Email__c = :emailWithoutSuffix
-                    OR Corporate_Relations_Email__c = :emailWithoutSuffix
+                    WHERE Email = :cleanFromAddress
+                    OR ASU_Gmail__c = :cleanFromAddress
+                    OR EPO_Email__c = :cleanFromAddress
+                    OR ASU_Email__c = :cleanFromAddress
+                    OR Lead_Email__c = :cleanFromAddress
+                    OR Lead_Secondary_Email__c = :cleanFromAddress
+                    OR Personal_Email__c = :cleanFromAddress
+                    OR Preferred_Email__c = :cleanFromAddress
+                    OR Corporate_Relations_Email__c = :cleanFromAddress
                 ];
 
                 if (contacts.size() > 1)
@@ -367,17 +367,17 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     }
 
                     // If the sender's email does not match the primary Email field for this Contact, update that field and note why
-                    if (theContact.Email == null || theContact.Email != email.fromAddress)
+                    if (theContact.Email == null || theContact.Email != cleanFromAddress)
                     {
-                        theContact.Email = email.fromAddress;
+                        theContact.Email = cleanFromAddress;
                         theContact.Email_Change_Reason__c = 'Service request received';
-                        theContact.Last_Case_Email_Used__c = email.fromAddress;
+                        theContact.Last_Case_Email_Used__c = cleanFromAddress;
                         theContact.Email_Change_Date__c = Datetime.now();
                         update theContact;
                     }
                     if (theContact.Last_Case_Email_Used__c == null || 
-                            theContact.Last_Case_Email_Used__c != emailWithoutSuffix) {
-                        theContact.Last_Case_Email_Used__c = emailWithoutSuffix;
+                            theContact.Last_Case_Email_Used__c != cleanFromAddress) {
+                        theContact.Last_Case_Email_Used__c = cleanFromAddress;
                         update theContact;
                     }
                 }
@@ -407,7 +407,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         lname = lname.subString(0, 80);
                     }
 
-                    Contact c = new Contact(FirstName = fname, LastName = lname, Email = email.fromAddress, RecordTypeId=rtId);
+                    Contact c = new Contact(FirstName = fname, LastName = lname, Email = cleanFromAddress, RecordTypeId=rtId);
                     insert c;
 
                     Contact insertedContact = [

@@ -352,7 +352,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         }
                     }
                 }
-				
+
                 if (contacts.size() > 0)
                 {
                     Contact theContact = contacts[0];

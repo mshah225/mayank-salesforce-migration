@@ -20,7 +20,7 @@ public class EmailTransformer {
             }
         }
         
-        return cleanedEmail;
+        return cleanedEmail.toLowerCase();
     }
     
     private String removeSuffixFromEmail(String emailWithSuffix, String suffixToRemove) {

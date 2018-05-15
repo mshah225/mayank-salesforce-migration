@@ -376,9 +376,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         update theContact;
                     }
                     if (theContact.Last_Case_Email_Used__c == null || 
-                            (theContact.Last_Case_Email_Used__c != email.fromAddress && 
-                                emailWithoutSuffix == email.fromAddress)) {
-                        theContact.Last_Case_Email_Used__c = email.fromAddress;
+                            theContact.Last_Case_Email_Used__c != emailWithoutSuffix) {
+                        theContact.Last_Case_Email_Used__c = emailWithoutSuffix;
                         update theContact;
                     }
                 }

@@ -84,22 +84,22 @@ public class CsvReader {
 
         Boolean eod = false;  // Whether end of CSV data is reached
         while (!eod) {
-            //System.debug(fileString);
 
             csvValue = readValue(fileString);
-			System.debug(csvValue.value);
-            System.debug(csvValue.value.length());
-            if(!String.isEmpty(csvValue.value)) {
-            	rowValues.add(csvValue.value);
-            
-                if (csvValue.delimiter == CR) {
+
+            rowValues.add(csvValue.value);
+
+            if (csvValue.delimiter == CR) {
+                if (rowValues.size() > 1 || (rowValues.size() == 1 && !String.isBlank(rowValues[0]))) {
                     fileValues.add(rowValues);
+                    
                     if (fileValues.size() > 0) {
                         System.assertEquals(fileValues.get(0).size(), rowValues.size());
                     }
-                    rowValues = new List<String>();
                 }
+                rowValues = new List<String>();
             }
+
             if (csvValue.biteSize() == fileString.length()) {
                 eod = true;
             } else {
@@ -173,8 +173,7 @@ public class CsvReader {
                 csvValue.delimiter = CR;
             }
         }
-
-        System.debug('Returning: ' + csvValue);
+       
 
         return csvValue;
     }
@@ -235,7 +234,6 @@ public class CsvReader {
                 biteSize += DQUOTE.length() * 2;
             }
 
-            System.debug('biteSize: ' + biteSize);
 
             return biteSize;
         }

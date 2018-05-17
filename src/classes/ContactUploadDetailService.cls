@@ -53,6 +53,7 @@ public class ContactUploadDetailService {
        }
        if (!validRow) {
            contactUpLoadDetailToCreate.Status__c = 'Error';
+           contactUploadDetailToCreate.Processing_Notes__c = 'Error with Contact / Subscription';
        }
        
        return contactUpLoadDetailToCreate;
@@ -62,6 +63,7 @@ public class ContactUploadDetailService {
         Subscriber__c subToCreate;
         if (cud.Subscription__c == null) {
             cud.Status__c = 'Error';
+            cud.Processing_Notes__c = (cud.Processing_Notes__c + ' Missing Subscription').left(255);
         } else if (cud.Contact__c == null) {
             ContactUploadSearcher contactMatcher = new ContactUploadSearcher();
             contactMatcher.getContact(cud);
@@ -86,5 +88,20 @@ public class ContactUploadDetailService {
             }
         }
         return cudToUpdate;
+    }
+    
+    public void searchAndMatchContactWithEmplId(List<Contact_Upload_Detail__c> uploadedContacts) {
+        Map<String, Contact_Upload_Detail__c> emplIdToUploadDetail = new Map<String, Contact_Upload_Detail__c>();
+        for (Contact_Upload_Detail__c contactDetailEntry : uploadedContacts) {
+            if(contactDetailEntry.EMPLID__c != NULL) {
+                emplIdToUploadDetail.put(contactDetailEntry.EMPLID__c, contactDetailEntry);
+            }
+        }
+        List<Contact> contactsWithExistingEmplId = [SELECT Id, EMPLID__c FROM Contact WHERE EMPLID__c IN :emplIdToUploadDetail.keyset()];
+
+        for (Contact matchedContact : contactsWithExistingEmplId) {
+            Contact_Upload_Detail__c detailToAdd = emplIdToUploadDetail.get(matchedContact.EMPLID__c);
+            detailToAdd.Contact__c = matchedContact.Id;
+        }
     }
 }

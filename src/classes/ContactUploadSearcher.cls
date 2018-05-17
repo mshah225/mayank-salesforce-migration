@@ -71,6 +71,7 @@ public class ContactUploadSearcher {
                 HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
                 response = contactService.get(parmMap);
             } catch (Exception e) {
+                updateDetailStatus(cud, 'Error', e.getMessage());
                 return false;
             }
             if (!String.isBlank(response)) {
@@ -80,6 +81,7 @@ public class ContactUploadSearcher {
                 try {
                     conResponse = (ContactResponse)JSON.deserialize(response, ContactResponse.class);
                 } catch (Exception e) {
+                    updateDetailStatus(cud, 'Error', e.getMessage());
                     return false;
                 }
 
@@ -89,6 +91,7 @@ public class ContactUploadSearcher {
                         cud.Processing_Notes__c += 'Found existing Contact ID: ' + conResponse.contactDetails[0].contactId;
                         return true;
                     } else {
+                        updateDetailStatus(cud, 'Error', 'Missing ContactID');
                         return false;
                     }
                 } else {
@@ -96,6 +99,7 @@ public class ContactUploadSearcher {
                 }
             }
         } else {
+            updateDetailStatus(cud, 'Error', 'No Parameters Found');
             return false;
         }
         return true;
@@ -109,6 +113,7 @@ public class ContactUploadSearcher {
             HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
             response = contactService.post(parameterMap);
         } catch (Exception e) {
+            updateDetailStatus(cud, 'Error', e.getMessage());
             return false;
         }
         if (!String.isBlank(response)) {
@@ -116,6 +121,7 @@ public class ContactUploadSearcher {
             try {
                 conPostResponse = (ContactPostResponse)JSON.deserialize(response, ContactPostResponse.class);
             } catch (Exception e) {
+                updateDetailStatus(cud, 'Error', e.getMessage());
                 return false;
             }
             if (conPostResponse.upsertResults != null && !String.isBlank(conPostResponse.upsertResults[0].contactId)) {
@@ -123,10 +129,19 @@ public class ContactUploadSearcher {
                 cud.Processing_Notes__c += 'Created new Contact ID: ' + conPostResponse.upsertResults[0].contactId;
                 return true;
             } else {
+                updateDetailStatus(cud, 'Error', 'Failed To Upsert Contact');
                 return false;
             }
         } else {
+            updateDetailStatus(cud, 'Error', 'No Response');
             return false;
         }
+    }
+    
+    private Contact_Upload_Detail__c updateDetailStatus(Contact_Upload_Detail__c cudToUpdate, String status, String error) {
+        cudToUpdate.Status__c = status;
+        cudToUpdate.Processing_Notes__c += error;
+        cudToUpdate.Processing_Notes__c = cudToUpdate.Processing_Notes__c.left(255);
+        return cudToUpdate;
     }
 }

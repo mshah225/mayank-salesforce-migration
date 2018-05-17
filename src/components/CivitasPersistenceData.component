@@ -385,7 +385,7 @@
             <div class="right" style="float:left; z-index:-1; margin-top:-20px">
                 <div id="chart_div" style="height:200px; width:400px"></div>
             </div>
-            <div id="persistenceLegend" style="float: left; margin-top: 42px; margin-left: 10px; display: block; margin-top:25px">
+            <div id="persistenceLegend" style="float: left; margin-top: 42px; margin-left: 10px; display: none; margin-top:25px">
                 <apex:image url="{!$Resource.PersistenceLegend}" width="75" height="158"/>
             </div>
         </div>

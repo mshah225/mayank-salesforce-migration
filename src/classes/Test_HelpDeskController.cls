@@ -426,10 +426,10 @@ private class Test_HelpDeskController
         
 		HelpDeskController hdc = new HelpDeskController();
 		
-		hdc.selectedFunctionalGroup = 'Test Functional Group1';
-        hdc.selectedCategory = 'Test Category1';
-        hdc.selectedSubCategory = 'Test Sub Category1';
-		
+		hdc.selectedFunctionalGroup = 'Test Functional Group0';
+        hdc.selectedCategory = 'Test Category0';
+        hdc.selectedSubCategory = 'Test Sub Category0';
+
 		System.assertEquals(1, hdc.functionalGroupOptions.size());
 		System.assertEquals(2, hdc.categoryOptions.size());
 		System.assertEquals(2, hdc.subCategoryOptions.size());

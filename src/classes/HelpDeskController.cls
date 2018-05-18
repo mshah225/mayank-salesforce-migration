@@ -169,17 +169,19 @@ public with sharing class HelpDeskController
         get {
             if(categoryOptions == null) {
                 categoryOptions = new List<SelectOption>();
-                Map<String, Case_Classification__c> categoriesForFunctionalGroup = allCategories.get(selectedFunctionalGroup);
-                if(categoriesForFunctionalGroup != null && !categoriesForFunctionalGroup.isEmpty()) {
-                    for(String categoryOption : categoriesForFunctionalGroup.keySet()) {
-                        categoryOptions.add(new SelectOption(categoryOption, categoryOption, false));
+                if(allCategories != null && selectedFunctionalGroup != null) {
+                    Map<String, Case_Classification__c> categoriesForFunctionalGroup = allCategories.get(selectedFunctionalGroup);
+                    if(categoriesForFunctionalGroup != null && !categoriesForFunctionalGroup.isEmpty()) {
+                        for(String categoryOption : categoriesForFunctionalGroup.keySet()) {
+                            categoryOptions.add(new SelectOption(categoryOption, categoryOption, false));
+                        }
+                    } else {
+                        categoryOptions.add(new SelectOption('--', '--', false));
                     }
                 } else {
                     categoryOptions.add(new SelectOption('--', '--', false));
                 }
-            } else {
-                    categoryOptions.add(new SelectOption('--', '--', false));
-            }
+            } 
             return categoryOptions;
         } 
         

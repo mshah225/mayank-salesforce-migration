@@ -430,10 +430,6 @@ private class Test_HelpDeskController
         hdc.selectedCategory = 'Test Category0';
         hdc.selectedSubCategory = 'Test Sub Category0';
 		
-        System.debug(hdc.allFunctionalGroups);
-        System.debug(hdc.allCategories);
-        System.debug(hdc.allSubCategories);
-        System.debug(hdc.categoryOptions);
 		System.assertEquals(1, hdc.functionalGroupOptions.size());
 		System.assertEquals(2, hdc.categoryOptions.size());
 		System.assertEquals(2, hdc.subCategoryOptions.size());

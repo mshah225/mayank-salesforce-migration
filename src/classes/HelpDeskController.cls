@@ -126,12 +126,8 @@ public with sharing class HelpDeskController
     }
     public String selectedCategory {
         get {
-            
-            System.debug(selectedCategory);
-            System.debug(mycase);
             if(selectedCategory == null) {
                 if (mycase.CC_Category__c != null) {
-                    System.debug(mycase.CC_Category__r.Name);
                 	selectedCategory = mycase.CC_Category__r.Name;
                 } else {
                     selectedCategory = '--';
@@ -986,10 +982,6 @@ public with sharing class HelpDeskController
         
         mycase = (Case) m.get(selectedCaseId).Ca;
         
-        System.debug('Running: ' + mycase);
-        System.debug(mycase.CC_Functional_Group__c + ' ' + mycase.CC_Functional_Group__r.Name);
-        System.debug(mycase.CC_Category__c + ' ' + mycase.CC_Category__r.Name);
-        System.debug(mycase.CC_Sub_Category__c + ' ' + mycase.CC_Sub_Category__r.Name);
         if (mycase.CC_Functional_Group__r.Name != NULL) {
             selectedFunctionalGroup = mycase.CC_Functional_Group__r.Name;
         } else {
@@ -1125,7 +1117,6 @@ public with sharing class HelpDeskController
         selectedFunctionalGroup = null;
         selectedCategory = null;
         selectedSubCategory = null;
-        System.debug('Canceled');
         ApexPages.getMessages().clear();
     }
     

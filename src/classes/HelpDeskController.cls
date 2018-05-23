@@ -112,7 +112,9 @@ public with sharing class HelpDeskController
     public String selectedFunctionalGroup {
         get {
             if(selectedFunctionalGroup == null) {
-                if (mycase.CC_Functional_Group__c != null) {
+                if (isNewCaseSelected) {
+                    selectedFunctionalGroup = 'Help Desk';
+                } else if (mycase.CC_Functional_Group__c != null) {
                 	selectedFunctionalGroup = mycase.CC_Functional_Group__r.Name;
                 } else {
                     selectedFunctionalGroup = '--';
@@ -124,8 +126,12 @@ public with sharing class HelpDeskController
     }
     public String selectedCategory {
         get {
+            
+            System.debug(selectedCategory);
+            System.debug(mycase);
             if(selectedCategory == null) {
                 if (mycase.CC_Category__c != null) {
+                    System.debug(mycase.CC_Category__r.Name);
                 	selectedCategory = mycase.CC_Category__r.Name;
                 } else {
                     selectedCategory = '--';
@@ -839,7 +845,7 @@ public with sharing class HelpDeskController
         mycase.ContactId = selectedContactId;
         mycase.Status = 'New';
         mycase.Campus__c = 'Tempe';
-        mycase.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Help Desk' LIMIT 1].Id;
+        mycase.CC_Functional_Group__c = [Select Id, Name FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Help Desk' LIMIT 1].Id;
     }
     
     public void newContact()
@@ -977,7 +983,30 @@ public with sharing class HelpDeskController
             m.put(cas.Ca.Id, cas);
         }
         
+        
         mycase = (Case) m.get(selectedCaseId).Ca;
+        
+        System.debug('Running: ' + mycase);
+        System.debug(mycase.CC_Functional_Group__c + ' ' + mycase.CC_Functional_Group__r.Name);
+        System.debug(mycase.CC_Category__c + ' ' + mycase.CC_Category__r.Name);
+        System.debug(mycase.CC_Sub_Category__c + ' ' + mycase.CC_Sub_Category__r.Name);
+        if (mycase.CC_Functional_Group__r.Name != NULL) {
+            selectedFunctionalGroup = mycase.CC_Functional_Group__r.Name;
+        } else {
+            selectedFunctionalGroup = '--';
+        }
+        updateCategories();
+        if (mycase.CC_Category__r.Name != NULL) {
+            selectedCategory = mycase.CC_Category__r.Name;
+        } else {
+            selectedCategory = '--';
+        }
+        updateSubCategories();
+        if (mycase.CC_Sub_Category__r.Name != NULL) {
+            selectedSubCategory = mycase.CC_Sub_Category__r.Name;
+        } else {
+            selectedSubCategory = '--';
+        }
         
         // Query for CaseArticle(s) attached to the Case.
         Set<Id> caseArticleIds = getCaseArticleIds();
@@ -1092,6 +1121,11 @@ public with sharing class HelpDeskController
         isNewCaseSelected = false;
         isExistingCaseSelected = false;
         isKnowledgeSearch = false;
+        mycase = null;
+        selectedFunctionalGroup = null;
+        selectedCategory = null;
+        selectedSubCategory = null;
+        System.debug('Canceled');
         ApexPages.getMessages().clear();
     }
     
@@ -1296,7 +1330,12 @@ public with sharing class HelpDeskController
         }
     }
     
-    
+    public PageReference updateCategoryAndSubCategory() {
+        updateCategories();
+        updateSubCategories();
+        
+        return null;
+    }
     public PageReference  updateCategories() {
         categoryOptions = new List<SelectOption>();
         Map<String, Case_Classification__c> categoriesForParent = allCategories.get(selectedFunctionalGroup);
@@ -1314,7 +1353,6 @@ public with sharing class HelpDeskController
             categoryOptions.add(new SelectOption('--', '--', false));
         }
         
-        updateSubcategories();
         return null;
     }
     

@@ -29,14 +29,14 @@ public class ContactUploadValidator {
     }
     
     private Boolean validIdForSubscription() {
-        if (validateId(detail.Subscription__c, Schema.Subscription__c.SobjectType)) {
+        if (isValidIdFor(detail.Subscription__c, Schema.Subscription__c.SobjectType)) {
             return true;
         }
         setError('Subscription Id is invalid. ');
         return false;
     }
     
-    private Boolean validateId(String potentialFieldId, Schema.sObjectType schemaToVerify) {
+    private Boolean isValidIdFor(String potentialFieldId, Schema.sObjectType schemaToVerify) {
         try {
             Id validIdForField = Id.ValueOf(potentialFieldId);
             return (validIdForField.getSobjectType() == schemaToVerify);

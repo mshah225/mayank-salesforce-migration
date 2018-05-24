@@ -71,7 +71,6 @@ public with sharing class ContactUploadBatch implements Database.batchable<Strin
                 }
             }
         }
-        
         detailsToProcess.addAll(detailsInError);
         if (detailsToProcess.size() > 0) {
             Database.insert(detailsToProcess, false);

@@ -32,13 +32,13 @@ public class ContactUploadSearcher {
             mapEmplIdIfPresent(detail);
             mapAsuRiteIfPresent(detail);
             mapFirstNameAndEmailIfPresent(detail);
-            mapFirstLastBirthdateAndPostalIfPresent(detail);
-            mapFirstLastAndPhoneIfPresent(detail);
+            //mapFirstLastBirthdateAndPostalIfPresent(detail);
+            //mapFirstLastAndPhoneIfPresent(detail);
         }
     }
     
     private void mapEmplIdIfPresent(Contact_Upload_Detail__c detail) {
-        if (!String.isBlank(detail.Emplid__c) {
+        if (!String.isBlank(detail.Emplid__c)) {
             emplIdToOriginalDetail.put((detail.Emplid__c).toLowerCase(), detail);
         }
     }
@@ -116,7 +116,6 @@ public class ContactUploadSearcher {
                 )
             )
         ];
-        System.debug('Contacts:' +  matchedContacts);
     }
     
     private void associateDetailsWithMatchedContacts() {
@@ -124,13 +123,13 @@ public class ContactUploadSearcher {
             if (matchByEmplId(contactMatch)) {}
             else if (matchByAsurite(contactMatch)) {}
             else if (matchByFirstNameAndEmail(contactMatch)) {}
-            else if (matchByNameBirthdateAndPostal(contactMatch)) {}
-            else if (matchByNameAndPhone(contactMatch)) {}
+            //else if (matchByNameBirthdateAndPostal(contactMatch)) {}
+            //else if (matchByNameAndPhone(contactMatch)) {}
         }
     }
     
     private Boolean matchByEmplId(Contact contactMatch) {
-        if (emplIdToOriginalDetail.containsKey((contactMatch.EMPLID__c).toLowerCase())) {
+        if (contactMatch.EMPLID__c != null && emplIdToOriginalDetail.containsKey((contactMatch.EMPLID__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = emplIdToOriginalDetail.get((contactMatch.EMPLID__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
             matchedDetail.Processing_Notes__c += 
@@ -142,7 +141,7 @@ public class ContactUploadSearcher {
     }
     
     private Boolean matchByAsurite(Contact contactMatch) {
-        if (asuriteToOriginalDetail.containsKey((contactMatch.AsuRite_Id__c).toLowerCase())) {
+        if (contactMatch.AsuRite_Id__c != null && asuriteToOriginalDetail.containsKey((contactMatch.AsuRite_Id__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = asuriteToOriginalDetail.get((contactMatch.AsuRite_Id__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
             matchedDetail.Processing_Notes__c += 
@@ -154,42 +153,42 @@ public class ContactUploadSearcher {
     }
     
     private Boolean matchByFirstNameAndEmail(Contact contactMatch) {
-        if (firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Email).toLowerCase())) {
+        if (contactMatch.FirstName != null && contactMatch.Email != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Email).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.Email).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
             matchedDetail.Processing_Notes__c += 
                 String.format('Found existing Contact ID: {0} Based on email match: {1} and name match: {2}', 
                     new String[] {contactMatch.Id, contactMatch.Email, contactMatch.FirstName});
             return true;
-        } else if (firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Lead_Email__c).toLowerCase())) {
+        } else if (contactMatch.FirstName != null && contactMatch.Lead_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Lead_Email__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.Lead_Email__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
             matchedDetail.Processing_Notes__c += 
                 String.format('Found existing Contact ID: {0} Based on lead email match: {1} and name match: {2}', 
                     new String[] {contactMatch.Id, contactMatch.Lead_Email__c, contactMatch.FirstName});
             return true;
-        } else if (firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Lead_Secondary_Email__c).toLowerCase())) {
+        } else if (contactMatch.FirstName != null && contactMatch.Lead_Secondary_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Lead_Secondary_Email__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.Lead_Secondary_Email__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
             matchedDetail.Processing_Notes__c += 
                 String.format('Found existing Contact ID: {0} Based on lead secondary email match: {1} and name match: {2}', 
                     new String[] {contactMatch.Id, contactMatch.Lead_Secondary_Email__c, contactMatch.FirstName});
             return true;
-        } else if (firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Personal_Email__c).toLowerCase())) {
+        } else if (contactMatch.FirstName != null && contactMatch.Personal_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Personal_Email__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.Personal_Email__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
             matchedDetail.Processing_Notes__c += 
                 String.format('Found existing Contact ID: {0} Based on personal email match: {1} and name match: {2}', 
                     new String[] {contactMatch.Id, contactMatch.Personal_Email__c, contactMatch.FirstName});
             return true;
-        } else if (firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.ASU_Gmail__c).toLowerCase())) {
+        } else if (contactMatch.FirstName != null && contactMatch.ASU_Gmail__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.ASU_Gmail__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.ASU_Gmail__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
             matchedDetail.Processing_Notes__c += 
                 String.format('Found existing Contact ID: {0} Based on ASU Gmail email match: {1} and name match: {2}', 
                     new String[] {contactMatch.Id, contactMatch.ASU_Gmail__c, contactMatch.FirstName});
             return true;
-        } else if (firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.EPO_Email__c).toLowerCase())) {
+        } else if (contactMatch.FirstName != null && contactMatch.EPO_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.EPO_Email__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.EPO_Email__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
             matchedDetail.Processing_Notes__c += 

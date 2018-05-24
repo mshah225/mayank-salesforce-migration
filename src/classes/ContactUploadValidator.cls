@@ -75,7 +75,7 @@ public class ContactUploadValidator {
     }
     
     private void cleanCountryCode() {
-        if (detail.Country__c.length() != 2) {
+        if (detail.Country__c != null && detail.Country__c.length() != 2) {
             detail.Processing_Notes__c += 'Invalid country code. ';
             detail.Country__c = null;
         }

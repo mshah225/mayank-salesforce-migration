@@ -1,4 +1,4 @@
-public with sharing class BatchContactUpload implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
+public with sharing class ContactUploadBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
     private Id attachmentId;
     private String contactUploadId;
     private static final Integer SCOPE_SIZE = 50; //Batch limit of 100 callouts; 50 allows for 2 per record (1 GET and 1 POST)
@@ -6,7 +6,7 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
     private Map<Integer, String> columnMap;
     ContactUploadFileReader uploadReader;
     
-    public BatchContactUpload(Id attachmentId) {
+    public ContactUploadBatch(Id attachmentId) {
         this.attachmentId = attachmentId;
     }
 
@@ -25,21 +25,27 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
     public void execute(Database.BatchableContext batchableContext, List<String> scope) {
         List<List<String>> csvLines = recreateRowsFromIteration(scope);
         
-        List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>();
+        List<Contact_Upload_Detail__c> detailsToProcess = new List<Contact_Upload_Detail__c>();
+        List<Contact_Upload_Detail__c> detailsInError = new List<Contact_Upload_Detail__c>();
         ContactUploadDetailService detailCreator = new ContactUploadDetailService(contactUploadId, columnMap);
         for (List<String> lineValues: csvLines) {
-           cudList.add(detailCreator.createContactFromRow(lineValues));
-        }
-        detailCreator.searchAndMatchContactWithEmplId(cudList);
-        List<Subscriber__c> subscriberList = new List<Subscriber__c>();
-        for (Contact_Upload_Detail__c cud: cudList) {
-            Subscriber__c subToAdd = detailCreator.createSubscriberForCUD(cud);
-            if(subtoAdd != NULL) {
-                subscriberList.add(detailCreator.createSubscriberForCUD(cud));
+            Contact_Upload_Detail__c detailFromLine = detailCreator.createAndValidateRow(lineValues);
+            if (detailFromLine.Status__c != 'Error') {
+                detailsToProcess.add(detailFromLine);
             } else {
-                cud = updateDetailStatus(cud, 'Error', 'Failed To Create Subscriber Record');
+                detailsInError.add(detailFromLine);
             }
         }
+        ContactUploadSearcher searcher = new ContactUploadSearcher(detailsToProcess);
+        searcher.searchAndCreateContacts();
+        List<Subscriber__c> subscriberList = new List<Subscriber__c>();
+        for (Contact_Upload_Detail__c uploadDetail : detailsToProcess) {
+            Subscriber__c subToAdd = detailCreator.createSubscriberForUploadDetail(uploadDetail);
+            if (subtoAdd != null) {
+                subscriberList.add(subToAdd);
+            }
+        }
+        
         if (subscriberList.size() > 0) {
             Database.upsert(subscriberList, Subscriber__c.Unique_Key__c, false);
         }
@@ -50,18 +56,30 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
             subKeyToSubIdMap.put(subscriber.Unique_Key__c, subscriber.Id);
         }
         
-        for (Contact_Upload_Detail__c cud: cudList) {
-            cud = detailCreator.addSubscriberToDetail(cud, subKeyToSubIdMap);
+        for (Contact_Upload_Detail__c uploadDetail: detailsToProcess) {
+            uploadDetail = detailCreator.addSubscriberToDetail(uploadDetail, subKeyToSubIdMap);
         }
-
-        if (cudList.size() > 0) {
-            Database.insert(cudList, false);
+        detailsToProcess.addAll(detailsInError);
+        if (detailsToProcess.size() > 0) {
+            Database.insert(detailsToProcess, false);
         }
     }
     
     public void finish(Database.BatchableContext batchableContext) {
-        List<Contact_Upload_Detail__c> cudsWithErrors = [Select Id FROM Contact_Upload_Detail__c WHERE Contact_Upload__c =: contactUploadId AND Status__c = 'Error'];
-        String errorStatus = (cudsWithErrors.isEmpty() ? 'No Errors' : 'Errors');
+        List<Contact_Upload_Detail__c> processedDetails = [
+            SELECT Status__c 
+            FROM Contact_Upload_Detail__c 
+            WHERE Contact_Upload__c =: contactUploadId
+            LIMIT 50000
+        ];
+        
+        String errorStatus = (processedDetails.isEmpty() ? 'Errors' : 'No Errors');
+        
+        for (Contact_Upload_Detail__c detail : processedDetails) {
+            if (detail.Status__c == 'Error') {
+                errorStatus = 'Errors';
+            }
+        }
 
         if (contactUploadId != null) {
             updateUploadStatus('Complete with ' + errorStatus);
@@ -69,6 +87,7 @@ public with sharing class BatchContactUpload implements Database.batchable<Strin
     }
 
     private void updateUploadStatus(String status) {
+        
         Contact_Upload__c cu = new Contact_Upload__c(
                 Id = contactUploadId, 
                 Status__c = status);

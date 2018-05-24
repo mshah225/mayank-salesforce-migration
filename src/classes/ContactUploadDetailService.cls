@@ -24,56 +24,46 @@ public class ContactUploadDetailService {
         columnNames = columnValueIn;
     }
     
-    public Contact_Upload_Detail__c createContactFromRow(List<String> contactInformation) {
-        Contact_Upload_Detail__c contactUpLoadDetailToCreate = new Contact_Upload_Detail__c(
-                Processing_Notes__c = ' ',
-                Contact_Upload__c = contactUploadId,
-                Status__c = 'Success',
-                Source_Line__c = String.join(contactInformation, ',')
-        );
-        Boolean validRow = true;
+    public Contact_Upload_Detail__c createAndValidateRow(List<String> contactInformation) {
+        Contact_Upload_Detail__c newUploadDetail = createDetailWithFields(contactInformation);
+        ContactUploadValidator validator = new ContactUploadValidator(newUploadDetail);
+        validator.validateAndClean();
+        return newUploadDetail;
+    }
+    
+    private Contact_Upload_Detail__c createDetailWithFields(List<String> contactInformation) {
+         Contact_Upload_Detail__c detailToPopulate = new Contact_Upload_Detail__c(
+            Processing_Notes__c = ' ',
+            Contact_Upload__c = contactUploadId,
+            Status__c = 'Success',
+            Source_Line__c = String.join(contactInformation, ','));
+        
         for (Integer i = 0; i < contactInformation.size(); i++) {
             String columnValue = contactInformation[i];
             String fieldName = columnToFieldNames.get(columnNames.get(i));
             if (!String.isBlank(columnValue)) {
                 columnValue = columnValue.trim();
-                
-                if (fieldName == 'Contact__c') {
-                    validRow = UploadContactValidator.validateId(columnValue, Schema.Contact.sObjectType);
-                } else if (fieldName == 'Subscription__c') {
-                    validRow = UploadContactValidator.validateId(columnValue, Schema.Subscription__c.sObjectType);
-                }
-
-                if (fieldName == 'Phone__c') {
-                    columnValue = UploadContactValidator.cleanPhoneNumber(columnValue);
-                }
-
-                contactUpLoadDetailToCreate.put(fieldName, columnValue);
+                detailToPopulate.put(fieldName, columnValue);
             }
        }
-       if (!validRow) {
-           contactUpLoadDetailToCreate.Status__c = 'Error';
-           contactUploadDetailToCreate.Processing_Notes__c = 'Error with Contact / Subscription';
-       }
        
-       return contactUpLoadDetailToCreate;
+       return detailToPopulate;
     }
     
-    public Subscriber__c createSubscriberForCUD(Contact_Upload_Detail__c cud) {
+    public Subscriber__c createSubscriberForUploadDetail(Contact_Upload_Detail__c uploadDetail) {
         Subscriber__c subToCreate;
-        if (cud.Subscription__c == null) {
-            cud.Status__c = 'Error';
-            cud.Processing_Notes__c = (cud.Processing_Notes__c + ' Missing Subscription').left(255);
-        } else if (cud.Contact__c == null) {
-            ContactUploadSearcher contactMatcher = new ContactUploadSearcher();
-            contactMatcher.getContact(cud);
-        }
-        if (cud.Contact__c != null && cud.Subscription__c != null) {
+        if (uploadDetail.Contact__c == null) {
+            uploadDetail.Status__c = 'Error';
+            uploadDetail.Processing_Notes__c = (uploadDetail.Processing_Notes__c + 'Contact not present. ').left(255);
+        } else if (uploadDetail.Subscription__c == null) {
+            uploadDetail.Status__c = 'Error';
+            uploadDetail.Processing_Notes__c = (uploadDetail.Processing_Notes__c + 'Subscription not present. ').left(255);
+        } else {
             subToCreate = new Subscriber__c(
-                Contact__c = cud.Contact__c,
-                Subscription__c = cud.Subscription__c,
-                Unique_Key__c = String.valueOf(cud.Subscription__c).left(15) + '.' + 
-                    String.valueOf(cud.Contact__c).left(15), 
+                Contact__c = uploadDetail.Contact__c,
+                Subscription__c = uploadDetail.Subscription__c,
+                Unique_Key__c = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' + 
+                    String.valueOf(uploadDetail.Contact__c).left(15), 
                 Subscriber_Status__c = 'Subscribed');
         }
         return subToCreate;
@@ -88,20 +78,5 @@ public class ContactUploadDetailService {
             }
         }
         return cudToUpdate;
-    }
-    
-    public void searchAndMatchContactWithEmplId(List<Contact_Upload_Detail__c> uploadedContacts) {
-        Map<String, Contact_Upload_Detail__c> emplIdToUploadDetail = new Map<String, Contact_Upload_Detail__c>();
-        for (Contact_Upload_Detail__c contactDetailEntry : uploadedContacts) {
-            if(contactDetailEntry.EMPLID__c != NULL) {
-                emplIdToUploadDetail.put(contactDetailEntry.EMPLID__c, contactDetailEntry);
-            }
-        }
-        List<Contact> contactsWithExistingEmplId = [SELECT Id, EMPLID__c FROM Contact WHERE EMPLID__c IN :emplIdToUploadDetail.keyset()];
-
-        for (Contact matchedContact : contactsWithExistingEmplId) {
-            Contact_Upload_Detail__c detailToAdd = emplIdToUploadDetail.get(matchedContact.EMPLID__c);
-            detailToAdd.Contact__c = matchedContact.Id;
-        }
     }
 }

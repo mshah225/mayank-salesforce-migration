@@ -39,8 +39,8 @@ public with sharing class ContactUploadAddFileExtension {
         try {
             insert newAttachment;
             queryAttachments();
-            BatchContactUpload bcu = new BatchContactUpload(newAttachment.Id);
-            Database.executeBatch(bcu, BATCH_SIZE);
+            ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id);
+            Database.executeBatch(batch, BATCH_SIZE);
         } catch (DMLException e) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,'Error uploading attachment: ' + e.getMessage()));
         } finally {

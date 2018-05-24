@@ -1,6 +1,6 @@
 public with sharing class ContactUploadAddFileExtension {
     private final Contact_Upload__c myContactUpload;
-    private final Integer BATCH_SIZE = 50;
+    private final Integer BATCH_SIZE = 200;
     public List<Attachment> attachmentList { get; set; }
 
     public Attachment newAttachment {

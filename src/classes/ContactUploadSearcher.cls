@@ -11,8 +11,6 @@ public class ContactUploadSearcher {
     private Set<String> postalCodeSet = new Set<String>();
     private Map<String, Contact_Upload_Detail__c> firstLastPhoneToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
     private Set<String> phoneSet = new Set<String>();
-    private Map<String, Contact_Upload_Detail__c> mapFirstLastPostalStreetToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
-    private Set<String> streetSet = new Set<String>();
     private List<Contact> matchedContacts;
     private List<Contact_Upload_Detail__c> unmatchedDetails = new List<Contact_Upload_Detail__c>();
     private Map<Contact_Upload_Detail__c, Contact> unmappedDetailToContact = new Map<Contact_Upload_Detail__c, Contact>();
@@ -117,11 +115,6 @@ public class ContactUploadSearcher {
                     OR Phone IN :phoneSet 
                     OR OtherPhone IN :phoneSet
                 )
-            ) OR (
-                FirstName IN :firstNameSet 
-                AND LastName IN :lastNameSet 
-                AND MailingPostalCode IN :postalCodeSet 
-                AND MailingStreet IN :streetSet
             )
         ];
         System.debug('Contacts:' +  matchedContacts);
@@ -134,7 +127,6 @@ public class ContactUploadSearcher {
             else if (matchByFirstNameAndEmail(contactMatch)) {}
             else if (matchByNameBirthdateAndPostal(contactMatch)) {}
             else if (matchByNameAndPhone(contactMatch)) {}
-            else if (matchByNamePostalAndStret(contactMatch)) {}
         }
     }
     
@@ -272,29 +264,6 @@ public class ContactUploadSearcher {
             matchedDetail.Processing_Notes__c += 
                 String.format('Found existing Contact ID: {0} Based on name match: {1} and phone match: {2}', 
                     new String[] {contactMatch.Id, contactMatch.FirstName + contactMatch.LastName, contactMatch.OtherPhone});
-            return true;
-        }
-        return false;
-    }
-    
-    private Boolean matchByNamePostalAndStret(Contact contactMatch) {
-        if (firstLastBirthdatePostalToOriginalDetail.containsKey(
-                contactMatch.FirstName + 
-                contactMatch.LastName + 
-                contactMatch.MailingPostalCode +
-                contactMatch.MailingStreet)) {
-            Contact_Upload_Detail__c matchedDetail = firstLastBirthdatePostalToOriginalDetail.get(
-                contactMatch.FirstName + 
-                contactMatch.LastName + 
-                contactMatch.MailingPostalCode +
-                contactMatch.MailingStreet);
-            matchedDetail.Contact__c = contactMatch.Id;
-            matchedDetail.Processing_Notes__c += 
-                String.format('Found existing Contact ID: {0} Based on name match: {1} postal code match: {2} and street match: {3}', 
-                    new String[] {contactMatch.Id, 
-                        contactMatch.FirstName + contactMatch.LastName, 
-                        contactMatch.MailingPostalCode, 
-                        contactMatch.MailingStreet});
             return true;
         }
         return false;

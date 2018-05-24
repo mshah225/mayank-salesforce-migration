@@ -70,7 +70,7 @@ public class ContactUploadDetailService {
     }
     
     public Contact_Upload_Detail__c addSubscriberToDetail(Contact_Upload_Detail__c cudToUpdate, Map<String, Id> subKeyToSubIdMap) {
-        if (UploadContactValidator.validContactUploadDetail(cudToUpdate)) {
+        if (cudToUpdate.Status__c != 'Error') {
             String uniqueKey = String.valueOf(cudToUpdate.Subscription__c).left(15) + '.' + 
             String.valueOf(cudToUpdate.Contact__c).left(15);
             if (subKeyToSubIdMap.containsKey(uniqueKey)) {

@@ -277,6 +277,7 @@ public without sharing class SubscriptionCenterController {
                         subscription, (!subscription.Subscribers__r.isEmpty() ? subscription.Subscribers__r[0] : null)));
                     mySubsBUMapKeys.add(subscription.Id);
                 } else if (subscription.Available_for_Opt_In__c) {
+                    availableSubsByParentSubIdMap.put(subscription.Id, new List<SubscriberWrapper>()); 
                     notSubbedBuSubIdToWrapperMap.put(subscription.Id, new SubscriberWrapper(subscription, null));
                     availableSubsBUMapKeys.add(subscription.Id);
                 }
@@ -395,7 +396,7 @@ public without sharing class SubscriptionCenterController {
             Boolean parentSubUnsubscribed = false;
             SubscriberWrapper parentSubWrapper = subbedBuSubIdToWrapperMap.get(parentSubId);
 
-            if (parentSubWrapper.subscriberStatus != parentSubWrapper.dbSubscriberStatus) {
+            if (parentSubWrapper != null && parentSubWrapper.subscriberStatus != parentSubWrapper.dbSubscriberStatus) {
                 parentSubUnsubscribed = (parentSubWrapper.subscriberStatus == UNSUBSCRIBED && 
                     parentSubWrapper.dbSubscriberStatus != UNSUBSCRIBED ? true : false);
                 if (parentSubWrapper.subscriber == null) {

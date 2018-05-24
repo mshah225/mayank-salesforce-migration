@@ -1,7 +1,6 @@
 public with sharing class ContactUploadBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
     private Id attachmentId;
     private String contactUploadId;
-    private static final Integer SCOPE_SIZE = 50; //Batch limit of 100 callouts; 50 allows for 2 per record (1 GET and 1 POST)
     private Boolean errorEncountered = false;
     private Map<Integer, String> columnMap;
     ContactUploadFileReader uploadReader;

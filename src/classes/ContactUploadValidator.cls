@@ -65,11 +65,19 @@ public class ContactUploadValidator {
     
     private void cleanOptionalFields() {
         cleanPhoneNumber();
+        cleanCountryCode();
     }
     
     private void cleanPhoneNumber() {
         if (detail.Phone__c != null) {
             detail.Phone__c = detail.Phone__c.replaceAll('[^0-9]', '');
+        }
+    }
+    
+    private void cleanCountryCode() {
+        if (detail.Country__c.length() != 2) {
+            detail.Processing_Notes__c += 'Invalid country code. ';
+            detail.Country__c = null;
         }
     }
     

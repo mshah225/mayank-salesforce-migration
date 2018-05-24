@@ -2,7 +2,7 @@ public class EmailTransformer {
 
     public List<EmailReplySuffix__mdt> emailSuffixes {
         get {
-            if(emailSuffixes == null) {
+            if (emailSuffixes == null) {
                 emailSuffixes = [SELECT MasterLabel FROM EmailReplySuffix__mdt];
             }
             return emailSuffixes;
@@ -11,7 +11,7 @@ public class EmailTransformer {
         set;
     }
     
-    public String restoreOriginalEmail(String emailToClean) {
+    public String trimReplyFromSuffix(String emailToClean) {
         String cleanedEmail = emailToClean;
         for (EmailReplySuffix__mdt suffixToCheckFor : emailSuffixes) {
             if (cleanedEmail.contains(suffixToCheckFor.MasterLabel)) {
@@ -20,7 +20,7 @@ public class EmailTransformer {
             }
         }
         
-        return cleanedEmail;
+        return cleanedEmail.toLowerCase();
     }
     
     private String removeSuffixFromEmail(String emailWithSuffix, String suffixToRemove) {

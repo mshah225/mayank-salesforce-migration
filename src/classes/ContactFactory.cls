@@ -5,31 +5,28 @@ public class ContactFactory {
             super(new Contact(
                 FirstName = 'Test',
                 LastName = 'Contact',
-                email = 'Test@Test.com'
+                Email = 'test@test.com'
             ));
             this.addToFieldsToIncrement('LastName');
-            this.addToFieldsToIncrement('email');
         }
     }
     
-    public class AllEmailCase extends TestFactory {
-        public AllEmailCase(Id accountId) {
+    public class AllEmailsFilled extends TestFactory {
+        public AllEmailsFilled(Id accountId) {
             super(new Contact(
                 FirstName = 'Test',
                 LastName = 'Test',
-                email = 'Test@Test.com',
-                Corporate_Relations_Email__c = 'Test@Test.com',
-                EPO_Email__c = 'Test@Test.com',
-                ASU_Email__c = 'Test@Test.com',
-                Last_Case_Email_Used__c = 'Test@Test.com',
-                Lead_Email__c = 'Test@Test.com',
-                Lead_Secondary_Email__c = 'Test@Test.com',
-                Parent_Email__c = 'Test@Test.com',
-                Personal_Email__c = 'Test@Test.com',
+                Email = 'test@test.com',
+                Corporate_Relations_Email__c = 'crtest@test.com',
+                EPO_Email__c = 'epotest@test.com',
+                ASU_Email__c = 'asutest@test.com',
+                Lead_Email__c = 'leadtest@test.com',
+                Lead_Secondary_Email__c = 'lead2test@test.com',
+                Parent_Email__c = 'parenttest@test.com',
+                Personal_Email__c = 'personaltest@test.com',
                 Birthdate = System.today()
             ));
             this.addToFieldsToIncrement('LastName');
-            this.addToFieldsToIncrement('email');
         }
     }
 }

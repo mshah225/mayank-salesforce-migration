@@ -1,4 +1,4 @@
-public class ContactUploadSearcher {
+public without sharing class ContactUploadSearcher {
     private List<Contact_Upload_Detail__c> detailsToSearch;
     private Map<String, Contact_Upload_Detail__c> emplIdToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
     private Map<String, Contact_Upload_Detail__c> asuriteToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();

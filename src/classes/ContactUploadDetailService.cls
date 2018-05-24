@@ -68,15 +68,4 @@ public class ContactUploadDetailService {
         }
         return subToCreate;
     }
-    
-    public Contact_Upload_Detail__c addSubscriberToDetail(Contact_Upload_Detail__c cudToUpdate, Map<String, Id> subKeyToSubIdMap) {
-        if (cudToUpdate.Status__c != 'Error') {
-            String uniqueKey = String.valueOf(cudToUpdate.Subscription__c).left(15) + '.' + 
-            String.valueOf(cudToUpdate.Contact__c).left(15);
-            if (subKeyToSubIdMap.containsKey(uniqueKey)) {
-                cudToUpdate.Subscriber__c = subKeyToSubIdMap.get(uniqueKey);
-            }
-        }
-        return cudToUpdate;
-    }
 }

@@ -42,22 +42,36 @@ public with sharing class ContactUploadBatch implements Database.batchable<Strin
             Subscriber__c subToAdd = detailCreator.createSubscriberForUploadDetail(uploadDetail);
             if (subtoAdd != null) {
                 subscriberList.add(subToAdd);
+            } else {
+                uploadDetail.Status__c = 'Error';
+                uploadDetail.Processing_Notes__c += 'Failed to create subscriber record. ';
             }
         }
         
         if (subscriberList.size() > 0) {
             Database.upsert(subscriberList, Subscriber__c.Unique_Key__c, false);
+                
         }
         
-        Map<String, Id> subKeyToSubIdMap = new Map<String, Id>();
-
-        for (Subscriber__c subscriber: subscriberList) {
-            subKeyToSubIdMap.put(subscriber.Unique_Key__c, subscriber.Id);
+        Map<String, Id> uniqueKeyToSubscriberId = new Map<String, Id>();
+        for (Subscriber__c upsertedSubscriber : subscriberList) {
+            uniqueKeyToSubscriberId.put(upsertedSubscriber.Unique_Key__c, upsertedSubscriber.Id);
         }
         
         for (Contact_Upload_Detail__c uploadDetail: detailsToProcess) {
-            uploadDetail = detailCreator.addSubscriberToDetail(uploadDetail, subKeyToSubIdMap);
+            if (uploadDetail.Status__c != 'Error') {
+                String uniqueKey = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' + 
+                    String.valueOf(uploadDetail.Contact__c).left(15);
+                Id subscriberId = uniqueKeyToSubscriberId.get(uniqueKey);
+                if (subscriberId == null) {
+                    uploadDetail.Status__c = 'Error';
+                    uploadDetail.Processing_Notes__c += 'Failed to create subscriber record. ';
+                } else {
+                    uploadDetail.Subscriber__c = uniqueKeyToSubscriberId.get(uniqueKey);
+                }
+            }
         }
+        
         detailsToProcess.addAll(detailsInError);
         if (detailsToProcess.size() > 0) {
             Database.insert(detailsToProcess, false);

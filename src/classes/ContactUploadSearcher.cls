@@ -36,7 +36,6 @@ public class ContactUploadSearcher {
             mapFirstNameAndEmailIfPresent(detail);
             mapFirstLastBirthdateAndPostalIfPresent(detail);
             mapFirstLastAndPhoneIfPresent(detail);
-            mapFirstLastPostalAndStreetIfPresent(detail);
         }
     }
     
@@ -53,6 +52,7 @@ public class ContactUploadSearcher {
     }
     
     private void mapFirstNameAndEmailIfPresent(Contact_Upload_Detail__c detail) {
+        System.debug(detail.First_Name__c + detail.Email__c);
         if (!String.isBlank(detail.First_Name__c) && !String.isBlank(detail.Email__c)) {
             firstNameAndEmailToOriginalDetail.put(detail.First_Name__c + detail.Email__c, detail);
             firstNameSet.add(detail.First_Name__c);
@@ -81,19 +81,6 @@ public class ContactUploadSearcher {
             firstNameSet.add(detail.First_Name__c);
             lastNameSet.add(detail.Last_Name__c);
             phoneSet.add(detail.Phone__c);
-        }
-    }
-    
-    private void mapFirstLastPostalAndStreetIfPresent(Contact_Upload_Detail__c detail) {
-        if (!String.isBlank(detail.First_Name__c) && 
-                !String.isBlank(detail.Last_Name__c) && 
-                !String.isBlank(detail.Postal_Code__c) && 
-                !String.isBlank(detail.Street__c)) {
-            mapFirstLastPostalStreetToOriginalDetail.put(detail.First_Name__c + detail.Last_Name__c + detail.Postal_Code__c + detail.Street__c, detail);
-            firstNameSet.add(detail.First_Name__c);
-            lastNameSet.add(detail.Last_Name__c);
-            postalCodeSet.add(detail.Postal_Code__c);
-            streetSet.add(detail.Street__c);
         }
     }
     
@@ -137,11 +124,11 @@ public class ContactUploadSearcher {
                 AND MailingStreet IN :streetSet
             )
         ];
+        System.debug('Contacts:' +  matchedContacts);
     }
     
     private void associateDetailsWithMatchedContacts() {
         for (Contact contactMatch : matchedContacts) {
-            System.debug('Contact: ' + contactMatch);
             if (matchByEmplId(contactMatch)) {}
             else if (matchByAsurite(contactMatch)) {}
             else if (matchByFirstNameAndEmail(contactMatch)) {}

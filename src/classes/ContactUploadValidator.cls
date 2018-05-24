@@ -55,6 +55,7 @@ public class ContactUploadValidator {
     
     private Boolean checkEmail() {
         if (!String.isBlank(detail.Email__c)) {
+            detail.Email__c = detail.Email__c.toLowerCase();
             return true;
         }
         setError('Email is REQUIRED. ');

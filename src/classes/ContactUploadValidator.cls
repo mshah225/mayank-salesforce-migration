@@ -32,7 +32,7 @@ public class ContactUploadValidator {
         if (isValidIdFor(detail.Subscription__c, Schema.Subscription__c.SobjectType)) {
             return true;
         }
-        detail.Subscription__c = '';
+        detail.Subscription__c = null;
         setError('Subscription Id is invalid. ');
         return false;
     }

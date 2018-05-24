@@ -1,4 +1,4 @@
-public with sharing class ContactUploadBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
+public without sharing class ContactUploadBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
     private Id attachmentId;
     private String contactUploadId;
     private Boolean errorEncountered = false;

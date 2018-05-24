@@ -1,4 +1,4 @@
-public class ContactUploadFileReader {
+public without sharing class ContactUploadFileReader {
     public Attachment contactCSV;
     public CsvIterator fileIterator {get; set;}
     public Map<Integer, String> columnMap {get; set;}

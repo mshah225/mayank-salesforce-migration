@@ -33,7 +33,7 @@ private class ContactUploadAddFileExtensionTest {
     
     private static Blob returnCSVBlob(String contactId, String subscribtionId, String campaignId) {
         String header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
-        String body = contactId+',,FirstName,LastName,TestBulk2@asu.edu.sid,'+campaignId+','+subscribtionId+',2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US,111-555-6567\n\r';
+        String body = contactId+',,FirstName,LastName,TestBulk2@asu.edu.sid,'+campaignId+','+subscribtionId+',2017-04-27,1232 E Lemon St,Tempe,,85281,,111-555-6567\n\r';
         return blob.valueOf(header + body);
     }
     
@@ -98,7 +98,6 @@ private class ContactUploadAddFileExtensionTest {
             
             contactUploadExtension.newAttachment.Name = 'Second Attachment.csv';
             contactUploadExtension.newAttachment.Body = returnCSVBlob('', subscriptions.get(0).Id, '');
-            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
             
             contactUploadExtension.upload();
             
@@ -121,7 +120,6 @@ private class ContactUploadAddFileExtensionTest {
             ContactUploadAddFileExtension contactUploadExtension = new ContactUploadAddFileExtension(sc);
             contactUploadExtension.newAttachment.Name = 'Second Attachment.csv';
             contactUploadExtension.newAttachment.Body = returnCSVBlob('', subscriptions.get(0).Id, '');
-            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
                         
             Test.startTest();
             contactUploadExtension.upload();
@@ -148,7 +146,7 @@ private class ContactUploadAddFileExtensionTest {
             
             contactUploadExtension.newAttachment.Name = 'Second Attachment.csv';
             String header = 'Contact ID,ASURITE,First Name,Last Name,Email Address,Campaign ID,Subscription ID,Date of Birth,Street Address,City,State Code,Postal Code,Country Code,Phone\n\r';
-            String body = contASURecord.Id+',,FirstName,LastName,TestBulk2@asu.edu.sid,,,2017-04-27,1232 E Lemon St,Tempe,AZ,85281,US,111-555-6567\n\r';
+            String body = contASURecord.Id+',,FirstName,LastName,TestBulk2@asu.edu.sid,,,2017-04-27,1232 E Lemon St,Tempe,,85281,,111-555-6567\n\r';
             contactUploadExtension.newAttachment.Body = returnCSVBlob(contASURecord.Id, '', '');
             
             Test.startTest();
@@ -157,7 +155,7 @@ private class ContactUploadAddFileExtensionTest {
             
             List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>([SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c]);
             for (Contact_Upload_Detail__c cud : cudList) {
-                System.assert(cud.Processing_Notes__c.contains('Either Subscription or Campaign must be specified'));
+                System.assert(cud.Processing_Notes__c.contains('Subscription Id is REQUIRED'));
             }
         }
     }
@@ -184,8 +182,7 @@ private class ContactUploadAddFileExtensionTest {
             
             List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>([SELECT Id, Processing_Notes__c, Contact__c FROM Contact_Upload_Detail__c]);
             for (Contact_Upload_Detail__c cud : cudList) {
-                System.assert(cud.Processing_Notes__c.contains('Exception: Invalid id: 7000000000000'));
-                System.assert(cud.Processing_Notes__c.contains('Either Subscription or Campaign must be specified'));
+                System.assert(cud.Processing_Notes__c.contains('Subscription Id is REQUIRED'));
             }
         }
     }

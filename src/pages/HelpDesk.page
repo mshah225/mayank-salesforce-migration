@@ -476,7 +476,8 @@
                             <div style="height:335px;overflow-y:auto;margin:-10px;">
                                 <fieldset id="caseFieldset">
                                     <apex:pageBlockSection columns="2"
-                                                           collapsible="false">
+                                                           collapsible="false"
+                                                           id="pageSection">
 
                                         <apex:inputField value="{!mycase.Subject}"
                                                          html-autofocus="true"
@@ -485,12 +486,35 @@
                                         <apex:inputField value="{!mycase.Campus__c}"/>
 
                                         <apex:inputField value="{!mycase.Affiliation__c}"/>
+                                        
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
+                                            <apex:actionRegion >
+                                                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!selectedFunctionalGroup}" size="1">
+                                                    <apex:actionSupport event="onchange" action="{!updateCategories}" />
+                                                    <apex:selectOptions value="{!functionalGroupOptions}"/>
+                                                </apex:selectList>
+                                            </apex:actionRegion>
+                                        </apex:pageBlockSectionItem>
+                                        
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="Case Category" for="categoryOptions" />
+                                            <apex:actionRegion >
+                                                <apex:selectList id="categoryOptions" value="{!selectedCategory}" size="1">
+                                                    <apex:actionSupport event="onchange" action="{!updateSubCategories}" />
+                                                    <apex:selectOptions value="{!categoryOptions}"/>
+                                                </apex:selectList>
+                                            </apex:actionRegion>
+                                        </apex:pageBlockSectionItem>
 
-                                        <apex:inputField value="{!mycase.CC_Functional_Group__c}"/>
-
-                                        <apex:inputField value="{!mycase.CC_Category__c}"/>
-
-                                        <apex:inputField value="{!mycase.CC_Sub_Category__c}"/>
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
+                                            <apex:actionRegion >
+                                                <apex:selectList label="Case Sub Category" value="{!selectedSubCategory}" size="1">
+                                                    <apex:selectOptions id="subCategoryOptions" value="{!subCategoryOptions}"/>
+                                                </apex:selectList>
+                                            </apex:actionRegion>
+                                        </apex:pageBlockSectionItem>
                                         
                                         <apex:pageBlockSectionItem />
                                         

@@ -28,7 +28,7 @@ private class ContactUploadDetailServiceTest {
     private static void contactCreationFromListOfStrings() {
         setup();
         List<String> contactValues = new list<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, ''};
-        Contact_Upload_Detail__c cudBeingCreated = detailService.createContactFromRow(contactValues);
+        Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         System.assertEquals('Success', cudBeingCreated.Status__c);
         System.assertEquals('tester', cudBeingCreated.ASURITE__c);
         System.assertEquals('Test', cudBeingCreated.First_Name__c);
@@ -44,10 +44,10 @@ private class ContactUploadDetailServiceTest {
         Contact createdContact = (Contact)contactCreator.create(1)[0];
         createdContact.EMPLID__c = '1234567890';
         insert createdcontact;
-        Contact_Upload_Detail__c cudBeingCreated = detailService.createContactFromRow(contactValues);
+        Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         cudBeingCreated.Contact__c = createdContact.Id;
         
-        Subscriber__c subCreated = detailService.createSubscriberForCUD(cudBeingCreated);
+        Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         System.assertEquals(createdContact.Id, subCreated.Contact__c);   
     }
     
@@ -59,15 +59,15 @@ private class ContactUploadDetailServiceTest {
         Contact createdContact = (Contact)contactCreator.create(1)[0];
         createdContact.EMPLID__c = '1234567890';
         insert createdcontact;
-        Contact_Upload_Detail__c cudBeingCreated = detailService.createContactFromRow(contactValues);
+        Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         cudBeingCreated.Contact__c = createdContact.Id;
         
-        Subscriber__c subCreated = detailService.createSubscriberForCUD(cudBeingCreated);
+        Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         insert subCreated;
         Map<String, Id> subKeyToSubIdMap = new Map<String, Id>();
         subKeyToSubIdMap.put(subCreated.Unique_Key__c, subCreated.Id);
         
-        cudBeingCreated = detailService.addSubscriberToDetail(cudBeingCreated, subKeyToSubIdMap);
+        cudBeingCreated = detailService.createDetailWithFields(cudBeingCreated, subKeyToSubIdMap);
         
         System.assertEquals(subCreated.Id, cudBeingCreated.Subscriber__c);
     }
@@ -80,7 +80,7 @@ private class ContactUploadDetailServiceTest {
         Contact createdContact = (Contact)contactCreator.create(1)[0];
         createdContact.EMPLID__c = '1234567890';
         insert createdcontact;
-        Contact_Upload_Detail__c cudBeingCreated = detailService.createContactFromRow(contactValues);
+        Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         detailService.searchAndMatchContactWithEmplId(new List<Contact_Upload_Detail__c>{cudBeingCreated});
         System.assertEquals(createdContact.Id, cudBeingCreated.Contact__c);
     }

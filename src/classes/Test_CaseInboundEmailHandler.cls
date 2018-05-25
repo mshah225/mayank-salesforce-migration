@@ -1001,8 +1001,7 @@ public with sharing class Test_CaseInboundEmailHandler {
        ContactFactory.AllEmailsFilled contactFactory = new ContactFactory.AllEmailsFilled(testAccount[0].Id);
        Contact[] testContact = contactFactory.create();
        insert testContact;
-       System.debug(testContact[0].Email);
-       System.debug([SELECT Email, Last_Case_Email_Used__c FROM Contact]);
+       update testContact[0];
        
        Messaging.InboundEmail email = new Messaging.InboundEmail();
        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();

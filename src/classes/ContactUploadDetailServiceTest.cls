@@ -27,7 +27,7 @@ private class ContactUploadDetailServiceTest {
     @isTest
     private static void contactCreationFromListOfStrings() {
         setup();
-        List<String> contactValues = new list<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, ''};
+        List<String> contactValues = new List<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, ''};
         Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         System.assertEquals('Success', cudBeingCreated.Status__c);
         System.assertEquals('tester', cudBeingCreated.ASURITE__c);
@@ -39,7 +39,7 @@ private class ContactUploadDetailServiceTest {
     @isTest
     private static void createSubscriberForDetail() {
         setup();
-        List<String> contactValues = new list<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, '1234567890'};
+        List<String> contactValues = new List<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, '1234567890'};
         ContactFactory.DefaultContact contactCreator = new ContactFactory.DefaultContact();
         Contact createdContact = (Contact)contactCreator.create(1)[0];
         createdContact.EMPLID__c = '1234567890';
@@ -54,7 +54,7 @@ private class ContactUploadDetailServiceTest {
     @isTest
     private static void addSubscriberToDetail() {
         setup();
-        List<String> contactValues = new list<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, '1234567890'};
+        List<String> contactValues = new List<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, '1234567890'};
         ContactFactory.DefaultContact contactCreator = new ContactFactory.DefaultContact();
         Contact createdContact = (Contact)contactCreator.create(1)[0];
         createdContact.EMPLID__c = '1234567890';
@@ -62,12 +62,12 @@ private class ContactUploadDetailServiceTest {
         Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         cudBeingCreated.Contact__c = createdContact.Id;
         
+        Test.startTest();
         Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         insert subCreated;
         Map<String, Id> subKeyToSubIdMap = new Map<String, Id>();
         subKeyToSubIdMap.put(subCreated.Unique_Key__c, subCreated.Id);
-        
-        cudBeingCreated = detailService.createDetailWithFields(cudBeingCreated, subKeyToSubIdMap);
+        Test.stopTest();
         
         System.assertEquals(subCreated.Id, cudBeingCreated.Subscriber__c);
     }
@@ -75,13 +75,18 @@ private class ContactUploadDetailServiceTest {
     @isTest
     private static void findContactWithEMPLID() {
         setup();
-        List<String> contactValues = new list<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, '1234567890'};
+        List<String> contactValues = new List<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, '1234567890'};
         ContactFactory.DefaultContact contactCreator = new ContactFactory.DefaultContact();
         Contact createdContact = (Contact)contactCreator.create(1)[0];
         createdContact.EMPLID__c = '1234567890';
         insert createdcontact;
+        
+        Test.startTest();
         Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
-        detailService.searchAndMatchContactWithEmplId(new List<Contact_Upload_Detail__c>{cudBeingCreated});
+        ContactUploadSearcher searcher = new ContactUploadSearcher(new List<Contact_Upload_Detail__c>{cudBeingCreated});
+        searcher.searchAndCreateContacts();
+        Test.stopTest();
+        
         System.assertEquals(createdContact.Id, cudBeingCreated.Contact__c);
     }
 }

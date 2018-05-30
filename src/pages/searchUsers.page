@@ -99,6 +99,15 @@
                                     {!u.FirstName} {!u.LastName}
                                 </apex:outputLink>
                             </apex:column>
+                            <apex:column headerValue="Username">
+                                <apex:outputText rendered="{!NOT(ISNULL(u.Username))}">
+                                    {!u.Username}
+                                </apex:outputText>
+
+                                <apex:outputText rendered="{!ISNULL(u.Username)}">
+                                    --
+                                </apex:outputText>
+                            </apex:column>
 
                             <apex:column headerValue="Alias">
                                 <apex:outputText rendered="{!NOT(ISNULL(u.Alias))}"

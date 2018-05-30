@@ -363,8 +363,7 @@ public without sharing class pkb_Controller
         }
     }
 
-    public String pageTitle
-    {
+    public String pageTitle {
         get {
             //Removed previous code so that articles/pageTitle are not prefixed with 'kb -'
             String t = 'Home';

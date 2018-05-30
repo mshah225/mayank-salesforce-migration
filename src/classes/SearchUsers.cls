@@ -17,7 +17,7 @@ public with sharing class SearchUsers
                 'FIND \'' + String.escapeSingleQuotes(searchString) + '*\' ' +
                 'IN ALL FIELDS ' +
                 'RETURNING User(' +
-                'Id, FirstName, LastName, Profile.Name, Contact.Name, ContactId, ' +
+                'Id, FirstName, LastName, Profile.Name, Contact.Name, Username, ContactId, ' +
                 'Contact.ASURite_Id__c, EmplId__c, contact.EMPLID__c, Alias, ' +
                 'FederationIdentifier, ASU_User_Type__c, IsActive LIMIT 50)';
 

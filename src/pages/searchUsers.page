@@ -105,6 +105,24 @@
                                                  value="{!u.Alias}"/>
                                 <apex:outputText rendered="{!ISNULL(u.Alias)}">--</apex:outputText>
                             </apex:column>
+                            <apex:column headerValue="Employee Id">
+                                <apex:outputText rendered="{!NOT(ISNULL(u.EmplId__c))}">
+                                    {!u.EmplId__c}
+                                </apex:outputText>
+
+                                <apex:outputText rendered="{!ISNULL(u.EmplId__c)}">
+                                    --
+                                </apex:outputText>
+                            </apex:column>
+                            <apex:column headerValue="Contact Name">
+                                <apex:outputText rendered="{!NOT(ISNULL(u.Contact.Name))}">
+                                    {!u.Contact.Name}
+                                </apex:outputText>
+
+                                <apex:outputText rendered="{!ISNULL(u.Contact.Name)}">
+                                    --
+                                </apex:outputText>
+                            </apex:column>
 
                             <apex:column headerValue="ASURITE Id">
                                 <apex:outputText rendered="{!NOT(ISNULL(u.Contact.ASURite_ID__c))}">
@@ -126,6 +144,7 @@
                                     --
                                 </apex:outputText>
                             </apex:column>
+
 
                             <apex:column headerValue="Profile" value="{!u.Profile.Name}" />
 

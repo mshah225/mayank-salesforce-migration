@@ -84,21 +84,19 @@ public class CsvReader {
 
         Boolean eod = false;  // Whether end of CSV data is reached
         while (!eod) {
-            //System.debug(fileString);
 
             csvValue = readValue(fileString);
 
             rowValues.add(csvValue.value);
 
             if (csvValue.delimiter == CR) {
-                fileValues.add(rowValues);
-
-                System.debug(rowValues);
-
-                if (fileValues.size() > 0) {
-                    System.assertEquals(fileValues.get(0).size(), rowValues.size());
+                if (rowValues.size() > 1 || (rowValues.size() == 1 && !String.isBlank(rowValues[0]))) {
+                    fileValues.add(rowValues);
+                    
+                    if (fileValues.size() > 0) {
+                        System.assertEquals(fileValues.get(0).size(), rowValues.size());
+                    }
                 }
-
                 rowValues = new List<String>();
             }
 
@@ -175,8 +173,7 @@ public class CsvReader {
                 csvValue.delimiter = CR;
             }
         }
-
-        System.debug('Returning: ' + csvValue);
+       
 
         return csvValue;
     }
@@ -237,7 +234,6 @@ public class CsvReader {
                 biteSize += DQUOTE.length() * 2;
             }
 
-            System.debug('biteSize: ' + biteSize);
 
             return biteSize;
         }
@@ -262,64 +258,4 @@ public class CsvReader {
             System.assertEquals(delimiter, compCsvValue.delimiter);
         }
     }
-
-    /**
-     * Test some use cases for reading IETF RFC 4180-compliant CSV values.
-     */
-	 /*
-    public static testMethod void readCSVValueTest() {
-        String data = null;  // Placeholder for data to use in testing.
-
-        System.debug(data = CRLF);
-        new CSVValue('', false, CRLF)
-                .assertEquals(readCSVValue(data));
-
-        System.debug(data = '""' + CRLF);
-        new CSVValue('', true, CRLF)
-                .assertEquals(readCSVValue(data));
-
-        System.debug(data = '"",asdf' + CRLF);
-        new CSVValue('', true, COMMA)
-                .assertEquals(readCSVValue(data));
-
-        System.debug(data = ',asdf' + CRLF);
-        new CSVValue('', false, COMMA)
-                .assertEquals(readCSVValue(data));
-
-        System.debug(data = '"' + CRLF + '",blah' + CRLF);
-        new CSVValue(CRLF, true, COMMA)
-                .assertEquals(readCSVValue(data));
-
-        System.debug(data = '"""marty""","""chang"""' + CRLF);
-        new CSVValue('"marty"', true, COMMA)
-                .assertEquals(readCSVValue(data));
-
-        System.debug(data = '"com""pli""cate' + CRLF + 'd"'
-                + CRLF);
-        new CSVValue('com"pli"cate' + CRLF + 'd', true, CRLF)
-                .assertEquals(readCSVValue(data));
-
-        System.debug(data = 'asdf' + CRLF);
-        new CSVValue('asdf', false, CRLF)
-                .assertEquals(readCSVValue(data));
-    }
-	*/
-
-    /**
-     * Tests one case of parsing a CSV file that contains the following data:
-     *
-     * abc,"def","g""h""i"
-     * "j
-     * kl","m
-     * n""o""",
-     */
-	 /*
-    public static testMethod void readCSVFile() {
-      String data = 'abc,"def","g""h""i"' + CRLF + '"j' + CRLF
-             + 'kl","m' + CRLF + 'n""o""",';
-
-      List<List<String>> fileValues =
-             readCSVFile(Blob.valueOf(data));
-    }
-	*/
 }

@@ -496,7 +496,6 @@
                                                 </apex:selectList>
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
-                                    
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
                                             <apex:actionRegion >

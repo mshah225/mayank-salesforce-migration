@@ -314,19 +314,21 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 {
                     theCase.Associate_Case_to_Active_Opportunity__c = associateCaseToActiveOpportunity;
                 }
-
+                
+                EmailTransformer transformer = new EmailTransformer();
+                String cleanFromAddress = transformer.trimReplyFromSuffix(email.fromAddress);
                 Contact[] contacts = [
                     SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c
                     FROM Contact
-                    WHERE Email = :email.fromAddress
-                    OR ASU_Gmail__c = :email.fromAddress
-                    OR EPO_Email__c = :email.fromAddress
-                    OR ASU_Email__c = :email.fromAddress
-                    OR Lead_Email__c = :email.fromAddress
-                    OR Lead_Secondary_Email__c = :email.fromAddress
-                    OR Personal_Email__c = :email.fromAddress
-                    OR Preferred_Email__c = :email.fromAddress
-                    OR Corporate_Relations_Email__c = :email.fromAddress
+                    WHERE Email = :cleanFromAddress
+                    OR ASU_Gmail__c = :cleanFromAddress
+                    OR EPO_Email__c = :cleanFromAddress
+                    OR ASU_Email__c = :cleanFromAddress
+                    OR Lead_Email__c = :cleanFromAddress
+                    OR Lead_Secondary_Email__c = :cleanFromAddress
+                    OR Personal_Email__c = :cleanFromAddress
+                    OR Preferred_Email__c = :cleanFromAddress
+                    OR Corporate_Relations_Email__c = :cleanFromAddress
                 ];
 
                 if (contacts.size() > 1)
@@ -350,7 +352,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         }
                     }
                 }
-				
+
                 if (contacts.size() > 0)
                 {
                     Contact theContact = contacts[0];
@@ -365,17 +367,17 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     }
 
                     // If the sender's email does not match the primary Email field for this Contact, update that field and note why
-                    if (theContact.Email == null || theContact.Email != email.fromAddress)
+                    if (theContact.Email == null || theContact.Email != cleanFromAddress)
                     {
-                        theContact.Email = email.fromAddress;
+                        theContact.Email = cleanFromAddress;
                         theContact.Email_Change_Reason__c = 'Service request received';
-                        theContact.Last_Case_Email_Used__c = email.fromAddress;
+                        theContact.Last_Case_Email_Used__c = cleanFromAddress;
                         theContact.Email_Change_Date__c = Datetime.now();
                         update theContact;
                     }
-                    if (theContact.Last_Case_Email_Used__c == null || theContact.Last_Case_Email_Used__c != email.fromAddress)
-                    {
-                        theContact.Last_Case_Email_Used__c = email.fromAddress;
+                    if (theContact.Last_Case_Email_Used__c == null || 
+                            theContact.Last_Case_Email_Used__c != cleanFromAddress) {
+                        theContact.Last_Case_Email_Used__c = cleanFromAddress;
                         update theContact;
                     }
                 }
@@ -405,7 +407,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         lname = lname.subString(0, 80);
                     }
 
-                    Contact c = new Contact(FirstName = fname, LastName = lname, Email = email.fromAddress, RecordTypeId=rtId);
+                    Contact c = new Contact(FirstName = fname, LastName = lname, Email = cleanFromAddress, RecordTypeId=rtId);
                     insert c;
 
                     Contact insertedContact = [
@@ -722,30 +724,15 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         String patternString;
         String caseId;
 
-        if (searchText.indexOf(':ref') > searchText.indexOf('ref:'))
-        {
+        if (searchText.indexOf(':ref') > searchText.indexOf('ref:')) {
             String caseReference = searchText.substring(searchText.indexOf('ref:') + 4, searchText.indexOf(':ref'));
-
-            if (Test.isRunningTest())
-            {
-                caseId = caseReference;
-            }
-            else
-            {
-                try
-                {
+            try {
                     caseId = Cases.getCaseIdFromEmailThreadId(caseReference);
-                }
-                catch (Exception e)
-                {
+            } catch (Exception e) {
                     return null;
-                }
             }
-
             return caseId;
-        }
-        else
-        {
+        } else {
             return null;
         }
     }

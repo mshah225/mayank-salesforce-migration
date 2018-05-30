@@ -366,8 +366,9 @@ public without sharing class pkb_Controller
     public String pageTitle
     {
         get {
-            String t = siteBaseTitle.replaceAll('_', ' ')+ ' - Home';
-            if (viewingArticle) t = siteBaseTitle.replaceAll('_', ' ')+ ' - ' +theKad.title;
+            //Removed previous code so that articles/pageTitle are not prefixed with 'kb -'
+            String t = 'Home';
+            if (viewingArticle) t = theKad.title;
             return t;
         }
     }

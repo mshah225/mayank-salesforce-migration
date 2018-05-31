@@ -22,6 +22,7 @@ public with sharing class StudentProfileController {
     public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
     public List<Student_Program_Plan_Advisor__c> gradStudentProgramAdvisors { get; set; }
     public Student_Account__c studentAccount { get; set; }
+    public Financial_Aid_Package__c financialAidPackage { get; set; }
     public Me3__c me3Results { get; set; }
     public Me3__c me3HighSchoolResults { get; set; }
     public List<Student_Milestone__c> studentMilestonesUGrad { get; set; }
@@ -121,6 +122,7 @@ public with sharing class StudentProfileController {
         ugStudentProgramAdvisors = getUndergraduateStudentProgramPlanAdvisor();
         gradStudentProgramAdvisors = getGraduateStudentProgramPlanAdvisor();
         studentAccount = getStudentAccount();
+        financialAidPackage = getFinancialPackageData();
         me3Results = getMe3Results();
         me3HighSchoolResults = getMe3HighScoolResults();
     }
@@ -1166,32 +1168,23 @@ public with sharing class StudentProfileController {
         }
     }
 
-    @RemoteAction
-    public static List<Financial_Aid_Package__c> getFinancialPackageData(String emplId)
-    {
-        List<Financial_Aid_Package__c> financesPackageList = new List<Financial_Aid_Package__c>();
+    public Financial_Aid_Package__c getFinancialPackageData() {
+        List<Financial_Aid_Package__c> financesPackageList = [
+            SELECT Aid_Year__c, Contact__c, CreatedById, CreatedDate, EFC_Range__c, 
+                   FA_Status_Time_Stamp__c, FAFSA_Date_Received__c, Fin_Aid_Package_Date__c, 
+                   Financial_Aid_Status__c, Id, IsDeleted, LastModifiedById, LastModifiedDate, 
+                   Name, Pell_Eligibility__c, Promise_Cohort__c, SystemModstamp 
+            FROM Financial_Aid_Package__c
+            WHERE Contact__c = :theContact.Id
+            ORDER BY Aid_Year__c DESC
+            LIMIT 1
+        ];
         
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            financesPackageList =
-            (
-                Test.isRunningTest() ? new List<Financial_Aid_Package__c>() :
-                [
-                    SELECT Aid_Year__c, Contact__c, CreatedById, CreatedDate, EFC_Range__c, 
-                           FA_Status_Time_Stamp__c, FAFSA_Date_Received__c, Fin_Aid_Package_Date__c, 
-                           Financial_Aid_Status__c, Id, IsDeleted, LastModifiedById, LastModifiedDate, 
-                           Name, Pell_Eligibility__c, Promise_Cohort__c, SystemModstamp 
-                    FROM Financial_Aid_Package__c
-                    WHERE Contact__r.EMPLID__c = :emplId
-                    ORDER BY Aid_Year__c DESC
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+        if (financesPackageList.isEmpty()) {
+            return new Financial_Aid_Package__c();
+        } else {
+            return financesPackageList[0];
         }
-
-        return (financesPackageList.size() > 0? financesPackageList : new List<Financial_Aid_Package__c>());
     } 
 
     public List<Service_Indicator__c> getServiceIndicators() {

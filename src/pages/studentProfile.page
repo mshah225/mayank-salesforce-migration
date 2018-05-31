@@ -20,7 +20,7 @@
               href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
               integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
               crossorigin="anonymous"/>
-        <link href='https://fonts.googleapis.com/css?family=Roboto:normal,medium'
+        <link href='https://fonts.googleapis.com/css?family=Rob oto:normal,medium'
               rel='stylesheet'
               type='text/css'/>
         <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
@@ -361,7 +361,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th>Financial Need Level</th>
-                                                        <td>{!IF(ISBLANK(studentProgram.Financial_Need_Level__c), '--', studentProgram.Financial_Need_Level__c)}</td>
+                                                        <td>{!IF(ISBLANK(financialAidPackage.EFC_Range__c), '--', financialAidPackage.EFC_Range__c)}</td>
                                                     </tr>
                                                 </table>
                                             </div>

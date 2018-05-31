@@ -1176,15 +1176,10 @@ public with sharing class StudentProfileController {
                    Name, Pell_Eligibility__c, Promise_Cohort__c, SystemModstamp 
             FROM Financial_Aid_Package__c
             WHERE Contact__c = :theContact.Id
-            ORDER BY Aid_Year__c DESC
+            AND Aid_Year__c = :String.valueOf(Date.today().year())
             LIMIT 1
         ];
-        
-        if (financesPackageList.isEmpty()) {
-            return new Financial_Aid_Package__c();
-        } else {
-            return financesPackageList[0];
-        }
+        return financesPackageList.isEmpty() ? new Financial_Aid_Package__c() : financesPackageList[0];
     } 
 
     public List<Service_Indicator__c> getServiceIndicators() {

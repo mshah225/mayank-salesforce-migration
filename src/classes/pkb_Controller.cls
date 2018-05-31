@@ -365,9 +365,12 @@ public without sharing class pkb_Controller
 
     public String pageTitle {
         get {
-            String t = 'Home';
-            if (viewingArticle) t = theKad.title;
-            return t;
+                if (viewingArticle){
+                    return theKad.title;
+                }
+                else{
+                    return 'Home';
+                }
         }
     }
 

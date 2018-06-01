@@ -491,17 +491,16 @@
                                             <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
                                             <apex:actionRegion >
                                                 <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!selectedFunctionalGroup}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateCategories}" />
+                                                    <apex:actionSupport event="onchange" action="{!updateCategoryAndSubCategory}" rerender="pageSection"/>
                                                     <apex:selectOptions value="{!functionalGroupOptions}"/>
                                                 </apex:selectList>
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
-                                        
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
                                             <apex:actionRegion >
                                                 <apex:selectList id="categoryOptions" value="{!selectedCategory}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateSubCategories}" />
+                                                    <apex:actionSupport event="onchange" action="{!updateSubCategories}" rerender="pageSection" />
                                                     <apex:selectOptions value="{!categoryOptions}"/>
                                                 </apex:selectList>
                                             </apex:actionRegion>

@@ -112,7 +112,9 @@ public with sharing class HelpDeskController
     public String selectedFunctionalGroup {
         get {
             if(selectedFunctionalGroup == null) {
-                if (mycase.CC_Functional_Group__c != null) {
+                if (isNewCaseSelected) {
+                    selectedFunctionalGroup = 'Help Desk';
+                } else if (mycase.CC_Functional_Group__c != null) {
                 	selectedFunctionalGroup = mycase.CC_Functional_Group__r.Name;
                 } else {
                     selectedFunctionalGroup = '--';
@@ -169,13 +171,19 @@ public with sharing class HelpDeskController
         get {
             if(categoryOptions == null) {
                 categoryOptions = new List<SelectOption>();
-                Map<String, Case_Classification__c> categoriesForFunctionalGroup = allCategories.get(selectedFunctionalGroup);
-                if(!categoriesForFunctionalGroup.isEmpty()) {
-                    for(String categoryOption : categoriesForFunctionalGroup.keySet()) {
-                        categoryOptions.add(new SelectOption(categoryOption, categoryOption, false));
+                if(allCategories != null && selectedFunctionalGroup != null) {
+                    Map<String, Case_Classification__c> categoriesForFunctionalGroup = allCategories.get(selectedFunctionalGroup);
+                    if(categoriesForFunctionalGroup != null && !categoriesForFunctionalGroup.isEmpty()) {
+                        for(String categoryOption : categoriesForFunctionalGroup.keySet()) {
+                            categoryOptions.add(new SelectOption(categoryOption, categoryOption, false));
+                        }
+                    } else {
+                        categoryOptions.add(new SelectOption('--', '--', false));
                     }
+                } else {
+                    categoryOptions.add(new SelectOption('--', '--', false));
                 }
-            }
+            } 
             return categoryOptions;
         } 
         
@@ -189,7 +197,7 @@ public with sharing class HelpDeskController
                 if(allSubCategories != null && selectedCategory != null) {
                     Map<String, Case_Classification__c> subCategoriesForParent = allsubCategories.get(selectedCategory);
                     
-                    if(!subCategoriesForParent.isEmpty()) {
+                    if(subCategoriesForParent != null && !subCategoriesForParent.isEmpty()) {
                         for(String subCategoryOption : subCategoriesForParent.keySet()) {
                             subCategoryOptions.add(new SelectOption(subCategoryOption, subCategoryOption, false));
                         }
@@ -833,7 +841,7 @@ public with sharing class HelpDeskController
         mycase.ContactId = selectedContactId;
         mycase.Status = 'New';
         mycase.Campus__c = 'Tempe';
-        mycase.CC_Functional_Group__c = [Select Id FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Help Desk' LIMIT 1].Id;
+        mycase.CC_Functional_Group__c = [Select Id, Name FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Help Desk' LIMIT 1].Id;
     }
     
     public void newContact()
@@ -971,7 +979,26 @@ public with sharing class HelpDeskController
             m.put(cas.Ca.Id, cas);
         }
         
+        
         mycase = (Case) m.get(selectedCaseId).Ca;
+        
+        if (mycase.CC_Functional_Group__r.Name != NULL) {
+            selectedFunctionalGroup = mycase.CC_Functional_Group__r.Name;
+        } else {
+            selectedFunctionalGroup = '--';
+        }
+        updateCategories();
+        if (mycase.CC_Category__r.Name != NULL) {
+            selectedCategory = mycase.CC_Category__r.Name;
+        } else {
+            selectedCategory = '--';
+        }
+        updateSubCategories();
+        if (mycase.CC_Sub_Category__r.Name != NULL) {
+            selectedSubCategory = mycase.CC_Sub_Category__r.Name;
+        } else {
+            selectedSubCategory = '--';
+        }
         
         // Query for CaseArticle(s) attached to the Case.
         Set<Id> caseArticleIds = getCaseArticleIds();
@@ -1042,7 +1069,7 @@ public with sharing class HelpDeskController
     }
     
     private boolean validCase(Case caseToValidate) {
-        return String.isEmpty(caseToValidate.Subject) || String.isEmpty(caseToValidate.Description);
+        return !String.isEmpty(caseToValidate.Subject) || !String.isEmpty(caseToValidate.Description);
     }
     
     private Case addCaseClassificationToCase(Case caseToModify) {
@@ -1050,17 +1077,25 @@ public with sharing class HelpDeskController
             
         if(functionalGroupToAdd != null) {
             caseToModify.CC_Functional_Group__c = functionalGroupToAdd.Id;
-            Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(selectedCategory);
-            if(categoryToAdd != null) {
-                caseToModify.CC_Category__c = categoryToAdd.Id; 
-                Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Name).get(selectedSubCategory);
-                if(subCategoryToAdd != null) {
-                    caseToModify.CC_Sub_Category__c = subCategoryToAdd.Id;
-                } else {
-                    caseToModify.CC_Sub_Category__c = null;
-                }
+            if(allCategories.get(functionalGroupToAdd.Name) == NULL) {
+                caseToModify.CC_Category__c = null;
             } else {
-                caseToModify.CC_Category__c = null; 
+                Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(selectedCategory);
+                if(categoryToAdd != null) {
+                    caseToModify.CC_Category__c = categoryToAdd.Id; 
+                    if(allSubCategories.get(categoryToAdd.Name) == NULL) {
+                        caseToModify.CC_Sub_Category__c = null;
+                    } else {
+                        Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Name).get(selectedSubCategory);
+                        if(subCategoryToAdd != null) {
+                            caseToModify.CC_Sub_Category__c = subCategoryToAdd.Id;
+                        } else {
+                            caseToModify.CC_Sub_Category__c = null;
+                        }
+                    }
+                } else {
+                    caseToModify.CC_Category__c = null; 
+                }
             }
         }
         
@@ -1078,6 +1113,10 @@ public with sharing class HelpDeskController
         isNewCaseSelected = false;
         isExistingCaseSelected = false;
         isKnowledgeSearch = false;
+        mycase = null;
+        selectedFunctionalGroup = null;
+        selectedCategory = null;
+        selectedSubCategory = null;
         ApexPages.getMessages().clear();
     }
     
@@ -1282,21 +1321,30 @@ public with sharing class HelpDeskController
         }
     }
     
-    
+    public PageReference updateCategoryAndSubCategory() {
+        updateCategories();
+        updateSubCategories();
+        
+        return null;
+    }
+
     public PageReference  updateCategories() {
         categoryOptions = new List<SelectOption>();
         Map<String, Case_Classification__c> categoriesForParent = allCategories.get(selectedFunctionalGroup);
         
         Boolean firstCategoryUpdated = false;
-        for(String categoryName : categoriesForParent.keySet()) {
-            categoryOptions.add(new SelectOption(categoryName, categoryName, false));
-            if(!firstCategoryUpdated) {
-                selectedCategory = categoryName;
-                firstCategoryUpdated = true;
+
+        if(categoriesForParent != NULL && !categoriesForParent.isEmpty()) {
+            for(String categoryName : categoriesForParent.keySet()) {
+                categoryOptions.add(new SelectOption(categoryName, categoryName, false));
+                if(!firstCategoryUpdated) {
+                    selectedCategory = categoryName;
+                    firstCategoryUpdated = true;
+                }
             }
+        } else {
+            categoryOptions.add(new SelectOption('--', '--', false));
         }
-        
-        updateSubcategories();
         return null;
     }
     
@@ -1304,7 +1352,7 @@ public with sharing class HelpDeskController
         subCategoryOptions = new List<SelectOption>();
         Map<String, Case_Classification__c> subCategoriesForParent = allsubCategories.get(selectedCategory);
         Boolean firstSubCategoryUpdated = false;
-        if(!subCategoriesForParent.isEmpty()) {
+        if(subCategoriesForParent != NULL && !subCategoriesForParent.isEmpty()) {
             for(String subCategoryName : subCategoriesForParent.keySet()) {
                 subCategoryOptions.add(new SelectOption(subCategoryName, subCategoryName, false));
                 if(!firstSubCategoryUpdated) {
@@ -1312,6 +1360,8 @@ public with sharing class HelpDeskController
                     firstSubCategoryUpdated = true;
                 }
             }
+        } else {
+            subCategoryOptions.add(new SelectOption('--', '--', false));
         }
         
         return null;

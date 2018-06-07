@@ -1136,6 +1136,8 @@ public with sharing class HelpDeskController
             return null;
         }
         try{
+            
+            mycase = addCaseClassificationToCase(mycase);
             upsert mycase;
             
             PageReference page = new PageReference('/apex/CaseTransfer?id=' + mycase.Id);
@@ -1182,6 +1184,7 @@ public with sharing class HelpDeskController
         
         mycase.Status = 'Closed: Resolved';
         try{
+            mycase = addCaseClassificationToCase(mycase);
             upsert mycase;
             savedAndClosed = true;
             return;
@@ -1327,13 +1330,11 @@ public with sharing class HelpDeskController
         
         return null;
     }
-
     public PageReference  updateCategories() {
         categoryOptions = new List<SelectOption>();
         Map<String, Case_Classification__c> categoriesForParent = allCategories.get(selectedFunctionalGroup);
         
         Boolean firstCategoryUpdated = false;
-
         if(categoriesForParent != NULL && !categoriesForParent.isEmpty()) {
             for(String categoryName : categoriesForParent.keySet()) {
                 categoryOptions.add(new SelectOption(categoryName, categoryName, false));
@@ -1345,6 +1346,7 @@ public with sharing class HelpDeskController
         } else {
             categoryOptions.add(new SelectOption('--', '--', false));
         }
+        
         return null;
     }
     

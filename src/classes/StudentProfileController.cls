@@ -67,7 +67,7 @@ public with sharing class StudentProfileController {
         if (theContact == null || theContact.EMPLID__c == null) {
             throw new StudentProfileException('Contact missing EMPLId');
         }
-        deceased = '';
+        deceased = theContact.Deceased__c ? 'Deceased' : '';
       
         populateStudentMilestoneUGrad();
         populateStudentMilestoneGrad();

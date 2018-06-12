@@ -36,7 +36,7 @@ public with sharing class HelpDeskController
                                          WHERE Name = 'Category' 
                                          LIMIT 1
                                         ].Id;
-                List<Case_Classification__c> categories = [SELECT Name, Parent__c, Parent__r.Name
+                List<Case_Classification__c> categories = [SELECT Name, Parent__c, Parent__r.Name, Default_Case_Description__c
                                                            FROM Case_Classification__c 
                                                            WHERE RecordTypeId =: categoryRecordType
                                                            ORDER By Parent__r.Name, Name
@@ -1326,7 +1326,7 @@ public with sharing class HelpDeskController
     
     public PageReference updateCategoryAndSubCategory() {
         updateCategories();
-        updateSubCategories();
+        updateOnCategoryChange();
         
         return null;
     }
@@ -1350,7 +1350,23 @@ public with sharing class HelpDeskController
         return null;
     }
     
-    public PageReference  updateSubCategories() {
+    public PageReference updateOnCategoryChange() {
+        addCategoryDescription();
+        updateSubCategories();
+        return null;
+    }
+    
+    public void addCategoryDescription() {
+        Case_Classification__c categoryWithDescription = allCategories.get(selectedFunctionalGroup).get(selectedCategory);
+        if (categoryWithDescription != null && categoryWithDescription.Default_Case_Description__c != null) {
+            if(mycase.Description == null) {
+                mycase.Description = '';
+            }
+            mycase.Description += categoryWithDescription.Default_Case_Description__c;
+        }
+    }
+    
+    public PageReference updateSubCategories() {
         subCategoryOptions = new List<SelectOption>();
         Map<String, Case_Classification__c> subCategoriesForParent = allsubCategories.get(selectedCategory);
         Boolean firstSubCategoryUpdated = false;

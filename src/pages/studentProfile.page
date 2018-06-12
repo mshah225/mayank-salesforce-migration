@@ -556,7 +556,7 @@
                                                         <td id="ugap_gpa">
                                                             <a href="https://students.asu.edu/gpa-calculator" target="_blank">
                                                                 {!IF(ISBLANK(ugStudentProgram.Cum_GPA__c), '--', '')}
-                                                                <apex:outputText value="{0,number,####.##}"> 
+                                                                <apex:outputText value="{0,number,####.###}"> 
                                                                     <apex:param value="{!ugStudentProgram.Cum_GPA__c}" /> 
                                                                 </apex:outputText>
                                                             </a>
@@ -817,7 +817,7 @@
                                                     <td id="grad_cumulative_gpa">
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank">
                                                             {!IF(ISBLANK(gradStudentProgram.Cum_GPA__c), '--', '')}
-                                                            <apex:outputText value="{0,number,####.##}"> 
+                                                            <apex:outputText value="{0,number,####.###}"> 
                                                                 <apex:param value="{!gradStudentProgram.Cum_GPA__c}" /> 
                                                             </apex:outputText>
                                                         </a>
@@ -828,7 +828,7 @@
                                                     <th>Graduate GPA</th>
                                                     <td id="grad_grad_gpa">
                                                         {!IF(ISBLANK(gradStudentProgram.ASU_AA_OVRL_GPA__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####.##}"> 
+                                                        <apex:outputText value="{0,number,####.###}"> 
                                                             <apex:param value="{!gradStudentProgram.ASU_AA_OVRL_GPA__c}" /> 
                                                         </apex:outputText>
                                                     </td>
@@ -837,7 +837,7 @@
                                                     <th>iPOS GPA </th>
                                                     <td id="grad_ipos_gpa">
                                                         {!IF(ISBLANK(gradStudentProgram.ASU_AA_POS_GPA__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####.##}"> 
+                                                        <apex:outputText value="{0,number,####.###}"> 
                                                             <apex:param value="{!gradStudentProgram.ASU_AA_POS_GPA__c}" /> 
                                                         </apex:outputText>
                                                     </td>
@@ -846,7 +846,7 @@
                                                     <th>Cumulative Hours</th>
                                                     <td id="grad_cumulative_hours">
                                                         {!IF(ISBLANK(gradStudentProgram.Tot_Cumulative__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####.##}"> 
+                                                        <apex:outputText value="{0,number,####.###}"> 
                                                             <apex:param value="{!gradStudentProgram.Tot_Cumulative__c}" /> 
                                                         </apex:outputText>
                                                     </td>

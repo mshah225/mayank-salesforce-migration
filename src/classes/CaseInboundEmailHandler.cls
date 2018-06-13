@@ -775,21 +775,21 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
             // If this filter is an email address, check the fromAddress only
             if (Pattern.matches('.+\\@.+\\..+', filter.Name)) {
-                if (emailSectionContainsTerm(inboundEmail.fromAddress, lcFilter)) {
+                if (emailSectionContainsTerm(inboundEmail.fromAddress, filter)) {
                     updateFilterRejectionCount(filter);
-                    return lcFilter;
+                    return filter;
                 }
             } else if (inboundEmail.subject != null) {
-                if (emailSectionContainsTerm(inboundEmail.subject, lcFilter)) {
+                if (emailSectionContainsTerm(inboundEmail.subject, filter)) {
                     updateFilterRejectionCount(filter);
-                    return lcFilter;
+                    return filter;
                 }
             }
             
             if (filter.Filter_Email_Body__c && inboundEmail.htmlBody != null) {
-                if (emailSectionContainsTerm(inboundEmail.htmlBody, lcFilter)) {
+                if (emailSectionContainsTerm(inboundEmail.htmlBody, filter)) {
                     updateFilterRejectionCount(filter);
-                    return lcFilter;
+                    return filter;
                 }
             }
         }

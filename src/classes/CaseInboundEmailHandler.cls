@@ -801,8 +801,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         update filter;
     }
     
-    private boolean emailSectionContainsTerm(String emailSection, String filterTerm) {
-        return emailSection.containsIgnoreCase(filterTerm);
+    private boolean emailSectionContainsTerm(String emailSection, Email_To_Case_Filter__c filterTerm) {
+        return emailSection.containsIgnoreCase(filterTerm.Name);
     }
     
     private void loadConfigurationSettings()

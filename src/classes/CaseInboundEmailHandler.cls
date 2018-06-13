@@ -759,41 +759,36 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         return address;
     }
 
-    private String filteredTermFound()
-    {
+    private String filteredTermFound() {
         
         Email_To_Case_Filter__c[] filteredTerms = [
-            SELECT Name, Rejection_Count__c
+            SELECT Name, Rejection_Count__c, Filter_Email_Body__c
             FROM Email_To_Case_Filter__c
+            ORDER By Filter_Email_Body__c ASC
         ];
 
-        for (Email_To_Case_Filter__c filter: filteredTerms)
-        {
-            String lcFilter = filter.Name.toLowerCase();
-
-            if (filter.Rejection_Count__c == null)
-            {
+        for (Email_To_Case_Filter__c filter: filteredTerms) {
+        
+            if (filter.Rejection_Count__c == null) {
                 filter.Rejection_Count__c = 0;
             }
 
             // If this filter is an email address, check the fromAddress only
-            if (Pattern.matches('.+\\@.+\\..+', filter.Name))
-            {
-                if (inboundEmail.fromAddress.toLowerCase().contains(lcFilter))
-                {
-                    filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
-                    update filter;
-
+            if (Pattern.matches('.+\\@.+\\..+', filter.Name)) {
+                if (emailSectionContainsTerm(inboundEmail.fromAddress, lcFilter)) {
+                    updateFilterRejectionCount(filter);
+                    return lcFilter;
+                }
+            } else if (inboundEmail.subject != null) {
+                if (emailSectionContainsTerm(inboundEmail.subject, lcFilter)) {
+                    updateFilterRejectionCount(filter);
                     return lcFilter;
                 }
             }
-            else if (inboundEmail.subject != null)
-            {
-                if (inboundEmail.subject.toLowerCase().contains(lcFilter))
-                {
-                    filter.Rejection_Count__c = filter.Rejection_Count__c + 1;
-                    update filter;
-
+            
+            if (filter.Filter_Email_Body__c && inboundEmail.htmlBody != null) {
+                if (emailSectionContainsTerm(inboundEmail.htmlBody, lcFilter)) {
+                    updateFilterRejectionCount(filter);
                     return lcFilter;
                 }
             }
@@ -801,6 +796,15 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         return null;
     }
 
+    private void updateFilterRejectionCount(Email_To_Case_Filter__c filter) {
+        filter.Rejection_Count__c += 1;
+        update filter;
+    }
+    
+    private boolean emailSectionContainsTerm(String emailSection, String filterTerm) {
+        return emailSection.containsIgnoreCase(filterTerm);
+    }
+    
     private void loadConfigurationSettings()
     {
         Email_To_Case_Configuration__c[] configList = [SELECT Name, Value__c

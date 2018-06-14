@@ -4,8 +4,8 @@ public with sharing class StudentProfileController {
     private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
     private static String paramToSort;
     
-    public static String examParamSort {get; set;}
-    public static String transferParamSort {get; set;}
+    public static String examParamSort { get; set; }
+    public static String transferParamSort { get; set; }
     
     private Boolean isContactId;
     private String contactId;
@@ -17,8 +17,6 @@ public with sharing class StudentProfileController {
     public List<Student_Program_Plan__c> gradProgramPlans { get; set; }
     public List<Service_Indicator__c> serviceIndicators { get; set; }
     public Student_Program_Plan__c studentProgram { get; set; }
-    public Student_Program_Plan__c ugStudentProgram { get; set; }
-    public Student_Program_Plan__c gradStudentProgram { get; set; }
     public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
     public List<Student_Program_Plan_Advisor__c> gradStudentProgramAdvisors { get; set; }
     public Student_Account__c studentAccount { get; set; }
@@ -34,67 +32,45 @@ public with sharing class StudentProfileController {
     public String deceased { get; set; }
     public String currentTerm { get; set; }
     public String currentTermName { get; set; }
-    public String nextTerm { get; set; }
     public String nextTermName { get; set; }
+    public String subPlanString { get; set; }
     
-    public String subPlanString {
-        get {
-            return subPlanString == null ? '' :subPlanString;
+    public Student_Program_Plan__c ugStudentProgram { get {
+            return ugProgramPlans.isEmpty() ? new Student_Program_Plan__c() : ugProgramPlans[0];
         }
-        set;
+        set; 
     }
     
-    private void getTermInfo()
-    {
-        vars = new List<String>();
-        List<JBT_RET_TERMS_VW__x> termInfoList = new List<JBT_RET_TERMS_VW__x>();
-       
-        try {
-            termInfoList = 
-            ( 
-                Test.isRunningTest() ? new List<JBT_RET_TERMS_VW__x>() :
-                [
-                    SELECT CURR_TERM__c,
-                           CURR_TERM_INCLUDE_SUMMER__c, 
-                           NEXT_TERM_INCLUDE_SUMMER__c,
-                           DisplayUrl, ExternalId, Id, 
-                           NEXT_TERM__c, 
-                           PREV_TERM__c,
-                           PREV_PREV_TERM__c 
-                    FROM JBT_RET_TERMS_VW__x
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+    public Student_Program_Plan__c gradStudentProgram { get {
+            return gradProgramPlans.isEmpty() ? new Student_Program_Plan__c() : gradProgramPlans[0];
         }
-
-        if (termInfoList.size() > 0)
-        {
-            currentTerm = termInfoList[0].CURR_TERM__c;
-            // This field is coming from the external source with a ".0" appended, so let's remove it
-            nextTerm = String.valueOf(Integer.valueOf(termInfoList[0].NEXT_TERM__c));
-            List<TERM__c> termList = 
-            [
-                SELECT Name, PeopleSoft_Code__c
-                FROM   TERM__c
-                WHERE  PeopleSoft_Code__c = :currentTerm 
-                   OR  PeopleSoft_Code__c = :nextTerm
-            ];
-
-            for (TERM__c term: termList)
-            {
-                if (term.PeopleSoft_Code__c == currentTerm)
-                    currentTermName = term.Name;
-                else if (term.PeopleSoft_Code__c == nextTerm)
-                    nextTermName = term.Name;
-            }
-        }
+        set;
     }
     
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
         }
+        subPlanString = '';
+        ugProgramPlans = new List<Student_Program_Plan__c>();
+        gradProgramPlans = new List<Student_Program_Plan__c>();
+    }
+    
+    public void init() {
+        setContactRecord();
+        setDeceased();
+        setMilestones();   
+        setCurrentAndNextTerms();
+        setOpenCases();
+        setStudentGroups();
+        setServiceIndicators();
+        setStudentProgramsAndAdvisors();
+        setTestScores();
+        setFinancials();
+        setMe3Results();
+    }
+    
+    private void setContactRecord() {
         if (Validator.validateId(contactId, Contact.class)) {
             isContactId = true;
         } else if (Validator.validateEMPLId(contactId)) {
@@ -102,9 +78,7 @@ public with sharing class StudentProfileController {
         } else {
             throw new StudentProfileException('URL Parameters are missing or invalid');
         }
-    }
-    
-    public void init() {
+        
         if (isContactId) {
             theContact = ContactService.getContactInformation(contactId, '');
         } else {
@@ -114,31 +88,18 @@ public with sharing class StudentProfileController {
         if (theContact == null || theContact.EMPLID__c == null) {
             throw new StudentProfileException('Contact missing EMPLId');
         }
-        deceased = theContact.Deceased__c ? 'Deceased' : '';
-      
-        populateStudentMilestoneUGrad();
-        populateStudentMilestoneGrad();
-        getFinancialSummaryData();    
-        getTermInfo();
-        setOpenCases();
-        setStudentGroups();
-        setCurrentTerm();
-        setServiceIndicators();
-        setStudentProgramLists();
-        setStudentProgramData();
-        setUndergradStudentProgram();
-        setGradStudentProgram();
-        setUndergradStudentTestScores();
-        setGraduateStudentTestScores();
-        setUndergraduateStudentProgramPlanAdvisor();
-        setGraduateStudentProgramPlanAdvisor();
-        setStudentAccount();
-        setFinancialPackageData();
-        setMe3Results();
-        setMe3HighScoolResults();
     }
     
-    private void populateStudentMilestoneUGrad() {
+    private void setDeceased() {
+        deceased = theContact.Deceased__c ? 'Deceased' : '';
+    }
+    
+    private void setMilestones() {
+        setStudentMilestoneUGrad();
+        setStudentMilestoneGrad();
+    }
+    
+    private void setStudentMilestoneUGrad() {
         studentMilestonesUGrad = new List<Student_Milestone__c>();
         Set<Student_Milestone__c> milestoneSet = new Set<Student_Milestone__c>();
         for (Student_Milestone__c milestoneRec: [
@@ -152,7 +113,7 @@ public with sharing class StudentProfileController {
         }
     }
     
-    private void populateStudentMilestoneGrad() {
+    private void setStudentMilestoneGrad() {
         studentMilestonesGrad = new List<Student_Milestone__c>();
         Set<Student_Milestone__c> milestoneSet = new Set<Student_Milestone__c>();
         for (Student_Milestone__c milestoneRec: [
@@ -166,6 +127,27 @@ public with sharing class StudentProfileController {
         }
     }
     
+    private void setCurrentAndNextTerms() {
+        StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+        String nextTermPeoplesoftCode = currentTermData.NextTerm__c;
+        currentTerm = currentTermData.CurrTerm__c;
+
+        List<TERM__c> termList = [
+            SELECT Name, PeopleSoft_Code__c
+            FROM   TERM__c
+            WHERE  PeopleSoft_Code__c = :currentTerm 
+            OR  PeopleSoft_Code__c = :nextTermPeoplesoftCode
+        ];
+
+        for (TERM__c term : termList) {
+            if (term.PeopleSoft_Code__c == currentTerm) {
+                currentTermName = term.Name;
+            } else if (term.PeopleSoft_Code__c == nextTermPeoplesoftCode) {
+                nextTermName = term.Name;
+            }
+        }
+    }
+    
     private void setOpenCases() {
         openCases = CaseService.getAllOpenCases(theContact.Id);
     }
@@ -174,182 +156,6 @@ public with sharing class StudentProfileController {
         sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
     }
     
-    private void setCurrentTerm() {
-        StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
-        currentTerm = currentTermData.CurrTerm__c;
-    }
-    
-    private void setStudentProgramLists() {
-        ugProgramPlans = new List<Student_Program_Plan__c>();
-        gradProgramPlans = new List<Student_Program_Plan__c>();
-        List<Student_Program_Plan__c> allProgramPlans = new List<Student_Program_Plan__c>();
-        allProgramPlans = StudentProgramPlanService.getContactStudentProgramPlans(theContact.Id);
-        
-        List<Student_Program_Plan__c> studentProgramPlansBeforeToday =
-            StudentProgramPlanService.getContactStudentProgramPlansBeforeToday(theContact.Id);
-        
-        Student_Program_Plan__c primaryProgramPlan =  new Student_Program_Plan__c();
-        
-        if (allProgramPlans.size() > 0) {
-            for (Student_Program_Plan__c spp: allProgramPlans) {
-                if (spp.PRIMARY_FLAG__c == true) {
-                    primaryProgramPlan = spp;
-                }
-                if (spp.Career__c == null || spp.Career__c == 'Undergraduate') {
-                    ugProgramPlans.add(spp);
-                } else {
-                    gradProgramPlans.add(spp);
-                }
-            }
-        }
-        List<Student_Program_Subplan__c> tmpSubPlanList = [
-                    Select Subplan_description__c
-                          FROM Student_Program_Subplan__c
-                          WHERE Student_Program_Plan__c =: primaryProgramPlan.Id
-        ];
-        
-        if (tmpSubPlanList.size() > 0) {
-            for (Integer i = 0; i < tmpSubPlanList.size()-1; i++) {
-                subPlanString += tmpSubPlanList[0].Subplan_description__c + ', ';
-            }
-            subPlanString += tmpSubPlanList[tmpSubPlanList.size()-1].Subplan_description__c;
-        }
-    }
-    
-    private void setUndergradStudentTestScores() {
-        Set<String> testCodes = new Set<String>{'ACT', 'AECP', 'AMPT', 'AP', 'CLEP', 'DSST', 'DSST2', 'GED', 'ALEKSMATH', 'ACCUPLACER2', 'HISET', 'IELTS', 'MPT', 'PTE', 'SAT I', 'SAT II', 'TOEFL', 'TOEIC', 'SATII'};
-        List<Test_Score__c> stdntTestComps = [
-            SELECT Test_Component_Score__c, Test_Component__c , Test_Date__c , Test_Type__c 
-            FROM Test_Score__c
-            WHERE Contact__c = :theContact.Id
-            AND Test_Type__c IN :testCodes
-            AND Integration_Source__c = 'Student Records'
-            ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
-        ];
-        
-        testUnderGradScoreList = stdntTestComps;
-    }
-    
-    private void setGraduateStudentTestScores() {
-        Set<String> testCodes = new Set<String>{'GMAT', 'GRE', 'IELTS', 'LSAT', 'MAT', 'MCAT', 'PTE', 'TOEFL', 'TOEIC'};
-        List<Test_Score__c> stdntTestComps = [
-            SELECT Test_Component_Score__c, Test_Component__c , Test_Date__c , Test_Type__c 
-            FROM Test_Score__c
-            WHERE Contact__c = :theContact.Id
-            AND Test_Type__c IN :testCodes
-            AND Integration_Source__c = 'Student Records'
-            ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
-        ];
-        
-        testGradScoreList = stdntTestComps;
-    }
-
-    private void setStudentProgramData() {
-        List<Student_Program_Plan__c> studentProgramDataList = [
-            SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c, 
-                       Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c, 
-                       Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
-                       Exp_Grad_Term__c, Exp_Grad_Term__r.Name, 
-                       Id, Residency__c, Financial_Need_Level__c, Cohort__c, 
-                       Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name
-            FROM Student_Program_Plan__c
-            WHERE Contact__c = :theContact.Id
-            LIMIT 1
-        ];
-        
-        studentProgram = (!studentProgramDataList.isEmpty() ? studentProgramDataList[0] : new Student_Program_Plan__c());
-    }
-    
-    private void setUndergradStudentProgram() {
-        List<Student_Program_Plan__c> studentProgramDataList = [
-            SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c, 
-                       Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c, 
-                       Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
-                       Exp_Grad_Term__c, Exp_Grad_Term__r.Name, 
-                       Id, Residency__c, Financial_Need_Level__c, Cum_GPA__c, 
-                       Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c,
-                       Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name
-            FROM Student_Program_Plan__c
-            WHERE Contact__c = :theContact.Id
-            AND Career__c = 'Undergraduate'
-            LIMIT 1
-        ];
-        
-        ugStudentProgram = (!studentProgramDataList.isEmpty() ? studentProgramDataList[0] : new Student_Program_Plan__c());
-    }
-    
-    private void setGradStudentProgram() {
-        List<Student_Program_Plan__c> studentProgramDataList = [
-            SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c, 
-                       Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c, 
-                       Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
-                       Exp_Grad_Term__c, Exp_Grad_Term__r.Name, 
-                       Id, Residency__c, Financial_Need_Level__c, Cum_GPA__c, 
-                       Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c, 
-                       ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c,
-                       Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name
-            FROM Student_Program_Plan__c
-            WHERE Contact__c = :theContact.Id
-            AND (Career__c = 'Graduate'
-                OR Career__c = 'Law')
-            LIMIT 1
-        ];
-        
-        gradStudentProgram = (!studentProgramDataList.isEmpty() ? studentProgramDataList[0] : new Student_Program_Plan__c());
-    }
-    
-    public void setUndergraduateStudentProgramPlanAdvisor() {
-       ugStudentProgramAdvisors = [
-           SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c, 
-                  Name, Advisor_Phone__c, Advisor_Name__c
-           FROM Student_Program_Plan_Advisor__c
-           WHERE Student_Program_Plan__c = :ugStudentProgram.Id
-           AND Student_Program_Plan__r.Career__c = 'Undergraduate'
-           ORDER BY Name
-       ];
-    }
-    
-    public void setGraduateStudentProgramPlanAdvisor() {
-        gradStudentProgramAdvisors = [
-            SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c, 
-                Name, Advisor_Phone__c, Advisor_Name__c
-            FROM Student_Program_Plan_Advisor__c
-            WHERE Student_Program_Plan__c = :gradStudentProgram.Id
-            AND (Student_Program_Plan__r.Career__c = 'Graduate'
-                OR Student_Program_Plan__r.Career__c = 'Law')
-            ORDER BY Name
-        ];
-    }
-    
-    private void setStudentAccount() {
-        List<Student_Account__c> studentAccounts = [
-            SELECT Future_Balance__c, Account_Balance__c, Past_Due_Tip__c
-            FROM Student_Account__c 
-            WHERE Contact__c = :theContact.Id
-            LIMIT 1
-        ];
-        
-        if (!studentAccounts.isEmpty()) {
-            studentAccount = studentAccounts[0];
-        } else {
-            studentAccount = new Student_Account__c();
-        }
-    }
-
-    private void setFinancialPackageData() {
-        List<Financial_Aid_Package__c> financesPackageList = [
-            SELECT Aid_Year__c, Contact__c, CreatedById, CreatedDate, EFC_Range__c, 
-                   FA_Status_Time_Stamp__c, FAFSA_Date_Received__c, Fin_Aid_Package_Date__c, 
-                   Financial_Aid_Status__c, Id, IsDeleted, LastModifiedById, LastModifiedDate, 
-                   Name, Pell_Eligibility__c, Promise_Cohort__c, SystemModstamp 
-            FROM Financial_Aid_Package__c
-            WHERE Contact__c = :theContact.Id
-            AND Aid_Year__c = :String.valueOf(Date.today().year())
-            LIMIT 1
-        ];
-        financialAidPackage = financesPackageList.isEmpty() ? new Financial_Aid_Package__c() : financesPackageList[0];
-    } 
-
     private void setServiceIndicators() {
         List<Service_Indicator__c> serviceIndicatorList = [
             SELECT SI_Code__c, SI_Description__c, SI_Reason__c, SI_Start_Date__c
@@ -362,8 +168,122 @@ public with sharing class StudentProfileController {
         ];
         serviceIndicators = (!serviceIndicatorList.isEmpty() ? serviceIndicatorList : new List<Service_Indicator__c>());
     }
-
-    private void getFinancialSummaryData() {
+    
+    private void setStudentProgramsAndAdvisors() {
+        setStudentProgramPlans();
+        setUndergraduateStudentProgramPlanAdvisors();
+        setGraduateStudentProgramPlanAdvisors();
+    }
+    
+    private void setStudentProgramPlans() {
+        List<Student_Program_Plan__c> allProgramPlans = [
+            SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c, 
+                Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c, 
+                Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, 
+                Exp_Grad_Term__c, Exp_Grad_Term__r.Name, Cohort__c,
+                Residency__c, Financial_Need_Level__c, Cum_GPA__c, 
+                Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c,
+                Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name,
+                Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c,
+                ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c
+            FROM Student_Program_Plan__c
+            WHERE Contact__c = :theContact.Id
+            ORDER BY Status__c, Primary_Flag__c DESC, Completion_Term__c DESC, Plan_Type_Text__c, Plan_Description__c
+        ];
+        
+        if (allProgramPlans.isEmpty()) {
+            return;
+        }
+        
+        for (Student_Program_Plan__c programPlan : allProgramPlans) {
+            if (programPlan.Career__c == null || programPlan.Career__c == 'Undergraduate') {
+                ugProgramPlans.add(programPlan);
+            } else {
+                gradProgramPlans.add(programPlan);
+            }
+            
+            if (programPlan.Primary_Flag__c) {
+                studentProgram = programPlan;
+            }
+        }
+        
+        setSubplanString();
+    }
+    
+    private void setSubplanString() {
+        List<Student_Program_Subplan__c> subplans = [
+            SELECT Subplan_description__c
+            FROM Student_Program_Subplan__c
+            WHERE Student_Program_Plan__c =: studentProgram.Id
+        ];
+        if (subplans.isEmpty()) {
+            return;
+        }
+        for (Student_Program_Subplan__c subplan : subplans) {
+            subPlanString += subplan.Subplan_description__c + ', ';
+        }
+        subPlanString = subPlanString.removeEnd(', ');
+    }
+    
+    public void setUndergraduateStudentProgramPlanAdvisors() {
+       ugStudentProgramAdvisors = [
+           SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c, 
+                  Name, Advisor_Phone__c, Advisor_Name__c
+           FROM Student_Program_Plan_Advisor__c
+           WHERE Student_Program_Plan__c = :ugStudentProgram.Id
+           AND Student_Program_Plan__r.Career__c = 'Undergraduate'
+           ORDER BY Name
+       ];
+    }
+    
+    public void setGraduateStudentProgramPlanAdvisors() {
+        gradStudentProgramAdvisors = [
+            SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c, 
+                Name, Advisor_Phone__c, Advisor_Name__c
+            FROM Student_Program_Plan_Advisor__c
+            WHERE Student_Program_Plan__c = :gradStudentProgram.Id
+            AND (Student_Program_Plan__r.Career__c = 'Graduate'
+                OR Student_Program_Plan__r.Career__c = 'Law')
+            ORDER BY Name
+        ];
+    }
+    
+    private void setTestScores() {
+        setUndergradStudentTestScores();
+        setGraduateStudentTestScores();
+    }
+    
+    private void setUndergradStudentTestScores() {
+        Set<String> testCodes = new Set<String>{'ACT', 'AECP', 'AMPT', 'AP', 'CLEP', 'DSST', 'DSST2', 'GED', 'ALEKSMATH', 'ACCUPLACER2', 'HISET', 'IELTS', 'MPT', 'PTE', 'SAT I', 'SAT II', 'TOEFL', 'TOEIC', 'SATII'};
+        testUnderGradScoreList = [
+            SELECT Test_Component_Score__c, Test_Component__c , Test_Date__c , Test_Type__c 
+            FROM Test_Score__c
+            WHERE Contact__c = :theContact.Id
+            AND Test_Type__c IN :testCodes
+            AND Integration_Source__c = 'Student Records'
+            ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
+        ];
+    }
+    
+    private void setGraduateStudentTestScores() {
+        Set<String> testCodes = new Set<String>{'GMAT', 'GRE', 'IELTS', 'LSAT', 'MAT', 'MCAT', 'PTE', 'TOEFL', 'TOEIC'};
+        testGradScoreList = [
+            SELECT Test_Component_Score__c, Test_Component__c , Test_Date__c , Test_Type__c 
+            FROM Test_Score__c
+            WHERE Contact__c = :theContact.Id
+            AND Test_Type__c IN :testCodes
+            AND Integration_Source__c = 'Student Records'
+            ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
+        ];
+    }
+    
+    private void setFinancials() {
+        setFinancialAidWrapper();
+        setStudentAccount();
+        setFinancialAidPackage();
+    }
+    
+    private void setFinancialAidWrapper() {
         faWrapper = new FinancialAidWrapper();
         
         Set<String> tempAidYears = new Set<String>();
@@ -384,25 +304,41 @@ public with sharing class StudentProfileController {
         }
     }
     
-    private void setMe3HighScoolResults() {
-        List<me3__c> me3List = [
-            SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,                 
-                Source__c, Test_Completed_Date__c, User_Id__c, 
-                (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
-                        Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
-                 FROM   Me3_Careers__r
-                 WHERE Active__c = TRUE
-                 ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
-                 LIMIT 10) 
-             FROM Me3__c
-             WHERE  Contact__c = :theContact.Id AND Source__c = 'me3hs' 
-             ORDER BY Test_Completed_Date__c DESC
-             LIMIT 1 
+    private void setStudentAccount() {
+        List<Student_Account__c> studentAccounts = [
+            SELECT Future_Balance__c, Account_Balance__c, Past_Due_Tip__c
+            FROM Student_Account__c 
+            WHERE Contact__c = :theContact.Id
+            LIMIT 1
         ];
-        me3HighSchoolResults = (!me3List.isEmpty() ? me3List[0] : new me3__c());
+        
+        if (!studentAccounts.isEmpty()) {
+            studentAccount = studentAccounts[0];
+        } else {
+            studentAccount = new Student_Account__c();
+        }
     }
 
+    private void setFinancialAidPackage() {
+        List<Financial_Aid_Package__c> financesPackageList = [
+            SELECT Aid_Year__c, Contact__c, CreatedById, CreatedDate, EFC_Range__c, 
+                   FA_Status_Time_Stamp__c, FAFSA_Date_Received__c, Fin_Aid_Package_Date__c, 
+                   Financial_Aid_Status__c, Id, IsDeleted, LastModifiedById, LastModifiedDate, 
+                   Name, Pell_Eligibility__c, Promise_Cohort__c, SystemModstamp 
+            FROM Financial_Aid_Package__c
+            WHERE Contact__c = :theContact.Id
+            AND Aid_Year__c = :String.valueOf(Date.today().year())
+            LIMIT 1
+        ];
+        financialAidPackage = financesPackageList.isEmpty() ? new Financial_Aid_Package__c() : financesPackageList[0];
+    }
+    
     private void setMe3Results() {
+        setMe3DegreeSearchResult();
+        setMe3HighScoolResult();
+    }
+    
+    private void setMe3DegreeSearchResult() {
         List<me3__c> me3List = [
             SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,                 
                 Source__c, Test_Completed_Date__c, User_Id__c, 
@@ -419,6 +355,24 @@ public with sharing class StudentProfileController {
              LIMIT 1 
         ];
         me3Results = (!me3List.isEmpty() ? me3List[0] : new Me3__c());
+    }
+    
+    private void setMe3HighScoolResult() {
+        List<me3__c> me3List = [
+            SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,                 
+                Source__c, Test_Completed_Date__c, User_Id__c, 
+                (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id, 
+                        Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c 
+                 FROM   Me3_Careers__r
+                 WHERE Active__c = TRUE
+                 ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
+                 LIMIT 10) 
+             FROM Me3__c
+             WHERE  Contact__c = :theContact.Id AND Source__c = 'me3hs' 
+             ORDER BY Test_Completed_Date__c DESC
+             LIMIT 1 
+        ];
+        me3HighSchoolResults = (!me3List.isEmpty() ? me3List[0] : new me3__c());
     }
     
     @RemoteAction

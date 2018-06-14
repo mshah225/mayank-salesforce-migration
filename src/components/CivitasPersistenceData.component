@@ -122,8 +122,8 @@
         
         function drawChart() {
             var feedback = document.getElementById('FeedbackButton');
-            feedback.style.display = 'none';
-
+            feedback.style.display = 'block';
+            
             result = {!civitasDataInJson}
             if (result == null || result.length <= 0 || result[0].name == 'Rejected') {
                 document.getElementById("errorMessage").innerHTML =

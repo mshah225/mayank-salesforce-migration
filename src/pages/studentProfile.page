@@ -425,7 +425,6 @@
                                     </apex:outputPanel>
                                 </div>
                                 
-
                                 
                                 <div class="page-header-smaller">
                                     <h4>
@@ -1203,7 +1202,7 @@
                                                         <th>Total Account Balance</th>
                                                         <td id="account_balance_total">
                                                             <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Future_Balance__c}" />
+                                                                <apex:param value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}" />
                                                             </apex:outputText>
                                                         </td>
                                                     </tr>

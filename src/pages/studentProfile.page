@@ -739,7 +739,7 @@
                                                           <tr>
                                                               <th>Orientation Date</th>
                                                               <td>
-                                                                  {!IF(ISBLANK(ugStudentProgram.Admit_Type__c), '--', '')}
+                                                                  {!IF(OR(ISBLANK(theContact.Orient_Dt__c), ISBLANK(ugStudentProgram.Admit_Type__c)), '--', '')}
                                                                   <apex:outputText value="{0,date,MM/dd/yyyy}" rendered="{!IF(ISBLANK(ugStudentProgram.Admit_Type__c), FALSE, TRUE)}"> 
                                                                       <apex:param value="{!theContact.Orient_Dt__c}" /> 
                                                                   </apex:outputText>
@@ -1004,6 +1004,10 @@
                                                                   <th>Admit Term</th>
                                                                   <td>{!IF(ISBLANK(gradStudentProgram.Admit_Term__r.Name), '--', gradStudentProgram.Admit_Term__r.Name)}</td>
                                                               </tr>
+                                                              <tr>
+                                                                    <th>Admit Type</th>
+                                                                    <td>{!IF(ISBLANK(gradStudentProgram.Admit_Type__c), '--', gradStudentProgram.Admit_Type__c)}</td>
+                                                              </tr>
                                                           </table>
                                                       </div>
                                                       <div class='col-sm-6'>
@@ -1015,7 +1019,7 @@
                                                               <tr>
                                                                   <th>Orientation Date</th>
                                                                   <td>
-                                                                      {!IF(ISBLANK(gradStudentProgram.Admit_Type__c), '--', '')}
+                                                                      {!IF(OR(ISBLANK(theContact.Orient_Dt__c), ISBLANK(gradStudentProgram.Admit_Type__c)), '--', '')}
                                                                       <apex:outputText value="{0,date,MM/dd/yyyy}" rendered="{!IF(ISBLANK(gradStudentProgram.Admit_Type__c), FALSE, TRUE)}"> 
                                                                           <apex:param value="{!theContact.Orient_Dt__c}" /> 
                                                                       </apex:outputText>

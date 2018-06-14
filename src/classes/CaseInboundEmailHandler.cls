@@ -777,19 +777,19 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             if (Pattern.matches('.+\\@.+\\..+', filter.Name)) {
                 if (emailSectionContainsTerm(inboundEmail.fromAddress, filter)) {
                     updateFilterRejectionCount(filter);
-                    return filter;
+                    return filter.Name;
                 }
             } else if (inboundEmail.subject != null) {
                 if (emailSectionContainsTerm(inboundEmail.subject, filter)) {
                     updateFilterRejectionCount(filter);
-                    return filter;
+                    return filter.Name;
                 }
             }
             
             if (filter.Filter_Email_Body__c && inboundEmail.htmlBody != null) {
                 if (emailSectionContainsTerm(inboundEmail.htmlBody, filter)) {
                     updateFilterRejectionCount(filter);
-                    return filter;
+                    return filter.Name;
                 }
             }
         }

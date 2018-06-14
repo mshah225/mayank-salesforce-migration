@@ -324,7 +324,7 @@
                                                         <td>{!IF(theContact.First_Generation_Student__c, 'Y', 'N')}</td>
                                                     </tr>
                                                     <tr>
-                                                        <th>BirthDate</th>
+                                                        <th>Birthdate</th>
                                                         <td>
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}"> 
                                                                 <apex:param value="{!theContact.BirthDate}" /> 
@@ -853,6 +853,7 @@
                                                 <tr>
                                                     <th>Advisors</th>
                                                     <td id="grad_advisors">
+                                                        {!IF(gradStudentProgramAdvisors.size > 0, '', '--')}
                                                         <apex:repeat value="{!gradStudentProgramAdvisors}" var="advisors">
                                                             <a href="mailto:{!advisors.Advisor_Email__c}"> {!advisors.Advisor_Name__c} </a><br/>
                                                         </apex:repeat>
@@ -940,17 +941,21 @@
                                                     <apex:outputPanel rendered="{!IF(studentMilestonesGrad.size > 0, true, false)}">
                                                         <apex:repeat value="{!studentMilestonesGrad}" var="milestone">
                                                             <tr>
-                                                                <td>  {!milestone.Acad_Program__r.Name} </td>
-                                                                <td>  {!milestone.Milestone__c} </td>
-                                                                <td>  {!milestone.Milestone_Title__c} </td>
-                                                                <td>  {!milestone.Milestone_Level__c} </td>
-                                                                <td>  {!milestone.Descrformal__c} </td>
-                                                                <td>  {!milestone.Acad_Plan__c} </td>
-                                                                <td>  {!milestone.Descr__c} </td>
-                                                                <td>  {!milestone.Term_Required__r.Name} </td>
-                                                                <td>  {!milestone.Anticipated_Term__c} </td>
-                                                                <td>  {!milestone.Date_Completed__c} </td>
-                                                                <td>  {!milestone.Milestone_Complete__c} </td>
+                                                                <td>{!IF(ISBLANK(milestone.Acad_Program__r.Name), '--', milestone.Acad_Program__r.Name)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Milestone__c), '--', milestone.Milestone__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Milestone_Title__c), '--', milestone.Milestone_Title__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Milestone_Level__c), '--', milestone.Milestone_Level__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Descrformal__c), '--', milestone.Descrformal__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Acad_Plan__r.Name), '--', milestone.Acad_Plan__r.Name)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Descr__c), '--', milestone.Descr__c)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Term_Required__r.Name), '--', milestone.Term_Required__r.Name)}</td>
+                                                                <td>{!IF(ISBLANK(milestone.Anticipated_Term__c), '--', milestone.Anticipated_Term__c)}</td>
+                                                                <td>
+                                                                    <apex:outputText value="{0,date,MM/dd/yyyy}"> 
+                                                                        <apex:param value="{!milestone.Date_Completed__c}" /> 
+                                                                    </apex:outputText>
+                                                                </td>
+                                                                <td>{!IF(milestone.Milestone_Complete__c, 'Y', 'N')}</td>
                                                             </tr>
                                                         </apex:repeat>
                                                     </apex:outputPanel>

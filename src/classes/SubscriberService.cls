@@ -19,7 +19,6 @@ public without sharing class SubscriberService {
         }
     }
 
-<<<<<<< HEAD
     /**
     * Upon opt-in, creates a Subscriber record for the parent Subscription if it does not already exist
     *
@@ -43,7 +42,7 @@ public without sharing class SubscriberService {
             }
         }
         Map<Id, Subscription__c> subscriptionMap = new Map<Id, Subscription__c>([
-            SELECT Id, Parent_Subscription__c, Subscription_Type__c 
+            SELECT Id, Parent_Subscription__c, Subscription_Type__c
             FROM Subscription__c
             WHERE Id IN :subscriptionIds
         ]);
@@ -54,7 +53,7 @@ public without sharing class SubscriberService {
                 parentSubIds.add(subscriptionMap.get(subId).Parent_Subscription__c);
             }
         }
-        
+
         Map<String, Subscriber__c> buSubAndContactToSubscriberMap = new Map<String, Subscriber__c>();
         for (Subscriber__c sub: [
             SELECT Id, Subscription__c, Subscriber_Status__c, Contact__c, Lead__c
@@ -118,8 +117,6 @@ public without sharing class SubscriberService {
         parentSubsSynced = true;
     }
 
-=======
->>>>>>> 323f475c... Added IsUnsubscribed field and code refactor
     /**
     * Returns all the fields on Subscriber in a String
     * @return A string containing all the Subscriber fields

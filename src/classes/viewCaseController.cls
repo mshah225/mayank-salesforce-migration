@@ -303,7 +303,6 @@ public with sharing class viewCaseController {
         submitCaseReply();
         submitAttachmentReply();
         closeReplyBox();
-        
         return null;
     }
     
@@ -311,7 +310,7 @@ public with sharing class viewCaseController {
         if (!String.isBlank(caseReply)) {
             RestCallResponse restStatusAndInfo = uploadResponse();
             if (restStatusAndInfo.isSuccessfull()) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));        
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));
             } else {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact system admin'));
             }

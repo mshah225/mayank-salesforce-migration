@@ -208,7 +208,7 @@ public with sharing class StudentProfileController {
             FROM Student_Program_Subplan__c
             WHERE Student_Program_Plan__c =: studentProgram.Id
         ];
-        if (subplans.isEmpty()) {
+        if (subplans == null || subplans.isEmpty()) {
             return;
         }
         for (Student_Program_Subplan__c subplan : subplans) {

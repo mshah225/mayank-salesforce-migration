@@ -116,7 +116,11 @@
                     return validateFile();
                 }
                 if (replyPresent) {
-                    return true;
+                    if ({!showOpenNewCaseAlert} == true) {
+                        return confirm("This case has been closed for more than 14 days, replying to this case will create a new case. Click OK to create a new case. Click Cancel to go back.");    
+                    } else {
+                        return true;
+                    }
                 } else {
                     document.getElementById('errorDiv').innerHTML = 'Error: Please add a reply or an attachment\n';
                 }
@@ -297,62 +301,7 @@
                         </div>
                     </div>
                     
-                    <apex:outputPanel id="emailMessagesBox"
-                                      rendered="{!IF(EmailMessages.empty,false,true)}">
-                        <div class="box commentBox">
-                            <div class="header">
-                                <h6><b>Responses To This Case</b></h6>
-                            </div>
-
-                            <div class="content">
-                                <apex:repeat value="{!EmailMessages}" var="EM">
-                                    <div class="panel panel-default">
-                                        <div class="panel-body">
-                                            <apex:outputLabel for="emailSentDate" value="Sent Date:"/>
-                                            <apex:outputText id="emailSentDate"
-                                                             value="{0, date, MMMM d',' yyyy, hh:MM a z}">
-                                                <apex:param value="{!EM.CreatedDate}"/>
-                                            </apex:outputText>
-                                            <br />
-                                            <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
-                                                <apex:outputLabel for="fromAddress"
-                                                                  value="From Address:"/>
-                                                &nbsp;
-                                                <apex:outputText id="fromAddress">
-                                                {!EM.FromName} &#60;{!EM.FromAddress}&#62;
-                                                </apex:outputText>
-                                                <br />
-                                            </apex:outputPanel>
-
-                                            <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
-                                                <apex:outputLabel for="toAddress"
-                                                                  value="To Address:"/>
-                                                &nbsp;
-                                                <apex:outputText id="toAddress"
-                                                                 value="{!EM.ToAddress}"/>
-                                                <br />
-                                            </apex:outputPanel>
-
-                                            <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
-                                                <apex:outputLabel for="ccAddress" value="CC:"/>
-                                                &nbsp;
-                                                <apex:outputText id="ccAddress"
-                                                                 value="{!EM.CCAddress}"/>
-                                                <br />
-                                            </apex:outputPanel>
-                                            <br />
-                                            <apex:outputField id="emailMore"
-                                                              styleClass="emailMessage"
-                                                              value="{!EM.TextBody}"
-                                                              style="word-wrap: break-word !important;"/>
-                                        </div>
-                                    </div>
-                                </apex:repeat>
-                            </div>
-                        </div>
-                    </apex:outputPanel>
-                    
-                     <apex:outputPanel id="replySection">
+                    <apex:outputPanel id="replySection">
                         <div class="box">
                              <div class="header">
                                     <h6 class="floatleft"><b>Reply to Case or Upload Attachment</b></h6>
@@ -418,6 +367,61 @@
                                 </apex:pageBlockTable>
                             </div>
                         </apex:pageBlock>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel id="emailMessagesBox"
+                                      rendered="{!IF(EmailMessages.empty,false,true)}">
+                        <div class="box commentBox">
+                            <div class="header">
+                                <h6><b>Responses To This Case</b></h6>
+                            </div>
+
+                            <div class="content">
+                                <apex:repeat value="{!EmailMessages}" var="EM">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <apex:outputLabel for="emailSentDate" value="Sent Date:"/>
+                                            <apex:outputText id="emailSentDate"
+                                                             value="{0, date, MMMM d',' yyyy, hh:MM a z}">
+                                                <apex:param value="{!EM.CreatedDate}"/>
+                                            </apex:outputText>
+                                            <br />
+                                            <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
+                                                <apex:outputLabel for="fromAddress"
+                                                                  value="From Address:"/>
+                                                &nbsp;
+                                                <apex:outputText id="fromAddress">
+                                                {!EM.FromName} &#60;{!EM.FromAddress}&#62;
+                                                </apex:outputText>
+                                                <br />
+                                            </apex:outputPanel>
+
+                                            <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
+                                                <apex:outputLabel for="toAddress"
+                                                                  value="To Address:"/>
+                                                &nbsp;
+                                                <apex:outputText id="toAddress"
+                                                                 value="{!EM.ToAddress}"/>
+                                                <br />
+                                            </apex:outputPanel>
+
+                                            <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
+                                                <apex:outputLabel for="ccAddress" value="CC:"/>
+                                                &nbsp;
+                                                <apex:outputText id="ccAddress"
+                                                                 value="{!EM.CCAddress}"/>
+                                                <br />
+                                            </apex:outputPanel>
+                                            <br />
+                                            <apex:outputField id="emailMore"
+                                                              styleClass="emailMessage"
+                                                              value="{!EM.TextBody}"
+                                                              style="word-wrap: break-word !important;"/>
+                                        </div>
+                                    </div>
+                                </apex:repeat>
+                            </div>
+                        </div>
                     </apex:outputPanel>
                     
                     <apex:outputPanel id="chatMessagesBox" rendered="{!IF(chatMessages.empty,false,true)}" >

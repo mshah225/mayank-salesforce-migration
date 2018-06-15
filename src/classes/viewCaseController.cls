@@ -1,6 +1,7 @@
 public with sharing class viewCaseController {
 
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
+    private static final Integer replyAcceptanceThreshold = 14;
     private Date today;
     private Decimal origPin;
     private Term__c termcAC;
@@ -27,6 +28,7 @@ public with sharing class viewCaseController {
     public List<String> varsForErrorLogging { get; set; }
     public List<Attachment> allCaseAttachments { get; set; }
     public Boolean showCaseAttachments { get; set; }
+    public Boolean showOpenNewCaseAlert { get; set; }
    
     public viewCaseController() {
         viewingAs = false;
@@ -38,6 +40,19 @@ public with sharing class viewCaseController {
         popTerms();
         setCaseId();
         retrieveAttachmentList();
+        displayOpenNewCaseAlert();
+    }
+    
+    public void displayOpenNewCaseAlert() {
+        if (!String.isEmpty(caseId)) {
+            Case caseOnPage = [Select Id, CreatedDate FROM Case WHERE Id =: caseId];
+            Date caseCreatedDate = date.newinstance(caseOnPage.CreatedDate.year(), caseOnPage.CreatedDate.month(), caseOnPage.CreatedDate.day());
+            if (caseCreatedDate.daysBetween(System.Today()) > replyAcceptanceThreshold) {
+                showOpenNewCaseAlert = true;
+            } else {
+                showOpenNewCaseAlert = false;  
+            }
+        }
     }
     
     public void retrieveAttachmentList() {
@@ -333,9 +348,8 @@ public with sharing class viewCaseController {
         }
         String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
         InsertEmailMessageCalloutBody emailMessageObjectBody = new InsertEmailMessageCalloutBody(caseReply, caseId,
-                                                            emailSubject, true,
-                                                            currentUser.Name, currentUser.Email,
-                                                            ownerEmail, '2'
+                                                            emailSubject, userContact.Name, 
+                                                            userContact.Email, ownerEmail
                                                             );
         String jsonEmailMessageInput = JSON.serialize(emailMessageObjectBody);
         return jsonEmailMessageInput;

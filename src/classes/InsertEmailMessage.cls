@@ -1,36 +1,43 @@
-@RestResource(urlMapping = '/InsertEmailMessage/*')
-global class InsertEmailMessage {
-
-    @HttpPost
-    global static RestCallResponse createEmailMessage(
-            String emailTextBody, 
-            String  parentId, 
-            String emailSubject, 
-            Boolean isIncoming, 
-            String fromName, 
-            String fromAddress, 
-            String toAddress, 
-            String status) {
-        EmailMessage emailResponse = new EmailMessage();
-        emailResponse.TextBody = emailTextBody;
-        emailResponse.Incoming = isIncoming;
-        emailResponse.ParentId = parentId;
-        emailResponse.Subject = emailSubject;
-        emailResponse.FromName = fromName;
-        emailResponse.FromAddress = fromAddress;
-        emailResponse.ToAddress = toAddress;
-        emailResponse.Status = status;
-        try {
-            insert emailResponse;
-            RestCallResponse restResponseObject = new RestCallResponse('success', emailResponse.Id);
-            return restResponseObject;
-        } catch (Exception e) {
-            List<String> errorCaseVariables = new List<String>();
-            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Error Info: ', e.getMessage()));
-            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Case Id: ', parentId));
-            ErrorLogger.log(e, errorCaseVariables, false);
-            RestCallResponse restResponseObject = new RestCallResponse('failure', e.getMessage());
-            return restResponseObject;        
-        } 
-    }
+public class InsertEmailMessageCalloutBody {
+        private String emailTextBody;
+        private String parentId;
+        private String emailSubject;
+        private String fromName;
+        private String fromAddress;
+        private String toAddress;
+        
+        public InsertEmailMessageCalloutBody(String emailTextBody, String parentId,
+                String emailSubject, String fromName, 
+                String fromAddress, String toAddress) {
+            this.emailTextBody = emailTextBody;
+            this.parentId = parentId;
+            this.emailSubject = emailSubject;
+            this.fromName = fromName;
+            this.fromAddress = fromAddress;
+            this.toAddress = toAddress;
+        }
+        
+        public String getEmailTextBody() {
+            return emailTextBody;        
+        }
+        
+        public String getParentId() {
+            return parentId;        
+        }
+        
+        public String getEmailSubject() {
+            return emailSubject;        
+        }
+        
+        public String getFromName() {
+            return fromName;        
+        }
+        
+        public String getFromAddress() {
+            return fromAddress;        
+        }
+        
+        public String getToAddress() {
+            return toAddress;
+        }
 }

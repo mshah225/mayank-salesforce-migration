@@ -1098,8 +1098,6 @@ public with sharing class HelpDeskController
                 }
             }
         }
-        
-        return myCase;
     }
     
     private PageReference redirectPage(Case caseToTrasferTo) {

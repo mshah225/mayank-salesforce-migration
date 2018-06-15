@@ -1194,6 +1194,7 @@
                                                     <tr>
                                                         <th>Past Due TIP</th>
                                                         <td id="account_balance_past_due_tip">
+                                                            {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
                                                             <apex:outputText value="{0, number, currency}">
                                                                 <apex:param value="{!studentAccount.Past_Due_Tip__c}" />
                                                             </apex:outputText>
@@ -1202,6 +1203,7 @@
                                                     <tr>
                                                         <th>Outstanding Account Balance</th>
                                                         <td id="account_balance_outstanding">
+                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c),'--','')}
                                                             <apex:outputText value="{0, number, currency}">
                                                                 <apex:param value="{!studentAccount.Account_Balance__c}" />
                                                             </apex:outputText>
@@ -1210,6 +1212,7 @@
                                                     <tr>
                                                         <th>Total Account Balance</th>
                                                         <td id="account_balance_total">
+                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c + studentAccount.Future_Balance__c),'--','')}
                                                             <apex:outputText value="{0, number, currency}">
                                                                 <apex:param value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}" />
                                                             </apex:outputText>

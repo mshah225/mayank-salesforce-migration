@@ -197,12 +197,14 @@ public with sharing class StudentProfileController {
             if (programPlan.Primary_Flag__c) {
                 studentProgram = programPlan;
             }
-        }
-        
+        }        
         setSubplanString();
     }
     
     private void setSubplanString() {
+        if (studentProgram == null || studentProgram.Id == null) {
+            return;
+        }
         List<Student_Program_Subplan__c> subplans = [
             SELECT Subplan_description__c
             FROM Student_Program_Subplan__c

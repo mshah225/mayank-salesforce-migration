@@ -5,7 +5,7 @@ public class InsertEmailMessageCalloutBody {
         private String fromName;
         private String fromAddress;
         private String toAddress;
-        
+
         public InsertEmailMessageCalloutBody(String emailTextBody, String parentId,
                 String emailSubject, String fromName, 
                 String fromAddress, String toAddress) {
@@ -16,27 +16,27 @@ public class InsertEmailMessageCalloutBody {
             this.fromAddress = fromAddress;
             this.toAddress = toAddress;
         }
-        
+
         public String getEmailTextBody() {
-            return emailTextBody;        
+            return emailTextBody;
         }
-        
+
         public String getParentId() {
-            return parentId;        
+            return parentId;
         }
-        
+
         public String getEmailSubject() {
-            return emailSubject;        
+            return emailSubject;
         }
-        
+
         public String getFromName() {
-            return fromName;        
+            return fromName;
         }
-        
+
         public String getFromAddress() {
-            return fromAddress;        
+            return fromAddress;
         }
-        
+
         public String getToAddress() {
             return toAddress;
         }

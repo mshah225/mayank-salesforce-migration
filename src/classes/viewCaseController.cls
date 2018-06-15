@@ -308,7 +308,7 @@ public with sharing class viewCaseController {
     
     private void submitCaseReply() {
         if (!String.isBlank(caseReply)) {
-            RestCallResponse restStatusAndInfo = uploadResponse();
+            RestCallResponse restStatusAndInfo = createAndSendEmailMessage();
             if (restStatusAndInfo.isSuccessfull()) {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));
             } else {
@@ -330,7 +330,7 @@ public with sharing class viewCaseController {
         }
     }
     
-    private RestCallResponse uploadResponse() {
+    private RestCallResponse createAndSendEmailMessage() {
         String jsonEmailBody = createJsonEmail();
         HttpRequest emailMessageRequest = createEmailMessageRequestWithJsonBody(jsonEmailBody);
         RestCallResponse restStatusAndInfo = sendRequestAndParseResponse(emailMessageRequest);

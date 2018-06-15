@@ -98,7 +98,6 @@
 
         <script>
             var $j = jQuery.noConflict();
-            
             function validateReply() {
                 var filePresent = false;
                 var replyPresent = false;
@@ -106,12 +105,12 @@
                     if ($(this).val().length > 0)
                         filePresent = true;
                 });
-                                                        
+
                 $j('textarea[id$=replyText]').each( function() {
                     if ($(this).val().trim().length > 0)
                         replyPresent = true;
                 });
-                                                        
+
                 if (filePresent) {
                     return validateFile();
                 }

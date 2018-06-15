@@ -3,13 +3,18 @@ private class InsertEmailMessageTest {
     
     private static List<Case> testCases;
     private static Contact testContact;
-    
+    private static Email_To_Case_Configuration__c testEmailToCaseConfig;
     private static void createTestData() {
         testContact = ContactService.createTestContact();
         insert testContact;
         
         testCases = CaseService.createTestCases(1, testContact);
         insert testCases;
+        
+        testEmailToCaseConfig = new Email_To_Case_Configuration__c();
+        testEmailToCaseConfig.Name = 'Reopen Closed Case Threshold';
+        testEmailToCaseConfig.Value__c = '14';
+        insert testEmailToCaseConfig;
     }
     
     @isTest
@@ -18,45 +23,39 @@ private class InsertEmailMessageTest {
         String emailBody = 'Test Email Body'; 
         String  parentId = testCases[0].Id; 
         String emailSubject = 'Test New Subject';
-        Boolean isIncoming = true;
         String fromName = 'Test Contact';
         String fromEmailAddress = testContact.Email;
         String toEmailAddress = 'test@test.com';
-        String emailStatus = '2';   
         
         Test.startTest();
         InsertEmailMessage.createEmailMessage(emailBody, parentId, emailSubject, 
-                                              isIncoming, fromName, fromEmailAddress, 
-                                              toEmailAddress, emailStatus);
+                                              fromName, fromEmailAddress, 
+                                              toEmailAddress);
         Test.stopTest();
         
-        List<EmailMessage> retrieveEmailMessage = [SELECT Id, ParentId, TextBody, FromAddress FROM EmailMessage LIMIT 1];
-        System.assertEquals(retrieveEmailMessage[0].ParentId, testCases[0].Id);
-        System.assertEquals(retrieveEmailMessage[0].TextBody, emailBody);
-        System.assertEquals(retrieveEmailMessage[0].FromAddress, testContact.Email);
+        List<EmailMessage> retreiveEmailMessage = [Select Id, ParentId, Subject, fromName from EmailMessage];
+        System.assertEquals(retreiveEmailMessage.size(), 1);
     }
     
     @isTest
-    private static void emailMessageInsertionFailure() {
+    private static void emailMessageInsertionOnClosedCase() {
         createTestData();
-        String emailBody = '';
+        String emailBody = 'Test Email Body'; 
         String  parentId = testCases[0].Id; 
-        String emailSubject = '';
-        Boolean isIncoming = true;
-        String fromName = '';
-        String fromEmailAddress = '';
-        String toEmailAddress = '';
-        String invalidStatusCode = '-1';
-        String emailStatus = invalidStatusCode;
+        testCases[0].Status = 'Closed: Resolved';
+        update testCases;
+        String emailSubject = 'Test New Subject';
+        String fromName = 'Test Contact';
+        String fromEmailAddress = testContact.Email;
+        String toEmailAddress = 'test@test.com';
         
         Test.startTest();
-        InsertEmailMessage.createEmailMessage(emailBody, parentId, emailSubject, 
-                                                              isIncoming, fromName, fromEmailAddress, 
-                                                              toEmailAddress, emailStatus);
+        RestCallResponse response = InsertEmailMessage.createEmailMessage(emailBody, parentId, emailSubject, 
+                                              fromName, fromEmailAddress, 
+                                              toEmailAddress);
         Test.stopTest();
-        
-        List<EmailMessage> retrieveEmailMessage = [SELECT Id, ParentId, TextBody, FromAddress FROM EmailMessage LIMIT 1];
-        
-        System.assertEquals(retrieveEmailMessage.size() , 0);
+        Case retrievedCase = [Select Id, IsClosed, Status from Case WHERE Id = :testCases[0].Id];
+        System.assertEquals(retrievedCase.IsClosed, false);
+        System.assertEquals(retrievedCase.Status,'Re-Opened');
     }
 }

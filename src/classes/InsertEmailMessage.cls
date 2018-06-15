@@ -1,43 +1,48 @@
-public class InsertEmailMessageCalloutBody {
-        private String emailTextBody;
-        private String parentId;
-        private String emailSubject;
-        private String fromName;
-        private String fromAddress;
-        private String toAddress;
+@RestResource(urlMapping = '/InsertEmailMessage/*')
+global class InsertEmailMessage {
+    
+    @HttpPost
+    global static RestCallResponse createEmailMessage(
+            String emailTextBody, 
+            String  parentId, 
+            String emailSubject, 
+            String fromName, 
+            String fromAddress, 
+            String toAddress) {
+        Messaging.InboundEmail emailResponse = new Messaging.InboundEmail(); 
+        List<String> toAddressAsList = new List<String>();
+        toAddressAsList.add(toAddress);
+        emailResponse.fromAddress = fromAddress;
+        emailResponse.fromName = fromName;
+        emailResponse.plainTextBody = emailTextBody + '\n\n' + GenerateReferenceIdOnEmailBody.addReferenceIdToEmailBody(parentId);
+        emailResponse.toAddresses = toAddressAsList;
+        emailResponse.subject = emailSubject;
         
-        public InsertEmailMessageCalloutBody(String emailTextBody, String parentId,
-                String emailSubject, String fromName, 
-                String fromAddress, String toAddress) {
-            this.emailTextBody = emailTextBody;
-            this.parentId = parentId;
-            this.emailSubject = emailSubject;
-            this.fromName = fromName;
-            this.fromAddress = fromAddress;
-            this.toAddress = toAddress;
-        }
+        Messaging.InboundEnvelope emailResponseEnvelope = new Messaging.InboundEnvelope();
+        emailResponseEnvelope.toAddress = toAddress;
+        emailResponseEnvelope.fromAddress = fromAddress;
         
-        public String getEmailTextBody() {
-            return emailTextBody;        
-        }
+        CaseInboundEmailHandler caseInboundEmailObject = new CaseInboundEmailHandler(); 
+        Messaging.InboundEmailResult emailResult;
         
-        public String getParentId() {
-            return parentId;        
+        try {
+            emailResult = caseInboundEmailObject.handleInboundEmail(emailResponse, emailResponseEnvelope);
+            if (emailResult.success) {
+                RestCallResponse restResponseObject = new RestCallResponse('success', emailResult.message);
+                return restResponseObject;    
+            } else {
+                RestCallResponse restResponseObject = new RestCallResponse('failure', emailResult.message);
+                return restResponseObject;
+            }
+        } catch(Exception e) {
+            List<String> errorCaseVariables = new List<String>();
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Error Info: ', 'Could not send email message from ASU Community'));
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('System Error Message: ', emailResult.message));
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Exception Error Message: ', e.getMessage()));
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Case Id: ', parentId));
+            ErrorLogger.log(e, errorCaseVariables, false);
+            RestCallResponse restResponseObject = new RestCallResponse('failure', emailResult.message);
+            return restResponseObject;
         }
-        
-        public String getEmailSubject() {
-            return emailSubject;        
-        }
-        
-        public String getFromName() {
-            return fromName;        
-        }
-        
-        public String getFromAddress() {
-            return fromAddress;        
-        }
-        
-        public String getToAddress() {
-            return toAddress;
-        }
+    }
 }

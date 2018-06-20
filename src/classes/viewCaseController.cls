@@ -7,6 +7,8 @@ public class viewCaseController{
     private Term__c termcAC;
     private Term__c termcB;
     private Map<String, String> viewAsMap;
+    private MyASUViewAs viewAsService;
+    
     public Id caseId {get;set;}
     public Decimal newPin { get; set; }
     public String firstName { get; set; }
@@ -43,8 +45,7 @@ public class viewCaseController{
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
+            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
         }
     }
 
@@ -73,14 +74,12 @@ public class viewCaseController{
     }
 
     public void popUserContact(){
-        if (viewingAs){
-            userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
-            stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
-            viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
+        if (viewAsService.hasViewAsRights) {
+            stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
+            viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
         }
-        else{
-            userContact = ContactService.getLoggedInContact();
-        }
+        
+        userContact = viewAsService.getViewAsContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
 
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
@@ -95,12 +94,11 @@ public class viewCaseController{
     }
     
      public Case getCaseDetails(){
-        if (viewingAs){
-            return MyASUViewAs.getViewAsCaseDetails(
+        if (viewAsService.hasViewAsRights) {
+            return viewAsService.getViewAsCaseDetails(
                 ApexPages.currentPage().getParameters().get('Id')
             );
-        }
-        else{
+        } else {
             Case returnCase=[
                 SELECT Id, CaseNumber, RecordType.Name, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
                     Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
@@ -135,20 +133,11 @@ public class viewCaseController{
         emailAddresses.add(userContact.Personal_Email__c);
         emailAddresses.add(userContact.EPO_Email__c);
 
-        if (viewingAs){
-            return MyASUViewAs.getViewAsCaseEmails(
-                EMAILVISIBILITYDATE,
-                ApexPages.currentPage().getParameters().get('id'),
-                emailAddresses
-            );
-        }
-        else{
-            return CaseService.getCaseEmailMessages(
-                EMAILVISIBILITYDATE,
-                ApexPages.currentPage().getParameters().get('id'),
-                emailAddresses
-            );
-        }
+        return viewAsService.getViewAsCaseEmails(
+            EMAILVISIBILITYDATE,
+            ApexPages.currentPage().getParameters().get('id'),
+            emailAddresses
+        );
     }
 
     public List<bomgar__Event__c> getChatMessages() {

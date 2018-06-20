@@ -1,160 +1,170 @@
-public without sharing class MyASUViewAs
-{
-    private static final String SECRET_KEY = '543d32e1eer10c3360X0916b16d4098q9ebc93d4';
-    private static final String GET_EFFECTIVE_IDENTITY_SERVICE_NAME = 'getEffIdent';
+public without sharing class MyASUViewAs {
+    private final String SECRET_KEY = '543d32e1eer10c3360X0916b16d4098q9ebc93d4';
+    private final String GET_EFFECTIVE_IDENTITY_SERVICE_NAME = 'getEffIdent';
+    private Map<String, String> response;
+    public Boolean hasViewAsRights;
 
-    /**
-    * Returns the values needed to verify view as access from My ASU
-    * @param The masqScopeIdCookie passed in the URL from My ASU
-    * @param The user who is viewing as asurite
-    * @return A Map containing the values
-    */
-    public static Map<String, String> getCalloutResponseContents(String idCookie, String asurite)
-    {
-        // Store these configuration parameters wherever you store your general app config/properties
-        String appid = 'salesforce_app';
-        String sharedSecret = SECRET_KEY; // this is the secret key assigned to the appid
-        String myAsuUrl = [SELECT MyASUURL__c FROM View_As_URL__c WHERE Name = 'URL'].MyASUURL__c;
+    public MyASUViewAs(String idCookie, String asurite) {
+        response = getCalloutResponseContents(idCookie, asurite);
+        hasViewAsRights = checkViewAsRights(response, asurite);
+    }
+    
+    public String getResponseValueFromMap(String specificResponse) {
+        return String.valueOf(response.get(specificResponse));
+    }
+    
+    private Map<String, String> getCalloutResponseContents(String idCookie, String asurite) {
+        String requestUrl = createRequestURL();
+        String xmlResponse = makeCallout();
+        return createMapForHttpResponse(xmlResponse);
+    }
+    
+    private String createRequestURL() {
+        String myAsuUrl = [SELECT MyASUURL__c FROM View_As_URL__c WHERE Name = 'URL' LIMIT 1].MyASUURL__c;
 
-        // Gather/determine input parameters to web service call
-        String realAsurite = asurite; // the real user identity -- get this from asuwebauth/SSO
-        String scopeIdCookie = idCookie; // this is from a cookie that My ASU sets to be visible by the domain .asu.edu
-        if (scopeIdCookie == null)
-        {
+        String scopeIdCookie = idCookie;
+        if (scopeIdCookie == null) {
             scopeIdCookie = '';
         }
 
-        // Generate request signature to authenticate our request to the web service
         String signatureTime = String.valueOf(System.currentTimeMillis()/1000);
         String stringToSign = 'service=' + GET_EFFECTIVE_IDENTITY_SERVICE_NAME;
-        stringToSign += '&appid=' + appid;
+        stringToSign += '&appid=salesforce_app';
         stringToSign += '&signaturetime=' + signatureTime;
-        stringToSign += '&real-asurite=' + realAsurite;
+        stringToSign += '&real-asurite=' + asurite;
         stringToSign += '&scopeid-cookie=' + scopeIdCookie;
 
-        Blob sigBlob = Crypto.generateMac('hmacSHA256', Blob.valueOf(stringToSign), Blob.valueOf(sharedSecret));
+        Blob sigBlob = Crypto.generateMac('hmacSHA256', Blob.valueOf(stringToSign), Blob.valueOf(SECRET_KEY));
         String signature = EncodingUtil.convertToHex(sigBlob);
 
-        // Build request url
         String requestUrl = myAsuUrl;
         requestUrl += '/ws/' + GET_EFFECTIVE_IDENTITY_SERVICE_NAME;
-        requestUrl += '?appid=' + appid;
+        requestUrl += '?appid=salesforce_app';
         requestUrl += '&signaturetime=' + signatureTime;
-        requestUrl += '&real-asurite=' + EncodingUtil.urlEncode(realAsurite, 'UTF-8');
+        requestUrl += '&real-asurite=' + EncodingUtil.urlEncode(asurite, 'UTF-8');
         requestUrl += '&scopeid-cookie=' + EncodingUtil.urlEncode(scopeIdCookie, 'UTF-8');
         requestUrl += '&signature=' + EncodingUtil.urlEncode(signature, 'UTF-8');
-
-        // Instantiate a new http object
-        Http h = new Http();
-
-         // Instantiate a new HTTP request, specify the method (GET) as well as the endpoint
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint(requestUrl);
-        req.setMethod('GET');
-
-        // Send the request, and return a response
-        // req.setTimeout(20000);
-        HttpResponse res = h.send(req);
-        String xml = res.getBody();
+        
+        return requestURL;
+    } 
+    
+    private String makeCallout() {
+        Http httpObject = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(requestUrl);
+        request.setMethod('GET');
+        HttpResponse response = httpObject.send(request);
+        return response.getBody();
+    }
+    
+    private Map<String, String> createMapForHttpResponse(String xmlResponse) {
         Dom.Document doc = new Dom.Document();
-        doc.load(xml);
-
-        // Retrieve the root element for this document.
-        Dom.XMLNode address = doc.getRootElement();
-
+        doc.load(xmlResponse);
+        Dom.XMLNode response = doc.getRootElement();
+        
         Map<String, String> viewAsValues = new Map<String, String>();
-        viewAsValues.put('authorizedToViewAs', address.getChildElement('authorizedToViewAs', null).getText());
-        viewAsValues.put('isViewingAs', address.getChildElement('isViewingAs', null).getText());
-        viewAsValues.put('effectiveAsurite', address.getChildElement('effectiveAsurite', null).getText());
-        viewAsValues.put('signoutUrl', address.getChildElement('signoutUrl', null).getText());
-        viewAsValues.put('viewAsUrl', address.getChildElement('viewAsUrl', null).getText());
-        viewAsValues.put('stopViewAsUrl', address.getChildElement('stopViewAsUrl', null).getText());
+        viewAsValues.put('authorizedToViewAs', response.getChildElement('authorizedToViewAs', null).getText());
+        viewAsValues.put('isViewingAs', response.getChildElement('isViewingAs', null).getText());
+        viewAsValues.put('effectiveAsurite', response.getChildElement('effectiveAsurite', null).getText());
+        viewAsValues.put('signoutUrl', response.getChildElement('signoutUrl', null).getText());
+        viewAsValues.put('viewAsUrl', response.getChildElement('viewAsUrl', null).getText());
+        viewAsValues.put('stopViewAsUrl', response.getChildElement('stopViewAsUrl', null).getText());
 
         return viewAsValues;
     }
-
-    /**
-    * Checks View As Map response to ensure user has rights to View As
-    * @param The Map recieved from the My ASU web service.
-    * @return A boolean stating if the user will be viewing as or not.
-    */
-    public static Boolean checkViewAsRights(Map<String, String> viewAsMap, String userAsurite)
-    {
-        if (!viewAsMap.isEmpty()
+    
+    private Boolean checkViewAsRights(Map<String, String> viewAsMap, String userAsurite){
+        return !viewAsMap.isEmpty()
                 && viewAsMap.get('authorizedToViewAs') == 'true'
                 && viewAsMap.get('isViewingAs') == 'true'
-                && userAsurite != viewAsMap.get('effectiveAsurite')
-            )
-        {
-            return true;
+                && userAsurite != viewAsMap.get('effectiveAsurite');
+    }
+    
+    public Contact getContact(String asurite) {
+        if (hasViewAsRights) {
+            return MyASUViewAsWithoutSharing.getContact(asurite);
+        } else {
+            return MyASUViewAsWithSharing.getContact(asurite);
         }
-        else
-        {
-            return false;
+    }
+
+    public Case getCaseDetails(Id caseId) {
+        if (hasViewAsRights) {
+            return MyASUViewAsWithoutSharing.getCaseDetails(caseId);
+        } else {
+            return MyASUViewAsWithSharing.getCaseDetails(caseId);
+        }
+    }
+    
+    public Map<Id, List<Case>> getOpenCases(List<Contact> contacts) {
+        if (hasViewAsRights) {
+            return MyASUViewAsWithoutSharing.getOpenCases(contacts);
+        } else {
+            return MyASUViewAsWithSharing.getOpenCases(contacts);
         }
     }
 
-    /**
-    * Calls the ContactService getContactToViewAs method to get the current
-    * contact for the user viewing as.
-    * @param The ASURITE to lookup the contact to view as
-    * @return The contact object
-    */
-    public static Contact getViewAsContact(String asurite)
-    {
-        Contact viewAsContact = ContactService.getContactToViewAs(asurite);
-
-        return viewAsContact;
+    public Map<Id, List<Case>> getClosedCases(List<Contact> contacts) {
+        if (hasViewAsRights) {
+            return MyASUViewAsWithoutSharing.getClosedCases(contacts);
+        } else {
+            return MyASUViewAsWithSharing.getClosedCases(contacts);
+        }
     }
 
-    /**
-    * Calls the CaseService to get all case details for a given case during view as.
-    * @param The case Id.
-    * @return The case object and it's fields.
-    */
-    public static Case getViewAsCaseDetails(Id caseId)
-    {
-        return CaseService.getCaseDetails(caseId);
+    public List<EmailMessage> getCaseEmails(Date launchDate, Id caseId, List<String> contactEmails) {
+        if (hasViewAsRights) {
+            return MyASUViewAsWithoutSharing.getCaseEmails(launchDate, caseId, contactEmails);
+        } else {
+            return MyASUViewAsWithSharing.getCaseEmails(launchDate, caseId, contactEmails);
+        }
     }
+        
+    private with sharing class MyASUViewAsWithSharing {
+     
+        public static Contact getContact(String asurite) {
+            return ContactService.getContactToViewAs(asurite);
+        }
 
-    /**
-    * Calls the CaseService to get all open cases for the given list of contacts.
-    * @param A list of contacts to get open cases for.
-    * @return A map with the open cases found for the contacts in the list.
-    */
-    public static Map<Id, List<Case>> getViewAsOpenCases(List<Contact> contacts)
-    {
-        Map<Id, List<Case>> viewAsOpenCases = CaseService.getVisibleOpenCases(contacts);
+        public static Case getCaseDetails(Id caseId) {
+            return CaseService.getCaseDetails(caseId);
+        }
+        
+        public static Map<Id, List<Case>> getOpenCases(List<Contact> contacts) {
+            return CaseService.getVisibleOpenCases(contacts);
+        }
 
-        return viewAsOpenCases;
+        public static Map<Id, List<Case>> getClosedCases(List<Contact> contacts) {
+            return CaseService.getVisibleClosedCases(contacts);
+        }
+    
+        public static List<EmailMessage> getCaseEmails(Date launchDate, Id caseId,
+                List<String> contactEmails) {
+            return CaseService.getCaseEmailMessages(launchDate, caseId, contactEmails);
+        }
     }
+    
+    private without sharing class MyASUViewAsWithoutSharing {
+     
+        public static Contact getContact(String asurite) {
+            return ContactService.getContactToViewAs(asurite);
+        }
 
-    /**
-    * Calls the CaseService to get all closed cases for the given list of contacts.
-    * @param A list of contacts to get closed cases for.
-    * @return A map with the closed cases found for the contacts in the list.
-    */
-    public static Map<Id, List<Case>> getViewAsClosedCases(List<Contact> contacts)
-    {
-        Map<Id, List<Case>> viewAsClosedCases = CaseService.getVisibleClosedCases(contacts);
+        public static Case getCaseDetails(Id caseId) {
+            return CaseService.getCaseDetails(caseId);
+        }
+        
+        public static Map<Id, List<Case>> getOpenCases(List<Contact> contacts) {
+            return CaseService.getVisibleOpenCases(contacts);
+        }
 
-        return viewAsClosedCases;
-    }
-
-
-    /**
-    * Calls the CaseService to get all email messages attached ot the case.
-    * @param the launchDate of the email messages on the service center
-    * @param the case id the email messages are attached to
-    * @param the contact email address to display.
-    * @return A list with the email messages.
-    */
-    public static List<EmailMessage> getViewAsCaseEmails(Date launchDate, Id caseId,
-            List<String> contactEmails)
-    {
-        List<EmailMessage> viewAsCaseEmails = CaseService.getCaseEmailMessages(launchDate,
-                caseId, contactEmails);
-
-        return viewAsCaseEmails;
+        public static Map<Id, List<Case>> getClosedCases(List<Contact> contacts) {
+            return CaseService.getVisibleClosedCases(contacts);
+        }
+    
+        public static List<EmailMessage> getCaseEmails(Date launchDate, Id caseId,
+                List<String> contactEmails) {
+            return CaseService.getCaseEmailMessages(launchDate, caseId, contactEmails);
+        }
     }
 }

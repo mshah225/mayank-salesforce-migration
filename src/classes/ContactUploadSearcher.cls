@@ -195,7 +195,13 @@ public without sharing class ContactUploadSearcher {
                 String.format('Found existing Contact ID: {0} Based on EPO email match: {1} and name match: {2}', 
                     new String[] {contactMatch.Id, contactMatch.EPO_Email__c, contactMatch.FirstName});
             return true;
-        }
+        } else if (contactMatch.FirstName != null && contactMatch.ASU_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.ASU_Email__c).toLowerCase())) {
+            Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.ASU_Email__c).toLowerCase());
+            matchedDetail.Contact__c = contactMatch.Id;
+            matchedDetail.Processing_Notes__c += 
+                String.format('Found existing Contact ID: {0} Based on ASU email match: {1} and name match: {2}', 
+                    new String[] {contactMatch.Id, contactMatch.ASU_Email__c, contactMatch.FirstName});
+            return true;
         return false;
     }
     

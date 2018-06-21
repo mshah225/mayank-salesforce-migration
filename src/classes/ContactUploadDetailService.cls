@@ -9,12 +9,12 @@ public class ContactUploadDetailService {
         'Phone' => 'Phone__c',
         'Street Address' => 'Address__c',
         'City' => 'City__c',
-        'State Code' => 'State__c',
-        'Country Code' => 'Country__c',
+        'State' => 'State__c',
+        'Country' => 'Country__c',
         'Postal Code' => 'Postal_Code__c',
         'Subscription ID' => 'Subscription__c',
         'EMPLID' => 'EMPLID__c',
-        'Is Unsubscribed' => 'Is_Unsubscribed__c'
+        'Subscriber Status' => 'Subscriber_Status__c'
     };
 
     private Map<Integer, String> columnNames;
@@ -64,7 +64,7 @@ public class ContactUploadDetailService {
                 Subscription__c = uploadDetail.Subscription__c,
                 Unique_Key__c = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' +
                     String.valueOf(uploadDetail.Contact__c).left(15),
-                Subscriber_Status__c = uploadDetail.Is_Unsubscribed__c != null && uploadDetail.Is_Unsubscribed__c.equalsIgnoreCase('true') ? 'Unsubscribed' : 'Subscribed' );
+                Subscriber_Status__c = uploadDetail.Subscriber_Status__c);
         }
         return subToCreate;
     }

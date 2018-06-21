@@ -14,12 +14,12 @@ public without sharing class MyASUViewAs {
     }
     
     private Map<String, String> getCalloutResponseContents(String idCookie, String asurite) {
-        String requestUrl = createRequestURL();
-        String xmlResponse = makeCallout();
+        String requestUrl = createRequestURL(idCookie, asurite);
+        String xmlResponse = makeCallout(requestUrl);
         return createMapForHttpResponse(xmlResponse);
     }
     
-    private String createRequestURL() {
+    private String createRequestURL(String idCookie, String asurite) {
         String myAsuUrl = [SELECT MyASUURL__c FROM View_As_URL__c WHERE Name = 'URL' LIMIT 1].MyASUURL__c;
 
         String scopeIdCookie = idCookie;
@@ -48,7 +48,7 @@ public without sharing class MyASUViewAs {
         return requestURL;
     } 
     
-    private String makeCallout() {
+    private String makeCallout(String requestUrl) {
         Http httpObject = new Http();
         HttpRequest request = new HttpRequest();
         request.setEndpoint(requestUrl);

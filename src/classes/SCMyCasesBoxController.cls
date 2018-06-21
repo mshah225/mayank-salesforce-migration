@@ -52,7 +52,7 @@ public with sharing class SCMyCasesBoxController{
             stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
         }
-        userContact = viewAsService.getViewAsContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+        userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
@@ -92,7 +92,7 @@ public with sharing class SCMyCasesBoxController{
         List<Contact> contacts = new List<Contact>{ userContact };
         Map<Id, List<Case>> closedCaseMap;
 
-        closedCaseMap = viewAsUrl.getViewAsClosedCases(contacts);
+        closedCaseMap = viewAsService.getClosedCases(contacts);
 
         if (closedCaseMap.get(userContact.Id) != null)
         {
@@ -169,7 +169,7 @@ public with sharing class SCMyCasesBoxController{
     {
         List<Contact> contacts = new List<Contact> { userContact };
         Map<Id, List<Case>> openCaseMap;
-        openCaseMap = viewAsUrl.getViewAsOpenCases(contacts);
+        openCaseMap = viewAsService.getOpenCases(contacts);
 
         return (openCaseMap.get(userContact.Id) == null)
             ? new List<Case>() : openCaseMap.get(userContact.Id);

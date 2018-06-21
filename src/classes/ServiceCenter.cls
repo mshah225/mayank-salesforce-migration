@@ -52,7 +52,7 @@ public with sharing class ServiceCenter
             stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
         }
-        userContact = viewAsService.getViewAsContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+        userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;

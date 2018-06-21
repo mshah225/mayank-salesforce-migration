@@ -42,7 +42,7 @@ public with sharing class ViewAllCasesController
             stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
         }
-        userContact = viewAsService.getViewAsContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+        userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
@@ -54,7 +54,7 @@ public with sharing class ViewAllCasesController
         List<Contact> contacts = new List<Contact> { userContact };
         Map<Id, List<Case>> openCaseMap;
 
-        openCaseMap = viewAsService.getViewAsOpenCases(contacts)
+        openCaseMap = viewAsService.getOpenCases(contacts);
             
         return (openCaseMap.get(userContact.Id) == null)
             ? new List<Case>() : openCaseMap.get(userContact.Id);
@@ -78,7 +78,7 @@ public with sharing class ViewAllCasesController
 
         Map<Id, List<Case>> closedCaseMap;
 
-        closedCaseMap = viewAsService.getViewAsClosedCases(loggedInContacts);
+        closedCaseMap = viewAsService.getClosedCases(loggedInContacts);
 
         return closedCaseMap.get(userContact.Id) == null ? new List<Case>() : closedCaseMap.get(userContact.Id);
     }

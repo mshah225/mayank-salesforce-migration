@@ -8,7 +8,7 @@ private class MyASUViewAsTest {
         Profile profileSettings = [SELECT Id FROM Profile WHERE Name='ASU Chatter User'];
         userToUse = new User(Alias = 'standt', Email='standarduser@testorg.com',
         EmailEncodingKey='UTF-8', LastName='Testing', LanguageLocaleKey='en_US',
-        LocaleSidKey='en_US', ProfileId = p.Id,
+        LocaleSidKey='en_US', ProfileId = profileSettings.Id,
         TimeZoneSidKey='America/Los_Angeles',
         UserName=uniqueUserName);
     }

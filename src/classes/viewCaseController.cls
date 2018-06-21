@@ -79,7 +79,7 @@ public class viewCaseController{
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
         }
         
-        userContact = viewAsService.getViewAsContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+        userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
 
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
@@ -95,9 +95,7 @@ public class viewCaseController{
     
      public Case getCaseDetails(){
         if (viewAsService.hasViewAsRights) {
-            return viewAsService.getViewAsCaseDetails(
-                ApexPages.currentPage().getParameters().get('Id')
-            );
+            return viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
         } else {
             Case returnCase=[
                 SELECT Id, CaseNumber, RecordType.Name, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
@@ -133,7 +131,7 @@ public class viewCaseController{
         emailAddresses.add(userContact.Personal_Email__c);
         emailAddresses.add(userContact.EPO_Email__c);
 
-        return viewAsService.getViewAsCaseEmails(
+        return viewAsService.getCaseEmails(
             EMAILVISIBILITYDATE,
             ApexPages.currentPage().getParameters().get('id'),
             emailAddresses

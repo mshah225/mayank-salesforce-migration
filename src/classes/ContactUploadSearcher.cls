@@ -278,14 +278,27 @@ public without sharing class ContactUploadSearcher {
     
     private void insertContactsForUnmatchedDetails() {
         List<Contact> newUnmatchedContacts = new List<Contact>();
+        List<Contact_Upload_Detail__c> unmatchedDetails = new List<Contact_Upload_Detail__c>();
         for (Contact_Upload_Detail__c processedDetail : detailsToSearch) {
             if (processedDetail.Contact__c == null) {
                 Contact createdContact = createContact(processedDetail);
                 newUnmatchedContacts.add(createdContact);
+                unmatchedDetails.add(processedDetail);
                 unmappedDetailToContact.put(processedDetail, createdContact);
             }
         }
-        insert newUnmatchedContacts;
+        
+        Database.SaveResult[] saveResults = Database.insert(newUnmatchedContacts, false);
+        for (Integer i = 0; i < saveResults.size(); i++) {
+            if (!saveResults[i].isSuccess()) {
+                Contact_Upload_Detail__c erroredDetail = unmatchedDetails[i];
+                erroredDetail.Status__c = 'Error';
+                erroredDetail.Processing_Notes__c += ' Error(s) creating Contact: ';
+                for (Database.Error saveError : saveResults[i].getErrors()) {
+                    erroredDetail.Processing_Notes__c += saveError.getMessage();
+                }
+            }
+        }
         associateContactsToUploadDetails();
     }
     
@@ -309,8 +322,11 @@ public without sharing class ContactUploadSearcher {
     
     private void associateContactsToUploadDetails() {
         for (Contact_Upload_Detail__c unmatchedDetail : unmappedDetailToContact.keySet()) {
+            if (unmatchedDetail.Status__c == 'Error') {
+                continue;
+            }
             unmatchedDetail.Contact__c = unmappedDetailToContact.get(unmatchedDetail).Id;
-            unmatchedDetail.Processing_Notes__c += 'Created new Contact: ' + unmatchedDetail.Contact__c;
+            unmatchedDetail.Processing_Notes__c += ' Created new Contact: ' + unmatchedDetail.Contact__c;
         }
     }
 }

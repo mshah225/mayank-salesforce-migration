@@ -54,6 +54,8 @@ public without sharing class MyASUViewAs {
         request.setEndpoint(requestUrl);
         request.setMethod('GET');
         HttpResponse response = httpObject.send(request);
+        System.debug(response);
+        System.debug(response.getBody());
         return response.getBody();
     }
     

@@ -1,17 +1,20 @@
 public class NavLinks {
-    
     public NavLinks() {}
     public Navlinks(Object controller) {}
     public List<Link> linkList { get; set; }
+    
     private static Cookie linksCookie;
     
     public PageReference init() {
         if (ApexPages.currentPage().getParameters().get('navbar') != null) {
             linksCookie = createCookieFromURL();
             ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});
-        } else {
+        } else if (ApexPages.currentPage().getCookies().get('navbarlinks') != null) {
             linksCookie = getNavBarCookie();
+        } else {
+            return null;
         }
+        
         parseCookieJsonAndPopulateLinks();
         return null;
     }
@@ -34,10 +37,13 @@ public class NavLinks {
     private void parseCookieJsonAndPopulateLinks() {
         List<Object> linkObjectsFromParsedJson = new List<Object>();
         String linksJson;
-        if (linksCookie != null) {
-            linksJson = linksCookie.getValue();
-            linksJson = cleanUpHtmlEncoding(linksJson);
+        if (linksCookie == null) {
+            linkList = new List<Link>();
+            return;
         }
+        
+        linksJson = linksCookie.getValue();
+        linksJson = cleanUpHtmlEncoding(linksJson);
         try {
             linkObjectsFromParsedJson = parseCookieJson(linksJson);
             linkList = new List<Link>();

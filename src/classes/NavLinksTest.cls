@@ -116,65 +116,65 @@ private class NavLinksTest {
     }
     
     
-    @isTest
-    private static void retrieveCookieFromPage() {
-        setUp();
-        Test.startTest();
-        System.runAs(testUser) {
-            sc = new ServiceCenter();
-            nav = new NavLinks(sc);
-            String links = '{"navbarLinks":' + '[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
-                '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
-                '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/servicecenter"},' +
-                '{"Campus Services":"https://webapp4-dev.asu.edu/myasu/student/campusservices"},' +
-                '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}]}';
-            setCookie(links);
-            nav.init();
-        }
-        Test.stopTest();
-        System.assertEquals(nav.linkList[0].name,'Home');
-        System.assertEquals(nav.linkList[0].url,'https://webapp4-dev.asu.edu/myasu/student');
-        
-        System.assertEquals(nav.linkList[1].name,'Finances');
-        System.assertEquals(nav.linkList[1].url,'https://webapp4-dev.asu.edu/myasu/student/finances');
+    // @isTest
+    // private static void retrieveCookieFromPage() {
+    //     setUp();
+    //     Test.startTest();
+    //     System.runAs(testUser) {
+    //         sc = new ServiceCenter();
+    //         nav = new NavLinks(sc);
+    //         String links = '{"navbarLinks":' + '[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
+    //             '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
+    //             '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/servicecenter"},' +
+    //             '{"Campus Services":"https://webapp4-dev.asu.edu/myasu/student/campusservices"},' +
+    //             '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}]}';
+    //         setCookie(links);
+    //         nav.init();
+    //     }
+    //     Test.stopTest();
+    //     System.assertEquals(nav.linkList[0].name,'Home');
+    //     System.assertEquals(nav.linkList[0].url,'https://webapp4-dev.asu.edu/myasu/student');
+    // 
+    //     System.assertEquals(nav.linkList[1].name,'Finances');
+    //     System.assertEquals(nav.linkList[1].url,'https://webapp4-dev.asu.edu/myasu/student/finances');
+    // 
+    //     System.assertEquals(nav.linkList[2].name,'Service Center');
+    //     System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
+    // 
+    //     System.assertEquals(nav.linkList[3].name,'Campus Services');
+    //     System.assertEquals(nav.linkList[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
+    // 
+    //     System.assertEquals(nav.linkList[4].name,'Profile');
+    //     System.assertEquals(nav.linkList[4].url, 'https://webapp4-dev.asu.edu/myasu/student/profile');
+    // }
     
-        System.assertEquals(nav.linkList[2].name,'Service Center');
-        System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
-        
-        System.assertEquals(nav.linkList[3].name,'Campus Services');
-        System.assertEquals(nav.linkList[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
-        
-        System.assertEquals(nav.linkList[4].name,'Profile');
-        System.assertEquals(nav.linkList[4].url, 'https://webapp4-dev.asu.edu/myasu/student/profile');
-    }
+    // @isTest
+    // private static void retrieveNullCookieFromPage() {
+    //     setUp();
+    //     Test.startTest();
+    //     System.runAs(testUser) {
+    //         sc = new ServiceCenter();
+    //         nav = new NavLinks(sc);
+    //         String links = '[]';
+    //         setCookie(links);
+    //         nav.init();
+    //     }
+    //     Test.stopTest();
+    //     System.assertEquals(nav.linkList, null);
+    // }
     
-    @isTest
-    private static void retrieveNullCookieFromPage() {
-        setUp();
-        Test.startTest();
-        System.runAs(testUser) {
-            sc = new ServiceCenter();
-            nav = new NavLinks(sc);
-            String links = '[]';
-            setCookie(links);
-            nav.init();
-        }
-        Test.stopTest();
-        System.assertEquals(nav.linkList, null);
-    }
-    
-    @isTest
-    private static void incorrectStringAsCookie() {
-        setUp();
-        Test.startTest();
-        System.runAs(testUser) {
-            sc = new ServiceCenter();
-            nav = new NavLinks(sc);
-            ApexPages.currentPage().getParameters().put('navbar',
-                '{"navbarLinks":');
-            nav.init();
-        }
-        Test.stopTest();
-        System.assertEquals(nav.linkList, null);
-    }
+    // @isTest
+    // private static void incorrectStringAsCookie() {
+    //     setUp();
+    //     Test.startTest();
+    //     System.runAs(testUser) {
+    //         sc = new ServiceCenter();
+    //         nav = new NavLinks(sc);
+    //         ApexPages.currentPage().getParameters().put('navbar',
+    //             '{"navbarLinks":');
+    //         nav.init();
+    //     }
+    //     Test.stopTest();
+    //     System.assertEquals(nav.linkList, null);
+    // }
 }

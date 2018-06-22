@@ -1,19 +1,18 @@
 public class CivitasPersistenceController {    
     private static final Integer CENSUS_OFFSET = 22;
-    private static String emplId;
+    
     private Integer endMonth;
     private String nextTerm;
     private String prevTerm;
     private String currentTerm;
     private Integer startMonth;
-    
-    public List<String> months = new List<String>();
-    public static Integer dayValue = 0;
-    public static List<CivitasWrapper> dataList { get; set; }
-    public static final Date TODAY = System.today();
-    
     private String contactEmplId;
     
+    public static final Date TODAY = System.today();
+    public static Integer dayValue = 0;
+    
+    public List<String> months = new List<String>();
+    public static List<CivitasWrapper> dataList { get; set; }
     public List<CivitasWrapper> civitasData { get; set; }
     
     public CivitasPersistenceController() {
@@ -34,19 +33,18 @@ public class CivitasPersistenceController {
     
     public String getInfo {
         get {
-            emplid = apexpages.currentPage().getparameters().get('contactId');
-            if (String.isEmpty(emplid)) {
+            if (String.isEmpty(contactEmplId)) {
                 getInfo = Label.EMPLIDMissing;
                 return getInfo;
             }
             List<Contact> contactList = new List<Contact>();
-            if (emplid.substring(0, 3).equals('003')) {
-                contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE id =: emplid LIMIT 1];
+            if (contactEmplId.substring(0, 3).equals('003')) {
+                contactList = [Select Id, FirstName, LastName, Emplid__c FROM Contact WHERE id =: contactEmplId LIMIT 1];
             } else {
-                contactList = [Select Id, FirstName, LastName, emplid__c FROM Contact WHERE emplid__c =: emplid LIMIT 1];
+                contactList = [Select Id, FirstName, LastName, Emplid__c FROM Contact WHERE Emplid__c =: contactEmplId LIMIT 1];
             }
             if (!contactList.isEmpty()) {
-                getInfo = 'Name: ' + contactList[0].FirstName + ' ' + contactList[0].LastName + ' (' + emplid + ') Persistence Level: No Data Available';
+                getInfo = 'Name: ' + contactList[0].FirstName + ' ' + contactList[0].LastName + ' (' + contactEmplId + ') Persistence Level: No Data Available';
             } else {
                 getInfo = Label.EMPLIDMissing; 
             }
@@ -106,7 +104,13 @@ public class CivitasPersistenceController {
     private List<CivitasWrapper> getCivitasData() {
         civitasData = new List<CivitasWrapper>();
         List<CivitasWrapper> rejected = new List<CivitasWrapper>();
-        Contact thisContact = [Select Id, FirstName, LastName, EmplId__c FROM Contact WHERE EmplId__c = :contactEmplId LIMIT 1];
+        List<Contact> contacts = [
+            SELECT Id, FirstName, LastName, EmplId__c 
+            FROM Contact 
+            WHERE EmplId__c = :contactEmplId 
+            OR Id = :contactEmplId LIMIT 1];
+
+        Contact thisContact = contacts[0];
         Persistence_Outlook__c prevData;
         Integer dateIncr = startDate.day();
         for (Persistence_Outlook__c outlook : [SELECT 

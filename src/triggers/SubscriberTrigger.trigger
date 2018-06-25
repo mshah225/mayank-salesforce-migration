@@ -27,5 +27,5 @@ trigger SubscriberTrigger on Subscriber__c (after delete, after insert, after un
                 d.afterUnDelete();
             }
         }
-	}
+    }
 }

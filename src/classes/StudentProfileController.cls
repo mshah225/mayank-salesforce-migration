@@ -1277,7 +1277,7 @@ global with sharing class StudentProfileController {
         return null;
     }
     
-    public class GeneralIndicatorsWrapper {
+    global class GeneralIndicatorsWrapper {
         public ASU_STDNT_RETENTION__x asuStudentRetention = new ASU_STDNT_RETENTION__x();
         public JBT_RET_FINAID_INDICATORS__x finAidIndicators = new JBT_RET_FINAID_INDICATORS__x();
         public List<JBT_RET_FINAID_UNRESOLVED__x> finAidUnresolvedList = new List<JBT_RET_FINAID_UNRESOLVED__x>();
@@ -1288,7 +1288,7 @@ global with sharing class StudentProfileController {
         public JBT_RET_MYASU_ACCESS_CNT_VW__x myAsuAccessCount = new JBT_RET_MYASU_ACCESS_CNT_VW__x();
     }
     
-    public class FinancialAidWrapper {
+    global class FinancialAidWrapper {
         public Set<String> aidYears { get; set; }
         public List<Financial_Aid_Detail__c> summaryRecords { get; set; }   
         
@@ -1298,12 +1298,12 @@ global with sharing class StudentProfileController {
         }
     }
     
-    public class AdvNoteWrapper {
+    global class AdvNoteWrapper {
         public PS_ASU_SP_ADNOTE_V__x note {get; set;}
         public String advUserId {get; set;}
     }
     
-    public class AcademicProgressDataWrapper {
+    global class AcademicProgressDataWrapper {
         public Student_Program_Plan__c jbtRetAcadSummaryVw;
         public Student_Program_Plan__c psAsuSpAcStndv;
         public List<Student_Program_Plan_Advisor__c> psAsuSpAcadAdvList;
@@ -1311,7 +1311,7 @@ global with sharing class StudentProfileController {
         public Student_Program_Plan__c jbtRetOthInd1Vw;
     }
     
-    public class ClassesWrapper {
+    global class ClassesWrapper {
         public Set<String> classTerms = new Set<String>();
         public Set<String> classSessions = new Set<String>();
         public Set<String> asrClasses = new Set<String>();
@@ -1319,7 +1319,7 @@ global with sharing class StudentProfileController {
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
     }
     
-    public class SortableTransferWork implements Comparable{
+    global class SortableTransferWork implements Comparable{
         JBT_RET_CLASS_XFER__x  transferInfo;
         
         public SortableTransferWork(JBT_RET_CLASS_XFER__x  transferIn){
@@ -1387,7 +1387,7 @@ global with sharing class StudentProfileController {
         }
     }
     
-    public class SortableClass implements Comparable{
+    global class SortableClass implements Comparable{
         PS_ASU_SP_CLASS_V__x classInfo;
         
         public SortableClass(PS_ASU_SP_CLASS_V__x classIn){
@@ -1464,7 +1464,7 @@ global with sharing class StudentProfileController {
         }
     }
     
-    public class SortableCreditByExam implements Comparable {
+    global class SortableCreditByExam implements Comparable {
         PS_ASU_SP_TRNSFR_V__x examInfo;
         
         public SortableCreditByExam(PS_ASU_SP_TRNSFR_V__x examIn){
@@ -1501,7 +1501,7 @@ global with sharing class StudentProfileController {
         }
     }
     
-    public class CommentWrapper {
+    global class CommentWrapper {
         public PS_ASU_SP_COMMNT_V__x comment {get; set;}
         public String commenterUserId {get; set;}
     }

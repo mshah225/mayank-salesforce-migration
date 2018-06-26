@@ -18,13 +18,15 @@ public class ContactUploadValidator {
         checkSubscription();
         checkFirstAndLastName();
         checkEmail();
+        checkSubscriberStatus();
+        checkSubscriberStatusValue();
     }
     
     private Boolean checkSubscription() {
         if (detail.Subscription__c != null) {
             return validIdForSubscription();
         }
-        setError('Subscription Id is REQUIRED. ');
+        setError('Subscription Id is REQUIRED.');
         return false;
     }
     
@@ -33,7 +35,7 @@ public class ContactUploadValidator {
             return true;
         }
         detail.Subscription__c = null;
-        setError('Subscription Id is invalid. ');
+        setError('Subscription Id is invalid.');
         return false;
     }
     
@@ -50,7 +52,7 @@ public class ContactUploadValidator {
         if (!String.isBlank(detail.First_Name__c) && !String.isBlank(detail.Last_Name__c)) {
             return true;
         }
-        setError('First and last names are REQUIRED. ');
+        setError('First and last names are REQUIRED.');
         return false;
     }
     
@@ -59,13 +61,30 @@ public class ContactUploadValidator {
             detail.Email__c = detail.Email__c.toLowerCase();
             return true;
         }
-        setError('Email is REQUIRED. ');
+        setError('Email is REQUIRED.');
+        return false;
+    }
+    
+    private Boolean checkSubscriberStatus() {
+        if (!String.isBlank(detail.Subscriber_Status__c)) {
+            return true;
+        }
+        setError('Subscriber Status is REQUIRED.');
+        return false;
+    }
+    
+    private Boolean checkSubscriberStatusValue() {
+        if (detail.Subscriber_Status__c.equalsIgnoreCase('Subscribed') || 
+                detail.Subscriber_Status__c.equalsIgnoreCase('Unsubscribed') /*|| 
+                detail.Subscriber_Status__c.equalsIgnoreCase('No Preference')*/) {
+            return true;
+        }
+        setError('Subscriber Status can only have the values Subscribed, Unsubscribed or No Preference.');
         return false;
     }
     
     private void cleanOptionalFields() {
         cleanPhoneNumber();
-        cleanCountryCode();
     }
     
     private void cleanPhoneNumber() {
@@ -74,15 +93,8 @@ public class ContactUploadValidator {
         }
     }
     
-    private void cleanCountryCode() {
-        if (detail.Country__c != null && detail.Country__c.length() != 2) {
-            detail.Processing_Notes__c += 'Invalid country code. ';
-            detail.Country__c = null;
-        }
-    }
-    
     private void setError(String errorMessage) {
         detail.Status__c = 'Error';
-        detail.Processing_Notes__c += errorMessage;
+        detail.Processing_Notes__c += errorMessage + ' ';
     }
 }

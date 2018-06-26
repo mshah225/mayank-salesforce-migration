@@ -19,6 +19,7 @@ public class ContactUploadValidator {
         checkFirstAndLastName();
         checkEmail();
         checkSubscriberStatus();
+        checkSubscriberStatusValue();
     }
     
     private Boolean checkSubscription() {
@@ -65,11 +66,14 @@ public class ContactUploadValidator {
     }
     
     private Boolean checkSubscriberStatus() {
-        if (String.isBlank(detail.Subscriber_Status__c)) {
-            setError('Subscriber Status is REQUIRED.');
-            return false;
+        if (!String.isBlank(detail.Subscriber_Status__c)) {
+            return true;
         }
-        
+        setError('Subscriber Status is REQUIRED.');
+        return false;
+    }
+    
+    private Boolean checkSubscriberStatusValue() {
         if (detail.Subscriber_Status__c.equalsIgnoreCase('Subscribed') || 
                 detail.Subscriber_Status__c.equalsIgnoreCase('Unsubscribed') || 
                 detail.Subscriber_Status__c.equalsIgnoreCase('No Preference')) {

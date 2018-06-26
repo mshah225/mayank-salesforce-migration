@@ -75,8 +75,8 @@ public class ContactUploadValidator {
     
     private Boolean checkSubscriberStatusValue() {
         if (detail.Subscriber_Status__c.equalsIgnoreCase('Subscribed') || 
-                detail.Subscriber_Status__c.equalsIgnoreCase('Unsubscribed') || 
-                detail.Subscriber_Status__c.equalsIgnoreCase('No Preference')) {
+                detail.Subscriber_Status__c.equalsIgnoreCase('Unsubscribed') /*|| 
+                detail.Subscriber_Status__c.equalsIgnoreCase('No Preference')*/) {
             return true;
         }
         setError('Subscriber Status can only have the values Subscribed, Unsubscribed or No Preference.');

@@ -3,7 +3,7 @@ trigger SubscriberTrigger on Subscriber__c (after delete, after insert, after un
 
     SubscriberDispatcher d = new SubscriberDispatcher(trigger.new, trigger.newMap, trigger.old, trigger.oldMap);
 
-    if(TriggerRecursionCheck.FirstRunCheck(1)) {
+    if(TriggerRecursionChecker.BeforeTriggerFirstRunCheck()) {
 
         if (trigger.isBefore) {
 
@@ -13,7 +13,7 @@ trigger SubscriberTrigger on Subscriber__c (after delete, after insert, after un
         }
     }
 
-    if(TriggerRecursionCheck.FirstRunCheck(2)) {
+    if(TriggerRecursionChecker.AfterTriggerFirstRunCheck()) {
 
         if (trigger.isAfter) {
 

@@ -73,7 +73,7 @@ private class ContactUploadDetailServiceTest {
 
         Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         cudBeingCreated.Contact__c = createdContact.Id;
-        cudBeingCreated.Is_Unsubscribed__c = 'false';
+        cudBeingCreated.Subscriber_Status__c = 'Subscribed';
 
         Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         System.assertEquals(subCreated.Subscriber_Status__c, 'Subscribed');
@@ -87,7 +87,7 @@ private class ContactUploadDetailServiceTest {
 
         Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         cudBeingCreated.Contact__c = createdContact.Id;
-        cudBeingCreated.Is_Unsubscribed__c = 'true';
+        cudBeingCreated.Subscriber_Status__c = 'Unsubscribed';
 
         Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         System.assertEquals(subCreated.Subscriber_Status__c, 'Unsubscribed');

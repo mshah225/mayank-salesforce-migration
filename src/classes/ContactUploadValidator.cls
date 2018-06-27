@@ -18,7 +18,7 @@ public class ContactUploadValidator {
         checkSubscription();
         checkFirstAndLastName();
         checkEmail();
-        checkSubscriberStatus();
+        checkSubscriberStatusAndValue();
         checkSubscriberStatusValue();
     }
     
@@ -63,6 +63,12 @@ public class ContactUploadValidator {
         }
         setError('Email is REQUIRED.');
         return false;
+    }
+    
+    private Boolean checkSubscriberStatusAndValue() {
+        if (checkSubscriberStatus) {
+            checkSubscriberStatusValue();
+        }
     }
     
     private Boolean checkSubscriberStatus() {

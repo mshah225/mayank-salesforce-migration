@@ -17,7 +17,7 @@ private class ContactUploadDetailServiceTest {
         columnPosToHeaderMap.put(3, 'Email Address');
         columnPosToHeaderMap.put(4, 'Subscription ID');
         columnPosToHeaderMap.put(5, 'EMPLID');
-        columnPosToHeaderMap.put(6, 'Is Unsubscribed');
+        columnPosToHeaderMap.put(6, 'Subscriber Status');
 
         detailService = new ContactUploadDetailService(contactUpload.Id, columnPosToHeaderMap);
 
@@ -25,7 +25,7 @@ private class ContactUploadDetailServiceTest {
         subForDetails = (Subscription__c)subscriptionCreator.create(1)[0];
         insert subForDetails;
 
-        contactValues = new List<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, '1234567890'};
+        contactValues = new List<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, '1234567890', 'Subscribed'};
     }
 
     @isTest
@@ -37,6 +37,7 @@ private class ContactUploadDetailServiceTest {
         System.assertEquals('Test', cudBeingCreated.First_Name__c);
         System.assertEquals('Person', cudBeingCreated.Last_Name__c);
         System.assertEquals('test@test.com', cudBeingCreated.Email__c);
+        System.assertEquals('Subscribed', cudBeingCreated.Subscriber_Status__c);
     }
 
     @isTest

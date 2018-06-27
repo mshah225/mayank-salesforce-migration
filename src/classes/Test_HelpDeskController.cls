@@ -12,8 +12,8 @@ private class Test_HelpDeskController
         testContacts[1].LastName = 'Caller';
 
         insert testContacts;
-		TestDataFactory.createFunctionalGroup('Help Desk');
-		
+        TestDataFactory.createFunctionalGroup('Help Desk');
+        
     }
 
     @isTest static void testCreateContactCreateCaseSaveCase()
@@ -421,24 +421,33 @@ private class Test_HelpDeskController
     
     @isTest
     private static void caseClassificationCorrectSelectOptions() {
+        CaseFactory.DefaultCase caseMaker = new CaseFactory.DefaultCase();
+        Case caseToEditDescription = (Case)caseMaker.create(1)[0];
         CaseClassificationFactory ccMaker = new CaseClassificationFactory();
-		ccMaker.createAndInsertSetOfCaseClassification();
+        ccMaker.createAndInsertSetOfCaseClassification();
+        Case_Classification__c categoryToAddDescription = [SELECT Id FROM Case_Classification__c WHERE Name = 'Test Category0' LIMIT 1];
+        categoryToAddDescription.Default_Case_Description__c = 'A';
+        update categoryToAddDescription;
         
-		HelpDeskController hdc = new HelpDeskController();
-		
-		hdc.selectedFunctionalGroup = 'Test Functional Group0';
-        hdc.selectedCategory = 'Test Category0';
-        hdc.selectedSubCategory = 'Test Sub Category0';
-		
-		System.assertEquals(1, hdc.functionalGroupOptions.size());
-		System.assertEquals(2, hdc.categoryOptions.size());
-		System.assertEquals(2, hdc.subCategoryOptions.size());
+        HelpDeskController hdc = new HelpDeskController();
+        hdc.mycase = caseToEditDescription;
+        hdc.selectedFunctionalGroup = 'Test Functional Group0';
+        hdc.selectedCategory = '--';
+        hdc.selectedSubCategory = '--';
         
-        Test.startTest();
         hdc.updateCategoryAndSubCategory();
+        
+        System.assertEquals(1, hdc.functionalGroupOptions.size());
+        System.assertEquals(2, hdc.categoryOptions.size());
+        System.assertEquals(1, hdc.subCategoryOptions.size());
+        Test.startTest();
+        hdc.selectedCategory = 'Test Category0';
+        hdc.updateOnCategoryChange();
         Test.stopTest();
         System.assertEquals(1, hdc.functionalGroupOptions.size());
-		System.assertEquals(2, hdc.categoryOptions.size());
-		System.assertEquals(1, hdc.subCategoryOptions.size());
+        System.assertEquals(2, hdc.categoryOptions.size());
+        System.assertEquals(2, hdc.subCategoryOptions.size());
+        
+        System.assertEquals('Test Description0A', hdc.mycase.Description);
     }
 }

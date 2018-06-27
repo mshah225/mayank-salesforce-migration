@@ -19,7 +19,6 @@ public class ContactUploadValidator {
         checkFirstAndLastName();
         checkEmail();
         checkSubscriberStatusAndValue();
-        checkSubscriberStatusValue();
     }
     
     private Boolean checkSubscription() {
@@ -66,9 +65,10 @@ public class ContactUploadValidator {
     }
     
     private Boolean checkSubscriberStatusAndValue() {
-        if (checkSubscriberStatus) {
-            checkSubscriberStatusValue();
+        if (checkSubscriberStatus()) {
+            return checkSubscriberStatusValue();
         }
+        return false;
     }
     
     private Boolean checkSubscriberStatus() {

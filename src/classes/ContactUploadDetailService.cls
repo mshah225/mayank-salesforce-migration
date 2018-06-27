@@ -9,35 +9,36 @@ public class ContactUploadDetailService {
         'Phone' => 'Phone__c',
         'Street Address' => 'Address__c',
         'City' => 'City__c',
-        'State Code' => 'State__c',
-        'Country Code' => 'Country__c',
+        'State' => 'State__c',
+        'Country' => 'Country__c',
         'Postal Code' => 'Postal_Code__c',
         'Subscription ID' => 'Subscription__c',
-        'EMPLID' => 'EMPLID__c'
+        'EMPLID' => 'EMPLID__c',
+        'Subscriber Status' => 'Subscriber_Status__c'
     };
 
     private Map<Integer, String> columnNames;
     private Id contactUploadId;
-    
+
     public ContactUploadDetailService (Id contactUploadIdIn, Map<Integer, String> columnValueIn) {
         contactUploadId = contactUploadIdIn;
         columnNames = columnValueIn;
     }
-    
+
     public Contact_Upload_Detail__c createAndValidateRow(List<String> contactInformation) {
         Contact_Upload_Detail__c newUploadDetail = createDetailWithFields(contactInformation);
         ContactUploadValidator validator = new ContactUploadValidator(newUploadDetail);
         validator.validateAndClean();
         return newUploadDetail;
     }
-    
+
     private Contact_Upload_Detail__c createDetailWithFields(List<String> contactInformation) {
          Contact_Upload_Detail__c detailToPopulate = new Contact_Upload_Detail__c(
             Processing_Notes__c = ' ',
             Contact_Upload__c = contactUploadId,
             Status__c = 'Success',
             Source_Line__c = String.join(contactInformation, ','));
-        
+
         for (Integer i = 0; i < contactInformation.size(); i++) {
             String columnValue = contactInformation[i];
             String fieldName = columnToFieldNames.get(columnNames.get(i));
@@ -46,10 +47,9 @@ public class ContactUploadDetailService {
                 detailToPopulate.put(fieldName, columnValue);
             }
        }
-       
        return detailToPopulate;
     }
-    
+
     public Subscriber__c createSubscriberForUploadDetail(Contact_Upload_Detail__c uploadDetail) {
         Subscriber__c subToCreate;
         if (uploadDetail.Contact__c == null) {
@@ -62,9 +62,9 @@ public class ContactUploadDetailService {
             subToCreate = new Subscriber__c(
                 Contact__c = uploadDetail.Contact__c,
                 Subscription__c = uploadDetail.Subscription__c,
-                Unique_Key__c = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' + 
-                    String.valueOf(uploadDetail.Contact__c).left(15), 
-                Subscriber_Status__c = 'Subscribed');
+                Unique_Key__c = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' +
+                    String.valueOf(uploadDetail.Contact__c).left(15),
+                Subscriber_Status__c = uploadDetail.Subscriber_Status__c);
         }
         return subToCreate;
     }

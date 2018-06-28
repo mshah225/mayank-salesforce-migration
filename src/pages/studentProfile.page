@@ -11,10 +11,6 @@
         <title>{!theContact.FirstName}'s Student Profile</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <!--<apex:stylesheet value="{!URLFOR($Resource.bootstrap_303,-->
-                <!--'/dist/css/bootstrap.min.css')}"/>-->
-        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
-            'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet"
               href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -360,7 +356,9 @@
                                                         <td>{!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--', theContact.FERPA_Directory_Hold__c)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <th>Financial Need Level</th>
+                                                        <th title="{!$ObjectType.Financial_Aid_Package__c.Fields.EFC_Range__c.inlineHelpText}">Financial Need Level
+                                                            <i class="fa fa-question-circle"></i>
+                                                        </th>
                                                         <td>{!IF(ISBLANK(financialAidPackage.EFC_Range__c), '--', financialAidPackage.EFC_Range__c)}</td>
                                                     </tr>
                                                 </table>

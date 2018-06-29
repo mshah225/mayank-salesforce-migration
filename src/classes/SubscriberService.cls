@@ -107,6 +107,9 @@ public without sharing class SubscriberService {
             }
             itemsProcessed.add(compositeKey);
         }
+
+        parentSubsSynced = true;
+
         if (subscribersToUpdate.size() > 0) {
             update subscribersToUpdate;
         }
@@ -114,7 +117,6 @@ public without sharing class SubscriberService {
             insert subscribersToInsert;
         }
 
-        parentSubsSynced = true;
     }
 
     /**

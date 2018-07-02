@@ -26,9 +26,6 @@
 <apex:attribute name="showRefresh" type="boolean" description="" default="false" />
 <apex:attribute name="showCivitas" type="boolean" description="" default="false"/>
 
-
-
-
 <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
     <apex:form >
         <div class="headerFooter">

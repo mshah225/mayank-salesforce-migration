@@ -235,7 +235,7 @@
                     </apex:facet>
                 </apex:column>
                 
-                <apex:column headerValue="Owner" value="{!c.obj.Owner.FirstName} {!c.obj.Owner.LastName}" rendered="true"
+                <apex:column headerValue="Owner" value="{!c.obj.Owner.Name}" rendered="true"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">

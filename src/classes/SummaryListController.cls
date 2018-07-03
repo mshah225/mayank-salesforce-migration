@@ -71,7 +71,7 @@ public class SummaryListController {
                 subject = String.escapeSingleQuotes(subject);
             }
             dynamicQuery = '' +
-                'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, ' +
+                'SELECT CaseNumber, ContactId, Owner.Name, CreatedDate, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, ' +
                     'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c  ' +
                 'FROM Case ' +
                 'WHERE OwnerId = \'' + ownerId + '\' ' +

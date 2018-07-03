@@ -4,14 +4,8 @@ trigger SubscriberTrigger on Subscriber__c (after delete, after insert, after un
     SubscriberDispatcher d = new SubscriberDispatcher(trigger.new, trigger.newMap, trigger.old, trigger.oldMap);
 
     if (trigger.isBefore) {
-        if (trigger.isUpdate) {
-            d.beforeUpdate();
-        }
         if (trigger.isInsert) {
             d.beforeInsert();
-        }
-        if (trigger.isDelete) {
-            d.beforeDelete();
         }
     }
     if (trigger.isAfter) {
@@ -20,9 +14,6 @@ trigger SubscriberTrigger on Subscriber__c (after delete, after insert, after un
         }
         if (trigger.isInsert) {
             d.afterInsert();
-        }
-        if (trigger.isDelete) {
-            d.afterDelete();
         }
         if (trigger.isUnDelete) {
             d.afterUnDelete();

@@ -1,6 +1,6 @@
 public without sharing class SubscriberService {
     private static Boolean parentSubsSynced = false;
-    
+
     /**
     * Updates Subscriber OwnerID and Private in Salesforce values to match their corresponding
     * formula field values
@@ -8,11 +8,12 @@ public without sharing class SubscriberService {
     */
     public static void enforceOwnerPolicies(List<Subscriber__c> subList) {
         for (Subscriber__c sub: subList) {
-            if (sub.OwnerId != sub.Apex_Owner_Should_Be__c || (sub.Apex_Private_in_Salesforce_Should_Be__c != null &&
+            if ((sub.OwnerId != sub.Apex_Owner_Should_Be__c  && sub.Apex_Owner_Should_Be__c != null) ||
+                (sub.Apex_Private_in_Salesforce_Should_Be__c != null &&
                 sub.Private_in_Salesforce__c != Boolean.valueOf(sub.Apex_Private_in_Salesforce_Should_Be__c))
             ) {
                 sub.OwnerId = sub.Apex_Owner_Should_Be__c;
-                sub.Private_in_Salesforce__c = sub.Apex_Private_in_Salesforce_Should_Be__c != null ? 
+                sub.Private_in_Salesforce__c = sub.Apex_Private_in_Salesforce_Should_Be__c != null ?
                     Boolean.valueOf(sub.Apex_Private_in_Salesforce_Should_Be__c) : false;
             }
         }
@@ -41,7 +42,7 @@ public without sharing class SubscriberService {
             }
         }
         Map<Id, Subscription__c> subscriptionMap = new Map<Id, Subscription__c>([
-            SELECT Id, Parent_Subscription__c, Subscription_Type__c 
+            SELECT Id, Parent_Subscription__c, Subscription_Type__c
             FROM Subscription__c
             WHERE Id IN :subscriptionIds
         ]);
@@ -52,7 +53,7 @@ public without sharing class SubscriberService {
                 parentSubIds.add(subscriptionMap.get(subId).Parent_Subscription__c);
             }
         }
-        
+
         Map<String, Subscriber__c> buSubAndContactToSubscriberMap = new Map<String, Subscriber__c>();
         for (Subscriber__c sub: [
             SELECT Id, Subscription__c, Subscriber_Status__c, Contact__c, Lead__c
@@ -106,6 +107,9 @@ public without sharing class SubscriberService {
             }
             itemsProcessed.add(compositeKey);
         }
+
+        parentSubsSynced = true;
+
         if (subscribersToUpdate.size() > 0) {
             update subscribersToUpdate;
         }
@@ -113,7 +117,6 @@ public without sharing class SubscriberService {
             insert subscribersToInsert;
         }
 
-        parentSubsSynced = true;
     }
 
     /**
@@ -136,7 +139,7 @@ public without sharing class SubscriberService {
         String subFields = subscriberFieldsToString();
         List<Subscriber__c> subs = new List<Subscriber__c>();
         String soql = '' +
-            'SELECT ' + subFields + ', Subscription__r.Name, Subscription__r.Subscription_Type__c, ' + 
+            'SELECT ' + subFields + ', Subscription__r.Name, Subscription__r.Subscription_Type__c, ' +
                 'Subscription__r.Business_Unit__r.Name ' +
             'FROM Subscriber__c ' +
             'WHERE Contact__c = :contactId ' +
@@ -144,11 +147,11 @@ public without sharing class SubscriberService {
         subs = Database.query(soql);
         return subs;
     }
-    
+
     /**
      * Creates a hash from the Subscriber ID and sets it as a unique identifier
      * @param subIdList the subscriber Id List
-    */ 
+    */
     @future
     public static void setHashId(List<Id> subIdList) {
         List<Subscriber__c> subList = new List<Subscriber__c>();
@@ -158,7 +161,7 @@ public without sharing class SubscriberService {
         }
         update subList;
     }
-    
+
     /**
      * Creates a hash from the Subscriber ID and sets it as a unique identifier
      * @param subIdList the list of subscribers

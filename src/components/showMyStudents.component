@@ -26,12 +26,27 @@
                     <apex:outputPanel layout="inline" styleClass="button-group">
                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-top: 5px; margin-right:10px"
                                          onclick="toggleEmailModal(this)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
-                         <apex:commandLink styleClass="btn btn-default asu-primary" id="renderFilterPanel" value="Filter"
-                                 reRender="filterListPanel" style="margin-top: 5px; margin-left: 10px">
-                             <apex:param assignTo="{!showFilterPanel}" value="true" name="toggleFilterPanel"/>
-                         </apex:commandLink>
+                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-left:10px; margin-top: 5px;"
+                                          onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
+                                         Filter
+                         </apex:outputLink>
 
                     </apex:outputPanel>
+
+                    <script>
+
+                        function toggleFilterListPanel(filterListPanelId){
+
+                            var filterListPanel = document.getElementById(filterListPanelId);
+
+                            if (filterListPanel.style.display === 'none') {
+                                filterListPanel.style.display = 'block';
+                            } else {
+                                filterListPanel.style.display = 'none';
+                            }
+                        }
+
+                    </script>
 
                     <apex:outputPanel id="filterListPanel">
                         <apex:outputPanel styleClass="input-group" style="width:100%;max-width:250px; margin-top: 5px;" rendered="{!showFilterPanel}">

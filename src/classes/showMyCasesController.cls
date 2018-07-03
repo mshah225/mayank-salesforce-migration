@@ -12,23 +12,6 @@ public class showMyCasesController extends ListViewController {
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
 
-    public Boolean showFilterPanel {
-        get {
-            if(showFilterPanel == null) {
-                showFilterPanel = false;
-            }
-            return showFilterPanel;
-        }
-
-        set {
-            if (showFilterPanel == true) {
-                showFilterPanel = false;
-            } else {
-                showFilterPanel = true;
-            }
-        }
-    }
-
     /*
      * Get the list of cases selected by the end user.
      */

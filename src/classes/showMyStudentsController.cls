@@ -11,23 +11,6 @@ public class showMyStudentsController extends ListViewController {
     public Map<Id,caseWrapper> caseCountMap  {get; set;}
     public List<studentWrapper> studentList {get; set;}
 
-    public Boolean showFilterPanel {
-        get {
-            if(showFilterPanel == null) {
-                showFilterPanel = false;
-            }
-            return showFilterPanel;
-        }
-
-        set {
-            if (showFilterPanel == true) {
-                showFilterPanel = false;
-            } else {
-                showFilterPanel = true;
-            }
-        }
-    }
-
     /*
      * Updats the setCon query with the ORDER BY clause sortField and sortDir
      */

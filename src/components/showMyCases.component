@@ -40,18 +40,14 @@
                         <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
                         <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg "></i>
                     </apex:commandLink>
-
                     <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-left:10px; margin-top: 5px;"
                                      onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
                                     Filter
                     </apex:outputLink>
-
                 </apex:outputPanel>
 
                 <script>
-
                     function toggleFilterListPanel(filterListPanelId){
-
                         var filterListPanel = document.getElementById(filterListPanelId);
 
                         if (filterListPanel.style.display === 'none') {
@@ -60,12 +56,9 @@
                             filterListPanel.style.display = 'none';
                         }
                     }
-
                 </script>
 
-
                 <apex:outputPanel id="filterListPanel" style="display: none">
-
                     <apex:outputPanel layout="block" styleClass="input-group" style="max-width:250px; margin-top: 5px;" >
                         <apex:inputText id="myStudentsInput"
                                         value="{!searchString}"
@@ -108,7 +101,6 @@
                             </apex:commandLink>
                         </span>
                     </apex:outputPanel>
-
                 </apex:outputPanel>
 
             </div>

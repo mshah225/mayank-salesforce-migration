@@ -30,26 +30,21 @@
                                           onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
                                          Filter
                          </apex:outputLink>
-
                     </apex:outputPanel>
 
                     <script>
-
                         function toggleFilterListPanel(filterListPanelId){
-
                             var filterListPanel = document.getElementById(filterListPanelId);
-
                             if (filterListPanel.style.display === 'none') {
                                 filterListPanel.style.display = 'block';
                             } else {
                                 filterListPanel.style.display = 'none';
                             }
                         }
-
                     </script>
 
                     <apex:outputPanel id="filterListPanel">
-                        <apex:outputPanel styleClass="input-group" style="width:100%;max-width:250px; margin-top: 5px;" rendered="{!showFilterPanel}">
+                        <apex:outputPanel styleClass="input-group" style="width:100%;max-width:250px; margin-top: 5px;">
                             <apex:inputText id="myStudentsInput"
                                             value="{!searchString}"
                                             html-placeholder="Filter Students"
@@ -90,8 +85,6 @@
                             </span>
                         </apex:outputPanel>
                     </apex:outputPanel>
-
-
 
                 </div>
 

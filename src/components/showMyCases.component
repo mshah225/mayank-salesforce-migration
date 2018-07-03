@@ -219,6 +219,24 @@
                 </apex:facet>
             </apex:column>
 
+            <apex:column headerValue="Created Date" value="{!c.obj.CreatedDate}" rendered="true"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                <apex:facet name="header">
+                    <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                        <apex:param name="createdDate"
+                                    value="CreatedDate"
+                                    assignTo="{!sortField}"/>
+                        Created Date&nbsp;
+                        <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Followup_Date__c'}">
+                            <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Followup_Date__c'}">
+                            <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                        </apex:outputPanel>
+                    </apex:commandLink>
+                </apex:facet>
+            </apex:column>
+
             <apex:column headerValue="Followup Date" value="{!c.obj.Followup_Date__c}" rendered="{! showFollowupDate}"
                          headerClass="ASUColumnHead" styleClass="ASUColumn">
                 <apex:facet name="header">
@@ -227,6 +245,24 @@
                                     value="Followup_Date__c"
                                     assignTo="{!sortField}"/>
                         Followup Date&nbsp;
+                        <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Followup_Date__c'}">
+                            <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Followup_Date__c'}">
+                            <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                        </apex:outputPanel>
+                    </apex:commandLink>
+                </apex:facet>
+            </apex:column>
+
+            <apex:column headerValue="Owner" value="{!c.obj.Owner.FirstName} {!c.obj.Owner.LastName}" rendered="true"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
+                <apex:facet name="header">
+                    <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                        <apex:param name="Owner"
+                                    value="Owner.FirstName"
+                                    assignTo="{!sortField}"/>
+                        Owner&nbsp;
                         <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Followup_Date__c'}">
                             <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </apex:outputPanel>

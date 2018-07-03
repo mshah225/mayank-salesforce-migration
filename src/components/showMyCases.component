@@ -58,8 +58,21 @@
                     }
                 </script>
 
-                <apex:outputPanel id="filterListPanel" style="display: none">
-                    <apex:outputPanel layout="block" styleClass="input-group" style="max-width:250px; margin-top: 5px;" >
+                <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
+
+                    <apex:outputPanel styleClass="ASUFont" style="max-width:250px; margin-top: 5px; font-weight: bold;">
+
+                            Student: &nbsp;
+                            <apex:inputText id="studentFilterInput"
+                                            value="{!searchString}"
+                                            html-placeholder="Filter Students"
+                                            onkeypress="return noenter(event);"
+                                            styleClass="searchBox"
+                                            />
+
+                    </apex:outputPanel>
+
+                    <!-- <apex:outputPanel layout="block" styleClass="input-group" style="max-width:250px; margin-top: 5px; display: none" >
                         <apex:inputText id="myStudentsInput"
                                         value="{!searchString}"
                                         html-placeholder="Filter Students"
@@ -100,7 +113,7 @@
                                 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                             </apex:commandLink>
                         </span>
-                    </apex:outputPanel>
+                    </apex:outputPanel> -->
                 </apex:outputPanel>
 
             </div>

@@ -650,6 +650,8 @@
                                                     <thead>
                                                         <tr>
                                                             <th>Program</th>
+                                                            <th>Effective Date</th>
+                                                            <th>MS #</th>
                                                             <th>Milestone</th>
                                                             <th>Milestone Title</th>
                                                             <th>Level Descr</th>
@@ -667,6 +669,12 @@
                                                             <apex:repeat value="{!studentMilestonesUGrad}" var="milestone">
                                                             <tr>
                                                                 <td>{!IF(ISBLANK(milestone.Acad_Program__r.Name), '--', milestone.Acad_Program__r.Name)}</td>
+                                                                <td>
+                                                                    <apex:outputText value="{0,date,MM/dd/yyyy}"> 
+                                                                        <apex:param value="{!milestone.Effd__c}" /> 
+                                                                    </apex:outputText>
+                                                                </td>
+                                                                <td>{!IF(ISBLANK(milestone.Milestone_Nbr__c), '--', milestone.Milestone_Nbr__c)}</td>
                                                                 <td>{!IF(ISBLANK(milestone.Milestone__c), '--', milestone.Milestone__c)}</td>
                                                                 <td>{!IF(ISBLANK(milestone.Milestone_Title__c), '--', milestone.Milestone_Title__c)}</td>
                                                                 <td>{!IF(ISBLANK(milestone.Milestone_Level__c), '--', milestone.Milestone_Level__c)}</td>
@@ -923,6 +931,8 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Program</th>
+                                                        <th>Effective Date</th>
+                                                        <th>MS #</th>
                                                         <th>Milestone</th>
                                                         <th>Milestone Title</th>
                                                         <th>Level Descr</th>
@@ -940,6 +950,12 @@
                                                         <apex:repeat value="{!studentMilestonesGrad}" var="milestone">
                                                             <tr>
                                                                 <td>{!IF(ISBLANK(milestone.Acad_Program__r.Name), '--', milestone.Acad_Program__r.Name)}</td>
+                                                                <td>
+                                                                    <apex:outputText value="{0,date,MM/dd/yyyy}"> 
+                                                                        <apex:param value="{!milestone.Effd__c}" /> 
+                                                                    </apex:outputText>
+                                                                </td>
+                                                                <td>{!IF(ISBLANK(milestone.Milestone_Nbr__c), '--', milestone.Milestone_Nbr__c)}</td>
                                                                 <td>{!IF(ISBLANK(milestone.Milestone__c), '--', milestone.Milestone__c)}</td>
                                                                 <td>{!IF(ISBLANK(milestone.Milestone_Title__c), '--', milestone.Milestone_Title__c)}</td>
                                                                 <td>{!IF(ISBLANK(milestone.Milestone_Level__c), '--', milestone.Milestone_Level__c)}</td>

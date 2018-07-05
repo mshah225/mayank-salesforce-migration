@@ -254,6 +254,7 @@ public class showMyStudentsController extends ListViewController {
                 String tmp = tempQueryLeft +' (' +
                     'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
                     'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                    'OR ASURiteID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
                 ') AND ' + tempQueryRight;
                 query=tmp;
             }

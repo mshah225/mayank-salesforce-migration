@@ -167,6 +167,8 @@ public with sharing class viewCaseController {
         emailAddresses.add(userContact.ASU_Gmail__c);
         emailAddresses.add(userContact.Personal_Email__c);
         emailAddresses.add(userContact.EPO_Email__c);
+        emailAddresses.add(userContact.Lead_Email__c);
+        emailAddresses.add(userContact.Lead_Secondary_Email__c);
         if (viewingAs) {
             return MyASUViewAs.getViewAsCaseEmails(
                 EMAILVISIBILITYDATE,

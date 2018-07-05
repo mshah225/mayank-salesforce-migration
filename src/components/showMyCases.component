@@ -71,19 +71,22 @@
                         <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
                         <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg "></i>
                     </apex:commandLink>
-                    <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-left:10px; margin-top: 5px;"
+                    <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="float: right; margin-left:10px; margin-top: 5px;"
                                      onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
-                                    Filter
+                                    Filters
                     </apex:outputLink>
                 </apex:outputPanel>
-                <apex:outputPanel id="filterListPanel" style="display: none">
-                    <apex:outputPanel layout="block" styleClass="input-group" style="max-width:250px; margin-top: 5px;" >
-                        <apex:inputText id="myStudentsInput"
-                                        value="{!searchString}"
-                                        html-placeholder="Filter Students"
-                                        onkeypress="return noenter(event);"
-                                        styleClass="searchBox"
-                                        style="padding:6px 12px;vertical-align:middle;border-radius:4px;border:solid 1px #ccc;max-width:300px;width:100%;font-size:11pt;border-top-right-radius:0;border-bottom-right-radius:0;border-right:none;"/>
+                <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
+                    <apex:outputPanel layout="block" styleClass="ASUFont" style="max-width:500px;margin-left: 50px; margin-top: 20px;">
+                            Student: &nbsp;
+                            <apex:inputText id="studentFilterInput"
+                                            value="{!searchString}"
+                                            html-placeholder=" Name, EmplID or ASURite_ID"
+                                            onkeypress="return noenter(event);"
+                                            styleClass="searchBox"
+                                            style="width:190px"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
                         <span class="input-group-addon">
                             <apex:commandLink id="searchStudentsBtn" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>

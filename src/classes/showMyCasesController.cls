@@ -258,6 +258,7 @@ public class showMyCasesController extends ListViewController {
                 String tmp = tempQueryLeft +' (' +
                     'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
                     'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                    'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
                 ') AND ' + tempQueryRight;
 
                 query = tmp;

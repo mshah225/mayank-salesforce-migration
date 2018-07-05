@@ -60,25 +60,19 @@
 
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
 
-                    <apex:outputPanel styleClass="ASUFont" style="max-width:250px; margin-top: 5px; font-weight: bold;">
+                    <apex:outputPanel layout="block" styleClass="ASUFont" style="max-width:500px;margin-left: 50px; margin-top: 20px;">
 
                             Student: &nbsp;
                             <apex:inputText id="studentFilterInput"
                                             value="{!searchString}"
-                                            html-placeholder="Filter Students"
+                                            html-placeholder=" Name, EmplID or ASURite_ID"
                                             onkeypress="return noenter(event);"
                                             styleClass="searchBox"
-                                            />
+                                            style="width:190px"/>
 
                     </apex:outputPanel>
 
-                    <!-- <apex:outputPanel layout="block" styleClass="input-group" style="max-width:250px; margin-top: 5px; display: none" >
-                        <apex:inputText id="myStudentsInput"
-                                        value="{!searchString}"
-                                        html-placeholder="Filter Students"
-                                        onkeypress="return noenter(event);"
-                                        styleClass="searchBox"
-                                        style="padding:6px 12px;vertical-align:middle;border-radius:4px;border:solid 1px #ccc;max-width:300px;width:100%;font-size:11pt;border-top-right-radius:0;border-bottom-right-radius:0;border-right:none;"/>
+                    <apex:outputPanel styleClass="input-group" style="max-width:250px; margin-top: 5px;" >
                         <span class="input-group-addon">
                             <apex:commandLink id="searchStudentsBtn" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -87,7 +81,7 @@
 
                         <script>
                         function focusSearch() {
-                            var input = document.getElementById('{!$Component.myStudentsInput}');
+                            var input = document.getElementById('{!$Component.studentFilterInput}');
                             input.select();
                             var tmpStr = input.value;
                             input.value = '';
@@ -95,7 +89,7 @@
                         }
 
                         jQuery(document).ready(function(){
-                            var search = document.getElementById('{!$Component.myStudentsInput}');
+                            var search = document.getElementById('{!$Component.studentFilterInput}');
                             jQuery(search).keypress(function( event ) {
                                 if ( event.which == 13 ) {
                                     event.preventDefault();
@@ -113,7 +107,8 @@
                                 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                             </apex:commandLink>
                         </span>
-                    </apex:outputPanel> -->
+                    </apex:outputPanel>
+
                 </apex:outputPanel>
 
             </div>
@@ -268,7 +263,7 @@
                 </apex:facet>
             </apex:column>
 
-            <apex:column headerValue="Owner" value="{!c.obj.Owner.FirstName} {!c.obj.Owner.LastName}" rendered="true"
+            <apex:column headerValue="Owner" value="{!c.obj.Owner.Name}" rendered="true"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                 <apex:facet name="header">
                     <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">

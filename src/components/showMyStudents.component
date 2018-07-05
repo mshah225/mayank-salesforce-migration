@@ -31,6 +31,7 @@
                         filterListPanel.style.display = 'none';
                     }
                 }
+
                 function focusSearch() {
                     var input = document.getElementById('{!$Component.myStudentsInput}');
                     input.select();
@@ -51,7 +52,6 @@
                     });
                 });
             </script>
-        
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
@@ -82,7 +82,6 @@
                         </apex:outputPanel>
                     </apex:outputPanel>
                 </div>
-
                 <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
                     <apex:commandLink action="{!setCon.previous}" value="<< Prev" rendered="{!setCon.HasPrevious}"
                                       style="float:left;" styleClass="standardLink" reRender="rerenderMe"

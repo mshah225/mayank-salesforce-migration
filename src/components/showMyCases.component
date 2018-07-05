@@ -28,6 +28,37 @@
 
 <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
     <apex:form >
+        <script>
+            function toggleFilterListPanel(filterListPanelId){
+                var filterListPanel = document.getElementById(filterListPanelId);
+
+                if (filterListPanel.style.display === 'none') {
+                    filterListPanel.style.display = 'block';
+                } else {
+                    filterListPanel.style.display = 'none';
+                }
+            }
+            function focusSearch() {
+                var input = document.getElementById('{!$Component.myStudentsInput}');
+                input.select();
+                var tmpStr = input.value;
+                input.value = '';
+                input.value = tmpStr;
+            }
+
+            jQuery(document).ready(function(){
+                var search = document.getElementById('{!$Component.myStudentsInput}');
+                jQuery(search).keypress(function( event ) {
+                    if ( event.which == 13 ) {
+                        event.preventDefault();
+                        var ele = document.getElementById('{!$Component.searchStudentsBtn}');
+                        ele.click();
+                        focusSearch();
+                    }
+                });
+            });
+        </script>
+
         <div class="headerFooter">
             <div class="toolbar" >
                 <apex:outputPanel layout="inline" styleClass="button-group">
@@ -45,19 +76,6 @@
                                     Filter
                     </apex:outputLink>
                 </apex:outputPanel>
-
-                <script>
-                    function toggleFilterListPanel(filterListPanelId){
-                        var filterListPanel = document.getElementById(filterListPanelId);
-
-                        if (filterListPanel.style.display === 'none') {
-                            filterListPanel.style.display = 'block';
-                        } else {
-                            filterListPanel.style.display = 'none';
-                        }
-                    }
-                </script>
-
                 <apex:outputPanel id="filterListPanel" style="display: none">
                     <apex:outputPanel layout="block" styleClass="input-group" style="max-width:250px; margin-top: 5px;" >
                         <apex:inputText id="myStudentsInput"
@@ -71,30 +89,6 @@
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </apex:commandLink>
                         </span>
-
-                        <script>
-                        function focusSearch() {
-                            var input = document.getElementById('{!$Component.myStudentsInput}');
-                            input.select();
-                            var tmpStr = input.value;
-                            input.value = '';
-                            input.value = tmpStr;
-                        }
-
-                        jQuery(document).ready(function(){
-                            var search = document.getElementById('{!$Component.myStudentsInput}');
-                            jQuery(search).keypress(function( event ) {
-                                if ( event.which == 13 ) {
-                                    event.preventDefault();
-                                    var ele = document.getElementById('{!$Component.searchStudentsBtn}');
-                                    ele.click();
-                                    focusSearch();
-                                }
-                            });
-                        });
-
-                        </script>
-
                         <span class="input-group-addon">
                             <apex:commandLink action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;">
                                 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
@@ -102,7 +96,6 @@
                         </span>
                     </apex:outputPanel>
                 </apex:outputPanel>
-
             </div>
             <div style="height: 1px; width = 100%">
 
@@ -255,7 +248,7 @@
                 </apex:facet>
             </apex:column>
 
-            <apex:column headerValue="Owner" value="{!c.obj.Owner.FirstName} {!c.obj.Owner.LastName}" rendered="true"
+            <apex:column headerValue="Owner" value="{!c.obj.Owner.Name}" rendered="true"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                 <apex:facet name="header">
                     <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">

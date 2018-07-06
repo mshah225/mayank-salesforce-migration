@@ -11,6 +11,35 @@ public class showMyCasesController extends ListViewController {
     private string originalQuery {get; set;} // Justin is this still required?
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
+    public String caseSubject {get; set;}
+    public Date startDate {get; set;}
+    public Date endDate {get; set;}
+    public String searchString{ get; set;}
+    public String caseStatusFilter {
+        get {
+            if (caseStatusFilter == null) {
+                caseStatusFilter = '--';
+            }
+            return caseStatusFilter;
+    	} 
+        set;
+    }
+    
+    public List<SelectOption> caseStatusOptions {
+        get {
+            if (caseStatusOptions == null) {
+                caseStatusOptions = new List<SelectOption>();
+                List<String> allCaseStatusOptions = getPicklistValues();
+                for (String statusOption : allCaseStatusOptions) {
+                    caseStatusOptions.add(new SelectOption(statusOption, statusOption));
+                }
+                caseStatusOptions.add(new SelectOption('--', '--'));
+            }
+            return caseStatusOptions;
+        }
+        
+        set;
+    }
 
     /*
      * Get the list of cases selected by the end user.
@@ -236,36 +265,6 @@ public class showMyCasesController extends ListViewController {
         set;
     }
 
-    /**
-	*Used to modify the query based on search parameter inputted by user
-	*
-	*/
-    public string searchString{
-        get{
-            return searchString;
-        }
-        set{
-            searchString = value;
-            if(searchString != NULL){
-                String tempQuery = removeSearchString();
-                Integer loc = tempQuery.indexOf('WHERE');
-                String tempQueryLeft = tempQuery.substring(0, loc + 5);
-                tempQueryLeft = tempQueryLeft.trim();
-                String tempQueryRight = tempQuery.subString(loc + 6);
-                tempQueryRight = tempQueryRight.trim();
-
-                String searchCon = value.trim();
-                String tmp = tempQueryLeft +' (' +
-                    'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                    'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                    'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                ') AND ' + tempQueryRight;
-
-                query = tmp;
-            }
-        }
-    }
-
     /*
      * Used to refresh the list to it's orignal state
      */
@@ -287,5 +286,76 @@ public class showMyCasesController extends ListViewController {
             tmpQuery = left + right;
         }
         return tmpQuery;
+    }
+    
+    private List<String> getPicklistValues() {
+        List<String> pickListValuesForCaseStatus= new List<String>();
+        Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
+    	List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
+    	for (Schema.PicklistEntry pickListVal : picklistEntries){
+	    	pickListValuesForCaseStatus.add(pickListVal.getLabel());
+    	} 
+    	return pickListValuesForCaseStatus;
+    }
+    
+    public void insertFilterIntoQuery() {
+        String modifiedQuery = queryAttr;
+        String filter = createFilterForCase();
+        
+        Integer loc = modifiedQuery.indexOf('WHERE');
+        String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);
+        leftSideOfQuery = leftSideOfQuery.trim();
+        String rightSideOfQuery = modifiedQuery.subString(loc + 6);
+        rightSideOfQuery = rightSideOfQuery.trim();
+        
+        modifiedQuery = leftSideOfQuery + filter + rightSideOfQuery;
+        query = modifiedQuery;
+    }
+    
+    private String createFilterForCase() {
+        String filter = createFilterStringForStatus();
+        filter += createFilterStringForSubject();
+        filter += createFilterStringForCreatedDate();
+        filter += createFilterStringForStudent();
+        return filter;
+    }
+    
+    private String createFilterStringForStatus() {
+        if (caseStatusFilter != '--') {
+            return ' Status = \'' + caseStatusFilter + '\' AND ';
+        }
+        return ' ';
+    }
+    
+    private String createFilterStringForSubject() {
+        if (!String.isEmpty(caseSubject)) {
+            return ' Subject LIKE \'%' + caseSubject + '%\' AND ';
+        }
+        return ' ';
+    }
+    
+    private String createFilterStringForCreatedDate() {
+        String createdQuery = ' ';
+        if(startDate != null) {
+            String startDateSection = DateTime.newInstance(startDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            startDateSection += 'T00:00:00+0000';
+            createdQuery += ' CreatedDate >= ' + startDateSection + ' AND ';
+        }
+        if(endDate != null) {
+            String endDateSection = DateTime.newInstance(endDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            endDateSection += 'T23:59:59+0000';
+            createdQuery += ' CreatedDate <= ' + endDateSection + ' AND ';
+        }
+        return createdQuery;
+    }
+    
+    private String createFilterStringForStudent() {
+        String searchCon = searchString.trim(); 
+        String createdQuery = ' (' +
+            'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+            'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+            'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+        ') AND ';
+        return createdQuery;
     }
 }

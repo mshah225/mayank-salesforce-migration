@@ -164,13 +164,18 @@ public class Test_ShowMyCases {
     }
     
     /**
-     * Test Search Methods
+     * Test Filter Methods
      */ 
-    public static testmethod void Test_Search(){
-        smsc.searchString = '';
-        System.assert(smsc.query.contains('LIKE'));
+    public static testmethod void Test_Filters(){
+        smsc.queryAttr = smsc.query;
+        smsc.searchString = 'Tester Mctesterson';
+        smsc.caseSubject = 'Testing Subject';
+        smsc.insertFilterIntoQuery();
+        System.assert(smsc.query.contains('Contact.Name LIKE'));
+        System.assert(smsc.query.contains('Subject LIKE'));
         smsc.resetSearch();
-        System.assert(!smsc.query.contains('LIKE'));
+        System.assert(!smsc.query.contains('Contact.Name LIKE'));
+        System.assert(!smsc.query.contains('Subject LIKE'));
     }
     
 }

@@ -275,7 +275,9 @@ public class showMyCasesController extends ListViewController {
      */
     public void resetSearch(){
         searchString = NULL;
-        query = removeSearchString();
+        caseStatusFilter = '--';
+        caseSubject = null;
+        query = queryAttr;
     }
     
     /*

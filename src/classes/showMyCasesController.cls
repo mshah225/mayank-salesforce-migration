@@ -1,7 +1,7 @@
 public class showMyCasesController extends ListViewController {
-    
+
     private boolean debug = false;
-    
+
     // Properties with standard getters/setters
     public Id proactiveCaseRTID {get; set;} // The record type Id of the proactive cases
     public Map<Id, relatedCases> caseCounts {get; set;} // Stores the contact Id to summarized case counts
@@ -11,7 +11,36 @@ public class showMyCasesController extends ListViewController {
     private string originalQuery {get; set;} // Justin is this still required?
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
+    public String caseSubject {get; set;}
+    public Date startDate {get; set;}
+    public Date endDate {get; set;}
+    public String searchString{ get; set;}
+    public String caseStatusFilter {
+        get {
+            if (caseStatusFilter == null) {
+                caseStatusFilter = '--';
+            }
+            return caseStatusFilter;
+    	} 
+        set;
+    }
     
+    public List<SelectOption> caseStatusOptions {
+        get {
+            if (caseStatusOptions == null) {
+                caseStatusOptions = new List<SelectOption>();
+                List<String> allCaseStatusOptions = getPicklistValues();
+                for (String statusOption : allCaseStatusOptions) {
+                    caseStatusOptions.add(new SelectOption(statusOption, statusOption));
+                }
+                caseStatusOptions.add(new SelectOption('--', '--'));
+            }
+            return caseStatusOptions;
+        }
+        
+        set;
+    }
+
     /*
      * Get the list of cases selected by the end user.
      */
@@ -19,20 +48,20 @@ public class showMyCasesController extends ListViewController {
         get {
             if (selectedCases == null) {
                 selectedCases = new List<Case>();
-                
+
                 for (caseWrapper cw : caseList) {
                     if (cw.selected) {
                         selectedCases.add(cw.obj);
                     }
                 }
             }
-            
+
             return selectedCases;
         }
-        
+
         set {
             selectedCases = value;
-            
+
             if (selectedCases == null) {
                 for (caseWrapper cw : caseList) {
                     cw.selected = false;
@@ -40,8 +69,8 @@ public class showMyCasesController extends ListViewController {
             }
         }
     }
-    
-    /* 
+
+    /*
      * Used to store imput from users for mass emails
      */
     public Portal_Email__c tempEmail {
@@ -52,18 +81,18 @@ public class showMyCasesController extends ListViewController {
                     Subject__c = 'A Message from your College and Department'
                 );
             }
-            
+
             return tempEmail;
         }
-        
+
         set;
     }
-    
+
     // Methods
-    
+
     /*
      * Rebuild the caseList variable (what is actually displayed to the page).
-     * 
+     *
      * <p>
      * This is primarily bound to the set con:
      * -Called when setCon is reset (query = query)
@@ -75,29 +104,29 @@ public class showMyCasesController extends ListViewController {
      */
     public override void resetRecordList() {
         Case tempCase;
-        
-        caseList = new List<CaseWrapper>(); 
+
+        caseList = new List<CaseWrapper>();
         for (SObject so : setCon.getRecords()) {
             tempCase = (Case) so;
             caseList.add(new CaseWrapper(tempCase));
         }
-        
+
         resetCaseCounts();
-        
+
     }
-    
+
     /*
 	* Resets the caseCounts map
 	*/
-    public void resetCaseCounts() {       
+    public void resetCaseCounts() {
         caseCounts = new Map<Id, relatedCases>();
         Set<Id> contactIds = new Set<Id>();
-        
+
         if (caseList != null) {
             for (caseWrapper cw : caseList) {
-                contactIds.add(cw.obj.contactid);    
+                contactIds.add(cw.obj.contactid);
             }
-            
+
             for (Contact c : [SELECT id,
                               (SELECT RecordTypeId
                                FROM Cases
@@ -114,29 +143,29 @@ public class showMyCasesController extends ListViewController {
                                   }
                               }
         }
-        
+
     }
-    
+
     /*
      * Transfer Cases
      */
     public void transferCases() {
-        
+
         for (case c : selectedCases) {
             c.ownerId = ownerId;
-        }  
-        
-        update selectedCases;  
+        }
+
+        update selectedCases;
         selectedCases = null;
         refreshList = true;
     }
-    
-    /* 
+
+    /*
      * Create portal email records for sending emails through marketing cloud
      */
     public void massEmail() {
         List<Portal_Email__c> emails = new List<Portal_Email__c>();
-        
+
         for (case c : selectedCases) {
             emails.add(new Portal_Email__c(
                 Case__c = c.Id,
@@ -150,11 +179,11 @@ public class showMyCasesController extends ListViewController {
         if (emails.size() > 0) {
             emailInsertResults = Database.insert(emails);
         }
-        
+
         tempEmail = null;
         emailPreviewMode = false;
     }
-    
+
     /*
      * The page can't pass a null value to the setter so we have to use
      * an action call instead.
@@ -166,22 +195,22 @@ public class showMyCasesController extends ListViewController {
         // were being re-submitted.
         selectedCases = null;
     }
-    
+
     // Sub-classes
-    
+
     /*
      * Used to track the number of proactive and reactive cases at the contact level
      */
     public class relatedCases {
         public Integer reactiveCount {get; set;}
         public Integer proactiveCount {get; set;}
-        
+
         public relatedCases () {
             reactiveCount = 0;
             proactiveCount = 0;
         }
     }
-    
+
     /*
      * Used to create a trackable way to select cases via a check box
      */
@@ -190,11 +219,11 @@ public class showMyCasesController extends ListViewController {
         public Case obj {get; set;}
         public String changeDir {get; set;}
         public String imageName {get; set;}
-        
+
         public caseWrapper (Case wrappedCase) {
             selected = false;
             obj = wrappedCase;
-            
+
             if (obj.Most_Recent_Outlook_Change_Direction__c == 1) {
                 changeDir = 'Up';
             } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
@@ -204,9 +233,9 @@ public class showMyCasesController extends ListViewController {
             } else {
                 changeDir = ' ';
             }
-            
+
             if (obj.Curr_Cont_Prediction_Level__c < 4) {
-               imageName = 'icon-1.png'; 
+               imageName = 'icon-1.png';
             } else if (obj.Curr_Cont_Prediction_Level__c < 6) {
                 imageName = 'icon-2.png';
             } else if (obj.Curr_Cont_Prediction_Level__c == 6) {
@@ -216,13 +245,13 @@ public class showMyCasesController extends ListViewController {
             } else {
                 imageName = 'icon-5.png';
             }
-            
+
         }
     }
-    
+
     /*
      * Indicates whether the string has been previously searched
-     */ 
+     */
     public boolean searched{
         get{
             if(query == NULL || !query.contains('LIKE')){
@@ -235,44 +264,17 @@ public class showMyCasesController extends ListViewController {
         }
         set;
     }
-    
-    /**
-	*Used to modify the query based on search parameter inputted by user
-	*
-	*/
-    public string searchString{
-        get{
-            return searchString;
-        }
-        set{
-            searchString = value;
-            if(searchString != NULL){
-                String tempQuery = removeSearchString();  
-                Integer loc = tempQuery.indexOf('WHERE');
-                String tempQueryLeft = tempQuery.substring(0, loc + 5);
-                tempQueryLeft = tempQueryLeft.trim();
-                String tempQueryRight = tempQuery.subString(loc + 6);
-                tempQueryRight = tempQueryRight.trim();
-                
-                String searchCon = value.trim(); 
-                String tmp = tempQueryLeft +' (' +
-                    'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                    'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                ') AND ' + tempQueryRight;
-                
-                query = tmp;
-            }
-        }  
-    }
-    
+
     /*
      * Used to refresh the list to it's orignal state
      */
     public void resetSearch(){
         searchString = NULL;
-        query = removeSearchString();
+        caseStatusFilter = '--';
+        caseSubject = null;
+        query = queryAttr;
     }
-    
+
     /*
      * Trims the query to remove any specific searches
      */
@@ -286,5 +288,76 @@ public class showMyCasesController extends ListViewController {
             tmpQuery = left + right;
         }
         return tmpQuery;
+    }
+    
+    private List<String> getPicklistValues() {
+        List<String> pickListValuesForCaseStatus= new List<String>();
+        Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
+    	List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
+    	for (Schema.PicklistEntry pickListVal : picklistEntries){
+	    	pickListValuesForCaseStatus.add(pickListVal.getLabel());
+    	} 
+    	return pickListValuesForCaseStatus;
+    }
+    
+    public void insertFilterIntoQuery() {
+        String modifiedQuery = queryAttr;
+        String filter = createFilterForCase();
+        
+        Integer loc = modifiedQuery.indexOf('WHERE');
+        String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);
+        leftSideOfQuery = leftSideOfQuery.trim();
+        String rightSideOfQuery = modifiedQuery.subString(loc + 6);
+        rightSideOfQuery = rightSideOfQuery.trim();
+        
+        modifiedQuery = leftSideOfQuery + filter + rightSideOfQuery;
+        query = modifiedQuery;
+    }
+    
+    private String createFilterForCase() {
+        String filter = createFilterStringForStatus();
+        filter += createFilterStringForSubject();
+        filter += createFilterStringForCreatedDate();
+        filter += createFilterStringForStudent();
+        return filter;
+    }
+    
+    private String createFilterStringForStatus() {
+        if (caseStatusFilter != '--') {
+            return ' Status = \'' + caseStatusFilter + '\' AND ';
+        }
+        return ' ';
+    }
+    
+    private String createFilterStringForSubject() {
+        if (!String.isEmpty(caseSubject)) {
+            return ' Subject LIKE \'%' + caseSubject + '%\' AND ';
+        }
+        return ' ';
+    }
+    
+    private String createFilterStringForCreatedDate() {
+        String createdQuery = ' ';
+        if(startDate != null) {
+            String startDateSection = DateTime.newInstance(startDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            startDateSection += 'T00:00:00+0000';
+            createdQuery += ' CreatedDate >= ' + startDateSection + ' AND ';
+        }
+        if(endDate != null) {
+            String endDateSection = DateTime.newInstance(endDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            endDateSection += 'T23:59:59+0000';
+            createdQuery += ' CreatedDate <= ' + endDateSection + ' AND ';
+        }
+        return createdQuery;
+    }
+    
+    private String createFilterStringForStudent() {
+        String searchCon = searchString.trim(); 
+        String createdQuery = ' (' +
+            'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+            'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+            'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+        ') AND ';
+        return createdQuery;
     }
 }

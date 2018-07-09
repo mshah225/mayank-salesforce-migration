@@ -8,7 +8,8 @@ public without sharing class SubscriberService {
     */
     public static void enforceOwnerPolicies(List<Subscriber__c> subList) {
         for (Subscriber__c sub: subList) {
-            if (sub.OwnerId != sub.Apex_Owner_Should_Be__c || (sub.Apex_Private_in_Salesforce_Should_Be__c != null &&
+            if ((sub.OwnerId != sub.Apex_Owner_Should_Be__c  && sub.Apex_Owner_Should_Be__c != null) ||
+                (sub.Apex_Private_in_Salesforce_Should_Be__c != null &&
                 sub.Private_in_Salesforce__c != Boolean.valueOf(sub.Apex_Private_in_Salesforce_Should_Be__c))
             ) {
                 sub.OwnerId = sub.Apex_Owner_Should_Be__c;

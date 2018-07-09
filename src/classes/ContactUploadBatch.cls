@@ -4,7 +4,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
     private Boolean errorEncountered = false;
     private Map<Integer, String> columnMap;
     ContactUploadFileReader uploadReader;
-    
+
     public ContactUploadBatch(Id attachmentId) {
         this.attachmentId = attachmentId;
     }
@@ -14,7 +14,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             uploadReader = new ContactUploadFileReader(attachmentId);
             contactUploadId = uploadReader.contactCSV.ParentId;
             columnMap = uploadReader.columnMap;
-            updateUploadStatus('Processing'); 
+            updateUploadStatus('Processing');
             return uploadReader.fileIterator;
         } else {
             return null;
@@ -23,7 +23,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
 
     public void execute(Database.BatchableContext batchableContext, List<String> scope) {
         List<List<String>> csvLines = recreateRowsFromIteration(scope);
-        
+
         List<Contact_Upload_Detail__c> detailsToProcess = new List<Contact_Upload_Detail__c>();
         List<Contact_Upload_Detail__c> detailsInError = new List<Contact_Upload_Detail__c>();
         ContactUploadDetailService detailCreator = new ContactUploadDetailService(contactUploadId, columnMap);
@@ -47,20 +47,19 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
                 uploadDetail.Processing_Notes__c += 'Failed to create subscriber record. ';
             }
         }
-        
+
         if (subscriberList.size() > 0) {
             Database.upsert(subscriberList, Subscriber__c.Unique_Key__c, false);
-                
         }
-        
+
         Map<String, Id> uniqueKeyToSubscriberId = new Map<String, Id>();
         for (Subscriber__c upsertedSubscriber : subscriberList) {
             uniqueKeyToSubscriberId.put(upsertedSubscriber.Unique_Key__c, upsertedSubscriber.Id);
         }
-        
+
         for (Contact_Upload_Detail__c uploadDetail: detailsToProcess) {
             if (uploadDetail.Status__c != 'Error') {
-                String uniqueKey = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' + 
+                String uniqueKey = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' +
                     String.valueOf(uploadDetail.Contact__c).left(15);
                 Id subscriberId = uniqueKeyToSubscriberId.get(uniqueKey);
                 if (subscriberId == null) {
@@ -76,17 +75,17 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             Database.insert(detailsToProcess, false);
         }
     }
-    
+
     public void finish(Database.BatchableContext batchableContext) {
         List<Contact_Upload_Detail__c> processedDetails = [
-            SELECT Status__c 
-            FROM Contact_Upload_Detail__c 
+            SELECT Status__c
+            FROM Contact_Upload_Detail__c
             WHERE Contact_Upload__c =: contactUploadId
             LIMIT 50000
         ];
-        
+
         String errorStatus = (processedDetails.isEmpty() ? 'Errors' : 'No Errors');
-        
+
         for (Contact_Upload_Detail__c detail : processedDetails) {
             if (detail.Status__c == 'Error') {
                 errorStatus = 'Errors';
@@ -99,9 +98,9 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
     }
 
     private void updateUploadStatus(String status) {
-        
+
         Contact_Upload__c cu = new Contact_Upload__c(
-                Id = contactUploadId, 
+                Id = contactUploadId,
                 Status__c = status);
         update cu;
     }
@@ -112,13 +111,13 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
         cudToUpdate.Processing_Notes__c = cudToUpdate.Processing_Notes__c.left(255);
         return cudToUpdate;
     }
-    
+
     private List<List<String>> recreateRowsFromIteration(List<String> tableOfContacts) {
         String csvFile = '';
         for (String row : tableOfContacts) {
             csvFile += row + '\r';
         }
-        
+
         return CsvReader.readCsvFile(Blob.valueOf(csvFile));
     }
 }

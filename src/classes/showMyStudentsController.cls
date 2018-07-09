@@ -30,26 +30,26 @@ public class showMyStudentsController extends ListViewController {
             ErrorLogger.log(e, vars, debug);
         }
     }
-    
+
     /*
      * Get the list of students selected by the end user.
      */
     public List<Success_Student__c> selectedStudents {
         get {
             selectedStudents = new List<Success_Student__c>();
-            
+
             for (studentWrapper sw : studentList) {
                 if (sw.selected) {
                     selectedStudents.add(sw.obj);
                 }
             }
-            
+
             return selectedStudents;
         }
-        
+
         set {
             selectedStudents = value;
-            
+
             if (selectedStudents == null) {
                 for (studentWrapper sw : studentList) {
                     sw.selected = false;
@@ -57,7 +57,7 @@ public class showMyStudentsController extends ListViewController {
             }
         }
     }
-    
+
     /*
      * Portal Email object to store user input for mass emails
      */
@@ -69,18 +69,18 @@ public class showMyStudentsController extends ListViewController {
                     Subject__c = 'A Message from your College and Department'
                 );
             }
-            
+
             return tempEmail;
         }
-        
+
         set;
     }
-    
+
     /*
      * Create portal email records for sending emails through marketing cloud
      */
     public void massEmail() {
-        List<String> vars = new List<String>(); 
+        List<String> vars = new List<String>();
         List<Portal_Email__c> emails = new List<Portal_Email__c>();
         try {
             for (Success_Student__c ss : selectedStudents) {
@@ -94,11 +94,11 @@ public class showMyStudentsController extends ListViewController {
                     Email_Template_Name__c = tempEmail.Email_Template_Name__c
                 ));
             }
-           
+
             if (emails.size() > 0) {
                 emailInsertResults = dataBase.insert(emails);
             }
-            
+
             // Reset the tempEmail
             tempEmail = null;
             emailPreviewMode = false;
@@ -107,34 +107,34 @@ public class showMyStudentsController extends ListViewController {
             ErrorLogger.log(e, vars, debug);
         }
     }
-    
+
 
     public override void resetRecordList() {
         Success_Student__c tempStudent;
-        
-        studentList = new List<studentWrapper>(); 
+
+        studentList = new List<studentWrapper>();
         for (SObject so : setCon.getRecords()) {
             tempStudent = (Success_Student__c) so;
             if(tempStudent.Student__c!=null) {
                 studentList.add(new studentWrapper(tempStudent));
             }
         }
-        
+
         resetCaseCounts();
     }
-    
+
     /*
     * Resets the caseCounts map
     */
-    public void resetCaseCounts() {       
+    public void resetCaseCounts() {
         caseCountMap = new Map<Id, caseWrapper>();
         Set<Id> contactIds = new Set<Id>();
-        
+
         if (studentList != null) {
             for (studentWrapper sw : studentList) {
-                contactIds.add(sw.obj.Student__c);    
+                contactIds.add(sw.obj.Student__c);
             }
-            
+
             for (Contact c : [SELECT id,
                               (SELECT RecordTypeId
                                FROM Cases
@@ -151,16 +151,16 @@ public class showMyStudentsController extends ListViewController {
                                   }
                               }
         }
-        
+
     }
-    
+
     /*
      * Used to track the number of proactive and reactive cases at the contact level
      */
      public class caseWrapper {
         public Integer reactiveCount {get; set;}
         public Integer proactiveCount {get; set;}
-        
+
         public caseWrapper() {
             reactiveCount = 0;
             proactiveCount = 0;
@@ -175,11 +175,11 @@ public class showMyStudentsController extends ListViewController {
         public Success_Student__c obj {get; set;}
         public String changeDir {get; set;}
         public String imageName {get; set;}
-        
+
         public studentWrapper(Success_Student__c student) {
             selected = false;
             obj = student;
-            
+
             if (obj.Most_Recent_Outlook_Change_Direction__c == 1) {
                 changeDir = 'Up';
             } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
@@ -189,9 +189,9 @@ public class showMyStudentsController extends ListViewController {
             } else {
                 changeDir = ' ';
             }
-            
+
             if (obj.Curr_Cont_Prediction_Level__c < 4) {
-               imageName = 'icon-1.png'; 
+               imageName = 'icon-1.png';
             } else if (obj.Curr_Cont_Prediction_Level__c < 6) {
                 imageName = 'icon-2.png';
             } else if (obj.Curr_Cont_Prediction_Level__c == 6) {
@@ -203,7 +203,7 @@ public class showMyStudentsController extends ListViewController {
             }
         }
     }
-    
+
     /*
      * Class to hold all of the data needed for Civitas
      */
@@ -212,14 +212,14 @@ public class showMyStudentsController extends ListViewController {
         //Direction is negative for down, 0 for same, and positive for up
         public Integer direction {get; set;}
         public Date changeDate {get; set;}
-        
+
         public CivitasWrapper(Integer oScore, Integer dir, Date change) {
             outlookScore = oScore;
             direction = dir;
             changeDate = change;
         }
     }
-    
+
     public boolean searched{
         get{
             if(query == NULL || !query.contains('LIKE')){
@@ -232,7 +232,7 @@ public class showMyStudentsController extends ListViewController {
         }
         set;
     }
-    
+
     /*
      * Used to refresh the list to it's orignal state
      */
@@ -252,7 +252,7 @@ public class showMyStudentsController extends ListViewController {
         // were being re-submitted.
         selectedStudents = null;
     }
-    
+
     public void insertFilterIntoQuery() {
         String modifiedQuery = queryAttr;
         String filter = createFilterForStudent();

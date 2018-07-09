@@ -7,7 +7,8 @@ public class showMyStudentsController extends ListViewController {
     private boolean differentField;
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
-
+    
+    public string searchString {get; set;}
     public Map<Id,caseWrapper> caseCountMap  {get; set;}
     public List<studentWrapper> studentList {get; set;}
 
@@ -232,56 +233,12 @@ public class showMyStudentsController extends ListViewController {
         set;
     }
 
-    /**
-    *Used to modify the query based on search parameter inputted by user
-    *
-    */
-    public string searchString{
-        get{
-            return searchString;
-        }
-        set{
-            searchString = value;
-            if(searchString != NULL){
-                String tempQuery = removeSearchString();
-                Integer loc = tempQuery.indexOf('WHERE');
-                String tempQueryLeft = tempQuery.substring(0, loc + 5);
-                tempQueryLeft = tempQueryLeft.trim();
-                String tempQueryRight = tempQuery.subString(loc + 6);
-                tempQueryRight = tempQueryRight.trim();
-
-                String searchCon = value.trim();
-                String tmp = tempQueryLeft +' (' +
-                    'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                    'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                    'OR ASURiteID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                ') AND ' + tempQueryRight;
-                query=tmp;
-            }
-        }
-    }
-
     /*
      * Used to refresh the list to it's orignal state
      */
     public void resetSearch(){
         searchString = NULL;
-        query = removeSearchString();
-    }
-
-    /*
-     * Trims the query to remove any specific searches
-     */
-    @TestVisible
-    private string removeSearchString(){
-        String tmpQuery = query;
-        if(searched){
-            Integer loc = tmpQuery.indexOf('AND');
-            String left = tmpQuery.substring(0, tmpQuery.indexOf('WHERE')+6);
-            String right = tmpQuery.substring(loc+3);
-            tmpQuery = left + right;
-        }
-        return tmpQuery;
+        query = queryAttr;
     }
 
     /*
@@ -294,5 +251,34 @@ public class showMyStudentsController extends ListViewController {
         // because the page wasn't rerendering after mass email and the selections
         // were being re-submitted.
         selectedStudents = null;
+    }
+
+    public void insertFilterIntoQuery() {
+        String modifiedQuery = queryAttr;
+        String filter = createFilterForStudent();
+        
+        Integer loc = modifiedQuery.indexOf('WHERE');
+        String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);
+        leftSideOfQuery = leftSideOfQuery.trim();
+        String rightSideOfQuery = modifiedQuery.subString(loc + 6);
+        rightSideOfQuery = rightSideOfQuery.trim();
+        
+        modifiedQuery = leftSideOfQuery + filter + rightSideOfQuery;
+        query = modifiedQuery;
+    }
+    
+    private String createFilterForStudent() {
+        String filter = createFilterStringForStudent();
+        return filter;
+    }
+    
+    private String createFilterStringForStudent() {
+        String searchCon = searchString.trim(); 
+        String createdQuery = ' (' +
+            'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                    'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                    'OR ASURiteID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                ') AND ';
+        return createdQuery;
     }
 }

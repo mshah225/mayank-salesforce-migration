@@ -199,13 +199,12 @@ public class Test_ShowMyStudents {
     }
 
     
-   /**
-     * Test Search Methods
-     */ 
-    public static testmethod void Test_Search(){
-        smsc.searchString = '';
-        System.assert(smsc.query.contains('LIKE'));
+   public static testmethod void Test_Filters(){
+        smsc.queryAttr = smsc.query;
+        smsc.searchString = 'Tester Mctesterson';
+        smsc.insertFilterIntoQuery();
+        System.assert(smsc.query.contains('Student_Name__c LIKE'));
         smsc.resetSearch();
-        System.assert(!smsc.query.contains('LIKE'));
+        System.assert(!smsc.query.contains('Student_Name__c LIKE'));
     }
 }

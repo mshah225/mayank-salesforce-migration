@@ -238,8 +238,6 @@ public class showMyStudentsController extends ListViewController {
      */
     public void resetSearch(){
         searchString = NULL;
-        caseStatusFilter = '--';
-        caseSubject = null;
         query = queryAttr;
     }
 
@@ -257,7 +255,7 @@ public class showMyStudentsController extends ListViewController {
     
     public void insertFilterIntoQuery() {
         String modifiedQuery = queryAttr;
-        String filter = createFilterForCase();
+        String filter = createFilterForStudent();
         
         Integer loc = modifiedQuery.indexOf('WHERE');
         String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);

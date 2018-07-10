@@ -85,21 +85,29 @@
                                             html-placeholder=" Name, EmplID or ASURite_ID"
                                             onkeypress="return noenter(event);"
                                             styleClass="searchBox"
-                                            style="width:190px"/>
+                                            style="width:190px;"/>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection>
+                            <apex:inputText id="collegeFilter" label="College: "
+                                        value="{!collegeFilter}" 
+                                        html-placeholder="Filter College"
+                                        styleClass="searchBox"/>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="2">
-                            <apex:selectList label="Status" value="{!caseStatusFilter}" size="1" required="false">
+                            <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
+                                    style="margin-right:10px;">
                                 <apex:selectOptions value="{!caseStatusOptions}"/>
                             </apex:selectList>
                             <apex:inputText label="Subject: " id="caseSubject"
                                         value="{!caseSubject}"
                                         html-placeholder="Filter Case"
-                                            styleClass="searchBox"/>
+                                            styleClass="searchBox"
+                                            />
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="3">
                             <apex:outputLabel >Created Date: </apex:outputLabel>
-                            <apex:input label="FROM: " value="{!startDate}" type="auto"/>
-                            <apex:input label="TO: " value="{!endDate}" type="auto"/>
+                            <apex:input label="FROM: " value="{!startDate}" type="auto" style="margin-right:10px;"/>
+                            <apex:input label="TO: " value="{!endDate}" type="auto" style="margin-right:10px;"/>
                         </apex:pageBlockSection>
                     </apex:pageBlock>
                     <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >

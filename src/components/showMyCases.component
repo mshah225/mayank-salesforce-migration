@@ -89,7 +89,7 @@
                         </apex:pageBlockSection>
                         <apex:pageBlockSection>
                             <apex:inputText id="collegeFilter" label="College: "
-                                        value="{!collegeFilter}" 
+                                        value="{!collegeFilter}"
                                         html-placeholder="Filter College"
                                         styleClass="searchBox"/>
                         </apex:pageBlockSection>
@@ -101,8 +101,7 @@
                             <apex:inputText label="Subject: " id="caseSubject"
                                         value="{!caseSubject}"
                                         html-placeholder="Filter Case"
-                                            styleClass="searchBox"
-                                            />
+                                            styleClass="searchBox"/>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="3">
                             <apex:outputLabel >Created Date: </apex:outputLabel>

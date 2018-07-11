@@ -73,6 +73,12 @@
                                                     styleClass="searchBox"
                                                     style="width:190px"/>
                             </apex:pageBlockSection>
+                            <apex:pageBlockSection>
+                                <apex:inputText id="degreeFilterInput" label="Degree: "
+                                            value="{!degreeFilter}"
+                                            html-placeholder="Filter Degree"
+                                            styleClass="searchBox"/>
+                            </apex:pageBlockSection>
                         </apex:pageBlock>
                         <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
                             <span class="input-group-addon">

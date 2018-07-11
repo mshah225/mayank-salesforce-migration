@@ -15,16 +15,18 @@ public class showMyCasesController extends ListViewController {
     public Date startDate {get; set;}
     public Date endDate {get; set;}
     public String searchString{ get; set;}
+    public String degreeFilter {get; set;}
+
     public String caseStatusFilter {
         get {
             if (caseStatusFilter == null) {
                 caseStatusFilter = '--';
             }
             return caseStatusFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> caseStatusOptions {
         get {
             if (caseStatusOptions == null) {
@@ -37,7 +39,7 @@ public class showMyCasesController extends ListViewController {
             }
             return caseStatusOptions;
         }
-        
+
         set;
     }
 
@@ -289,53 +291,54 @@ public class showMyCasesController extends ListViewController {
         }
         return tmpQuery;
     }
-    
+
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
         Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
     	List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
     	for (Schema.PicklistEntry pickListVal : picklistEntries){
 	    	pickListValuesForCaseStatus.add(pickListVal.getLabel());
-    	} 
+    	}
     	return pickListValuesForCaseStatus;
     }
-    
+
     public void insertFilterIntoQuery() {
         String modifiedQuery = queryAttr;
         String filter = createFilterForCase();
-        
+
         Integer loc = modifiedQuery.indexOf('WHERE');
         String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);
         leftSideOfQuery = leftSideOfQuery.trim();
         String rightSideOfQuery = modifiedQuery.subString(loc + 6);
         rightSideOfQuery = rightSideOfQuery.trim();
-        
+
         modifiedQuery = leftSideOfQuery + filter + rightSideOfQuery;
         query = modifiedQuery;
     }
-    
+
     private String createFilterForCase() {
         String filter = createFilterStringForStatus();
         filter += createFilterStringForSubject();
         filter += createFilterStringForCreatedDate();
         filter += createFilterStringForStudent();
+        filter += createFilterStringForDegree();
         return filter;
     }
-    
+
     private String createFilterStringForStatus() {
         if (caseStatusFilter != '--') {
             return ' Status = \'' + caseStatusFilter + '\' AND ';
         }
         return ' ';
     }
-    
+
     private String createFilterStringForSubject() {
         if (!String.isEmpty(caseSubject)) {
             return ' Subject LIKE \'%' + caseSubject + '%\' AND ';
         }
         return ' ';
     }
-    
+
     private String createFilterStringForCreatedDate() {
         String createdQuery = ' ';
         if(startDate != null) {
@@ -350,14 +353,23 @@ public class showMyCasesController extends ListViewController {
         }
         return createdQuery;
     }
-    
+
     private String createFilterStringForStudent() {
-        String searchCon = searchString.trim(); 
+        String searchCon = searchString.trim();
         String createdQuery = ' (' +
             'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
             'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
             'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
         ') AND ';
         return createdQuery;
+    }
+
+    private String createFilterStringForDegree() {
+        if (!String.isEmpty(degreeFilter)) {
+            return ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
+                   'WHERE Status__c = \'Active in Program\' AND Degree__c LIKE \'%' +
+                   degreeFilter + '%\')) AND ';
+        }
+        return ' ';
     }
 }

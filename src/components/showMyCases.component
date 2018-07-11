@@ -87,6 +87,12 @@
                                             styleClass="searchBox"
                                             style="width:190px"/>
                         </apex:pageBlockSection>
+                        <apex:pageBlockSection>
+                            <apex:inputText id="degreeFilterInput" label="Degree: "
+                                        value="{!degreeFilter}"
+                                        html-placeholder="Filter Degree"
+                                        styleClass="searchBox"/>
+                        </apex:pageBlockSection>
                         <apex:pageBlockSection columns="2">
                             <apex:selectList label="Status" value="{!caseStatusFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!caseStatusOptions}"/>

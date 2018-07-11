@@ -12,6 +12,7 @@ public class showMyCasesController extends ListViewController {
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
     public String caseSubject {get; set;}
+    public String studentGroup {get; set;}
     public Date startDate {get; set;}
     public Date endDate {get; set;}
     public String searchString{ get; set;}
@@ -21,10 +22,10 @@ public class showMyCasesController extends ListViewController {
                 caseStatusFilter = '--';
             }
             return caseStatusFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> caseStatusOptions {
         get {
             if (caseStatusOptions == null) {
@@ -37,7 +38,7 @@ public class showMyCasesController extends ListViewController {
             }
             return caseStatusOptions;
         }
-        
+
         set;
     }
 
@@ -289,53 +290,64 @@ public class showMyCasesController extends ListViewController {
         }
         return tmpQuery;
     }
-    
+
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
         Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
     	List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
     	for (Schema.PicklistEntry pickListVal : picklistEntries){
 	    	pickListValuesForCaseStatus.add(pickListVal.getLabel());
-    	} 
+    	}
     	return pickListValuesForCaseStatus;
     }
-    
+
     public void insertFilterIntoQuery() {
         String modifiedQuery = queryAttr;
         String filter = createFilterForCase();
-        
+
         Integer loc = modifiedQuery.indexOf('WHERE');
         String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);
         leftSideOfQuery = leftSideOfQuery.trim();
         String rightSideOfQuery = modifiedQuery.subString(loc + 6);
         rightSideOfQuery = rightSideOfQuery.trim();
-        
+
         modifiedQuery = leftSideOfQuery + filter + rightSideOfQuery;
         query = modifiedQuery;
     }
-    
+
     private String createFilterForCase() {
         String filter = createFilterStringForStatus();
+        filter += createFilterStringForStudentGroup();
         filter += createFilterStringForSubject();
         filter += createFilterStringForCreatedDate();
         filter += createFilterStringForStudent();
         return filter;
     }
-    
+
     private String createFilterStringForStatus() {
         if (caseStatusFilter != '--') {
             return ' Status = \'' + caseStatusFilter + '\' AND ';
         }
         return ' ';
     }
-    
+
+    private String createFilterStringForStudentGroup() {
+        if (!String.isEmpty(studentGroup)) {
+            return '(ContactId IN (SELECT SG_Contact__c FROM Student_Group__c ' +
+                    'WHERE SG_PeopleSoft_Code__c LIKE \'%' +
+                    studentGroup + '%\')) AND ';
+        }
+        return ' ';
+    }
+
+
     private String createFilterStringForSubject() {
         if (!String.isEmpty(caseSubject)) {
             return ' Subject LIKE \'%' + caseSubject + '%\' AND ';
         }
         return ' ';
     }
-    
+
     private String createFilterStringForCreatedDate() {
         String createdQuery = ' ';
         if(startDate != null) {

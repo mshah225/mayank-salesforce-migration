@@ -7,7 +7,7 @@ public class showMyStudentsController extends ListViewController {
     private boolean differentField;
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
-    
+    public String studentGroup {get; set;}
     public string searchString {get; set;}
     public Map<Id,caseWrapper> caseCountMap  {get; set;}
     public List<studentWrapper> studentList {get; set;}
@@ -256,24 +256,34 @@ public class showMyStudentsController extends ListViewController {
     public void insertFilterIntoQuery() {
         String modifiedQuery = queryAttr;
         String filter = createFilterForStudent();
-        
+
         Integer loc = modifiedQuery.indexOf('WHERE');
         String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);
         leftSideOfQuery = leftSideOfQuery.trim();
         String rightSideOfQuery = modifiedQuery.subString(loc + 6);
         rightSideOfQuery = rightSideOfQuery.trim();
-        
+
         modifiedQuery = leftSideOfQuery + filter + rightSideOfQuery;
         query = modifiedQuery;
     }
-    
+
     private String createFilterForStudent() {
         String filter = createFilterStringForStudent();
+        filter += createFilterStringForStudentGroup();
         return filter;
     }
-    
+
+    private String createFilterStringForStudentGroup() {
+        if (!String.isEmpty(studentGroup)) {
+            return '(Student__c IN (SELECT SG_Contact__c FROM Student_Group__c ' +
+                    'WHERE SG_PeopleSoft_Code__c LIKE \'%' +
+                    studentGroup + '%\')) AND ';
+        }
+        return ' ';
+    }
+
     private String createFilterStringForStudent() {
-        String searchCon = searchString.trim(); 
+        String searchCon = searchString.trim();
         String createdQuery = ' (' +
             'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
                     'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +

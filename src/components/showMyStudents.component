@@ -81,6 +81,31 @@
                                                 onkeypress="return noenter(event);"
                                                 styleClass="searchBox"/>
                             </apex:pageBlockSection>
+                            <apex:pageBlockSection columns="2">
+                                <apex:selectList label="Enrollment Status" value="{!enrollmentStatusFilter}" size="1" required="false">
+                                    <apex:selectOptions value="{!enrollmentStatusOptions}"/>
+                                </apex:selectList>
+                                <apex:inputText label="Campus: " id="campusFilter"
+                                        value="{!campusFilter}"
+                                        html-placeholder="Campus Name"
+                                            styleClass="searchBox"/>
+                                <apex:selectList label="Residency" value="{!residentFilter}" size="1" required="false">
+                                    <apex:selectOptions value="{!residentOptions}"/>
+                                </apex:selectList>
+                                <apex:selectList label="US Citizen" value="{!citizenFilter}" size="1" required="false">
+                                    <apex:selectOptions value="{!citizenOptions}"/>
+                                </apex:selectList>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection>
+                                <apex:inputText id="degreeFilterInput" label="Degree: "
+                                            value="{!degreeFilter}"
+                                            html-placeholder="Filter Degree"
+                                            styleClass="searchBox"/>
+                                <apex:inputText id="collegeFilter" label="College: "
+                                            value="{!collegeFilter}"
+                                            html-placeholder="Filter College"
+                                            styleClass="searchBox"/>
+                            </apex:pageBlockSection>
                         </apex:pageBlock>
                         <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
                             <span class="input-group-addon">

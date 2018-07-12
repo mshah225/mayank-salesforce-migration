@@ -87,7 +87,10 @@
                                 <apex:selectList label="US Citizen" value="{!citizenFilter}" size="1" required="false">
                                     <apex:selectOptions value="{!citizenOptions}"/>
                                 </apex:selectList>
-                            </apex:pageBlockSection>
+                                <apex:inputText id="collegeFilter" label="College: "
+                                            value="{!collegeFilter}"
+                                            html-placeholder="Filter College"
+                                            styleClass="searchBox"/>
                         </apex:pageBlock>
                         <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
                             <span class="input-group-addon">

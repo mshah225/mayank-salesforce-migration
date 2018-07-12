@@ -7,6 +7,7 @@ public class showMyStudentsController extends ListViewController {
     private boolean differentField;
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
+    public String collegeFilter {get; set;}
     public string searchString {get; set;}
     public String campusFilter {get; set;}
     public Map<Id,caseWrapper> caseCountMap  {get; set;}
@@ -317,6 +318,7 @@ public class showMyStudentsController extends ListViewController {
         campusFilter = '';
         residentFilter = '--';
         citizenFilter = '--';
+        collegeFilter = NULL;
         query = queryAttr;
     }
 
@@ -335,17 +337,17 @@ public class showMyStudentsController extends ListViewController {
     public void insertFilterIntoQuery() {
         String modifiedQuery = queryAttr;
         String filter = createFilterForStudent();
-        
+
         Integer loc = modifiedQuery.indexOf('WHERE');
         String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);
         leftSideOfQuery = leftSideOfQuery.trim();
         String rightSideOfQuery = modifiedQuery.subString(loc + 6);
         rightSideOfQuery = rightSideOfQuery.trim();
-        
+
         modifiedQuery = leftSideOfQuery + filter + rightSideOfQuery;
         query = modifiedQuery;
     }
-    
+
     private String createFilterForStudent() {
         String filter = createFilterStringForStudentIdSearch();
         filter += createFilterStringForEnrollmentStatus();
@@ -368,6 +370,15 @@ public class showMyStudentsController extends ListViewController {
         return createdQuery;
     }
     
+    private String createFilterStringForCollege() {
+        if (!String.isEmpty(collegeFilter)) {
+            return ' (Student__c IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
+                   'WHERE Status__c = \'Active in Program\' AND Program_Description__c LIKE \'%' +
+                   collegeFilter + '%\')) AND ';
+        }
+        return ' ';
+    }
+  
     private String createFilterStringForEnrollmentStatus() {
         if (enrollmentStatusFilter != '--') {
             return ' Student__r.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';

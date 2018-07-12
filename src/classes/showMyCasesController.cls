@@ -17,6 +17,8 @@ public class showMyCasesController extends ListViewController {
     public Date startDate {get; set;}
     public Date endDate {get; set;}
     public String searchString{ get; set;}
+    public String degreeFilter {get; set;}
+
     public String caseStatusFilter {
         get {
             if (caseStatusFilter == null) {
@@ -402,6 +404,7 @@ public class showMyCasesController extends ListViewController {
         filter += createFilterStringForCampus();
         filter += createFilterStringForResidency();
         filter += createFilterStringForCitizenship();
+        filter += createFilterStringForDegree();
         return filter;
     }
 
@@ -479,6 +482,15 @@ public class showMyCasesController extends ListViewController {
     private String createFilterStringForCitizenship() {
         if (residentFilter != '--') {
             return ' Contact.US_Citizen__c = ' + citizenFilter + ' AND ';
+           }
+        return ' ';
+    }
+
+    private String createFilterStringForDegree() {
+        if (!String.isEmpty(degreeFilter)) {
+            return ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
+                   'WHERE Status__c = \'Active in Program\' AND Degree__c LIKE \'%' +
+                   degreeFilter + '%\')) AND ';
         }
         return ' ';
     }

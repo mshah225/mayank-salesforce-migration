@@ -7,6 +7,7 @@ public class showMyStudentsController extends ListViewController {
     private boolean differentField;
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
+
     public String collegeFilter {get; set;}
     public string searchString {get; set;}
     public String campusFilter {get; set;}
@@ -37,6 +38,7 @@ public class showMyStudentsController extends ListViewController {
         
         set;
     }
+    public String degreeFilter {get; set;}
 
     public String residentFilter {
         get {
@@ -354,6 +356,9 @@ public class showMyStudentsController extends ListViewController {
         filter += createFilterStringForCampus();
         filter += createFilterStringForResidency();
         filter += createFilterForCitizenship();
+        filter = createFilterStringForStudent();
+        filter += createFilterStringForDegree();
+        filter += createFilterStringForCollege();
         return filter;
     }
     
@@ -405,6 +410,15 @@ public class showMyStudentsController extends ListViewController {
     private String createFilterStringForCitizenship() {
         if (citizenFilter != '--') {
             return ' Student__r.US_Citizen__c = ' + citizenFilter + ' AND ';
+        }
+        return ' ';
+    }
+
+    private String createFilterStringForDegree() {
+        if (!String.isEmpty(degreeFilter)) {
+            return ' (Student__c IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
+                   'WHERE Status__c = \'Active in Program\' AND Degree__c LIKE \'%' +
+                   degreeFilter + '%\')) AND ';
         }
         return ' ';
     }

@@ -418,12 +418,12 @@ public class showMyCasesController extends ListViewController {
     
     private String createFilterStringForCreatedDate() {
         String createdQuery = ' ';
-        if(startDate != null) {
+        if (startDate != null) {
             String startDateSection = DateTime.newInstance(startDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
             startDateSection += 'T00:00:00+0000';
             createdQuery += ' CreatedDate >= ' + startDateSection + ' AND ';
         }
-        if(endDate != null) {
+        if (endDate != null) {
             String endDateSection = DateTime.newInstance(endDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
             endDateSection += 'T23:59:59+0000';
             createdQuery += ' CreatedDate <= ' + endDateSection + ' AND ';

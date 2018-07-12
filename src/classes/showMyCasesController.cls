@@ -59,14 +59,12 @@ public class showMyCasesController extends ListViewController {
         get {
             if (enrollmentStatusOptions == null) {
                 enrollmentStatusOptions = new List<SelectOption>();
-
                 enrollmentStatusOptions.add(new SelectOption('--', '--'));
                 enrollmentStatusOptions.add(new SelectOption('true', 'Enrolled'));
                 enrollmentStatusOptions.add(new SelectOption('false', 'Not Enrolled'));
             }
             return enrollmentStatusOptions;
         }
-
         set;
     }
 
@@ -84,14 +82,12 @@ public class showMyCasesController extends ListViewController {
         get {
             if (residentOptions == null) {
                 residentOptions = new List<SelectOption>();
-
                 residentOptions.add(new SelectOption('--', '--'));
                 residentOptions.add(new SelectOption('true', 'Resident'));
                 residentOptions.add(new SelectOption('false', 'Non-Resident'));
             }
             return residentOptions;
         }
-
         set;
     }
 
@@ -109,7 +105,6 @@ public class showMyCasesController extends ListViewController {
         get {
             if (citizenOptions == null) {
                 citizenOptions = new List<SelectOption>();
-
                 citizenOptions.add(new SelectOption('--', '--'));
                 citizenOptions.add(new SelectOption('true', 'US Citizen'));
                 citizenOptions.add(new SelectOption('false', 'International'));
@@ -133,7 +128,6 @@ public class showMyCasesController extends ListViewController {
                     }
                 }
             }
-
             return selectedCases;
         }
 
@@ -159,10 +153,8 @@ public class showMyCasesController extends ListViewController {
                     Subject__c = 'A Message from your College and Department'
                 );
             }
-
             return tempEmail;
         }
-
         set;
     }
 

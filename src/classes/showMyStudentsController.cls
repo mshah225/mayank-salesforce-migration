@@ -28,14 +28,12 @@ public class showMyStudentsController extends ListViewController {
         get {
             if (enrollmentStatusOptions == null) {
                 enrollmentStatusOptions = new List<SelectOption>();
-
                 enrollmentStatusOptions.add(new SelectOption('--', '--'));
                 enrollmentStatusOptions.add(new SelectOption('true', 'Enrolled'));
                 enrollmentStatusOptions.add(new SelectOption('false', 'Not Enrolled'));
             }
             return enrollmentStatusOptions;
         }
-
         set;
     }
     public String degreeFilter {get; set;}
@@ -54,14 +52,12 @@ public class showMyStudentsController extends ListViewController {
         get {
             if (residentOptions == null) {
                 residentOptions = new List<SelectOption>();
-
                 residentOptions.add(new SelectOption('--', '--'));
                 residentOptions.add(new SelectOption('true', 'Resident'));
                 residentOptions.add(new SelectOption('false', 'Non-Resident'));
             }
             return residentOptions;
         }
-
         set;
     }
 
@@ -79,14 +75,12 @@ public class showMyStudentsController extends ListViewController {
         get {
             if (citizenOptions == null) {
                 citizenOptions = new List<SelectOption>();
-
                 citizenOptions.add(new SelectOption('--', '--'));
                 citizenOptions.add(new SelectOption('true', 'US Citizen'));
                 citizenOptions.add(new SelectOption('false', 'International'));
             }
             return citizenOptions;
         }
-
         set;
     }
 

@@ -74,6 +74,9 @@
                                                     style="width:190px"/>
                             </apex:pageBlockSection>
                             <apex:pageBlockSection>
+                                <apex:inputText id="degreeFilterInput" label="Degree: "
+                                            value="{!degreeFilter}"
+                                            html-placeholder="Filter Degree"
                                 <apex:inputText id="collegeFilter" label="College: "
                                             value="{!collegeFilter}"
                                             html-placeholder="Filter College"

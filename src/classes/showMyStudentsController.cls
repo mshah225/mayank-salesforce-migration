@@ -350,7 +350,7 @@ public class showMyStudentsController extends ListViewController {
         filter += createFilterStringForEnrollmentStatus();
         filter += createFilterStringForCampus();
         filter += createFilterStringForResidency();
-        filter += createFilterForCitizenship();
+        filter += createFilterStringForCitizenship();
         filter += createFilterStringForDegree();
         filter += createFilterStringForCollege();
         return filter;

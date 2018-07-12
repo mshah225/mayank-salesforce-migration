@@ -202,9 +202,21 @@ public class Test_ShowMyStudents {
    public static testmethod void Test_Filters(){
         smsc.queryAttr = smsc.query;
         smsc.searchString = 'Tester Mctesterson';
+        smsc.enrollmentStatusFilter = 'Enrolled';
+        smsc.campusFilter = 'Tempe';
+        smsc.residentFilter = 'true';
+        smsc.citizenFilter = 'true';
         smsc.insertFilterIntoQuery();
         System.assert(smsc.query.contains('Student_Name__c LIKE'));
+        System.assert(smsc.query.contains('Currently_Enrolled__c ='));
+        System.assert(smsc.query.contains('Campus__r.Name LIKE'));
+        System.assert(smsc.query.contains('Student__r.Arizona_Resident__c ='));
+        System.assert(smsc.query.contains('Student__r.US_Citizen__c ='));
         smsc.resetSearch();
         System.assert(!smsc.query.contains('Student_Name__c LIKE'));
+        System.assert(!smsc.query.contains('Currently_Enrolled__c ='));
+        System.assert(!smsc.query.contains('Campus__r.Name LIKE'));
+        System.assert(!smsc.query.contains('Student__r.Arizona_Resident__c ='));
+        System.assert(!smsc.query.contains('Student__r.US_Citizen__c ='));
     }
 }

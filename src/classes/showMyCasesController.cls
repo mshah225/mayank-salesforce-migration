@@ -441,9 +441,9 @@ public class showMyCasesController extends ListViewController {
         String createdQuery = ' ';
         if (!String.isEmpty(searchCon)) {
             createdQuery = ' (' +
-                'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                'OR ASURiteID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
                 ') AND ';
         }
         return createdQuery;

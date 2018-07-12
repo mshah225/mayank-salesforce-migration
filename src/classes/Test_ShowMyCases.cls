@@ -170,12 +170,24 @@ public class Test_ShowMyCases {
         smsc.queryAttr = smsc.query;
         smsc.searchString = 'Tester Mctesterson';
         smsc.caseSubject = 'Testing Subject';
+        smsc.enrollmentStatusFilter = 'Enrolled';
+        smsc.campusFilter = 'Tempe';
+        smsc.residentFilter = 'true';
+        smsc.citizenFilter = 'true';
         smsc.insertFilterIntoQuery();
         System.assert(smsc.query.contains('Contact.Name LIKE'));
         System.assert(smsc.query.contains('Subject LIKE'));
+        System.assert(smsc.query.contains('Student__r.Currently_Enrolled__c ='));
+        System.assert(smsc.query.contains('Campus__r.Name LIKE'));
+        System.assert(smsc.query.contains('Contact.Arizona_Resident__c ='));
+        System.assert(smsc.query.contains('Contact.US_Citizen__c ='));
         smsc.resetSearch();
         System.assert(!smsc.query.contains('Contact.Name LIKE'));
         System.assert(!smsc.query.contains('Subject LIKE'));
+        System.assert(!smsc.query.contains('Student__r.Currently_Enrolled__c ='));
+        System.assert(!smsc.query.contains('Campus__r.Name LIKE'));
+        System.assert(!smsc.query.contains('Contact.Arizona_Resident__c ='));
+        System.assert(!smsc.query.contains('Contact.US_Citizen__c ='));
     }
     
 }

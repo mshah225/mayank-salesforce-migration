@@ -388,25 +388,14 @@ public class showMyCasesController extends ListViewController {
     private String createFilterForCase() {
         String filter = createFilterStringForStatus();
         filter += createFilterStringForStudentGroup();
-        filter += createFilterStringForCollege();
+        filter += createFilterStringForCollegeDegreeAndCampus();
         filter += createFilterStringForSubject();
         filter += createFilterStringForCreatedDate();
-        filter += createFilterStringForStudent();
+        filter += createFilterStringForStudentIdSearch();
         filter += createFilterStringForEnrollmentStatus();
-        filter += createFilterStringForCampus();
         filter += createFilterStringForResidency();
         filter += createFilterStringForCitizenship();
-        filter += createFilterStringForDegree();
         return filter;
-    }
-
-    private String createFilterStringForCollege() {
-        if (!String.isEmpty(collegeFilter)) {
-            return ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
-                   'WHERE Status__c = \'Active in Program\' AND Program_Description__c LIKE \'%' +
-                   collegeFilter + '%\')) AND ';
-        }
-        return ' ';
     }
 
     private String createFilterStringForStatus() {
@@ -418,7 +407,7 @@ public class showMyCasesController extends ListViewController {
 
     private String createFilterStringForStudentGroup() {
         if (!String.isEmpty(studentGroup)) {
-            return '(ContactId IN (SELECT SG_Contact__c FROM Student_Group__c ' +
+            return ' (ContactId IN (SELECT SG_Contact__c FROM Student_Group__c ' +
                     'WHERE SG_PeopleSoft_Code__c LIKE \'%' +
                     studentGroup + '%\')) AND ';
         }
@@ -447,28 +436,22 @@ public class showMyCasesController extends ListViewController {
         return createdQuery;
     }
 
-    private String createFilterStringForStudent() {
+    private String createFilterStringForStudentIdSearch() {
         String searchCon = searchString.trim();
-        String createdQuery = ' (' +
-            'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-            'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-            'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-        ') AND ';
+        String createdQuery = ' ';
+        if (!String.isEmpty(searchCon)) {
+            createdQuery = ' (' +
+                'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                'OR ASURiteID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                ') AND ';
+        }
         return createdQuery;
     }
 
     private String createFilterStringForEnrollmentStatus() {
         if (enrollmentStatusFilter != '--') {
             return ' Student__r.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';
-        }
-        return ' ';
-    }
-
-    private String createFilterStringForCampus() {
-        if (!String.isEmpty(campusFilter)) {
-            return '(ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
-                    'WHERE Status__c = \'Active in Program\' AND Campus__r.Name LIKE \'%' +
-                    campusFilter + '%\')) AND ';
         }
         return ' ';
     }
@@ -487,11 +470,25 @@ public class showMyCasesController extends ListViewController {
         return ' ';
     }
 
-    private String createFilterStringForDegree() {
-        if (!String.isEmpty(degreeFilter)) {
-            return ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
-                   'WHERE Status__c = \'Active in Program\' AND Degree__c LIKE \'%' +
-                   degreeFilter + '%\')) AND ';
+    private String createFilterStringForCollegeDegreeAndCampus() {
+        if (!String.isEmpty(collegeFilter) || !String.isEmpty(degreeFilter) || !String.isEmpty(campusFilter)) {
+            String collegeDegreeAndCampusFilter = ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
+                   'WHERE Status__c = \'Active in Program\' ';
+
+            if (!String.isEmpty(collegeFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Program_Description__c LIKE \'%' +
+                collegeFilter + '%\' ';
+            }
+            if (!String.isEmpty(degreeFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Degree__c LIKE \'%' +
+                degreeFilter + '%\' ';
+            }
+            if (!String.isEmpty(campusFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Campus__r.Name LIKE \'%' +
+                campusFilter + '%\' ';
+            }
+            collegeDegreeAndCampusFilter += ')) AND ';
+            return collegeDegreeAndCampusFilter;
         }
         return ' ';
     }

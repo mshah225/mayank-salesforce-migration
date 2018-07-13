@@ -63,8 +63,8 @@
                          </apex:outputLink>
                     </apex:outputPanel>
                     <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
-                        <apex:pageBlock>
-                            <apex:pageBlockSection>
+                        <apex:pageBlock >
+                            <apex:pageBlockSection >
                                 <apex:inputText id="studentFilterInput"
                                                     value="{!searchString}"
                                                     label="Student: "

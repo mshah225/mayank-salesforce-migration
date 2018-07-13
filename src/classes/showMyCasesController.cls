@@ -15,6 +15,7 @@ public class showMyCasesController extends ListViewController {
     public String studentGroup {get; set;}
     public String campusFilter {get; set;}
     public String collegeFilter {get; set;}
+    public String majorFilter {get; set;}
     public Date startDate {get; set;}
     public Date endDate {get; set;}
     public String searchString{ get; set;}
@@ -471,7 +472,8 @@ public class showMyCasesController extends ListViewController {
     }
 
     private String createFilterStringForCollegeDegreeAndCampus() {
-        if (!String.isEmpty(collegeFilter) || !String.isEmpty(degreeFilter) || !String.isEmpty(campusFilter)) {
+        if (!String.isEmpty(collegeFilter) || !String.isEmpty(degreeFilter) ||
+                !String.isEmpty(campusFilter) || !String.isEmpty(majorFilter)) {
             String collegeDegreeAndCampusFilter = ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
                    'WHERE Status__c = \'Active in Program\' ';
 
@@ -486,6 +488,10 @@ public class showMyCasesController extends ListViewController {
             if (!String.isEmpty(campusFilter)) {
                 collegeDegreeAndCampusFilter += ' AND Campus__r.Name LIKE \'%' +
                 campusFilter + '%\' ';
+            }
+            if (!String.isEmpty(majorFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Plan_Description__c LIKE \'%' +
+                majorFilter + '%\' ';
             }
             collegeDegreeAndCampusFilter += ')) AND ';
             return collegeDegreeAndCampusFilter;

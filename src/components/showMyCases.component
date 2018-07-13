@@ -105,6 +105,10 @@
                                         value="{!collegeFilter}"
                                         html-placeholder="Filter College"
                                         styleClass="searchBox"/>
+                            <apex:inputText id="majorFilter" label="Major: "
+                                        value="{!majorFilter}"
+                                        html-placeholder="Filter Major"
+                                        styleClass="searchBox"/>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="2">
                             <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
@@ -482,25 +486,24 @@
             </div>
         </div>
         <div class="modal fade updateModal" role="dialog">
-                <div class="modal-dialog" role="document" style ="padding-left: 5%;">
-                    <apex:outputPanel id="updateModalContent">
-                        <div class="modal-content" style="width: 95%;">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">
-                                    Mass Update
-                                </h4>
-                            </div>
-                            <div class="modal-body">
-                                <apex:outputPanel id="updateModalContentBody">
-                                    {!selectedCases}
-                                </apex:repeat>
-                                </apex:outputPanel>
-                            </div>
+            <div class="modal-dialog" role="document" style ="padding-left: 5%;">
+                <apex:outputPanel id="updateModalContent">
+                    <div class="modal-content" style="width: 95%;">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">
+                                Mass Update
+                            </h4>
                         </div>
-                    </apex:outputPanel>
-                </div>
+                        <div class="modal-body">
+                            <apex:outputPanel id="updateModalContentBody">
+                                {!selectedCases}
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                </apex:outputPanel>
             </div>
+        </div>
     </apex:form>
     <apex:form >
         <div class="headerFooter">

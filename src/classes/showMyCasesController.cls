@@ -546,7 +546,7 @@ public class showMyCasesController extends ListViewController {
     
     private String createFilterStringForEnrollmentStatus() {
         if (enrollmentStatusFilter != '--') {
-            return ' Student__r.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';
+            return ' Contact.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';
         }
         return ' ';
     }
@@ -617,5 +617,18 @@ public class showMyCasesController extends ListViewController {
             createdQuery += ' Change_Date__c  <= ' + persistenceSearchEndDate + ' AND ';
         }
         return createdQuery;
+    }
+    
+    private String createFilterForProactive() {
+        if(String.isNumeric(proactiveFilter)) {
+            List<Id> contactsWhoMeetFilter = new List<Id>();
+            List<Id> mapKeys = caseCounts.keySet();
+            for(Id contactId : mapKeys) {
+                RelatedCases casesForContact = caseCounts.get(contactId);
+                if (Integer.valueOf(proactiveFilter) == casesForContact.proactiveCount) {
+                    contactsWhoMeetFilter.add(contactId);
+                }
+            }
+        }
     }
 }

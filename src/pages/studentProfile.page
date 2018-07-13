@@ -671,7 +671,7 @@
                                                                 <td>{!IF(ISBLANK(milestone.Acad_Program__r.Name), '--', milestone.Acad_Program__r.Name)}</td>
                                                                 <td>
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}"> 
-                                                                        <apex:param value="{!milestone.Effd__c}" /> 
+                                                                        <apex:param value="{!milestone.Effdt__c}" /> 
                                                                     </apex:outputText>
                                                                 </td>
                                                                 <td>{!IF(ISBLANK(milestone.Milestone_Nbr__c), '--', milestone.Milestone_Nbr__c)}</td>
@@ -952,7 +952,7 @@
                                                                 <td>{!IF(ISBLANK(milestone.Acad_Program__r.Name), '--', milestone.Acad_Program__r.Name)}</td>
                                                                 <td>
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}"> 
-                                                                        <apex:param value="{!milestone.Effd__c}" /> 
+                                                                        <apex:param value="{!milestone.Effdt__c}" /> 
                                                                     </apex:outputText>
                                                                 </td>
                                                                 <td>{!IF(ISBLANK(milestone.Milestone_Nbr__c), '--', milestone.Milestone_Nbr__c)}</td>

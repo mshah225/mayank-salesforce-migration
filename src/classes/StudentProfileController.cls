@@ -103,9 +103,10 @@ global with sharing class StudentProfileController {
         studentMilestonesUGrad = [
             SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c, 
                 Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
-                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effd__c
+                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effdt__c
             FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
             AND Acad_Career__c = 'UGRD'
+            ORDER BY Effdt__c DESC
         ];
     }
     
@@ -113,9 +114,10 @@ global with sharing class StudentProfileController {
         studentMilestonesGrad = [
             SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c, 
                 Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
-                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effd__c
+                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effdt__c
             FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
             AND (Acad_Career__c = 'GRAD' OR Acad_Career__c = 'LAW')
+            ORDER BY Effdt__c DESC
         ];
     }
     

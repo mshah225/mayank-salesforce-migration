@@ -618,17 +618,4 @@ public class showMyCasesController extends ListViewController {
         }
         return createdQuery;
     }
-    
-    private String createFilterForProactive() {
-        if(String.isNumeric(proactiveFilter)) {
-            List<Id> contactsWhoMeetFilter = new List<Id>();
-            List<Id> mapKeys = caseCounts.keySet();
-            for(Id contactId : mapKeys) {
-                RelatedCases casesForContact = caseCounts.get(contactId);
-                if (Integer.valueOf(proactiveFilter) == casesForContact.proactiveCount) {
-                    contactsWhoMeetFilter.add(contactId);
-                }
-            }
-        }
-    }
 }

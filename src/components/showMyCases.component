@@ -68,7 +68,7 @@
                     <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
                                      onclick="toggleEmailModal(this, adjustTextHeight)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                     <apex:outputLink id="MassUpdate" styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
-                                     onclick="toggleUpdateModal(this);" rendered="{! showMassUpdate}">Mass Update</apex:outputLink>
+                                     onclick="toggleUpdateModal(this);" rendered="{!showMassUpdate}">Mass Update</apex:outputLink>
                     <apex:commandLink styleClass="btn btn-default asu-primary" style="margin-top: 5px;"
                                       rendered="{! showRefresh}" reRender="rerenderMe" status="ASUAjaxStatus">
                         <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>

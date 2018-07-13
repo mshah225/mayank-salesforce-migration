@@ -1,6 +1,5 @@
 <apex:component id="viewAsComponent" controller="ViewAsController">
     <apex:includeScript value="{!URLFOR($Resource.chosen_jquery, 'docsupport/jquery-1.12.4.min.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.chosen_jquery, 'chosen.jquery.js')}"/>
     <apex:includeScript value="{!URLFOR($Resource.chosen_jquery, 'chosen.jquery.min.js')}"/>
     <apex:includeScript value="{!URLFOR($Resource.chosen_jquery, 'docsupport/prism.js')}"/>
     <apex:includeScript value="/support/console/38.0/integration.js"/>
@@ -35,8 +34,7 @@
      j$(document).ready(function() {
          j$('.viewAsList').chosen();
          j$('.viewAsList option').each(function() {
-             if(j$(this).is(":enabled"))
-             {
+             if(j$(this).is(":enabled")) {
                  selectOptionValues.push(j$(this).val());
              }
          });

@@ -12,6 +12,7 @@ public class showMyCasesController extends ListViewController {
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
     public String caseSubject {get; set;}
+    public String studentGroup {get; set;}
     public String campusFilter {get; set;}
     public String collegeFilter {get; set;}
     public Date startDate {get; set;}
@@ -41,32 +42,29 @@ public class showMyCasesController extends ListViewController {
             }
             return caseStatusOptions;
         }
-
         set;
     }
-    
+
     public String enrollmentStatusFilter {
         get {
             if (enrollmentStatusFilter == null) {
                 enrollmentStatusFilter = '--';
             }
             return enrollmentStatusFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> enrollmentStatusOptions {
         get {
             if (enrollmentStatusOptions == null) {
                 enrollmentStatusOptions = new List<SelectOption>();
-                
                 enrollmentStatusOptions.add(new SelectOption('--', '--'));
                 enrollmentStatusOptions.add(new SelectOption('true', 'Enrolled'));
                 enrollmentStatusOptions.add(new SelectOption('false', 'Not Enrolled'));
             }
             return enrollmentStatusOptions;
         }
-        
         set;
     }
 
@@ -76,47 +74,43 @@ public class showMyCasesController extends ListViewController {
                 residentFilter = '--';
             }
             return residentFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> residentOptions {
         get {
             if (residentOptions == null) {
                 residentOptions = new List<SelectOption>();
-                
                 residentOptions.add(new SelectOption('--', '--'));
                 residentOptions.add(new SelectOption('true', 'Resident'));
                 residentOptions.add(new SelectOption('false', 'Non-Resident'));
             }
             return residentOptions;
         }
-        
         set;
     }
-    
+
     public String citizenFilter {
         get {
             if (citizenFilter == null) {
                 citizenFilter = '--';
             }
             return citizenFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> citizenOptions {
         get {
             if (citizenOptions == null) {
                 citizenOptions = new List<SelectOption>();
-                
                 citizenOptions.add(new SelectOption('--', '--'));
                 citizenOptions.add(new SelectOption('true', 'US Citizen'));
                 citizenOptions.add(new SelectOption('false', 'International'));
             }
             return citizenOptions;
         }
-        
         set;
     }
 
@@ -134,7 +128,6 @@ public class showMyCasesController extends ListViewController {
                     }
                 }
             }
-
             return selectedCases;
         }
 
@@ -160,10 +153,8 @@ public class showMyCasesController extends ListViewController {
                     Subject__c = 'A Message from your College and Department'
                 );
             }
-
             return tempEmail;
         }
-
         set;
     }
 
@@ -396,30 +387,29 @@ public class showMyCasesController extends ListViewController {
 
     private String createFilterForCase() {
         String filter = createFilterStringForStatus();
-        filter += createFilterStringForCollege();
+        filter += createFilterStringForStudentGroup();
+        filter += createFilterStringForCollegeDegreeAndCampus();
         filter += createFilterStringForSubject();
         filter += createFilterStringForCreatedDate();
-        filter += createFilterStringForStudent();
+        filter += createFilterStringForStudentIdSearch();
         filter += createFilterStringForEnrollmentStatus();
-        filter += createFilterStringForCampus();
         filter += createFilterStringForResidency();
         filter += createFilterStringForCitizenship();
-        filter += createFilterStringForDegree();
         return filter;
-    }
-
-    private String createFilterStringForCollege() {
-        if (!String.isEmpty(collegeFilter)) {
-            return ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
-                   'WHERE Status__c = \'Active in Program\' AND Program_Description__c LIKE \'%' +
-                   collegeFilter + '%\')) AND ';
-        }
-        return ' ';
     }
 
     private String createFilterStringForStatus() {
         if (caseStatusFilter != '--') {
             return ' Status = \'' + caseStatusFilter + '\' AND ';
+        }
+        return ' ';
+    }
+
+    private String createFilterStringForStudentGroup() {
+        if (!String.isEmpty(studentGroup)) {
+            return ' (ContactId IN (SELECT SG_Contact__c FROM Student_Group__c ' +
+                    'WHERE SG_PeopleSoft_Code__c LIKE \'%' +
+                    studentGroup + '%\')) AND ';
         }
         return ' ';
     }
@@ -446,39 +436,33 @@ public class showMyCasesController extends ListViewController {
         return createdQuery;
     }
 
-    private String createFilterStringForStudent() {
+    private String createFilterStringForStudentIdSearch() {
         String searchCon = searchString.trim();
-        String createdQuery = ' (' +
-            'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-            'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-            'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-        ') AND ';
+        String createdQuery = ' ';
+        if (!String.isEmpty(searchCon)) {
+            createdQuery = ' (' +
+                'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                ') AND ';
+        }
         return createdQuery;
     }
-    
+
     private String createFilterStringForEnrollmentStatus() {
         if (enrollmentStatusFilter != '--') {
             return ' Student__r.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';
         }
         return ' ';
     }
-    
-    private String createFilterStringForCampus() {
-        if (!String.isEmpty(campusFilter)) {
-            return '(ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' + 
-                    'WHERE Status__c = \'Active in Program\' AND Campus__r.Name LIKE \'%' +
-                    campusFilter + '%\')) AND ';
-        }
-        return ' ';
-    }
-    
+
     private String createFilterStringForResidency() {
         if (residentFilter != '--') {
             return ' Contact.Arizona_Resident__c = ' + residentFilter + ' AND ';
         }
         return ' ';
     }
-    
+
     private String createFilterStringForCitizenship() {
         if (residentFilter != '--') {
             return ' Contact.US_Citizen__c = ' + citizenFilter + ' AND ';
@@ -486,11 +470,25 @@ public class showMyCasesController extends ListViewController {
         return ' ';
     }
 
-    private String createFilterStringForDegree() {
-        if (!String.isEmpty(degreeFilter)) {
-            return ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
-                   'WHERE Status__c = \'Active in Program\' AND Degree__c LIKE \'%' +
-                   degreeFilter + '%\')) AND ';
+    private String createFilterStringForCollegeDegreeAndCampus() {
+        if (!String.isEmpty(collegeFilter) || !String.isEmpty(degreeFilter) || !String.isEmpty(campusFilter)) {
+            String collegeDegreeAndCampusFilter = ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
+                   'WHERE Status__c = \'Active in Program\' ';
+
+            if (!String.isEmpty(collegeFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Program_Description__c LIKE \'%' +
+                collegeFilter + '%\' ';
+            }
+            if (!String.isEmpty(degreeFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Degree__c LIKE \'%' +
+                degreeFilter + '%\' ';
+            }
+            if (!String.isEmpty(campusFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Campus__r.Name LIKE \'%' +
+                campusFilter + '%\' ';
+            }
+            collegeDegreeAndCampusFilter += ')) AND ';
+            return collegeDegreeAndCampusFilter;
         }
         return ' ';
     }

@@ -91,15 +91,19 @@
                                             style="width:190px;"/>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection>
-                            <apex:inputText id="collegeFilter" label="College: "
-                                        value="{!collegeFilter}"
-                                        html-placeholder="Filter College"
-                                        styleClass="searchBox"/>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection>
+                            <apex:inputText id="studentGroupFilterInput"
+                                            label="Student Group: "
+                                            value="{!studentGroup}"
+                                            html-placeholder=" Filter Student Group"
+                                            onkeypress="return noenter(event);"
+                                            styleClass="searchBox"/>
                             <apex:inputText id="degreeFilterInput" label="Degree: "
                                         value="{!degreeFilter}"
                                         html-placeholder="Filter Degree"
+                                        styleClass="searchBox"/>
+                            <apex:inputText id="collegeFilter" label="College: "
+                                        value="{!collegeFilter}"
+                                        html-placeholder="Filter College"
                                         styleClass="searchBox"/>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="2">

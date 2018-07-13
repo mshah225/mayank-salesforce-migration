@@ -20,6 +20,7 @@
 <apex:attribute name="showFollowupDate" type="boolean" description="" default="false" />
 <apex:attribute name="showTransfer" type="boolean" description="" default="false" />
 <apex:attribute name="showMassEmail" type="boolean" description="" default="false" />
+<apex:attribute name="showMassUpdate" type="boolean" description="" default="false" />
 <apex:attribute name="showProactive" type="boolean" description="" default="false" />
 <apex:attribute name="showReactive" type="boolean" description="" default="false" />
 <apex:attribute name="showSearch" type="boolean" description="" default="false" />
@@ -66,6 +67,8 @@
                                      onclick="toggleTransferModal(this)" rendered="{! showTransfer}">Mass Transfer</apex:outputLink>
                     <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
                                      onclick="toggleEmailModal(this, adjustTextHeight)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
+                    <apex:outputLink id="MassUpdate" styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
+                                     onclick="toggleUpdateModal(this);" rendered="{!showMassUpdate}">Mass Update</apex:outputLink>
                     <apex:commandLink styleClass="btn btn-default asu-primary" style="margin-top: 5px;"
                                       rendered="{! showRefresh}" reRender="rerenderMe" status="ASUAjaxStatus">
                         <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
@@ -91,10 +94,27 @@
                                             value="{!ownerFilter}"
                                             html-placeholder="Owner Name"
                                             styleClass="searchBox"
-                                            style="width:190px"/>
+                                            style="width:190px;"/>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection>
+                            <apex:inputText id="studentGroupFilterInput"
+                                            label="Student Group: "
+                                            value="{!studentGroup}"
+                                            html-placeholder=" Filter Student Group"
+                                            onkeypress="return noenter(event);"
+                                            styleClass="searchBox"/>
+                            <apex:inputText id="degreeFilterInput" label="Degree: "
+                                        value="{!degreeFilter}"
+                                        html-placeholder="Filter Degree"
+                                        styleClass="searchBox"/>
+                            <apex:inputText id="collegeFilter" label="College: "
+                                        value="{!collegeFilter}"
+                                        html-placeholder="Filter College"
+                                        styleClass="searchBox"/>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="2">
-                            <apex:selectList label="Status" value="{!caseStatusFilter}" size="1" required="false">
+                            <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
+                                    style="margin-right:10px;">
                                 <apex:selectOptions value="{!caseStatusOptions}"/>
                             </apex:selectList>
                             <apex:inputText label="Subject: " id="caseSubject"
@@ -483,6 +503,26 @@
                 </apex:outputPanel>
             </div>
         </div>
+        <div class="modal fade updateModal" role="dialog">
+                <div class="modal-dialog" role="document" style ="padding-left: 5%;">
+                    <apex:outputPanel id="updateModalContent">
+                        <div class="modal-content" style="width: 95%;">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">
+                                    Mass Update
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <apex:outputPanel id="updateModalContentBody">
+                                    {!selectedCases}
+                                </apex:repeat>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </div>
+            </div>
     </apex:form>
     <apex:form >
         <div class="headerFooter">

@@ -1,11 +1,17 @@
 <apex:component id="viewAsComponent" controller="ViewAsController">
-    <apex:stylesheet value="{!URLFOR($Resource.viewAsComponentResources, 'viewAsContainer.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.chosen_jquery, 'docsupport/jquery-1.12.4.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.chosen_jquery, 'chosen.jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.chosen_jquery, 'docsupport/prism.js')}"/>
     <apex:includeScript value="/support/console/38.0/integration.js"/>
-    
+    <apex:stylesheet value="{!URLFOR($Resource.chosen_jquery, 'docsupport/prism.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.chosen_jquery, 'chosen.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.viewAsComponentResources, 'viewAsContainer.css')}"/>
+
+
     <apex:attribute name="hasViewAs" type="boolean" description="Does this user have the view as ability?"/>
     <apex:attribute name="mimicId" type="string" description="" />
     <apex:attribute name="selectOptions" type="selectOption[]" description="" />
-    
+
     <!-- Not in static resource as this method calls an action function to rerender -->
     <script>
     function closeAllConsoleTabs() {
@@ -18,18 +24,45 @@
                 }
             });
         }
-        
+
         doIt();
     }
     </script>
-    
+    <script>
+     j$ = $.noConflict();
+     var selectOptionValues = [];
+     j$(document).ready(function() {
+         j$('.viewAsList').chosen();
+         j$('.viewAsList option').each(function() {
+             if(j$(this).is(":enabled")) {
+                 selectOptionValues.push(j$(this).val());
+             }
+         });
+
+         j$('.viewAsList').blur(function() {
+             closeAllConsoleTabs();
+         });
+         j$(document).on('click', '.btn-default', function(e){
+             if(e.target.id == 'SelectAll'){
+                 j$('.viewAsList').val(selectOptionValues[0]).trigger("chosen:updated");
+                 closeAllConsoleTabs();
+             }
+             else if(e.target.id == 'DeselectAll'){
+                 j$('.viewAsList').val(' ');
+                 j$('.viewAsList').trigger("chosen:updated");
+                 closeAllConsoleTabs();
+             }
+         });
+     });
+    </script>
+
     <apex:form rendered="{!hasViewAs}" styleClass="rich-tabpanel viewAsForm buffer">
         <apex:actionFunction name="doIt" reRender="componentContent" status="ASUAjaxStatus"/>
-        <apex:selectList size="1" onchange="closeAllConsoleTabs()" value="{!viewAsId}" styleClass="viewAsList">
+        <apex:selectList multiselect="true" size="1" onchange="closeAllConsoleTabs()" styleClass="viewAsList">
             <apex:selectOptions value="{!selectOptions}"/>
         </apex:selectList>
     </apex:form>
-    
+
     <apex:outputPanel id="componentContent">
         <apex:componentBody >
             <apex:variable var="mimicId" value="{!viewAsId}"/>

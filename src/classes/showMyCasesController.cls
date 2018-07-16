@@ -16,10 +16,16 @@ public class showMyCasesController extends ListViewController {
     public String campusFilter {get; set;}
     public String collegeFilter {get; set;}
     public String majorFilter {get; set;}
-    public Date startDate {get; set;}
-    public Date endDate {get; set;}
+    public Date createdByStartDate {get; set;}
+    public Date createdByEndDate {get; set;}
+    public Date followupStartDate {get; set;}
+    public Date followupEndDate {get; set;}
+    public Date persistenceStartDate {get; set;}
+    public Date persistenceEndDate {get; set;}
     public String searchString{ get; set;}
+    public String ownerFilter { get; set;}
     public String degreeFilter {get; set;}
+    public String collegeFilter {get; set;}
 
     public String caseStatusFilter {
         get {
@@ -112,6 +118,59 @@ public class showMyCasesController extends ListViewController {
             }
             return citizenOptions;
         }
+        set;
+    }
+    
+    public String outlookScoreFilter {
+        get {
+            if (outlookScoreFilter == null) {
+                outlookScoreFilter = '--';
+            }
+            return outlookScoreFilter;
+    	} 
+        set;
+    }
+    
+    public List<SelectOption> outlookScoreOptions {
+        get {
+            if (outlookScoreOptions == null) {
+                outlookScoreOptions = new List<SelectOption>();
+                
+                outlookScoreOptions.add(new SelectOption('--', '--'));
+                outlookScoreOptions.add(new SelectOption('1', 'Very Low'));
+                outlookScoreOptions.add(new SelectOption('2', 'Low'));
+                outlookScoreOptions.add(new SelectOption('3', 'Moderate'));
+                outlookScoreOptions.add(new SelectOption('4', 'High'));
+                outlookScoreOptions.add(new SelectOption('5', 'Very High'));
+            }
+            return outlookScoreOptions;
+        }
+        
+        set;
+    }
+    
+    public String outlookChangeFilter {
+        get {
+            if (outlookChangeFilter == null) {
+                outlookChangeFilter = '--';
+            }
+            return outlookChangeFilter;
+    	} 
+        set;
+    }
+    
+    public List<SelectOption> outlookChangeOptions {
+        get {
+            if (outlookChangeOptions == null) {
+                outlookChangeOptions = new List<SelectOption>();
+                
+                outlookChangeOptions.add(new SelectOption('--', '--'));
+                outlookChangeOptions.add(new SelectOption('1', 'Up'));
+                outlookChangeOptions.add(new SelectOption('-1', 'Down'));
+            }
+            return outlookChangeOptions;
+        }
+        
         set;
     }
 
@@ -341,9 +400,25 @@ public class showMyCasesController extends ListViewController {
      */
     public void resetSearch(){
         searchString = NULL;
-        caseStatusFilter = '--';
+        caseSubject = NULL;
+        ownerFilter = NULL;
+        campusFilter = NULL;
+        followupStartDate = NULL;
+        followupEndDate = NULL;
+        createdByStartDate = NULL;
+        createdByEndDate = NULL;
+        persistenceStartDate = NULL;
+        persistenceEndDate = NULL; 
         caseSubject = NULL;
         collegeFilter = NULL;
+      
+        caseStatusFilter = '--';
+        citizenFilter = '--';
+        residentFilter = '--';
+        enrollmentStatusFilter = '--';
+        outlookChangeFilter = '--';
+        outlookScoreFilter = '--';
+        
         query = queryAttr;
     }
 
@@ -396,6 +471,11 @@ public class showMyCasesController extends ListViewController {
         filter += createFilterStringForEnrollmentStatus();
         filter += createFilterStringForResidency();
         filter += createFilterStringForCitizenship();
+        filter += createFilterStringForFollowupDate();
+        filter += createFilterStringForOwner();
+        filter += createFilterStringForOutlookChange();
+        filter += createFilterStringForOutlookScore();
+        filter += createFilterStringForOutlookDate();
         return filter;
     }
 
@@ -424,18 +504,37 @@ public class showMyCasesController extends ListViewController {
 
     private String createFilterStringForCreatedDate() {
         String createdQuery = ' ';
-        if (startDate != null) {
-            String startDateSection = DateTime.newInstance(startDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+        if (createdByStartDate != null) {
+            String startDateSection = DateTime.newInstance(createdByStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
             startDateSection += 'T00:00:00+0000';
             createdQuery += ' CreatedDate >= ' + startDateSection + ' AND ';
         }
-        if (endDate != null) {
-            String endDateSection = DateTime.newInstance(endDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+        if (createdByEndDate != null) {
+            String endDateSection = DateTime.newInstance(createdByEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
             endDateSection += 'T23:59:59+0000';
             createdQuery += ' CreatedDate <= ' + endDateSection + ' AND ';
         }
         return createdQuery;
     }
+    
+    private String createFilterStringForFollowupDate() {
+        String createdQuery = ' ';
+        if (followupStartDate != null) {
+            String followupSearchStartDate = DateTime.newInstance(followupStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' FollowUp_Date__c >= ' + followupSearchStartDate + ' AND ';
+        }
+        if (followupEndDate != null) {
+            String followupSearchEndDate = DateTime.newInstance(followupEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' FollowUp_Date__c  <= ' + followupSearchEndDate + ' AND ';
+        }
+        return createdQuery;
+    }
+    
+    private String createFilterStringForOwner() {
+        String searchCon = ownerFilter.trim();
+        String createdQuery = ' ';
+        if(!String.isEmpty(searchCon)) {
+            createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
 
     private String createFilterStringForStudentIdSearch() {
         String searchCon = searchString.trim();
@@ -452,7 +551,7 @@ public class showMyCasesController extends ListViewController {
 
     private String createFilterStringForEnrollmentStatus() {
         if (enrollmentStatusFilter != '--') {
-            return ' Student__r.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';
+            return ' Contact.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';
         }
         return ' ';
     }
@@ -465,7 +564,7 @@ public class showMyCasesController extends ListViewController {
     }
 
     private String createFilterStringForCitizenship() {
-        if (residentFilter != '--') {
+        if (citizenFilter != '--') {
             return ' Contact.US_Citizen__c = ' + citizenFilter + ' AND ';
            }
         return ' ';
@@ -497,5 +596,50 @@ public class showMyCasesController extends ListViewController {
             return collegeDegreeAndCampusFilter;
         }
         return ' ';
+    }
+    
+    private String createFilterStringForOutlookChange() {
+        if (outlookChangeFilter != '--') {
+            return ' Contact.Most_Recent_Outlook_Change_Direction__c  = ' + outlookChangeFilter + ' AND ';
+        }
+        return ' ';
+    }
+    
+    private String createFilterStringForOutlookScore() {
+        String outlookScoreQueryFilter;
+        switch on outlookScoreFilter {
+            when '1' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c < 4 AND ';
+            }
+            when '2' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c >= 4 AND Contact.Curr_Cont_Prediction_Level__c < 6 AND ';
+            }
+            when '3' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c = 6 AND ';
+            }
+            when '4' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c = 7 AND ';
+            }
+            when '5' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c > 7 AND ';
+            }
+            when '--' {
+                outlookScoreQueryFilter = '';
+            }
+        }
+        return outlookScoreQueryFilter;
+    }
+    
+    private String createFilterStringForOutlookDate() {
+        String createdQuery = ' ';
+        if (persistenceStartDate != null) {
+            String persistenceSearchStartDate = DateTime.newInstance(persistenceStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' Change_Date__c >= ' + persistenceSearchStartDate + ' AND ';
+        }
+        if (persistenceEndDate != null) {
+            String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' Change_Date__c  <= ' + persistenceSearchEndDate + ' AND ';
+        }
+        return createdQuery;
     }
 }

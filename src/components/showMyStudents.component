@@ -63,8 +63,8 @@
                          </apex:outputLink>
                     </apex:outputPanel>
                     <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
-                        <apex:pageBlock>
-                            <apex:pageBlockSection>
+                        <apex:pageBlock >
+                            <apex:pageBlockSection >
                                 <apex:inputText id="studentFilterInput"
                                                     value="{!searchString}"
                                                     label="Student: "
@@ -107,6 +107,17 @@
                                 <apex:selectList label="US Citizen" value="{!citizenFilter}" size="1" required="false">
                                     <apex:selectOptions value="{!citizenOptions}"/>
                                 </apex:selectList>
+                                <apex:selectList label="Outlook Score" value="{!outlookScoreFilter}" size="1" required="false">
+                                <apex:selectOptions value="{!outlookScoreOptions}"/>
+                                </apex:selectList>
+                                <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
+                                    <apex:selectOptions value="{!outlookChangeOptions}"/>
+                                </apex:selectList>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection columns="3">
+                                <apex:outputLabel >Persistence Change Date: </apex:outputLabel>
+                                <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
+                                <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
                             </apex:pageBlockSection>
                         </apex:pageBlock>
                         <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >

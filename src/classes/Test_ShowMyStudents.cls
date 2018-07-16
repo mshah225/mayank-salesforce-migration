@@ -206,17 +206,24 @@ public class Test_ShowMyStudents {
         smsc.campusFilter = 'Tempe';
         smsc.residentFilter = 'true';
         smsc.citizenFilter = 'true';
+        smsc.outlookScoreFilter = '3';
+        smsc.outlookChangeFilter = 'Up';
+       
         smsc.insertFilterIntoQuery();
         System.assert(smsc.query.contains('Student_Name__c LIKE'));
         System.assert(smsc.query.contains('Currently_Enrolled__c ='));
         System.assert(smsc.query.contains('Campus__r.Name LIKE'));
         System.assert(smsc.query.contains('Student__r.Arizona_Resident__c ='));
         System.assert(smsc.query.contains('Student__r.US_Citizen__c ='));
+        System.assert(smsc.query.contains('Student__r.Most_Recent_Outlook_Change_Direction__c'));
+        System.assert(smsc.query.contains('Student__r.Curr_Cont_Prediction_Level__c = 6 AND'));
         smsc.resetSearch();
         System.assert(!smsc.query.contains('Student_Name__c LIKE'));
         System.assert(!smsc.query.contains('Currently_Enrolled__c ='));
         System.assert(!smsc.query.contains('Campus__r.Name LIKE'));
         System.assert(!smsc.query.contains('Student__r.Arizona_Resident__c ='));
         System.assert(!smsc.query.contains('Student__r.US_Citizen__c ='));
+        System.assert(!smsc.query.contains('Student__r.Most_Recent_Outlook_Change_Direction__c'));
+        System.assert(!smsc.query.contains('Student__r.Curr_Cont_Prediction_Level__c = 6 AND'));
     }
 }

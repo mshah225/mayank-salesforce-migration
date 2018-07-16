@@ -86,22 +86,22 @@ public class showMyStudentsController extends ListViewController {
         }
         set;
     }
-    
+
     public String outlookScoreFilter {
         get {
             if (outlookScoreFilter == null) {
                 outlookScoreFilter = '--';
             }
             return outlookScoreFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> outlookScoreOptions {
         get {
             if (outlookScoreOptions == null) {
                 outlookScoreOptions = new List<SelectOption>();
-                
+
                 outlookScoreOptions.add(new SelectOption('--', '--'));
                 outlookScoreOptions.add(new SelectOption('1', 'Very Low'));
                 outlookScoreOptions.add(new SelectOption('2', 'Low'));
@@ -111,35 +111,35 @@ public class showMyStudentsController extends ListViewController {
             }
             return outlookScoreOptions;
         }
-        
+
         set;
     }
-    
+
     public String outlookChangeFilter {
         get {
             if (outlookChangeFilter == null) {
                 outlookChangeFilter = '--';
             }
             return outlookChangeFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> outlookChangeOptions {
         get {
             if (outlookChangeOptions == null) {
                 outlookChangeOptions = new List<SelectOption>();
-                
+
                 outlookChangeOptions.add(new SelectOption('--', '--'));
                 outlookChangeOptions.add(new SelectOption('1', 'Up'));
                 outlookChangeOptions.add(new SelectOption('-1', 'Down'));
             }
             return outlookChangeOptions;
         }
-        
+
         set;
     }
-    
+
     /*
      * Updats the setCon query with the ORDER BY clause sortField and sortDir
      */
@@ -370,13 +370,15 @@ public class showMyStudentsController extends ListViewController {
         persistenceStartDate = NULL;
         persistenceEndDate = NULL;
         collegeFilter = NULL;
-      
+        studentGroup = NULL;
+        degreeFilter = NULL;
+
         enrollmentStatusFilter = '--';
         residentFilter = '--';
         citizenFilter = '--';
         outlookChangeFilter = '--';
         outlookScoreFilter = '--';
-        
+
         query = queryAttr;
     }
 
@@ -462,14 +464,14 @@ public class showMyStudentsController extends ListViewController {
         return ' ';
     }
 
-    
+
     private String createFilterStringForOutlookChange() {
         if (outlookChangeFilter != '--') {
             return ' Student__r.Most_Recent_Outlook_Change_Direction__c  = ' + outlookChangeFilter + ' AND ';
         }
         return ' ';
     }
-    
+
     private String createFilterStringForOutlookScore() {
         String outlookScoreQueryFilter;
         switch on outlookScoreFilter {
@@ -494,7 +496,7 @@ public class showMyStudentsController extends ListViewController {
         }
         return outlookScoreQueryFilter;
     }
-    
+
     private String createFilterStringForOutlookDate() {
         String createdQuery = ' ';
         if (persistenceStartDate != null) {

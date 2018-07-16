@@ -119,22 +119,22 @@ public class showMyCasesController extends ListViewController {
         }
         set;
     }
-    
+
     public String outlookScoreFilter {
         get {
             if (outlookScoreFilter == null) {
                 outlookScoreFilter = '--';
             }
             return outlookScoreFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> outlookScoreOptions {
         get {
             if (outlookScoreOptions == null) {
                 outlookScoreOptions = new List<SelectOption>();
-                
+
                 outlookScoreOptions.add(new SelectOption('--', '--'));
                 outlookScoreOptions.add(new SelectOption('1', 'Very Low'));
                 outlookScoreOptions.add(new SelectOption('2', 'Low'));
@@ -144,32 +144,32 @@ public class showMyCasesController extends ListViewController {
             }
             return outlookScoreOptions;
         }
-        
+
         set;
     }
-    
+
     public String outlookChangeFilter {
         get {
             if (outlookChangeFilter == null) {
                 outlookChangeFilter = '--';
             }
             return outlookChangeFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> outlookChangeOptions {
         get {
             if (outlookChangeOptions == null) {
                 outlookChangeOptions = new List<SelectOption>();
-                
+
                 outlookChangeOptions.add(new SelectOption('--', '--'));
                 outlookChangeOptions.add(new SelectOption('1', 'Up'));
                 outlookChangeOptions.add(new SelectOption('-1', 'Down'));
             }
             return outlookChangeOptions;
         }
-        
+
         set;
     }
 
@@ -178,17 +178,16 @@ public class showMyCasesController extends ListViewController {
      */
     public List<Case> selectedCases {
         get {
-            if (selectedCases == null) {
-                selectedCases = new List<Case>();
+            selectedCases = new List<Case>();
 
-                for (caseWrapper cw : caseList) {
-                    if (cw.selected) {
-                        selectedCases.add(cw.obj);
-                    }
+            for (caseWrapper cw : caseList) {
+                if (cw.selected) {
+                    selectedCases.add(cw.obj);
                 }
             }
+
             return selectedCases;
-        }
+            }
 
         set {
             selectedCases = value;
@@ -215,6 +214,15 @@ public class showMyCasesController extends ListViewController {
             return tempEmail;
         }
         set;
+    }
+
+    /*
+    * set the tempemail to null when user closes panel
+    */
+    public void clearTempEmail() {
+
+            tempEmail = null;
+
     }
 
     // Methods
@@ -407,17 +415,17 @@ public class showMyCasesController extends ListViewController {
         createdByStartDate = NULL;
         createdByEndDate = NULL;
         persistenceStartDate = NULL;
-        persistenceEndDate = NULL; 
+        persistenceEndDate = NULL;
         caseSubject = NULL;
         collegeFilter = NULL;
-      
+
         caseStatusFilter = '--';
         citizenFilter = '--';
         residentFilter = '--';
         enrollmentStatusFilter = '--';
         outlookChangeFilter = '--';
         outlookScoreFilter = '--';
-        
+
         query = queryAttr;
     }
 
@@ -515,7 +523,7 @@ public class showMyCasesController extends ListViewController {
         }
         return createdQuery;
     }
-    
+
     private String createFilterStringForFollowupDate() {
         String createdQuery = ' ';
         if (followupStartDate != null) {
@@ -528,7 +536,7 @@ public class showMyCasesController extends ListViewController {
         }
         return createdQuery;
     }
-    
+
     private String createFilterStringForOwner() {
         String searchCon = ownerFilter.trim();
         String createdQuery = ' ';
@@ -599,14 +607,14 @@ public class showMyCasesController extends ListViewController {
         }
         return ' ';
     }
-    
+
     private String createFilterStringForOutlookChange() {
         if (outlookChangeFilter != '--') {
             return ' Contact.Most_Recent_Outlook_Change_Direction__c  = ' + outlookChangeFilter + ' AND ';
         }
         return ' ';
     }
-    
+
     private String createFilterStringForOutlookScore() {
         String outlookScoreQueryFilter;
         switch on outlookScoreFilter {
@@ -631,7 +639,7 @@ public class showMyCasesController extends ListViewController {
         }
         return outlookScoreQueryFilter;
     }
-    
+
     private String createFilterStringForOutlookDate() {
         String createdQuery = ' ';
         if (persistenceStartDate != null) {

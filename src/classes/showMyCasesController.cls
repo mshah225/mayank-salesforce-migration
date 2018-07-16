@@ -25,7 +25,6 @@ public class showMyCasesController extends ListViewController {
     public String searchString{ get; set;}
     public String ownerFilter { get; set;}
     public String degreeFilter {get; set;}
-    public String collegeFilter {get; set;}
 
     public String caseStatusFilter {
         get {

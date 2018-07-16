@@ -535,6 +535,9 @@ public class showMyCasesController extends ListViewController {
         String createdQuery = ' ';
         if(!String.isEmpty(searchCon)) {
             createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+        }
+        return createdQuery;
+    }
 
     private String createFilterStringForStudentIdSearch() {
         String searchCon = searchString.trim();

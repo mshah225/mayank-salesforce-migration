@@ -178,17 +178,16 @@ public class showMyCasesController extends ListViewController {
      */
     public List<Case> selectedCases {
         get {
-            if (selectedCases == null) {
-                selectedCases = new List<Case>();
+            selectedCases = new List<Case>();
 
-                for (caseWrapper cw : caseList) {
-                    if (cw.selected) {
-                        selectedCases.add(cw.obj);
-                    }
+            for (caseWrapper cw : caseList) {
+                if (cw.selected) {
+                    selectedCases.add(cw.obj);
                 }
             }
+
             return selectedCases;
-        }
+            }
 
         set {
             selectedCases = value;
@@ -215,6 +214,15 @@ public class showMyCasesController extends ListViewController {
             return tempEmail;
         }
         set;
+    }
+
+    /*
+    * set the tempemail to null when user closes panel
+    */
+    public void clearTempEmail() {
+
+            tempEmail = null;
+
     }
 
     // Methods

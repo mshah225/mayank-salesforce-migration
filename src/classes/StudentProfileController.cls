@@ -156,8 +156,8 @@ global with sharing class StudentProfileController {
             FROM Service_Indicator__c
             WHERE SI_Contact__c = :theContact.Id
             AND SI_Positive_Service_Indicator__c = FALSE
-            AND (SI_End_Date__c < :Date.today()
-                OR SI_End_Date__c = null)
+            AND (SI_Start_Date__c < :Date.today()
+                OR SI_Start_Date__c = null)
             ORDER BY SI_Start_Date__c ASC, SI_Code__c ASC
         ];
         serviceIndicators = (!serviceIndicatorList.isEmpty() ? serviceIndicatorList : new List<Service_Indicator__c>());

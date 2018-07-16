@@ -63,18 +63,66 @@
                          </apex:outputLink>
                     </apex:outputPanel>
                     <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
-                        <apex:outputPanel layout="block" styleClass="ASUFont" style="max-width:500px;margin-left: 50px; margin-top: 20px;">
-                                Student: &nbsp;
+                        <apex:pageBlock >
+                            <apex:pageBlockSection >
                                 <apex:inputText id="studentFilterInput"
-                                                value="{!searchString}"
-                                                html-placeholder=" Name, EmplID or ASURiteID"
+                                                    value="{!searchString}"
+                                                    label="Student: "
+                                                    html-placeholder=" Name, EmplID or ASURiteID"
+                                                    onkeypress="return noenter(event);"
+                                                    styleClass="searchBox"
+                                                    style="width:190px"/>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection>
+                                <apex:inputText id="studentGroupFilterInput"
+                                                label="Student Group: "
+                                                value="{!studentGroup}"
+                                                html-placeholder=" Filter Student Group"
                                                 onkeypress="return noenter(event);"
-                                                styleClass="searchBox"
-                                                style="width:190px"/>
-                        </apex:outputPanel>
+                                                styleClass="searchBox"/>
+                                <apex:inputText id="degreeFilterInput" label="Degree: "
+                                            value="{!degreeFilter}"
+                                            html-placeholder="Filter Degree"
+                                            styleClass="searchBox"/>
+                                <apex:inputText id="collegeFilter" label="College: "
+                                            value="{!collegeFilter}"
+                                            html-placeholder="Filter College"
+                                            styleClass="searchBox"/>
+                                <apex:inputText id="majorFilter" label="Major: "
+                                            value="{!majorFilter}"
+                                            html-placeholder="Filter Major"
+                                            styleClass="searchBox"/>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection columns="2">
+                                <apex:selectList label="Enrollment Status" value="{!enrollmentStatusFilter}" size="1" required="false">
+                                    <apex:selectOptions value="{!enrollmentStatusOptions}"/>
+                                </apex:selectList>
+                                <apex:inputText label="Campus: " id="campusFilter"
+                                        value="{!campusFilter}"
+                                        html-placeholder="Campus Name"
+                                            styleClass="searchBox"/>
+                                <apex:selectList label="Residency" value="{!residentFilter}" size="1" required="false">
+                                    <apex:selectOptions value="{!residentOptions}"/>
+                                </apex:selectList>
+                                <apex:selectList label="US Citizen" value="{!citizenFilter}" size="1" required="false">
+                                    <apex:selectOptions value="{!citizenOptions}"/>
+                                </apex:selectList>
+                                <apex:selectList label="Outlook Score" value="{!outlookScoreFilter}" size="1" required="false">
+                                <apex:selectOptions value="{!outlookScoreOptions}"/>
+                                </apex:selectList>
+                                <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
+                                    <apex:selectOptions value="{!outlookChangeOptions}"/>
+                                </apex:selectList>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection columns="3">
+                                <apex:outputLabel >Persistence Change Date: </apex:outputLabel>
+                                <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
+                                <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
+                            </apex:pageBlockSection>
+                        </apex:pageBlock>
                         <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
                             <span class="input-group-addon">
-                                <apex:commandLink id="searchStudentsBtn" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
+                                <apex:commandLink id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
                                     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                                 </apex:commandLink>
                             </span>

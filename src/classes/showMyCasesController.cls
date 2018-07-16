@@ -12,19 +12,30 @@ public class showMyCasesController extends ListViewController {
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
     public String caseSubject {get; set;}
-    public Date startDate {get; set;}
-    public Date endDate {get; set;}
+    public String studentGroup {get; set;}
+    public String campusFilter {get; set;}
+    public String collegeFilter {get; set;}
+    public String majorFilter {get; set;}
+    public Date createdByStartDate {get; set;}
+    public Date createdByEndDate {get; set;}
+    public Date followupStartDate {get; set;}
+    public Date followupEndDate {get; set;}
+    public Date persistenceStartDate {get; set;}
+    public Date persistenceEndDate {get; set;}
     public String searchString{ get; set;}
+    public String ownerFilter { get; set;}
+    public String degreeFilter {get; set;}
+
     public String caseStatusFilter {
         get {
             if (caseStatusFilter == null) {
                 caseStatusFilter = '--';
             }
             return caseStatusFilter;
-    	} 
+    	}
         set;
     }
-    
+
     public List<SelectOption> caseStatusOptions {
         get {
             if (caseStatusOptions == null) {
@@ -36,6 +47,127 @@ public class showMyCasesController extends ListViewController {
                 caseStatusOptions.add(new SelectOption('--', '--'));
             }
             return caseStatusOptions;
+        }
+        set;
+    }
+
+    public String enrollmentStatusFilter {
+        get {
+            if (enrollmentStatusFilter == null) {
+                enrollmentStatusFilter = '--';
+            }
+            return enrollmentStatusFilter;
+    	}
+        set;
+    }
+
+    public List<SelectOption> enrollmentStatusOptions {
+        get {
+            if (enrollmentStatusOptions == null) {
+                enrollmentStatusOptions = new List<SelectOption>();
+                enrollmentStatusOptions.add(new SelectOption('--', '--'));
+                enrollmentStatusOptions.add(new SelectOption('true', 'Enrolled'));
+                enrollmentStatusOptions.add(new SelectOption('false', 'Not Enrolled'));
+            }
+            return enrollmentStatusOptions;
+        }
+        set;
+    }
+
+    public String residentFilter {
+        get {
+            if (residentFilter == null) {
+                residentFilter = '--';
+            }
+            return residentFilter;
+    	}
+        set;
+    }
+
+    public List<SelectOption> residentOptions {
+        get {
+            if (residentOptions == null) {
+                residentOptions = new List<SelectOption>();
+                residentOptions.add(new SelectOption('--', '--'));
+                residentOptions.add(new SelectOption('true', 'Resident'));
+                residentOptions.add(new SelectOption('false', 'Non-Resident'));
+            }
+            return residentOptions;
+        }
+        set;
+    }
+
+    public String citizenFilter {
+        get {
+            if (citizenFilter == null) {
+                citizenFilter = '--';
+            }
+            return citizenFilter;
+    	}
+        set;
+    }
+
+    public List<SelectOption> citizenOptions {
+        get {
+            if (citizenOptions == null) {
+                citizenOptions = new List<SelectOption>();
+                citizenOptions.add(new SelectOption('--', '--'));
+                citizenOptions.add(new SelectOption('true', 'US Citizen'));
+                citizenOptions.add(new SelectOption('false', 'International'));
+            }
+            return citizenOptions;
+        }
+        set;
+    }
+    
+    public String outlookScoreFilter {
+        get {
+            if (outlookScoreFilter == null) {
+                outlookScoreFilter = '--';
+            }
+            return outlookScoreFilter;
+    	} 
+        set;
+    }
+    
+    public List<SelectOption> outlookScoreOptions {
+        get {
+            if (outlookScoreOptions == null) {
+                outlookScoreOptions = new List<SelectOption>();
+                
+                outlookScoreOptions.add(new SelectOption('--', '--'));
+                outlookScoreOptions.add(new SelectOption('1', 'Very Low'));
+                outlookScoreOptions.add(new SelectOption('2', 'Low'));
+                outlookScoreOptions.add(new SelectOption('3', 'Moderate'));
+                outlookScoreOptions.add(new SelectOption('4', 'High'));
+                outlookScoreOptions.add(new SelectOption('5', 'Very High'));
+            }
+            return outlookScoreOptions;
+        }
+        
+        set;
+    }
+    
+    public String outlookChangeFilter {
+        get {
+            if (outlookChangeFilter == null) {
+                outlookChangeFilter = '--';
+            }
+            return outlookChangeFilter;
+    	} 
+        set;
+    }
+    
+    public List<SelectOption> outlookChangeOptions {
+        get {
+            if (outlookChangeOptions == null) {
+                outlookChangeOptions = new List<SelectOption>();
+                
+                outlookChangeOptions.add(new SelectOption('--', '--'));
+                outlookChangeOptions.add(new SelectOption('1', 'Up'));
+                outlookChangeOptions.add(new SelectOption('-1', 'Down'));
+            }
+            return outlookChangeOptions;
         }
         
         set;
@@ -55,7 +187,6 @@ public class showMyCasesController extends ListViewController {
                     }
                 }
             }
-
             return selectedCases;
         }
 
@@ -81,10 +212,8 @@ public class showMyCasesController extends ListViewController {
                     Subject__c = 'A Message from your College and Department'
                 );
             }
-
             return tempEmail;
         }
-
         set;
     }
 
@@ -270,8 +399,25 @@ public class showMyCasesController extends ListViewController {
      */
     public void resetSearch(){
         searchString = NULL;
+        caseSubject = NULL;
+        ownerFilter = NULL;
+        campusFilter = NULL;
+        followupStartDate = NULL;
+        followupEndDate = NULL;
+        createdByStartDate = NULL;
+        createdByEndDate = NULL;
+        persistenceStartDate = NULL;
+        persistenceEndDate = NULL; 
+        caseSubject = NULL;
+        collegeFilter = NULL;
+      
         caseStatusFilter = '--';
-        caseSubject = null;
+        citizenFilter = '--';
+        residentFilter = '--';
+        enrollmentStatusFilter = '--';
+        outlookChangeFilter = '--';
+        outlookScoreFilter = '--';
+        
         query = queryAttr;
     }
 
@@ -289,75 +435,213 @@ public class showMyCasesController extends ListViewController {
         }
         return tmpQuery;
     }
-    
+
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
         Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
     	List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
     	for (Schema.PicklistEntry pickListVal : picklistEntries){
 	    	pickListValuesForCaseStatus.add(pickListVal.getLabel());
-    	} 
+    	}
     	return pickListValuesForCaseStatus;
     }
-    
+
     public void insertFilterIntoQuery() {
         String modifiedQuery = queryAttr;
         String filter = createFilterForCase();
-        
+
         Integer loc = modifiedQuery.indexOf('WHERE');
         String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);
         leftSideOfQuery = leftSideOfQuery.trim();
         String rightSideOfQuery = modifiedQuery.subString(loc + 6);
         rightSideOfQuery = rightSideOfQuery.trim();
-        
+
         modifiedQuery = leftSideOfQuery + filter + rightSideOfQuery;
         query = modifiedQuery;
     }
-    
+
     private String createFilterForCase() {
         String filter = createFilterStringForStatus();
+        filter += createFilterStringForStudentGroup();
+        filter += createFilterStringForCollegeDegreeAndCampus();
         filter += createFilterStringForSubject();
         filter += createFilterStringForCreatedDate();
-        filter += createFilterStringForStudent();
+        filter += createFilterStringForStudentIdSearch();
+        filter += createFilterStringForEnrollmentStatus();
+        filter += createFilterStringForResidency();
+        filter += createFilterStringForCitizenship();
+        filter += createFilterStringForFollowupDate();
+        filter += createFilterStringForOwner();
+        filter += createFilterStringForOutlookChange();
+        filter += createFilterStringForOutlookScore();
+        filter += createFilterStringForOutlookDate();
         return filter;
     }
-    
+
     private String createFilterStringForStatus() {
         if (caseStatusFilter != '--') {
             return ' Status = \'' + caseStatusFilter + '\' AND ';
         }
         return ' ';
     }
-    
+
+    private String createFilterStringForStudentGroup() {
+        if (!String.isEmpty(studentGroup)) {
+            return ' (ContactId IN (SELECT SG_Contact__c FROM Student_Group__c ' +
+                    'WHERE SG_PeopleSoft_Code__c LIKE \'%' +
+                    studentGroup + '%\')) AND ';
+        }
+        return ' ';
+    }
+
     private String createFilterStringForSubject() {
         if (!String.isEmpty(caseSubject)) {
             return ' Subject LIKE \'%' + caseSubject + '%\' AND ';
         }
         return ' ';
     }
-    
+
     private String createFilterStringForCreatedDate() {
         String createdQuery = ' ';
-        if(startDate != null) {
-            String startDateSection = DateTime.newInstance(startDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+        if (createdByStartDate != null) {
+            String startDateSection = DateTime.newInstance(createdByStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
             startDateSection += 'T00:00:00+0000';
             createdQuery += ' CreatedDate >= ' + startDateSection + ' AND ';
         }
-        if(endDate != null) {
-            String endDateSection = DateTime.newInstance(endDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+        if (createdByEndDate != null) {
+            String endDateSection = DateTime.newInstance(createdByEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
             endDateSection += 'T23:59:59+0000';
             createdQuery += ' CreatedDate <= ' + endDateSection + ' AND ';
         }
         return createdQuery;
     }
     
-    private String createFilterStringForStudent() {
-        String searchCon = searchString.trim(); 
-        String createdQuery = ' (' +
-            'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-            'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-            'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-        ') AND ';
+    private String createFilterStringForFollowupDate() {
+        String createdQuery = ' ';
+        if (followupStartDate != null) {
+            String followupSearchStartDate = DateTime.newInstance(followupStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' FollowUp_Date__c >= ' + followupSearchStartDate + ' AND ';
+        }
+        if (followupEndDate != null) {
+            String followupSearchEndDate = DateTime.newInstance(followupEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' FollowUp_Date__c  <= ' + followupSearchEndDate + ' AND ';
+        }
+        return createdQuery;
+    }
+    
+    private String createFilterStringForOwner() {
+        String searchCon = ownerFilter.trim();
+        String createdQuery = ' ';
+        if(!String.isEmpty(searchCon)) {
+            createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+        }
+        return createdQuery;
+    }
+
+    private String createFilterStringForStudentIdSearch() {
+        String searchCon = searchString.trim();
+        String createdQuery = ' ';
+        if (!String.isEmpty(searchCon)) {
+            createdQuery = ' (' +
+                'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                ') AND ';
+        }
+        return createdQuery;
+    }
+
+    private String createFilterStringForEnrollmentStatus() {
+        if (enrollmentStatusFilter != '--') {
+            return ' Contact.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';
+        }
+        return ' ';
+    }
+
+    private String createFilterStringForResidency() {
+        if (residentFilter != '--') {
+            return ' Contact.Arizona_Resident__c = ' + residentFilter + ' AND ';
+        }
+        return ' ';
+    }
+
+    private String createFilterStringForCitizenship() {
+        if (citizenFilter != '--') {
+            return ' Contact.US_Citizen__c = ' + citizenFilter + ' AND ';
+           }
+        return ' ';
+    }
+
+    private String createFilterStringForCollegeDegreeAndCampus() {
+        if (!String.isEmpty(collegeFilter) || !String.isEmpty(degreeFilter) ||
+                !String.isEmpty(campusFilter) || !String.isEmpty(majorFilter)) {
+            String collegeDegreeAndCampusFilter = ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
+                   'WHERE Status__c = \'Active in Program\' ';
+
+            if (!String.isEmpty(collegeFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Program_Description__c LIKE \'%' +
+                collegeFilter + '%\' ';
+            }
+            if (!String.isEmpty(degreeFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Degree__c LIKE \'%' +
+                degreeFilter + '%\' ';
+            }
+            if (!String.isEmpty(campusFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Campus__r.Name LIKE \'%' +
+                campusFilter + '%\' ';
+            }
+            if (!String.isEmpty(majorFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Plan_Description__c LIKE \'%' +
+                majorFilter + '%\' ';
+            }
+            collegeDegreeAndCampusFilter += ')) AND ';
+            return collegeDegreeAndCampusFilter;
+        }
+        return ' ';
+    }
+    
+    private String createFilterStringForOutlookChange() {
+        if (outlookChangeFilter != '--') {
+            return ' Contact.Most_Recent_Outlook_Change_Direction__c  = ' + outlookChangeFilter + ' AND ';
+        }
+        return ' ';
+    }
+    
+    private String createFilterStringForOutlookScore() {
+        String outlookScoreQueryFilter;
+        switch on outlookScoreFilter {
+            when '1' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c < 4 AND ';
+            }
+            when '2' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c >= 4 AND Contact.Curr_Cont_Prediction_Level__c < 6 AND ';
+            }
+            when '3' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c = 6 AND ';
+            }
+            when '4' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c = 7 AND ';
+            }
+            when '5' {
+                outlookScoreQueryFilter = ' Contact.Curr_Cont_Prediction_Level__c > 7 AND ';
+            }
+            when '--' {
+                outlookScoreQueryFilter = '';
+            }
+        }
+        return outlookScoreQueryFilter;
+    }
+    
+    private String createFilterStringForOutlookDate() {
+        String createdQuery = ' ';
+        if (persistenceStartDate != null) {
+            String persistenceSearchStartDate = DateTime.newInstance(persistenceStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' Change_Date__c >= ' + persistenceSearchStartDate + ' AND ';
+        }
+        if (persistenceEndDate != null) {
+            String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' Change_Date__c  <= ' + persistenceSearchEndDate + ' AND ';
+        }
         return createdQuery;
     }
 }

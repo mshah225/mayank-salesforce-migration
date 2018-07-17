@@ -25,6 +25,10 @@ public class showMyCasesController extends ListViewController {
     public String searchString{ get; set;}
     public String ownerFilter { get; set;}
     public String degreeFilter {get; set;}
+    public string caseReasonAdministrativelyClosed{get;set;}
+    public string caseStatus{get;set;}
+    public string caseRecommendedActions{get;set;}
+    public string caseRecommendedActionsOther{get;set;}
 
     public String caseStatusFilter {
         get {
@@ -653,5 +657,65 @@ public class showMyCasesController extends ListViewController {
             createdQuery += ' Change_Date__c  <= ' + persistenceSearchEndDate + ' AND ';
         }
         return createdQuery;
+    }
+
+    public List<selectOption> caseStatusOptions {
+        get {
+            if (caseStatusOptions == null) {
+                caseStatusOptions = new List<selectOption>();
+
+
+                    caseStatusOptions.add(new selectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
+                    caseStatusOptions.add(new selectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
+                    caseStatusOptions.add(new selectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
+                    caseStatusOptions.add(new selectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
+                    caseStatusOptions.add(new selectOption('In Person Meeting', 'In Person Meeting', false));
+            }
+            return caseStatusOptions;
+
+        }
+
+        set;
+    }
+
+    public List<selectOption> caseRecommendedActionOptions {
+        get {
+            if (caseRecommendedActionOptions == null) {
+                caseRecommendedActionOptions = new List<selectOption>();
+                Schema.DescribeFieldResult caseRecommendedActionDescribe = Case.Recommended_Actions__c.getDescribe();
+                List<Schema.PicklistEntry> caseRecommendedActionList = caseRecommendedActionDescribe.getPicklistValues();
+
+
+                for(Integer i = 0; i<caseRecommendedActionList.size(); i++){
+                    caseRecommendedActionOptions.add(new selectOption(caseRecommendedActionList[i].getValue(), caseRecommendedActionList[i].getLabel(), false));
+                }
+            }
+            return caseRecommendedActionOptions;
+        }
+
+        set;
+    }
+
+    public void massClose() {
+
+        List<case> casesToClose = new List<case>();
+
+        for (case c : selectedCases) {
+            c.Status = caseStatus;
+            c.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
+            c.Recommended_Actions__c = caseRecommendedActions;
+            c.Recommended_Actions_Other__c = caseRecommendedActionsOther;
+            casesToClose.add(c);
+        }
+
+        if(casesToClose.size() > 0) {
+            try {
+                Database.update(casesToClose);
+            } catch(Exception ex) {
+                ApexPages.addMessages(ex);
+            }
+        }
+
+
     }
 }

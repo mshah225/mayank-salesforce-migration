@@ -685,7 +685,7 @@ public class showMyCasesController extends ListViewController {
                 Schema.DescribeFieldResult caseRecommendedActionDescribe = Case.Recommended_Actions__c.getDescribe();
                 List<Schema.PicklistEntry> caseRecommendedActionList = caseRecommendedActionDescribe.getPicklistValues();
 
-                for(Integer i = 0; i<caseRecommendedActionList.size(); i++){
+                for(Integer i = 0; i<caseRecommendedActionList.size(); i++) {
                     caseRecommendedActionOptions.add(new selectOption(caseRecommendedActionList[i].getValue(), caseRecommendedActionList[i].getLabel(), false));
                 }
             }

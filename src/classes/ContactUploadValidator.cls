@@ -16,7 +16,7 @@ public class ContactUploadValidator {
     
     private void checkRequiredFields() {
         checkSubscription();
-        checkFirstAndLastName();
+        checkUnqiueIdentifier();
         checkEmail();
         checkSubscriberStatusAndValue();
     }
@@ -47,11 +47,43 @@ public class ContactUploadValidator {
         }
     }
     
+    private Boolean checkUnqiueIdentifier() {
+        if (checkFirstAndLastName() && checkEmail()) {
+            return true;
+        }
+        
+        if (checkEmplId()) {
+            return true;
+        }
+        
+        if (checkAsurite()) {
+            return true;
+        }
+        
+        setError('First Name, Last Name, and Email OR EMPLID OR Asurite is REQUIRED.');
+        return false;
+    }
     private Boolean checkFirstAndLastName() {
         if (!String.isBlank(detail.First_Name__c) && !String.isBlank(detail.Last_Name__c)) {
             return true;
         }
-        setError('First and last names are REQUIRED.');
+        
+        return false;
+    }
+    
+    private Boolean checkEmplId() {
+        if (!String.isBlank(detail.EMPLID__c)) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    private Boolean checkAsurite() {
+        if (!String.isBlank(detail.ASURITE__c)) {
+            return true;
+        }
+        
         return false;
     }
     

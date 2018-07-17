@@ -25,6 +25,7 @@ public class showMyCasesController extends ListViewController {
     public String searchString{ get; set;}
     public String ownerFilter { get; set;}
     public String degreeFilter {get; set;}
+    public String categoryFilter {get; set;}
 
     public String caseStatusFilter {
         get {
@@ -485,6 +486,7 @@ public class showMyCasesController extends ListViewController {
         filter += createFilterStringForOutlookChange();
         filter += createFilterStringForOutlookScore();
         filter += createFilterStringForOutlookDate();
+        filter += createFilterStringForCategory();
         return filter;
     }
 
@@ -651,6 +653,15 @@ public class showMyCasesController extends ListViewController {
         if (persistenceEndDate != null) {
             String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
             createdQuery += ' Change_Date__c  <= ' + persistenceSearchEndDate + ' AND ';
+        }
+        return createdQuery;
+    }
+    
+    private String createFilterStringForCategory() {
+        String searchCon = categoryFilter.trim();
+        String createdQuery = ' ';
+        if(!String.isEmpty(searchCon)) {
+            createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
         }
         return createdQuery;
     }

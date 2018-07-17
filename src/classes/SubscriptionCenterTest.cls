@@ -88,6 +88,24 @@ private class SubscriptionCenterTest {
     }
 
     @isTest
+    private static void testMainContactId() {
+        SubscriptionCenterController controller;
+        String subscriber = [SELECT Id FROM Contact LIMIT 1].Id;
+
+        PageReference subscriptionCenterPage = Page.SubscriptionCenter;
+        Test.setCurrentPage(subscriptionCenterPage);
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber);
+
+        controller = new SubscriptionCenterController();
+
+        Integer subCounter = 0;
+        for (String key : controller.subsByParentSubIdMap.keySet()) {
+            subCounter += controller.subsByParentSubIdMap.get(key).size();
+        }
+        System.assertEquals(SUBSCRIBED_COUNT, subCounter);
+    }
+    
+    @isTest
     private static void testUnsubParent() {
         SubscriptionCenterController controller;
         String subscriber = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;

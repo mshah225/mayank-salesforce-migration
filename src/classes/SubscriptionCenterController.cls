@@ -42,17 +42,25 @@ public without sharing class SubscriptionCenterController {
         actionParm = ApexPages.currentPage().getParameters().get('action'); // String describing what action to take
 
         if (hashedSubscriberKeyParm != null) {
+            String encodedSubscriberKeyParm = hashedSubscriberKeyParm;
             if (!Test.isRunningTest()) {
-                hashedSubscriberKeyParm = EncodingUtil.urlEncode(hashedSubscriberKeyParm, 'UTF-8');
+                encodedSubscriberKeyParm = EncodingUtil.urlEncode(encodedSubscriberKeyParm, 'UTF-8');
             }
             List<Contact> tmpList = new List<Contact>();
-            tmpList = [SELECT Id FROM Contact WHERE HashContactId__c =: hashedSubscriberKeyParm];
+            tmpList = [SELECT Id FROM Contact 
+                        WHERE HashContactId__c =: encodedSubscriberKeyParm 
+                        OR Id =: hashedSubscriberKeyParm 
+                        OR SSB_CRMSYSTEM_CONTACT_ID__c =: hashedSubscriberKeyParm
+                        ];
             if (!tmpList.isEmpty()) {
-                System.debug(tmpList);
                 subscriberKeyParm = tmpList[0].Id;
             } else {
                 List<Lead> tmpLeadList = new List<Lead>();
-                tmpLeadList = [Select Id FROM Lead WHERE HashLeadId__c =: hashedSubscriberKeyParm];
+                tmpLeadList = [Select Id FROM Lead 
+                                WHERE HashLeadId__c =: encodedSubscriberKeyParm
+                                OR Id =: hashedSubscriberKeyParm 
+                                OR SSB_CRMSYSTEM_CONTACT_ID__c =: hashedSubscriberKeyParm
+                                ];
                 if (!tmpLeadList.isEmpty()) {
                     subscriberKeyParm = tmpLeadList[0].Id;
                 }

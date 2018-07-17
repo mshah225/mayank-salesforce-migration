@@ -662,14 +662,14 @@ public class showMyCasesController extends ListViewController {
     public List<selectOption> caseStatusOptions {
         get {
             if (caseStatusOptions == null) {
+
                 caseStatusOptions = new List<selectOption>();
+                caseStatusOptions.add(new selectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
+                caseStatusOptions.add(new selectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
+                caseStatusOptions.add(new selectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
+                caseStatusOptions.add(new selectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
+                caseStatusOptions.add(new selectOption('In Person Meeting', 'In Person Meeting', false));
 
-
-                    caseStatusOptions.add(new selectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
-                    caseStatusOptions.add(new selectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
-                    caseStatusOptions.add(new selectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
-                    caseStatusOptions.add(new selectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
-                    caseStatusOptions.add(new selectOption('In Person Meeting', 'In Person Meeting', false));
             }
             return caseStatusOptions;
 
@@ -684,7 +684,6 @@ public class showMyCasesController extends ListViewController {
                 caseRecommendedActionOptions = new List<selectOption>();
                 Schema.DescribeFieldResult caseRecommendedActionDescribe = Case.Recommended_Actions__c.getDescribe();
                 List<Schema.PicklistEntry> caseRecommendedActionList = caseRecommendedActionDescribe.getPicklistValues();
-
 
                 for(Integer i = 0; i<caseRecommendedActionList.size(); i++){
                     caseRecommendedActionOptions.add(new selectOption(caseRecommendedActionList[i].getValue(), caseRecommendedActionList[i].getLabel(), false));

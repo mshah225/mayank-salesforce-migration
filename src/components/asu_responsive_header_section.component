@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <apex:includeScript value="{!URLFOR($Resource.jquery_2_1_1)}"/>
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303,
             '/dist/css/bootstrap.min.css')}"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,

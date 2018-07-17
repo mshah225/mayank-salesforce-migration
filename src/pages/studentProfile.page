@@ -2091,7 +2091,7 @@
                     jQuery('#sunImgSpinner').remove();
                 }
             },
-            {buffer: false, escape: true, timeout: 15000}
+            {buffer: false, escape: true, timeout: 60000}
         );
     }
     
@@ -2237,7 +2237,7 @@
                             event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
         }
     }
@@ -2306,7 +2306,7 @@
                         errorHtml += event.message;
                     }                            
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
 
             Visualforce.remoting.Manager.invokeAction(
@@ -2326,7 +2326,7 @@
                         errorHtml += event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
 
             Visualforce.remoting.Manager.invokeAction(
@@ -2381,7 +2381,7 @@
                         errorHtml += event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
 
             Visualforce.remoting.Manager.invokeAction(
@@ -2402,7 +2402,7 @@
                         errorHtml += event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
 
             Visualforce.remoting.Manager.invokeAction(
@@ -2460,7 +2460,7 @@
                         errorHtml += event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
 
            Visualforce.remoting.Manager.invokeAction(
@@ -2513,7 +2513,7 @@
                     }
             document.getElementById("stdtRetentionResponseErrors").innerHTML = errorHtml;
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
             cleanUpUndefined("UGgeneralIndicators");
         }
@@ -2610,7 +2610,7 @@
                             event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
         }
     }
@@ -2730,7 +2730,7 @@
                             event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
         }
     }
@@ -2797,7 +2797,7 @@
                             event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
         }
     }
@@ -2876,7 +2876,7 @@
                             event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
         }
     }
@@ -2939,7 +2939,7 @@
                             event.message;
                     }
                 },
-                {buffer: false, escape: true, timeout: 15000}
+                {buffer: false, escape: true, timeout: 60000}
             );
         }
     }
@@ -3191,7 +3191,7 @@
                         event.message;
                 }
             },
-            {buffer: false, escape: true, timeout: 15000}
+            {buffer: false, escape: true, timeout: 60000}
         );
     }
 
@@ -3323,7 +3323,7 @@
                 filterClasses();
                 cleanUpUndefined("ps_enrolled_classes");
             }, 
-            {buffer: false, escape: true, timeout: 15000}
+            {buffer: false, escape: true, timeout: 60000}
         );
     }
     
@@ -3383,7 +3383,7 @@
                 }
                 filterClasses();
             }, 
-            {buffer: false, escape: true, timeout: 15000}
+            {buffer: false, escape: true, timeout: 60000}
         );
     }
     
@@ -3444,7 +3444,7 @@
                         event.message;
                 }
             },
-            {buffer: false, escape: true, timeout: 15000}
+            {buffer: false, escape: true, timeout: 60000}
         );
     }
 
@@ -3493,7 +3493,7 @@
                         'No credit by exam found.';
                 }
             },
-            {buffer: false, escape: true, timeout: 15000}
+            {buffer: false, escape: true, timeout: 60000}
         );
     }
     
@@ -3566,7 +3566,7 @@
                         event.message;
                 }
             },
-            {buffer: false, escape: true, timeout: 15000}
+            {buffer: false, escape: true, timeout: 60000}
         );
     }
 
@@ -3627,7 +3627,7 @@
                         'No transfer work found.';
                 }
             },
-            {buffer: false, escape: true, timeout: 15000}
+            {buffer: false, escape: true, timeout: 60000}
         );
     }
        

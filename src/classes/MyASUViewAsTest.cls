@@ -20,6 +20,13 @@ private class MyASUViewAsTest {
         contactToInsert.ASURite_ID__c = 'ASUTestID';
         insert contactToInsert;
         
+        CaseFactory.DefaultCase openCaseCreator = new CaseFactory.DefaultCase();
+        Case openCaseToInsert = (Case)openCaseCreator.create(1)[0];
+        openCaseToInsert.Contact = contactToInsert;
+        openCaseToInsert.ContactId = contactToInsert.Id;
+        openCaseToInsert.Visible_by_Contact__c = true;
+        insert openCaseToInsert;
+        
         View_As_URL__c urlToInsert = new View_As_URL__c(Name = 'URL', MyASUURL__c = 'https://webapp4.asu.edu/myasu');
         insert urlToInsert;
         Test.startTest();
@@ -40,21 +47,25 @@ private class MyASUViewAsTest {
 
     @isTest
     private static void getCaseDetails() {
-
+        MyASUViewAsTest.setUpUser();
+        System.runAs(userToUse) {
+            viewAsService.hasViewAsRights = true;
+            Case createdCase = [SELECT Id FROM Case LIMIT 1];
+            Case caseAssociatedWithAsurite = viewAsService.getCaseDetails(createdCase.Id);
+            System.assertEquals(createdCase.Id, caseAssociatedWithAsurite.Id);
+        }
     }
     
     @isTest
     private static void getOpenCasesWithSharing() {
-
-    }
-
-    @isTest
-    private static void getClosedCasesWithSharing() {
-
-    }
-
-    @isTest
-    private static void getCaseEmailsWithSharing() {
-
+        MyASUViewAsTest.setUpUser();
+        List<Contact> contactsWithCases = [SELECT Id FROM Contact];
+        System.runAs(userToUse) {
+            viewAsService.hasViewAsRights = true;
+            List<Case> allOpenCases = [SELECT Id FROM Case WHERE isClosed = false];
+            Map<Id, List<Case>> openCasesFromService = viewAsService.getOpenCases(contactsWithCases);
+            List<Case> openCases = openCasesFromService.get(contactsWithCases[0].Id);
+            System.assertEquals(allOpenCases.size(), openCases.size());
+        }
     }
 }

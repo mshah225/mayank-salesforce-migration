@@ -29,6 +29,10 @@ public class showMyCasesController extends ListViewController {
     public String caseStatus{get;set;}
     public String caseRecommendedActions{get;set;}
     public String caseRecommendedActionsOther{get;set;}
+<<<<<<< HEAD
+=======
+    public String categoryFilter {get; set;}
+>>>>>>> 7c73593b4cdf58418cd3e830c6211de3d62fcd57
 
     public String caseStatusFilter {
         get {
@@ -489,6 +493,7 @@ public class showMyCasesController extends ListViewController {
         filter += createFilterStringForOutlookChange();
         filter += createFilterStringForOutlookScore();
         filter += createFilterStringForOutlookDate();
+        filter += createFilterStringForCategory();
         return filter;
     }
 
@@ -714,7 +719,15 @@ public class showMyCasesController extends ListViewController {
                 ApexPages.addMessages(ex);
             }
         }
+        return createdQuery;
+    }
 
-
+    private String createFilterStringForCategory() {
+        String searchCon = categoryFilter.trim();
+        String createdQuery = ' ';
+        if(!String.isEmpty(searchCon)) {
+            createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+        }
+        return createdQuery;
     }
 }

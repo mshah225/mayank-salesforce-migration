@@ -545,10 +545,11 @@ public class showMyCasesController extends ListViewController {
         String createdQuery = ' ';
         if (!String.isEmpty(ownerFilter)) {
             String searchCon = ownerFilter.trim();
+            if (!String.isEmpty(searchCon)) {
+                createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+            }
         }
-        if(!String.isEmpty(searchCon)) {
-            createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
-        }
+        
         return createdQuery;
     }
 
@@ -556,14 +557,15 @@ public class showMyCasesController extends ListViewController {
         String createdQuery = ' ';
         if(!String.isEmpty(searchString)) {
             String searchCon = searchString.trim();
+            if (!String.isEmpty(searchCon)) {
+                createdQuery = ' (' +
+                    'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                    'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                    'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                    ') AND ';
+            }
         }
-        if (!String.isEmpty(searchCon)) {
-            createdQuery = ' (' +
-                'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                ') AND ';
-        }
+        
         return createdQuery;
     }
 
@@ -665,10 +667,11 @@ public class showMyCasesController extends ListViewController {
         String createdQuery = ' ';
         if (!String.isEmpty(categoryFilter)) {
             String searchCon = categoryFilter.trim();
+            if (!String.isEmpty(searchCon)) {
+                createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+            }
         }
-        if (!String.isEmpty(searchCon)) {
-            createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
-        }
+        
         return createdQuery;
     }
 }

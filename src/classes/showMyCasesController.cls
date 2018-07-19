@@ -25,10 +25,6 @@ public class showMyCasesController extends ListViewController {
     public String searchString{ get; set;}
     public String ownerFilter { get; set;}
     public String degreeFilter {get; set;}
-    public String caseReasonAdministrativelyClosed {get; set;}
-    public String caseStatus {get; set;}
-    public String caseRecommendedActions {get; set;}
-    public String caseRecommendedActionsOther {get; set;}
     public String categoryFilter {get; set;}
 
     public String caseStatusFilter {
@@ -37,7 +33,7 @@ public class showMyCasesController extends ListViewController {
                 caseStatusFilter = '--';
             }
             return caseStatusFilter;
-    	}
+        }
         set;
     }
 
@@ -62,7 +58,7 @@ public class showMyCasesController extends ListViewController {
                 enrollmentStatusFilter = '--';
             }
             return enrollmentStatusFilter;
-    	}
+        }
         set;
     }
 
@@ -85,7 +81,7 @@ public class showMyCasesController extends ListViewController {
                 residentFilter = '--';
             }
             return residentFilter;
-    	}
+        }
         set;
     }
 
@@ -108,7 +104,7 @@ public class showMyCasesController extends ListViewController {
                 citizenFilter = '--';
             }
             return citizenFilter;
-    	}
+        }
         set;
     }
 
@@ -131,7 +127,7 @@ public class showMyCasesController extends ListViewController {
                 outlookScoreFilter = '--';
             }
             return outlookScoreFilter;
-    	}
+        }
         set;
     }
 
@@ -159,7 +155,7 @@ public class showMyCasesController extends ListViewController {
                 outlookChangeFilter = '--';
             }
             return outlookChangeFilter;
-    	}
+        }
         set;
     }
 
@@ -212,7 +208,7 @@ public class showMyCasesController extends ListViewController {
         get {
             if (tempEmail == null) {
                 tempEmail = new Portal_Email__c(
-                	RecordTypeId = portalEmailRTID,
+                    RecordTypeId = portalEmailRTID,
                     Subject__c = 'A Message from your College and Department'
                 );
             }
@@ -258,8 +254,8 @@ public class showMyCasesController extends ListViewController {
     }
 
     /*
-	* Resets the caseCounts map
-	*/
+    * Resets the caseCounts map
+    */
     public void resetCaseCounts() {
         caseCounts = new Map<Id, relatedCases>();
         Set<Id> contactIds = new Set<Id>();
@@ -454,11 +450,11 @@ public class showMyCasesController extends ListViewController {
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
         Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
-    	List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
-    	for (Schema.PicklistEntry pickListVal : picklistEntries){
-	    	pickListValuesForCaseStatus.add(pickListVal.getLabel());
-    	}
-    	return pickListValuesForCaseStatus;
+        List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
+        for (Schema.PicklistEntry pickListVal : picklistEntries){
+            pickListValuesForCaseStatus.add(pickListVal.getLabel());
+        }
+        return pickListValuesForCaseStatus;
     }
 
     public void insertFilterIntoQuery() {
@@ -546,24 +542,30 @@ public class showMyCasesController extends ListViewController {
     }
 
     private String createFilterStringForOwner() {
-        String searchCon = ownerFilter.trim();
         String createdQuery = ' ';
-        if(!String.isEmpty(searchCon)) {
-            createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+        if (!String.isEmpty(ownerFilter)) {
+            String searchCon = ownerFilter.trim();
+            if (!String.isEmpty(searchCon)) {
+                createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+            }
         }
+
         return createdQuery;
     }
 
     private String createFilterStringForStudentIdSearch() {
-        String searchCon = searchString.trim();
         String createdQuery = ' ';
-        if (!String.isEmpty(searchCon)) {
-            createdQuery = ' (' +
-                'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                ') AND ';
+        if(!String.isEmpty(searchString)) {
+            String searchCon = searchString.trim();
+            if (!String.isEmpty(searchCon)) {
+                createdQuery = ' (' +
+                    'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                    'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                    'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                    ') AND ';
+            }
         }
+
         return createdQuery;
     }
 
@@ -661,69 +663,15 @@ public class showMyCasesController extends ListViewController {
         return createdQuery;
     }
 
-    public List<SelectOption> caseMassUpdateStatusOptions {
-        get {
-            if (caseMassUpdateStatusOptions == null) {
-
-                caseMassUpdateStatusOptions = new List<selectOption>();
-                caseMassUpdateStatusOptions.add(new selectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
-                caseMassUpdateStatusOptions.add(new selectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
-                caseMassUpdateStatusOptions.add(new selectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
-                caseMassUpdateStatusOptions.add(new selectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
-                caseMassUpdateStatusOptions.add(new selectOption('In Person Meeting', 'In Person Meeting', false));
-
-            }
-            return caseMassUpdateStatusOptions;
-
-        }
-
-        set;
-    }
-
-    public List<SelectOption> caseRecommendedActionOptions {
-        get {
-            if (caseRecommendedActionOptions == null) {
-                caseRecommendedActionOptions = new List<selectOption>();
-                Schema.DescribeFieldResult caseRecommendedActionDescribe = Case.Recommended_Actions__c.getDescribe();
-                List<Schema.PicklistEntry> caseRecommendedActionList = caseRecommendedActionDescribe.getPicklistValues();
-
-                for(Schema.PicklistEntry caseRecommendedAction : caseRecommendedActionList) {
-                    caseRecommendedActionOptions.add(new selectOption(caseRecommendedAction.getValue(), caseRecommendedAction.getLabel(), false));
-                }
-            }
-            return caseRecommendedActionOptions;
-        }
-
-        set;
-    }
-
-    public void massClose() {
-
-        List<Case> casesToClose = new List<case>();
-
-        for (case selectedCase : selectedCases) {
-            selectedCase.Status = caseStatus;
-            selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
-            selectedCase.Recommended_Actions__c = caseRecommendedActions;
-            selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
-            casesToClose.add(selectedCase);
-        }
-
-        if (casesToClose.size() > 0) {
-            try {
-                Database.update(casesToClose);
-            } catch(Exception ex) {
-                ApexPages.addMessages('There was an error closing these cases. If the problem persists, contact your system admin with this message: '+ex);
-            }
-        }
-    }
-
     private String createFilterStringForCategory() {
-        String searchCon = categoryFilter.trim();
         String createdQuery = ' ';
-        if(!String.isEmpty(searchCon)) {
-            createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+        if (!String.isEmpty(categoryFilter)) {
+            String searchCon = categoryFilter.trim();
+            if (!String.isEmpty(searchCon)) {
+                createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+            }
         }
+
         return createdQuery;
     }
 }

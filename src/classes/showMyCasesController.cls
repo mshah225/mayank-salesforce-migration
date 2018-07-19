@@ -25,14 +25,11 @@ public class showMyCasesController extends ListViewController {
     public String searchString{ get; set;}
     public String ownerFilter { get; set;}
     public String degreeFilter {get; set;}
-    public String caseReasonAdministrativelyClosed{get;set;}
-    public String caseStatus{get;set;}
-    public String caseRecommendedActions{get;set;}
-    public String caseRecommendedActionsOther{get;set;}
-<<<<<<< HEAD
-=======
+    public String caseReasonAdministrativelyClosed {get; set;}
+    public String caseStatus {get; set;}
+    public String caseRecommendedActions {get; set;}
+    public String caseRecommendedActionsOther {get; set;}
     public String categoryFilter {get; set;}
->>>>>>> 7c73593b4cdf58418cd3e830c6211de3d62fcd57
 
     public String caseStatusFilter {
         get {
@@ -664,34 +661,34 @@ public class showMyCasesController extends ListViewController {
         return createdQuery;
     }
 
-    public List<selectOption> caseStatusOptions {
+    public List<SelectOption> caseMassUpdateStatusOptions {
         get {
-            if (caseStatusOptions == null) {
+            if (caseMassUpdateStatusOptions == null) {
 
-                caseStatusOptions = new List<selectOption>();
-                caseStatusOptions.add(new selectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
-                caseStatusOptions.add(new selectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
-                caseStatusOptions.add(new selectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
-                caseStatusOptions.add(new selectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
-                caseStatusOptions.add(new selectOption('In Person Meeting', 'In Person Meeting', false));
+                caseMassUpdateStatusOptions = new List<selectOption>();
+                caseMassUpdateStatusOptions.add(new selectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
+                caseMassUpdateStatusOptions.add(new selectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
+                caseMassUpdateStatusOptions.add(new selectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
+                caseMassUpdateStatusOptions.add(new selectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
+                caseMassUpdateStatusOptions.add(new selectOption('In Person Meeting', 'In Person Meeting', false));
 
             }
-            return caseStatusOptions;
+            return caseMassUpdateStatusOptions;
 
         }
 
         set;
     }
 
-    public List<selectOption> caseRecommendedActionOptions {
+    public List<SelectOption> caseRecommendedActionOptions {
         get {
             if (caseRecommendedActionOptions == null) {
                 caseRecommendedActionOptions = new List<selectOption>();
                 Schema.DescribeFieldResult caseRecommendedActionDescribe = Case.Recommended_Actions__c.getDescribe();
                 List<Schema.PicklistEntry> caseRecommendedActionList = caseRecommendedActionDescribe.getPicklistValues();
 
-                for(Integer i = 0; i<caseRecommendedActionList.size(); i++) {
-                    caseRecommendedActionOptions.add(new selectOption(caseRecommendedActionList[i].getValue(), caseRecommendedActionList[i].getLabel(), false));
+                for(Schema.PicklistEntry caseRecommendedAction : caseRecommendedActionList) {
+                    caseRecommendedActionOptions.add(new selectOption(caseRecommendedAction.getValue(), caseRecommendedAction.getLabel(), false));
                 }
             }
             return caseRecommendedActionOptions;
@@ -702,24 +699,23 @@ public class showMyCasesController extends ListViewController {
 
     public void massClose() {
 
-        List<case> casesToClose = new List<case>();
+        List<Case> casesToClose = new List<case>();
 
-        for (case c : selectedCases) {
-            c.Status = caseStatus;
-            c.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
-            c.Recommended_Actions__c = caseRecommendedActions;
-            c.Recommended_Actions_Other__c = caseRecommendedActionsOther;
-            casesToClose.add(c);
+        for (case selectedCase : selectedCases) {
+            selectedCase.Status = caseStatus;
+            selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
+            selectedCase.Recommended_Actions__c = caseRecommendedActions;
+            selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
+            casesToClose.add(selectedCase);
         }
 
-        if(casesToClose.size() > 0) {
+        if (casesToClose.size() > 0) {
             try {
                 Database.update(casesToClose);
             } catch(Exception ex) {
-                ApexPages.addMessages(ex);
+                ApexPages.addMessages('There was an error closing these cases. If the problem persists, contact your system admin with this message: '+ex);
             }
         }
-        return createdQuery;
     }
 
     private String createFilterStringForCategory() {

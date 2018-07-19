@@ -534,7 +534,7 @@
                                         Status: &nbsp;<br/>
                                     </p>
                                     <apex:selectList style="margin: 10px;" value="{!caseStatus}" multiselect="false" size="1">
-                                    <apex:selectOptions value="{!caseStatusOptions}"/>
+                                    <apex:selectOptions value="{!caseMassUpdateStatusOptions}"/>
                                     </apex:selectList>
                                     <p align="right" style="margin-top:10px;">
                                         Reason Administratively Closed: &nbsp;<br/>
@@ -556,7 +556,7 @@
                                    </apex:pageBlock>
                                </div>
                             <div class="modal-footer">
-                                <apex:commandButton action="{!massClose}" status="ASUAjaxStatus" styleClass="btn btn-default asu-primary" value="Update Selected Cases">
+                                <apex:commandButton action="{!massClose}" status="ASUAjaxStatus" styleClass="btn btn-default asu-primary" value="Close Selected Cases">
                                 </apex:commandButton>
                             </div>
                             </apex:pageMessage>

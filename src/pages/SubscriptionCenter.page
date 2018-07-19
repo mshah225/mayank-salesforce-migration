@@ -272,7 +272,7 @@
     									  value="Yes, unsubscribe me"
     									  style="text-decoration:none;margin:15px;background:#8c1d40;"
     									  styleClass="btn"/>
-                        <p><h4>You can also <a href="SubscriptionCenter?subscriberKey={!hashedSubscriberKeyParm}" id="manage1" class="sclink">manage your subscriptions</a>.</h4></p>
+                        <p><h4>You can also <a href="SubscriptionCenter?subscriberKey={!subscriberIdentifier}" id="manage1" class="sclink">manage your subscriptions</a>.</h4></p>
                     </apex:form>
                   </apex:outputPanel>
                 -->
@@ -290,7 +290,7 @@
                 									  value="Yes, unsubscribe me"
                 									  style="text-decoration:none;margin:15px;background:#8c1d40;"
                 									  styleClass="btn"/>
-                                    <p><h4>You can also <a href="SubscriptionCenter?subscriberKey={!hashedSubscriberKeyParm}" id="manage1" class="sclink">manage your subscriptions</a>.</h4></p>
+                                    <p><h4>You can also <a href="SubscriptionCenter?subscriberKey={!subscriberIdentifier}" id="manage1" class="sclink">manage your subscriptions</a>.</h4></p>
                                 </div>
                             </div>
                         </apex:outputPanel>
@@ -301,7 +301,7 @@
                         				<h2><span style="font-weight:bold;">{!subscriberEmail}</span>{!unsubscribeMessage}</h2>
                         			</div>
                                     <apex:outputLink id="manage3"
-                                                      value="SubscriptionCenter?subscriberKey={!hashedSubscriberKeyParm}"
+                                                      value="SubscriptionCenter?subscriberKey={!subscriberIdentifier}"
                 									  style="text-decoration:none;margin:15px;background:#8c1d40;"
                 									  styleClass="btn">Manage My Subscriptions</apex:outputLink>
                                 </div>

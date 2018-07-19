@@ -49,7 +49,7 @@ public without sharing class SubscriptionCenterController {
                         WHERE HashContactId__c =: encodedSubscriberKeyParm 
                         OR Id =: subscriberIdentifier 
                         OR SSB_CRMSYSTEM_CONTACT_ID__c =: subscriberIdentifier
-                        ORDER By CreatedDate ASC
+                        ORDER BY RecordType.Name ASC CreatedDate DESC
                         LIMIT 1
                         ];
             if (!tmpList.isEmpty()) {
@@ -60,7 +60,7 @@ public without sharing class SubscriptionCenterController {
                                 WHERE HashLeadId__c =: encodedSubscriberKeyParm
                                 OR Id =: subscriberIdentifier 
                                 OR SSB_CRMSYSTEM_CONTACT_ID__c =: subscriberIdentifier
-                                ORDER By CreatedDate ASC
+                                ORDER BY RecordType.Name ASC CreatedDate DESC
                                 LIMIT 1
                                 ];
                 if (!tmpLeadList.isEmpty()) {

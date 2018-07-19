@@ -25,10 +25,11 @@ public class showMyCasesController extends ListViewController {
     public String searchString{ get; set;}
     public String ownerFilter { get; set;}
     public String degreeFilter {get; set;}
-    public string caseReasonAdministrativelyClosed{get;set;}
-    public string caseStatus{get;set;}
-    public string caseRecommendedActions{get;set;}
-    public string caseRecommendedActionsOther{get;set;}
+    public String caseReasonAdministrativelyClosed{get;set;}
+    public String caseStatus{get;set;}
+    public String caseRecommendedActions{get;set;}
+    public String caseRecommendedActionsOther{get;set;}
+    public String categoryFilter {get; set;}
 
     public String caseStatusFilter {
         get {
@@ -489,6 +490,7 @@ public class showMyCasesController extends ListViewController {
         filter += createFilterStringForOutlookChange();
         filter += createFilterStringForOutlookScore();
         filter += createFilterStringForOutlookDate();
+        filter += createFilterStringForCategory();
         return filter;
     }
 
@@ -714,7 +716,15 @@ public class showMyCasesController extends ListViewController {
                 ApexPages.addMessages(ex);
             }
         }
+        return createdQuery;
+    }
 
-
+    private String createFilterStringForCategory() {
+        String searchCon = categoryFilter.trim();
+        String createdQuery = ' ';
+        if(!String.isEmpty(searchCon)) {
+            createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+        }
+        return createdQuery;
     }
 }

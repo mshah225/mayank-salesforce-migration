@@ -81,7 +81,7 @@
                 </apex:outputPanel>
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
                     <apex:pageBlock >
-                        <apex:pageBlockSection columns="2">
+                        <apex:pageBlockSection columns="3">
                             <apex:inputText id="studentFilterInput"
                                             label="Student: "
                                             value="{!searchString}"
@@ -93,6 +93,12 @@
                                             label="Owner Name: "
                                             value="{!ownerFilter}"
                                             html-placeholder="Owner Name"
+                                            styleClass="searchBox"
+                                            style="width:190px;"/>
+                            <apex:inputText id="categoryFilterInput"
+                                            label="Category: "
+                                            value="{!categoryFilter}"
+                                            html-placeholder="Category Name"
                                             styleClass="searchBox"
                                             style="width:190px;"/>
                         </apex:pageBlockSection>

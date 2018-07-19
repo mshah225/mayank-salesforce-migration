@@ -7,7 +7,7 @@ public with sharing class ServiceCenter
     private Decimal origPin;  
     private Term__c termcAC;
     private Term__c termcB;
-    private MyASUViewAs viewAsService;
+    private MyAsuViewAs viewAsService;
     
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
@@ -43,7 +43,7 @@ public with sharing class ServiceCenter
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
         }
     }
 

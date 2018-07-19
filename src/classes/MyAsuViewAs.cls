@@ -1,4 +1,4 @@
-public without sharing class MyASUViewAs {
+public without sharing class MyAsuViewAs {
     private final String SECRET_KEY = '543d32e1eer10c3360X0916b16d4098q9ebc93d4';
     private final String GET_EFFECTIVE_IDENTITY_SERVICE_NAME = 'getEffIdent';
     private Map<String, String> response;
@@ -6,7 +6,7 @@ public without sharing class MyASUViewAs {
 
     public MyASUViewAs(String idCookie, String asurite) {
         response = getCalloutResponseContents(idCookie, asurite);
-        hasViewAsRights = checkViewAsRights(response, asurite);
+        checkViewAsRights(response, asurite);
     }
     
     public String getResponseValueFromMap(String specificResponse) {
@@ -14,13 +14,13 @@ public without sharing class MyASUViewAs {
     }
     
     private Map<String, String> getCalloutResponseContents(String idCookie, String asurite) {
-        String requestUrl = createRequestURL(idCookie, asurite);
+        String requestUrl = createRequestUrl(idCookie, asurite);
         String xmlResponse = makeCallout(requestUrl);
         return createMapForHttpResponse(xmlResponse);
     }
     
-    private String createRequestURL(String idCookie, String asurite) {
-        String myAsuUrl = [SELECT MyASUURL__c FROM View_As_URL__c WHERE Name = 'URL' LIMIT 1].MyASUURL__c;
+    private String createRequestUrl(String idCookie, String asurite) {
+        String myAsuUrl = [SELECT MyAsuUrl__c FROM View_As_Url__c WHERE Name = 'URL' LIMIT 1].MyAsuUrl__c;
 
         String scopeIdCookie = idCookie;
         if (scopeIdCookie == null) {
@@ -45,7 +45,7 @@ public without sharing class MyASUViewAs {
         requestUrl += '&scopeid-cookie=' + EncodingUtil.urlEncode(scopeIdCookie, 'UTF-8');
         requestUrl += '&signature=' + EncodingUtil.urlEncode(signature, 'UTF-8');
         
-        return requestURL;
+        return requestUrl;
     } 
     
     private String makeCallout(String requestUrl) {
@@ -54,8 +54,6 @@ public without sharing class MyASUViewAs {
         request.setEndpoint(requestUrl);
         request.setMethod('GET');
         HttpResponse response = httpObject.send(request);
-        System.debug(response);
-        System.debug(response.getBody());
         return response.getBody();
     }
     
@@ -75,8 +73,8 @@ public without sharing class MyASUViewAs {
         return viewAsValues;
     }
     
-    private Boolean checkViewAsRights(Map<String, String> viewAsMap, String userAsurite){
-        return !viewAsMap.isEmpty()
+    private void checkViewAsRights(Map<String, String> viewAsMap, String userAsurite) {
+        hasViewAsRights = !viewAsMap.isEmpty()
                 && viewAsMap.get('authorizedToViewAs') == 'true'
                 && viewAsMap.get('isViewingAs') == 'true'
                 && userAsurite != viewAsMap.get('effectiveAsurite');
@@ -84,45 +82,45 @@ public without sharing class MyASUViewAs {
     
     public Contact getContact(String asurite) {
         if (hasViewAsRights) {
-            return MyASUViewAsWithoutSharing.getContact(asurite);
+            return MyAsuViewAsWithoutSharing.getContact(asurite);
         } else {
-            return MyASUViewAsWithSharing.getContact(asurite);
+            return MyAsuViewAsWithSharing.getContact(asurite);
         }
     }
 
     public Case getCaseDetails(Id caseId) {
         if (hasViewAsRights) {
-            return MyASUViewAsWithoutSharing.getCaseDetails(caseId);
+            return MyAsuViewAsWithoutSharing.getCaseDetails(caseId);
         } else {
-            return MyASUViewAsWithSharing.getCaseDetails(caseId);
+            return MyAsuViewAsWithSharing.getCaseDetails(caseId);
         }
     }
     
     public Map<Id, List<Case>> getOpenCases(List<Contact> contacts) {
         if (hasViewAsRights) {
-            return MyASUViewAsWithoutSharing.getOpenCases(contacts);
+            return MyAsuViewAsWithoutSharing.getOpenCases(contacts);
         } else {
-            return MyASUViewAsWithSharing.getOpenCases(contacts);
+            return MyAsuViewAsWithSharing.getOpenCases(contacts);
         }
     }
 
     public Map<Id, List<Case>> getClosedCases(List<Contact> contacts) {
         if (hasViewAsRights) {
-            return MyASUViewAsWithoutSharing.getClosedCases(contacts);
+            return MyAsuViewAsWithoutSharing.getClosedCases(contacts);
         } else {
-            return MyASUViewAsWithSharing.getClosedCases(contacts);
+            return MyAsuViewAsWithSharing.getClosedCases(contacts);
         }
     }
 
     public List<EmailMessage> getCaseEmails(Date launchDate, Id caseId, List<String> contactEmails) {
         if (hasViewAsRights) {
-            return MyASUViewAsWithoutSharing.getCaseEmails(launchDate, caseId, contactEmails);
+            return MyAsuViewAsWithoutSharing.getCaseEmails(launchDate, caseId, contactEmails);
         } else {
-            return MyASUViewAsWithSharing.getCaseEmails(launchDate, caseId, contactEmails);
+            return MyAsuViewAsWithSharing.getCaseEmails(launchDate, caseId, contactEmails);
         }
     }
         
-    private with sharing class MyASUViewAsWithSharing extends MyASUViewAsSharingService{}
+    private with sharing class MyAsuViewAsWithSharing extends MyAsuViewAsSharingService{}
     
-    private without sharing class MyASUViewAsWithoutSharing extends MyASUViewAsSharingService{}
+    private without sharing class MyAsuViewAsWithoutSharing extends MyAsuViewAsSharingService{}
 }

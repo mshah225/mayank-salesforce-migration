@@ -7,7 +7,7 @@ public class viewCaseController{
     private Term__c termcAC;
     private Term__c termcB;
     private Map<String, String> viewAsMap;
-    private MyASUViewAs viewAsService;
+    private MyAsuViewAs viewAsService;
     
     public Id caseId {get;set;}
     public Decimal newPin { get; set; }
@@ -45,7 +45,7 @@ public class viewCaseController{
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
         }
     }
 

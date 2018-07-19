@@ -1,8 +1,8 @@
 @isTest
-private class MyASUViewAsTest {
+private class MyAsuViewAsTest {
     
     private static User userToUse;
-    private static MyASUViewAs viewAsService;
+    private static MyAsuViewAs viewAsService;
     
     private static void setUpUser() {
         
@@ -27,27 +27,27 @@ private class MyASUViewAsTest {
         openCaseToInsert.Visible_by_Contact__c = true;
         insert openCaseToInsert;
         
-        View_As_URL__c urlToInsert = new View_As_URL__c(Name = 'URL', MyASUURL__c = 'https://webapp4.asu.edu/myasu');
+        View_As_Url__c urlToInsert = new View_As_Url__c(Name = 'URL', MyAsuUrl__c = 'https://webapp4.asu.edu/myasu');
         insert urlToInsert;
         Test.startTest();
-        viewAsService = new MyASUViewAs(null, 'Tester');
+        viewAsService = new MyAsuViewAs(null, 'Tester');
         Test.stopTest();
     }
     
     @isTest
     private static void getContact() {
-        MyASUViewAsTest.setUpUser();
+        MyAsuViewAsTest.setUpUser();
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;
             Contact contactAssociatedWithAsurite = viewAsService.getContact('ASUTestID');
-            Contact expectedResult = [Select Id FROM Contact WHERE ASURite_ID__c = 'ASUTestID'];
+            Contact expectedResult = [Select Id FROM Contact WHERE Asurite_ID__c = 'ASUTestID'];
             System.assertEquals(expectedResult.Id, contactAssociatedWithAsurite.Id);
         }
     }
 
     @isTest
     private static void getCaseDetails() {
-        MyASUViewAsTest.setUpUser();
+        MyAsuViewAsTest.setUpUser();
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;
             Case createdCase = [SELECT Id FROM Case LIMIT 1];
@@ -58,7 +58,7 @@ private class MyASUViewAsTest {
     
     @isTest
     private static void getOpenCasesWithSharing() {
-        MyASUViewAsTest.setUpUser();
+        MyAsuViewAsTest.setUpUser();
         List<Contact> contactsWithCases = [SELECT Id FROM Contact];
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;

@@ -2,14 +2,14 @@
 public class MockHttpResponseGen_MyAsuViewAs implements HttpCalloutMock {
     
     public HTTPResponse respond(HTTPRequest request) {
-		HttpResponse fakeResponse = new HttpResponse();
+        HttpResponse fakeResponse = new HttpResponse();
         if (request.getMethod() == 'GET') {
             fakeResponse = callGetResponse();
         } 
         return fakeResponse;
     }
     
-    public HTTPResponse callGetResponse() {
+    private HTTPResponse callGetResponse() {
         HttpResponse fakeGetResponse = new HttpResponse();
         fakeGetResponse.setHeader('Content-Type', 'application/json');
         

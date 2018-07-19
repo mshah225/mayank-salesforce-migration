@@ -3,7 +3,7 @@ public with sharing class ViewAllCasesController
     private Id caseId;
     private Map<String, String> viewAsMap;
     private Decimal origPin;
-    private MyASUViewAs viewAsService;
+    private MyAsuViewAs viewAsService;
     
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -33,7 +33,7 @@ public with sharing class ViewAllCasesController
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
         }
     }
 

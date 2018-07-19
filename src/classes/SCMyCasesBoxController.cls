@@ -19,7 +19,7 @@ public with sharing class SCMyCasesBoxController{
     public String userAsurite;
     public String asurite { get; set; }
     public String masqScopeIdCookie { get; set; }
-    public MyASUViewAs viewAsService;
+    public MyAsuViewAs viewAsService;
 
     public SCMyCasesBoxController(){
         newCase=new Case();
@@ -42,7 +42,7 @@ public with sharing class SCMyCasesBoxController{
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
         }
     }
 

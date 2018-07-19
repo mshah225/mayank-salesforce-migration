@@ -25,10 +25,10 @@ public class showMyCasesController extends ListViewController {
     public String searchString{ get; set;}
     public String ownerFilter { get; set;}
     public String degreeFilter {get; set;}
-    public string caseReasonAdministrativelyClosed{get;set;}
-    public string caseStatus{get;set;}
-    public string caseRecommendedActions{get;set;}
-    public string caseRecommendedActionsOther{get;set;}
+    public String caseReasonAdministrativelyClosed{get;set;}
+    public String caseStatus{get;set;}
+    public String caseRecommendedActions{get;set;}
+    public String caseRecommendedActionsOther{get;set;}
 
     public String caseStatusFilter {
         get {

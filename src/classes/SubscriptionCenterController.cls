@@ -42,8 +42,7 @@ public without sharing class SubscriptionCenterController {
         actionParm = ApexPages.currentPage().getParameters().get('action'); // String describing what action to take
 
         if (subscriberIdentifier != null) {
-            String encodedSubscriberKeyParm = subscriberIdentifier;
-            encodedSubscriberKeyParm = EncodingUtil.urlEncode(encodedSubscriberKeyParm, 'UTF-8');
+            String encodedSubscriberKeyParm = EncodingUtil.urlEncode(subscriberIdentifier, 'UTF-8');
             
             List<Contact> tmpList = new List<Contact>();
             tmpList = [SELECT Id FROM Contact 
@@ -266,9 +265,6 @@ public without sharing class SubscriptionCenterController {
                 availableParentSubIds.remove(subId);
             }
         }
-        system.debug('subscriptionList: ' + subscriptionList);
-        system.debug('parentSubIds: ' + parentSubIds);
-        system.debug('availableParentSubIds: ' + availableParentSubIds);
 
         for (String s : parentSubIds) {
             subsByParentSubIdMap.put(s, new List<SubscriberWrapper>());
@@ -317,7 +313,6 @@ public without sharing class SubscriptionCenterController {
     }
 
     public void doUnsubscribe() {
-        System.debug(directUnsubscribeSubscriberId);
         List<Subscriber__c> unsubList = new List<Subscriber__c>([
             SELECT Id, Subscriber_Status__c 
             FROM Subscriber__c
@@ -424,9 +419,6 @@ public without sharing class SubscriptionCenterController {
             }
 
             for (SubscriberWrapper sw : subsByParentSubIdMap.get(parentSubId)) {
-                system.debug('sw.subscriberStatus: ' + sw.subscriberStatus);
-                system.debug('sw.dbSubscriberStatus: ' + sw.dbSubscriberStatus);
-                system.debug('sw: ' + sw);
                 if (parentSubUnsubscribed && sw.subscriber != null) {
                     sw.subscriber.Subscriber_Status__c = UNSUBSCRIBED;
                     subsToUpdate.add(sw.subscriber);

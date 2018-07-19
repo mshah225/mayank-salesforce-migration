@@ -9,7 +9,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
     }
 
     public Iterable<String> start(Database.BatchableContext batchableContext) {
-        if (attachmentId = null) {
+        if (attachmentId == null) {
             return null;
         }
         headerRow = true;

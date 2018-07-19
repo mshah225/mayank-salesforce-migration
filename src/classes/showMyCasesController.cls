@@ -542,8 +542,10 @@ public class showMyCasesController extends ListViewController {
     }
 
     private String createFilterStringForOwner() {
-        String searchCon = ownerFilter.trim();
         String createdQuery = ' ';
+        if (!String.isEmpty(ownerFilter)) {
+            String searchCon = ownerFilter.trim();
+        }
         if(!String.isEmpty(searchCon)) {
             createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
         }
@@ -551,8 +553,10 @@ public class showMyCasesController extends ListViewController {
     }
 
     private String createFilterStringForStudentIdSearch() {
-        String searchCon = searchString.trim();
         String createdQuery = ' ';
+        if(!String.isEmpty(searchString)) {
+            String searchCon = searchString.trim();
+        }
         if (!String.isEmpty(searchCon)) {
             createdQuery = ' (' +
                 'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
@@ -658,9 +662,11 @@ public class showMyCasesController extends ListViewController {
     }
     
     private String createFilterStringForCategory() {
-        String searchCon = categoryFilter.trim();
         String createdQuery = ' ';
-        if(!String.isEmpty(searchCon)) {
+        if (!String.isEmpty(categoryFilter)) {
+            String searchCon = categoryFilter.trim();
+        }
+        if (!String.isEmpty(searchCon)) {
             createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
         }
         return createdQuery;

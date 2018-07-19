@@ -542,24 +542,30 @@ public class showMyCasesController extends ListViewController {
     }
 
     private String createFilterStringForOwner() {
-        String searchCon = ownerFilter.trim();
         String createdQuery = ' ';
-        if(!String.isEmpty(searchCon)) {
-            createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+        if (!String.isEmpty(ownerFilter)) {
+            String searchCon = ownerFilter.trim();
+            if (!String.isEmpty(searchCon)) {
+                createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+            }
         }
+        
         return createdQuery;
     }
 
     private String createFilterStringForStudentIdSearch() {
-        String searchCon = searchString.trim();
         String createdQuery = ' ';
-        if (!String.isEmpty(searchCon)) {
-            createdQuery = ' (' +
-                'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                ') AND ';
+        if(!String.isEmpty(searchString)) {
+            String searchCon = searchString.trim();
+            if (!String.isEmpty(searchCon)) {
+                createdQuery = ' (' +
+                    'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                    'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                    'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                    ') AND ';
+            }
         }
+        
         return createdQuery;
     }
 
@@ -658,11 +664,14 @@ public class showMyCasesController extends ListViewController {
     }
     
     private String createFilterStringForCategory() {
-        String searchCon = categoryFilter.trim();
         String createdQuery = ' ';
-        if(!String.isEmpty(searchCon)) {
-            createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+        if (!String.isEmpty(categoryFilter)) {
+            String searchCon = categoryFilter.trim();
+            if (!String.isEmpty(searchCon)) {
+                createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+            }
         }
+        
         return createdQuery;
     }
 }

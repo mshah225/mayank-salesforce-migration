@@ -22,8 +22,8 @@ public class showMyCasesController extends ListViewController {
     public Date followupEndDate {get; set;}
     public Date persistenceStartDate {get; set;}
     public Date persistenceEndDate {get; set;}
-    public String searchString{ get; set;}
-    public String ownerFilter { get; set;}
+    public String searchString {get; set;}
+    public String ownerFilter {get; set;}
     public String degreeFilter {get; set;}
     public String caseReasonAdministrativelyClosed {get; set;}
     public String caseStatus {get; set;}

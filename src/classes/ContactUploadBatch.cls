@@ -1,24 +1,22 @@
 public without sharing class ContactUploadBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
     private Id attachmentId;
     private String contactUploadId;
-    private Boolean errorEncountered = false;
     private Map<Integer, String> columnMap;
-    ContactUploadFileReader uploadReader;
+    private Boolean headerRow;
 
     public ContactUploadBatch(Id attachmentId) {
         this.attachmentId = attachmentId;
     }
 
     public Iterable<String> start(Database.BatchableContext batchableContext) {
-        if (attachmentId != null) {
-            uploadReader = new ContactUploadFileReader(attachmentId);
-            contactUploadId = uploadReader.contactCSV.ParentId;
-            columnMap = uploadReader.columnMap;
-            updateUploadStatus('Processing');
-            return uploadReader.fileIterator;
-        } else {
+        if (attachmentId = null) {
             return null;
         }
+        headerRow = true;
+        ContactUploadFileReader uploadReader = new ContactUploadFileReader(attachmentId);
+        contactUploadId = uploadReader.contactCSV.ParentId;
+        updateUploadStatus('Processing');
+        return uploadReader.fileIterator;
     }
 
     public void execute(Database.BatchableContext batchableContext, List<String> scope) {
@@ -64,60 +62,81 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
                 Id subscriberId = uniqueKeyToSubscriberId.get(uniqueKey);
                 if (subscriberId == null) {
                     uploadDetail.Status__c = 'Error';
-                    uploadDetail.Processing_Notes__c += 'Failed to create subscriber record. ';
+                    uploadDetail.Processing_Notes__c += ' Failed to create subscriber record. ';
                 } else {
                     uploadDetail.Subscriber__c = uniqueKeyToSubscriberId.get(uniqueKey);
                 }
             }
         }
+
         detailsToProcess.addAll(detailsInError);
         if (detailsToProcess.size() > 0) {
             Database.insert(detailsToProcess, false);
         }
     }
+    
+    private List<List<String>> recreateRowsFromIteration(List<String> csvContacts) {
+        String csvFile = '';
+        List<List<String>> csvColumnData = new List<List<String>>();
+        for (String row : csvContacts) {
+            if (headerRow) {
+                createHeaderMappings(row);
+                headerRow = false;
+                continue;
+            }
+            csvColumnData.addAll(CsvReader.readCsvFile(row));
+        }
+        return csvColumnData;
+    }
+    
+    private void createHeaderMappings(String row) {
+        List<List<String>> csvLines = CsvReader.readCsvFile(row);
+        columnMap = new Map<Integer, String>();
+        if (!csvLines.isEmpty()) {
+            Integer columnIndex = 0;
+            for (String s : csvLines[0]) {
+                columnMap.put(columnIndex, s);
+                columnIndex++;
+            } 
+        }
+    }
 
     public void finish(Database.BatchableContext batchableContext) {
-        List<Contact_Upload_Detail__c> processedDetails = [
-            SELECT Status__c
+        if (hasSuccessfulRecords() && noErroredRecords()) {
+            updateUploadStatus('Complete with no errors');
+        } else {
+            updateUploadStatus('Complete with errors');
+        }
+    }
+    
+    private Boolean hasSuccessfulRecords() {
+        List<Contact_Upload_Detail__c> successfulDetails = [
+            SELECT Id
             FROM Contact_Upload_Detail__c
             WHERE Contact_Upload__c =: contactUploadId
-            LIMIT 50000
+            AND Status__c = 'Success'
+            LIMIT 1
         ];
-
-        String errorStatus = (processedDetails.isEmpty() ? 'Errors' : 'No Errors');
-
-        for (Contact_Upload_Detail__c detail : processedDetails) {
-            if (detail.Status__c == 'Error') {
-                errorStatus = 'Errors';
-            }
-        }
-
-        if (contactUploadId != null) {
-            updateUploadStatus('Complete with ' + errorStatus);
-        }
+        
+        return !successfulDetails.isEmpty();
+    }
+    
+    private Boolean noErroredRecords() {
+        List<Contact_Upload_Detail__c> erroredDetails = [
+            SELECT Id
+            FROM Contact_Upload_Detail__c
+            WHERE Contact_Upload__c =: contactUploadId
+            AND Status__c = 'Error'
+            LIMIT 1
+        ];
+        
+        return erroredDetails.isEmpty();
     }
 
     private void updateUploadStatus(String status) {
-
         Contact_Upload__c cu = new Contact_Upload__c(
-                Id = contactUploadId,
-                Status__c = status);
+            Id = contactUploadId,
+            Status__c = status);
         update cu;
-    }
-
-    private Contact_Upload_Detail__c updateDetailStatus(Contact_Upload_Detail__c cudToUpdate, String status, String error) {
-        cudToUpdate.Status__c = status;
-        cudToUpdate.Processing_Notes__c += error;
-        cudToUpdate.Processing_Notes__c = cudToUpdate.Processing_Notes__c.left(255);
-        return cudToUpdate;
-    }
-
-    private List<List<String>> recreateRowsFromIteration(List<String> tableOfContacts) {
-        String csvFile = '';
-        for (String row : tableOfContacts) {
-            csvFile += row + '\r';
-        }
-
-        return CsvReader.readCsvFile(Blob.valueOf(csvFile));
     }
 }

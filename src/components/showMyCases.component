@@ -79,9 +79,11 @@
                                     Filters
                     </apex:outputLink>
                 </apex:outputPanel>
+            </div>
+            <div style="text-align: -webkit-center; line-height: 1.92857143;">
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
-                    <apex:pageBlock >
-                        <apex:pageBlockSection columns="2">
+                    <apex:pageBlock>
+                        <apex:pageBlockSection columns="3">
                             <apex:inputText id="studentFilterInput"
                                             label="Student: "
                                             value="{!searchString}"
@@ -94,13 +96,11 @@
                                             value="{!ownerFilter}"
                                             html-placeholder="Owner Name"
                                             styleClass="searchBox"
-                                            style="width:190px;"/>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection>
+                                            />
                             <apex:inputText id="studentGroupFilterInput"
                                             label="Student Group: "
                                             value="{!studentGroup}"
-                                            html-placeholder=" Filter Student Group"
+                                            html-placeholder="Filter Student Group"
                                             onkeypress="return noenter(event);"
                                             styleClass="searchBox"/>
                             <apex:inputText id="degreeFilterInput" label="Degree: "
@@ -115,8 +115,6 @@
                                         value="{!majorFilter}"
                                         html-placeholder="Filter Major"
                                         styleClass="searchBox"/>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection columns="2">
                             <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
                                     style="margin-right:10px;">
                                 <apex:selectOptions value="{!caseStatusOptions}"/>
@@ -125,40 +123,39 @@
                                         value="{!caseSubject}"
                                         html-placeholder="Filter Case"
                                             styleClass="searchBox"/>
-                            <apex:selectList label="Enrollment Status" value="{!enrollmentStatusFilter}" size="1" required="false">
+                            <apex:selectList label="Enrollment Status: " value="{!enrollmentStatusFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!enrollmentStatusOptions}"/>
                             </apex:selectList>
                             <apex:inputText label="Campus: " id="campusFilter"
                                     value="{!campusFilter}"
                                     html-placeholder="Campus Name"
                                         styleClass="searchBox"/>
-                            <apex:selectList label="Residency" value="{!residentFilter}" size="1" required="false">
+                            <apex:selectList label="Residency: " value="{!residentFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!residentOptions}"/>
                             </apex:selectList>
-                            <apex:selectList label="US Citizen" value="{!citizenFilter}" size="1" required="false">
+                            <apex:selectList label="US Citizen: " value="{!citizenFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!citizenOptions}"/>
                             </apex:selectList>
-                            <apex:selectList label="Outlook Score" value="{!outlookScoreFilter}" size="1" required="false">
+                            <apex:selectList label="Outlook Score: " value="{!outlookScoreFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookScoreOptions}"/>
                             </apex:selectList>
-                            <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
+                            <apex:selectList label="Outlook Change: " value="{!outlookChangeFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookChangeOptions}"/>
                             </apex:selectList>
+                            <apex:outputLabel/>
                         </apex:pageBlockSection>
+                    </apex:pageBlock>
+                    <apex:pageBlock>
                         <apex:pageBlockSection columns="3">
-                            <apex:outputLabel >Persistence Change Date: </apex:outputLabel>
-                            <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
-                            <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection columns="3">
-                            <apex:outputLabel >Created Date: </apex:outputLabel>
-                            <apex:input label="FROM: " value="{!createdByStartDate}" type="auto"/>
-                            <apex:input label="TO: " value="{!createdByEndDate}" type="auto"/>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection columns="3">
-                            <apex:outputLabel >Followup Date: </apex:outputLabel>
-                            <apex:input label="FROM: " value="{!followupStartDate}" type="auto"/>
-                            <apex:input label="TO: " value="{!followupEndDate}" type="auto"/>
+                            <apex:outputLabel style="width: 70% !important;">Persistence Change Date: </apex:outputLabel>
+                            <apex:input type="auto" label="FROM: " value="{!persistenceStartDate}"/>
+                            <apex:input type="auto" label="TO: " value="{!persistenceEndDate}"/>
+                            <apex:outputLabel style="width: 70% !important;" >Created Date: </apex:outputLabel>
+                            <apex:input type="auto" label="FROM: " value="{!createdByStartDate}"/>
+                            <apex:input type="auto" label="TO: " value="{!createdByEndDate}"/>
+                            <apex:outputLabel style="width: 70% !important;" >Followup Date: </apex:outputLabel>
+                            <apex:input type="auto" label="FROM: " value="{!followupStartDate}"/>
+                            <apex:input type="auto" label="TO: " value="{!followupEndDate}"/>
                         </apex:pageBlockSection>
                     </apex:pageBlock>
                     <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
@@ -505,7 +502,7 @@
                                 </apex:commandLink>
                             </apex:outputPanel>
                             <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(emailInsertResults))}">
-                            	<apex:commandLink type="button" action="{!clearSaveResults}" styleClass="btn btn-default asu-primary"
+                                <apex:commandLink type="button" action="{!clearSaveResults}" styleClass="btn btn-default asu-primary"
                                           reRender="rerenderMe,{!rerenderList}" value="Ok" oncomplete="actionComplete()"
                                           onclick="toggleEmailModal(this)" status="ASUAjaxStatus">
                                     <apex:param name="updateCaseStates" value="true" assignTo="{!refreshList}"/>
@@ -516,54 +513,25 @@
                 </apex:outputPanel>
             </div>
         </div>
-        <div id="caseModal2" class="modal fade updateModal" role="dialog">
-                <div class="modal-dialog" role="document" style ="padding-left: 5%;">
-                    <apex:outputPanel id="updateModalContent">
-                        <div class="modal-content" style="width: 95%;">
-                            <apex:pageMessage severity="error">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">
-                                    Mass Update
-                                </h4>
-                            </div>
-                            <div class="modal-body">
-                                <apex:pageBlock id="massUpdateBlock">
-                                <apex:pageBlockSection >
-                                    <p align="right" style="margin-top:10px;">
-                                        Status: &nbsp;<br/>
-                                    </p>
-                                    <apex:selectList style="margin: 10px;" value="{!caseStatus}" multiselect="false" size="1">
-                                    <apex:selectOptions value="{!caseMassUpdateStatusOptions}"/>
-                                    </apex:selectList>
-                                    <p align="right" style="margin-top:10px;">
-                                        Reason Administratively Closed: &nbsp;<br/>
-                                    </p>
-                                    <apex:inputText style="margin: 10px;" value="{!caseReasonAdministrativelyClosed}">
-                                    </apex:inputText>
-                                    <p align="right" style="margin-top:10px;">
-                                        Recommended Action(s): &nbsp;<br/>
-                                    </p>
-                                    <apex:selectList style="margin: 10px;" value="{!caseRecommendedActions}" multiselect="true" size="4">
-                                    <apex:selectOptions value="{!caseRecommendedActionOptions}"/>
-                                    </apex:selectList>
-                                    <p align="right" style="margin-top:10px;">
-                                        Recommended Action(s) Other: &nbsp;<br/>
-                                    </p>
-                                    <apex:inputText style="margin: 10px;" value="{!caseRecommendedActionsOther}">
-                                    </apex:inputText>
-                                    </apex:pageBlockSection>
-                                   </apex:pageBlock>
-                               </div>
-                            <div class="modal-footer">
-                                <apex:commandButton action="{!massClose}" status="ASUAjaxStatus" styleClass="btn btn-default asu-primary" value="Close Selected Cases">
-                                </apex:commandButton>
-                            </div>
-                            </apex:pageMessage>
+        <div class="modal fade updateModal" role="dialog">
+            <div class="modal-dialog" role="document" style ="padding-left: 5%;">
+                <apex:outputPanel id="updateModalContent">
+                    <div class="modal-content" style="width: 95%;">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">
+                                Mass Update
+                            </h4>
                         </div>
-                    </apex:outputPanel>
-                </div>
+                        <div class="modal-body">
+                            <apex:outputPanel id="updateModalContentBody">
+                                {!selectedCases}
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                </apex:outputPanel>
             </div>
+        </div>
     </apex:form>
     <apex:form >
         <div class="headerFooter">

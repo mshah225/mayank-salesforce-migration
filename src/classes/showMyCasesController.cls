@@ -719,7 +719,7 @@ public class showMyCasesController extends ListViewController {
             try {
                 Database.update(casesToClose);
             } catch(Exception ex) {
-                ApexPages.addMessages('There was an error closing these cases. If the problem persists, contact your system admin with this message: '+ex);
+                ApexPages.addMessage('There was an error closing these cases. If the problem persists, contact your system admin with this message: '+ex);
             }
         }
     }

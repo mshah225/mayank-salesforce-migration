@@ -41,10 +41,10 @@ public class showMyCasesController extends ListViewController {
             if (caseStatusOptions == null) {
                 caseStatusOptions = new List<SelectOption>();
                 List<String> allCaseStatusOptions = getPicklistValues();
+                caseStatusOptions.add(new SelectOption('--', '--'));
                 for (String statusOption : allCaseStatusOptions) {
                     caseStatusOptions.add(new SelectOption(statusOption, statusOption));
                 }
-                caseStatusOptions.add(new SelectOption('--', '--'));
             }
             return caseStatusOptions;
         }
@@ -387,22 +387,6 @@ public class showMyCasesController extends ListViewController {
     }
 
     /*
-     * Indicates whether the string has been previously searched
-     */
-    public boolean searched{
-        get{
-            if(query == NULL || !query.contains('LIKE')){
-                searched = false;
-            }
-            else{
-                searched = true;
-            }
-            return searched;
-        }
-        set;
-    }
-
-    /*
      * Used to refresh the list to it's orignal state
      */
     public void resetSearch(){
@@ -420,6 +404,7 @@ public class showMyCasesController extends ListViewController {
         collegeFilter = NULL;
         studentGroup = NULL;
         degreeFilter = NULL;
+        majorFilter = NULL;
 
         caseStatusFilter = '--';
         citizenFilter = '--';
@@ -429,21 +414,6 @@ public class showMyCasesController extends ListViewController {
         outlookScoreFilter = '--';
 
         query = queryAttr;
-    }
-
-    /*
-     * Trims the query to remove any specific searches
-     */
-    @TestVisible
-    private string removeSearchString(){
-        String tmpQuery = query;
-        if(searched){
-            Integer loc = tmpQuery.indexOf('AND');
-            String left = tmpQuery.substring(0, tmpQuery.indexOf('WHERE')+6);
-            String right = tmpQuery.substring(loc+3);
-            tmpQuery = left + right;
-        }
-        return tmpQuery;
     }
 
     private List<String> getPicklistValues() {
@@ -534,7 +504,7 @@ public class showMyCasesController extends ListViewController {
         }
         if (followupEndDate != null) {
             String followupSearchEndDate = DateTime.newInstance(followupEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
-            createdQuery += ' FollowUp_Date__c  <= ' + followupSearchEndDate + ' AND ';
+            createdQuery += ' FollowUp_Date__c <= ' + followupSearchEndDate + ' AND ';
         }
         return createdQuery;
     }
@@ -650,7 +620,7 @@ public class showMyCasesController extends ListViewController {
         }
         if (persistenceEndDate != null) {
             String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
-            createdQuery += ' Change_Date__c  <= ' + persistenceSearchEndDate + ' AND ';
+            createdQuery += ' Change_Date__c <= ' + persistenceSearchEndDate + ' AND ';
         }
         return createdQuery;
     }

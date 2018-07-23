@@ -553,7 +553,7 @@ public class showMyCasesController extends ListViewController {
                 createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
             }
         }
-        
+
         return createdQuery;
     }
 
@@ -569,7 +569,7 @@ public class showMyCasesController extends ListViewController {
                     ') AND ';
             }
         }
-        
+
         return createdQuery;
     }
 
@@ -721,7 +721,7 @@ public class showMyCasesController extends ListViewController {
             } catch(Exception ex) {
                 ApexPages.addMessage(
 			new ApexPages.message(
-                    	ApexPages.severity.ERROR, 
+                    	ApexPages.severity.ERROR,
 			'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
 		);
             }
@@ -736,7 +736,7 @@ public class showMyCasesController extends ListViewController {
                 createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
             }
         }
-        
+
         return createdQuery;
     }
 }

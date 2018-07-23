@@ -56,7 +56,7 @@ public without sharing class SubscriptionCenterController {
                 subscriberKeyParm = tmpList[0].Id;
             } else {
                 List<Lead> tmpLeadList = new List<Lead>();
-                tmpLeadList = [SELECT Id FROM Lead 
+                tmpLeadList = [SELECT Id, Convert_Contact__c FROM Lead 
                                 WHERE HashLeadId__c =: encodedSubscriberKeyParm
                                 OR Id =: subscriberIdentifier 
                                 OR SSB_CRMSYSTEM_CONTACT_ID__c =: subscriberIdentifier

@@ -79,11 +79,9 @@
                                     Filters
                     </apex:outputLink>
                 </apex:outputPanel>
-            </div>
-            <div style="text-align: -webkit-center;">
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
                     <apex:pageBlock >
-                        <apex:pageBlockSection columns="3">
+                        <apex:pageBlockSection columns="2">
                             <apex:inputText id="studentFilterInput"
                                             label="Student: "
                                             value="{!searchString}"
@@ -97,6 +95,8 @@
                                             html-placeholder="Owner Name"
                                             styleClass="searchBox"
                                             style="width:190px;"/>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection>
                             <apex:inputText id="studentGroupFilterInput"
                                             label="Student Group: "
                                             value="{!studentGroup}"
@@ -115,6 +115,8 @@
                                         value="{!majorFilter}"
                                         html-placeholder="Filter Major"
                                         styleClass="searchBox"/>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="2">
                             <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
                                     style="margin-right:10px;">
                                 <apex:selectOptions value="{!caseStatusOptions}"/>
@@ -142,18 +144,19 @@
                             <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookChangeOptions}"/>
                             </apex:selectList>
-                            <apex:outputLabel/>
                         </apex:pageBlockSection>
-                    </apex:pageBlock>
-                    <apex:pageBlock>
                         <apex:pageBlockSection columns="3">
-                            <apex:outputLabel style="width: 70% !important;">Persistence Change Date: </apex:outputLabel>
+                            <apex:outputLabel >Persistence Change Date: </apex:outputLabel>
                             <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
                             <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
-                            <apex:outputLabel style="width: 70% !important;">Created Date: </apex:outputLabel>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="3">
+                            <apex:outputLabel >Created Date: </apex:outputLabel>
                             <apex:input label="FROM: " value="{!createdByStartDate}" type="auto"/>
                             <apex:input label="TO: " value="{!createdByEndDate}" type="auto"/>
-                            <apex:outputLabel style="width: 70% !important;">Followup Date: </apex:outputLabel>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="3">
+                            <apex:outputLabel >Followup Date: </apex:outputLabel>
                             <apex:input label="FROM: " value="{!followupStartDate}" type="auto"/>
                             <apex:input label="TO: " value="{!followupEndDate}" type="auto"/>
                         </apex:pageBlockSection>

@@ -51,6 +51,7 @@ public with sharing class SCMyCasesBoxController{
         if (viewAsService.hasViewAsRights) {
             stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
+            viewingAs = true;
         }
         userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
         firstName = userContact.FirstName;

@@ -1,4 +1,5 @@
-<apex:page controller="CoachPortalMainPageController"
+<apex:page docType=“html-5.0”
+           controller="CoachPortalMainPageController"
            standardStylesheets="false"
            showHeader="false"
            sidebar="false"

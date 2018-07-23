@@ -80,7 +80,7 @@
                     </apex:outputLink>
                 </apex:outputPanel>
             </div>
-            <div style="text-align: -webkit-center; line-height: 1.92857143;">
+            <div style="text-align: -webkit-center;">
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
                     <apex:pageBlock >
                         <apex:pageBlockSection columns="3">

@@ -483,7 +483,7 @@ public class TestDataFactory {
     /*
      * Generates test data for the current user as if they were an advisor
      */
-    public static void makeMeAnAdvisorUser(Integer numberOfPods, Integer numberOfCases, Integer numberOfStudents, String role) {
+    public static void makeMeAnAdvisorUser(Integer numberOfPods, Integer numberOfCases, Integer numberOfStudents) {
         Id advisorOutReachId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach');
         Success_Resource__c myAdvisorUserResource = createMyAdvisorUserResource();
         List<Success_Pod__c> myAdvisorPods = createAdvisorPods(numberOfPods);

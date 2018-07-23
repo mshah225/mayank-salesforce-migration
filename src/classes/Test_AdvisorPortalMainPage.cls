@@ -3,6 +3,11 @@ public class Test_AdvisorPortalMainPage {
     private static Integer numberOfPods;
     private static Integer numberOfCases;
     private static Integer numberOfStudents;
+    private static Integer numberOfTabsForUser;
+    private static Integer numberOfBlankOptionsForUser;
+    private static Integer numberOfTabsForManager;
+    private static Integer numberOfBlankOptionsForManager;
+    private static Integer numbeOfAdvisorsForManager;
     private static AdvisorPortalMainPageController apmpc;
 
     /*
@@ -12,53 +17,30 @@ public class Test_AdvisorPortalMainPage {
         numberOfPods = 3;
         numberOfCases = 1;
         numberOfStudents = 10;
+        numberOfTabsForUser = 2;
+        numberOfBlankOptionsForUser = 1;
+        numberOfTabsForManager = 3;
+        numberOfBlankOptionsForManager = 2;
+        numbeOfAdvisorsForManager = 1;
         apmpc = new AdvisorPortalMainPageController();
     }
 
     /*
-     * testSetup method to create test data.
-     *
-     * <p>
-     * The AdvisorPortalMainPage generates data based off of the currently
-     * logged in user. When creating test data, we need to provide the current userId
-     * rather than creating a new user.
-     * </p>
-     */
-    // @testSetup
-    // public static void testSetup() {
-    //     TestDataFactory.makeMeAnAdvisorUser(numberOfPods, numberOfCases, numberOfStudents);
-    // }
-
-    /*
      * Test the controllers ability to return accurate view as options.
      */
-    public static testMethod void Test_getViewAsOptions() {
-        TestDataFactory.makeMeAnAdvisorUser(numberOfPods, numberOfCases, numberOfStudents);
+     @isTest
+    private static void Test_getViewAsOptions() {
+        UserFactory.makeMeAnAdvisorUser(numberOfPods, numberOfCases, numberOfStudents);
+
+        Test.startTest();
         List<SelectOption> listToTest = apmpc.viewAsOptions;
 
-        // Check sizes
-        system.assertEquals(3 + numberOfPods, listToTest.size());
-
-        // Make sure the current user is the first option on the list
-        system.assertEquals(UserInfo.getName(), listToTest[0].getLabel());
-        system.assertEquals(UserInfo.getUserId(), listToTest[0].getValue());
-
-        // Make sure that the second option is a blank option that is disabled
-        system.assertEquals('', listToTest[1].getLabel());
-        system.assertEquals('', listToTest[1].getValue());
-        system.assert(listToTest[1].getDisabled());
-
-        // Make sure the third option is the "My Comittees" heading
-        system.assertEquals('--My Committees--', listToTest[2].getLabel());
-        system.assertEquals('', listToTest[2].getValue());
-        system.assert(listToTest[2].getDisabled());
-
-        // Make sure the rest of the options value is a group Id
-        validator.setPrefix(group.class);
-
-        for (Integer x = 3; x < listToTest.size(); x++) {
-            system.assert(Validator.validateId(listToTest[x].getValue()));
-        }
+        validateUserOptionsSize(listToTest);
+        validateCurrentUserOption(listToTest);
+        validateBlankOptionsForUser(listToTest);
+        validateTabsForUser(listToTest);
+        validateCommitteesGroupId(listToTest);
+        Test.stopTest();
     }
 
     /*
@@ -105,66 +87,91 @@ public class Test_AdvisorPortalMainPage {
     }
 
     @isTest
-    public static void checkDepartmentManagerViewAsOptions() {
-        TestDataFactory.makeMeAnAdvisorDepartmentManager(numberOfPods, numberOfCases, numberOfStudents);
+    private static void checkDepartmentManagerViewAsOptions() {
+        UserFactory.makeMeAnAdvisorDepartmentManager(numberOfPods, numberOfCases, numberOfStudents);
 
+        Test.startTest();
         List<SelectOption> listToTest = apmpc.viewAsOptions;
-        System.debug(listToTest);
 
-        // Check sizes
-        system.assertEquals(6 + numberOfPods, listToTest.size());
-
-        // Make sure the current user is the first option on the list
-        system.assertEquals(UserInfo.getName(), listToTest[0].getLabel());
-        system.assertEquals(UserInfo.getUserId(), listToTest[0].getValue());
-
-        // Make sure that the second option is a blank option that is disabled
-        system.assertEquals('', listToTest[1].getLabel());
-        system.assertEquals('', listToTest[1].getValue());
-        system.assert(listToTest[1].getDisabled());
-
-        // Make sure the third option is the "My Comittees" heading
-        system.assertEquals('--Department Committees--', listToTest[2].getLabel());
-        system.assertEquals('', listToTest[2].getValue());
-        system.assert(listToTest[2].getDisabled());
-
-        // Make sure the rest of the options value is a group Id
-        validator.setPrefix(group.class);
-
-        for (Integer x = 3; x < 6; x++) {
-            system.assert(Validator.validateId(listToTest[x].getValue()));
-        }
+        validateManagerOptionsSize(listToTest);
+        validateCurrentUserOption(listToTest);
+        validateBlankOptionsForManager(listToTest);
+        validateTabsForDepartmentManager(listToTest);
+        validateCommitteesGroupId(listToTest);
+        Test.stopTest();
     }
 
     @isTest
-    public static void checkCollegeManagerViewAsOptions() {
-        TestDataFactory.makeMeAnAdvisorCollegeManager(numberOfPods, numberOfCases, numberOfStudents);
+    private static void checkCollegeManagerViewAsOptions() {
+        UserFactory.makeMeAnAdvisorCollegeManager(numberOfPods, numberOfCases, numberOfStudents);
 
+        Test.startTest();
         List<SelectOption> listToTest = apmpc.viewAsOptions;
-        System.debug(listToTest);
 
-        // Check sizes
-        system.assertEquals(6 + numberOfPods, listToTest.size());
+        validateManagerOptionsSize(listToTest);
+        validateCurrentUserOption(listToTest);
+        validateBlankOptionsForManager(listToTest);
+        validateTabsForCollegeManager(listToTest);
+        validateCommitteesGroupId(listToTest);
+        Test.stopTest();
+    }
 
-        // Make sure the current user is the first option on the list
-        system.assertEquals(UserInfo.getName(), listToTest[0].getLabel());
-        system.assertEquals(UserInfo.getUserId(), listToTest[0].getValue());
+    private static void validateUserOptionsSize(List<SelectOption> listToTest) {
+        System.assertEquals(numberOfTabsForUser + numberOfBlankOptionsForUser + numberOfPods, listToTest.size());
+    }
 
-        // Make sure that the second option is a blank option that is disabled
-        system.assertEquals('', listToTest[1].getLabel());
-        system.assertEquals('', listToTest[1].getValue());
-        system.assert(listToTest[1].getDisabled());
+    private static void validateManagerOptionsSize(List<SelectOption> listToTest) {
+        System.assertEquals(numberOfTabsForManager + numberOfBlankOptionsForManager + numbeOfAdvisorsForManager + numberOfPods, listToTest.size());
+    }
 
-        // Make sure the third option is the "My Comittees" heading
-        system.assertEquals('--College Committees--', listToTest[2].getLabel());
-        system.assertEquals('', listToTest[2].getValue());
-        system.assert(listToTest[2].getDisabled());
+    private static void validateCurrentUserOption(List<SelectOption> listToTest) {
+        System.assertEquals(UserInfo.getName(), listToTest[0].getLabel());
+        System.assertEquals(UserInfo.getUserId(), listToTest[0].getValue());
+    }
 
-        // Make sure the rest of the options value is a group Id
+    private static void validateBlankOptionsForUser(List<SelectOption> listToTest) {
+        System.assertEquals('', listToTest[1].getLabel());
+        System.assertEquals('', listToTest[1].getValue());
+        System.assert(listToTest[1].getDisabled());
+    }
+
+    private static void validateBlankOptionsForManager(List<SelectOption> listToTest) {
+        System.assertEquals('', listToTest[1].getLabel());
+        System.assertEquals('', listToTest[1].getValue());
+        System.assert(listToTest[1].getDisabled());
+
+        System.assertEquals('', listToTest[6].getLabel());
+        System.assertEquals('', listToTest[6].getValue());
+        System.assert(listToTest[6].getDisabled());
+    }
+
+    private static void validateTabsForUser(List<SelectOption> listToTest) {
+        System.assertEquals('--My Committees--', listToTest[2].getLabel());
+        System.assertEquals('', listToTest[2].getValue());
+        System.assert(listToTest[2].getDisabled());
+    }
+
+    private static void validateTabsForDepartmentManager(List<SelectOption> listToTest) {
+        System.assertEquals('--Department Committees--', listToTest[2].getLabel());
+        System.assertEquals('', listToTest[2].getValue());
+        System.assert(listToTest[2].getDisabled());
+
+        System.assertEquals('--Department Advisors--', listToTest[7].getLabel());
+        System.assertEquals('', listToTest[7].getValue());
+        System.assert(listToTest[7].getDisabled());
+    }
+
+    private static void validateTabsForCollegeManager(List<SelectOption> listToTest) {
+        System.assertEquals('--College Advisors--', listToTest[7].getLabel());
+        System.assertEquals('', listToTest[7].getValue());
+        System.assert(listToTest[7].getDisabled());
+    }
+
+    private static void validateCommitteesGroupId(List<SelectOption> listToTest) {
         validator.setPrefix(group.class);
-
-        for (Integer x = 3; x < 6; x++) {
-            system.assert(Validator.validateId(listToTest[x].getValue()));
+        Integer firstCommitteeOptionIndex = 3;
+        for (Integer i = firstCommitteeOptionIndex; i < firstCommitteeOptionIndex + numberOfPods; i++) {
+            System.assert(Validator.validateId(listToTest[i].getValue()));
         }
     }
 }

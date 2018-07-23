@@ -415,12 +415,12 @@ public class TestDataFactory {
         return result;
     }
 
-    public static Success_Resource__c createMyAdvisorUserResource(String role) {
+    public static Success_Resource__c createMyAdvisorUserResource() {
         Id advisorResourceRTId = IDHelper.getRTID('Success_Resource__c', 'Advisor');
 
         Success_Resource__c result = new Success_Resource__c(
         	IsActive__c = true,
-            Role__c = role,
+            Role__c = 'User',
             Resource__c = UserInfo.getUserId(),
             RecordTypeId =advisorResourceRTId
         );
@@ -480,25 +480,12 @@ public class TestDataFactory {
         return result;
     }
 
-    public static void makeMeAnAdvisorDepartmentManager(Integer numberOfPods, Integer numberOfCases, Integer numberOfStudents) {
-        makeMeAnAdvisor(numberOfPods, numberOfCases, numberOfStudents, 'Department Manager');
-    }
-
-    public static void makeMeAnAdvisorCollegeManager(Integer numberOfPods, Integer numberOfCases, Integer numberOfStudents) {
-        makeMeAnAdvisor(numberOfPods, numberOfCases, numberOfStudents, 'College Manager');
-    }
-
-    public static void makeMeAnAdvisorUser(Integer numberOfPods, Integer numberOfCases, Integer numberOfStudents) {
-        makeMeAnAdvisor(numberOfPods, numberOfCases, numberOfStudents, 'User');
-    }
-
-
     /*
      * Generates test data for the current user as if they were an advisor
      */
-    public static void makeMeAnAdvisor(Integer numberOfPods, Integer numberOfCases, Integer numberOfStudents, String role) {
+    public static void makeMeAnAdvisorUser(Integer numberOfPods, Integer numberOfCases, Integer numberOfStudents, String role) {
         Id advisorOutReachId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach');
-        Success_Resource__c myAdvisorUserResource = createMyAdvisorUserResource(role);
+        Success_Resource__c myAdvisorUserResource = createMyAdvisorUserResource();
         List<Success_Pod__c> myAdvisorPods = createAdvisorPods(numberOfPods);
         List<Success_Student__c> myAdvisorStudents = createAdvisorStudents(myAdvisorPods, numberOfStudents);
 		List<Success_Resource_Pod_Association__c> myAdvisorSRPAS = createAdvisorSRPAS(myAdvisorUserResource, myAdvisorPods);

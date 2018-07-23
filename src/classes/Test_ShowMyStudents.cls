@@ -199,7 +199,8 @@ public class Test_ShowMyStudents {
     }
 
     @isTest
-    public static void checkQueryForFilterAdditionAndRemoval(){
+    private static void checkQueryForFilterAdditionAndRemoval(){
+        Test.startTest();
         smsc.queryAttr = smsc.query;
         smsc.searchString = 'Tester Mctesterson';
         smsc.enrollmentStatusFilter = 'Enrolled';
@@ -242,10 +243,12 @@ public class Test_ShowMyStudents {
         System.assert(!smsc.query.contains('SG_PeopleSoft_Code__c LIKE'));
         System.assert(!smsc.query.contains('Change_Date__c >='));
         System.assert(!smsc.query.contains('Change_Date__c <='));
+        Test.stopTest();
     }
 
     @isTest
-    public static void checkQueryForNoFilters() {
+    private static void checkQueryForNoFilters() {
+        Test.startTest();
         smsc.searchString = '';
         smsc.insertFilterIntoQuery();
         System.assert(!smsc.query.contains('Contact.Name LIKE'));
@@ -268,37 +271,45 @@ public class Test_ShowMyStudents {
         System.assert(!smsc.query.contains('Change_Date__c >='));
         System.assert(!smsc.query.contains('Change_Date__c <='));
         System.assert(!smsc.query.contains('Status ='));
+        Test.stopTest();
     }
 
     @isTest
-    public static void checkDefaultResidentOptions() {
+    private static void checkDefaultResidentOptions() {
+        Test.startTest();
         List<SelectOption> residentOptions = smsc.residentOptions;
 
         System.assert(residentOptions.get(0).getValue() == '--' && residentOptions.get(0).getLabel().equals('--'));
         System.assert(residentOptions.get(1).getValue() == 'true' && residentOptions.get(1).getLabel().equals('Resident'));
         System.assert(residentOptions.get(2).getValue() == 'false' && residentOptions.get(2).getLabel().equals('Non-Resident'));
+        Test.stopTest();
     }
 
     @isTest
-    public static void checkDefaultEnrollmentStatusOptions() {
+    private static void checkDefaultEnrollmentStatusOptions() {
+        Test.startTest();
         List<SelectOption> enrollmentStatusOptions = smsc.enrollmentStatusOptions;
 
         System.assert(enrollmentStatusOptions.get(0).getValue() == '--' && enrollmentStatusOptions.get(0).getLabel().equals('--'));
         System.assert(enrollmentStatusOptions.get(1).getValue() == 'true' && enrollmentStatusOptions.get(1).getLabel().equals('Enrolled'));
         System.assert(enrollmentStatusOptions.get(2).getValue() == 'false' && enrollmentStatusOptions.get(2).getLabel().equals('Not Enrolled'));
+        Test.stopTest();
     }
 
     @isTest
-    public static void checkDefaultCitizenOptions() {
+    private static void checkDefaultCitizenOptions() {
+        Test.startTest();
         List<SelectOption> citizenOptions = smsc.citizenOptions;
 
         System.assert(citizenOptions.get(0).getValue() == '--' && citizenOptions.get(0).getLabel().equals('--'));
         System.assert(citizenOptions.get(1).getValue() == 'true' && citizenOptions.get(1).getLabel().equals('US Citizen'));
         System.assert(citizenOptions.get(2).getValue() == 'false' && citizenOptions.get(2).getLabel().equals('International'));
+        Test.stopTest();
     }
 
     @isTest
-    public static void checkDefaultOutlookScoreOptions() {
+    private static void checkDefaultOutlookScoreOptions() {
+        Test.startTest();
         List<SelectOption> outlookScoreOptions = smsc.outlookScoreOptions;
 
         System.assert(outlookScoreOptions.get(0).getValue() == '--' && outlookScoreOptions.get(0).getLabel().equals('--'));
@@ -307,15 +318,18 @@ public class Test_ShowMyStudents {
         System.assert(outlookScoreOptions.get(3).getValue() == '3' && outlookScoreOptions.get(3).getLabel().equals('Moderate'));
         System.assert(outlookScoreOptions.get(4).getValue() == '4' && outlookScoreOptions.get(4).getLabel().equals('High'));
         System.assert(outlookScoreOptions.get(5).getValue() == '5' && outlookScoreOptions.get(5).getLabel().equals('Very High'));
+        Test.stopTest();
     }
 
     @isTest
-    public static void checkDefaultOutlookChangeOptions() {
+    private static void checkDefaultOutlookChangeOptions() {
+        Test.startTest();
         List<SelectOption> outlookChangeOptions = smsc.outlookChangeOptions;
 
         System.assert(outlookChangeOptions.get(0).getValue() == '--' && outlookChangeOptions.get(0).getLabel().equals('--'));
         System.assert(outlookChangeOptions.get(1).getValue() == '1' && outlookChangeOptions.get(1).getLabel().equals('Up'));
         System.assert(outlookChangeOptions.get(2).getValue() == '-1' && outlookChangeOptions.get(2).getLabel().equals('Down'));
+        Test.stopTest();
     }
 
 }

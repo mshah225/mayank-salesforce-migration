@@ -13,7 +13,7 @@
 
     <apex:pageMessages />
 
-    <c:ViewAsComponent selectOptions="{!viewAsOptions}"
+    <c:coachPortalViewAsComponent selectOptions="{!viewAsOptions}"
                        hasViewAs="{!hasViewAs}"
                        mimicId="{!$User.Id}"
                        id="viewAsComponent">
@@ -80,7 +80,7 @@
                 </apex:tab>
             </apex:tabPanel>
         </apex:outputPanel>
-    </c:ViewAsComponent>
+    </c:coachPortalViewAsComponent>
 
     <div style="text-align:center;padding:25px;">
         <c:DynamicFeedbackButton betaTag="true" carName="Coach Portal"/>

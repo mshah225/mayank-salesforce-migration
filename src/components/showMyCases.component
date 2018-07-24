@@ -147,13 +147,13 @@
                     </apex:pageBlock>
                     <apex:pageBlock>
                         <apex:pageBlockSection columns="3">
-                            <apex:outputLabel style="width: 70% !important;">Persistence Change Date: </apex:outputLabel>
+                            <apex:outputLabel style="width: 65% !important;">Persistence Change Date: </apex:outputLabel>
                             <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
                             <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
-                            <apex:outputLabel style="width: 70% !important;">Created Date: </apex:outputLabel>
+                            <apex:outputLabel style="width: 65% !important;">Created Date: </apex:outputLabel>
                             <apex:input label="FROM: " value="{!createdByStartDate}" type="auto"/>
                             <apex:input label="TO: " value="{!createdByEndDate}" type="auto"/>
-                            <apex:outputLabel style="width: 70% !important;">Followup Date: </apex:outputLabel>
+                            <apex:outputLabel style="width: 65% !important;">Followup Date: </apex:outputLabel>
                             <apex:input label="FROM: " value="{!followupStartDate}" type="auto"/>
                             <apex:input label="TO: " value="{!followupEndDate}" type="auto"/>
                         </apex:pageBlockSection>

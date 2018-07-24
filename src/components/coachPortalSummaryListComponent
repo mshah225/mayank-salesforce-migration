@@ -1,4 +1,4 @@
-<apex:component Controller="SummaryListController" id="coachPortalSummaryListComponent">
+<apex:component Controller="SummaryListController" id="CoachPortalSummaryListComponent">
     <apex:attribute name="aggregateQuery" type="string" description="" assignTo="{!query}" />
     <apex:attribute name="owner" type="Id" description="" assignTo="{!ownerId}" />
 

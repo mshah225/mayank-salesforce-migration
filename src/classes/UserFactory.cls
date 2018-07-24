@@ -61,82 +61,37 @@ public class UserFactory {
         // Pods may end up with cases for students not in their pod
         // This can and has happened in the real world so we are accounting for it here
         List<Case> cases = new List<Case>();
-        createFunctionalGroup('ASU Advisor Outreach');
-        createCategory('ASU Advisor Outreach', 'Outreach');
-        createCategory('ASU Advisor Outreach', 'Watchlist');
+        CaseClassificationFactory caseClassificationsMaker = new CaseClassificationFactory();
+        caseClassificationsMaker.createAndInsertSetOfAdvisorOutreachCaseClassification();
+
         Id functionalGroup = [Select Id FROM case_classification__c WHERE name = 'ASU Advisor Outreach' LIMIT 1].Id;
         Id categoryOutreach = [Select Id FROM case_classification__c WHERE name = 'Outreach' LIMIT 1].Id;
         Id categoryWatchlist = [Select Id FROM case_classification__c WHERE name = 'Watchlist' LIMIT 1].Id;
         // Cases for pods
         for (Success_Pod__c sp : myAdvisorPods) {
             for (Integer x = 0; x < numberOfCases; x++) {
-                // proactive case
-                cases.add(new Case(
-                	OwnerId = sp.OwnerId,
-                    RecordTypeId = advisorOutReachId,
-                    Status = 'Outreach Required',
-                    CC_Functional_Group__c = functionalGroup,
-                    CC_Category__c = categoryOutreach,
-                    Origin__c = 'Outreach',
-                    Subject = 'Case Bloat ' + math.mod(x, 2),
-                    Description = 'Case Bloat',
-                    contactId = myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))].student__c
-                ));
-                // Watchlist Cases
-                cases.add(new Case(
-                    OwnerId = sp.OwnerId,
-                    RecordTypeId = advisorOutReachId,
-                    Status = 'New',
-                    CC_Functional_Group__c = functionalGroup,
-                    CC_Category__c = categoryWatchlist,
-                    Origin__c = 'Outreach',
-                    Subject = 'Case Bloat ' + math.mod(x, 2),
-                    Description = 'Case Bloat',
-                    contactId = myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))].student__c
-                ));
+                CaseFactory.AdvisorOutreachCase proactiveCaseMaker = new CaseFactory.AdvisorOutreachCase(sp.OwnerId,
+                    advisorOutReachId, 'Outreach Required', functionalGroup, categoryOutreach,
+                    myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))].student__c, null);
+                cases.add((Case)proactiveCaseMaker.create(1)[0]);
+
+                CaseFactory.AdvisorOutreachCase watchlistCaseMaker = new CaseFactory.AdvisorOutreachCase(sp.OwnerId,
+                    advisorOutReachId, 'New', functionalGroup, categoryWatchlist,
+                    myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))].student__c, null);
+                cases.add((Case)watchlistCaseMaker.create(1)[0]);
             }
         }
         // Cases for advisor
         for (Integer x = 0; x < numberOfCases; x++) {
             Success_Pod__c sp = myAdvisorPods[(Integer) math.rint(math.random() * (myAdvisorPods.size() - 1))];
-            string mrq = podMap.get(sp.Id).Owner.Name;
+            string mostRecentQueue = podMap.get(sp.Id).Owner.Name;
 
-            cases.add(new Case(
-                OwnerId = UserInfo.getUserId(),
-                RecordTypeId = advisorOutReachId,
-                Status = 'Outreach Required',
-                CC_Functional_Group__c = functionalGroup,
-                CC_Category__c = categoryWatchlist,
-                Origin__c = 'Outreach',
-                Subject = 'Case Bloat ' + math.mod(x, 2),
-                Description = 'Case Bloat',
-                contactId = myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))].student__c,
-                Most_Recent_Queue__c = mrq
-            ));
+            CaseFactory.AdvisorOutreachCase advisorCaseMaker = new CaseFactory.AdvisorOutreachCase(UserInfo.getUserId(),
+                advisorOutReachId, 'Outreach Required', functionalGroup, categoryWatchlist,
+                myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))].student__c, mostRecentQueue);
+            cases.add((Case)advisorCaseMaker.create(1)[0]);
         }
         insert cases;
-    }
-
-    public static Case_Classification__c createFunctionalGroup(string RT){
-        Case_Classification__c tmp = new Case_Classification__c();
-        tmp.RecordTypeId = [Select Id FROM RecordType WHERE Name ='Functional Group'].Id;
-		tmp.Name = RT;
-        tmp.Record_Types__c = 'ASU Service';
-		tmp.Active__c = true;
-		tmp.Visible__c = true;
-		insert tmp;
-		return tmp;
-    }
-
-    public static Case_Classification__c createCategory(string parent, string name){
-        Case_Classification__c tmp = new Case_Classification__c();
-		tmp.Name = name;
-        tmp.RecordTypeId = [Select Id FROM RecordType WHERE Name = 'Category'].Id;
-        tmp.Parent__c = [Select Id FROM Case_Classification__c WHERE Name =: parent].Id;
-		tmp.Active__c = true;
-		tmp.Visible__c = true;
-		insert tmp;
-		return tmp;
     }
 
     public static List<Success_Pod__c> createAdvisorPods(Integer numberOfPods) {

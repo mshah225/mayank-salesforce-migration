@@ -25,22 +25,19 @@ public class Test_AdvisorPortalMainPage {
         apmpc = new AdvisorPortalMainPageController();
     }
 
-    /*
-     * Test the controllers ability to return accurate view as options.
-     */
-     @isTest
-    private static void Test_getViewAsOptions() {
+    @isTest
+    private static void getCorrectViewAsOptions() {
         UserFactory.makeMeAnAdvisorUser(numberOfPods, numberOfCases, numberOfStudents);
 
         Test.startTest();
         List<SelectOption> listToTest = apmpc.viewAsOptions;
+        Test.stopTest();
 
         validateUserOptionsSize(listToTest);
         validateCurrentUserOption(listToTest);
         validateBlankOptionsForUser(listToTest);
         validateTabsForUser(listToTest);
         validateCommitteesGroupId(listToTest);
-        Test.stopTest();
     }
 
     /*
@@ -92,13 +89,13 @@ public class Test_AdvisorPortalMainPage {
 
         Test.startTest();
         List<SelectOption> listToTest = apmpc.viewAsOptions;
+        Test.stopTest();
 
         validateManagerOptionsSize(listToTest);
         validateCurrentUserOption(listToTest);
         validateBlankOptionsForManager(listToTest);
         validateTabsForDepartmentManager(listToTest);
         validateCommitteesGroupId(listToTest);
-        Test.stopTest();
     }
 
     @isTest
@@ -107,13 +104,13 @@ public class Test_AdvisorPortalMainPage {
 
         Test.startTest();
         List<SelectOption> listToTest = apmpc.viewAsOptions;
+        Test.stopTest();
 
         validateManagerOptionsSize(listToTest);
         validateCurrentUserOption(listToTest);
         validateBlankOptionsForManager(listToTest);
         validateTabsForCollegeManager(listToTest);
         validateCommitteesGroupId(listToTest);
-        Test.stopTest();
     }
 
     private static void validateUserOptionsSize(List<SelectOption> listToTest) {
@@ -168,7 +165,7 @@ public class Test_AdvisorPortalMainPage {
     }
 
     private static void validateCommitteesGroupId(List<SelectOption> listToTest) {
-        validator.setPrefix(group.class);
+        Validator.setPrefix(Group.class);
         Integer firstCommitteeOptionIndex = 3;
         for (Integer i = firstCommitteeOptionIndex; i < firstCommitteeOptionIndex + numberOfPods; i++) {
             System.assert(Validator.validateId(listToTest[i].getValue()));

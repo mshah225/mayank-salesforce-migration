@@ -98,7 +98,7 @@ public class viewCaseController{
         if (viewAsService.hasViewAsRights) {
             return viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
         } else {
-            Case returnCase=[
+            Case returnCase = [
                 SELECT Id, CaseNumber, RecordType.Name, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
                     Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
                 FROM Case

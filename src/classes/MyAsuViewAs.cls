@@ -4,7 +4,7 @@ public without sharing class MyAsuViewAs {
     public Boolean hasViewAsRights;
 
     public MyASUViewAs(String idCookie, String asurite) {
-        response = MyAsuViewAsCallout.getCalloutResponseContents(idCookie, asurite);
+        response = EffectiveIdentityCallout.getCalloutResponseContents(idCookie, asurite);
         checkViewAsRights(response, asurite);
     }
     

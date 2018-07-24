@@ -8,20 +8,20 @@ private class MyAsuViewAsTest {
         
         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_MyAsuViewAs());       
         String uniqueUserName = 'standarduser' + DateTime.now().getTime() + '@testorg.com';
-        Profile profileSettings = [SELECT Id FROM Profile WHERE Name='ASU Chatter User'];
-        userToUse = new User(Alias = 'standt', Email='standarduser@testorg.com',
-        EmailEncodingKey='UTF-8', LastName='Testing', LanguageLocaleKey='en_US',
-        LocaleSidKey='en_US', ProfileId = profileSettings.Id,
-        TimeZoneSidKey='America/Los_Angeles',
-        UserName=uniqueUserName);
+        Profile profileSettings = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'];
+        userToUse = new User(Alias = 'standt', Email = 'standarduser@testorg.com',
+                            EmailEncodingKey = 'UTF-8', LastName = 'Testing', LanguageLocaleKey = 'en_US',
+                            LocaleSidKey = 'en_US', ProfileId = profileSettings.Id,
+                            TimeZoneSidKey = 'America/Los_Angeles',
+                            UserName = uniqueUserName);
         
         ContactFactory.DefaultContact contactCreator = new ContactFactory.DefaultContact();
-        Contact contactToInsert = (Contact)contactCreator.create(1)[0];
+        Contact contactToInsert = (Contact) contactCreator.create(1)[0];
         contactToInsert.ASURite_ID__c = 'ASUTestID';
         insert contactToInsert;
         
         CaseFactory.DefaultCase openCaseCreator = new CaseFactory.DefaultCase();
-        Case openCaseToInsert = (Case)openCaseCreator.create(1)[0];
+        Case openCaseToInsert = (Case) openCaseCreator.create(1)[0];
         openCaseToInsert.Contact = contactToInsert;
         openCaseToInsert.ContactId = contactToInsert.Id;
         openCaseToInsert.Visible_by_Contact__c = true;
@@ -40,32 +40,33 @@ private class MyAsuViewAsTest {
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;
             Contact contactAssociatedWithAsurite = viewAsService.getContact('ASUTestID');
-            Contact expectedResult = [Select Id FROM Contact WHERE Asurite_ID__c = 'ASUTestID'];
-            System.assertEquals(expectedResult.Id, contactAssociatedWithAsurite.Id);
         }
+        
+        Contact expectedResult = [Select Id FROM Contact WHERE Asurite_ID__c = 'ASUTestID'];
+        System.assertEquals(expectedResult.Id, contactAssociatedWithAsurite.Id);
     }
 
     @isTest
     private static void getCaseDetails() {
         MyAsuViewAsTest.setUpUser();
+        Case createdCase = [SELECT Id FROM Case LIMIT 1];
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;
-            Case createdCase = [SELECT Id FROM Case LIMIT 1];
             Case caseAssociatedWithAsurite = viewAsService.getCaseDetails(createdCase.Id);
-            System.assertEquals(createdCase.Id, caseAssociatedWithAsurite.Id);
         }
+        System.assertEquals(createdCase.Id, caseAssociatedWithAsurite.Id);
     }
     
     @isTest
     private static void getOpenCasesWithSharing() {
         MyAsuViewAsTest.setUpUser();
         List<Contact> contactsWithCases = [SELECT Id FROM Contact];
+        List<Case> allOpenCases = [SELECT Id FROM Case WHERE isClosed = false];
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;
-            List<Case> allOpenCases = [SELECT Id FROM Case WHERE isClosed = false];
             Map<Id, List<Case>> openCasesFromService = viewAsService.getOpenCases(contactsWithCases);
             List<Case> openCases = openCasesFromService.get(contactsWithCases[0].Id);
-            System.assertEquals(allOpenCases.size(), openCases.size());
         }
+        System.assertEquals(allOpenCases.size(), openCases.size());
     }
 }

@@ -1,8 +1,9 @@
-@isTest(SeeAllData=true)
-public class Test_StudentProfileController {
+@isTest
+private class StudentProfileControllerTest {
+    private static Contact studentProfileContact;
     
     @isTest
-    public static void quickTest() {
+    public static void methodCoverage() {
         PageReference pageRef = Page.studentProfile;
         Test.setCurrentPage(pageRef);
         ApexPages.currentPage().getParameters().put('contactId', '1203436008');
@@ -29,7 +30,7 @@ public class Test_StudentProfileController {
 
         try 
         {
-            ContactService.getLoggedInContact();            
+            ContactService.getLoggedInContact();
         }
         catch (Exception e){}
 
@@ -85,86 +86,45 @@ public class Test_StudentProfileController {
 
         
         StudentProfileController.getStudentRetention('1203436008');
-        // StudentProfileController.getStdntTestComps('1203436008');
-        StudentProfileController.getStdntCarMlstnsGrad('1203436008');
-        StudentProfileController.getStdntCarMlstnsUG('1203436008');
         StudentProfileController.getRetentionSNP('1203436008');
         StudentProfileController.getPSAdvisorNotes('1203436008');
         StudentProfileController.getComments('1203436008');
-        StudentProfileController.getProfileHeader('1203436008');
-        StudentProfileController.getTestCodes('UGRD');
-        StudentProfileController.getTestCodes('NOT');
-        StudentProfileController.getStdntTestComps('1203436008', 'test');
         StudentProfileController.getTranscripts('1203436008');
         StudentProfileController.getGuestAccess('1203436008');
-        StudentProfileController.getStudentProgramData('1203436008');
-        StudentProfileController.getStudentDemographicData('1203436008');
-        StudentProfileController.getAcademicProgressData('1203436008', 'test');
         StudentProfileController.getClassesData('1203436008', '');
         StudentProfileController.getCreditByExamData('1203436008');
         StudentProfileController.getTransferWorkData('1203436008');
-        StudentProfileController.getFinancesBalanceData('1203436008');
-        StudentProfileController.getFinancialPackageData('1203436008');
-        StudentProfileController.getServiceIndicators('1203436008');
-        StudentProfileController.getUGIndicatorsNew('1203436008', '2177');
         StudentProfileController.getFinAidUnresolved('1203436008', '2177');
         StudentProfileController.getAsrIndicator('1203436008', '2177');
         StudentProfileController.getAsrInformation('1203436008', '2177');
         StudentProfileController.getEnrollmentHolds('1203436008', '2177');
-        StudentProfileController.getHousingInfo('1203436008', '2177');
         StudentProfileController.getFinAidIndicator('1203436008');
+        StudentProfileController.getSunCardPhotoRa('asurite', '1203436008');
+        StudentProfileController.sortClasses('sortBy', new List<PS_ASU_SP_CLASS_V__x>(), true);
+        StudentProfileController.sortExams('sortBy', new List<PS_ASU_SP_TRNSFR_V__x>(), true);
+        StudentProfileController.sortTransfers('sortBy', new List<JBT_RET_CLASS_XFER__x>(), true);
+        StudentProfileController.createCase('Description', 'Subject', '1203436008');
         
-        // String nextPage = controller.save().getUrl();
-
-        // Verify that page fails without parameters
-        //System.assertEquals('/apex/failure?error=noParam', nextPage);
-
-        // Add parameters to page URL
-      
-        // Instantiate a new controller with all parameters in the page
+        
         controller = new StudentProfileController(); 
-        
-        // controller.setLastName('lastname');
-        // controller.setFirstName('firstname');
-        // controller.setCompany('acme');
-        // controller.setEmail('firstlast@acme.com');
-        // nextPage = controller.save().getUrl();
-        
-
-        // Verify that the success page displays
-        //System.assertEquals('/apex/success', nextPage);
-    }
-    
-    @isTest
-    public static void getFinancialSummaryDataTest() {
-        // Contact ID needed for method calls
-        String contactId = '1203436008';
-
-        // Create a Financial Aid Wrapper for storing our response data
-        StudentProfileController.financialAidWrapper faData = new StudentProfileController.financialAidWrapper();
-
-        Test.startTest();
-            // Invoke the method
-            faData = StudentProfileController.getFinancialSummaryData(contactId);
-        Test.stopTest();
-
-        System.debug('FADATA: ' + faData.summaryRecords);
     }
     
     @isTest
     private static void initCoverage() {
-        Id contactId = [SELECT Id FROM Contact LIMIT 1].Id;
+        createTestData();
         
         PageReference studentProfile = Page.StudentProfile;
-        studentProfile.getParameters().put('contactId', contactId);
+        studentProfile.getParameters().put('contactId',  studentProfileContact.Id);
         Test.setCurrentPage(studentProfile);
         
         StudentProfileController controller = new StudentProfileController();
-        try {
-            controller.init();
-        } catch (Exception e) {
-            //TODO: Real test
-        }
+        controller.init();
+    }
+    
+    private static void createTestData() {
+        ContactFactory.DefaultContact contactBuilder = new ContactFactory.DefaultContact();
+        studentProfileContact = (Contact) contactBuilder.create()[0];
+        insert studentProfileContact;
     }
     
     @isTest
@@ -172,27 +132,41 @@ public class Test_StudentProfileController {
         StudentProfileController controller = new StudentProfileController();
         System.debug(controller.theContact);
         System.debug(controller.openCases);
-        System.debug(controller.sIList);
         System.debug(controller.sGroupList);
-        System.debug(controller.allProgramPlans);
         System.debug(controller.ugProgramPlans);
         System.debug(controller.gradProgramPlans);
-        System.debug(controller.primaryProgramPlan);
-        System.debug(controller.subProgramPlan);
-        System.debug(controller.programPlan);
         System.debug(controller.studentProgram);
         System.debug(controller.ugStudentProgram);
         System.debug(controller.gradStudentProgram);
-        System.debug(controller.studentDemographic);
-        System.debug(controller.profileHeader);
-        System.debug(controller.termInfo);
         System.debug(controller.suncardPhotoURL);
         System.debug(controller.deceased);
-        System.debug(controller.birthDate);
-        System.debug(controller.studentProgramDataList);
         System.debug(controller.currentTerm);
         System.debug(controller.currentTermName);
-        System.debug(controller.nextTerm);
         System.debug(controller.nextTermName);
+        
+        System.debug(controller.serviceIndicators);
+        System.debug(controller.ugStudentProgramAdvisors);
+        System.debug(controller.gradStudentProgramAdvisors);
+        System.debug(controller.studentAccount);
+        System.debug(controller.financialAidPackage);
+        System.debug(controller.me3Results);
+        System.debug(controller.me3HighSchoolResults);
+        System.debug(controller.studentMilestonesUGrad);
+        System.debug(controller.studentMilestonesGrad);
+        System.debug(controller.faWrapper);
+        System.debug(controller.testUndergradScoreList);
+        System.debug(controller.testGradScoreList);
+    }
+    
+    @isTest
+    private static void coverageForComparables() {
+        StudentProfileController.SortableTransferWork work = new StudentProfileController.SortableTransferWork(new JBT_RET_CLASS_XFER__x(), '');
+        work.compareTo(work);
+        
+        StudentProfileController.SortableClass sortClass = new StudentProfileController.SortableClass(new PS_ASU_SP_CLASS_V__x(), '');
+        sortClass.compareTo(sortClass);
+        
+        StudentProfileController.SortableCreditByExam exam = new StudentProfileController.SortableCreditByExam(new PS_ASU_SP_TRNSFR_V__x(), '');
+        exam.compareTo(exam);
     }
 }

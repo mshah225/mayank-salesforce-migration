@@ -1,12 +1,6 @@
 global with sharing class StudentProfileController { 
-    // Error Logger Variables 
-    private static Boolean debug = false; // Used to determine if error logger is in debug mode or not
-    private static List<String> vars = new List<String>(); // Stores the values of variables for use by the Error Logger
-    private static String paramToSort;
-    
-    public static String examParamSort { get; set; }
-    public static String transferParamSort { get; set; }
-    
+    private static List<String> vars = new List<String>();
+
     private Boolean isContactId;
     private String contactId;
     
@@ -373,414 +367,202 @@ global with sharing class StudentProfileController {
     
     @RemoteAction
     global static String getSunCardPhotoRA(String asurite, String emplId) {
-        String suncardPhotoURL;
-        List<String> vars = new List<String>();
+        String suncardPhotoUrl;
         
-        if (! Test.isRunningTest()) {
-            try {
-                vars.add(ErrorLogger.convertStringToJSON('asurite', asurite));
-                vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-                
-                suncardPhotoURL = SuncardPhotoService.getSunCardPhotoURL(asurite, emplId);
-            } catch (Exception e) {
-                ErrorLogger.log(e, vars, debug);
-                return null;
-            }
+        try {
+            suncardPhotoUrl = SuncardPhotoService.getSunCardPhotoUrl(asurite, emplId);
+        } catch (Exception ex) {
+            vars.add(ErrorLogger.convertStringToJSON('asurite', asurite));
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(ex, vars, FALSE);
+            return null;
         }
 
-        return suncardPhotoURL;
+        return suncardPhotoUrl;
     }
 
     @RemoteAction
     global static ASU_STDNT_RETENTION__x getStudentRetention(String emplId) {
-        vars = new List<String>();
-        List<ASU_STDNT_RETENTION__x> stdntList = new List<ASU_STDNT_RETENTION__x>();
+        List<ASU_STDNT_RETENTION__x> studentRetentions = new List<ASU_STDNT_RETENTION__x>();
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            stdntList = (
-                Test.isRunningTest() ? new List<ASU_STDNT_RETENTION__x>() : 
-                [
-                    SELECT ASR_INDICATOR__c, CI_INDEX_INDICATOR__c,
-                        CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c, EMPLID__c,
-                        ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c, FINANCIAL_HOLD__c,
-                        Id, NEXT_TERM_ENROLLED__c, PROBATION_INDICATOR__c,
-                        STRM__c, TOT_IND__c, AVG_MYASU_COHORT__c,
-                        PAST_DUE_TIP__c, TERM_MYASU_USAGE__c
-                    FROM ASU_STDNT_RETENTION__x
-                    WHERE EMPLID__c = :emplId
-                ]
-            );
+            studentRetentions = [
+                SELECT ASR_INDICATOR__c, CI_INDEX_INDICATOR__c,
+                    CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c, EMPLID__c,
+                    ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c, FINANCIAL_HOLD__c,
+                    Id, NEXT_TERM_ENROLLED__c, PROBATION_INDICATOR__c,
+                    STRM__c, TOT_IND__c, AVG_MYASU_COHORT__c,
+                    PAST_DUE_TIP__c, TERM_MYASU_USAGE__c
+                FROM ASU_STDNT_RETENTION__x
+                WHERE EMPLID__c = :emplId
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(e, vars, FALSE);
         }
 
-        if (stdntList.size() > 0) {
-            return stdntList[0];
-        } else {
-            return new ASU_STDNT_RETENTION__x();
-        }
+        return studentRetentions.isEmpty() ? new ASU_STDNT_RETENTION__x() : studentRetentions[0];
     }
    
     @RemoteAction
     global static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
-        vars = new List<String>();
         List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts = new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
         
         try {
-            transcripts = (
-                Test.isRunningTest() ? new List<JBT_RET_TRANSCRIPT_SENT_VW__x>() : [
-                    SELECT
-                        EMPLID__c, ADDRESS1__c, ADDRESS2__c, ADDRESS3__c,
-                        ADDRESS4__c, CITY__c, COUNTRY__c, SEND_TO_NAME__c,
-                        POSTAL__c, STATE__c, STATUS__c, REQUEST_OR_SENT_DATE__c,
-                        DisplayURL, ExternalId, Id
-                    FROM JBT_RET_TRANSCRIPT_SENT_VW__x
-                    WHERE EMPLID__c = :emplId
-                    ORDER BY REQUEST_OR_SENT_DATE__c DESC, SEND_TO_NAME__c DESC
-                ]
-            );
+            transcripts = [
+                SELECT EMPLID__c, ADDRESS1__c, ADDRESS2__c, ADDRESS3__c,
+                    ADDRESS4__c, CITY__c, COUNTRY__c, SEND_TO_NAME__c,
+                    POSTAL__c, STATE__c, STATUS__c, REQUEST_OR_SENT_DATE__c,
+                    DisplayURL, ExternalId, Id
+                FROM JBT_RET_TRANSCRIPT_SENT_VW__x
+                WHERE EMPLID__c = :emplId
+                ORDER BY REQUEST_OR_SENT_DATE__c DESC, SEND_TO_NAME__c DESC
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            ErrorLogger.log(e, vars, FALSE);
         }
-        
-        if (transcripts.size() > 0) {
-            return transcripts;
-        } else {
-            return new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
-        }
+        return transcripts;
     }
 
     @RemoteAction
-    global static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId)
-    {
-        vars = new List<String>();
-        List<ASU_STDNT_RETENTION_SNP__x> retention_snps = new List<ASU_STDNT_RETENTION_SNP__x>();
+    global static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId) {
+        List<ASU_STDNT_RETENTION_SNP__x> retentionSnps = new List<ASU_STDNT_RETENTION_SNP__x>();
             
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            retention_snps = 
-            (
-                Test.isRunningTest() ? new List<ASU_STDNT_RETENTION_SNP__x>() :
-                [
-                    SELECT ASR_INDICATOR__c, AVG_MYASU_COHORT__c, CI_INDEX_INDICATOR__c,
-                        CREATED_EW_DTTM__c, CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c,
-                        EMPLID__c, ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c,
-                        FINANCIAL_HOLD__c, Id, NEXT_TERM_ENROLLED__c, PAST_DUE_TIP__c,
-                        PROBATION_INDICATOR__c, SNP_WEEK__c, STRM__c, TERM_MYASU_USAGE__c,
-                        TRANSCRIPTS_SENT_COUNT__c
-                    FROM ASU_STDNT_RETENTION_SNP__x
-                    WHERE emplId__c = :emplId
-                    ORDER BY CREATED_EW_DTTM__c DESC, STRM__c DESC
-                ]
-            );
+            retentionSnps = [
+                SELECT ASR_INDICATOR__c, AVG_MYASU_COHORT__c, CI_INDEX_INDICATOR__c,
+                    CREATED_EW_DTTM__c, CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c,
+                    EMPLID__c, ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c,
+                    FINANCIAL_HOLD__c, Id, NEXT_TERM_ENROLLED__c, PAST_DUE_TIP__c,
+                    PROBATION_INDICATOR__c, SNP_WEEK__c, STRM__c, TERM_MYASU_USAGE__c,
+                    TRANSCRIPTS_SENT_COUNT__c
+                FROM ASU_STDNT_RETENTION_SNP__x
+                WHERE emplId__c = :emplId
+                ORDER BY CREATED_EW_DTTM__c DESC, STRM__c DESC
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(e, vars, FALSE);
         }
         
-        if (retention_snps.size() > 0)
-        {
-            return retention_snps;
-        }
-        else
-        {
-            return new List<ASU_STDNT_RETENTION_SNP__x>();
-        }
+        return retentionSnps;
     }
 
-
-
     @RemoteAction
-    // Get PS_ASU_SP_ADNOTE_V__x advising notes as a list
-    global static List<AdvNoteWrapper> getPSAdvisorNotes(String emplId)
-    {
-        vars = new List<String>();
+    global static List<AdvisingNoteWrapper> getPSAdvisorNotes(String emplId) {
+        List<AdvisingNoteWrapper> advNoteWrapperList = new List<AdvisingNoteWrapper>();
         List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = new List<PS_ASU_SP_ADNOTE_V__x>();
-        
-        List<AdvNoteWrapper> advNoteWrapperList = new List<AdvNoteWrapper>();
-        List<String> advAsuRiteIds = new List<String>();
-        Map<String, String> advUserMap = new Map<String, String>();
-
-        // Build out list to avoid de-reference null object errors.
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            advisingNoteList = 
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_ADNOTE_V__x>() :
-                [
-                    SELECT ACAD_CAREER__c, COMMENTS__c, CREATDTTM__c, CREATEOPRID__c, DisplayUrl,
-                        EMPLID__c, ExternalId, Id, NAME__c, STRM__c
-                    FROM PS_ASU_SP_ADNOTE_V__x
-                    WHERE EMPLID__c = :emplId
-                    ORDER BY CREATDTTM__c DESC
-                ]
-            );
+            advisingNoteList = [
+                SELECT ACAD_CAREER__c, COMMENTS__c, CREATDTTM__c, CREATEOPRID__c, DisplayUrl,
+                    EMPLID__c, ExternalId, Id, NAME__c, STRM__c
+                FROM PS_ASU_SP_ADNOTE_V__x
+                WHERE EMPLID__c = :emplId
+                ORDER BY CREATDTTM__c DESC
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(e, vars, FALSE);
             return null;
         }
 
-        for (PS_ASU_SP_ADNOTE_V__x note: advisingNoteList)
-        {
-            if (note.CREATEOPRID__c != null && note.CREATEOPRID__c != '')
-            {
+        List<String> advAsuRiteIds = new List<String>();
+        for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList) {
+            if (note.CREATEOPRID__c != null && note.CREATEOPRID__c != '') {
                 advAsuRiteIds.add(note.CREATEOPRID__c + '@admin.asu.edu');
             }
         }
 
-        List<User> advUserList =
-        (
-            Test.isRunningTest() ? new List<User>() :
-            [
-                SELECT Id, FederationIdentifier
-                FROM User
-                WHERE FederationIdentifier IN :advAsuRiteIds
-            ]
-        );
+        List<User> advUserList = [
+            SELECT Id, FederationIdentifier
+            FROM User
+            WHERE FederationIdentifier IN :advAsuRiteIds
+        ];
 
-        for (User u: advUserList)
-        {
-            advUserMap.put(u.FederationIdentifier, u.Id);
+        Map<String, String> advUserMap = new Map<String, String>();
+        for (User user: advUserList) {
+            advUserMap.put(user.FederationIdentifier, user.Id);
         }
 
-        for (PS_ASU_SP_ADNOTE_V__x note: advisingNoteList) 
-        {
-            AdvNoteWrapper nw = new AdvNoteWrapper();
-            nw.note = note;
-            nw.advUserId = advUserMap.get(note.CREATEOPRID__c + '@admin.asu.edu');
-            advNoteWrapperList.add(nw);
+        for (PS_ASU_SP_ADNOTE_V__x note: advisingNoteList) {
+            AdvisingNoteWrapper noteWrapper = new AdvisingNoteWrapper();
+            noteWrapper.note = note;
+            noteWrapper.advUserId = advUserMap.get(note.CREATEOPRID__c + '@admin.asu.edu');
+            advNoteWrapperList.add(noteWrapper);
         }
 
-        return (advNoteWrapperList.size() > 0 ? advNoteWrapperList : new List<AdvNoteWrapper>());
+        return advNoteWrapperList;
     }
 
     @RemoteAction
-    // Get PS_ASU_SP_COMMNT_V__x comments as a list
-    global static List<CommentWrapper> getComments(String emplId)
-    {
-        vars = new List<String>();
+    global static List<CommentWrapper> getComments(String emplId) {
         List<PS_ASU_SP_COMMNT_V__x> commentsList = new List<PS_ASU_SP_COMMNT_V__x>();
-        
-        List<CommentWrapper> commentWrapperList = new List<CommentWrapper>();
-        Set<String> commenterUserIds = new Set<String>();
-        Map<String, String> commenterUserMap = new Map<String, String>();
-
-        // Build out list to avoid de-reference null object errors.
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            commentsList = 
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_COMMNT_V__x>() :
-                [
-                    SELECT ADMIN_FUNCTION__c, ADMIN_ROLENAME__c, COMMENT_DTTM__c, COMNT_ID__c,
-                        COMMENTS__c, DisplayUrl, EMPLID__c, ExternalId, Id, NAME__c
-                    FROM PS_ASU_SP_COMMNT_V__x
-                    WHERE EMPLID__c = :emplId
-                    ORDER BY COMMENT_DTTM__c DESC
-                ]
-            );
+            commentsList = [
+                SELECT ADMIN_FUNCTION__c, ADMIN_ROLENAME__c, COMMENT_DTTM__c, COMNT_ID__c,
+                    COMMENTS__c, DisplayUrl, EMPLID__c, ExternalId, Id, NAME__c
+                FROM PS_ASU_SP_COMMNT_V__x
+                WHERE EMPLID__c = :emplId
+                ORDER BY COMMENT_DTTM__c DESC
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(e, vars, FALSE);
             return null;
         }
 
-        for (PS_ASU_SP_COMMNT_V__x comment: commentsList)
-        {
-            if (comment.COMNT_ID__c != null && comment.COMNT_ID__c != '')
-            {
+        Set<String> commenterUserIds = new Set<String>();
+        for (PS_ASU_SP_COMMNT_V__x comment: commentsList) {
+            if (comment.COMNT_ID__c != null && comment.COMNT_ID__c != '') {
                 commenterUserIds.add(comment.COMNT_ID__c);
             }
         }
 
-        List<User> commenterUserList =
-        (
-            Test.isRunningTest() ? new List<User>() :
-            [
-                SELECT Id, EmployeeNumber
-                FROM User
-                WHERE EmployeeNumber IN :commenterUserIds
-            ]
-        );
+        List<User> commenterUserList = [
+            SELECT Id, EmployeeNumber
+            FROM User
+            WHERE EmployeeNumber IN :commenterUserIds
+        ];
 
-        for (User u: commenterUserList)
-        {
-            commenterUserMap.put(u.EmployeeNumber, u.Id);
+        Map<String, String> commenterUserMap = new Map<String, String>();
+        for (User user: commenterUserList) {
+            commenterUserMap.put(user.EmployeeNumber, user.Id);
         }
 
-        for (PS_ASU_SP_COMMNT_V__x comment: commentsList) 
-        {
-            CommentWrapper cw = new CommentWrapper();
-            cw.comment = comment;
-            cw.commenterUserId = commenterUserMap.get(comment.COMNT_ID__c);
-            commentWrapperList.add(cw);
+        List<CommentWrapper> commentWrapperList = new List<CommentWrapper>();
+        for (PS_ASU_SP_COMMNT_V__x comment: commentsList) {
+            CommentWrapper commentWrapper = new CommentWrapper();
+            commentWrapper.comment = comment;
+            commentWrapper.commenterUserId = commenterUserMap.get(comment.COMNT_ID__c);
+            commentWrapperList.add(commentWrapper);
         }
-
-        return (commentWrapperList.size() > 0 ? commentWrapperList : new List<CommentWrapper>());
+        return commentWrapperList;
     }
 
     @RemoteAction
-    // Get PS_ASU_SP_GUEST_V__x comments as a list
-    global static List<PS_ASU_SP_GUEST_V__x> getGuestAccess(String emplId)
-    {
-        vars = new List<String>();
+    global static List<PS_ASU_SP_GUEST_V__x> getGuestAccess(String emplId) {
         List<PS_ASU_SP_GUEST_V__x> guestAccessList = new List<PS_ASU_SP_GUEST_V__x>();
-        
-        // Build out list to avoid de-reference null object errors.
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            guestAccessList = 
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_GUEST_V__x>() : 
-                [
-                    SELECT AUTHOR__c, COMMENT_DT__c, COMMENTS__c, DisplayUrl, EMPLID__c,    
-                           ExternalId, Id 
-                    FROM PS_ASU_SP_GUEST_V__x
-                    WHERE EMPLID__c = :emplId
-                    ORDER BY COMMENT_DT__c DESC
-                ]
-            );
+            guestAccessList = [
+                SELECT AUTHOR__c, COMMENT_DT__c, COMMENTS__c, DisplayUrl, EMPLID__c,    
+                       ExternalId, Id 
+                FROM PS_ASU_SP_GUEST_V__x
+                WHERE EMPLID__c = :emplId
+                ORDER BY COMMENT_DT__c DESC
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(e, vars, FALSE);
         }
-
-        return (guestAccessList.size() > 0? guestAccessList : new List<PS_ASU_SP_GUEST_V__x>());
+        return guestAccessList;
     }
-    
-    @RemoteAction
-   // Get all Academic Progress Data
-   global static AcademicProgressDataWrapper getAcademicProgressData(String emplId, String career)
-   {
-       vars = new List<String>();
-       List<Student_Program_Plan__c> tempStudentProgramList = new List<Student_Program_Plan__c>();
-       List<Student_Program_Plan__c> academicSummaryList = new List<Student_Program_Plan__c>();
-       List<Student_Program_Plan__c> otherIndicatorList = new List<Student_Program_Plan__c>();
-       List<Student_Program_Plan__c> academicStandingList = new List<Student_Program_Plan__c>();
-       List<Student_Program_Plan_Advisor__c> academicAdviserList = new List<Student_Program_Plan_Advisor__c>();
-       List<Student_Program_Plan__c> gradPlanList = new List<Student_Program_Plan__c>();
-       
-       AcademicProgressDataWrapper dataWrapper = new AcademicProgressDataWrapper();
-
-       Set<String> careerSet;
-       if (career == 'Undergraduate')
-           careerSet = new Set<String>{'Undergraduate'};
-       else
-           careerSet = new Set<String>{'Graduate','Law'};
-
-       // Build out list to avoid de-reference null object errors.
-       try {
-           vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-           vars.add(ErrorLogger.convertStringToJSON('career', career));
-           tempStudentProgramList = [ SELECT Career__c, Status__c, Cum_GPA__c, Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c
-                                       FROM Student_Program_Plan__c
-                                       WHERE Contact__r.EMPLID__c = :emplId
-                                       AND Career__c IN :careerSet
-                                       LIMIT 1
-                                    ];//ORDER BY STRM__c DESC;
-           academicSummaryList = tempStudentProgramList;
-       } catch (Exception e) {
-           ErrorLogger.log(e, vars, debug);
-       }
-       
-       dataWrapper.jbtRetAcadSummaryVw = (academicSummaryList.size()>0 ? academicSummaryList[0] : new Student_Program_Plan__c());
-
-       try {
-           vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-           
-           vars.add(ErrorLogger.convertStringToJSON('careerSet', ''));
-           
-           for (String s : careerSet) {
-               vars.add(ErrorLogger.convertStringToJSON('--Value: ', s));
-           }
-           
-           otherIndicatorList = tempStudentProgramList;
-       } catch (Exception e) {
-           ErrorLogger.log(e, vars, debug);
-       }
-
-       dataWrapper.jbtRetOthInd1Vw = (otherIndicatorList.size()>0 ? otherIndicatorList[0] : new Student_Program_Plan__c());
-
-       try {
-           vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-           vars.add(ErrorLogger.convertStringToJSON('careerSet', ''));
-           
-           for (String s : careerSet) {
-               vars.add(ErrorLogger.convertStringToJSON('--Value: ', s));
-           }
-           
-           academicStandingList = tempStudentProgramList;
-       } catch (Exception e) {
-           ErrorLogger.log(e, vars, debug);
-       }
-
-       dataWrapper.psAsuSpAcStndv = (academicStandingList.size()>0 ? academicStandingList[0] : new Student_Program_Plan__c());
-
-       try {
-           vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-           vars.add(ErrorLogger.convertStringToJSON('careerSet', ''));
-           
-           for (String s : careerSet) {
-               vars.add(ErrorLogger.convertStringToJSON('--Value: ', s));
-           }
-           
-           academicAdviserList =        
-           (
-               Test.isRunningTest() ? new List<Student_Program_Plan_Advisor__c>() : 
-               [
-                   SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c, 
-                          Name, Advisor_Phone__c
-                   FROM Student_Program_Plan_Advisor__c
-                   WHERE Student_Program_Plan__c = :academicSummaryList.get(0).Id
-                   AND Student_Program_Plan__r.Career__c IN :careerSet
-                   ORDER BY Name
-               ]
-           );
-       } catch (Exception e) {
-           ErrorLogger.log(e, vars, debug);
-       }
-       
-
-       dataWrapper.psAsuSpAcadAdvList = (academicAdviserList.size()>0 ? academicAdviserList : new List<Student_Program_Plan_Advisor__c>());
-
-       try {
-           vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-           vars.add(ErrorLogger.convertStringToJSON('careerSet', ''));
-           
-           for (String s : careerSet) {
-               vars.add(ErrorLogger.convertStringToJSON('--Value: ', s));
-           }
-           
-           gradPlanList = 
-           (
-               Test.isRunningTest() ? new List<Student_Program_Plan__c>() :
-               [
-                   SELECT ASU_AA_POS_GPA__c, ASU_AA_OVRL_GPA__c, Cum_GPA__c, Career__c
-                   FROM Student_Program_Plan__c
-                   WHERE Contact__r.EMPLID__c = :emplId
-                     AND Career__c IN :careerSet
-                   LIMIT 1
-               ]
-           ); 
-       } catch (Exception e) {
-           ErrorLogger.log(e, vars, debug);
-       }
-
-       dataWrapper.psGradPlan = (gradPlanList.size() > 0? gradPlanList[0] : new Student_Program_Plan__c());
-
-       return dataWrapper;        
-
-   }
 
    @RemoteAction
-   global static List<SortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, Boolean sortDirection){
+   global static List<SortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, Boolean sortDirection) {
        List<SortableClass> classList = new List<SortableClass>();
-       for (PS_ASU_SP_CLASS_V__x c : listOfClasses) {
-           classList.add(new SortableClass(c));
+       for (PS_ASU_SP_CLASS_V__x asuClass : listOfClasses) {
+           classList.add(new SortableClass(asuClass, paramToSortBy));
        }
        
-       paramToSort = paramToSortBy;
        classList.sort();
        if(!sortDirection) {
            List<SortableClass> reversedList = new List<SortableClass>();
@@ -797,264 +579,95 @@ global with sharing class StudentProfileController {
    }
    
    @RemoteAction
-   global static List<SortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, Boolean sortDirection){
+   global static List<SortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, Boolean sortDirection) {
        List<SortableCreditByExam> examList = new List<SortableCreditByExam>();
-       for (PS_ASU_SP_TRNSFR_V__x c : listOfExams) {
-           examList.add(new SortableCreditByExam(c));
+       for (PS_ASU_SP_TRNSFR_V__x exam : listOfExams) {
+           examList.add(new SortableCreditByExam(exam, paramToSortBy));
        }
        
-       examParamSort = paramToSortBy;
        examList.sort();
-       if(!sortDirection) {
-           List<SortableCreditByExam> reversedList = new List<SortableCreditByExam>();
-           for(SortableCreditByExam sc : examList) {
-               if (reversedList.size() == 0) {
-                   reversedList.add(sc);
-               } else {
-                   reversedList.add(0, sc);
-               }
-           }
-           return reversedList;
+       if (sortDirection) {
+           return examList;
        }
-       return examList;
+       
+       List<SortableCreditByExam> reversedList = new List<SortableCreditByExam>();
+       for(SortableCreditByExam sc : examList) {
+           if (reversedList.size() == 0) {
+               reversedList.add(sc);
+           } else {
+               reversedList.add(0, sc);
+           }
+       }
+       return reversedList;
    }
    
    @RemoteAction
-   global static List<SortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, Boolean sortDirection){
+   global static List<SortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, Boolean sortDirection) {
        List<SortableTransferWork> transferList = new List<SortableTransferWork>();
-       for (JBT_RET_CLASS_XFER__x c : listOfTransfer) {
-           transferList.add(new SortableTransferWork(c));
+       for (JBT_RET_CLASS_XFER__x transferClass : listOfTransfer) {
+           transferList.add(new SortableTransferWork(transferClass, paramToSortBy));
        }
        
-       transferParamSort = paramToSortBy;
        transferList.sort();
-       if(!sortDirection) {
-           List<SortableTransferWork> reversedList = new List<SortableTransferWork>();
-           for(SortableTransferWork sc : transferList) {
-               if (reversedList.size() == 0) {
-                   reversedList.add(sc);
-               } else {
-                   reversedList.add(0, sc);
-               }
-           }
-           return reversedList;
+       if (sortDirection) {
+           return transferList;
        }
-       return transferList;
+       
+       List<SortableTransferWork> reversedList = new List<SortableTransferWork>();
+       for(SortableTransferWork sc : transferList) {
+           if (reversedList.size() == 0) {
+               reversedList.add(sc);
+           } else {
+               reversedList.add(0, sc);
+           }
+       }
+       return reversedList;
    }
     
     @RemoteAction
-    global static GeneralIndicatorsWrapper getUGIndicatorsNew(String emplid, String currentTerm)
-    {
-        GeneralIndicatorsWrapper giData = new GeneralIndicatorsWrapper();
-
-        List<ASU_STDNT_RETENTION__x> asuStdntRetentionList = new List<ASU_STDNT_RETENTION__x>();
-        
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            
-            asuStdntRetentionList =
-            (
-                Test.isRunningTest() ? new List<ASU_STDNT_RETENTION__x>() : 
-                [SELECT ASR_INDICATOR__c, AVG_MYASU_COHORT__c, CI_INDEX_INDICATOR__c, CUM_GPA_INDICATOR__c, 
-                        EADVISOR_INDICATOR__c, EMPLID__c, ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c, 
-                        FINANCIAL_HOLD__c, Id, NEXT_TERM_ENROLLED__c, PAST_DUE_TIP__c, PROBATION_INDICATOR__c, 
-                        STRM__c, TERM_MYASU_USAGE__c, TOT_IND__c
-                 FROM   ASU_STDNT_RETENTION__x 
-                 WHERE  EMPLID__c = :emplid
-                   AND  STRM__c = :currentTerm 
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-        
-        if (asuStdntRetentionList.size() > 0)
-            giData.asuStudentRetention = asuStdntRetentionList[0];
-
-        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList = new List<JBT_RET_FINAID_INDICATORS__x>();
-        
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            jbtRetFinaidIndicatorsList =
-            (
-                Test.isRunningTest() ? new List<JBT_RET_FINAID_INDICATORS__x>() : 
-                [SELECT FA_IND__c
-                 FROM   JBT_RET_FINAID_INDICATORS__x
-                 WHERE  EMPLID__c = :emplid
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-        
-        if (jbtRetFinaidIndicatorsList.size() > 0) {
-            giData.finAidIndicators = jbtRetFinaidIndicatorsList[0];   
-        }
-
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            giData.finAidUnresolvedList = 
-            (
-                Test.isRunningTest() ? new List<JBT_RET_FINAID_UNRESOLVED__x>() : 
-                [SELECT ACTION__c, AID_YEAR__c, CHECKLIST_CD__c, CHKLST_ITEM_CD__c, STATUS__c, STATUS_DT__c, STRM__c 
-                 FROM   JBT_RET_FINAID_UNRESOLVED__x
-                 WHERE  EMPLID__c = :emplid
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList = new List<PS_ASU_SR_INDASR_V__x>();
-        
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            
-            psAsuSrIndasrVList =
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SR_INDASR_V__x>() : 
-                [SELECT ACAD_CAREER__c, CLASSCOUNT__c, EMPLID__c, STRM__c 
-                 FROM   PS_ASU_SR_INDASR_V__x
-                 WHERE  EMPLID__c = :emplid
-                   AND  STRM__c = :currentTerm 
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-        
-        if(psAsuSrIndasrVList.size() > 0) {
-            giData.asrIndicator = psAsuSrIndasrVList[0];
-        }
-
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            
-            giData.asrInformation =
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SR_ASR_INDV__x>() : 
-                [SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, CLASS_NBR__c, COMMENT1__c, 
-                        COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, EMPLID__c, ENROLLED__c, INSTITUTION__c, 
-                        SEQNUM__c, SESSION_CODE__c
-                 FROM   PS_ASU_SR_ASR_INDV__x
-                 WHERE  EMPLID__c = :emplid
-                   AND  STRM__c = :currentTerm 
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            
-            giData.enrollmentHoldInformation =
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_ENRHLD_V__x>() : 
-                [SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c
-                 FROM   PS_ASU_SP_ENRHLD_V__x
-                 WHERE  EMPLID__c = :emplid
-                 AND  STRM__c = :currentTerm 
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-        
-        giData.enrollmentHoldCount = giData.enrollmentHoldInformation.size();
-
-        List<JBT_RET_MYASU_ACCESS_CNT_VW__x> jbtRetMyasuAccessCntVwList = new List<JBT_RET_MYASU_ACCESS_CNT_VW__x>();
-        
-        try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            
-            jbtRetMyasuAccessCntVwList =
-            (
-                Test.isRunningTest() ? new List<JBT_RET_MYASU_ACCESS_CNT_VW__x>() : 
-                [SELECT ACAD_CAREER__c, SEM_ACCESS_COUNT__c, STRM__c
-                 FROM   JBT_RET_MYASU_ACCESS_CNT_VW__x
-                 WHERE  EMPLID__c = :emplid
-                   AND  STRM__c = :currentTerm 
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
-        }
-        
-        if (jbtRetMyasuAccessCntVwList.size() > 0)
-            giData.myAsuAccessCount = jbtRetMyasuAccessCntVwList[0];
-
-        return giData;
-    }
-    
-    
-    @RemoteAction
-    global static ClassesWrapper getClassesData(String emplid, String strm)
-    {
-        ClassesWrapper classesData = new ClassesWrapper();
-        List<PS_ASU_SP_ASR_CLSV__x> asrList = new List<PS_ASU_SP_ASR_CLSV__x>();
-        Set<String> asrClassSet = new Set<String>();
-
+    global static ClassesWrapper getClassesData(String emplid, String strm) {
         List<PS_ASU_SP_CLASS_V__x> classList = new List<PS_ASU_SP_CLASS_V__x>();
-        
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
-            vars.add(ErrorLogger.convertStringToJSON('strm', strm));
-            
-            classList =
-            (
-                Test.isRunningTest() ? new LIST<PS_ASU_SP_CLASS_V__x>() : 
-                [
-                    SELECT ACAD_CAREER__c, ASU_SCH_DATES__c, CATALOG_NBR__c, CLASS_DESCR__c, 
+            classList = [
+                SELECT ACAD_CAREER__c, ASU_SCH_DATES__c, CATALOG_NBR__c, CLASS_DESCR__c, 
                     CLASS_NBR__c, CRSE_GRADE_OFF__c, CRSE_ID__c, CUM_GPA__c, CUR_GPA__c, 
                     DisplayUrl, EARN_CREDIT__c, EMPLID__c, ENRL_STATUS_REASON__c, ExternalId, 
                     FT_FULL_NAME__c, Id, SCH_DAILY_TIME__c, SCH_HTML_DAY1__c, SESSION_CODE__c, 
                     SSR_CLSTOPIC_DESCR__c, SSR_MTG_LOC_LONG__c, STDNT_ENRL_STATUS__c, STRM__c, 
                     SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c  
-                    FROM PS_ASU_SP_CLASS_V__x 
-                    WHERE EMPLID__c = :emplid 
-                    ORDER BY STRM__c DESC, CLASS_NBR__c ASC
-                ]
-            );
+                FROM PS_ASU_SP_CLASS_V__x 
+                WHERE EMPLID__c = :emplid 
+                ORDER BY STRM__c DESC, CLASS_NBR__c ASC
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
+            vars.add(ErrorLogger.convertStringToJSON('strm', strm));
+            ErrorLogger.log(e, vars, FALSE);
         }
 
-        // Build a Set of courses that have the ASR flag for the current term
-        if (classList.size() > 0)
-        {
+        
+        List<PS_ASU_SP_ASR_CLSV__x> asrList = new List<PS_ASU_SP_ASR_CLSV__x>();
+        if (!classList.isEmpty()) {
             try {
-                vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
-                vars.add(ErrorLogger.convertStringToJSON('strm', strm));
-                
-                asrList = 
-                [
+                asrList = [
                     SELECT CLASS_NBR__c, SESSION_CODE__c, STRM__c 
-                    FROM   PS_ASU_SP_ASR_CLSV__x
-                    WHERE  EMPLID__c = :emplId 
-                      AND  STRM__c = :strm
+                    FROM PS_ASU_SP_ASR_CLSV__x
+                    WHERE EMPLID__c = :emplId 
+                        AND STRM__c = :strm
                 ];
             } catch (Exception e) {
-                ErrorLogger.log(e, vars, debug);
-            }
-            
-            if (asrList.size() > 0) {
-                for (PS_ASU_SP_ASR_CLSV__x asr: asrList)
-                {
-                    classesData.asrClasses.add(asr.STRM__c + '|' + asr.SESSION_CODE__c + '|' + asr.CLASS_NBR__c);
-                }
+                vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
+                vars.add(ErrorLogger.convertStringToJSON('strm', strm));
+                ErrorLogger.log(e, vars, FALSE);
             }
         }
+        
+        ClassesWrapper classesData = new ClassesWrapper();
+        for (PS_ASU_SP_ASR_CLSV__x asr: asrList) {
+            classesData.asrClasses.add(asr.STRM__c + '|' + asr.SESSION_CODE__c + '|' + asr.CLASS_NBR__c);
+        }
 
-        for (PS_ASU_SP_CLASS_V__x course: classList)
-        {
+        for (PS_ASU_SP_CLASS_V__x course: classList) {
             if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL') {
                 classesData.enrolledClasses.add(course);
             } else {
@@ -1063,170 +676,133 @@ global with sharing class StudentProfileController {
             classesData.classTerms.add(course.STRM__c+ '|' + course.TERM_DESCR30__c);
             classesData.classSessions.add(course.SESSION_CODE__c);
         }     
-        if (classList.size() > 0) {
+        if (!classList.isEmpty()) {
             classesData.classTerms.add('All|All');
             classesData.classSessions.add('All');
         }
         return classesData;
     }
     
-    // Get Credit by Exam Information
     @RemoteAction
-    global static LIST<PS_ASU_SP_TRNSFR_V__x> getCreditByExamData(String emplId)
-    {
+    global static LIST<PS_ASU_SP_TRNSFR_V__x> getCreditByExamData(String emplId) {
         List<PS_ASU_SP_TRNSFR_V__x> creditByExamList = new List<PS_ASU_SP_TRNSFR_V__x>();
-        
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            creditByExamList = 
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_TRNSFR_V__x>() : 
-                [
-                    SELECT ACAD_CAREER__c, COURSE_TITLE__c, DisplayUrl, EMPLID__c, 
-                           ExternalId, Id, SCORE__c, STRM__c, TITLE__c, UNT_TRNSFR__c 
-                    FROM PS_ASU_SP_TRNSFR_V__x
-                    WHERE EMPLID__c = :emplId
-                ]
-            );
+            creditByExamList = [
+                SELECT ACAD_CAREER__c, COURSE_TITLE__c, DisplayUrl, EMPLID__c, 
+                       ExternalId, Id, SCORE__c, STRM__c, TITLE__c, UNT_TRNSFR__c 
+                FROM PS_ASU_SP_TRNSFR_V__x
+                WHERE EMPLID__c = :emplId
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(e, vars, FALSE);
         }
 
-        return (creditByExamList.size() > 0? creditByExamList : new List<PS_ASU_SP_TRNSFR_V__x>());
+        return creditByExamList;
 
     }
 
-    // Get Transfer Work Information
     @RemoteAction
-    global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId)
-    {
+    global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId) {
         List<JBT_RET_CLASS_XFER__x> transferWorkList = new List<JBT_RET_CLASS_XFER__x>();
-        
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            transferWorkList = 
-            (
-                Test.isRunningTest() ? new List<JBT_RET_CLASS_XFER__x>() :
-                [
-                    SELECT COURSE__c, DisplayUrl, ECREDIT__c, EMPLID__c, ExternalId, GPAHRS__c, 
-                           GPAPTS__c, GRADE__c, Id, INSTITUTION__c, RCREDIT__c, TERM__c, TITLE__c, 
-                           TOPIC__c 
-                    FROM JBT_RET_CLASS_XFER__x 
-                    WHERE EMPLID__c = :emplId
-                    ORDER BY COURSE__c, TERM__c
-                ]
-            );
+            transferWorkList = [
+                SELECT COURSE__c, DisplayUrl, ECREDIT__c, EMPLID__c, ExternalId, GPAHRS__c, 
+                       GPAPTS__c, GRADE__c, Id, INSTITUTION__c, RCREDIT__c, TERM__c, TITLE__c, 
+                       TOPIC__c 
+                FROM JBT_RET_CLASS_XFER__x 
+                WHERE EMPLID__c = :emplId
+                ORDER BY COURSE__c, TERM__c
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(e, vars, FALSE);
         }
 
-        return (transferWorkList.size() > 0? transferWorkList : new List<JBT_RET_CLASS_XFER__x>());
+        return transferWorkList;
     }
     
     @RemoteAction
-    global static JBT_RET_FINAID_INDICATORS__x getFinAidIndicator(String emplid)
-    {
-
+    global static JBT_RET_FINAID_INDICATORS__x getFinAidIndicator(String emplid) {
         List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList = new List<JBT_RET_FINAID_INDICATORS__x>();
-        
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            
-            jbtRetFinaidIndicatorsList = 
-            (
-                Test.isRunningTest() ? new List<JBT_RET_FINAID_INDICATORS__x>() : 
-                [SELECT EMPLID__c, FA_IND__c
-                 FROM   JBT_RET_FINAID_INDICATORS__x
-                 WHERE  EMPLID__c = :emplid
-                 LIMIT 1
-                ]
-            );
+            jbtRetFinaidIndicatorsList = [
+                SELECT EMPLID__c, FA_IND__c
+                FROM JBT_RET_FINAID_INDICATORS__x
+                WHERE EMPLID__c = :emplid
+                LIMIT 1
+            ];
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(e, vars, FALSE);
         }
-
-        return (jbtRetFinaidIndicatorsList.size() > 0? jbtRetFinaidIndicatorsList[0] : new JBT_RET_FINAID_INDICATORS__x());
+        
+        return jbtRetFinaidIndicatorsList.isEmpty() ? new JBT_RET_FINAID_INDICATORS__x() : jbtRetFinaidIndicatorsList[0];
     }
 
     @RemoteAction
-    global static List<JBT_RET_FINAID_UNRESOLVED__x> getFinAidUnresolved(String emplid, String currentTerm)
-    {
+    global static List<JBT_RET_FINAID_UNRESOLVED__x> getFinAidUnresolved(String emplid, String currentTerm) {
         List<JBT_RET_FINAID_UNRESOLVED__x> jbtRetFinaidUnresolvedList = new List<JBT_RET_FINAID_UNRESOLVED__x>();
         
         try {
+            jbtRetFinaidUnresolvedList = [
+                SELECT ACTION__c, AID_YEAR__c, CHECKLIST_CD__c, CHKLST_ITEM_CD__c, 
+                    STATUS__c, STATUS_DT__c, STRM__c 
+                FROM JBT_RET_FINAID_UNRESOLVED__x
+                WHERE EMPLID__c = :emplid
+                    AND STRM__c = :currentTerm
+                ORDER BY AID_YEAR__c DESC, CHECKLIST_CD__c ASC
+            ];
+        } catch (Exception e) {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
             vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            
-            jbtRetFinaidUnresolvedList =
-            (
-                Test.isRunningTest() ? new List<JBT_RET_FINAID_UNRESOLVED__x>() : 
-                [SELECT ACTION__c, AID_YEAR__c, CHECKLIST_CD__c, CHKLST_ITEM_CD__c, STATUS__c, STATUS_DT__c, STRM__c 
-                 FROM   JBT_RET_FINAID_UNRESOLVED__x
-                 WHERE  EMPLID__c = :emplid
-                   AND  STRM__c = :currentTerm
-                 ORDER BY AID_YEAR__c DESC, CHECKLIST_CD__c ASC
-                ]
-            );    
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            ErrorLogger.log(e, vars, FALSE);
         }
 
-        return (jbtRetFinaidUnresolvedList.size() > 0? jbtRetFinaidUnresolvedList : new List<JBT_RET_FINAID_UNRESOLVED__x>());
+        return jbtRetFinaidUnresolvedList;
     }
 
     @RemoteAction
-    global static PS_ASU_SR_INDASR_V__x getAsrIndicator(String emplid, String currentTerm)
-    {
+    global static PS_ASU_SR_INDASR_V__x getAsrIndicator(String emplid, String currentTerm) {
         List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList = new List<PS_ASU_SR_INDASR_V__x>();
         
         try {
+            psAsuSrIndasrVList = [
+                SELECT CLASSCOUNT__c 
+                FROM PS_ASU_SR_INDASR_V__x
+                WHERE EMPLID__c = :emplid
+                    AND STRM__c = :currentTerm 
+                LIMIT 1
+            ];
+        } catch (Exception e) {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
             vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            
-            psAsuSrIndasrVList =
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SR_INDASR_V__x>() : 
-                [SELECT CLASSCOUNT__c 
-                 FROM   PS_ASU_SR_INDASR_V__x
-                 WHERE  EMPLID__c = :emplid
-                   AND  STRM__c = :currentTerm 
-                 LIMIT 1
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            ErrorLogger.log(e, vars, FALSE);
         }
 
-        return (psAsuSrIndasrVList.size() > 0? psAsuSrIndasrVList[0] : new PS_ASU_SR_INDASR_V__x());
+        return psAsuSrIndasrVList.isEmpty() ? new PS_ASU_SR_INDASR_V__x() : psAsuSrIndasrVList[0];
     }
     
     @RemoteAction
-    global static List<PS_ASU_SR_ASR_INDV__x> getAsrInformation(String emplid, String currentTerm)
-    {
+    global static List<PS_ASU_SR_ASR_INDV__x> getAsrInformation(String emplid, String currentTerm) {
         List<PS_ASU_SR_ASR_INDV__x> asrInformationList = new List<PS_ASU_SR_ASR_INDV__x>();
-        
+
         try {
+            asrInformationList = [
+                SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, 
+                    CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, 
+                    EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c
+                 FROM PS_ASU_SR_ASR_INDV__x
+                 WHERE EMPLID__c = :emplid
+                    AND STRM__c = :currentTerm
+            ];
+        } catch (Exception e) {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
             vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            
-            asrInformationList = 
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SR_ASR_INDV__x>() : 
-                [SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, CLASS_NBR__c, COMMENT1__c, 
-                        COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, EMPLID__c, ENROLLED__c, INSTITUTION__c, 
-                        SEQNUM__c, SESSION_CODE__c
-                 FROM   PS_ASU_SR_ASR_INDV__x
-                 WHERE  EMPLID__c = :emplid
-                   AND  STRM__c = :currentTerm
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            ErrorLogger.log(e, vars, FALSE);
         }
 
-        return (asrInformationList.size() > 0? asrInformationList : new List<PS_ASU_SR_ASR_INDV__x>());
+        return asrInformationList;
     }
 
     @RemoteAction
@@ -1235,59 +811,45 @@ global with sharing class StudentProfileController {
         List<PS_ASU_SP_ENRHLD_V__x> enrollmentHoldList = new List<PS_ASU_SP_ENRHLD_V__x>();
         
         try {
+            enrollmentHoldList = [
+                SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c
+                FROM PS_ASU_SP_ENRHLD_V__x
+                WHERE EMPLID__c = :emplid
+                    AND (STRM__c >= :currentTerm OR STRM__c = '0000')
+                ORDER BY STRM__c ASC, SRVC_IND_CD__c ASC 
+            ];
+        } catch (Exception e) {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
             vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            
-            enrollmentHoldList =
-            (
-                Test.isRunningTest() ? new List<PS_ASU_SP_ENRHLD_V__x>() : 
-                [SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c
-                 FROM   PS_ASU_SP_ENRHLD_V__x
-                 WHERE  EMPLID__c = :emplid
-                   AND  (STRM__c >= :currentTerm OR STRM__c = '0000')
-                 ORDER BY STRM__c ASC, SRVC_IND_CD__c ASC 
-                ]
-            );
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            ErrorLogger.log(e, vars, FALSE);
         }
 
-        return (enrollmentHoldList.size() > 0 ? enrollmentHoldList : new List<PS_ASU_SP_ENRHLD_V__x>());
+        return enrollmentHoldList;
     }
 
     @RemoteAction
     global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
         try {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
-            
-            Id student = [SELECT Id FROM Contact WHERE emplId__c =: emplidIn LIMIT 1].Id;
-            RecordType rt = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
+            Id student = [SELECT Id FROM Contact WHERE EmplId__c =: emplidIn LIMIT 1].Id;
+            RecordType recordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
             Case feedbackCase = new Case(
-                        status = 'New',
-                        RecordType = rt,
-                        contactId = student,
-                        subject = subjectIn,
-                        description = descriptionIn,
-                        Origin__c = 'Student Profile',
-                        IsVisibleInSelfService = false
+                Status = 'New',
+                RecordType = recordType,
+                ContactId = student,
+                Subject = subjectIn,
+                Description = descriptionIn,
+                Origin__c = 'Student Profile',
+                IsVisibleInSelfService = false
             );
             insert feedbackCase;
             return feedbackCase.Id;
         } catch (Exception e) {
-            ErrorLogger.log(e, vars, debug);
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
+            vars.add(ErrorLogger.convertStringToJSON('subjectIn', subjectIn));
+            vars.add(ErrorLogger.convertStringToJSON('descriptionIn', descriptionIn));
+            ErrorLogger.log(e, vars, FALSE);
         }
         return null;
-    }
-    
-    global class GeneralIndicatorsWrapper {
-        public ASU_STDNT_RETENTION__x asuStudentRetention = new ASU_STDNT_RETENTION__x();
-        public JBT_RET_FINAID_INDICATORS__x finAidIndicators = new JBT_RET_FINAID_INDICATORS__x();
-        public List<JBT_RET_FINAID_UNRESOLVED__x> finAidUnresolvedList = new List<JBT_RET_FINAID_UNRESOLVED__x>();
-        public PS_ASU_SR_INDASR_V__x asrIndicator = new PS_ASU_SR_INDASR_V__x();
-        public List<PS_ASU_SR_ASR_INDV__x> asrInformation = new List<PS_ASU_SR_ASR_INDV__x>();
-        public List<PS_ASU_SP_ENRHLD_V__x> enrollmentHoldInformation = new List<PS_ASU_SP_ENRHLD_V__x>();
-        public Integer enrollmentHoldCount = 0;
-        public JBT_RET_MYASU_ACCESS_CNT_VW__x myAsuAccessCount = new JBT_RET_MYASU_ACCESS_CNT_VW__x();
     }
     
     global class FinancialAidWrapper {
@@ -1300,17 +862,9 @@ global with sharing class StudentProfileController {
         }
     }
     
-    global class AdvNoteWrapper {
+    global class AdvisingNoteWrapper {
         public PS_ASU_SP_ADNOTE_V__x note {get; set;}
         public String advUserId {get; set;}
-    }
-    
-    global class AcademicProgressDataWrapper {
-        public Student_Program_Plan__c jbtRetAcadSummaryVw;
-        public Student_Program_Plan__c psAsuSpAcStndv;
-        public List<Student_Program_Plan_Advisor__c> psAsuSpAcadAdvList;
-        public Student_Program_Plan__c psGradPlan; // Need POS GPA
-        public Student_Program_Plan__c jbtRetOthInd1Vw;
     }
     
     global class ClassesWrapper {
@@ -1323,9 +877,11 @@ global with sharing class StudentProfileController {
     
     global class SortableTransferWork implements Comparable{
         JBT_RET_CLASS_XFER__x  transferInfo;
+        String transferParamSort;
         
-        public SortableTransferWork(JBT_RET_CLASS_XFER__x  transferIn){
+        public SortableTransferWork(JBT_RET_CLASS_XFER__x  transferIn, String sortBy) {
             transferInfo = transferIn;
+            this.transferParamSort = sortBy;
         }
         
         public Integer compareTo(Object compareTo) {
@@ -1391,23 +947,25 @@ global with sharing class StudentProfileController {
     
     global class SortableClass implements Comparable{
         PS_ASU_SP_CLASS_V__x classInfo;
+        String classParamSort;
         
-        public SortableClass(PS_ASU_SP_CLASS_V__x classIn){
+        public SortableClass(PS_ASU_SP_CLASS_V__x classIn, String sortBy) {
             classInfo = classIn;
+            this.classParamSort = sortBy;
         }
         
         public Integer compareTo(Object compareTo) {
             SortableClass compareToClass = (SortableClass)compareTo;
             Integer sortDir = 0;
-            if (paramToSort.equals('Session')) {
+            if (classParamSort.equals('Session')) {
                 sortDir = compareToClass.classInfo.SESSION_CODE__c.compareTo(this.classInfo.SESSION_CODE__c);
-            } else if (paramToSort.equals('Class')) {
+            } else if (classParamSort.equals('Class')) {
                 sortDir = compareToClass.classInfo.CLASS_NBR__c.compareTo(this.classInfo.CLASS_NBR__c);
-            } else if (paramToSort.equals('Course')) {
+            } else if (classParamSort.equals('Course')) {
                 sortDir = compareToClass.classInfo.CRSE_ID__c.compareTo(this.classInfo.CRSE_ID__c);
-            } else if (paramToSort.equals('Title')) {
+            } else if (classParamSort.equals('Title')) {
                 sortDir = compareToClass.classInfo.CLASS_DESCR__c.compareTo(this.classInfo.CLASS_DESCR__c);
-            } else if (paramToSort.equals('Topic')) {
+            } else if (classParamSort.equals('Topic')) {
                 if(compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c != null) {
                     sortDir = compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c.compareTo(this.classInfo.SSR_CLSTOPIC_DESCR__c);
                 } else if (compareToClass.classInfo.SSR_CLSTOPIC_DESCR__c != null && this.classInfo.SSR_CLSTOPIC_DESCR__c == null) {
@@ -1415,7 +973,7 @@ global with sharing class StudentProfileController {
                 } else {
                     sortDir = 1;
                 }
-            } else if (paramToSort.equals('Units')) {
+            } else if (classParamSort.equals('Units')) {
                 if(compareToClass.classInfo.UNT_TAKEN__c == this.classInfo.UNT_TAKEN__c){
                     sortDir = 0;
                 } else if (this.classInfo.UNT_TAKEN__c > compareToClass.classInfo.UNT_TAKEN__c) {
@@ -1423,7 +981,7 @@ global with sharing class StudentProfileController {
                 } else {
                     sortDir = -1;
                 }
-            } else if (paramToSort.equals('Instructor')) {
+            } else if (classParamSort.equals('Instructor')) {
                 if(compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c != null) {
                     sortDir = compareToClass.classInfo.FT_FULL_NAME__c.compareTo(this.classInfo.FT_FULL_NAME__c);
                 } else if (compareToClass.classInfo.FT_FULL_NAME__c != null && this.classInfo.FT_FULL_NAME__c == null) {
@@ -1431,7 +989,7 @@ global with sharing class StudentProfileController {
                 } else {
                     sortDir = 1;
                 }
-            } else if (paramToSort.equals('Days')) {
+            } else if (classParamSort.equals('Days')) {
                 if(compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c != null) {
                     sortDir = compareToClass.classInfo.SCH_HTML_DAY1__c.compareTo(this.classInfo.SCH_HTML_DAY1__c);
                 } else if (compareToClass.classInfo.SCH_HTML_DAY1__c != null && this.classInfo.SCH_HTML_DAY1__c == null) {
@@ -1439,7 +997,7 @@ global with sharing class StudentProfileController {
                 } else {
                     sortDir = 1;
                 }
-            } else if (paramToSort.equals('Times')) {
+            } else if (classParamSort.equals('Times')) {
                 if(compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c != null) {
                     sortDir = compareToClass.classInfo.SCH_DAILY_TIME__c.compareTo(this.classInfo.SCH_DAILY_TIME__c);
                 } else if (compareToClass.classInfo.SCH_DAILY_TIME__c != null && this.classInfo.SCH_DAILY_TIME__c == null) {
@@ -1447,11 +1005,11 @@ global with sharing class StudentProfileController {
                 } else {
                     sortDir = 1;
                 }
-            } else if (paramToSort.equals('Dates')) {
+            } else if (classParamSort.equals('Dates')) {
                 sortDir = compareToClass.classInfo.ASU_SCH_DATES__c.compareTo(this.classInfo.ASU_SCH_DATES__c);
-            } else if (paramToSort.equals('Location')) {
+            } else if (classParamSort.equals('Location')) {
                 sortDir = compareToClass.classInfo.SSR_MTG_LOC_LONG__c.compareTo(this.classInfo.SSR_MTG_LOC_LONG__c);
-            } else if (paramToSort.equals('Grade')) {
+            } else if (classParamSort.equals('Grade')) {
                 if(compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c != null) {
                     sortDir = compareToClass.classInfo.CRSE_GRADE_OFF__c.compareTo(this.classInfo.CRSE_GRADE_OFF__c);
                 } else if (compareToClass.classInfo.CRSE_GRADE_OFF__c != null && this.classInfo.CRSE_GRADE_OFF__c == null) {
@@ -1468,9 +1026,11 @@ global with sharing class StudentProfileController {
     
     global class SortableCreditByExam implements Comparable {
         PS_ASU_SP_TRNSFR_V__x examInfo;
+        String examParamSort;
         
-        public SortableCreditByExam(PS_ASU_SP_TRNSFR_V__x examIn){
+        public SortableCreditByExam(PS_ASU_SP_TRNSFR_V__x examIn, String sortBy) {
             examInfo = examIn;
+            this.examParamSort = sortBy;
         }
         
         public Integer compareTo(Object compareTo) {

@@ -5,7 +5,8 @@ public class ContactFactory {
             super(new Contact(
                 FirstName = 'Test',
                 LastName = 'Contact',
-                email = 'Test@Test.com'
+                Email = 'Test@Test.com',
+                EmplId__c = '1234567890'
             ));
             this.addToFieldsToIncrement('LastName');
             this.addToFieldsToIncrement('email');
@@ -17,7 +18,7 @@ public class ContactFactory {
             super(new Contact(
                 FirstName = 'Test',
                 LastName = 'Test',
-                email = 'Test@Test.com',
+                Email = 'Test@Test.com',
                 Corporate_Relations_Email__c = 'Test@Test.com',
                 EPO_Email__c = 'Test@Test.com',
                 ASU_Email__c = 'Test@Test.com',

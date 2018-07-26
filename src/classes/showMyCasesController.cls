@@ -46,10 +46,10 @@ public class showMyCasesController extends ListViewController {
             if (caseStatusOptions == null) {
                 caseStatusOptions = new List<SelectOption>();
                 List<String> allCaseStatusOptions = getPicklistValues();
+                caseStatusOptions.add(new SelectOption('--', '--'));
                 for (String statusOption : allCaseStatusOptions) {
                     caseStatusOptions.add(new SelectOption(statusOption, statusOption));
                 }
-                caseStatusOptions.add(new SelectOption('--', '--'));
             }
             return caseStatusOptions;
         }
@@ -192,7 +192,7 @@ public class showMyCasesController extends ListViewController {
             }
 
             return selectedCases;
-            }
+        }
 
         set {
             selectedCases = value;

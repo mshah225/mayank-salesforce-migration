@@ -6,7 +6,7 @@
     <apex:pageMessages />
 
     <div style="text-align:center;padding:25px;">
-        <c:DynamicFeedbackButton betaTag="true" carName="Advisor Portal" />
+        <c:DynamicFeedbackButton carName="Advisor Portal" />
     </div>
 
     <c:ViewAsComponent selectOptions="{!viewAsOptions}" hasViewAs="{!hasViewAs}"
@@ -20,8 +20,12 @@
             <apex:actionFunction name="setOwnerId" reRender="rerenderMe" status="ASUAjaxStatus">
                 <apex:param name="ownerId" assignTo="{!ownerId}" value="{!mimicId}"/>
             </apex:actionFunction>
-            <script>
+            <apex:actionFunction action="{!parseOwnerIdString}" name="setOwnerIdList" reRender="tabPanel, rerenderMe" status="ASUAjaxStatus">
+			    <apex:param name="ownerIdList" assignTo="{!ownerIdString}" value="{!mimicIdList}"/>
+            </apex:actionFunction>
+                   <script>
             	setOwnerId();
+           		setOwnerIdList();
             </script>
         </apex:form>
 

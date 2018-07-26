@@ -167,8 +167,7 @@ public class Test_ShowMyCases {
      * Test Filter Methods
      */
      @isTest
-     private static void checkQueryForFilterAdditionAndRemoval() {
-        Test.startTest();
+     private static void checkQueryForFilterAddition() {
         smsc.queryAttr = smsc.query;
         smsc.searchString = 'Tester Mctesterson';
         smsc.caseSubject = 'Testing Subject';
@@ -190,6 +189,8 @@ public class Test_ShowMyCases {
         smsc.followupEndDate = Date.valueOf('2018-08-17 00:00:00');
         smsc.persistenceStartDate = Date.valueOf('2018-07-17 00:00:00');
         smsc.persistenceEndDate = Date.valueOf('2018-08-17 00:00:00');
+
+        Test.startTest();
         smsc.insertFilterIntoQuery();
         Test.stopTest();
 
@@ -213,6 +214,32 @@ public class Test_ShowMyCases {
         System.assert(smsc.query.contains('Change_Date__c >='));
         System.assert(smsc.query.contains('Change_Date__c <='));
         System.assert(smsc.query.contains('Status ='));
+    }
+
+    @isTest
+    private static void checkQueryForFilterRemoval() {
+        smsc.queryAttr = smsc.query;
+        smsc.searchString = 'Tester Mctesterson';
+        smsc.caseSubject = 'Testing Subject';
+        smsc.enrollmentStatusFilter = 'Enrolled';
+        smsc.campusFilter = 'Tempe';
+        smsc.residentFilter = 'true';
+        smsc.citizenFilter = 'true';
+        smsc.outlookScoreFilter = '5';
+        smsc.outlookChangeFilter = 'Up';
+        smsc.ownerFilter = 'Tester';
+        smsc.collegeFilter = 'Fulton';
+        smsc.degreeFilter = 'Master';
+        smsc.majorFilter = 'Engineering';
+        smsc.studentGroup = 'SG';
+        smsc.caseStatusFilter = 'Email Sent';
+        smsc.createdByStartDate = Date.valueOf('2018-07-17 00:00:00');
+        smsc.createdByEndDate = Date.valueOf('2018-08-17 00:00:00');
+        smsc.followupStartDate = Date.valueOf('2018-07-17 00:00:00');
+        smsc.followupEndDate = Date.valueOf('2018-08-17 00:00:00');
+        smsc.persistenceStartDate = Date.valueOf('2018-07-17 00:00:00');
+        smsc.persistenceEndDate = Date.valueOf('2018-08-17 00:00:00');
+        smsc.insertFilterIntoQuery();
 
         Test.startTest();
         smsc.resetSearch();
@@ -242,9 +269,9 @@ public class Test_ShowMyCases {
 
     @isTest
     private static void checkQueryForNoFilters() {
-        Test.startTest();
         smsc.searchString = '';
         smsc.ownerFilter = '';
+        Test.startTest();
         smsc.insertFilterIntoQuery();
         Test.stopTest();
 

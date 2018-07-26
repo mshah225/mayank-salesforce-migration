@@ -26,7 +26,7 @@ public class Test_AdvisorPortalMainPage {
     }
 
     @isTest
-    private static void getCorrectViewAsOptions() {
+    private static void checkUserViewAsOptions() {
         UserFactory.makeMeAnAdvisorUser(numberOfPods, numberOfCases, numberOfStudents);
 
         Test.startTest();

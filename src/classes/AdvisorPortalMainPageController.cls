@@ -1,13 +1,6 @@
 public class AdvisorPortalMainPageController {
     public AdvisorPortalMainPageController() {}
 
-    /*
-     * The ID privded by the view as component
-     *
-     * <p>
-     * If the ID is null (Page load) use the current Users Id.
-     * </p>
-     */
     public Id ownerId {
         get {
             if (ownerId == null) {
@@ -20,28 +13,9 @@ public class AdvisorPortalMainPageController {
         set;
     }
 
-    /*
-     * List to be used for the cases and student queries containing owner ids
-     * that the current user has viewAs options
-     */
-    public List<String> ownerIdList {
-        get;
-        set;
-    }
+    public List<String> ownerIdList {get; set;}
+    public String ownerIdString {get; set;}
 
-    /*
-     * String containing owner ids that the current user has viewAs options
-     */
-    public String ownerIdString {
-        get;
-        set;
-    }
-
-    /*
-     * Method to convert the string containing the owner ids to a list
-     * to be used for the cases and student queries
-     * Returns null to refresh page
-     */
     public PageReference parseOwnerIdString() {
 
         if(ownerIdString != null && ownerIdString != '') {
@@ -50,14 +24,6 @@ public class AdvisorPortalMainPageController {
         return null;
     }
 
-    /*
-     * A list of selectOptions that the currently logged in user
-     * has the permission to view as.
-     *
-     * <p>
-     * Contains the Id of the owner of the cases mapped to a display name (user or pod)
-     * </p>
-     */
     public List<selectOption> viewAsOptions {
         get {
             if (viewAsOptions == null) {

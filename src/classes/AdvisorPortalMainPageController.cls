@@ -93,9 +93,6 @@ public class AdvisorPortalMainPageController {
         set;
     }
 
-    /*
-     * List of My Committeess
-     */
     public Map<Id, String> myCommittees {
         get {
             String committeeDisplayName; // The display name for the view as and transfer lists
@@ -125,9 +122,6 @@ public class AdvisorPortalMainPageController {
         set;
     }
 
-    /*
-     * List of the committees for which I am a manager/admin
-     */
     public Map<Id, String> mySubordinateCommittees {
         get {
             String committeeDisplayName;
@@ -152,9 +146,6 @@ public class AdvisorPortalMainPageController {
         set;
     }
 
-    /*
-     * List of my subordinate pods. To be converted into comittees and resources.
-     */
     public Map<Id, Success_Resource_Pod_Association__c> mySubordinatePods {
         get {
             if (mySubordinatePods == null) {
@@ -175,9 +166,6 @@ public class AdvisorPortalMainPageController {
         set;
     }
 
-    /*
-     * List of my subordinates
-     */
     public Map<Id, String> mySubordinates {
         get {
             String subordinateDisplayName;
@@ -212,9 +200,6 @@ public class AdvisorPortalMainPageController {
         set;
     }
 
-    /*
-     * List of my resources
-     */
     public List<Success_Resource__c> myResources {
         get {
             if (myResources == null) {
@@ -238,9 +223,6 @@ public class AdvisorPortalMainPageController {
         set;
     }
 
-    /*
-     * Returns the highest level of access granted by this users resources
-     */
     public String myRole {
         get {
             if (myRole == null) {
@@ -350,11 +332,11 @@ public class AdvisorPortalMainPageController {
                 myWatchlistQuery = 'SELECT CaseNumber, ContactId, CreatedDate, Owner.Name, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ' +
                     'WHERE (OwnerId = \'' + ownerId + '\' ';
-               if(ownerIdList != null){
-                for(Id ownerIdFromList : ownerIdList) {
-                    whereClause = whereClause + 'OR OwnerId = \'' + ownerIdFromList + '\' ';
+                if (ownerIdList != null) {
+                    for (Id ownerIdFromList : ownerIdList) {
+                        whereClause = whereClause + 'OR OwnerId = \'' + ownerIdFromList + '\' ';
+                    }
                 }
-               }
                 myWatchlistQuery = myWatchlistQuery + whereClause +
                     ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
                     'AND CC_Category__c IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
@@ -373,17 +355,19 @@ public class AdvisorPortalMainPageController {
         get {
             if (ownerId != null) {
                 String whereClause = '';
-                myStudentsQuery = 'SELECT Student_Name__c, EMPLID__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c, '
-                + 'Student__c, Student__r.FirstName, Student__r.LastName ' +
+                myStudentsQuery = 
+                    'SELECT Student_Name__c, EMPLID__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, ' +
+                        'Prev_Cont_Prediction_Level__c, Change_Date__c, ' +
+                        'Student__c, Student__r.FirstName, Student__r.LastName ' +
                     'FROM Success_Student__c ' +
                     'WHERE (Success_Pod__r.OwnerId = \'' + ownerId + '\' ';
-                if(ownerIdList != null){
-                for(Id ownerIdFromList : ownerIdList) {
-                    whereClause = whereClause + 'OR Success_Pod__r.OwnerId = \'' + ownerIdFromList + '\' ';
+                if (ownerIdList != null) {
+                    for(Id ownerIdFromList : ownerIdList) {
+                        whereClause = whereClause + 'OR Success_Pod__r.OwnerId = \'' + ownerIdFromList + '\' ';
+                    }
                 }
-                }
-                myStudentsQuery = myStudentsQuery + whereClause +
-                    ')AND (Is_Active__c = true) ORDER BY Student_Name__c ASC';
+                myStudentsQuery = myStudentsQuery + whereClause + 
+                ')AND (Is_Active__c = true) ORDER BY Student_Name__c ASC';
             }
 
             return myStudentsQuery;
@@ -399,13 +383,14 @@ public class AdvisorPortalMainPageController {
         get {
             if (ownerId != null) {
                 String whereClause = '';
-                mySummaryListQuery = 'SELECT count(Id) total, Subject, Followup_Date__c ' +
+                mySummaryListQuery = 
+                    'SELECT count(Id) total, Subject, Followup_Date__c ' +
                     'FROM Case ' +
-                     'WHERE (OwnerId = \'' + ownerId + '\' ';
-                if(ownerIdList != null){
-                for(Id ownerIdFromList : ownerIdList) {
-                    whereClause = whereClause + 'OR OwnerId = \'' + ownerIdFromList + '\' ';
-                }
+                    'WHERE (OwnerId = \'' + ownerId + '\' ';
+                if (ownerIdList != null) {
+                    for(Id ownerIdFromList : ownerIdList) {
+                        whereClause = whereClause + 'OR OwnerId = \'' + ownerIdFromList + '\' ';
+                    }
                 }
                 mySummaryListQuery = mySummaryListQuery + whereClause +
                     ')AND CC_Category__c NOT IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
@@ -414,7 +399,6 @@ public class AdvisorPortalMainPageController {
                     'GROUP BY Subject, Followup_Date__c ' +
                     'ORDER BY Followup_Date__c ASC NULLS LAST';
             }
-
             return mySummaryListQuery;
         }
 

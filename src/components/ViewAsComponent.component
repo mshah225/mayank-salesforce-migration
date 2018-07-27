@@ -65,7 +65,6 @@
                  closeAllConsoleTabs();
                  var allSelectedOptionsArray = selectOptionValues.join(",");
                  callSelectedOption(allSelectedOptionsArray);
-
              }
              else if(e.target.id == 'DeselectAll'){
                  j$('.viewAsList').val(' ');

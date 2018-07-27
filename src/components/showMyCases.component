@@ -40,7 +40,7 @@
                 }
             }
 
-        	function clearMassUpdate() {
+            function clearMassUpdate() {
                 var caseClosedReason = jQuery('[id*="caseReasonClosed"]');
                 var reccomendedActions = jQuery('[id*="caseRecommendedActionsOther"]');
                 var closedCaseStatus = jQuery('[id*="closedCaseStatus"]');
@@ -526,7 +526,7 @@
                                 </apex:commandLink>
                             </apex:outputPanel>
                             <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(emailInsertResults))}">
-                            	<apex:commandLink type="button" action="{!clearSaveResults}" styleClass="btn btn-default asu-primary"
+                                <apex:commandLink type="button" action="{!clearSaveResults}" styleClass="btn btn-default asu-primary"
                                           reRender="rerenderMe,{!rerenderList}" value="Ok" oncomplete="actionComplete()"
                                           onclick="toggleEmailModal(this)" status="ASUAjaxStatus">
                                     <apex:param name="updateCaseStates" value="true" assignTo="{!refreshList}"/>

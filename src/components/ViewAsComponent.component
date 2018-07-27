@@ -41,6 +41,7 @@
          });
          //set the search results to current user
          if(!j$('.viewAsList').val() ) {
+             j$('.viewAsList').val('{viewAsId}');
              resetSearchBoxToOwner();
          }
          j$('.viewAsList').on('change',function(e) {
@@ -59,6 +60,7 @@
          j$(document).on('click', '.btn-default', function(e){
              if(e.target.id == 'SelectAll'){
                  if(!(j$('.viewAsList option[value="All"]').length > 0)) {
+                     j$('.viewAsList').val(' ');
                      j$('.viewAsList').append('<option value = "All" selected="selected">All</option>');
                      j$('.viewAsList').trigger("chosen:updated");
                  }

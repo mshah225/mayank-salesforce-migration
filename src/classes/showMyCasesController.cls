@@ -37,7 +37,7 @@ public class showMyCasesController extends ListViewController {
                 caseStatusFilter = '--';
             }
             return caseStatusFilter;
-    	}
+        }
         set;
     }
 
@@ -62,7 +62,7 @@ public class showMyCasesController extends ListViewController {
                 enrollmentStatusFilter = '--';
             }
             return enrollmentStatusFilter;
-    	}
+        }
         set;
     }
 
@@ -85,7 +85,7 @@ public class showMyCasesController extends ListViewController {
                 residentFilter = '--';
             }
             return residentFilter;
-    	}
+        }
         set;
     }
 
@@ -108,7 +108,7 @@ public class showMyCasesController extends ListViewController {
                 citizenFilter = '--';
             }
             return citizenFilter;
-    	}
+        }
         set;
     }
 
@@ -131,7 +131,7 @@ public class showMyCasesController extends ListViewController {
                 outlookScoreFilter = '--';
             }
             return outlookScoreFilter;
-    	}
+        }
         set;
     }
 
@@ -159,7 +159,7 @@ public class showMyCasesController extends ListViewController {
                 outlookChangeFilter = '--';
             }
             return outlookChangeFilter;
-    	}
+        }
         set;
     }
 
@@ -212,7 +212,7 @@ public class showMyCasesController extends ListViewController {
         get {
             if (tempEmail == null) {
                 tempEmail = new Portal_Email__c(
-                	RecordTypeId = portalEmailRTID,
+                    RecordTypeId = portalEmailRTID,
                     Subject__c = 'A Message from your College and Department'
                 );
             }
@@ -258,8 +258,8 @@ public class showMyCasesController extends ListViewController {
     }
 
     /*
-	* Resets the caseCounts map
-	*/
+    * Resets the caseCounts map
+    */
     public void resetCaseCounts() {
         caseCounts = new Map<Id, relatedCases>();
         Set<Id> contactIds = new Set<Id>();
@@ -454,11 +454,11 @@ public class showMyCasesController extends ListViewController {
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
         Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
-    	List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
-    	for (Schema.PicklistEntry pickListVal : picklistEntries){
-	    	pickListValuesForCaseStatus.add(pickListVal.getLabel());
-    	}
-    	return pickListValuesForCaseStatus;
+        List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
+        for (Schema.PicklistEntry pickListVal : picklistEntries){
+            pickListValuesForCaseStatus.add(pickListVal.getLabel());
+        }
+        return pickListValuesForCaseStatus;
     }
 
     public void insertFilterIntoQuery() {
@@ -672,6 +672,7 @@ public class showMyCasesController extends ListViewController {
             if (caseMassUpdateStatusOptions == null) {
 
                 caseMassUpdateStatusOptions = new List<SelectOption>();
+                caseMassUpdateStatusOptions.add(new SelectOption('', '--', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
@@ -707,27 +708,33 @@ public class showMyCasesController extends ListViewController {
 
         List<Case> casesToClose = new List<case>();
 
-        for (case selectedCase : selectedCases) {
-            selectedCase.Status = caseStatus;
-            selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
-            selectedCase.Recommended_Actions__c = caseRecommendedActions;
-            selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
-            casesToClose.add(selectedCase);
-        }
-
-        if (casesToClose.size() > 0) {
-            try {
-                Database.update(casesToClose);
-            } catch(Exception ex) {
-                ApexPages.addMessage(
-			new ApexPages.message(
-                    	ApexPages.severity.ERROR,
-			'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
-		);
+        if (String.isEmpty(caseStatus) || String.isEmpty(caseRecommendedActions)) {
+            ApexPages.addMessage(
+                new ApexPages.message(ApexPages.severity.ERROR,'You must select an option for the Case Status AND Recommended Action(s)')
+            );
+        } else {
+            for (case selectedCase : selectedCases) {
+                selectedCase.Status = caseStatus;
+                selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
+                selectedCase.Recommended_Actions__c = caseRecommendedActions;
+                selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
+                casesToClose.add(selectedCase);
             }
+            
+            if (casesToClose.size() > 0) {
+                try {
+                    Database.update(casesToClose);
+                } catch(Exception ex) {
+                    ApexPages.addMessage(
+                        new ApexPages.message(
+                            ApexPages.severity.ERROR,
+                            'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
+                    );
+                }
+            }
+            
+            clearMassUpdateFields();
         }
-        
-        clearMassUpdateFields();
     }
 
     private void clearMassUpdateFields() {

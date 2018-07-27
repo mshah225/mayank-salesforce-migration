@@ -43,7 +43,6 @@
         	function clearMassUpdate() {
                 var caseClosedReason = jQuery('[id*="caseReasonClosed"]');
                 var reccomendedActions = jQuery('[id*="caseRecommendedActionsOther"]');
-                var reccomendedActionsSelect = jQuery('[id*="caseRecommendedActionsSelect"]');
                 caseClosedReason.each(function() {
                     jQuery(this).val('');
                 });

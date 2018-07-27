@@ -56,13 +56,16 @@
          });
          j$(document).on('click', '.btn-default', function(e){
              if(e.target.id == 'SelectAll'){
-                 j$('.viewAsList').val(selectOptionValues).trigger("chosen:updated");
+                 j$('.viewAsList').append('<option value = "All" selected="selected">All</option>');
+                 j$('.viewAsList').trigger("chosen:updated");
                  closeAllConsoleTabs();
+                 callSelectedOption(selectOptionValues);
              }
              else if(e.target.id == 'DeselectAll'){
                  j$('.viewAsList').val(' ');
                  j$('.viewAsList').trigger("chosen:updated");
                  closeAllConsoleTabs();
+                 resetSearchBoxToOwner();
              }
          });
      });

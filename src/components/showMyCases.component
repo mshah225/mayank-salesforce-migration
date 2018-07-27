@@ -183,15 +183,11 @@
                     </apex:pageBlock>
                     <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
                         <span class="input-group-addon">
-                            <apex:commandLink id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
-                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                            </apex:commandLink>
+                            <apex:commandLink value='Apply Filters' styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
                         </span>
 
                         <span class="input-group-addon">
-                            <apex:commandLink action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;">
-                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                            </apex:commandLink>
+                            <apex:commandLink value='Clear Filters' styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
                         </span>
                     </apex:outputPanel>
                 </apex:outputPanel>

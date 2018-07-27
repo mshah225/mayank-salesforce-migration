@@ -58,16 +58,14 @@
          });
          j$(document).on('click', '.btn-default', function(e){
              if(e.target.id == 'SelectAll'){
-                 if(j$('.viewAsList option[value="All"]').length > 0) {
-                     //do nothing
-                 }
-                 else {
+                 if(!(j$('.viewAsList option[value="All"]').length > 0)) {
                      j$('.viewAsList').append('<option value = "All" selected="selected">All</option>');
                      j$('.viewAsList').trigger("chosen:updated");
-                     closeAllConsoleTabs();
-                     var allSelectedOptionsArray = selectOptionValues.join(",");
-                     callSelectedOption(allSelectedOptionsArray);
                  }
+                 closeAllConsoleTabs();
+                 var allSelectedOptionsArray = selectOptionValues.join(",");
+                 callSelectedOption(allSelectedOptionsArray);
+
              }
              else if(e.target.id == 'DeselectAll'){
                  j$('.viewAsList').val(' ');

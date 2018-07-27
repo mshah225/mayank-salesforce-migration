@@ -43,10 +43,18 @@
         	function clearMassUpdate() {
                 var caseClosedReason = jQuery('[id*="caseReasonClosed"]');
                 var reccomendedActions = jQuery('[id*="caseRecommendedActionsOther"]');
+                var closedCaseStatus = jQuery('[id*="closedCaseStatus"]');
+                var reccomendedActionsSelect = jQuery('[id*="reccomendedActionsSelect"]');
                 caseClosedReason.each(function() {
                     jQuery(this).val('');
                 });
                 reccomendedActions.each(function() {
+                    jQuery(this).val('');
+                });
+                closedCaseStatus.each(function() {
+                    jQuery(this).val('');
+                });
+                reccomendedActionsSelect.each(function() {
                     jQuery(this).val('');
                 });
             }
@@ -134,6 +142,10 @@
                                         value="{!caseSubject}"
                                         html-placeholder="Filter Case"
                                             styleClass="searchBox"/>
+                            <apex:inputText label="Case Category: " id="caseCategory"
+                                        value="{!categoryFilter}"
+                                        html-placeholder="Category"
+                                            styleClass="searchBox"/>
                             <apex:selectList label="Enrollment Status" value="{!enrollmentStatusFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!enrollmentStatusOptions}"/>
                             </apex:selectList>
@@ -175,6 +187,7 @@
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </apex:commandLink>
                         </span>
+
                         <span class="input-group-addon">
                             <apex:commandLink action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;">
                                 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
@@ -545,7 +558,7 @@
                                     <p align="right" style="margin-top:10px;">
                                         Status: &nbsp;<br/>
                                     </p>
-                                    <apex:selectList style="margin: 10px;" value="{!caseStatus}" multiselect="false" size="1">
+                                    <apex:selectList id="closedCaseStatus" style="margin: 10px;" value="{!caseStatus}" multiselect="false" size="1">
                                     <apex:selectOptions value="{!caseMassUpdateStatusOptions}"/>
                                     </apex:selectList>
                                     <p align="right" style="margin-top:10px;">
@@ -556,7 +569,7 @@
                                     <p align="right" style="margin-top:10px;">
                                         Recommended Action(s): &nbsp;<br/>
                                     </p>
-                                    <apex:selectList style="margin: 10px;" value="{!caseRecommendedActions}" multiselect="true" size="4">
+                                    <apex:selectList id="reccomendedActionsSelect" style="margin: 10px;" value="{!caseRecommendedActions}" multiselect="true" size="4">
                                     <apex:selectOptions value="{!caseRecommendedActionOptions}"/>
                                     </apex:selectList>
                                     <p align="right" style="margin-top:10px;">

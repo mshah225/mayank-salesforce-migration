@@ -40,6 +40,18 @@
                 }
             }
 
+        	function clearMassUpdate() {
+                var caseClosedReason = jQuery('[id*="caseReasonClosed"]');
+                var reccomendedActions = jQuery('[id*="caseRecommendedActionsOther"]');
+                var reccomendedActionsSelect = jQuery('[id*="caseRecommendedActionsSelect"]');
+                caseClosedReason.each(function() {
+                    jQuery(this).val('');
+                });
+                reccomendedActions.each(function() {
+                    jQuery(this).val('');
+                });
+            }
+        
             function focusSearch() {
                 var input = document.getElementById('{!$Component.myStudentsInput}');
                 input.select();
@@ -79,9 +91,11 @@
                                     Filters
                     </apex:outputLink>
                 </apex:outputPanel>
+            </div>
+                <div style="text-align: -webkit-center;">
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
                     <apex:pageBlock >
-                        <apex:pageBlockSection columns="2">
+                        <apex:pageBlockSection columns="3">
                             <apex:inputText id="studentFilterInput"
                                             label="Student: "
                                             value="{!searchString}"
@@ -95,8 +109,6 @@
                                             html-placeholder="Owner Name"
                                             styleClass="searchBox"
                                             style="width:190px;"/>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection>
                             <apex:inputText id="studentGroupFilterInput"
                                             label="Student Group: "
                                             value="{!studentGroup}"
@@ -115,8 +127,6 @@
                                         value="{!majorFilter}"
                                         html-placeholder="Filter Major"
                                         styleClass="searchBox"/>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection columns="2">
                             <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
                                     style="margin-right:10px;">
                                 <apex:selectOptions value="{!caseStatusOptions}"/>
@@ -144,19 +154,18 @@
                             <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookChangeOptions}"/>
                             </apex:selectList>
+                            <apex:outputLabel />
                         </apex:pageBlockSection>
+                    </apex:pageBlock>
+                    <apex:pageBlock >
                         <apex:pageBlockSection columns="3">
-                            <apex:outputLabel >Persistence Change Date: </apex:outputLabel>
+                            <apex:outputLabel style="width: 70% !important;">Persistence Change Date: </apex:outputLabel>
                             <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
                             <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection columns="3">
-                            <apex:outputLabel >Created Date: </apex:outputLabel>
+                            <apex:outputLabel style="width: 70% !important;">Created Date: </apex:outputLabel>
                             <apex:input label="FROM: " value="{!createdByStartDate}" type="auto"/>
                             <apex:input label="TO: " value="{!createdByEndDate}" type="auto"/>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection columns="3">
-                            <apex:outputLabel >Followup Date: </apex:outputLabel>
+                            <apex:outputLabel style="width: 70% !important;">Followup Date: </apex:outputLabel>
                             <apex:input label="FROM: " value="{!followupStartDate}" type="auto"/>
                             <apex:input label="TO: " value="{!followupEndDate}" type="auto"/>
                         </apex:pageBlockSection>
@@ -522,7 +531,11 @@
                         <div class="modal-content" style="width: 95%;">
                             <apex:pageMessage severity="error">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <button onclick="clearMassUpdate(); clearCaseErrorBox('{!$Component.caseErrorBox}'); clearEmailContentBodyouterXButton();" type="button" class="close" data-dismiss="modal">&times;
+                                    <apex:actionFunction reRender="EmailModalContent" name="clearEmailContentBodyouterXButton" action="{!clearTempEmail}">
+                                        <apex:param assignTo="{!emailPreviewMode}" value="false" name="previewMode"/>
+                                    </apex:actionFunction>
+                                </button>
                                 <h4 class="modal-title">
                                     Mass Update
                                 </h4>
@@ -539,7 +552,7 @@
                                     <p align="right" style="margin-top:10px;">
                                         Reason Administratively Closed: &nbsp;<br/>
                                     </p>
-                                    <apex:inputText style="margin: 10px;" value="{!caseReasonAdministrativelyClosed}">
+                                    <apex:inputText id="caseReasonClosed" style="margin: 10px;" value="{!caseReasonAdministrativelyClosed}">
                                     </apex:inputText>
                                     <p align="right" style="margin-top:10px;">
                                         Recommended Action(s): &nbsp;<br/>
@@ -550,9 +563,12 @@
                                     <p align="right" style="margin-top:10px;">
                                         Recommended Action(s) Other: &nbsp;<br/>
                                     </p>
-                                    <apex:inputText style="margin: 10px;" value="{!caseRecommendedActionsOther}">
+                                    <apex:inputText id="caseRecommendedActionsOther" style="margin: 10px;" value="{!caseRecommendedActionsOther}">
                                     </apex:inputText>
                                     </apex:pageBlockSection>
+                                    <script>
+                                    
+                                    </script>
                                    </apex:pageBlock>
                                </div>
                             <div class="modal-footer">

@@ -726,8 +726,17 @@ public class showMyCasesController extends ListViewController {
 		);
             }
         }
+        
+        clearMassUpdateFields();
     }
 
+    private void clearMassUpdateFields() {
+        caseStatus = null;
+        caseReasonAdministrativelyClosed = null;
+        caseRecommendedActions = null;
+        caseRecommendedActionsOther = null;
+    }
+    
     private String createFilterStringForCategory() {
         String createdQuery = ' ';
         if (!String.isEmpty(categoryFilter)) {

@@ -45,8 +45,10 @@ public virtual class ListViewController {
 
         set {
             queryAttr = value;
-            query = queryAttr;
-            oldQuery = queryAttr;
+            if (queryAttr != oldQuery || query == null) {
+                query = queryAttr;
+                oldQuery = queryAttr;
+            }
         }
     }
 

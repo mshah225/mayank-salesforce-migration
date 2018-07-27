@@ -40,19 +40,16 @@
              }
          });
          //set the search results to current user
-         resetSearchBoxToOwner();
+         if(!j$('.viewAsList').val() ) {
+             resetSearchBoxToOwner();
+         }
          j$('.viewAsList').on('change',function(e) {
              var listOfSelectedOptions = [];
-             if(!j$('.viewAsList').val() ) {
-                 //do nothing
-             }
-             else{
-                 j$('.viewAsList').find('option:selected').each(function() {
-                     listOfSelectedOptions.push(j$(this).val());
-                 });
-                 var listOfSelectedOptionsArray = listOfSelectedOptions.join(",");
-                 callSelectedOption(listOfSelectedOptionsArray);
-             }
+             j$('.viewAsList').find('option:selected').each(function() {
+                 listOfSelectedOptions.push(j$(this).val());
+             });
+             var listOfSelectedOptionsArray = listOfSelectedOptions.join(",");
+             callSelectedOption(listOfSelectedOptionsArray);
          });
          j$('.viewAsList').blur(function() {
              closeAllConsoleTabs();

@@ -22,41 +22,6 @@
         <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
                 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
         <c:StudentProfileStyles />
-        <style>
-        .mobile {
-            display:none;
-            margin:auto !important;
-            margin-bottom:24px !important;
-            max-width:50% !important;
-       }
-        li.transcriptAddress {
-            list-style: none;
-       }
-        th.transcriptHeader {
-            width: 165px;
-       }
-        @media screen and (max-width:767px) {
-            .browser {
-                display:none;
-           }
-            .mobile {
-                display:block;
-           }
-       }
-        @media screen and (min-width:992px) and (max-width:1115px) {
-            .browser {
-                padding:8px !important;
-                font-size:15px !important;
-           }
-            .browser img {
-                height:36px !important;
-                width:36px !important;
-           }
-       }
-        .hide {
-            display: none;
-       }
-        </style>
     </head>
     <body>
         <div class="mainCont">

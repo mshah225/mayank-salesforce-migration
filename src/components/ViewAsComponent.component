@@ -65,7 +65,8 @@
                      j$('.viewAsList').append('<option value = "All" selected="selected">All</option>');
                      j$('.viewAsList').trigger("chosen:updated");
                      closeAllConsoleTabs();
-                     callSelectedOption(selectOptionValues);
+                     var allSelectedOptionsArray = selectOptionValues.join(",");
+                     callSelectedOption(allSelectedOptionsArray);
                  }
              }
              else if(e.target.id == 'DeselectAll'){

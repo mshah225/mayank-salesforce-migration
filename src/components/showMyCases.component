@@ -134,6 +134,10 @@
                                         value="{!caseSubject}"
                                         html-placeholder="Filter Case"
                                             styleClass="searchBox"/>
+                            <apex:inputText label="Case Category: " id="caseCategory"
+                                        value="{!categoryFilter}"
+                                        html-placeholder="Category"
+                                            styleClass="searchBox"/>
                             <apex:selectList label="Enrollment Status" value="{!enrollmentStatusFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!enrollmentStatusOptions}"/>
                             </apex:selectList>

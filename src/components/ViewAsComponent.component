@@ -10,6 +10,7 @@
 
     <apex:attribute name="hasViewAs" type="boolean" description="Does this user have the view as ability?"/>
     <apex:attribute name="mimicId" type="string" description="" />
+    <apex:attribute name="mimicIdList" type="String[]" description="" />
     <apex:attribute name="selectOptions" type="selectOption[]" description="" />
 
     <!-- Not in static resource as this method calls an action function to rerender -->
@@ -38,13 +39,27 @@
                  selectOptionValues.push(j$(this).val());
              }
          });
-
+         //set the search results to current user
+         resetSearchBoxToOwner();
+         j$('.viewAsList').on('change',function(e) {
+             var listOfSelectedOptions = [];
+             if(!j$('.viewAsList').val() ) {
+                 //do nothing
+             }
+             else{
+                 j$('.viewAsList').find('option:selected').each(function() {
+                     listOfSelectedOptions.push(j$(this).val());
+                 });
+                 var listOfSelectedOptionsArray = listOfSelectedOptions.join(",");
+                 callSelectedOption(listOfSelectedOptionsArray);
+             }
+         });
          j$('.viewAsList').blur(function() {
              closeAllConsoleTabs();
          });
          j$(document).on('click', '.btn-default', function(e){
              if(e.target.id == 'SelectAll'){
-                 j$('.viewAsList').val(selectOptionValues[0]).trigger("chosen:updated");
+                 j$('.viewAsList').val(selectOptionValues).trigger("chosen:updated");
                  closeAllConsoleTabs();
              }
              else if(e.target.id == 'DeselectAll'){
@@ -58,14 +73,22 @@
 
     <apex:form rendered="{!hasViewAs}" styleClass="rich-tabpanel viewAsForm buffer">
         <apex:actionFunction name="doIt" reRender="componentContent" status="ASUAjaxStatus"/>
-        <apex:selectList multiselect="true" size="1" onchange="closeAllConsoleTabs()" styleClass="viewAsList">
+        <apex:actionFunction name="callSelectedOption" reRender="componentContent" status="ASUAjaxStatus">
+       <apex:param name="optionsSelected" assignTo="{!viewAsIdListString}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="resetSearchBoxToOwner" reRender="componentContent" status="ASUAjaxStatus">
+       <apex:param name="currentUser" assignTo="{!viewAsIdListString}" value="{!viewAsId}" />
+        </apex:actionFunction>
+        <script>
+        </script>
+        <apex:selectList multiselect="true" size="1" styleClass="viewAsList">
             <apex:selectOptions value="{!selectOptions}"/>
         </apex:selectList>
     </apex:form>
-
     <apex:outputPanel id="componentContent">
         <apex:componentBody >
             <apex:variable var="mimicId" value="{!viewAsId}"/>
+            <apex:variable var="mimicIdList" value="{!viewAsIdListString}"/>
         </apex:componentBody>
     </apex:outputPanel>
 </apex:component>

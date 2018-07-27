@@ -377,35 +377,6 @@ public class AdvisorPortalMainPageController {
     }
 
     /*
-     * The query used to generate the summary list for the current resource
-     */
-    public string mySummaryListQuery {
-        get {
-            if (ownerId != null) {
-                String whereClause = '';
-                mySummaryListQuery =
-                    'SELECT count(Id) total, Subject, Followup_Date__c ' +
-                    'FROM Case ' +
-                    'WHERE (OwnerId = \'' + ownerId + '\' ';
-                if (ownerIdList != null) {
-                    for(Id ownerIdFromList : ownerIdList) {
-                        whereClause = whereClause + 'OR OwnerId = \'' + ownerIdFromList + '\' ';
-                    }
-                }
-                mySummaryListQuery = mySummaryListQuery + whereClause +
-                    ')AND CC_Category__c NOT IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
-                    'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
-                    'AND IsClosed = false ' +
-                    'GROUP BY Subject, Followup_Date__c ' +
-                    'ORDER BY Followup_Date__c ASC NULLS LAST LIMIT 10000';
-            }
-            return mySummaryListQuery;
-        }
-
-        set;
-    }
-
-    /*
      * Whether or not the currently logged in user has the permission to change
      * who they are viewing as.
      */

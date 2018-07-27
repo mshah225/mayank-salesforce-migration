@@ -44,6 +44,8 @@
              resetSearchBoxToOwner();
          }
          j$('.viewAsList').on('change',function(e) {
+             j$('.viewAsList option[value="All"]').remove();
+             j$('.viewAsList').trigger("chosen:updated");
              var listOfSelectedOptions = [];
              j$('.viewAsList').find('option:selected').each(function() {
                  listOfSelectedOptions.push(j$(this).val());
@@ -56,13 +58,22 @@
          });
          j$(document).on('click', '.btn-default', function(e){
              if(e.target.id == 'SelectAll'){
-                 j$('.viewAsList').val(selectOptionValues).trigger("chosen:updated");
-                 closeAllConsoleTabs();
+                 if(j$('.viewAsList option[value="All"]').length > 0) {
+                     //do nothing
+                 }
+                 else {
+                     j$('.viewAsList').append('<option value = "All" selected="selected">All</option>');
+                     j$('.viewAsList').trigger("chosen:updated");
+                     closeAllConsoleTabs();
+                     callSelectedOption(selectOptionValues);
+                 }
              }
              else if(e.target.id == 'DeselectAll'){
                  j$('.viewAsList').val(' ');
+                 j$('.viewAsList option[value="All"]').remove();
                  j$('.viewAsList').trigger("chosen:updated");
                  closeAllConsoleTabs();
+                 resetSearchBoxToOwner();
              }
          });
      });

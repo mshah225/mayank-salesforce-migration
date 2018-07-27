@@ -315,7 +315,7 @@ public class AdvisorPortalMainPageController {
                 }
                 myProactiveQuery = myProactiveQuery + whereClause +
                     ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC';
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 10000';
             }
             return myProactiveQuery;
         }
@@ -340,7 +340,7 @@ public class AdvisorPortalMainPageController {
                 myWatchlistQuery = myWatchlistQuery + whereClause +
                     ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
                     'AND CC_Category__c IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC';
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 10000';
             }
             return myWatchlistQuery;
         }
@@ -355,7 +355,7 @@ public class AdvisorPortalMainPageController {
         get {
             if (ownerId != null) {
                 String whereClause = '';
-                myStudentsQuery = 
+                myStudentsQuery =
                     'SELECT Student_Name__c, EMPLID__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, ' +
                         'Prev_Cont_Prediction_Level__c, Change_Date__c, ' +
                         'Student__c, Student__r.FirstName, Student__r.LastName ' +
@@ -366,8 +366,8 @@ public class AdvisorPortalMainPageController {
                         whereClause = whereClause + 'OR Success_Pod__r.OwnerId = \'' + ownerIdFromList + '\' ';
                     }
                 }
-                myStudentsQuery = myStudentsQuery + whereClause + 
-                ')AND (Is_Active__c = true) ORDER BY Student_Name__c ASC';
+                myStudentsQuery = myStudentsQuery + whereClause +
+                ')AND (Is_Active__c = true) ORDER BY Student_Name__c ASC LIMIT 10000';
             }
 
             return myStudentsQuery;
@@ -383,7 +383,7 @@ public class AdvisorPortalMainPageController {
         get {
             if (ownerId != null) {
                 String whereClause = '';
-                mySummaryListQuery = 
+                mySummaryListQuery =
                     'SELECT count(Id) total, Subject, Followup_Date__c ' +
                     'FROM Case ' +
                     'WHERE (OwnerId = \'' + ownerId + '\' ';
@@ -397,7 +397,7 @@ public class AdvisorPortalMainPageController {
                     'AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
                     'AND IsClosed = false ' +
                     'GROUP BY Subject, Followup_Date__c ' +
-                    'ORDER BY Followup_Date__c ASC NULLS LAST';
+                    'ORDER BY Followup_Date__c ASC NULLS LAST LIMIT 10000';
             }
             return mySummaryListQuery;
         }

@@ -557,14 +557,14 @@
                                     <apex:selectList id="closedCaseStatus" style="margin: 10px;" value="{!caseStatus}" multiselect="false" size="1">
                                     <apex:selectOptions value="{!caseMassUpdateStatusOptions}"/>
                                     </apex:selectList>
-                                    <p align="right" style="margin-top:10px;">
-                                        Reason Administratively Closed: &nbsp;<br/>
-                                    </p>
-                                    <apex:inputText id="caseReasonClosed" style="margin: 10px;" value="{!caseReasonAdministrativelyClosed}">
-                                    </apex:inputText>
-                                    <p align="right" style="margin-top:10px;">
-                                        Recommended Action(s): &nbsp;<br/>
-                                    </p>
+                                    <p title="If Closed: Administratively Resolved (No Outreach), enter the reason." align="right" style="margin-top:10px;">
+                                            Reason Administratively Closed: &nbsp;<br/>
+                                        </p>
+                                        <apex:inputText id="caseReasonClosed" title="If Closed: Administratively Resolved (No Outreach), enter the reason." style="margin: 10px;" value="{!caseReasonAdministrativelyClosed}">
+                                        </apex:inputText>
+                                        <p align="right" style="margin-top:10px;">
+                                            Recommended Action(s): &nbsp;<br/>
+                                        </p>
                                     <apex:selectList id="reccomendedActionsSelect" style="margin: 10px;" value="{!caseRecommendedActions}" multiselect="true" size="4">
                                     <apex:selectOptions value="{!caseRecommendedActionOptions}"/>
                                     </apex:selectList>

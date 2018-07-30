@@ -34,7 +34,7 @@ public class showMyCasesController extends ListViewController {
     public String caseStudentReturnTerm {get; set;}
     public String caseStudentRisk {get; set;}
     public String caseStudentRiskOther {get; set;}
-    public String caseReasonNotReturning {get; set;}
+    public List<String> caseReasonNotReturning {get; set;}
     public String caseReasonNotReturningOther {get; set;}
     
     public String categoryFilter {get; set;}
@@ -798,7 +798,7 @@ public class showMyCasesController extends ListViewController {
                 selectedCase.What_term_is_the_student_planning_to_ret__c = caseStudentReturnTerm;
                 selectedCase.Student_Presented_Risk_for__c = caseStudentRisk;
                 selectedCase.Student_Presented_Risk_for_Other__c = caseStudentRiskOther.left(50);
-                selectedCase.Reasons_Not_Returning__c = caseReasonNotReturning;
+                selectedCase.Reasons_Not_Returning__c = createStringFromReasonNotReturningList();
                 selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
                 
                 casesToClose.add(selectedCase);
@@ -820,6 +820,14 @@ public class showMyCasesController extends ListViewController {
         }
     }
 
+    private String createStringFromReasonNotReturningList() {
+        String formattedReasonNotReturning = '';
+        for (String reason : caseReasonNotReturning) {
+            formattedReasonNotReturning += reason + ';';
+        }
+        return formattedReasonNotReturning;
+    }
+    
     private void clearMassUpdateFields() {
         caseStatus = null;
         caseReasonAdministrativelyClosed = null;

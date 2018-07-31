@@ -14,7 +14,6 @@ public class showMyCasesController extends ListViewController {
     public String caseSubject {get; set;}
     public String studentGroup {get; set;}
     public String campusFilter {get; set;}
-    public String collegeFilter {get; set;}
     public String majorFilter {get; set;}
     public Date createdByStartDate {get; set;}
     public Date createdByEndDate {get; set;}
@@ -23,12 +22,18 @@ public class showMyCasesController extends ListViewController {
     public Date persistenceStartDate {get; set;}
     public Date persistenceEndDate {get; set;}
     public String searchString {get; set;}
-    public String ownerFilter {get; set;}
-    public String degreeFilter {get; set;}
     public String caseReasonAdministrativelyClosed {get; set;}
     public String caseStatus {get; set;}
     public String caseRecommendedActions {get; set;}
     public String caseRecommendedActionsOther {get; set;}
+    
+    public String caseStudentIntention {get; set;}
+    public String caseStudentReturnTerm {get; set;}
+    public String caseStudentRisk {get; set;}
+    public String caseStudentRiskOther {get; set;}
+    public List<String> caseReasonNotReturning {get; set;}
+    public String caseReasonNotReturningOther {get; set;}
+    
     public String categoryFilter {get; set;}
 
     public String caseStatusFilter {
@@ -37,7 +42,7 @@ public class showMyCasesController extends ListViewController {
                 caseStatusFilter = '--';
             }
             return caseStatusFilter;
-    	}
+        }
         set;
     }
 
@@ -46,81 +51,12 @@ public class showMyCasesController extends ListViewController {
             if (caseStatusOptions == null) {
                 caseStatusOptions = new List<SelectOption>();
                 List<String> allCaseStatusOptions = getPicklistValues();
+                caseStatusOptions.add(new SelectOption('--', '--'));
                 for (String statusOption : allCaseStatusOptions) {
                     caseStatusOptions.add(new SelectOption(statusOption, statusOption));
                 }
-                caseStatusOptions.add(new SelectOption('--', '--'));
             }
             return caseStatusOptions;
-        }
-        set;
-    }
-
-    public String enrollmentStatusFilter {
-        get {
-            if (enrollmentStatusFilter == null) {
-                enrollmentStatusFilter = '--';
-            }
-            return enrollmentStatusFilter;
-    	}
-        set;
-    }
-
-    public List<SelectOption> enrollmentStatusOptions {
-        get {
-            if (enrollmentStatusOptions == null) {
-                enrollmentStatusOptions = new List<SelectOption>();
-                enrollmentStatusOptions.add(new SelectOption('--', '--'));
-                enrollmentStatusOptions.add(new SelectOption('true', 'Enrolled'));
-                enrollmentStatusOptions.add(new SelectOption('false', 'Not Enrolled'));
-            }
-            return enrollmentStatusOptions;
-        }
-        set;
-    }
-
-    public String residentFilter {
-        get {
-            if (residentFilter == null) {
-                residentFilter = '--';
-            }
-            return residentFilter;
-    	}
-        set;
-    }
-
-    public List<SelectOption> residentOptions {
-        get {
-            if (residentOptions == null) {
-                residentOptions = new List<SelectOption>();
-                residentOptions.add(new SelectOption('--', '--'));
-                residentOptions.add(new SelectOption('true', 'Resident'));
-                residentOptions.add(new SelectOption('false', 'Non-Resident'));
-            }
-            return residentOptions;
-        }
-        set;
-    }
-
-    public String citizenFilter {
-        get {
-            if (citizenFilter == null) {
-                citizenFilter = '--';
-            }
-            return citizenFilter;
-    	}
-        set;
-    }
-
-    public List<SelectOption> citizenOptions {
-        get {
-            if (citizenOptions == null) {
-                citizenOptions = new List<SelectOption>();
-                citizenOptions.add(new SelectOption('--', '--'));
-                citizenOptions.add(new SelectOption('true', 'US Citizen'));
-                citizenOptions.add(new SelectOption('false', 'International'));
-            }
-            return citizenOptions;
         }
         set;
     }
@@ -131,7 +67,7 @@ public class showMyCasesController extends ListViewController {
                 outlookScoreFilter = '--';
             }
             return outlookScoreFilter;
-    	}
+        }
         set;
     }
 
@@ -159,7 +95,7 @@ public class showMyCasesController extends ListViewController {
                 outlookChangeFilter = '--';
             }
             return outlookChangeFilter;
-    	}
+        }
         set;
     }
 
@@ -192,7 +128,7 @@ public class showMyCasesController extends ListViewController {
             }
 
             return selectedCases;
-            }
+        }
 
         set {
             selectedCases = value;
@@ -212,7 +148,7 @@ public class showMyCasesController extends ListViewController {
         get {
             if (tempEmail == null) {
                 tempEmail = new Portal_Email__c(
-                	RecordTypeId = portalEmailRTID,
+                    RecordTypeId = portalEmailRTID,
                     Subject__c = 'A Message from your College and Department'
                 );
             }
@@ -258,8 +194,8 @@ public class showMyCasesController extends ListViewController {
     }
 
     /*
-	* Resets the caseCounts map
-	*/
+    * Resets the caseCounts map
+    */
     public void resetCaseCounts() {
         caseCounts = new Map<Id, relatedCases>();
         Set<Id> contactIds = new Set<Id>();
@@ -413,7 +349,6 @@ public class showMyCasesController extends ListViewController {
     public void resetSearch(){
         searchString = NULL;
         caseSubject = NULL;
-        ownerFilter = NULL;
         campusFilter = NULL;
         followupStartDate = NULL;
         followupEndDate = NULL;
@@ -422,14 +357,11 @@ public class showMyCasesController extends ListViewController {
         persistenceStartDate = NULL;
         persistenceEndDate = NULL;
         caseSubject = NULL;
-        collegeFilter = NULL;
         studentGroup = NULL;
-        degreeFilter = NULL;
+        majorFilter = NULL;
+        categoryFilter = NULL;
 
         caseStatusFilter = '--';
-        citizenFilter = '--';
-        residentFilter = '--';
-        enrollmentStatusFilter = '--';
         outlookChangeFilter = '--';
         outlookScoreFilter = '--';
 
@@ -454,11 +386,11 @@ public class showMyCasesController extends ListViewController {
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
         Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
-    	List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
-    	for (Schema.PicklistEntry pickListVal : picklistEntries){
-	    	pickListValuesForCaseStatus.add(pickListVal.getLabel());
-    	}
-    	return pickListValuesForCaseStatus;
+        List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
+        for (Schema.PicklistEntry pickListVal : picklistEntries){
+            pickListValuesForCaseStatus.add(pickListVal.getLabel());
+        }
+        return pickListValuesForCaseStatus;
     }
 
     public void insertFilterIntoQuery() {
@@ -482,11 +414,7 @@ public class showMyCasesController extends ListViewController {
         filter += createFilterStringForSubject();
         filter += createFilterStringForCreatedDate();
         filter += createFilterStringForStudentIdSearch();
-        filter += createFilterStringForEnrollmentStatus();
-        filter += createFilterStringForResidency();
-        filter += createFilterStringForCitizenship();
         filter += createFilterStringForFollowupDate();
-        filter += createFilterStringForOwner();
         filter += createFilterStringForOutlookChange();
         filter += createFilterStringForOutlookScore();
         filter += createFilterStringForOutlookDate();
@@ -545,18 +473,6 @@ public class showMyCasesController extends ListViewController {
         return createdQuery;
     }
 
-    private String createFilterStringForOwner() {
-        String createdQuery = ' ';
-        if (!String.isEmpty(ownerFilter)) {
-            String searchCon = ownerFilter.trim();
-            if (!String.isEmpty(searchCon)) {
-                createdQuery = ' (Owner.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
-            }
-        }
-
-        return createdQuery;
-    }
-
     private String createFilterStringForStudentIdSearch() {
         String createdQuery = ' ';
         if(!String.isEmpty(searchString)) {
@@ -573,41 +489,11 @@ public class showMyCasesController extends ListViewController {
         return createdQuery;
     }
 
-    private String createFilterStringForEnrollmentStatus() {
-        if (enrollmentStatusFilter != '--') {
-            return ' Contact.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';
-        }
-        return ' ';
-    }
-
-    private String createFilterStringForResidency() {
-        if (residentFilter != '--') {
-            return ' Contact.Arizona_Resident__c = ' + residentFilter + ' AND ';
-        }
-        return ' ';
-    }
-
-    private String createFilterStringForCitizenship() {
-        if (citizenFilter != '--') {
-            return ' Contact.US_Citizen__c = ' + citizenFilter + ' AND ';
-           }
-        return ' ';
-    }
-
     private String createFilterStringForCollegeDegreeAndCampus() {
-        if (!String.isEmpty(collegeFilter) || !String.isEmpty(degreeFilter) ||
-                !String.isEmpty(campusFilter) || !String.isEmpty(majorFilter)) {
+        if (!String.isEmpty(campusFilter) || !String.isEmpty(majorFilter)) {
             String collegeDegreeAndCampusFilter = ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
                    'WHERE Status__c = \'Active in Program\' ';
 
-            if (!String.isEmpty(collegeFilter)) {
-                collegeDegreeAndCampusFilter += ' AND Program_Description__c LIKE \'%' +
-                collegeFilter + '%\' ';
-            }
-            if (!String.isEmpty(degreeFilter)) {
-                collegeDegreeAndCampusFilter += ' AND Degree__c LIKE \'%' +
-                degreeFilter + '%\' ';
-            }
             if (!String.isEmpty(campusFilter)) {
                 collegeDegreeAndCampusFilter += ' AND Campus__r.Name LIKE \'%' +
                 campusFilter + '%\' ';
@@ -672,6 +558,7 @@ public class showMyCasesController extends ListViewController {
             if (caseMassUpdateStatusOptions == null) {
 
                 caseMassUpdateStatusOptions = new List<SelectOption>();
+                caseMassUpdateStatusOptions.add(new SelectOption('', '--', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
@@ -702,30 +589,136 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
+    
+    public List<SelectOption> studentIntentionOptions {
+        get {
+            if (studentIntentionOptions == null) {
+                studentIntentionOptions = new List<SelectOption>();
+                Schema.DescribeFieldResult caseStudentIntentionDescribe = Case.Student_Intention__c.getDescribe();
+                List<Schema.PicklistEntry> caseStudentIntentionList = caseStudentIntentionDescribe.getPicklistValues();
+                studentIntentionOptions.add(new SelectOption('', '--'));
+                for(Schema.PicklistEntry caseStudentIntentionEntry : caseStudentIntentionList) {
+                    studentIntentionOptions.add(new SelectOption(caseStudentIntentionEntry.getValue(), caseStudentIntentionEntry.getLabel(), false));
+                }
+            }
+            return studentIntentionOptions;
+        }
 
+        set;
+    }
+    
+    public List<SelectOption> caseStudentReturnTermOptions {
+        get {
+            if (caseStudentReturnTermOptions == null) {
+                caseStudentReturnTermOptions = new List<SelectOption>();
+                Schema.DescribeFieldResult caseStudentReturnTermDescribe = Case.What_term_is_the_student_planning_to_ret__c.getDescribe();
+                List<Schema.PicklistEntry> caseStudentReturnTermList = caseStudentReturnTermDescribe.getPicklistValues();
+                caseStudentReturnTermOptions.add(new SelectOption('', '--', false));
+                for(Schema.PicklistEntry caseStudentReturnTermEntry : caseStudentReturnTermList) {
+                    caseStudentReturnTermOptions.add(new SelectOption(caseStudentReturnTermEntry.getValue(), caseStudentReturnTermEntry.getLabel(), false));
+                }
+            }
+            return caseStudentReturnTermOptions;
+        }
+
+        set;
+    }
+    
+    public List<SelectOption> caseStudentRiskOptions {
+        get {
+            if (caseStudentRiskOptions == null) {
+                caseStudentRiskOptions = new List<SelectOption>();
+                Schema.DescribeFieldResult caseStudentRiskDescribe = Case.Student_Presented_Risk_for__c.getDescribe();
+                List<Schema.PicklistEntry> caseStudentRiskList = caseStudentRiskDescribe.getPicklistValues();
+                caseStudentRiskOptions.add(new SelectOption('', '--', false));
+                for(Schema.PicklistEntry caseStudentRiskEntry : caseStudentRiskList) {
+                    caseStudentRiskOptions.add(new SelectOption(caseStudentRiskEntry.getValue(), caseStudentRiskEntry.getLabel(), false));
+                }
+            }
+            return caseStudentRiskOptions;
+        }
+
+        set;
+    }
+    
+    public List<SelectOption> caseReasonNotReturningOptions {
+        get {
+            if (caseReasonNotReturningOptions == null) {
+                caseReasonNotReturningOptions = new List<SelectOption>();
+                Schema.DescribeFieldResult caseReasonNotReturningDescribe = Case.Reasons_Not_Returning__c.getDescribe();
+                List<Schema.PicklistEntry> caseReasonNotReturningList = caseReasonNotReturningDescribe.getPicklistValues();
+                for(Schema.PicklistEntry caseReasonNotReturningEntry : caseReasonNotReturningList) {
+                    caseReasonNotReturningOptions.add(new SelectOption(caseReasonNotReturningEntry.getValue(), caseReasonNotReturningEntry.getLabel(), false));
+                }
+            }
+            return caseReasonNotReturningOptions;
+        }
+
+        set;
+    }
+    
     public void massClose() {
 
         List<Case> casesToClose = new List<case>();
 
-        for (case selectedCase : selectedCases) {
-            selectedCase.Status = caseStatus;
-            selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
-            selectedCase.Recommended_Actions__c = caseRecommendedActions;
-            selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
-            casesToClose.add(selectedCase);
-        }
-
-        if (casesToClose.size() > 0) {
-            try {
-                Database.update(casesToClose);
-            } catch(Exception ex) {
-                ApexPages.addMessage(
-                    new ApexPages.message(ApexPages.severity.ERROR, 
-                    'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex));
+        if (String.isEmpty(caseStatus) || String.isEmpty(caseRecommendedActions)) {
+            ApexPages.addMessage(
+                new ApexPages.message(ApexPages.severity.ERROR,'You must select an option for the Case Status AND Recommended Action(s)')
+            );
+        } else {
+            for (case selectedCase : selectedCases) {
+                selectedCase.Status = caseStatus;
+                selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
+                selectedCase.Recommended_Actions__c = caseRecommendedActions;
+                selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
+                
+                selectedCase.Student_Intention__c = caseStudentIntention;
+                selectedCase.What_term_is_the_student_planning_to_ret__c = caseStudentReturnTerm;
+                selectedCase.Student_Presented_Risk_for__c = caseStudentRisk;
+                selectedCase.Student_Presented_Risk_for_Other__c = caseStudentRiskOther.left(50);
+                selectedCase.Reasons_Not_Returning__c = createStringFromReasonNotReturningList();
+                selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
+                
+                casesToClose.add(selectedCase);
             }
+            
+            if (casesToClose.size() > 0) {
+                try {
+                    Database.update(casesToClose);
+                } catch(Exception ex) {
+                    ApexPages.addMessage(
+                        new ApexPages.message(
+                            ApexPages.severity.ERROR,
+                            'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
+                    );
+                }
+            }
+            
+            clearMassUpdateFields();
         }
     }
 
+    private String createStringFromReasonNotReturningList() {
+        String formattedReasonNotReturning = '';
+        for (String reason : caseReasonNotReturning) {
+            formattedReasonNotReturning += reason + ';';
+        }
+        return formattedReasonNotReturning;
+    }
+    
+    private void clearMassUpdateFields() {
+        caseStatus = null;
+        caseReasonAdministrativelyClosed = null;
+        caseRecommendedActions = null;
+        caseRecommendedActionsOther = null;
+        caseStudentIntention = null;
+        caseStudentReturnTerm = null;
+        caseStudentRisk = null;
+        caseStudentRiskOther = null;
+        caseReasonNotReturning = null;
+        caseReasonNotReturningOther = null;
+    }
+    
     private String createFilterStringForCategory() {
         String createdQuery = ' ';
         if (!String.isEmpty(categoryFilter)) {

@@ -45,6 +45,13 @@
                 var reccomendedActions = jQuery('[id*="caseRecommendedActionsOther"]');
                 var closedCaseStatus = jQuery('[id*="closedCaseStatus"]');
                 var reccomendedActionsSelect = jQuery('[id*="reccomendedActionsSelect"]');
+                var caseStudentIntention = jQuery('[id*="studentIntention"]');
+                var caseStudentReturnTerm = jQuery('[id*="studentReturnTerm"]');
+                var caseStudentRisk = jQuery('[id*="studentRisk"]');
+                var caseStudentRiskOther = jQuery('[id*="studentRiskOther"]');
+                var caseReasonNotReturning = jQuery('[id*="reasonNotReturning"]');
+                var caseReasonNotReturningOther = jQuery('[id*="reasonNotReturningOther"]');
+                
                 caseClosedReason.each(function() {
                     jQuery(this).val('');
                 });
@@ -55,6 +62,24 @@
                     jQuery(this).val('');
                 });
                 reccomendedActionsSelect.each(function() {
+                    jQuery(this).val('');
+                });
+                caseStudentIntention.each(function() {
+                    jQuery(this).val('');
+                });
+                caseStudentReturnTerm.each(function() {
+                    jQuery(this).val('');
+                });
+                caseStudentRisk.each(function() {
+                    jQuery(this).val('');
+                });
+                caseStudentRiskOther.each(function() {
+                    jQuery(this).val('');
+                });
+                caseReasonNotReturning.each(function() {
+                    jQuery(this).val('');
+                });
+                caseReasonNotReturningOther.each(function() {
                     jQuery(this).val('');
                 });
             }
@@ -87,7 +112,7 @@
                     <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
                                      onclick="toggleEmailModal(this, adjustTextHeight)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                     <apex:outputLink id="MassUpdate" styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
-                                     onclick="toggleUpdateModal(this);" rendered="{!showMassUpdate}">Mass Update</apex:outputLink>
+                                     onclick="toggleUpdateModal(this);" rendered="{!showMassUpdate}">Mass Close</apex:outputLink>
                     <apex:commandLink styleClass="btn btn-default asu-primary" style="margin-top: 5px;"
                                       rendered="{! showRefresh}" reRender="rerenderMe" status="ASUAjaxStatus">
                         <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
@@ -158,8 +183,6 @@
                     </apex:pageBlock>
                     <apex:commandLink style="float:right; margin-top: 25px;" value='Clear Filters' styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
                     <apex:commandLink style="float:right; margin-right: 5px; margin-top: 25px;" value='Apply Filters' styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
-                    
-                    
                 </apex:outputPanel>
             </div>
             <div style="height: 1px; width = 100%">
@@ -515,39 +538,70 @@
                                     </apex:actionFunction>
                                 </button>
                                 <h4 class="modal-title">
-                                    Mass Update
+                                    Mass Close
                                 </h4>
                             </div>
                             <div class="modal-body">
                                 <apex:pageBlock id="massUpdateBlock">
-                                <apex:pageBlockSection >
-                                    <p align="right" style="margin-top:10px;">
-                                        Status: &nbsp;<br/>
-                                    </p>
-                                    <apex:selectList id="closedCaseStatus" style="margin: 10px;" value="{!caseStatus}" multiselect="false" size="1">
-                                    <apex:selectOptions value="{!caseMassUpdateStatusOptions}"/>
-                                    </apex:selectList>
-                                    <p align="right" style="margin-top:10px;">
-                                        Reason Administratively Closed: &nbsp;<br/>
-                                    </p>
-                                    <apex:inputText id="caseReasonClosed" style="margin: 10px;" value="{!caseReasonAdministrativelyClosed}">
-                                    </apex:inputText>
-                                    <p align="right" style="margin-top:10px;">
-                                        Recommended Action(s): &nbsp;<br/>
-                                    </p>
-                                    <apex:selectList id="reccomendedActionsSelect" style="margin: 10px;" value="{!caseRecommendedActions}" multiselect="true" size="4">
-                                    <apex:selectOptions value="{!caseRecommendedActionOptions}"/>
-                                    </apex:selectList>
-                                    <p align="right" style="margin-top:10px;">
-                                        Recommended Action(s) Other: &nbsp;<br/>
-                                    </p>
-                                    <apex:inputText id="caseRecommendedActionsOther" style="margin: 10px;" value="{!caseRecommendedActionsOther}">
-                                    </apex:inputText>
+                                    <apex:pageBlockSection >
+                                        <p align="right" style="margin-top:10px;">
+                                            Status: &nbsp;<br/>
+                                        </p>
+                                        <apex:selectList id="closedCaseStatus" style="margin: 10px;" value="{!caseStatus}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!caseMassUpdateStatusOptions}"/>
+                                        </apex:selectList>
+                                        <p title ="{!$ObjectType.Case.fields.Reason_Administratively_Closed__c.inlineHelpText}" align="right" style="margin-top:10px;">
+                                            Reason Administratively Closed: &nbsp;<br/>
+                                        </p>
+                                        <apex:inputText id="caseReasonClosed" title ="{!$ObjectType.Case.fields.Reason_Administratively_Closed__c.inlineHelpText}" style="margin: 10px;" value="{!caseReasonAdministrativelyClosed}">
+                                        </apex:inputText>
+                                        <p align="right" style="margin-top:10px;">
+                                            Recommended Action(s): &nbsp;<br/>
+                                        </p>
+                                        <apex:selectList id="reccomendedActionsSelect" style="margin: 10px;" value="{!caseRecommendedActions}" multiselect="true" size="4">
+                                            <apex:selectOptions value="{!caseRecommendedActionOptions}"/>
+                                        </apex:selectList>
+                                        <p align="right" style="margin-top:10px;">
+                                            Recommended Action(s) Other: &nbsp;<br/>
+                                        </p>
+                                        <apex:inputText id="caseRecommendedActionsOther" style="margin: 10px;" value="{!caseRecommendedActionsOther}">
+                                        </apex:inputText>
                                     </apex:pageBlockSection>
-                                    <script>
-                                    
-                                    </script>
-                                   </apex:pageBlock>
+                                    <apex:pageBlockSection title="Enrollment Details">
+                                        <p align="right" style="margin-top:10px;">
+                                            Student's Intention: &nbsp;<br/>
+                                        </p>
+                                        <apex:selectList id="studentIntention" style="margin: 10px;" value="{!caseStudentIntention}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!studentIntentionOptions}"/>
+                                        </apex:selectList>
+                                        <p align="right" style="margin-top:10px;">
+                                            What term would the student return?: &nbsp;<br/>
+                                        </p>
+                                        <apex:selectList id="studentReturnTerm" style="margin: 10px;" value="{!caseStudentReturnTerm}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!caseStudentReturnTermOptions}"/>
+                                        </apex:selectList>
+                                        <p align="right" style="margin-top:10px;">
+                                            Student Presented Risk for: &nbsp;<br/>
+                                        </p>
+                                        <apex:selectList id="studentRisk" style="margin: 10px;" value="{!caseStudentRisk}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!caseStudentRiskOptions}"/>
+                                        </apex:selectList>
+                                        <p align="right" style="margin-top:10px;">
+                                            Student Presented Risk for Other: &nbsp;<br/>
+                                        </p>
+                                        <apex:inputText id="studentRiskOther" style="margin: 10px;" value="{!caseStudentRiskOther}"/>
+                                        <p align="right" style="margin-top:10px;">
+                                            Reason(s) Not Returning &nbsp;<br/>
+                                        </p>
+                                        <apex:selectList id="reasonNotReturning" style="margin: 10px;" value="{!caseReasonNotReturning}" multiselect="true" size="4">
+                                            <apex:selectOptions value="{!caseReasonNotReturningOptions}"/>
+                                        </apex:selectList>
+                                        <p align="right" style="margin-top:10px;">
+                                            Reason(s) Not Returning Other: &nbsp;<br/>
+                                        </p>
+                                        <apex:inputText id="reasonNotReturningOther" style="margin: 10px;" value="{!caseReasonNotReturningOther}"/>
+                                    </apex:pageBlockSection>
+                               </apex:pageBlock>
                                </div>
                             <div class="modal-footer">
                                 <apex:commandButton onclick="return confirm('The selected cases will be closed. Are you sure you want to continue?');" action="{!massClose}" status="ASUAjaxStatus" styleClass="btn btn-default asu-primary" value="Close Selected Cases">

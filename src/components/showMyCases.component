@@ -127,94 +127,62 @@
                 <div style="text-align: -webkit-center;">
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
                     <apex:pageBlock >
-                        <apex:pageBlockSection columns="3">
+                        <apex:pageBlockSection columns="3" title="Student Filters">
                             <apex:inputText id="studentFilterInput"
-                                            label="Student: "
-                                            value="{!searchString}"
-                                            html-placeholder=" Name, EmplID or ASURite_ID"
-                                            onkeypress="return noenter(event);"
-                                            styleClass="searchBox"
-                                            style="width:190px"/>
-                            <apex:inputText id="ownerFilterInput"
-                                            label="Owner Name: "
-                                            value="{!ownerFilter}"
-                                            html-placeholder="Owner Name"
-                                            styleClass="searchBox"
-                                            style="width:190px;"/>
+                                        label="Student: "
+                                        value="{!searchString}"
+                                        html-placeholder=" Name, EmplID or ASURite_ID"
+                                        onkeypress="return noenter(event);"
+                                        styleClass="searchBox"
+                                        style="width:190px"/>
                             <apex:inputText id="studentGroupFilterInput"
-                                            label="Student Group: "
-                                            value="{!studentGroup}"
-                                            html-placeholder=" Filter Student Group"
-                                            onkeypress="return noenter(event);"
-                                            styleClass="searchBox"/>
-                            <apex:inputText id="degreeFilterInput" label="Degree: "
-                                        value="{!degreeFilter}"
-                                        html-placeholder="Filter Degree"
-                                        styleClass="searchBox"/>
-                            <apex:inputText id="collegeFilter" label="College: "
-                                        value="{!collegeFilter}"
-                                        html-placeholder="Filter College"
+                                        label="Student Group: "
+                                        value="{!studentGroup}"
+                                        html-placeholder="All or part of code"
+                                        onkeypress="return noenter(event);"
                                         styleClass="searchBox"/>
                             <apex:inputText id="majorFilter" label="Major: "
                                         value="{!majorFilter}"
-                                        html-placeholder="Filter Major"
+                                        html-placeholder="All or part of major name"
                                         styleClass="searchBox"/>
-                            <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
-                                    style="margin-right:10px;">
-                                <apex:selectOptions value="{!caseStatusOptions}"/>
-                            </apex:selectList>
-                            <apex:inputText label="Subject: " id="caseSubject"
-                                        value="{!caseSubject}"
-                                        html-placeholder="Filter Case"
-                                            styleClass="searchBox"/>
-                            <apex:inputText label="Case Category: " id="caseCategory"
-                                        value="{!categoryFilter}"
-                                        html-placeholder="Category"
-                                            styleClass="searchBox"/>
-                            <apex:selectList label="Enrollment Status" value="{!enrollmentStatusFilter}" size="1" required="false">
-                                <apex:selectOptions value="{!enrollmentStatusOptions}"/>
-                            </apex:selectList>
                             <apex:inputText label="Campus: " id="campusFilter"
-                                    value="{!campusFilter}"
-                                    html-placeholder="Campus Name"
+                                        value="{!campusFilter}"
+                                        html-placeholder="All or part of campus name"
                                         styleClass="searchBox"/>
-                            <apex:selectList label="Residency" value="{!residentFilter}" size="1" required="false">
-                                <apex:selectOptions value="{!residentOptions}"/>
-                            </apex:selectList>
-                            <apex:selectList label="US Citizen" value="{!citizenFilter}" size="1" required="false">
-                                <apex:selectOptions value="{!citizenOptions}"/>
-                            </apex:selectList>
                             <apex:selectList label="Outlook Score" value="{!outlookScoreFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookScoreOptions}"/>
                             </apex:selectList>
                             <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookChangeOptions}"/>
                             </apex:selectList>
-                            <apex:outputLabel />
-                        </apex:pageBlockSection>
-                    </apex:pageBlock>
-                    <apex:pageBlock >
-                        <apex:pageBlockSection columns="3">
                             <apex:outputLabel style="width: 70% !important;">Persistence Change Date: </apex:outputLabel>
-                            <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
-                            <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
-                            <apex:outputLabel style="width: 70% !important;">Created Date: </apex:outputLabel>
-                            <apex:input label="FROM: " value="{!createdByStartDate}" type="auto"/>
-                            <apex:input label="TO: " value="{!createdByEndDate}" type="auto"/>
-                            <apex:outputLabel style="width: 70% !important;">Followup Date: </apex:outputLabel>
-                            <apex:input label="FROM: " value="{!followupStartDate}" type="auto"/>
-                            <apex:input label="TO: " value="{!followupEndDate}" type="auto"/>
+                            <apex:input label="From: " value="{!persistenceStartDate}" type="auto"/>
+                            <apex:input label="To: " value="{!persistenceEndDate}" type="auto"/>
                         </apex:pageBlockSection>
+                        
+                        <apex:pageBlockSection columns="3" title="Case Filters">
+                            <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
+                                    style="margin-right:10px;">
+                                <apex:selectOptions value="{!caseStatusOptions}"/>
+                            </apex:selectList>
+                            <apex:inputText label="Case Subject: " id="caseSubject"
+                                        value="{!caseSubject}"
+                                        html-placeholder="All or part of subject"
+                                        styleClass="searchBox"/>
+                            <apex:inputText label="Case Category: " id="caseCategory"
+                                        value="{!categoryFilter}"
+                                        html-placeholder="All or part of category"
+                                        styleClass="searchBox"/>
+                            <apex:outputLabel style="width: 70% !important;">Created Date: </apex:outputLabel>
+                            <apex:input label="From: " value="{!createdByStartDate}" type="auto"/>
+                            <apex:input label="To: " value="{!createdByEndDate}" type="auto"/>
+                            <apex:outputLabel style="width: 70% !important;">Followup Date: </apex:outputLabel>
+                            <apex:input label="From: " value="{!followupStartDate}" type="auto"/>
+                            <apex:input label="To: " value="{!followupEndDate}" type="auto"/>
+                        </apex:pageBlockSection>                     
                     </apex:pageBlock>
-                    <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
-                        <span class="input-group-addon">
-                            <apex:commandLink value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
-                        </span>
-
-                        <span class="input-group-addon">
-                            <apex:commandLink value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
-                        </span>
-                    </apex:outputPanel>
+                    <apex:commandLink style="float:right; margin-top: 25px;" value='Clear Filters' styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
+                    <apex:commandLink style="float:right; margin-right: 5px; margin-top: 25px;" value='Apply Filters' styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
                 </apex:outputPanel>
             </div>
             <div style="height: 1px; width = 100%">

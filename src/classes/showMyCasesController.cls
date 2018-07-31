@@ -358,7 +358,6 @@ public class showMyCasesController extends ListViewController {
         persistenceEndDate = NULL;
         caseSubject = NULL;
         studentGroup = NULL;
-        degreeFilter = NULL;
         majorFilter = NULL;
         categoryFilter = NULL;
 

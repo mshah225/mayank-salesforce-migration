@@ -99,7 +99,6 @@ public class Test_AdvisorPortalMainPage {
         
         system.assert(apmpc.myProactiveQuery.contains((String) apmpc.OwnerId));
         system.assert(apmpc.myWatchlistQuery.contains((String) apmpc.OwnerId));
-        system.assert(apmpc.mySummaryListQuery.contains((String) apmpc.OwnerId));
         system.assert(apmpc.myStudentsQuery.contains((String) apmpc.OwnerId));
     }
 }

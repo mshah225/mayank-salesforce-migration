@@ -299,7 +299,6 @@ public class showMyStudentsController extends ListViewController {
         persistenceStartDate = NULL;
         persistenceEndDate = NULL;
         studentGroup = NULL;
-        degreeFilter = NULL;
         majorFilter = NULL;
 
         outlookChangeFilter = '--';

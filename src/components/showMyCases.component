@@ -155,8 +155,9 @@
                             <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookChangeOptions}"/>
                             </apex:selectList>
-                            <apex:outputLabel style="width: 70% !important;">Persistence Change Date: </apex:outputLabel>
-                            <apex:input label="From: " value="{!persistenceStartDate}" type="auto"/>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="2">
+                            <apex:input label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>
                             <apex:input label="To: " value="{!persistenceEndDate}" type="auto"/>
                         </apex:pageBlockSection>
                         
@@ -173,11 +174,11 @@
                                         value="{!categoryFilter}"
                                         html-placeholder="All or part of category"
                                         styleClass="searchBox"/>
-                            <apex:outputLabel style="width: 70% !important;">Created Date: </apex:outputLabel>
-                            <apex:input label="From: " value="{!createdByStartDate}" type="auto"/>
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="2">
+                            <apex:input label="Created Date From: " value="{!createdByStartDate}" type="auto"/>
                             <apex:input label="To: " value="{!createdByEndDate}" type="auto"/>
-                            <apex:outputLabel style="width: 70% !important;">Followup Date: </apex:outputLabel>
-                            <apex:input label="From: " value="{!followupStartDate}" type="auto"/>
+                            <apex:input label="Follwup Date From: " value="{!followupStartDate}" type="auto"/>
                             <apex:input label="To: " value="{!followupEndDate}" type="auto"/>
                         </apex:pageBlockSection>                     
                     </apex:pageBlock>

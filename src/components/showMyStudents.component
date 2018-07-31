@@ -93,9 +93,10 @@
                                     <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
                                         <apex:selectOptions value="{!outlookChangeOptions}"/>
                                     </apex:selectList>
-                                    <apex:outputLabel >Persistence Change Date: </apex:outputLabel>
-                                    <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
-                                    <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSection columns="2">
+                                    <apex:input label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>
+                                    <apex:input label="To: " value="{!persistenceEndDate}" type="auto"/>
                                 </apex:pageBlockSection>
                             </apex:pageBlock>
                             <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >

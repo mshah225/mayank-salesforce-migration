@@ -27,7 +27,7 @@
             <apex:param name="ownerIdList" assignTo="{!ownerIdString}" value="{!ownerId}"/>
             </apex:actionFunction>
                    <script>
-                   function resetOwnerIdListFunction()
+                   function resetOwnerIdListFunction() {
                        resetOwnerIdList();
                    }
                    setOwnerIdList();

@@ -84,10 +84,6 @@
                                             value="{!degreeFilter}"
                                             html-placeholder="Filter Degree"
                                             styleClass="searchBox"/>
-                                <apex:inputText id="collegeFilter" label="College: "
-                                            value="{!collegeFilter}"
-                                            html-placeholder="Filter College"
-                                            styleClass="searchBox"/>
                                 <apex:inputText id="majorFilter" label="Major: "
                                             value="{!majorFilter}"
                                             html-placeholder="Filter Major"

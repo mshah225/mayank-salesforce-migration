@@ -8,7 +8,6 @@ public class showMyStudentsController extends ListViewController {
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
     public String studentGroup {get; set;}
-    public String collegeFilter {get; set;}
     public string searchString {get; set;}
     public String campusFilter {get; set;}
     public String majorFilter {get; set;}
@@ -369,7 +368,6 @@ public class showMyStudentsController extends ListViewController {
         campusFilter = NULL;
         persistenceStartDate = NULL;
         persistenceEndDate = NULL;
-        collegeFilter = NULL;
         studentGroup = NULL;
         degreeFilter = NULL;
 
@@ -511,15 +509,11 @@ public class showMyStudentsController extends ListViewController {
     }
 
     private String createFilterStringForCollegeDegreeAndCampus() {
-        if (!String.isEmpty(collegeFilter) || !String.isEmpty(degreeFilter) ||
+        if (!String.isEmpty(degreeFilter) ||
                 !String.isEmpty(campusFilter) || !String.isEmpty(majorFilter)) {
             String collegeDegreeAndCampusFilter = ' (Student__c IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
                    'WHERE Status__c = \'Active in Program\' ';
 
-            if (!String.isEmpty(collegeFilter)) {
-                collegeDegreeAndCampusFilter += ' AND Program_Description__c LIKE \'%' +
-                collegeFilter + '%\' ';
-            }
             if (!String.isEmpty(degreeFilter)) {
                 collegeDegreeAndCampusFilter += ' AND Degree__c LIKE \'%' +
                 degreeFilter + '%\' ';

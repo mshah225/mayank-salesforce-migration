@@ -425,6 +425,8 @@ public class showMyCasesController extends ListViewController {
         collegeFilter = NULL;
         studentGroup = NULL;
         degreeFilter = NULL;
+        majorFilter = NULL;
+        categoryFilter = NULL;
 
         caseStatusFilter = '--';
         citizenFilter = '--';

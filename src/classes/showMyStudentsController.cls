@@ -372,6 +372,7 @@ public class showMyStudentsController extends ListViewController {
         collegeFilter = NULL;
         studentGroup = NULL;
         degreeFilter = NULL;
+        majorFilter = NULL;
 
         enrollmentStatusFilter = '--';
         residentFilter = '--';

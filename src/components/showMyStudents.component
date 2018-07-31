@@ -99,9 +99,10 @@
                                     <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
                                         <apex:selectOptions value="{!outlookChangeOptions}"/>
                                     </apex:selectList>
-                                    <apex:outputLabel >Persistence Change Date: </apex:outputLabel>
-                                    <apex:input styleClass="createdByStartDate" label="FROM: " value="{!persistenceStartDate}" type="auto"/>
-                                    <apex:input styleClass="createdByEndDate" label="TO: " value="{!persistenceEndDate}" type="auto"/>
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSection columns="2">
+                                    <apex:input label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>
+                                    <apex:input label="To: " value="{!persistenceEndDate}" type="auto"/>
                                 </apex:pageBlockSection>
                             </apex:pageBlock>
                             <apex:commandLink style="float:right; margin-top: 25px;" value='Clear Filters' styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>

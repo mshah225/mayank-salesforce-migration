@@ -385,11 +385,16 @@ public class showMyCasesController extends ListViewController {
 
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
-        Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
-        List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
-        for (Schema.PicklistEntry pickListVal : picklistEntries){
-            pickListValuesForCaseStatus.add(pickListVal.getLabel());
-        }
+        
+        picklistValuesForCaseStatus.add('Busy Signal');        
+		picklistValuesForCaseStatus.add('Email Sent');       
+        picklistValuesForCaseStatus.add('In Progress');        
+        picklistValuesForCaseStatus.add('Left Message with Third Party');
+        picklistValuesForCaseStatus.add('Left voicemail');
+        picklistValuesForCaseStatus.add('Outreach Required');
+        picklistValuesForCaseStatus.add('Unable to Leave Voicemail');
+        picklistValuesForCaseStatus.add('Wrong number');
+        
         return pickListValuesForCaseStatus;
     }
 

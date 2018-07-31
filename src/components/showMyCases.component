@@ -79,6 +79,12 @@
                 });
             });
         </script>
+        <style>
+            .createdByStartDate::-webkit-calendar-picker-indicator, 
+            .createdByEndDate::-webkit-calendar-picker-indicator {
+            	opacity: 1;
+            }
+        </style>
         <div class="headerFooter">
             <div class="toolbar" >
                 <apex:outputPanel layout="inline" styleClass="button-group">
@@ -131,8 +137,8 @@
                                 <apex:selectOptions value="{!outlookChangeOptions}"/>
                             </apex:selectList>
                             <apex:outputLabel style="width: 70% !important;">Persistence Change Date: </apex:outputLabel>
-                            <apex:input label="From: " value="{!persistenceStartDate}" type="auto"/>
-                            <apex:input label="To: " value="{!persistenceEndDate}" type="auto"/>
+                            <apex:input styleClass="createdByStartDate" label="From: " value="{!persistenceStartDate}" type="auto"/>
+                            <apex:input styleClass="createdByEndDate" label="To: " value="{!persistenceEndDate}" type="auto"/>
                         </apex:pageBlockSection>
                         
                         <apex:pageBlockSection columns="3" title="Case Filters">
@@ -149,17 +155,15 @@
                                         html-placeholder="All or part of category"
                                         styleClass="searchBox"/>
                             <apex:outputLabel style="width: 70% !important;">Created Date: </apex:outputLabel>
-                            <apex:input label="From: " value="{!createdByStartDate}" type="auto"/>
-                            <apex:input label="To: " value="{!createdByEndDate}" type="auto"/>
+                            <apex:input styleClass="createdByStartDate" label="From: " value="{!createdByStartDate}" type="auto"/>
+                            <apex:input styleClass="createdByEndDate" label="To: " value="{!createdByEndDate}" type="auto"/>
                             <apex:outputLabel style="width: 70% !important;">Followup Date: </apex:outputLabel>
-                            <apex:input label="From: " value="{!followupStartDate}" type="auto"/>
-                            <apex:input label="To: " value="{!followupEndDate}" type="auto"/>
+                            <apex:input styleClass="createdByStartDate" label="From: " value="{!followupStartDate}" type="auto"/>
+                            <apex:input styleClass="createdByEndDate" label="To: " value="{!followupEndDate}" type="auto"/>
                         </apex:pageBlockSection>                     
                     </apex:pageBlock>
                     <apex:commandLink style="float:right; margin-top: 25px;" value='Clear Filters' styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
                     <apex:commandLink style="float:right; margin-right: 5px; margin-top: 25px;" value='Apply Filters' styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
-                    
-                    
                 </apex:outputPanel>
             </div>
             <div style="height: 1px; width = 100%">

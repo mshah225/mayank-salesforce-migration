@@ -52,6 +52,12 @@
                     });
                 });
             </script>
+            <style>
+                .createdByStartDate::-webkit-calendar-picker-indicator, 
+                .createdByEndDate::-webkit-calendar-picker-indicator {
+                    opacity: 1;
+                }
+    		</style>
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
@@ -94,18 +100,12 @@
                                         <apex:selectOptions value="{!outlookChangeOptions}"/>
                                     </apex:selectList>
                                     <apex:outputLabel >Persistence Change Date: </apex:outputLabel>
-                                    <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
-                                    <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
+                                    <apex:input styleClass="createdByStartDate" label="FROM: " value="{!persistenceStartDate}" type="auto"/>
+                                    <apex:input styleClass="createdByEndDate" label="TO: " value="{!persistenceEndDate}" type="auto"/>
                                 </apex:pageBlockSection>
                             </apex:pageBlock>
-                            <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
-                                <span class="input-group-addon">
-                                    <apex:commandLink value='Apply Filters' styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
-                                </span>
-                                <span class="input-group-addon">
-                                    <apex:commandLink value='Clear Filters' action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;"/>
-                                </span>
-                            </apex:outputPanel>
+                            <apex:commandLink style="float:right; margin-top: 25px;" value='Clear Filters' styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
+                            <apex:commandLink style="float:right; margin-right: 5px; margin-top: 25px;" value='Apply Filters' styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
                         </apex:outputPanel>
                     </div>
                 </div>

@@ -19,6 +19,8 @@ public class AdvisorPortalMainPageController {
     public PageReference parseOwnerIdString() {
         if (ownerIdString != null && ownerIdString != '') {
             ownerIdList = ownerIdString.split(',');
+	} else {
+            ownerIdList = null;
         }
         return null;
     }

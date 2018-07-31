@@ -10,7 +10,7 @@
 
     <apex:attribute name="hasViewAs" type="boolean" description="Does this user have the view as ability?"/>
     <apex:attribute name="mimicId" type="string" description="" />
-    <apex:attribute name="mimicIdList" type="String[]" description="" />
+    <apex:attribute name="mimicIdList" type="string" description="" />
     <apex:attribute name="selectOptions" type="selectOption[]" description="" />
 
     <!-- Not in static resource as this method calls an action function to rerender -->
@@ -41,54 +41,45 @@
          });
          //set the search results to current user
          if(!j$('.viewAsList').val() ) {
-             j$('.viewAsList').val('{viewAsId}');
-             resetSearchBoxToOwner();
+             callSelectedOption('{!viewAsId}');
+             j$('.viewAsList').val('{!viewAsId}').trigger("chosen:updated");
          }
          j$('.viewAsList').on('change',function(e) {
-             j$('.viewAsList option[value="All"]').remove();
-             j$('.viewAsList').trigger("chosen:updated");
+             if(!j$('.viewAsList').val() ) {
+                 callSelectedOption('{!viewAsId}');
+                 j$('.viewAsList').val('{!viewAsId}').trigger("chosen:updated");
+             }
              var listOfSelectedOptions = [];
              j$('.viewAsList').find('option:selected').each(function() {
                  listOfSelectedOptions.push(j$(this).val());
              });
              var listOfSelectedOptionsArray = listOfSelectedOptions.join(",");
              callSelectedOption(listOfSelectedOptionsArray);
+             j$('.viewAsList option[value="All"]').remove();
+             j$('.viewAsList').trigger("chosen:updated");
          });
          j$('.viewAsList').blur(function() {
              closeAllConsoleTabs();
          });
-         j$(document).on('click', '.btn-default', function(e){
+
+     });
+    j$(document).click(function(e){
              if(e.target.id == 'SelectAll'){
+                 var allSelectedOptionsArray = selectOptionValues.join(",");
+                 callSelectedOption(allSelectedOptionsArray);
                  if(!(j$('.viewAsList option[value="All"]').length > 0)) {
                      j$('.viewAsList').val(' ');
                      j$('.viewAsList').append('<option value = "All" selected="selected">All</option>');
                      j$('.viewAsList').trigger("chosen:updated");
                  }
-                 closeAllConsoleTabs();
-                 var allSelectedOptionsArray = selectOptionValues.join(",");
-                 callSelectedOption(allSelectedOptionsArray);
-             }
-             else if(e.target.id == 'DeselectAll'){
-                 j$('.viewAsList').val(' ');
-                 j$('.viewAsList option[value="All"]').remove();
-                 j$('.viewAsList').trigger("chosen:updated");
-                 closeAllConsoleTabs();
-                 resetSearchBoxToOwner();
              }
          });
-     });
     </script>
-
     <apex:form rendered="{!hasViewAs}" styleClass="rich-tabpanel viewAsForm buffer">
         <apex:actionFunction name="doIt" reRender="componentContent" status="ASUAjaxStatus"/>
         <apex:actionFunction name="callSelectedOption" reRender="componentContent" status="ASUAjaxStatus">
        <apex:param name="optionsSelected" assignTo="{!viewAsIdListString}" value="" />
         </apex:actionFunction>
-        <apex:actionFunction name="resetSearchBoxToOwner" reRender="componentContent" status="ASUAjaxStatus">
-       <apex:param name="currentUser" assignTo="{!viewAsIdListString}" value="{!viewAsId}" />
-        </apex:actionFunction>
-        <script>
-        </script>
         <apex:selectList multiselect="true" size="1" styleClass="viewAsList">
             <apex:selectOptions value="{!selectOptions}"/>
         </apex:selectList>

@@ -104,6 +104,12 @@
                 });
             });
         </script>
+        <style>
+            .createdByStartDate::-webkit-calendar-picker-indicator, 
+            .createdByEndDate::-webkit-calendar-picker-indicator {
+            	opacity: 1;
+            }
+        </style>
         <div class="headerFooter">
             <div class="toolbar" >
                 <apex:outputPanel layout="inline" styleClass="button-group">

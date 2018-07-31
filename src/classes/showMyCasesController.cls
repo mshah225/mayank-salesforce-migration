@@ -29,6 +29,14 @@ public class showMyCasesController extends ListViewController {
     public String caseStatus {get; set;}
     public String caseRecommendedActions {get; set;}
     public String caseRecommendedActionsOther {get; set;}
+    
+    public String caseStudentIntention {get; set;}
+    public String caseStudentReturnTerm {get; set;}
+    public String caseStudentRisk {get; set;}
+    public String caseStudentRiskOther {get; set;}
+    public List<String> caseReasonNotReturning {get; set;}
+    public String caseReasonNotReturningOther {get; set;}
+    
     public String categoryFilter {get; set;}
 
     public String caseStatusFilter {
@@ -705,7 +713,74 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
+    
+    public List<SelectOption> studentIntentionOptions {
+        get {
+            if (studentIntentionOptions == null) {
+                studentIntentionOptions = new List<SelectOption>();
+                Schema.DescribeFieldResult caseStudentIntentionDescribe = Case.Student_Intention__c.getDescribe();
+                List<Schema.PicklistEntry> caseStudentIntentionList = caseStudentIntentionDescribe.getPicklistValues();
+                studentIntentionOptions.add(new SelectOption('', '--'));
+                for(Schema.PicklistEntry caseStudentIntentionEntry : caseStudentIntentionList) {
+                    studentIntentionOptions.add(new SelectOption(caseStudentIntentionEntry.getValue(), caseStudentIntentionEntry.getLabel(), false));
+                }
+            }
+            return studentIntentionOptions;
+        }
 
+        set;
+    }
+    
+    public List<SelectOption> caseStudentReturnTermOptions {
+        get {
+            if (caseStudentReturnTermOptions == null) {
+                caseStudentReturnTermOptions = new List<SelectOption>();
+                Schema.DescribeFieldResult caseStudentReturnTermDescribe = Case.What_term_is_the_student_planning_to_ret__c.getDescribe();
+                List<Schema.PicklistEntry> caseStudentReturnTermList = caseStudentReturnTermDescribe.getPicklistValues();
+                caseStudentReturnTermOptions.add(new SelectOption('', '--', false));
+                for(Schema.PicklistEntry caseStudentReturnTermEntry : caseStudentReturnTermList) {
+                    caseStudentReturnTermOptions.add(new SelectOption(caseStudentReturnTermEntry.getValue(), caseStudentReturnTermEntry.getLabel(), false));
+                }
+            }
+            return caseStudentReturnTermOptions;
+        }
+
+        set;
+    }
+    
+    public List<SelectOption> caseStudentRiskOptions {
+        get {
+            if (caseStudentRiskOptions == null) {
+                caseStudentRiskOptions = new List<SelectOption>();
+                Schema.DescribeFieldResult caseStudentRiskDescribe = Case.Student_Presented_Risk_for__c.getDescribe();
+                List<Schema.PicklistEntry> caseStudentRiskList = caseStudentRiskDescribe.getPicklistValues();
+                caseStudentRiskOptions.add(new SelectOption('', '--', false));
+                for(Schema.PicklistEntry caseStudentRiskEntry : caseStudentRiskList) {
+                    caseStudentRiskOptions.add(new SelectOption(caseStudentRiskEntry.getValue(), caseStudentRiskEntry.getLabel(), false));
+                }
+            }
+            return caseStudentRiskOptions;
+        }
+
+        set;
+    }
+    
+    public List<SelectOption> caseReasonNotReturningOptions {
+        get {
+            if (caseReasonNotReturningOptions == null) {
+                caseReasonNotReturningOptions = new List<SelectOption>();
+                Schema.DescribeFieldResult caseReasonNotReturningDescribe = Case.Reasons_Not_Returning__c.getDescribe();
+                List<Schema.PicklistEntry> caseReasonNotReturningList = caseReasonNotReturningDescribe.getPicklistValues();
+                for(Schema.PicklistEntry caseReasonNotReturningEntry : caseReasonNotReturningList) {
+                    caseReasonNotReturningOptions.add(new SelectOption(caseReasonNotReturningEntry.getValue(), caseReasonNotReturningEntry.getLabel(), false));
+                }
+            }
+            return caseReasonNotReturningOptions;
+        }
+
+        set;
+    }
+    
     public void massClose() {
 
         List<Case> casesToClose = new List<case>();
@@ -720,6 +795,14 @@ public class showMyCasesController extends ListViewController {
                 selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
                 selectedCase.Recommended_Actions__c = caseRecommendedActions;
                 selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
+                
+                selectedCase.Student_Intention__c = caseStudentIntention;
+                selectedCase.What_term_is_the_student_planning_to_ret__c = caseStudentReturnTerm;
+                selectedCase.Student_Presented_Risk_for__c = caseStudentRisk;
+                selectedCase.Student_Presented_Risk_for_Other__c = caseStudentRiskOther.left(50);
+                selectedCase.Reasons_Not_Returning__c = createStringFromReasonNotReturningList();
+                selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
+                
                 casesToClose.add(selectedCase);
             }
             
@@ -739,11 +822,25 @@ public class showMyCasesController extends ListViewController {
         }
     }
 
+    private String createStringFromReasonNotReturningList() {
+        String formattedReasonNotReturning = '';
+        for (String reason : caseReasonNotReturning) {
+            formattedReasonNotReturning += reason + ';';
+        }
+        return formattedReasonNotReturning;
+    }
+    
     private void clearMassUpdateFields() {
         caseStatus = null;
         caseReasonAdministrativelyClosed = null;
         caseRecommendedActions = null;
         caseRecommendedActionsOther = null;
+        caseStudentIntention = null;
+        caseStudentReturnTerm = null;
+        caseStudentRisk = null;
+        caseStudentRiskOther = null;
+        caseReasonNotReturning = null;
+        caseReasonNotReturningOther = null;
     }
     
     private String createFilterStringForCategory() {

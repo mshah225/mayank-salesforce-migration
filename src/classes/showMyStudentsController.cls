@@ -16,76 +16,6 @@ public class showMyStudentsController extends ListViewController {
     public Map<Id,caseWrapper> caseCountMap  {get; set;}
     public List<studentWrapper> studentList {get; set;}
 
-    public String enrollmentStatusFilter {
-        get {
-            if (enrollmentStatusFilter == null) {
-                enrollmentStatusFilter = '--';
-            }
-            return enrollmentStatusFilter;
-    	}
-        set;
-    }
-
-    public List<SelectOption> enrollmentStatusOptions {
-        get {
-            if (enrollmentStatusOptions == null) {
-                enrollmentStatusOptions = new List<SelectOption>();
-                enrollmentStatusOptions.add(new SelectOption('--', '--'));
-                enrollmentStatusOptions.add(new SelectOption('true', 'Enrolled'));
-                enrollmentStatusOptions.add(new SelectOption('false', 'Not Enrolled'));
-            }
-            return enrollmentStatusOptions;
-        }
-        set;
-    }
-    public String degreeFilter {get; set;}
-
-    public String residentFilter {
-        get {
-            if (residentFilter == null) {
-                residentFilter = '--';
-            }
-            return residentFilter;
-    	}
-        set;
-    }
-
-    public List<SelectOption> residentOptions {
-        get {
-            if (residentOptions == null) {
-                residentOptions = new List<SelectOption>();
-                residentOptions.add(new SelectOption('--', '--'));
-                residentOptions.add(new SelectOption('true', 'Resident'));
-                residentOptions.add(new SelectOption('false', 'Non-Resident'));
-            }
-            return residentOptions;
-        }
-        set;
-    }
-
-    public String citizenFilter {
-        get {
-            if (citizenFilter == null) {
-                citizenFilter = '--';
-            }
-            return citizenFilter;
-    	}
-        set;
-    }
-
-    public List<SelectOption> citizenOptions {
-        get {
-            if (citizenOptions == null) {
-                citizenOptions = new List<SelectOption>();
-                citizenOptions.add(new SelectOption('--', '--'));
-                citizenOptions.add(new SelectOption('true', 'US Citizen'));
-                citizenOptions.add(new SelectOption('false', 'International'));
-            }
-            return citizenOptions;
-        }
-        set;
-    }
-
     public String outlookScoreFilter {
         get {
             if (outlookScoreFilter == null) {
@@ -369,11 +299,7 @@ public class showMyStudentsController extends ListViewController {
         persistenceStartDate = NULL;
         persistenceEndDate = NULL;
         studentGroup = NULL;
-        degreeFilter = NULL;
 
-        enrollmentStatusFilter = '--';
-        residentFilter = '--';
-        citizenFilter = '--';
         outlookChangeFilter = '--';
         outlookScoreFilter = '--';
 
@@ -409,9 +335,6 @@ public class showMyStudentsController extends ListViewController {
     private String createFilterForStudent() {
         String filter = createFilterStringForStudentIdSearch();
         filter += createFilterStringForStudentGroup();
-        filter += createFilterStringForEnrollmentStatus();
-        filter += createFilterStringForResidency();
-        filter += createFilterStringForCitizenship();
         filter += createFilterStringForOutlookChange();
         filter += createFilterStringForOutlookScore();
         filter += createFilterStringForOutlookDate();
@@ -440,28 +363,6 @@ public class showMyStudentsController extends ListViewController {
         }
         return createdQuery;
     }
-
-    private String createFilterStringForEnrollmentStatus() {
-        if (enrollmentStatusFilter != '--') {
-            return ' Student__r.Currently_Enrolled__c = ' + enrollmentStatusFilter + ' AND ';
-        }
-        return ' ';
-    }
-
-    private String createFilterStringForResidency() {
-        if (residentFilter != '--') {
-            return ' Student__r.Arizona_Resident__c = ' + residentFilter + ' AND ';
-        }
-        return ' ';
-    }
-
-    private String createFilterStringForCitizenship() {
-        if (citizenFilter != '--') {
-            return ' Student__r.US_Citizen__c = ' + citizenFilter + ' AND ';
-        }
-        return ' ';
-    }
-
 
     private String createFilterStringForOutlookChange() {
         if (outlookChangeFilter != '--') {
@@ -509,15 +410,10 @@ public class showMyStudentsController extends ListViewController {
     }
 
     private String createFilterStringForCollegeDegreeAndCampus() {
-        if (!String.isEmpty(degreeFilter) ||
-                !String.isEmpty(campusFilter) || !String.isEmpty(majorFilter)) {
+        if (!String.isEmpty(campusFilter) || !String.isEmpty(majorFilter)) {
             String collegeDegreeAndCampusFilter = ' (Student__c IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
                    'WHERE Status__c = \'Active in Program\' ';
 
-            if (!String.isEmpty(degreeFilter)) {
-                collegeDegreeAndCampusFilter += ' AND Degree__c LIKE \'%' +
-                degreeFilter + '%\' ';
-            }
             if (!String.isEmpty(campusFilter)) {
                 collegeDegreeAndCampusFilter += ' AND Campus__r.Name LIKE \'%' +
                 campusFilter + '%\' ';

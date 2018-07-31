@@ -20,6 +20,9 @@ public class AdvisorPortalMainPageController {
         if (ownerIdString != null && ownerIdString != '') {
             ownerIdList = ownerIdString.split(',');
         }
+        else {
+            ownerIdList = null;
+        }
         return null;
     }
 

@@ -606,7 +606,7 @@
                                         <apex:selectList id="studentIntention" style="margin: 10px;" value="{!caseStudentIntention}" multiselect="false" size="1">
                                             <apex:selectOptions value="{!studentIntentionOptions}"/>
                                         </apex:selectList>
-                                        <p title="If Closed: Administratively Resolved (No Outreach), enter the reason." align="right" style="margin-top:10px;">
+                                        <p align="right" style="margin-top:10px;">
                                             What term would the student return?: &nbsp;<br/>
                                         </p>
                                         <apex:selectList id="studentReturnTerm" style="margin: 10px;" value="{!caseStudentReturnTerm}" multiselect="false" size="1">

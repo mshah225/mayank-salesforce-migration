@@ -163,8 +163,8 @@
                             </apex:selectList>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="2">
-                            <apex:input label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>
-                            <apex:input label="To: " value="{!persistenceEndDate}" type="auto"/>
+                            <apex:input styleClass="createdByStartDate" label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>
+                            <apex:input styleClass="createdByEndDate" label="To: " value="{!persistenceEndDate}" type="auto"/>
                         </apex:pageBlockSection>
                         
                         <apex:pageBlockSection columns="3" title="Case Filters">
@@ -182,10 +182,10 @@
                                         styleClass="searchBox"/>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="2">
-                            <apex:input label="Created Date From: " value="{!createdByStartDate}" type="auto"/>
-                            <apex:input label="To: " value="{!createdByEndDate}" type="auto"/>
-                            <apex:input label="Follwup Date From: " value="{!followupStartDate}" type="auto"/>
-                            <apex:input label="To: " value="{!followupEndDate}" type="auto"/>
+                            <apex:input styleClass="createdByStartDate" label="Created Date From: " value="{!createdByStartDate}" type="auto"/>
+                            <apex:input styleClass="createdByEndDate" label="To: " value="{!createdByEndDate}" type="auto"/>
+                            <apex:input styleClass="createdByStartDate" label="Follwup Date From: " value="{!followupStartDate}" type="auto"/>
+                            <apex:input styleClass="createdByEndDate" label="To: " value="{!followupEndDate}" type="auto"/>
                         </apex:pageBlockSection>                     
                     </apex:pageBlock>
                     <apex:commandLink style="float:right; margin-top: 25px;" value='Clear Filters' styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>

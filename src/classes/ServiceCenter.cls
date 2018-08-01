@@ -44,16 +44,20 @@ public with sharing class ServiceCenter
             ].ASURite_Id__C;
 
             viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
         }
     }
 
     public void popUserContact(){
-        if (viewAsService.hasViewAsRights) {
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
             stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
             viewingAs = true;
+        } else {
+            userContact = ContactService.getLoggedInContact();
         }
-        userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;

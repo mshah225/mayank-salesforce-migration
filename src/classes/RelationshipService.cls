@@ -49,7 +49,10 @@ public class RelationshipService {
                         Reciprocal_Relationship__c = relation.Id,
                         Relationship_Start_Date__c = relation.Relationship_Start_Date__c,
                         Relationship_End_Date__c = relation.Relationship_End_Date__c,
-                        Title__c = relation.Title__c
+                        Title__c = relation.Title__c,
+                        Primary_Parent__c = relation.Primary_Parent__c,
+                        Source__c = relation.Source__c,
+                        Source_Date__c = relation.Source_Date__c
                     );
                     
                     if (recipRTIDMap.get(relation.RecordTypeId) == null) {
@@ -212,18 +215,20 @@ public class RelationshipService {
     *
     * @param List<SObject> List of newly inserted relationships
     */
-    public static boolean verifyTwoPrimary(List<Relationship__c> rel) {
+    public static boolean verifyTwoPrimary(List<Relationship__c> relList) {
         List<Id> contactList = new List<Id>();
-        for (Relationship__c relLst : rel) {
-            if (relLst.Primary_Parent__c) {
-                contactList.add(relLst.Contact__c);
+        for (Relationship__c rel : relList) {
+            if (rel.Primary_Parent__c && relatedContactIsDependentOfPrimaryParent(rel)) {
+                contactList.add(rel.Related_Contact__c);
+            } else if (rel.Primary_Parent__c) {
+                contactList.add(rel.Contact__c);
             }
         }
-        AggregateResult[] groupedResults = [SELECT Contact__c 
-                                            FROM Relationship__c 
-                                            WHERE Primary_Parent__c = true AND Contact__c IN :contactList 
-                                            GROUP BY Contact__c HAVING COUNT(Id) >= 2];
-        if (!groupedResults.isEmpty()) {
+        List<Contact> contactsWithTwoPrimaryParents = [SELECT Id 
+                                                       FROM Contact
+                                                       WHERE Rel_Parent_1__c <> null AND Rel_Parent_2__c <> null
+                                                       AND Id IN :contactList];
+        if (!contactsWithTwoPrimaryParents.isEmpty()) {
             return false;
         } else {
             return true;
@@ -263,7 +268,9 @@ public class RelationshipService {
         List<Id> contactList = new List<Id>();
         for (Relationship__c rel : relList) {
             if (rel.Primary_Parent__c && rel.Contact__c != null && rel.Related_Contact__c != null) {
-                contactList.add(rel.Contact__c);
+                if (relatedContactIsDependentOfPrimaryParent(rel)) {
+                    contactList.add(rel.Related_Contact__c);
+                }
             }
         }
         if (!contactList.isEmpty()) {
@@ -274,13 +281,22 @@ public class RelationshipService {
             List<Contact> contactsToUpdate = new List<Contact>();
             for (Contact con : contactsToEdit) {
                 for (Relationship__c rel : relList) {
-                    if (con.Id == rel.Contact__c) {
+                    if (contactMatchesPrimaryContact(rel, con)) {
                         if (con.Rel_Parent_1__c == null) {
                             con.Rel_Parent_1__c = rel.Related_Contact__c;
-                            con.Rel_Relationship_Id_1__c = rel;
+                            con.Rel_Relationship_Id_1__c = rel.Id;
                         } else {
                             con.Rel_Parent_2__c = rel.Related_Contact__c;
-                            con.Rel_Relationship_Id_2__c = rel;
+                            con.Rel_Relationship_Id_2__c = rel.Id;
+                        }
+                        contactsToUpdate.add(con);
+                    } else if (contactMatchesRelatedContact(rel, con)) {
+                        if (con.Rel_Parent_1__c == null) {
+                            con.Rel_Parent_1__c = rel.Contact__c;
+                            con.Rel_Relationship_Id_1__c = rel.Id;
+                        } else {
+                            con.Rel_Parent_2__c = rel.Contact__c;
+                            con.Rel_Relationship_Id_2__c = rel.Id;
                         }
                         contactsToUpdate.add(con);
                     }
@@ -333,6 +349,26 @@ public class RelationshipService {
                 }
             }
             update contactsToUpdate;
+        }
+    }
+    
+    private static boolean relatedContactIsDependentOfPrimaryParent(Relationship__c rel) {
+        return rel.Relationship_Type__c == 'Parent/Guardian';
+    }
+    
+    private static boolean contactMatchesPrimaryContact(Relationship__c rel, Contact con) {
+        if (!relatedContactIsDependentOfPrimaryParent(rel)) {
+            return rel.Contact__c == con.Id;
+        } else {
+            return false;
+        }
+    }
+    
+    private static boolean contactMatchesRelatedContact(Relationship__c rel, Contact con) {
+        if (relatedContactIsDependentOfPrimaryParent(rel)) {
+            return rel.Related_Contact__c == con.Id;
+        } else {
+            return false;
         }
     }
 }

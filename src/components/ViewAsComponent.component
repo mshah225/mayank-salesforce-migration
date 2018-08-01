@@ -74,6 +74,7 @@
                  }
              }
              else if(e.target.id == 'DeselectAll') {
+                 j$('.viewAsList option[value="All"]').remove();
                  j$('.viewAsList').val('{!viewAsId}');
                  j$('.viewAsList').trigger("chosen:updated");
              }

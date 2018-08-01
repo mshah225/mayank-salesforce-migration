@@ -46,6 +46,8 @@ public class viewCaseController{
             ].ASURite_Id__C;
 
             viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
         }
     }
 
@@ -74,14 +76,16 @@ public class viewCaseController{
     }
 
     public void popUserContact(){
-        if (viewAsService.hasViewAsRights) {
+        if (viewAsService != null &&  viewAsService.hasViewAsRights) {
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
             stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
             viewingAs = true;
+        } else {
+            userContact = ContactService.getLoggedInContact();
         }
         
-        userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
-
+        
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
@@ -95,7 +99,7 @@ public class viewCaseController{
     }
     
      public Case getCaseDetails(){
-        if (viewAsService.hasViewAsRights) {
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
             return viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
         } else {
             Case returnCase = [
@@ -132,11 +136,20 @@ public class viewCaseController{
         emailAddresses.add(userContact.Personal_Email__c);
         emailAddresses.add(userContact.EPO_Email__c);
 
-        return viewAsService.getCaseEmails(
-            EMAILVISIBILITYDATE,
-            ApexPages.currentPage().getParameters().get('id'),
-            emailAddresses
-        );
+        if (viewAsService != null) {
+            return viewAsService.getCaseEmails(
+                EMAILVISIBILITYDATE,
+                ApexPages.currentPage().getParameters().get('id'),
+                emailAddresses
+            );
+        } else {
+            return CaseService.getCaseEmailMessages(
+                EMAILVISIBILITYDATE,
+                ApexPages.currentPage().getParameters().get('id'),
+                emailAddresses
+            );
+        }
+        
     }
 
     public List<bomgar__Event__c> getChatMessages() {

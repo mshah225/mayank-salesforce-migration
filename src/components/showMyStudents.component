@@ -39,19 +39,13 @@
                     input.value = '';
                     input.value = tmpStr;
                 }
-
-                jQuery(document).ready(function(){
-                    var search = document.getElementById('{!$Component.myStudentsInput}');
-                    jQuery(search).keypress(function( event ) {
-                        if ( event.which == 13 ) {
-                            event.preventDefault();
-                            var ele = document.getElementById('{!$Component.searchStudentsBtn}');
-                            ele.click();
-                            focusSearch();
-                        }
-                    });
-                });
             </script>
+            <style>
+                .createdByStartDate::-webkit-calendar-picker-indicator, 
+                .createdByEndDate::-webkit-calendar-picker-indicator {
+                    opacity: 1;
+                }
+    		</style>
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
@@ -62,77 +56,47 @@
                                          Filters
                          </apex:outputLink>
                     </apex:outputPanel>
-                    <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
-                        <apex:pageBlock >
-                            <apex:pageBlockSection >
-                                <apex:inputText id="studentFilterInput"
+                    <div style="text-align: -webkit-center;">
+                        <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
+                            <apex:pageBlock >
+                                <apex:pageBlockSection columns="3" title="Student Filters">
+                                    <apex:inputText id="studentFilterInput"
                                                     value="{!searchString}"
                                                     label="Student: "
                                                     html-placeholder=" Name, EmplID or ASURiteID"
                                                     onkeypress="return noenter(event);"
                                                     styleClass="searchBox"
                                                     style="width:190px"/>
-                            </apex:pageBlockSection>
-                            <apex:pageBlockSection>
-                                <apex:inputText id="studentGroupFilterInput"
-                                                label="Student Group: "
-                                                value="{!studentGroup}"
-                                                html-placeholder=" Filter Student Group"
-                                                onkeypress="return noenter(event);"
-                                                styleClass="searchBox"/>
-                                <apex:inputText id="degreeFilterInput" label="Degree: "
-                                            value="{!degreeFilter}"
-                                            html-placeholder="Filter Degree"
-                                            styleClass="searchBox"/>
-                                <apex:inputText id="collegeFilter" label="College: "
-                                            value="{!collegeFilter}"
-                                            html-placeholder="Filter College"
-                                            styleClass="searchBox"/>
-                                <apex:inputText id="majorFilter" label="Major: "
-                                            value="{!majorFilter}"
-                                            html-placeholder="Filter Major"
-                                            styleClass="searchBox"/>
-                            </apex:pageBlockSection>
-                            <apex:pageBlockSection columns="2">
-                                <apex:selectList label="Enrollment Status" value="{!enrollmentStatusFilter}" size="1" required="false">
-                                    <apex:selectOptions value="{!enrollmentStatusOptions}"/>
-                                </apex:selectList>
-                                <apex:inputText label="Campus: " id="campusFilter"
-                                        value="{!campusFilter}"
-                                        html-placeholder="Campus Name"
-                                            styleClass="searchBox"/>
-                                <apex:selectList label="Residency" value="{!residentFilter}" size="1" required="false">
-                                    <apex:selectOptions value="{!residentOptions}"/>
-                                </apex:selectList>
-                                <apex:selectList label="US Citizen" value="{!citizenFilter}" size="1" required="false">
-                                    <apex:selectOptions value="{!citizenOptions}"/>
-                                </apex:selectList>
-                                <apex:selectList label="Outlook Score" value="{!outlookScoreFilter}" size="1" required="false">
-                                <apex:selectOptions value="{!outlookScoreOptions}"/>
-                                </apex:selectList>
-                                <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
-                                    <apex:selectOptions value="{!outlookChangeOptions}"/>
-                                </apex:selectList>
-                            </apex:pageBlockSection>
-                            <apex:pageBlockSection columns="3">
-                                <apex:outputLabel >Persistence Change Date: </apex:outputLabel>
-                                <apex:input label="FROM: " value="{!persistenceStartDate}" type="auto"/>
-                                <apex:input label="TO: " value="{!persistenceEndDate}" type="auto"/>
-                            </apex:pageBlockSection>
-                        </apex:pageBlock>
-                        <apex:outputPanel styleClass="input-group" style="max-width:150px; margin-top: 5px;" >
-                            <span class="input-group-addon">
-                                <apex:commandLink id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
-                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                                </apex:commandLink>
-                            </span>
-                            <span class="input-group-addon">
-                                <apex:commandLink action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;">
-                                    <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                                </apex:commandLink>
-                            </span>
+                                    <apex:inputText id="studentGroupFilterInput"
+                                                    label="Student Group: "
+                                                    value="{!studentGroup}"
+                                                    html-placeholder="All or part of code"
+                                                    onkeypress="return noenter(event);"
+                                                    styleClass="searchBox"/>
+                                    <apex:inputText id="majorFilter" label="Major: "
+                                                    value="{!majorFilter}"
+                                                    html-placeholder="All or part of major name"
+                                                    styleClass="searchBox"/>
+                                    <apex:inputText label="Campus: " id="campusFilter"
+                                                    value="{!campusFilter}"
+                                                    html-placeholder="All or part of campus name"
+                                                    styleClass="searchBox"/>
+                                    <apex:selectList label="Outlook Score" value="{!outlookScoreFilter}" size="1" required="false">
+                                        <apex:selectOptions value="{!outlookScoreOptions}"/>
+                                    </apex:selectList>
+                                    <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
+                                        <apex:selectOptions value="{!outlookChangeOptions}"/>
+                                    </apex:selectList>
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSection columns="2">
+                                    <apex:input styleClass="createdByStartDate" label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>
+                                    <apex:input styleClass="createdByEndDate" label="To: " value="{!persistenceEndDate}" type="auto"/>
+                                </apex:pageBlockSection>
+                            </apex:pageBlock>
+                            <apex:commandLink style="float:right; margin-top: 25px;" value='Clear Filters' styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
+                            <apex:commandLink style="float:right; margin-right: 5px; margin-top: 25px;" value='Apply Filters' styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
                         </apex:outputPanel>
-                    </apex:outputPanel>
+                    </div>
                 </div>
                 <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
                     <apex:commandLink action="{!setCon.previous}" value="<< Prev" rendered="{!setCon.HasPrevious}"

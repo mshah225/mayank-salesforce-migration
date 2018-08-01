@@ -4,20 +4,20 @@ public with sharing class ViewAsController {
 
     /*
      * Cannot define getter of transient property
-     * 
+     *
      * <p>
      * Gets the pages current cookies
      * </p>
      */
     private Map<String, Cookie> getCookieMap() {
         cookieMap = ApexPages.currentPage().getCookies();
-        
+
         return cookieMap;
     }
 
     /*
      * Keeps track of the view as id(user selected in view as component).
-     * 
+     *
      * <p>
      * Setter creates a cookie to store user id. Cookie
      * expires after each session.
@@ -26,15 +26,23 @@ public with sharing class ViewAsController {
     public String viewAsId {
         get;
 
-        set {   
-             viewAsId = value;  
-             viewAsCookie = new Cookie('viewAsId', viewAsId, null, -1, false);  // setting max age to -1 creates a session cookie       
+        set {
+             viewAsId = value;
+             viewAsCookie = new Cookie('viewAsId', viewAsId, null, -1, false);  // setting max age to -1 creates a session cookie
              getCookieMap().put('viewAsId', viewAsCookie);
              ApexPages.currentPage().setCookies(cookieMap.values());
         }
-    }                                                                           
+    }
 
-    
+    /*
+     * Contains list owner ids selected by user in viewas component search box
+     */
+    public String viewAsIdListString {
+        get;
+        set;
+    }
+
+
     /*
      * Initialize component with current user's Id
      */

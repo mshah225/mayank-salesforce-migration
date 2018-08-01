@@ -30,9 +30,6 @@ public class AdvisorPortalMainPageController {
             if (viewAsOptions == null) {
                 viewAsOptions = new List<selectOption>();
 
-                // Insert myself
-                viewAsOptions.add(new selectOption(UserInfo.getUserId(), UserInfo.getName()));
-
 				// Insert My Comittees
                 if (myCommittees.size() > 0) {
                     viewAsOptions.add(new selectOption('', '', true));

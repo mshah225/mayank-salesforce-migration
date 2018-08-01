@@ -63,8 +63,8 @@
          });
 
      });
-    j$(document).click(function(e){
-             if(e.target.id == 'SelectAll'){
+    j$(document).click(function(e) {
+             if(e.target.id == 'SelectAll') {
                  var allSelectedOptionsArray = selectOptionValues.join(",");
                  callSelectedOption(allSelectedOptionsArray);
                  if(!(j$('.viewAsList option[value="All"]').length > 0)) {
@@ -72,6 +72,10 @@
                      j$('.viewAsList').append('<option value = "All" selected="selected">All</option>');
                      j$('.viewAsList').trigger("chosen:updated");
                  }
+             }
+             else if(e.target.id == 'DeselectAll') {
+                 j$('.viewAsList').val('{!viewAsId}');
+                 j$('.viewAsList').trigger("chosen:updated");
              }
          });
     </script>

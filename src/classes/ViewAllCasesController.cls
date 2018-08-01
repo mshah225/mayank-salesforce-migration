@@ -34,16 +34,20 @@ public with sharing class ViewAllCasesController
             ].ASURite_Id__C;
 
             viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
         }
     }
 
     public void popUserContact(){
-        if (viewAsService.hasViewAsRights){
+        if (viewAsService != null && viewAsService.hasViewAsRights){
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
             stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
             viewingAs = true;
+        } else {
+            userContact = ContactService.getLoggedInContact();
         }
-        userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
@@ -55,7 +59,11 @@ public with sharing class ViewAllCasesController
         List<Contact> contacts = new List<Contact> { userContact };
         Map<Id, List<Case>> openCaseMap;
 
-        openCaseMap = viewAsService.getOpenCases(contacts);
+        if (viewAsService != null) {
+            openCaseMap = viewAsService.getOpenCases(contacts);
+        } else {
+            openCaseMap = CaseService.getVisibleOpenCases(contacts);
+        }
             
         return (openCaseMap.get(userContact.Id) == null)
             ? new List<Case>() : openCaseMap.get(userContact.Id);
@@ -78,8 +86,11 @@ public with sharing class ViewAllCasesController
         List<Contact> loggedInContacts = new List<Contact> { userContact };
 
         Map<Id, List<Case>> closedCaseMap;
-
-        closedCaseMap = viewAsService.getClosedCases(loggedInContacts);
+        if (viewAsService != null) {
+            closedCaseMap = viewAsService.getClosedCases(loggedInContacts);
+        } else {
+            closedCaseMap = CaseService.getVisibleClosedCases(loggedInContacts);
+        }
 
         return closedCaseMap.get(userContact.Id) == null ? new List<Case>() : closedCaseMap.get(userContact.Id);
     }

@@ -214,10 +214,6 @@ public class Test_ShowMyStudents {
         Test.stopTest();
 
         System.assert(smsc.query.contains('Student_Name__c LIKE'));
-        System.assert(smsc.query.contains('Currently_Enrolled__c ='));
-        System.assert(smsc.query.contains('Campus__r.Name LIKE'));
-        System.assert(smsc.query.contains('Student__r.Arizona_Resident__c ='));
-        System.assert(smsc.query.contains('Student__r.US_Citizen__c ='));
         System.assert(smsc.query.contains('Student__r.Most_Recent_Outlook_Change_Direction__c'));
         System.assert(smsc.query.contains('Student__r.Curr_Cont_Prediction_Level__c > 7 AND'));
         System.assert(smsc.query.contains('Program_Description__c LIKE'));
@@ -248,10 +244,6 @@ public class Test_ShowMyStudents {
         Test.stopTest();
 
         System.assert(!smsc.query.contains('Student_Name__c LIKE'));
-        System.assert(!smsc.query.contains('Currently_Enrolled__c ='));
-        System.assert(!smsc.query.contains('Campus__r.Name LIKE'));
-        System.assert(!smsc.query.contains('Student__r.Arizona_Resident__c ='));
-        System.assert(!smsc.query.contains('Student__r.US_Citizen__c ='));
         System.assert(!smsc.query.contains('Student__r.Most_Recent_Outlook_Change_Direction__c'));
         System.assert(!smsc.query.contains('Student__r.Curr_Cont_Prediction_Level__c > 7 AND'));
         System.assert(!smsc.query.contains('Program_Description__c LIKE'));
@@ -271,13 +263,8 @@ public class Test_ShowMyStudents {
 
         System.assert(!smsc.query.contains('Contact.Name LIKE'));
         System.assert(!smsc.query.contains('Subject LIKE'));
-        System.assert(!smsc.query.contains('Contact.Currently_Enrolled__c = LIKE'));
-        System.assert(!smsc.query.contains('Campus__r.Name LIKE'));
-        System.assert(!smsc.query.contains('Contact.Arizona_Resident__c ='));
-        System.assert(!smsc.query.contains('Contact.US_Citizen__c ='));
         System.assert(!smsc.query.contains('Contact.Most_Recent_Outlook_Change_Direction__c'));
         System.assert(!smsc.query.contains('Contact.Curr_Cont_Prediction_Level__c > 7 AND'));
-        System.assert(!smsc.query.contains('Owner.Name LIKE'));
         System.assert(!smsc.query.contains('Program_Description__c LIKE'));
         System.assert(!smsc.query.contains('Degree__c LIKE'));
         System.assert(!smsc.query.contains('Plan_Description__c LIKE'));

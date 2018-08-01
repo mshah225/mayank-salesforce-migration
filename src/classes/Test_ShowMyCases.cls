@@ -171,15 +171,9 @@ public class Test_ShowMyCases {
         smsc.queryAttr = smsc.query;
         smsc.searchString = 'Tester Mctesterson';
         smsc.caseSubject = 'Testing Subject';
-        smsc.enrollmentStatusFilter = 'Enrolled';
         smsc.campusFilter = 'Tempe';
-        smsc.residentFilter = 'true';
-        smsc.citizenFilter = 'true';
         smsc.outlookScoreFilter = '5';
         smsc.outlookChangeFilter = 'Up';
-        smsc.ownerFilter = 'Tester';
-        smsc.collegeFilter = 'Fulton';
-        smsc.degreeFilter = 'Master';
         smsc.majorFilter = 'Engineering';
         smsc.studentGroup = 'SG';
         smsc.caseStatusFilter = 'Email Sent';
@@ -221,15 +215,9 @@ public class Test_ShowMyCases {
         smsc.queryAttr = smsc.query;
         smsc.searchString = 'Tester Mctesterson';
         smsc.caseSubject = 'Testing Subject';
-        smsc.enrollmentStatusFilter = 'Enrolled';
         smsc.campusFilter = 'Tempe';
-        smsc.residentFilter = 'true';
-        smsc.citizenFilter = 'true';
         smsc.outlookScoreFilter = '5';
         smsc.outlookChangeFilter = 'Up';
-        smsc.ownerFilter = 'Tester';
-        smsc.collegeFilter = 'Fulton';
-        smsc.degreeFilter = 'Master';
         smsc.majorFilter = 'Engineering';
         smsc.studentGroup = 'SG';
         smsc.caseStatusFilter = 'Email Sent';
@@ -270,7 +258,6 @@ public class Test_ShowMyCases {
     @isTest
     private static void checkQueryForNoFilters() {
         smsc.searchString = '';
-        smsc.ownerFilter = '';
         Test.startTest();
         smsc.insertFilterIntoQuery();
         Test.stopTest();
@@ -298,17 +285,6 @@ public class Test_ShowMyCases {
     }
 
     @isTest
-    private static void checkDefaultResidentOptions() {
-        Test.startTest();
-        List<SelectOption> residentOptions = smsc.residentOptions;
-        Test.stopTest();
-
-        System.assert(residentOptions.get(0).getValue() == '--' && residentOptions.get(0).getLabel().equals('--'));
-        System.assert(residentOptions.get(1).getValue() == 'true' && residentOptions.get(1).getLabel().equals('Resident'));
-        System.assert(residentOptions.get(2).getValue() == 'false' && residentOptions.get(2).getLabel().equals('Non-Resident'));
-    }
-
-    @isTest
     private static void checkDefaultCaseStatusOptions() {
         Test.startTest();
         List<SelectOption> caseStatusOptions = smsc.caseStatusOptions;
@@ -316,28 +292,6 @@ public class Test_ShowMyCases {
 
         System.assert(caseStatusOptions.size() > 1);
         System.assert(caseStatusOptions.get(0).getValue() == '--' && caseStatusOptions.get(0).getLabel().equals('--'));
-    }
-
-    @isTest
-    private static void checkDefaultEnrollmentStatusOptions() {
-        Test.startTest();
-        List<SelectOption> enrollmentStatusOptions = smsc.enrollmentStatusOptions;
-        Test.stopTest();
-
-        System.assert(enrollmentStatusOptions.get(0).getValue() == '--' && enrollmentStatusOptions.get(0).getLabel().equals('--'));
-        System.assert(enrollmentStatusOptions.get(1).getValue() == 'true' && enrollmentStatusOptions.get(1).getLabel().equals('Enrolled'));
-        System.assert(enrollmentStatusOptions.get(2).getValue() == 'false' && enrollmentStatusOptions.get(2).getLabel().equals('Not Enrolled'));
-    }
-
-    @isTest
-    private static void checkDefaultCitizenOptions() {
-        Test.startTest();
-        List<SelectOption> citizenOptions = smsc.citizenOptions;
-        Test.stopTest();
-
-        System.assert(citizenOptions.get(0).getValue() == '--' && citizenOptions.get(0).getLabel().equals('--'));
-        System.assert(citizenOptions.get(1).getValue() == 'true' && citizenOptions.get(1).getLabel().equals('US Citizen'));
-        System.assert(citizenOptions.get(2).getValue() == 'false' && citizenOptions.get(2).getLabel().equals('International'));
     }
 
     @isTest

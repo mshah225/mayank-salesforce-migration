@@ -216,8 +216,6 @@ public class Test_ShowMyStudents {
         System.assert(smsc.query.contains('Student_Name__c LIKE'));
         System.assert(smsc.query.contains('Student__r.Most_Recent_Outlook_Change_Direction__c'));
         System.assert(smsc.query.contains('Student__r.Curr_Cont_Prediction_Level__c > 7 AND'));
-        System.assert(smsc.query.contains('Program_Description__c LIKE'));
-        System.assert(smsc.query.contains('Degree__c LIKE'));
         System.assert(smsc.query.contains('Plan_Description__c LIKE'));
         System.assert(smsc.query.contains('SG_PeopleSoft_Code__c LIKE'));
         System.assert(smsc.query.contains('Student__r.Change_Date__c >='));

@@ -91,18 +91,6 @@
                 input.value = '';
                 input.value = tmpStr;
             }
-
-            jQuery(document).ready(function(){
-                var search = document.getElementById('{!$Component.myStudentsInput}');
-                jQuery(search).keypress(function( event ) {
-                    if ( event.which == 13 ) {
-                        event.preventDefault();
-                        var ele = document.getElementById('{!$Component.searchStudentsBtn}');
-                        ele.click();
-                        focusSearch();
-                    }
-                });
-            });
         </script>
         <style>
             .createdByStartDate::-webkit-calendar-picker-indicator, 

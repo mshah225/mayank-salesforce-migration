@@ -5,7 +5,8 @@ public class ContactFactory {
             super(new Contact(
                 FirstName = 'Test',
                 LastName = 'Contact',
-                Email = 'test@test.com'
+                Email = 'Test@Test.com',
+                EmplId__c = '1234567890'
             ));
             this.addToFieldsToIncrement('LastName');
         }
@@ -16,14 +17,15 @@ public class ContactFactory {
             super(new Contact(
                 FirstName = 'Test',
                 LastName = 'Test',
-                Email = 'test@test.com',
-                Corporate_Relations_Email__c = 'crtest@test.com',
-                EPO_Email__c = 'epotest@test.com',
-                ASU_Email__c = 'asutest@test.com',
-                Lead_Email__c = 'leadtest@test.com',
-                Lead_Secondary_Email__c = 'lead2test@test.com',
-                Parent_Email__c = 'parenttest@test.com',
-                Personal_Email__c = 'personaltest@test.com',
+                Email = 'Test@Test.com',
+                Corporate_Relations_Email__c = 'Test@Test.com',
+                EPO_Email__c = 'Test@Test.com',
+                ASU_Email__c = 'Test@Test.com',
+                Last_Case_Email_Used__c = 'Test@Test.com',
+                Lead_Email__c = 'Test@Test.com',
+                Lead_Secondary_Email__c = 'Test@Test.com',
+                Parent_Email__c = 'Test@Test.com',
+                Personal_Email__c = 'Test@Test.com',
                 Birthdate = System.today()
             ));
             this.addToFieldsToIncrement('LastName');

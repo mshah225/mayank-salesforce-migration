@@ -190,10 +190,6 @@ public class Test_ShowMyCases {
 
         System.assert(smsc.query.contains('Contact.Name LIKE'));
         System.assert(smsc.query.contains('Subject LIKE'));
-        System.assert(smsc.query.contains('Contact.Currently_Enrolled__c ='));
-        System.assert(smsc.query.contains('Campus__r.Name LIKE'));
-        System.assert(smsc.query.contains('Contact.Arizona_Resident__c ='));
-        System.assert(smsc.query.contains('Contact.US_Citizen__c ='));
         System.assert(smsc.query.contains('Contact.Most_Recent_Outlook_Change_Direction__c'));
         System.assert(smsc.query.contains('Contact.Curr_Cont_Prediction_Level__c > 7 AND'));
         System.assert(smsc.query.contains('Owner.Name LIKE'));
@@ -235,10 +231,6 @@ public class Test_ShowMyCases {
 
         System.assert(!smsc.query.contains('Contact.Name LIKE'));
         System.assert(!smsc.query.contains('Subject LIKE'));
-        System.assert(!smsc.query.contains('Contact.Currently_Enrolled__c = LIKE'));
-        System.assert(!smsc.query.contains('Campus__r.Name LIKE'));
-        System.assert(!smsc.query.contains('Contact.Arizona_Resident__c ='));
-        System.assert(!smsc.query.contains('Contact.US_Citizen__c ='));
         System.assert(!smsc.query.contains('Contact.Most_Recent_Outlook_Change_Direction__c'));
         System.assert(!smsc.query.contains('Contact.Curr_Cont_Prediction_Level__c > 7 AND'));
         System.assert(!smsc.query.contains('Owner.Name LIKE'));

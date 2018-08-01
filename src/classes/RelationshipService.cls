@@ -341,6 +341,7 @@ public class RelationshipService {
                         relatedContact.Rel_Relationship_Id_1__c = null;
                     } else {
                         relatedContact.Rel_Parent_1__c = relatedContact.Rel_Parent_2__c;
+                        relatedContact.Rel_Relationship_Id_2__c = relatedContact.Rel_Parent_2__c;
                         relatedContact.Rel_Parent_2__c = null;
                         relatedContact.Rel_Relationship_Id_2__c = null;
                         parent2ToContact.remove(relatedContact.Rel_Parent_2__c);

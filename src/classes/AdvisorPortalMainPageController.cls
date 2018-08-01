@@ -30,9 +30,6 @@ public class AdvisorPortalMainPageController {
             if (viewAsOptions == null) {
                 viewAsOptions = new List<selectOption>();
 
-                // Insert myself
-                viewAsOptions.add(new selectOption(UserInfo.getUserId(), UserInfo.getName()));
-
 				// Insert My Comittees
                 if (myCommittees.size() > 0) {
                     viewAsOptions.add(new selectOption('', '', true));
@@ -317,7 +314,7 @@ public class AdvisorPortalMainPageController {
                 }
                 myProactiveQuery = myProactiveQuery + whereClause +
                     ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 10000';
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 2000';
             }
             return myProactiveQuery;
         }
@@ -342,7 +339,7 @@ public class AdvisorPortalMainPageController {
                 myWatchlistQuery = myWatchlistQuery + whereClause +
                     ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
                     'AND CC_Category__c IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 10000';
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 2000';
             }
             return myWatchlistQuery;
         }
@@ -369,7 +366,7 @@ public class AdvisorPortalMainPageController {
                     }
                 }
                 myStudentsQuery = myStudentsQuery + whereClause +
-                ')AND (Is_Active__c = true) ORDER BY Student_Name__c ASC LIMIT 10000';
+                ')AND (Is_Active__c = true) ORDER BY Student_Name__c ASC LIMIT 2000';
             }
 
             return myStudentsQuery;

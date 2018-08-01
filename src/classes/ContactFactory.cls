@@ -9,12 +9,11 @@ public class ContactFactory {
                 EmplId__c = '1234567890'
             ));
             this.addToFieldsToIncrement('LastName');
-            this.addToFieldsToIncrement('email');
         }
     }
     
-    public class AllEmailCase extends TestFactory {
-        public AllEmailCase(Id accountId) {
+    public class AllEmailsFilled extends TestFactory {
+        public AllEmailsFilled(Id accountId) {
             super(new Contact(
                 FirstName = 'Test',
                 LastName = 'Test',
@@ -30,7 +29,6 @@ public class ContactFactory {
                 Birthdate = System.today()
             ));
             this.addToFieldsToIncrement('LastName');
-            this.addToFieldsToIncrement('email');
         }
     }
 }

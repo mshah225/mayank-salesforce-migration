@@ -1,7 +1,7 @@
 public without sharing class CaseHandler implements ITrigger {
     Map<ID, Contact> relatedContactMap = new Map<ID, Contact>();
     Map<Id, Campaign> sourceMap = new Map<Id, Campaign>();
-    Map<Id, String> groupNameMap = new Map<Id, String>();
+    Map<Id, Group> groupNameMap = new Map<Id, Group>();
     List<RecordType> recruitmentCaseRT;
     Savepoint sp;
     public Map<Id, String> mapCCIdToName;
@@ -21,7 +21,6 @@ public without sharing class CaseHandler implements ITrigger {
     public void bulkBefore() {
 
         // Call the Group Service to map all the group names to their ids
-        groupNameMap = GroupService.mapGroupIdToName();
 		Set<String> caseClassificationsToQuery = new Set<String>();
 		List<CaseClassifier> casesToClassify = new List<CaseClassifier>();
 		Set<Id> setOfCaseClassficationId = new Set<Id>();
@@ -94,6 +93,8 @@ public without sharing class CaseHandler implements ITrigger {
 
             // classification has been completed, so we can update the old values as per new values
             // SFE-11309; Update the Old CC fields as per new CC field values
+            
+            List<Id> ownerIdForCasesBeingInserted = new List<Id>();
             for (Case caseRecord : (List<Case>)Trigger.new) {
                 caseRecord.Functional_Group__c = mapCCIdToName.get(caseRecord.CC_Functional_Group__c);
                 caseRecord.Category__c =  mapCCIdToName.get(caseRecord.CC_Category__c);
@@ -103,15 +104,14 @@ public without sharing class CaseHandler implements ITrigger {
                     caseRecord.Original_Category__c = caseRecord.Category__c;
                 }
                 assignRecordType(caseRecord);
+                ownerIdForCasesBeingInserted.add(caseRecord.OwnerId);
             }
-
+            groupNameMap = GroupService.mapGroupIdToName(ownerIdForCasesBeingInserted);
         } else if (Trigger.isUpdate) {
             for (Case c : (List<Case>)Trigger.new) {
-                //Handles Webform cases from webforms.asu.edu
                 Case previousCaseState = (Case) Trigger.oldMap.get(c.Id);
                 CaseWebformCloser closer = new CaseWebformCloser(c, previousCaseState);
                 closer.handleWebformCase();
-                
 				// Check each incoming case for valid classification fields.
 				CaseClassifier classifier = new CaseClassifier(c);
 				if (classifier.hasInvalidCaseClassification()) {
@@ -153,13 +153,17 @@ public without sharing class CaseHandler implements ITrigger {
             // classification has been completed, so we can update the old values as per new values
             // SFE-11309; Update the Old CC fields as per new CC field values
             // checks if CC exists and Name is not null
+            // 
+            List<Id> ownerIdForCasesBeingUpdated = new List<Id>();
             for (Case caseRecord : (List<Case>)Trigger.new) {
                 caseRecord.Functional_Group__c = mapCCIdToName.get(caseRecord.CC_Functional_Group__c);
                 caseRecord.Category__c =  mapCCIdToName.get(caseRecord.CC_Category__c);
                 caseRecord.Sub_Category__c = mapCCIdToName.get(caseRecord.CC_Sub_Category__c);
 
                 assignRecordType(caseRecord);
+                ownerIdForCasesBeingUpdated.add(caseRecord.OwnerId);
             }
+            groupNameMap = GroupService.mapGroupIdToName(ownerIdForCasesBeingUpdated);
         }
     }
 
@@ -184,7 +188,7 @@ public without sharing class CaseHandler implements ITrigger {
         // Set system info field for Most Recent Queue
         if (groupNameMap.containsKey(c.OwnerId))
         {
-            c.Most_Recent_Queue__c = groupNameMap.get(c.OwnerId);
+            c.Most_Recent_Queue__c = groupNameMap.get(c.OwnerId).Name;
         }
         // Set system info field for Most Recent Functional Group
         if (c.Functional_Group__c != 'External Unit' && c.Functional_Group__c != null)
@@ -438,7 +442,7 @@ public without sharing class CaseHandler implements ITrigger {
         // Update the Most Recent Queue field if the case owner is a Group
         if (groupNameMap.containsKey(newCase.OwnerId))
         {
-            newCase.Most_Recent_Queue__c = groupNameMap.get(newCase.OwnerId);
+            newCase.Most_Recent_Queue__c = groupNameMap.get(newCase.OwnerId).Name;
         }
     }
 

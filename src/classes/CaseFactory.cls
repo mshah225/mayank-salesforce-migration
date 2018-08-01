@@ -11,6 +11,7 @@ public class CaseFactory {
             this.addToFieldsToIncrement('Description');
         }
     }
+
     
     public class ClosedWebformCase extends TestFactory {
         public ClosedWebformCase() {

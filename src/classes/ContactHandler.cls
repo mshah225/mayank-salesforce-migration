@@ -375,8 +375,20 @@ public without sharing class ContactHandler implements ITrigger
         }
     }
     
+    private static void setHashId(List<Id> contactIdList) {
+        if (System.isFuture() || System.isBatch()) {
+            setHashIdNow(contactIdList);
+        } else {
+            setHashIdFuture(contactIdList);
+        }
+    }
+    
     @future
-    static void setHashId(List<Id> contactIdList) {
+    private static void setHashIdFuture(List<Id> contactIdList) {
+        setHashIdNow(contactIdList);
+    }
+    
+    private static void setHashIdNow(List<Id> contactIdList) {
         List<Contact> conList = new List<Contact>();
         for(Id i : contactIdList) {
             Contact c = new Contact(Id = i, HashContactID__c = Hasher.hashId(i));
@@ -384,5 +396,4 @@ public without sharing class ContactHandler implements ITrigger
         }
         update conList;
     }
-
 }

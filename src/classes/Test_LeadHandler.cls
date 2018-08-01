@@ -83,9 +83,9 @@ public with sharing class Test_LeadHandler
     {
         Integer DUPETHRESHOLD = 1;
 
-        Account institution = AccountService.createTestInstitution();
-        insert institution;
-
+        List<Account> institutionAccounts = new AccountFactory.Institution().create();
+        insert institutionAccounts;
+        
         List<Contact> testContacts = ContactService.createTestContacts(TRIGGERLOAD);
         insert testContacts;
 
@@ -106,7 +106,7 @@ public with sharing class Test_LeadHandler
         for (Lead l : testLeads)
         {
             l.Convert_Perform_Conversion__c = true;
-            l.Last_Institution_Attended__c = institution.Id;
+            l.Last_Institution_Attended__c = institutionAccounts[0].Id;
             leadIds.add(l.Id);
         }
 
@@ -181,8 +181,8 @@ public with sharing class Test_LeadHandler
 
     @isTest static void testCreationOfPERecordsOnConversion()
     {
-        Account institution = AccountService.createTestInstitution();
-        insert institution;
+        List<Account> institutionAccounts = new AccountFactory.Institution().create();
+        insert institutionAccounts;
 
         List<Contact> testContacts = ContactService.createTestContacts(5);
         insert testContacts;
@@ -205,7 +205,7 @@ public with sharing class Test_LeadHandler
         for (Lead l : testLeads)
         {
             l.Convert_Perform_Conversion__c = true;
-            l.Last_Institution_Attended__c = institution.Id;
+            l.Last_Institution_Attended__c = institutionAccounts[0].Id;
             leadIds.add(l.Id);
             contactIds.add(l.Convert_Contact__c);
         }
@@ -218,7 +218,7 @@ public with sharing class Test_LeadHandler
 
         for (Previous_Education__c pe : peRecordsCreated)
         {
-            System.assertEquals(institution.Id, pe.Account__c, 'Previous Education was not created correctly');
+            System.assertEquals(institutionAccounts[0].Id, pe.Account__c, 'Previous Education was not created correctly');
         }
     }
 }

@@ -21,7 +21,7 @@ private class AllPublishedArticlesControllerTest {
         
        System.assertEquals(1, completeListOfArticles.size());
         
-       String expectedURL = 'https://asu.secure.force.com/kb/articles/FAQ/FAQURL1';
+       String expectedURL = 'https://asu.secure.force.com/kb/articles/FAQ/FAQURL0';
        System.assertEquals(expectedURL, completeListOfArticles[0].url);
 	}
 }

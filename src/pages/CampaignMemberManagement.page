@@ -251,8 +251,7 @@
 
                 <apex:tab label="New Registration"
                           name="newRegTab"
-                          id="newRegTab"
-                          rendered="{!IF(NOT(crProfile) || admin,true,false)}">
+                          id="newRegTab">
                     <apex:form id="browseEvents">
                         <apex:outputPanel layout="block"
                                           style="overflow:auto;height:295px;">

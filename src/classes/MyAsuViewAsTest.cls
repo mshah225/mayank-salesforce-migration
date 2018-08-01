@@ -37,9 +37,10 @@ private class MyAsuViewAsTest {
     @isTest
     private static void getContact() {
         MyAsuViewAsTest.setUpUser();
+        Contact contactAssociatedWithAsurite;
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;
-            Contact contactAssociatedWithAsurite = viewAsService.getContact('ASUTestID');
+            contactAssociatedWithAsurite = viewAsService.getContact('ASUTestID');
         }
         
         Contact expectedResult = [Select Id FROM Contact WHERE Asurite_ID__c = 'ASUTestID'];
@@ -50,9 +51,10 @@ private class MyAsuViewAsTest {
     private static void getCaseDetails() {
         MyAsuViewAsTest.setUpUser();
         Case createdCase = [SELECT Id FROM Case LIMIT 1];
+        Case caseAssociatedWithAsurite; 
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;
-            Case caseAssociatedWithAsurite = viewAsService.getCaseDetails(createdCase.Id);
+            caseAssociatedWithAsurite = viewAsService.getCaseDetails(createdCase.Id);
         }
         System.assertEquals(createdCase.Id, caseAssociatedWithAsurite.Id);
     }
@@ -62,10 +64,11 @@ private class MyAsuViewAsTest {
         MyAsuViewAsTest.setUpUser();
         List<Contact> contactsWithCases = [SELECT Id FROM Contact];
         List<Case> allOpenCases = [SELECT Id FROM Case WHERE isClosed = false];
+        List<Case> openCases;
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;
             Map<Id, List<Case>> openCasesFromService = viewAsService.getOpenCases(contactsWithCases);
-            List<Case> openCases = openCasesFromService.get(contactsWithCases[0].Id);
+            openCases = openCasesFromService.get(contactsWithCases[0].Id);
         }
         System.assertEquals(allOpenCases.size(), openCases.size());
     }

@@ -202,14 +202,9 @@ public class Test_ShowMyStudents {
     private static void checkQueryForFilterAddition() {
         smsc.queryAttr = smsc.query;
         smsc.searchString = 'Tester Mctesterson';
-        smsc.enrollmentStatusFilter = 'Enrolled';
         smsc.campusFilter = 'Tempe';
-        smsc.residentFilter = 'true';
-        smsc.citizenFilter = 'true';
         smsc.outlookScoreFilter = '5';
         smsc.outlookChangeFilter = 'Up';
-        smsc.collegeFilter = 'Fulton';
-        smsc.degreeFilter = 'Master';
         smsc.majorFilter = 'Engineering';
         smsc.studentGroup = 'SG';
         smsc.persistenceStartDate = Date.valueOf('2018-07-17 00:00:00');
@@ -239,14 +234,9 @@ public class Test_ShowMyStudents {
     private static void checkQueryForFilterRemoval() {
         smsc.queryAttr = smsc.query;
         smsc.searchString = 'Tester Mctesterson';
-        smsc.enrollmentStatusFilter = 'Enrolled';
         smsc.campusFilter = 'Tempe';
-        smsc.residentFilter = 'true';
-        smsc.citizenFilter = 'true';
         smsc.outlookScoreFilter = '5';
         smsc.outlookChangeFilter = 'Up';
-        smsc.collegeFilter = 'Fulton';
-        smsc.degreeFilter = 'Master';
         smsc.majorFilter = 'Engineering';
         smsc.studentGroup = 'SG';
         smsc.persistenceStartDate = Date.valueOf('2018-07-17 00:00:00');
@@ -299,39 +289,6 @@ public class Test_ShowMyStudents {
         System.assert(!smsc.query.contains('Change_Date__c >='));
         System.assert(!smsc.query.contains('Change_Date__c <='));
         System.assert(!smsc.query.contains('Status ='));
-    }
-
-    @isTest
-    private static void checkDefaultResidentOptions() {
-        Test.startTest();
-        List<SelectOption> residentOptions = smsc.residentOptions;
-        Test.stopTest();
-
-        System.assert(residentOptions.get(0).getValue() == '--' && residentOptions.get(0).getLabel().equals('--'));
-        System.assert(residentOptions.get(1).getValue() == 'true' && residentOptions.get(1).getLabel().equals('Resident'));
-        System.assert(residentOptions.get(2).getValue() == 'false' && residentOptions.get(2).getLabel().equals('Non-Resident'));
-    }
-
-    @isTest
-    private static void checkDefaultEnrollmentStatusOptions() {
-        Test.startTest();
-        List<SelectOption> enrollmentStatusOptions = smsc.enrollmentStatusOptions;
-        Test.stopTest();
-
-        System.assert(enrollmentStatusOptions.get(0).getValue() == '--' && enrollmentStatusOptions.get(0).getLabel().equals('--'));
-        System.assert(enrollmentStatusOptions.get(1).getValue() == 'true' && enrollmentStatusOptions.get(1).getLabel().equals('Enrolled'));
-        System.assert(enrollmentStatusOptions.get(2).getValue() == 'false' && enrollmentStatusOptions.get(2).getLabel().equals('Not Enrolled'));
-    }
-
-    @isTest
-    private static void checkDefaultCitizenOptions() {
-        Test.startTest();
-        List<SelectOption> citizenOptions = smsc.citizenOptions;
-        Test.stopTest();
-
-        System.assert(citizenOptions.get(0).getValue() == '--' && citizenOptions.get(0).getLabel().equals('--'));
-        System.assert(citizenOptions.get(1).getValue() == 'true' && citizenOptions.get(1).getLabel().equals('US Citizen'));
-        System.assert(citizenOptions.get(2).getValue() == 'false' && citizenOptions.get(2).getLabel().equals('International'));
     }
 
     @isTest

@@ -192,8 +192,6 @@ public class Test_ShowMyCases {
         System.assert(smsc.query.contains('Subject LIKE'));
         System.assert(smsc.query.contains('Contact.Most_Recent_Outlook_Change_Direction__c'));
         System.assert(smsc.query.contains('Contact.Curr_Cont_Prediction_Level__c > 7 AND'));
-        System.assert(smsc.query.contains('Program_Description__c LIKE'));
-        System.assert(smsc.query.contains('Degree__c LIKE'));
         System.assert(smsc.query.contains('Plan_Description__c LIKE'));
         System.assert(smsc.query.contains('SG_PeopleSoft_Code__c LIKE'));
         System.assert(smsc.query.contains('CreatedDate >='));

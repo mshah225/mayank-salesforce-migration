@@ -107,6 +107,7 @@ public class showMyCasesController extends ListViewController {
                 outlookChangeOptions.add(new SelectOption('--', '--'));
                 outlookChangeOptions.add(new SelectOption('1', 'Up'));
                 outlookChangeOptions.add(new SelectOption('-1', 'Down'));
+                outlookChangeOptions.add(new SelectOption('0', 'No Change'));
             }
             return outlookChangeOptions;
         }
@@ -568,12 +569,10 @@ public class showMyCasesController extends ListViewController {
         get {
             if (studentIntentionOptions == null) {
                 studentIntentionOptions = new List<SelectOption>();
-                Schema.DescribeFieldResult caseStudentIntentionDescribe = Case.Student_Intention__c.getDescribe();
-                List<Schema.PicklistEntry> caseStudentIntentionList = caseStudentIntentionDescribe.getPicklistValues();
                 studentIntentionOptions.add(new SelectOption('', '--'));
-                for(Schema.PicklistEntry caseStudentIntentionEntry : caseStudentIntentionList) {
-                    studentIntentionOptions.add(new SelectOption(caseStudentIntentionEntry.getValue(), caseStudentIntentionEntry.getLabel(), false));
-                }
+                studentIntentionOptions.add(new SelectOption('Not returning ever', 'Not returning ever'));
+                studentIntentionOptions.add(new SelectOption('Not returning temporarily', 'Not returning temporarily'));
+                studentIntentionOptions.add(new SelectOption('Will enroll', 'Will enroll'));
             }
             return studentIntentionOptions;
         }

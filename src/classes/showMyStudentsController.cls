@@ -62,6 +62,7 @@ public class showMyStudentsController extends ListViewController {
                 outlookChangeOptions.add(new SelectOption('--', '--'));
                 outlookChangeOptions.add(new SelectOption('1', 'Up'));
                 outlookChangeOptions.add(new SelectOption('-1', 'Down'));
+                outlookChangeOptions.add(new SelectOption('0', 'No Change'));
             }
             return outlookChangeOptions;
         }

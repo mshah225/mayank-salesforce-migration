@@ -274,7 +274,8 @@ public class RelationshipService {
             }
         }
         if (!contactList.isEmpty()) {
-            List<Contact> contactsToEdit = [SELECT Rel_Parent_1__c, Rel_Parent_2__c
+            List<Contact> contactsToEdit = [SELECT Rel_Parent_1__c, Rel_Parent_2__c,
+                                            Rel_Relationship_Id_1__c, Rel_Relationship_Id_2__c
                                             FROM Contact 
                                             WHERE Id IN :contactList 
                                             ];
@@ -314,7 +315,8 @@ public class RelationshipService {
                 contactIdList.add(rel.Contact__c);
             }
             
-            List<Contact>  contactList = [SELECT Id, Rel_Parent_1__c, Rel_Parent_2__c
+            List<Contact>  contactList = [SELECT Id, Rel_Parent_1__c, Rel_Parent_2__c, 
+                                          Rel_Relationship_Id_1__c, Rel_Relationship_Id_2__c
                                           FROM Contact
                                           WHERE Id IN :contactIdList];
             Map<Id, Contact> parent1ToContact = new Map<Id, Contact>();
@@ -333,6 +335,7 @@ public class RelationshipService {
                 if (parent2ToContact.containsKey(rel.Related_Contact__c)) {
                     Contact relatedContact = parent2ToContact.get(rel.Related_Contact__c);
                     relatedContact.Rel_Parent_2__c = null;
+                    relatedContact.Rel_Relationship_Id_2__c = null;
                     contactsToUpdate.add(relatedContact);
                 } else if (parent1ToContact.containsKey(rel.Related_Contact__c)) {
                     Contact relatedContact = parent1ToContact.get(rel.Related_Contact__c);
@@ -341,7 +344,7 @@ public class RelationshipService {
                         relatedContact.Rel_Relationship_Id_1__c = null;
                     } else {
                         relatedContact.Rel_Parent_1__c = relatedContact.Rel_Parent_2__c;
-                        relatedContact.Rel_Relationship_Id_2__c = relatedContact.Rel_Parent_2__c;
+                        relatedContact.Rel_Relationship_Id_1__c = relatedContact.Rel_Relationship_Id_2__c;
                         relatedContact.Rel_Parent_2__c = null;
                         relatedContact.Rel_Relationship_Id_2__c = null;
                         parent2ToContact.remove(relatedContact.Rel_Parent_2__c);

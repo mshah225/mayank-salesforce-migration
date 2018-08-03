@@ -3,7 +3,8 @@ public with sharing class ViewAllCasesController
     private Id caseId;
     private Map<String, String> viewAsMap;
     private Decimal origPin;
-
+    private MyAsuViewAs viewAsService;
+    
     public String firstName { get; set; }
     public String lastName { get; set; }
     public String emplId { get; set; }
@@ -32,18 +33,19 @@ public with sharing class ViewAllCasesController
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
         }
     }
 
     public void popUserContact(){
-        if (viewingAs){
-            userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
-            stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
-            viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
-        }
-        else{
+        if (viewAsService != null && viewAsService.hasViewAsRights){
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+            stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
+            viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
+            viewingAs = true;
+        } else {
             userContact = ContactService.getLoggedInContact();
         }
         firstName = userContact.FirstName;
@@ -57,13 +59,12 @@ public with sharing class ViewAllCasesController
         List<Contact> contacts = new List<Contact> { userContact };
         Map<Id, List<Case>> openCaseMap;
 
-        if (viewingAs){
-            openCaseMap = MyASUViewAs.getViewAsOpenCases(contacts);
-        }
-        else{
+        if (viewAsService != null) {
+            openCaseMap = viewAsService.getOpenCases(contacts);
+        } else {
             openCaseMap = CaseService.getVisibleOpenCases(contacts);
         }
-
+            
         return (openCaseMap.get(userContact.Id) == null)
             ? new List<Case>() : openCaseMap.get(userContact.Id);
     }
@@ -85,13 +86,9 @@ public with sharing class ViewAllCasesController
         List<Contact> loggedInContacts = new List<Contact> { userContact };
 
         Map<Id, List<Case>> closedCaseMap;
-
-        if (viewingAs)
-        {
-            closedCaseMap = MyASUViewAs.getViewAsClosedCases(loggedInContacts);
-        }
-        else
-        {
+        if (viewAsService != null) {
+            closedCaseMap = viewAsService.getClosedCases(loggedInContacts);
+        } else {
             closedCaseMap = CaseService.getVisibleClosedCases(loggedInContacts);
         }
 

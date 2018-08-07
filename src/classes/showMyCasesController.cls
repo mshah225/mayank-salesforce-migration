@@ -708,17 +708,17 @@ public class showMyCasesController extends ListViewController {
         get {
                 caseCategoryOptions = new List<SelectOption>();
                 List<Case_Classification__c> userQueueCaseCategoryOptions = new List<Case_Classification__c>();
-                List<Case> selectedCases = new List<Case>();
+                List<Case> userQueueCases = new List<Case>();
                 List<Id> caseCategoryIds = new List<Id>();
 
                 if(caseList != null) {
                     for (caseWrapper casewrap : caseList) {
                         caseCategoryIds.add(casewrap.obj.Id);
                     }
-                    selectedCases = [SELECT Id, CC_Category__c FROM Case WHERE Id IN :caseCategoryIds];
+                    userQueueCases = [SELECT Id, CC_Category__c FROM Case WHERE Id IN :caseCategoryIds];
                 }
 
-                for(Case caseId : selectedCases) {
+                for(Case caseId : userQueueCases) {
                     caseCategoryIds.add(caseId.CC_Category__c);
                 }
 

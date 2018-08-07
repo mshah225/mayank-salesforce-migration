@@ -414,7 +414,7 @@ public class showMyCasesController extends ListViewController {
     }
 
     private String createFilterStringForSubject() {
-        if (!String.isEmpty(caseSubject)) {
+        if ((!String.isEmpty(caseSubject)) && (!caseSubject.contains('--'))) {
             return ' Subject LIKE \'%' + caseSubject + '%\' AND ';
         }
         return ' ';
@@ -696,7 +696,7 @@ public class showMyCasesController extends ListViewController {
         String createdQuery = ' ';
         if (!String.isEmpty(categoryFilter)) {
             String searchCon = categoryFilter.trim();
-            if (!String.isEmpty(searchCon)) {
+            if ((!String.isEmpty(searchCon)) && (!searchCon.contains('--'))) {
                 createdQuery = ' (CC_Category__r.Id = \'' + String.escapeSingleQuotes(searchCon) + '\' ) AND ';
             }
         }
@@ -706,32 +706,63 @@ public class showMyCasesController extends ListViewController {
 
     public List<SelectOption> caseCategoryOptions {
         get {
-                caseCategoryOptions = new List<SelectOption>();
+                if (caseCategoryOptions == null || caseCategoryOptions.isEmpty()) {
+                    caseCategoryOptions = new List<SelectOption>();
+                    caseCategoryOptions.add(new SelectOption('--', '--'));
+                }
                 List<Case_Classification__c> userQueueCaseCategoryOptions = new List<Case_Classification__c>();
                 List<Case> userQueueCases = new List<Case>();
                 List<Id> caseCategoryIds = new List<Id>();
-
-                if(caseList != null) {
+                if (caseList != null) {
                     for (caseWrapper casewrap : caseList) {
                         caseCategoryIds.add(casewrap.obj.Id);
                     }
                     userQueueCases = [SELECT Id, CC_Category__c FROM Case WHERE Id IN :caseCategoryIds];
                 }
 
-                for(Case caseId : userQueueCases) {
+                for (Case caseId : userQueueCases) {
                     if(!caseCategoryIds.contains(caseId.CC_Category__c)) {
                         caseCategoryIds.add(caseId.CC_Category__c);
                     }
                 }
 
                 userQueueCaseCategoryOptions = [SELECT Id, Name FROM Case_Classification__c WHERE Id IN :caseCategoryIds AND Visible__c = true AND Active__c = true ORDER BY Name ASC];
-                caseCategoryOptions.add(new SelectOption('--', '--'));
 
                 for (Case_Classification__c categoryOption : userQueueCaseCategoryOptions) {
                         caseCategoryOptions.add(new SelectOption(categoryOption.Id, categoryOption.Name));
                 }
 
             return caseCategoryOptions;
+        }
+        set;
+    }
+
+    public List<SelectOption> caseSubjectOptions {
+        get {
+                if (caseSubjectOptions == null || caseSubjectOptions.isEmpty()) {
+                    caseSubjectOptions = new List<SelectOption>();
+                    caseSubjectOptions.add(new SelectOption('--', '--'));
+                }
+                List<String> userQueueCaseSubjectOptions = new List<String>();
+                List<Case> userQueueCases = new List<Case>();
+                List<Id> caseSubjectIds = new List<Id>();
+                if (caseList != null) {
+                    for (caseWrapper casewrap : caseList) {
+                        caseSubjectIds.add(casewrap.obj.Id);
+                    }
+                    userQueueCases = [SELECT Id, Subject FROM Case WHERE Id IN :caseSubjectIds ORDER BY Subject ASC];
+                }
+
+                for (Case caseSubjectQueue : userQueueCases) {
+                    if(!userQueueCaseSubjectOptions.contains(caseSubjectQueue.Subject)) {
+                        userQueueCaseSubjectOptions.add(String.valueOf(caseSubjectQueue.Subject));
+                    }
+                }
+
+                for (String subjectOption : userQueueCaseSubjectOptions) {
+                        caseSubjectOptions.add(new SelectOption(subjectOption, subjectOption));
+                }
+            return caseSubjectOptions;
         }
         set;
     }

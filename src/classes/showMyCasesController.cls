@@ -26,14 +26,14 @@ public class showMyCasesController extends ListViewController {
     public String caseStatus {get; set;}
     public String caseRecommendedActions {get; set;}
     public String caseRecommendedActionsOther {get; set;}
-    
+
     public String caseStudentIntention {get; set;}
     public String caseStudentReturnTerm {get; set;}
     public String caseStudentRisk {get; set;}
     public String caseStudentRiskOther {get; set;}
     public List<String> caseReasonNotReturning {get; set;}
     public String caseReasonNotReturningOther {get; set;}
-    
+
     public String categoryFilter {get; set;}
 
     public String caseStatusFilter {
@@ -107,6 +107,7 @@ public class showMyCasesController extends ListViewController {
                 outlookChangeOptions.add(new SelectOption('--', '--'));
                 outlookChangeOptions.add(new SelectOption('1', 'Up'));
                 outlookChangeOptions.add(new SelectOption('-1', 'Down'));
+                outlookChangeOptions.add(new SelectOption('0', 'No Change'));
             }
             return outlookChangeOptions;
         }
@@ -328,22 +329,6 @@ public class showMyCasesController extends ListViewController {
     }
 
     /*
-     * Indicates whether the string has been previously searched
-     */
-    public boolean searched{
-        get{
-            if(query == NULL || !query.contains('LIKE')){
-                searched = false;
-            }
-            else{
-                searched = true;
-            }
-            return searched;
-        }
-        set;
-    }
-
-    /*
      * Used to refresh the list to it's orignal state
      */
     public void resetSearch(){
@@ -368,28 +353,18 @@ public class showMyCasesController extends ListViewController {
         query = queryAttr;
     }
 
-    /*
-     * Trims the query to remove any specific searches
-     */
-    @TestVisible
-    private string removeSearchString(){
-        String tmpQuery = query;
-        if(searched){
-            Integer loc = tmpQuery.indexOf('AND');
-            String left = tmpQuery.substring(0, tmpQuery.indexOf('WHERE')+6);
-            String right = tmpQuery.substring(loc+3);
-            tmpQuery = left + right;
-        }
-        return tmpQuery;
-    }
-
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
-        Schema.DescribeFieldResult fieldResult = Case.Status.getDescribe();
-        List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
-        for (Schema.PicklistEntry pickListVal : picklistEntries){
-            pickListValuesForCaseStatus.add(pickListVal.getLabel());
-        }
+
+        picklistValuesForCaseStatus.add('Busy Signal');
+		picklistValuesForCaseStatus.add('Email Sent');
+        picklistValuesForCaseStatus.add('In Progress');
+        picklistValuesForCaseStatus.add('Left Message with Third Party');
+        picklistValuesForCaseStatus.add('Left voicemail');
+        picklistValuesForCaseStatus.add('Outreach Required');
+        picklistValuesForCaseStatus.add('Unable to Leave Voicemail');
+        picklistValuesForCaseStatus.add('Wrong number');
+
         return pickListValuesForCaseStatus;
     }
 
@@ -468,7 +443,7 @@ public class showMyCasesController extends ListViewController {
         }
         if (followupEndDate != null) {
             String followupSearchEndDate = DateTime.newInstance(followupEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
-            createdQuery += ' FollowUp_Date__c  <= ' + followupSearchEndDate + ' AND ';
+            createdQuery += ' FollowUp_Date__c <= ' + followupSearchEndDate + ' AND ';
         }
         return createdQuery;
     }
@@ -548,7 +523,7 @@ public class showMyCasesController extends ListViewController {
         }
         if (persistenceEndDate != null) {
             String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
-            createdQuery += ' Change_Date__c  <= ' + persistenceSearchEndDate + ' AND ';
+            createdQuery += ' Change_Date__c <= ' + persistenceSearchEndDate + ' AND ';
         }
         return createdQuery;
     }
@@ -589,24 +564,22 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
-    
+
     public List<SelectOption> studentIntentionOptions {
         get {
             if (studentIntentionOptions == null) {
                 studentIntentionOptions = new List<SelectOption>();
-                Schema.DescribeFieldResult caseStudentIntentionDescribe = Case.Student_Intention__c.getDescribe();
-                List<Schema.PicklistEntry> caseStudentIntentionList = caseStudentIntentionDescribe.getPicklistValues();
                 studentIntentionOptions.add(new SelectOption('', '--'));
-                for(Schema.PicklistEntry caseStudentIntentionEntry : caseStudentIntentionList) {
-                    studentIntentionOptions.add(new SelectOption(caseStudentIntentionEntry.getValue(), caseStudentIntentionEntry.getLabel(), false));
-                }
+                studentIntentionOptions.add(new SelectOption('Not returning ever', 'Not returning ever'));
+                studentIntentionOptions.add(new SelectOption('Not returning temporarily', 'Not returning temporarily'));
+                studentIntentionOptions.add(new SelectOption('Will enroll', 'Will enroll'));
             }
             return studentIntentionOptions;
         }
 
         set;
     }
-    
+
     public List<SelectOption> caseStudentReturnTermOptions {
         get {
             if (caseStudentReturnTermOptions == null) {
@@ -623,7 +596,7 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
-    
+
     public List<SelectOption> caseStudentRiskOptions {
         get {
             if (caseStudentRiskOptions == null) {
@@ -640,7 +613,7 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
-    
+
     public List<SelectOption> caseReasonNotReturningOptions {
         get {
             if (caseReasonNotReturningOptions == null) {
@@ -656,7 +629,7 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
-    
+
     public void massClose() {
 
         List<Case> casesToClose = new List<case>();
@@ -671,17 +644,17 @@ public class showMyCasesController extends ListViewController {
                 selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
                 selectedCase.Recommended_Actions__c = caseRecommendedActions;
                 selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
-                
+
                 selectedCase.Student_Intention__c = caseStudentIntention;
                 selectedCase.What_term_is_the_student_planning_to_ret__c = caseStudentReturnTerm;
                 selectedCase.Student_Presented_Risk_for__c = caseStudentRisk;
                 selectedCase.Student_Presented_Risk_for_Other__c = caseStudentRiskOther.left(50);
                 selectedCase.Reasons_Not_Returning__c = createStringFromReasonNotReturningList();
                 selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
-                
+
                 casesToClose.add(selectedCase);
             }
-            
+
             if (casesToClose.size() > 0) {
                 try {
                     Database.update(casesToClose);
@@ -693,7 +666,7 @@ public class showMyCasesController extends ListViewController {
                     );
                 }
             }
-            
+
             clearMassUpdateFields();
         }
     }
@@ -705,7 +678,7 @@ public class showMyCasesController extends ListViewController {
         }
         return formattedReasonNotReturning;
     }
-    
+
     private void clearMassUpdateFields() {
         caseStatus = null;
         caseReasonAdministrativelyClosed = null;
@@ -718,16 +691,49 @@ public class showMyCasesController extends ListViewController {
         caseReasonNotReturning = null;
         caseReasonNotReturningOther = null;
     }
-    
+
     private String createFilterStringForCategory() {
         String createdQuery = ' ';
         if (!String.isEmpty(categoryFilter)) {
             String searchCon = categoryFilter.trim();
             if (!String.isEmpty(searchCon)) {
-                createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+                createdQuery = ' (CC_Category__r.Id = \'' + String.escapeSingleQuotes(searchCon) + '\' ) AND ';
             }
         }
 
         return createdQuery;
+    }
+
+    public List<SelectOption> caseCategoryOptions {
+        get {
+                caseCategoryOptions = new List<SelectOption>();
+                List<Case_Classification__c> currentUserCaseCategoryOptions = new List<Case_Classification__c>();
+                List<Case> selectedCases = new List<Case>();
+                List<Id> caseCategoryId = new List<Id>();
+                if(caseList == null) {
+                    caseCategoryId.add(ownerId);
+                    selectedCases = [select id, CC_Category__c from Case Where id IN :caseCategoryId];
+                }
+                else {
+                    for (caseWrapper cw : caseList) {
+                        caseCategoryId.add(cw.obj.Id);
+                    }
+                    selectedCases = [select id, CC_Category__c from Case Where id IN :caseCategoryId];
+                }
+
+                for(Case caseId : selectedCases) {
+                    caseCategoryId.add(caseId.CC_Category__c);
+                }
+
+                currentUserCaseCategoryOptions = [select id, Name from Case_Classification__c where id IN :caseCategoryId];
+                caseCategoryOptions.add(new SelectOption('--', '--'));
+
+                for (Case_Classification__c categoryOption : currentUserCaseCategoryOptions) {
+                    caseCategoryOptions.add(new SelectOption(categoryOption.Id, categoryOption.Name));
+                }
+
+            return caseCategoryOptions;
+        }
+        set;
     }
 }

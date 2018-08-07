@@ -707,28 +707,27 @@ public class showMyCasesController extends ListViewController {
     public List<SelectOption> caseCategoryOptions {
         get {
                 caseCategoryOptions = new List<SelectOption>();
-                List<Case_Classification__c> currentUserCaseCategoryOptions = new List<Case_Classification__c>();
+                List<Case_Classification__c> userQueueCaseCategoryOptions = new List<Case_Classification__c>();
                 List<Case> selectedCases = new List<Case>();
-                List<Id> caseCategoryId = new List<Id>();
+                List<Id> caseCategoryIds = new List<Id>();
                 if(caseList == null) {
-                    caseCategoryId.add(ownerId);
-                    selectedCases = [select id, CC_Category__c from Case Where id IN :caseCategoryId];
+                    selectedCases = [SELECT Id, CC_Category__c FROM Case WHERE Id = :ownerId];
                 }
                 else {
-                    for (caseWrapper cw : caseList) {
-                        caseCategoryId.add(cw.obj.Id);
+                    for (caseWrapper casewrap : caseList) {
+                        caseCategoryIds.add(casewrap.obj.Id);
                     }
-                    selectedCases = [select id, CC_Category__c from Case Where id IN :caseCategoryId];
+                    selectedCases = [SELECT Id, CC_Category__c FROM Case WHERE Id IN :caseCategoryIds];
                 }
 
                 for(Case caseId : selectedCases) {
-                    caseCategoryId.add(caseId.CC_Category__c);
+                    caseCategoryIds.add(caseId.CC_Category__c);
                 }
 
-                currentUserCaseCategoryOptions = [select id, Name from Case_Classification__c where id IN :caseCategoryId];
+                userQueueCaseCategoryOptions = [SELECT Id, Name FROM Case_Classification__c WHERE Id IN :caseCategoryIds];
                 caseCategoryOptions.add(new SelectOption('--', '--'));
 
-                for (Case_Classification__c categoryOption : currentUserCaseCategoryOptions) {
+                for (Case_Classification__c categoryOption : userQueueCaseCategoryOptions) {
                     caseCategoryOptions.add(new SelectOption(categoryOption.Id, categoryOption.Name));
                 }
 

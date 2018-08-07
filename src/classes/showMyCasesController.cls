@@ -355,10 +355,10 @@ public class showMyCasesController extends ListViewController {
 
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
-      
+
         picklistValuesForCaseStatus.add('Busy Signal');
 		    picklistValuesForCaseStatus.add('Email Sent');
-        picklistValuesForCaseStatus.add('In Progress');      
+        picklistValuesForCaseStatus.add('In Progress');
         picklistValuesForCaseStatus.add('Left Message with Third Party');
         picklistValuesForCaseStatus.add('Left voicemail');
         picklistValuesForCaseStatus.add('Outreach Required');
@@ -719,14 +719,16 @@ public class showMyCasesController extends ListViewController {
                 }
 
                 for(Case caseId : userQueueCases) {
-                    caseCategoryIds.add(caseId.CC_Category__c);
+                    if(!caseCategoryIds.contains(caseId.CC_Category__c)) {
+                        caseCategoryIds.add(caseId.CC_Category__c);
+                    }
                 }
 
-                userQueueCaseCategoryOptions = [SELECT Id, Name FROM Case_Classification__c WHERE Id IN :caseCategoryIds AND Visible__c = true AND Active__c = true];
+                userQueueCaseCategoryOptions = [SELECT Id, Name FROM Case_Classification__c WHERE Id IN :caseCategoryIds AND Visible__c = true AND Active__c = true ORDER BY Name ASC];
                 caseCategoryOptions.add(new SelectOption('--', '--'));
 
                 for (Case_Classification__c categoryOption : userQueueCaseCategoryOptions) {
-                    caseCategoryOptions.add(new SelectOption(categoryOption.Id, categoryOption.Name));
+                        caseCategoryOptions.add(new SelectOption(categoryOption.Id, categoryOption.Name));
                 }
 
             return caseCategoryOptions;

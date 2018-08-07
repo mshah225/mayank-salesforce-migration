@@ -62,6 +62,7 @@ public class showMyStudentsController extends ListViewController {
                 outlookChangeOptions.add(new SelectOption('--', '--'));
                 outlookChangeOptions.add(new SelectOption('1', 'Up'));
                 outlookChangeOptions.add(new SelectOption('-1', 'Down'));
+                outlookChangeOptions.add(new SelectOption('0', 'No Change'));
             }
             return outlookChangeOptions;
         }
@@ -277,19 +278,6 @@ public class showMyStudentsController extends ListViewController {
         }
     }
 
-    public boolean searched{
-        get{
-            if(query == NULL || !query.contains('LIKE')){
-                searched = false;
-            }
-            else{
-                searched = true;
-            }
-            return searched;
-        }
-        set;
-    }
-
     /*
      * Used to refresh the list to it's orignal state
      */
@@ -405,7 +393,7 @@ public class showMyStudentsController extends ListViewController {
         }
         if (persistenceEndDate != null) {
             String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
-            createdQuery += ' Student__r.Change_Date__c  <= ' + persistenceSearchEndDate + ' AND ';
+            createdQuery += ' Student__r.Change_Date__c <= ' + persistenceSearchEndDate + ' AND ';
         }
         return createdQuery;
     }

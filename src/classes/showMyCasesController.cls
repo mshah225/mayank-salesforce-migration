@@ -355,10 +355,10 @@ public class showMyCasesController extends ListViewController {
 
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
-
+      
         picklistValuesForCaseStatus.add('Busy Signal');
-		picklistValuesForCaseStatus.add('Email Sent');
-        picklistValuesForCaseStatus.add('In Progress');
+		    picklistValuesForCaseStatus.add('Email Sent');
+        picklistValuesForCaseStatus.add('In Progress');      
         picklistValuesForCaseStatus.add('Left Message with Third Party');
         picklistValuesForCaseStatus.add('Left voicemail');
         picklistValuesForCaseStatus.add('Outreach Required');

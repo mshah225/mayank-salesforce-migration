@@ -52,7 +52,63 @@
         .clear {
             clear: both;
         }
+        
+        #level, #lastUpdated, #change, #levelChangeDate {
+            display: block;
+            line-height: 18px;
+        }
+        
+        .persistenceFeedbackButton {
+            position:relative;
+            border:1px solid transparent;
+            border-radius:2px;
+            margin:0px;
+            padding-left:12px;
+            padding-right:12px;
+            padding-top:6px;
+            padding-bottom:4px;
+            color:white;
+            background-color:RGB(140, 29, 64);
+            transition:all 0.25s ease-in-out 0s;
+            word-wrap: break-word;
+            font-size:10px;
+            text-align:center;
+            text-decoration:none;
+        }
+        
+        .persistenceFeedbackButton img {
+            transition: all 0.25s ease-in-out 0s;
+            -moz-transition: all 0.25s ease-in-out 0s;
+            -webkit-transition: all 0.25s ease-in-out 0s;
+            -o-transition: all 0.25s ease-in-out 0s;
+            -ms-transition: all 0.25s ease-in-out 0s;
+        }
+        
+        .persistenceFeedbackButton:hover {
+            color:white;
+            text-decoration:none;
+            background-color:#d23153;
+        }
+        
+        .persistenceFeedbackButton:hover img {
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";
+            filter: alpha(opacity=95);
+            opacity: 0.95;
+        }
+        
+        .persistenceFeedbackButton:focus {
+            color:white;
+            text-decoration:none;
+        }
     </style>
+    
+    <!-- Google JavaScript API -->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    
+    <!-- Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
 
     <script>
         google.charts.load('current', {

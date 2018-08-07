@@ -1063,4 +1063,64 @@ public with sharing class Test_CaseInboundEmailHandler {
        System.assertEquals(testContact[0].Email, contactAfterTest.Email);
        System.assertEquals(null, contactAfterTest.Last_Case_Email_Used__c);
    }
+
+    @isTest
+    private static void filterOnBody() {
+        CaseInboundEmailHandler emailHandler = new CaseInboundEmailHandler();
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        List<Email_To_Case_Filter__c> filtersToAdd = new List<Email_To_Case_Filter__c>();
+        filtersToAdd.add(new Email_To_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = true));
+        insert filtersToAdd;
+ 
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('asusf@asu.edu');
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'test.test.com@reply.asu.edu';
+        email.fromName = 'Last, First';
+        email.plainTextBody = 'The Safe Word is Banana';
+        email.htmlBody = 'The Safe Word is Banana';
+        env.fromAddress = email.fromAddress;
+       
+        Test.startTest();
+        CaseInboundEmailHandler handler = new CaseInboundEmailHandler();
+        handler.handleInboundEmail(email, env);
+        Test.stopTest();
+        
+        List<LostEmail__c> rejectedMessages = [Select Id FROM LostEmail__c];
+        
+        System.assertEquals(1, rejectedMessages.size());
+    }
+    
+    @isTest
+    private static void filterInBodyButNotActive() {
+        CaseInboundEmailHandler emailHandler = new CaseInboundEmailHandler();
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        List<Email_To_Case_Filter__c> filtersToAdd = new List<Email_To_Case_Filter__c>();
+        filtersToAdd.add(new Email_To_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = false));
+        insert filtersToAdd;
+ 
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('asusf@asu.edu');
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'test.test.com@reply.asu.edu';
+        email.fromName = 'Last, First';
+        email.plainTextBody = 'The Safe Word is Banana';
+        email.htmlBody = 'The Safe Word is Banana';
+        env.fromAddress = email.fromAddress;
+       
+        Test.startTest();
+        CaseInboundEmailHandler handler = new CaseInboundEmailHandler();
+        handler.handleInboundEmail(email, env);
+        Test.stopTest();
+        
+        List<LostEmail__c> rejectedMessages = [Select Id FROM LostEmail__c];
+        
+        System.assertEquals(0, rejectedMessages.size());
+    }
 }

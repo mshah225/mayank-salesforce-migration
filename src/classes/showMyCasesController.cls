@@ -710,10 +710,8 @@ public class showMyCasesController extends ListViewController {
                 List<Case_Classification__c> userQueueCaseCategoryOptions = new List<Case_Classification__c>();
                 List<Case> selectedCases = new List<Case>();
                 List<Id> caseCategoryIds = new List<Id>();
-                if(caseList == null) {
-                    selectedCases = [SELECT Id, CC_Category__c FROM Case WHERE Id = :ownerId];
-                }
-                else {
+
+                if(caseList != null) {
                     for (caseWrapper casewrap : caseList) {
                         caseCategoryIds.add(casewrap.obj.Id);
                     }
@@ -724,7 +722,7 @@ public class showMyCasesController extends ListViewController {
                     caseCategoryIds.add(caseId.CC_Category__c);
                 }
 
-                userQueueCaseCategoryOptions = [SELECT Id, Name FROM Case_Classification__c WHERE Id IN :caseCategoryIds];
+                userQueueCaseCategoryOptions = [SELECT Id, Name FROM Case_Classification__c WHERE Id IN :caseCategoryIds AND Visible__c = true AND Active__c = true];
                 caseCategoryOptions.add(new SelectOption('--', '--'));
 
                 for (Case_Classification__c categoryOption : userQueueCaseCategoryOptions) {

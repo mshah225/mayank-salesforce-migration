@@ -49,9 +49,9 @@
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
-                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-top: 5px; margin-right:10px"
+                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="float: left; margin-top: 5px; margin-right:10px"
                                          onclick="toggleEmailModal(this)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
-                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="float: right; margin-top: 5px;"
+                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="float: left; margin-top: 5px; margin-right:10px; background-color: #8C1D40 !important; color: white !important;"
                                           onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
                                          Filters
                          </apex:outputLink>

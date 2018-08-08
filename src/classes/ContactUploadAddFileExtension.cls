@@ -1,6 +1,7 @@
 public without sharing class ContactUploadAddFileExtension {
     private final Contact_Upload__c myContactUpload;
-    private final Integer BATCH_SIZE = 200;
+    private final Integer UPLOAD_BATCH_SIZE = 100;
+    private final Integer MATCHER_BATCH_SIZE = 200;
     public List<Attachment> attachmentList { get; set; }
     public Boolean onlyContactIdMatch {get; set; }
     
@@ -42,10 +43,10 @@ public without sharing class ContactUploadAddFileExtension {
             queryAttachments();
             if (onlyContactIdMatch) {
                 ContactMatcherBatch batch = new ContactMatcherBatch(newAttachment.Id);
-                Database.executeBatch(batch, BATCH_SIZE);
+                Database.executeBatch(batch, MATCHER_BATCH_SIZE);
             } else {
                 ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id);
-                Database.executeBatch(batch, BATCH_SIZE);
+                Database.executeBatch(batch, UPLOAD_BATCH_SIZE);
             }
         } catch (DMLException e) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,'Error uploading attachment: ' + e.getMessage()));

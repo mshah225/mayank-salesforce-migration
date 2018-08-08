@@ -709,7 +709,7 @@ public class showMyCasesController extends ListViewController {
             caseCategoryOptions = new List<SelectOption>();
             caseCategoryOptions.add(new SelectOption('--', '--'));
 
-            if (caseList != null || caseList.isEmpty()) {
+            if (caseList == null || caseList.isEmpty()) {
                 return caseCategoryOptions;
             }
 
@@ -733,7 +733,7 @@ public class showMyCasesController extends ListViewController {
             caseSubjectOptions = new List<SelectOption>();
             caseSubjectOptions.add(new SelectOption('--', '--'));
 
-            if (caseList != null || caseList.isEmpty()) {
+            if (caseList == null || caseList.isEmpty()) {
                 return caseSubjectOptions;
             }
 
@@ -742,7 +742,7 @@ public class showMyCasesController extends ListViewController {
             for (CaseWrapper casewrap : caseList) {
                 caseSubjectSet.add(casewrap.obj.Subject);
             }
-            
+
             for (String subjectOption : caseSubjectSet) {
                     caseSubjectOptions.add(new SelectOption(subjectOption, subjectOption));
             }

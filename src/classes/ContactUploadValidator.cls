@@ -14,10 +14,13 @@ public class ContactUploadValidator {
         checkRequiredFields();
     }
     
+    public void validateDataForMatcher() {
+        hasMinimumFields();
+    }
+    
     private void checkRequiredFields() {
         checkSubscription();
-        checkFirstAndLastName();
-        checkEmail();
+        hasMinimumFields();
         checkSubscriberStatusAndValue();
     }
     
@@ -47,21 +50,34 @@ public class ContactUploadValidator {
         }
     }
     
-    private Boolean checkFirstAndLastName() {
-        if (!String.isBlank(detail.First_Name__c) && !String.isBlank(detail.Last_Name__c)) {
-            return true;
-        }
-        setError('First and last names are REQUIRED.');
-        return false;
-    }
-    
-    private Boolean checkEmail() {
-        if (!String.isBlank(detail.Email__c)) {
+    private Boolean hasMinimumFields() {
+        if (hasFirstAndLastName() && hasEmail()) {
             detail.Email__c = detail.Email__c.toLowerCase();
             return true;
+        } else if (hasEmplId()) {
+            return true;
+        } else if (hasAsurite()) {
+            return true;
+        } else {
+            setError('First Name, Last Name, and Email OR EMPLID OR Asurite is REQUIRED.');
+            return false;
         }
-        setError('Email is REQUIRED.');
-        return false;
+    }
+    
+    private Boolean hasFirstAndLastName() {
+        return !String.isBlank(detail.First_Name__c) && !String.isBlank(detail.Last_Name__c);
+    }
+    
+    private Boolean hasEmplId() {
+        return !String.isBlank(detail.EMPLID__c);
+    }
+    
+    private Boolean hasAsurite() {
+        return !String.isBlank(detail.ASURITE__c);
+    }
+    
+    private Boolean hasEmail() {
+        return !String.isBlank(detail.Email__c);
     }
     
     private Boolean checkSubscriberStatusAndValue() {

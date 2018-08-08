@@ -32,6 +32,13 @@ public class ContactUploadDetailService {
         return newUploadDetail;
     }
 
+    public Contact_Upload_Detail__c createAndValidateRowForMatcher(List<String> contactInformation) {
+        Contact_Upload_Detail__c newUploadDetail = createDetailWithFields(contactInformation);
+        ContactUploadValidator validator = new ContactUploadValidator(newUploadDetail);
+        validator.validateDataForMatcher();
+        return newUploadDetail;
+    }
+    
     private Contact_Upload_Detail__c createDetailWithFields(List<String> contactInformation) {
          Contact_Upload_Detail__c detailToPopulate = new Contact_Upload_Detail__c(
             Processing_Notes__c = ' ',

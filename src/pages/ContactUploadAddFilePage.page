@@ -18,6 +18,10 @@
         <apex:outputPanel rendered="{!attachmentList.size == 0}">
             <apex:form enctype="multipart/form-data">
                 <apex:pageBlockSection showHeader="false" columns="1" id="block1">
+                    <apex:pageBlockSectionItem>
+                        <apex:outputLabel value="Contact Id Match Only?" for="file"/>
+                        <apex:inputCheckbox value="{!onlyContactIdMatch}"/>
+                    </apex:pageBlockSectionItem>
                     <apex:pageBlockSectionItem >
                         <apex:outputLabel value="File" for="file"/>
                         <apex:inputFile value="{!newAttachment.body}" filename="{!newAttachment.name}" id="file" required="true"/>

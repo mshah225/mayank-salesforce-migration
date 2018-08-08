@@ -26,6 +26,12 @@ public without sharing class ContactUploadSearcher {
         insertContactsForUnmatchedDetails();
     }
     
+    public void searchForContacts() {
+        createDataMappingForSearch();
+        searchContactsForMappedValues();
+        associateDetailsWithMatchedContacts();
+    }
+    
     private void createDataMappingForSearch() {
         for (Contact_Upload_Detail__c detail : detailsToSearch) {
             mapEmplIdIfPresent(detail);

@@ -706,21 +706,17 @@ public class showMyCasesController extends ListViewController {
 
     public List<SelectOption> caseCategoryOptions {
         get {
-            if (caseCategoryOptions == null) {
-                caseCategoryOptions = new List<SelectOption>();
-                caseCategoryOptions.add(new SelectOption('--', '--'));
-                return caseCategoryOptions;
-            }
-
             caseCategoryOptions = new List<SelectOption>();
             caseCategoryOptions.add(new SelectOption('--', '--'));
 
+            if (caseList != null || caseList.isEmpty()) {
+                return caseCategoryOptions;
+            }
+
             Set<Case_Classification__c> caseCategorySet = new Set<Case_Classification__c>();
 
-            if (caseList != null) {
-                for (CaseWrapper casewrap : caseList) {
-                    caseCategorySet.add(casewrap.obj.CC_Category__r);
-                }
+            for (CaseWrapper casewrap : caseList) {
+                caseCategorySet.add(casewrap.obj.CC_Category__r);
             }
 
             for (Case_Classification__c categoryOption : caseCategorySet) {
@@ -734,23 +730,19 @@ public class showMyCasesController extends ListViewController {
 
     public List<SelectOption> caseSubjectOptions {
         get {
-            if (caseSubjectOptions == null) {
-                caseSubjectOptions = new List<SelectOption>();
-                caseSubjectOptions.add(new SelectOption('--', '--'));
-                return caseSubjectOptions;
-            }
-
             caseSubjectOptions = new List<SelectOption>();
             caseSubjectOptions.add(new SelectOption('--', '--'));
 
-            Set<String> caseSubjectSet = new Set<String>();
-
-            if (caseList != null) {
-                for (CaseWrapper casewrap : caseList) {
-                    caseSubjectSet.add(casewrap.obj.Subject);
-                }
+            if (caseList != null || caseList.isEmpty()) {
+                return caseSubjectOptions;
             }
 
+            Set<String> caseSubjectSet = new Set<String>();
+
+            for (CaseWrapper casewrap : caseList) {
+                caseSubjectSet.add(casewrap.obj.Subject);
+            }
+            
             for (String subjectOption : caseSubjectSet) {
                     caseSubjectOptions.add(new SelectOption(subjectOption, subjectOption));
             }

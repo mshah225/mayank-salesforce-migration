@@ -115,12 +115,12 @@
                         <apex:param name="refreshList" value="true" assignTo="{!refreshList}"/>
                         <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg "></i>
                     </apex:commandLink>
-                    <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="float: right; margin-left:10px; margin-top: 5px;"
-                                     onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
-                                    Filters
-                    </apex:outputLink>
                 </apex:outputPanel>
             </div>
+            <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="float: left; margin-top: 5px; background-color: #8C1D40 !important; color: white !important;"
+            onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
+            Filters
+            </apex:outputLink>
                 <div style="text-align: -webkit-center;">
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
                     <apex:pageBlock >

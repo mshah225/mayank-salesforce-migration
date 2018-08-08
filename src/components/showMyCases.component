@@ -91,6 +91,9 @@
                 input.value = '';
                 input.value = tmpStr;
             }
+            j$(document).ajaxSuccess(function() {
+                resetCategoryAndSubjectSelectOptions();
+            });
         </script>
         <style>
             .createdByStartDate::-webkit-calendar-picker-indicator,

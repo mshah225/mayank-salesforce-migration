@@ -33,7 +33,7 @@ public class ContactUploadDetailService {
     }
 
     public Contact_Upload_Detail__c createAndValidateRowForMatcher(List<String> contactInformation) {
-        Contact_Upload_Detail__c newUploadDetail = createDetailWithFieldsForMatcher(contactInformation);
+        Contact_Upload_Detail__c newUploadDetail = createDetailWithFields(contactInformation);
         ContactUploadValidator validator = new ContactUploadValidator(newUploadDetail);
         validator.validateDataForMatcher();
         return newUploadDetail;
@@ -55,31 +55,6 @@ public class ContactUploadDetailService {
             }
        }
        return detailToPopulate;
-    }
-
-    private Contact_Upload_Detail__c createDetailWithFieldsForMatcher(List<String> contactInformation) {
-         Contact_Upload_Detail__c detailToPopulate = new Contact_Upload_Detail__c(
-            Processing_Notes__c = ' ',
-            Contact_Upload__c = contactUploadId,
-            Status__c = 'Success',
-            Source_Line__c = String.join(contactInformation, ','));
-
-        for (Integer i = 0; i < contactInformation.size(); i++) {
-            String columnValue = contactInformation[i];
-            String fieldName = columnToFieldNames.get(columnNames.get(i));
-            if (!String.isBlank(columnValue) && isFieldForMatcher(fieldName)) {
-                columnValue = columnValue.trim();
-                detailToPopulate.put(fieldName, columnValue);
-                System.debug(detailToPopulate);
-            }
-       }
-       return detailToPopulate;
-    }
-    
-    private Boolean isFieldForMatcher(String fieldName) {
-        System.debug(fieldName);
-        return (fieldName.equals('ASURITE__c') || fieldName.equals('First_Name__c') || fieldName.equals('Last_Name__c') 
-                || fieldName.equals('EMPLID__c') || fieldName.equals('Email__c'));
     }
     
     public Subscriber__c createSubscriberForUploadDetail(Contact_Upload_Detail__c uploadDetail) {

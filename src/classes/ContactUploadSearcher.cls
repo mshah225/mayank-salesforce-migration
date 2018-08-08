@@ -20,9 +20,7 @@ public without sharing class ContactUploadSearcher {
     }
     
     public void searchAndCreateContacts() {
-        createDataMappingForSearch();
-        searchContactsForMappedValues();
-        associateDetailsWithMatchedContacts();
+        searchForContacts();
         insertContactsForUnmatchedDetails();
     }
     

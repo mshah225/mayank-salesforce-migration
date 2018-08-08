@@ -91,6 +91,9 @@
                 input.value = '';
                 input.value = tmpStr;
             }
+            j$(document).ajaxSuccess(function() {
+                resetCategoryAndSubjectSelectOptions();
+            });
         </script>
         <style>
             .createdByStartDate::-webkit-calendar-picker-indicator,
@@ -160,14 +163,14 @@
                                     style="margin-right:10px;">
                                 <apex:selectOptions value="{!caseStatusOptions}"/>
                             </apex:selectList>
-                            <apex:inputText label="Case Subject: " id="caseSubject"
-                                        value="{!caseSubject}"
-                                        html-placeholder="All or part of subject"
-                                        styleClass="searchBox"/>
-                            <apex:inputText label="Case Category: " id="caseCategory"
-                                        value="{!categoryFilter}"
-                                        html-placeholder="All or part of category"
-                                        styleClass="searchBox"/>
+                            <apex:selectList id="caseSubject" label="Case Subject: " value="{!caseSubject}" size="1" required="false"
+                                style="margin-right:10px;">
+                                <apex:selectOptions value="{!caseSubjectOptions}"/>
+                            </apex:selectList>
+                            <apex:selectList label="Case Category: " value="{!categoryFilter}" size="1" required="false"
+                                style="margin-right:10px;">
+                                <apex:selectOptions value="{!caseCategoryOptions}"/>
+                            </apex:selectList>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="2">
                             <apex:input styleClass="createdByStartDate" label="Created Date From: " value="{!createdByStartDate}" type="auto"/>

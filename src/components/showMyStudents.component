@@ -41,7 +41,7 @@
                 }
             </script>
             <style>
-                .createdByStartDate::-webkit-calendar-picker-indicator, 
+                .createdByStartDate::-webkit-calendar-picker-indicator,
                 .createdByEndDate::-webkit-calendar-picker-indicator {
                     opacity: 1;
                 }
@@ -93,8 +93,8 @@
                                     <apex:input styleClass="createdByEndDate" label="To: " value="{!persistenceEndDate}" type="auto"/>
                                 </apex:pageBlockSection>
                             </apex:pageBlock>
-                            <apex:commandLink style="float:right; margin-top: 25px;" value='Clear Filters' styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
-                            <apex:commandLink style="float:right; margin-right: 5px; margin-top: 25px;" value='Apply Filters' styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
+                            <apex:commandLink style="float:left; margin-right: 5px; margin-top: 25px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
+                            <apex:commandLink style="float:left; margin-right: 5px; margin-top: 25px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
                         </apex:outputPanel>
                     </div>
                 </div>

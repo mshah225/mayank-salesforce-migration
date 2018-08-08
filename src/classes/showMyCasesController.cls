@@ -26,14 +26,14 @@ public class showMyCasesController extends ListViewController {
     public String caseStatus {get; set;}
     public String caseRecommendedActions {get; set;}
     public String caseRecommendedActionsOther {get; set;}
-    
+
     public String caseStudentIntention {get; set;}
     public String caseStudentReturnTerm {get; set;}
     public String caseStudentRisk {get; set;}
     public String caseStudentRiskOther {get; set;}
     public List<String> caseReasonNotReturning {get; set;}
     public String caseReasonNotReturningOther {get; set;}
-    
+
     public String categoryFilter {get; set;}
 
     public String caseStatusFilter {
@@ -355,16 +355,16 @@ public class showMyCasesController extends ListViewController {
 
     private List<String> getPicklistValues() {
         List<String> pickListValuesForCaseStatus= new List<String>();
-        
-        picklistValuesForCaseStatus.add('Busy Signal');        
-		picklistValuesForCaseStatus.add('Email Sent');       
-        picklistValuesForCaseStatus.add('In Progress');        
+
+        picklistValuesForCaseStatus.add('Busy Signal');
+		    picklistValuesForCaseStatus.add('Email Sent');
+        picklistValuesForCaseStatus.add('In Progress');
         picklistValuesForCaseStatus.add('Left Message with Third Party');
         picklistValuesForCaseStatus.add('Left voicemail');
         picklistValuesForCaseStatus.add('Outreach Required');
         picklistValuesForCaseStatus.add('Unable to Leave Voicemail');
         picklistValuesForCaseStatus.add('Wrong number');
-        
+
         return pickListValuesForCaseStatus;
     }
 
@@ -414,7 +414,7 @@ public class showMyCasesController extends ListViewController {
     }
 
     private String createFilterStringForSubject() {
-        if (!String.isEmpty(caseSubject)) {
+        if ((!String.isEmpty(caseSubject)) && (!caseSubject.contains('--'))) {
             return ' Subject LIKE \'%' + caseSubject + '%\' AND ';
         }
         return ' ';
@@ -564,7 +564,7 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
-    
+
     public List<SelectOption> studentIntentionOptions {
         get {
             if (studentIntentionOptions == null) {
@@ -579,7 +579,7 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
-    
+
     public List<SelectOption> caseStudentReturnTermOptions {
         get {
             if (caseStudentReturnTermOptions == null) {
@@ -596,7 +596,7 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
-    
+
     public List<SelectOption> caseStudentRiskOptions {
         get {
             if (caseStudentRiskOptions == null) {
@@ -613,7 +613,7 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
-    
+
     public List<SelectOption> caseReasonNotReturningOptions {
         get {
             if (caseReasonNotReturningOptions == null) {
@@ -629,7 +629,7 @@ public class showMyCasesController extends ListViewController {
 
         set;
     }
-    
+
     public void massClose() {
 
         List<Case> casesToClose = new List<case>();
@@ -644,17 +644,17 @@ public class showMyCasesController extends ListViewController {
                 selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
                 selectedCase.Recommended_Actions__c = caseRecommendedActions;
                 selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
-                
+
                 selectedCase.Student_Intention__c = caseStudentIntention;
                 selectedCase.What_term_is_the_student_planning_to_ret__c = caseStudentReturnTerm;
                 selectedCase.Student_Presented_Risk_for__c = caseStudentRisk;
                 selectedCase.Student_Presented_Risk_for_Other__c = caseStudentRiskOther.left(50);
                 selectedCase.Reasons_Not_Returning__c = createStringFromReasonNotReturningList();
                 selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
-                
+
                 casesToClose.add(selectedCase);
             }
-            
+
             if (casesToClose.size() > 0) {
                 try {
                     Database.update(casesToClose);
@@ -666,7 +666,7 @@ public class showMyCasesController extends ListViewController {
                     );
                 }
             }
-            
+
             clearMassUpdateFields();
         }
     }
@@ -678,7 +678,7 @@ public class showMyCasesController extends ListViewController {
         }
         return formattedReasonNotReturning;
     }
-    
+
     private void clearMassUpdateFields() {
         caseStatus = null;
         caseReasonAdministrativelyClosed = null;
@@ -691,16 +691,64 @@ public class showMyCasesController extends ListViewController {
         caseReasonNotReturning = null;
         caseReasonNotReturningOther = null;
     }
-    
+
     private String createFilterStringForCategory() {
         String createdQuery = ' ';
         if (!String.isEmpty(categoryFilter)) {
             String searchCon = categoryFilter.trim();
-            if (!String.isEmpty(searchCon)) {
-                createdQuery = ' (CC_Category__r.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ) AND ';
+            if ((!String.isEmpty(searchCon)) && (!searchCon.contains('--'))) {
+                createdQuery = ' (CC_Category__r.Id = \'' + String.escapeSingleQuotes(searchCon) + '\' ) AND ';
             }
         }
 
         return createdQuery;
+    }
+
+    public List<SelectOption> caseCategoryOptions {
+        get {
+            caseCategoryOptions = new List<SelectOption>();
+            caseCategoryOptions.add(new SelectOption('--', '--'));
+
+            if (caseList == null || caseList.isEmpty()) {
+                return caseCategoryOptions;
+            }
+
+            Set<Case_Classification__c> caseCategorySet = new Set<Case_Classification__c>();
+
+            for (CaseWrapper casewrap : caseList) {
+                caseCategorySet.add(casewrap.obj.CC_Category__r);
+            }
+
+            for (Case_Classification__c categoryOption : caseCategorySet) {
+                    caseCategoryOptions.add(new SelectOption(categoryOption.Id, categoryOption.Name));
+            }
+            caseCategoryOptions.sort();
+            return caseCategoryOptions;
+        }
+        set;
+    }
+
+    public List<SelectOption> caseSubjectOptions {
+        get {
+            caseSubjectOptions = new List<SelectOption>();
+            caseSubjectOptions.add(new SelectOption('--', '--'));
+
+            if (caseList == null || caseList.isEmpty()) {
+                return caseSubjectOptions;
+            }
+
+            Set<String> caseSubjectSet = new Set<String>();
+
+            for (CaseWrapper casewrap : caseList) {
+                caseSubjectSet.add(casewrap.obj.Subject);
+            }
+
+            for (String subjectOption : caseSubjectSet) {
+                    caseSubjectOptions.add(new SelectOption(subjectOption, subjectOption));
+            }
+            caseSubjectOptions.sort();
+            return caseSubjectOptions;
+        }
+        set;
     }
 }

@@ -301,7 +301,7 @@ public class AdvisorPortalMainPageController {
         get {
             String whereClause = '';
             if (ownerId != null) {
-                myProactiveQuery = 'SELECT CaseNumber, ContactId, CreatedDate, Owner.Name, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
+                myProactiveQuery = 'SELECT CaseNumber, CC_Category__r.Name, ContactId, CreatedDate, Owner.Name, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ';
                if(ownerIdList != null){
                    whereClause = 'WHERE (OwnerId = \'' + ownerIdList[0] + '\' ';
@@ -328,7 +328,7 @@ public class AdvisorPortalMainPageController {
         get {
             String whereClause = '';
             if (ownerId != null) {
-                myWatchlistQuery = 'SELECT CaseNumber, ContactId, CreatedDate, Owner.Name, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
+                myWatchlistQuery = 'SELECT CaseNumber, CC_Category__r.Name, ContactId, CreatedDate, Owner.Name, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ' +
                     'WHERE (OwnerId = \'' + ownerId + '\' ';
                 if (ownerIdList != null) {

@@ -706,36 +706,47 @@ public class showMyCasesController extends ListViewController {
 
     public List<SelectOption> caseCategoryOptions {
         get {
+            if (caseCategoryOptions == null) {
+                caseCategoryOptions = new List<SelectOption>();
+                caseCategoryOptions.add(new SelectOption('--', '--'));
+                return caseCategoryOptions;
+            }
+            else {
                 caseCategoryOptions = new List<SelectOption>();
                 caseCategoryOptions.add(new SelectOption('--', '--'));
                 List<Case> userQueueCases = new List<Case>();
-                List<Id> caseCategoryIds = new List<Id>();
+                Set<Case_Classification__c> caseCategoryIds = new Set<Case_Classification__c>();
 
                 if (caseList != null) {
-                    for (caseWrapper casewrap : caseList) {
-                        caseCategoryIds.add(casewrap.obj.CC_Category__c);
+                    for (CaseWrapper casewrap : caseList) {
+                        caseCategoryIds.add(casewrap.obj.CC_Category__r);
                     }
                 }
-                List<Case_Classification__c> userQueueCaseCategoryOptions = new List<Case_Classification__c>();
-                userQueueCaseCategoryOptions = [SELECT Id, Name FROM Case_Classification__c WHERE Id IN :caseCategoryIds AND Visible__c = true AND Active__c = true ORDER BY Name ASC];
-
-                for (Case_Classification__c categoryOption : userQueueCaseCategoryOptions) {
+                
+                for (Case_Classification__c categoryOption : caseCategoryIds) {
                         caseCategoryOptions.add(new SelectOption(categoryOption.Id, categoryOption.Name));
                 }
                 return caseCategoryOptions;
+            }
         }
         set;
     }
 
     public List<SelectOption> caseSubjectOptions {
         get {
+            if (caseSubjectOptions == null) {
+                caseSubjectOptions = new List<SelectOption>();
+                caseSubjectOptions.add(new SelectOption('--', '--'));
+                return caseSubjectOptions;
+            }
+            else {
                 caseSubjectOptions = new List<SelectOption>();
                 caseSubjectOptions.add(new SelectOption('--', '--'));
                 List<Case> userQueueCases = new List<Case>();
                 List<Id> caseSubjectIds = new List<Id>();
-                
+
                 if (caseList != null) {
-                    for (caseWrapper casewrap : caseList) {
+                    for (CaseWrapper casewrap : caseList) {
                         caseSubjectIds.add(casewrap.obj.Id);
                     }
                     userQueueCases = [SELECT Id, Subject FROM Case WHERE Id IN :caseSubjectIds ORDER BY Subject ASC];
@@ -744,13 +755,14 @@ public class showMyCasesController extends ListViewController {
                 Set<String> userQueueCaseSubjectOptions = new Set<String>();
 
                 for (Case caseSubjectQueue : userQueueCases) {
-                        userQueueCaseSubjectOptions.add(String.valueOf(caseSubjectQueue.Subject));
+                        userQueueCaseSubjectOptions.add(caseSubjectQueue.Subject);
                 }
 
                 for (String subjectOption : userQueueCaseSubjectOptions) {
                         caseSubjectOptions.add(new SelectOption(subjectOption, subjectOption));
                 }
                 return caseSubjectOptions;
+            }
         }
         set;
     }

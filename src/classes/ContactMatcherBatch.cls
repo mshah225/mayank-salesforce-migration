@@ -112,14 +112,18 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
     }
     
     private void addContactIdToCSV(List<String> tableOfContacts, List<Contact_Upload_Detail__c> contactDetails) {
-        Integer i = 0;
+        Integer contactDetailRow = 0;
         if (String.isEmpty(updatedCSVBody)) {
             createHeaderForContactMatcher();
             tableOfContacts.remove(0);
         }
         for (String row : tableOfContacts) {
-            updatedCSVBody += row + ',' + contactDetails[i].Contact__c + '\r';
-            i++;
+            if (contactDetails[contactDetailRow].Contact__c == null) {
+                updatedCSVBody += row + ', \r';
+            } else {
+                updatedCSVBody += row + ',' + contactDetails[contactDetailRow].Contact__c + '\r';
+            }
+            contactDetailRow++;
         }
     }
     

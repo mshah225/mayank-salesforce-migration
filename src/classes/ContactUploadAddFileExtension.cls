@@ -1,7 +1,7 @@
 public without sharing class ContactUploadAddFileExtension {
     private final Contact_Upload__c myContactUpload;
-    private final Integer UPLOAD_BATCH_SIZE = 100;
-    private final Integer MATCHER_BATCH_SIZE = 200;
+    private final Integer UPLOAD_BATCH_SIZE = 200;
+    private final Integer MATCHER_BATCH_SIZE = 500;
     public List<Attachment> attachmentList { get; set; }
     public Boolean onlyContactIdMatch {get; set; }
     

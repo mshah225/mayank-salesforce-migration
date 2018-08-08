@@ -41,7 +41,7 @@ public without sharing class ContactUploadAddFileExtension {
             insert newAttachment;
             queryAttachments();
             if (onlyContactIdMatch) {
-                ContactMatcherBatch batch = new ContactUploadBatch(newAttachment.Id);
+                ContactMatcherBatch batch = new ContactMatcherBatch(newAttachment.Id);
                 Database.executeBatch(batch, BATCH_SIZE);
             } else {
                 ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id);

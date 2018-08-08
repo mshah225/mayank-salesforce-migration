@@ -28,7 +28,7 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
         List<Contact_Upload_Detail__c> allDetailsFromLines = new List<Contact_Upload_Detail__c>();
         ContactUploadDetailService detailCreator = new ContactUploadDetailService(contactUploadId, columnMap);
         for (List<String> lineValues: csvLines) {
-            Contact_Upload_Detail__c detailFromLine = detailCreator.createAndValidateRow(lineValues);
+            Contact_Upload_Detail__c detailFromLine = detailCreator.createAndValidateRowForMatcher(lineValues);
             if (detailFromLine.Status__c != 'Error') {
                 detailsToProcess.add(detailFromLine);
             } else {
@@ -131,10 +131,16 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
     }
     
     private void createNewAttachment() {
-        Attachment updatedAttachment = [SELECT Body FROM Attachment WHERE Id =: attachmentId LIMIT 1];
+        Attachment updatedAttachment = [SELECT Name, ParentId, Body, Description FROM Attachment WHERE Id =: attachmentId LIMIT 1];
         updatedAttachment.Body = Blob.valueOf(updatedCSVBody);
         updatedAttachment.Id = null;
-        updatedAttachment.Name += '(With Ids)'; 
+        updatedAttachment.Name = updateFileName(updatedAttachment.Name); 
         insert updatedAttachment;
+    }
+    
+    private String updateFileName(String oldFileName) {
+        String fileName = oldFileName;
+        fileName = fileName.substring(0, fileName.indexOf('.'));
+        return fileName + '(With Ids).csv'; 
     }
 }

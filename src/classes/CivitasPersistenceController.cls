@@ -1,12 +1,12 @@
-public class CivitasPersistenceController {    
+public class CivitasPersistenceController {
     private static final Integer CENSUS_OFFSET = 22;
     
-    private Integer endMonth;
-    private String nextTerm;
-    private String prevTerm;
-    private String currentTerm;
-    private Integer startMonth;
-    private String contactEmplId;
+    public Integer endMonth;
+    public String nextTerm;
+    public String prevTerm;
+    public String currentTerm;
+    public Integer startMonth;
+    public String contactEmplId;
     
     public static final Date TODAY = System.today();
     public static Integer dayValue = 0;
@@ -110,7 +110,7 @@ public class CivitasPersistenceController {
             WHERE EmplId__c = :contactEmplId 
             OR Id = :contactEmplId LIMIT 1];
 
-        Contact thisContact = contacts[0];
+        Contact thisContact = contacts.isEmpty() ?new Contact() : contacts[0];
         Persistence_Outlook__c prevData;
         Integer dateIncr = startDate.day();
         for (Persistence_Outlook__c outlook : [SELECT 

@@ -121,9 +121,30 @@
             onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
             Filters
             </apex:outputLink>
-                <div style="text-align: -webkit-center;">
+                <div style="text-align: left; margin-top: 40px; margin-left: 20px; line-height: .92857143 !important;">
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
                     <apex:pageBlock >
+                        <apex:pageBlockSection columns="3" title="Case Filters">
+                            <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
+                                    style="margin-right:10px;">&nbsp;&nbsp;
+                                <apex:selectOptions value="{!caseStatusOptions}"/>
+                            </apex:selectList>
+                            <apex:selectList id="caseSubject" label="Case Subject: " value="{!caseSubject}" size="1" required="false"
+                                style="margin-right:10px;">&nbsp;&nbsp;
+                                <apex:selectOptions value="{!caseSubjectOptions}"/>
+                            </apex:selectList>
+                            <apex:selectList label="Case Category: " value="{!categoryFilter}" size="1" required="false"
+                                style="margin-right:10px;">&nbsp;&nbsp;
+                                <apex:selectOptions value="{!caseCategoryOptions}"/>
+                            </apex:selectList>
+                        </apex:pageBlockSection>
+                        &nbsp;&nbsp;&nbsp;
+                        <apex:pageBlockSection columns="2">
+                            <apex:input styleClass="createdByStartDate" label="Created Date From: " value="{!createdByStartDate}" type="auto"/>
+                            <apex:input styleClass="createdByEndDate" label="To: " value="{!createdByEndDate}" type="auto"/>
+                            <apex:input styleClass="createdByStartDate" label="Followup Date From: " value="{!followupStartDate}" type="auto"/>
+                            <apex:input styleClass="createdByEndDate" label="To: " value="{!followupEndDate}" type="auto"/>
+                        </apex:pageBlockSection>
                         <apex:pageBlockSection columns="3" title="Student Filters">
                             <apex:inputText id="studentFilterInput"
                                         label="Student: "
@@ -156,27 +177,6 @@
                         <apex:pageBlockSection columns="2">
                             <apex:input styleClass="createdByStartDate" label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>
                             <apex:input styleClass="createdByEndDate" label="To: " value="{!persistenceEndDate}" type="auto"/>
-                        </apex:pageBlockSection>
-
-                        <apex:pageBlockSection columns="3" title="Case Filters">
-                            <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
-                                    style="margin-right:10px;">
-                                <apex:selectOptions value="{!caseStatusOptions}"/>
-                            </apex:selectList>
-                            <apex:selectList id="caseSubject" label="Case Subject: " value="{!caseSubject}" size="1" required="false"
-                                style="margin-right:10px;">
-                                <apex:selectOptions value="{!caseSubjectOptions}"/>
-                            </apex:selectList>
-                            <apex:selectList label="Case Category: " value="{!categoryFilter}" size="1" required="false"
-                                style="margin-right:10px;">
-                                <apex:selectOptions value="{!caseCategoryOptions}"/>
-                            </apex:selectList>
-                        </apex:pageBlockSection>
-                        <apex:pageBlockSection columns="2">
-                            <apex:input styleClass="createdByStartDate" label="Created Date From: " value="{!createdByStartDate}" type="auto"/>
-                            <apex:input styleClass="createdByEndDate" label="To: " value="{!createdByEndDate}" type="auto"/>
-                            <apex:input styleClass="createdByStartDate" label="Followup Date From: " value="{!followupStartDate}" type="auto"/>
-                            <apex:input styleClass="createdByEndDate" label="To: " value="{!followupEndDate}" type="auto"/>
                         </apex:pageBlockSection>
                     </apex:pageBlock>
                     <apex:commandLink style="float:left; margin-right: 5px; margin-top: 25px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>

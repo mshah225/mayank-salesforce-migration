@@ -8,7 +8,7 @@ public without sharing class SubscriptionCenterController {
     private String campaignIdParm;
     private String subscriptionIdParm;
     private String subscriberKeyParm;
-    public String subscriberIdentifier { get; set; }
+    public String hashedSubscriberKeyParm { get; set; }
     public String searchTerms { get; set; }
     public String subscriberEmail { get; set; }
     public Boolean hasOptedOutOfEmail { get; set; }
@@ -35,20 +35,20 @@ public without sharing class SubscriptionCenterController {
     public List<String>  availableSubsBUMapKeys { get; set; }
 
     public SubscriptionCenterController() {
-        subscriberIdentifier = ApexPages.currentPage().getParameters().get('subscriberKey'); // Id of a Contact or Lead record
+        hashedSubscriberKeyParm = ApexPages.currentPage().getParameters().get('subscriberKey'); // Id of a Contact or Lead record
         String hashedSubscriptionIdParm = ApexPages.currentPage().getParameters().get('subscriptionId'); // Id of a Subscription__c record
         String hashedCampaignIdParm = ApexPages.currentPage().getParameters().get('campaignId'); // Id of a Campaign record
         String hashedSubscriberIdParm = ApexPages.currentPage().getParameters().get('subscriberId'); // Id of a Subscriber__c record
         actionParm = ApexPages.currentPage().getParameters().get('action'); // String describing what action to take
 
-        if (subscriberIdentifier != null) {
-            String encodedSubscriberKeyParm = EncodingUtil.urlEncode(subscriberIdentifier, 'UTF-8');
+        if (hashedSubscriberKeyParm != null) {
+            String encodedSubscriberKeyParm = EncodingUtil.urlEncode(hashedSubscriberKeyParm, 'UTF-8');
             
             List<Contact> tmpList = new List<Contact>();
             tmpList = [SELECT Id FROM Contact 
                         WHERE HashContactId__c =: encodedSubscriberKeyParm 
-                        OR Id =: subscriberIdentifier 
-                        OR SSB_CRMSYSTEM_CONTACT_ID__c =: subscriberIdentifier
+                        OR Id =: hashedSubscriberKeyParm 
+                        OR SSB_CRMSYSTEM_CONTACT_ID__c =: hashedSubscriberKeyParm
                         ORDER BY RecordType.Name ASC, CreatedDate DESC
                         LIMIT 1
                         ];
@@ -58,8 +58,8 @@ public without sharing class SubscriptionCenterController {
                 List<Lead> tmpLeadList = new List<Lead>();
                 tmpLeadList = [SELECT Id, Convert_Contact__c FROM Lead 
                                 WHERE HashLeadId__c =: encodedSubscriberKeyParm
-                                OR Id =: subscriberIdentifier 
-                                OR SSB_CRMSYSTEM_CONTACT_ID__c =: subscriberIdentifier
+                                OR Id =: hashedSubscriberKeyParm 
+                                OR SSB_CRMSYSTEM_CONTACT_ID__c =: hashedSubscriberKeyParm
                                 ORDER BY RecordType.Name ASC, CreatedDate DESC
                                 LIMIT 1
                                 ];

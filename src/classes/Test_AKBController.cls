@@ -56,7 +56,8 @@ public class Test_AKBController
 
         insert testContact;
 
-        User testUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User)userCreator.create(1)[0];
         testUser.ProfileId = p.Id;
         testUser.ContactId = testContact.Id;
 
@@ -74,7 +75,7 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -104,7 +105,7 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -128,7 +129,7 @@ public class Test_AKBController
                 LIMIT 1
             ];
 
-            testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+            testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
             testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
             akbPage = Page.akb;
             Test.setCurrentPage(akbPage);
@@ -152,7 +153,7 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -177,7 +178,7 @@ public class Test_AKBController
                 LIMIT 1
             ];
 
-            testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+            testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
             testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
             akbPage = Page.akb;
             Test.setCurrentPage(akbPage);
@@ -202,7 +203,7 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -233,7 +234,7 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -266,7 +267,7 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);

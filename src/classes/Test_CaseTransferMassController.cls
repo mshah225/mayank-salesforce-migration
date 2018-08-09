@@ -104,7 +104,8 @@ private class Test_CaseTransferMassController {
 
         insert testCase;
 
-        User testUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User)userCreator.create(1)[0];
         Id pId = [SELECT Id FROM Profile WHERE Name LIKE 'ASU Service%' LIMIT 1].Id;
         testUser.ProfileId = pId;
 
@@ -164,7 +165,7 @@ private class Test_CaseTransferMassController {
         User testUser = [
             SELECT Id, Name
             FROM User
-            WHERE Name = 'Test User'
+            WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'
         ];
 
         Case caseToTest = [SELECT Id FROM Case LIMIT 1];

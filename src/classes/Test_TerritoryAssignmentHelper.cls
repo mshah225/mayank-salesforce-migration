@@ -3,7 +3,8 @@ public without sharing class Test_TerritoryAssignmentHelper
 {
     @testSetup static void setup()
     {
-        User testUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User)userCreator.create(1)[0];
 
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
@@ -14,7 +15,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testAccountGeomarketCodeAssignment()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Account HS = new Account();
         HS.Name = 'Test High School';
@@ -65,7 +66,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testContactGeomarketCodeAssignment()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact con = new Contact();
         con.FirstName = 'TestFirstName';
@@ -166,7 +167,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testFreshmanScholar()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
 
         Contact Con = new Contact();
@@ -210,7 +211,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testGraduateOpportunity()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Contact> testContacts = ContactService.createTestContacts(1);
 
@@ -252,7 +253,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testInternational()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
@@ -296,12 +297,15 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testInternationalChina()
     {
-        List<User> chinaManagers = UserService.createMultipleTestUsers(2);
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        List<User> chinaManagers = userCreator.create(2);
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
         for (User u : chinaManagers)
         {
             u.ProfileId = saProfile;
+            u.UserName += 'China';
+            u.CommunityNickname += 'China';
         }
 
         insert chinaManagers;
@@ -402,12 +406,15 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testInternationalUnitedStates()
     {
-        List<User> usManagers = UserService.createMultipleTestUsers(2);
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        List<User> usManagers = userCreator.create(2);
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
         for (User u : usManagers)
         {
             u.ProfileId = saProfile;
+            u.UserName += 'US';
+            u.CommunityNickname += 'US';
         }
 
         insert usManagers;
@@ -508,12 +515,15 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testInternationalTransfer()
     {
-        List<User> transferManagers = UserService.createMultipleTestUsers(2);
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        List<User> transferManagers = userCreator.create(2);
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
         for (User u : transferManagers)
         {
             u.ProfileId = saProfile;
+            u.UserName += 'tManagers';
+            u.CommunityNickname += 'tManagers';
         }
 
         insert transferManagers;
@@ -593,7 +603,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testInternationalAdmitConditional()
     {
-        User conditAdmitManager = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User conditAdmitManager = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International Admitted - Conditional';
@@ -631,7 +641,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testInternationalStageChange()
     {
-        User conditAdmitManager = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User conditAdmitManager = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International Admitted - Conditional';
@@ -673,7 +683,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLocation()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
@@ -723,7 +733,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testAdmittedLocation()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
@@ -765,7 +775,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLastHighSchoolAttended()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Account HS = new Account();
         HS.Name = 'Test High School';
@@ -814,7 +824,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLastCollegeAttended()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.User__c = TestUser.Id;
@@ -908,7 +918,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testGeomarketCode()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'Geomarket';
@@ -958,7 +968,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testState()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'State';
@@ -1004,7 +1014,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testDefaultUser()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
@@ -1045,11 +1055,12 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testInactiveUser()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Profile saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
 
-        User InactiveUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User InactiveUser = (User)userCreator.create(1)[0];
         InactiveUser.FirstName = 'Test';
         InactiveUser.LastName = 'Name';
         InactiveUser.CompanyName = 'Test Company';
@@ -1120,7 +1131,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadFreshmanScholar()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
 
@@ -1161,7 +1172,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadInternational()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
 
@@ -1201,7 +1212,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadLastInstitution()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Key_Value__c KVHS = new Key_Value__c();
         KVHS.Geomarket_ZIP__c = '84108';
@@ -1250,7 +1261,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadState()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'State';
@@ -1294,7 +1305,7 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadDefaultUser()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
 
@@ -1336,12 +1347,15 @@ public without sharing class Test_TerritoryAssignmentHelper
 
     @isTest public static void testLeadUpdate()
     {
-        List<User> testUsers = UserService.createMultipleTestUsers(2);
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        List<User> testUsers = userCreator.create(2);
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
         for (User u : testUsers)
         {
             u.ProfileId = saProfile;
+            u.UserName += 'leadUpdate';
+            u.CommunityNickname += 'leadUpdate';
         }
 
         insert testUsers;

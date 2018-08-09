@@ -3,7 +3,8 @@ private class Test_BatchDeferredTAClasses {
 
     @testSetup static void setup()
     {
-        List<User> testUsers = UserService.createMultipleTestUsers(2);
+    	UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        List<User> testUsers = userCreator.create(2);
 
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
@@ -16,8 +17,8 @@ private class Test_BatchDeferredTAClasses {
     }
 
     @isTest static void testBatchAccountDeferredLeadTA() {
-	    User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
-	    User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+	    User TestUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+	    User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com1'];
 
 	    Key_Value__c KVHS = new Key_Value__c();
 	    KVHS.Geomarket_ZIP__c = '84108';
@@ -68,8 +69,8 @@ private class Test_BatchDeferredTAClasses {
     }
 
     @isTest static void testBatchAccountDeferredOppTA() {
-        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
-        User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+	    User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com1'];
 
         Account HS = new Account();
 	    HS.Name = 'Test High School';
@@ -122,8 +123,8 @@ private class Test_BatchDeferredTAClasses {
     }
 
     @isTest static void testBatchTARDeferredLeadTA() {
-        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
-        User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+	    User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com1'];
 
         Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
 	    Atar1.Rule_Type__c = 'Default User';
@@ -166,8 +167,8 @@ private class Test_BatchDeferredTAClasses {
     }
 
     @isTest static void testBatchTARDeferredOppTA() {
-        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
-        User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+	    User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com1'];
 
         Contact Con = new Contact();
 	    Con.FirstName = 'TestFirstName';

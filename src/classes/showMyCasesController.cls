@@ -630,7 +630,7 @@ public class showMyCasesController extends ListViewController {
         set;
     }
 
-    public void massClose() {
+public void massClose() {
 
         List<Case> casesToClose = new List<case>();
 
@@ -666,7 +666,7 @@ public class showMyCasesController extends ListViewController {
                     );
                 }
             }
-
+            refreshList = true;
             clearMassUpdateFields();
         }
     }

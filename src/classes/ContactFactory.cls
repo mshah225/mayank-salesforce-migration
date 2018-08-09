@@ -6,9 +6,10 @@ public class ContactFactory {
                 FirstName = 'Test',
                 LastName = 'Contact',
                 Email = 'test@test.com',
-                EmplId__c = '1234567890'
+                EmplId__c = '123456789'
             ));
             this.addToFieldsToIncrement('LastName');
+            this.addToFieldsToIncrement('EmplId__c');
         }
     }
     

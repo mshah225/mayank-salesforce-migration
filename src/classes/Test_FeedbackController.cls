@@ -7,7 +7,7 @@ private class Test_FeedbackController
 	private static FeedbackController fc;
 	private static ServiceCenter sc;
 
-	@testSetup static void setUp()
+	static void setUp()
 	{
 		Term__c termAC = new Term__c();
 		Date dTac = Date.today().adddays(365);
@@ -37,6 +37,7 @@ private class Test_FeedbackController
 
 	@isTest static void testFeedbackCase()
 	{
+		setUp();
 		testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
 		PageReference setPage = Page.feedback;
 		Test.setCurrentPage(setPage);
@@ -53,6 +54,7 @@ private class Test_FeedbackController
 
 	@isTest static void testViewAsFeedback()
 	{
+		setUp();
 		testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
 		PageReference setPage = Page.feedback;
 		Test.setCurrentPage(setPage);

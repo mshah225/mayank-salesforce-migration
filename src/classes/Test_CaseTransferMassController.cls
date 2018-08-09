@@ -1,7 +1,8 @@
 @isTest
 private class Test_CaseTransferMassController {
 	
-    @testSetup static void setUpData()
+	private static User testUser;
+    static void setUpData()
     {
         Group testGroup = new Group(
             Name = 'Test Group Name',
@@ -105,7 +106,7 @@ private class Test_CaseTransferMassController {
         insert testCase;
 
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User testUser = (User)userCreator.create(1)[0];
+        testUser = (User)userCreator.create(1)[0];
         Id pId = [SELECT Id FROM Profile WHERE Name LIKE 'ASU Service%' LIMIT 1].Id;
         testUser.ProfileId = pId;
 
@@ -114,6 +115,7 @@ private class Test_CaseTransferMassController {
 
     @isTest static void testTransferToDept()
     {
+        setUpData();
         Case_Assignment_Rule__c testCar = [
             SELECT Id, Label__c, CTPGroup__c
             FROM Case_Assignment_Rule__c
@@ -162,12 +164,7 @@ private class Test_CaseTransferMassController {
 
     @isTest static void testTransferToUserWithSearch()
     {
-        User testUser = [
-            SELECT Id, Name
-            FROM User
-            WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'
-        ];
-
+        setUpData();
         Case caseToTest = [SELECT Id FROM Case LIMIT 1];
         List<Case> casesToTest = [SELECT Id FROM Case];
         List<string> ids = new List<string>();

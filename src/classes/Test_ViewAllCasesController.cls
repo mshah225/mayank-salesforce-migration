@@ -1,7 +1,8 @@
 @isTest
 private class Test_ViewAllCasesController
 {
-    @testSetup static void setup()
+    private static User testUser;
+    static void setup()
     {
         Term__c termAC = new Term__c();
         Date dTac = Date.today().adddays(365);
@@ -21,7 +22,7 @@ private class Test_ViewAllCasesController
         insert testContact;
 
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User testUser = (User)userCreator.create(1)[0];
+        testUser = (User)userCreator.create(1)[0];
         testUser.ProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
         testUser.ContactId = testContact.Id;
         insert testUser;
@@ -48,8 +49,7 @@ private class Test_ViewAllCasesController
 
     @isTest static void testGetAllClosedCases()
     {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'testuser'];
-
+        setup();
         PageReference viewAllCasesPage = Page.viewAllCases;
         Test.setCurrentPage(viewAllCasesPage);
         ServiceCenter sc;

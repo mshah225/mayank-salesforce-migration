@@ -3,7 +3,7 @@ public class CivitasControllerTest {
     
     @isTest 
     public static void civitasWrapperFormat() {
-        CivitasPersistenceController.civitasWrapper civitasWrapper = new CivitasPersistenceController.civitasWrapper(date.newInstance(2000, 12, 12), 3, 'High', 'Y', 'Test', 'User', '1111111110', 1, '0030W00003MVpD0');
+        CivitasPersistenceController.civitasWrapper civitasWrapper = new CivitasPersistenceController.civitasWrapper(date.newInstance(2000, 12, 12), 3, 'High', True, 'Test', 'User', '1111111110', 1, '0030W00003MVpD0');
         
         System.assertEquals(civitasWrapper.fullDate, '12/12/2000');
         System.assertEquals(civitasWrapper.name, 'Test User');

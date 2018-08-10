@@ -630,44 +630,51 @@ public class showMyCasesController extends ListViewController {
         set;
     }
 
-    public void massClose() {
+
+    public void validateMassCloseFields () {
         if (String.isEmpty(caseStatus) || String.isEmpty(caseRecommendedActions)) {
             ApexPages.addMessage(
                 new ApexPages.message(ApexPages.severity.ERROR,'You must select an option for the Case Status AND Recommended Action(s)')
             );
-        } else {
-            List<Case> listOfCasesToClose = new List<case>();
-
-            for (case selectedCase : selectedCases) {
-                selectedCase.Status = caseStatus;
-                selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
-                selectedCase.Recommended_Actions__c = caseRecommendedActions;
-                selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
-
-                selectedCase.Student_Intention__c = caseStudentIntention;
-                selectedCase.What_term_is_the_student_planning_to_ret__c = caseStudentReturnTerm;
-                selectedCase.Student_Presented_Risk_for__c = caseStudentRisk;
-                selectedCase.Student_Presented_Risk_for_Other__c = caseStudentRiskOther.left(50);
-                selectedCase.Reasons_Not_Returning__c = createStringFromReasonNotReturningList();
-                selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
-
-                listOfCasesToClose.add(selectedCase);
-            }
-
-            if (listOfCasesToClose.size() > 0) {
-                try {
-                    Database.update(listOfCasesToClose);
-                } catch(Exception ex) {
-                    ApexPages.addMessage(
-                        new ApexPages.message(
-                            ApexPages.severity.ERROR,
-                            'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
-                    );
-                }
-            }
-            refreshList = true;
-            clearMassUpdateFields();
         }
+        else {
+            updateCaseListFieldsToClose();
+        }
+
+    }
+    public void updateCaseListFieldsToClose () {
+        List<Case> listOfCasesToClose = new List<case>();
+
+        for (case selectedCase : selectedCases) {
+            selectedCase.Status = caseStatus;
+            selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
+            selectedCase.Recommended_Actions__c = caseRecommendedActions;
+            selectedCase.Recommended_Actions_Other__c = caseRecommendedActionsOther;
+            selectedCase.Student_Intention__c = caseStudentIntention;
+            selectedCase.What_term_is_the_student_planning_to_ret__c = caseStudentReturnTerm;
+            selectedCase.Student_Presented_Risk_for__c = caseStudentRisk;
+            selectedCase.Student_Presented_Risk_for_Other__c = caseStudentRiskOther.left(50);
+            selectedCase.Reasons_Not_Returning__c = createStringFromReasonNotReturningList();
+            selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
+
+            listOfCasesToClose.add(selectedCase);
+        }
+        if (listOfCasesToClose.size() > 0) {
+            massCloseCaseList(listOfCasesToClose);
+        }
+    }
+    public void massCloseCaseList (List<Case> caseListToClose) {
+        try {
+            Database.update(caseListToClose);
+        } catch(Exception ex) {
+            ApexPages.addMessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
+            );
+        }
+        refreshList = true;
+        clearMassUpdateFields();
     }
 
     private String createStringFromReasonNotReturningList() {

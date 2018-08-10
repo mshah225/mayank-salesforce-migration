@@ -631,14 +631,13 @@ public class showMyCasesController extends ListViewController {
     }
 
     public void massClose() {
-
-        List<Case> casesToClose = new List<case>();
-
         if (String.isEmpty(caseStatus) || String.isEmpty(caseRecommendedActions)) {
             ApexPages.addMessage(
                 new ApexPages.message(ApexPages.severity.ERROR,'You must select an option for the Case Status AND Recommended Action(s)')
             );
         } else {
+            List<Case> listOfCasesToClose = new List<case>();
+
             for (case selectedCase : selectedCases) {
                 selectedCase.Status = caseStatus;
                 selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
@@ -652,12 +651,12 @@ public class showMyCasesController extends ListViewController {
                 selectedCase.Reasons_Not_Returning__c = createStringFromReasonNotReturningList();
                 selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
 
-                casesToClose.add(selectedCase);
+                listOfCasesToClose.add(selectedCase);
             }
 
-            if (casesToClose.size() > 0) {
+            if (listOfCasesToClose.size() > 0) {
                 try {
-                    Database.update(casesToClose);
+                    Database.update(listOfCasesToClose);
                 } catch(Exception ex) {
                     ApexPages.addMessage(
                         new ApexPages.message(

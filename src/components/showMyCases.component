@@ -602,7 +602,7 @@
                                </apex:pageBlock>
                                </div>
                             <div class="modal-footer">
-                                <apex:commandButton onclick="return confirm('The selected cases will be closed. Are you sure you want to continue?');" action="{!validateMassCloseFields}" status="ASUAjaxStatus" styleClass="btn btn-default asu-primary" value="Close Selected Cases">
+                                <apex:commandButton onclick="return confirm('The selected cases will be closed. Are you sure you want to continue?');" action="{!massCloseCaseList}" status="ASUAjaxStatus" styleClass="btn btn-default asu-primary" value="Close Selected Cases">
                                 </apex:commandButton>
                             </div>
                             </apex:pageMessage>

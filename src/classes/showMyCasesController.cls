@@ -631,18 +631,19 @@ public class showMyCasesController extends ListViewController {
     }
 
 
-    public void validateMassCloseFields () {
+    public Boolean validateMassCloseFields () {
         if (String.isEmpty(caseStatus) || String.isEmpty(caseRecommendedActions)) {
             ApexPages.addMessage(
                 new ApexPages.message(ApexPages.severity.ERROR,'You must select an option for the Case Status AND Recommended Action(s)')
             );
+            return false;
         }
         else {
-            updateCaseListFieldsToClose();
+            return true;
         }
 
     }
-    public void updateCaseListFieldsToClose () {
+    public List<Case> updateCaseListFieldsToClose () {
         List<Case> listOfCasesToClose = new List<case>();
 
         for (case selectedCase : selectedCases) {
@@ -659,22 +660,25 @@ public class showMyCasesController extends ListViewController {
 
             listOfCasesToClose.add(selectedCase);
         }
-        if (listOfCasesToClose.size() > 0) {
-            massCloseCaseList(listOfCasesToClose);
-        }
+        return listOfCasesToClose;
     }
-    public void massCloseCaseList (List<Case> caseListToClose) {
-        try {
-            Database.update(caseListToClose);
-        } catch(Exception ex) {
-            ApexPages.addMessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
-            );
+    public void massCloseCaseList () {
+        if (validateMassCloseFields()) {
+            List<Case> casesToCloseList =  updateCaseListFieldsToClose();
+            if (casesToCloseList.size() > 0) {
+                try {
+                    Database.update(casesToCloseList);
+                } catch(Exception ex) {
+                    ApexPages.addMessage(
+                        new ApexPages.message(
+                            ApexPages.severity.ERROR,
+                            'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
+                    );
+                }
+                refreshList = true;
+                clearMassUpdateFields();
+            }
         }
-        refreshList = true;
-        clearMassUpdateFields();
     }
 
     private String createStringFromReasonNotReturningList() {

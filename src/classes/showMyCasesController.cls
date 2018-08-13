@@ -634,8 +634,7 @@ public class showMyCasesController extends ListViewController {
     public Boolean validateMassCloseFields () {
         if (String.isEmpty(caseStatus) || String.isEmpty(caseRecommendedActions)) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -654,23 +653,23 @@ public class showMyCasesController extends ListViewController {
         }
     }
     public void massClose () {
-        if (validateMassCloseFields()) {
-            if (!selectedCases.isEmpty()) {
-                try {
-                    updateCaseListFieldsToClose();
-                    Database.update(selectedCases);
-                } catch(Exception ex) {
-                    ApexPages.addMessage(
-                        new ApexPages.message(
-                            ApexPages.severity.ERROR,
-                            'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
-                    );
-                }
-                refreshList = true;
-                clearMassUpdateFields();
-            }
+        if (selectedCases.isEmpty()) {
+            return;
         }
-        else {
+        if (validateMassCloseFields()) {
+            try {
+                updateCaseListFieldsToClose();
+                Database.update(selectedCases);
+            } catch(Exception ex) {
+                ApexPages.addMessage(
+                    new ApexPages.message(
+                        ApexPages.severity.ERROR,
+                        'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
+                );
+            }
+            refreshList = true;
+            clearMassUpdateFields();
+        } else {
             ApexPages.addMessage(
                 new ApexPages.message(ApexPages.severity.ERROR,'You must select an option for the Case Status AND Recommended Action(s)')
             );

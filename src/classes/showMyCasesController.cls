@@ -662,7 +662,7 @@ public class showMyCasesController extends ListViewController {
         }
         return listOfCasesToClose;
     }
-    public void massCloseCaseList () {
+    public void massClose () {
         if (validateMassCloseFields()) {
             List<Case> casesToCloseList =  updateCaseListFieldsToClose();
             if (casesToCloseList.size() > 0) {

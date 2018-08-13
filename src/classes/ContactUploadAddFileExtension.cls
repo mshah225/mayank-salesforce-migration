@@ -8,6 +8,7 @@ public without sharing class ContactUploadAddFileExtension {
         if (onlyContactIdMatch == null) {
             onlyContactIdMatch = false;
         }
+        return onlyContactIdMatch;
     }
     
     set; 

@@ -640,7 +640,6 @@ public class showMyCasesController extends ListViewController {
         }
     }
     public void updateCaseListFieldsToClose () {
-
         for (case selectedCase : selectedCases) {
             selectedCase.Status = caseStatus;
             selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;

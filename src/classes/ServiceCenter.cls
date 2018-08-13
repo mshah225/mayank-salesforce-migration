@@ -7,7 +7,7 @@ public with sharing class ServiceCenter
     private Decimal origPin;  
     private Term__c termcAC;
     private Term__c termcB;
-    private Map<String, String> viewAsMap;
+    private MyAsuViewAs viewAsService;
     
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
@@ -24,6 +24,7 @@ public with sharing class ServiceCenter
     public String asurite { get; set; }
     public String userAsurite;
     public String mMessage;
+    
 
     public ServiceCenter(){
         suggestAnArticle = new Case();
@@ -42,18 +43,19 @@ public with sharing class ServiceCenter
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
         }
     }
 
     public void popUserContact(){
-        if (viewingAs){
-            userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
-            stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
-            viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
-        }
-        else{
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+            stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
+            viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
+            viewingAs = true;
+        } else {
             userContact = ContactService.getLoggedInContact();
         }
         firstName = userContact.FirstName;

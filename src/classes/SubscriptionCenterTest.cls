@@ -46,10 +46,10 @@ private class SubscriptionCenterTest {
     private static void testMain() {
         SubscriptionCenterController controller;
         String subscriber = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
-
+		String decodedHashContact = EncodingUtil.urlDecode(subscriber, 'UTF-8');
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber);
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', decodedHashContact);
 
         controller = new SubscriptionCenterController();
 
@@ -88,12 +88,29 @@ private class SubscriptionCenterTest {
     }
 
     @isTest
+    private static void findMatchOnContactId() {
+        String subscriberKey = [SELECT Id FROM Contact LIMIT 1].Id;
+
+        Test.setCurrentPage(Page.SubscriptionCenter);
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriberKey);
+
+        SubscriptionCenterController controller = new SubscriptionCenterController();
+
+        Integer subCounter = 0;
+        for (String key : controller.subsByParentSubIdMap.keySet()) {
+            subCounter += controller.subsByParentSubIdMap.get(key).size();
+        }
+        System.assertEquals(SUBSCRIBED_COUNT, subCounter);
+    }
+    
+    @isTest
     private static void testUnsubParent() {
         SubscriptionCenterController controller;
         String subscriber = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
+        subscriber = EncodingUtil.urlDecode(subscriber, 'UTF-8');
         ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber);
 
         controller = new SubscriptionCenterController();
@@ -120,6 +137,7 @@ private class SubscriptionCenterTest {
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
+        subscriber = EncodingUtil.urlDecode(subscriber, 'UTF-8');
         ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber);
 
         controller = new SubscriptionCenterController();
@@ -168,6 +186,7 @@ private class SubscriptionCenterTest {
         String leadHash = [Select HashLeadId__c From Lead LIMIT 1].HashLeadId__c;
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
+        leadHash = EncodingUtil.urlDecode(leadHash, 'UTF-8');
         ApexPages.CurrentPage().getParameters().put('subscriberKey', leadHash);
 
         controller = new SubscriptionCenterController();
@@ -214,7 +233,8 @@ private class SubscriptionCenterTest {
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('action', 'unsubscribe');
-        ApexPages.CurrentPage().getParameters().put('subscriberId', subscriberIn.HashSubscriberId__c);
+        String decodedHashId = EncodingUtil.urlDecode(subscriberIn.HashSubscriberId__c, 'UTF-8');
+        ApexPages.CurrentPage().getParameters().put('subscriberId', decodedHashId);
 
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();
@@ -245,11 +265,13 @@ private class SubscriptionCenterTest {
         SubscriptionCenterController controller;
         
         testCampaign = [SELECT HashCampaignId__c FROM Campaign LIMIT 1];
+        String decodedHashedContactId = EncodingUtil.urlDecode(Hasher.hashId(subscriber.Contact__c), 'UTF-8');
+        String decodedHashedCampaignId = EncodingUtil.urlDecode(testCampaign.HashCampaignId__c, 'UTF-8');
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('action', 'unsubscribe');
-        ApexPages.CurrentPage().getParameters().put('campaignId', testCampaign.HashCampaignId__c);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', Hasher.hashId(subscriber.Contact__c));
+        ApexPages.CurrentPage().getParameters().put('campaignId', decodedHashedCampaignId);  
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber.Contact__c);
 
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();
@@ -270,14 +292,17 @@ private class SubscriptionCenterTest {
             WHERE Subscriber_Status__c = 'Subscribed' 
             LIMIT 1
         ];
-
+        
+        String decodedContactHash = EncodingUtil.urlDecode(Hasher.hashId(subscriber.Contact__c), 'UTF-8');
+        String decodedSubscriptionHash = EncodingUtil.urlDecode(Hasher.hashId(subscriber.Subscription__c), 'UTF-8');
+        
         SubscriptionCenterController controller;
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('action', 'unsubscribe');
-        ApexPages.CurrentPage().getParameters().put('subscriptionId', Hasher.hashId(subscriber.Subscription__c));
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', Hasher.hashId(subscriber.Contact__c));
+        ApexPages.CurrentPage().getParameters().put('subscriptionId', decodedSubscriptionHash);
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', decodedContactHash);
 
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();
@@ -293,10 +318,10 @@ private class SubscriptionCenterTest {
     private static void testOptOut() {
         SubscriptionCenterController controller;
         String subscriberId = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
-
+        String decodedHashedContact = EncodingUtil.urlDecode(subscriberId, 'UTF-8');
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriberId);
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', decodedHashedContact);
 
         controller = new SubscriptionCenterController();
         controller.toggleOptOut();
@@ -319,7 +344,7 @@ private class SubscriptionCenterTest {
     private static void testFilterAvailableSubs() {
         SubscriptionCenterController controller;
         String subscriberId = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
-
+        subscriberId = EncodingUtil.urlDecode(subscriberId, 'UTF-8');
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriberId);
@@ -354,10 +379,10 @@ private class SubscriptionCenterTest {
             FROM Subscriber__c 
             LIMIT 1
         ];
-
+        String decodedContactHash = EncodingUtil.urlDecode(subscriber.Contact__r.HashContactId__c, 'UTF-8');
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
-        ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber.Contact__r.HashContactId__c);
+        ApexPages.CurrentPage().getParameters().put('subscriberKey', decodedContactHash);
 
         controller = new SubscriptionCenterController();
         SubscriptionCenterController.SubscriberWrapper sw = 

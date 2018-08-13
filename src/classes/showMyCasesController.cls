@@ -633,9 +633,6 @@ public class showMyCasesController extends ListViewController {
 
     public Boolean validateMassCloseFields () {
         if (String.isEmpty(caseStatus) || String.isEmpty(caseRecommendedActions)) {
-            ApexPages.addMessage(
-                new ApexPages.message(ApexPages.severity.ERROR,'You must select an option for the Case Status AND Recommended Action(s)')
-            );
             return false;
         }
         else {
@@ -643,8 +640,7 @@ public class showMyCasesController extends ListViewController {
         }
 
     }
-    public List<Case> updateCaseListFieldsToClose () {
-        List<Case> listOfCasesToClose = new List<case>();
+    public void updateCaseListFieldsToClose () {
 
         for (case selectedCase : selectedCases) {
             selectedCase.Status = caseStatus;
@@ -657,17 +653,14 @@ public class showMyCasesController extends ListViewController {
             selectedCase.Student_Presented_Risk_for_Other__c = caseStudentRiskOther.left(50);
             selectedCase.Reasons_Not_Returning__c = createStringFromReasonNotReturningList();
             selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
-
-            listOfCasesToClose.add(selectedCase);
         }
-        return listOfCasesToClose;
     }
     public void massClose () {
         if (validateMassCloseFields()) {
-            List<Case> casesToCloseList =  updateCaseListFieldsToClose();
-            if (casesToCloseList.size() > 0) {
+            if (!selectedCases.isEmpty()) {
                 try {
-                    Database.update(casesToCloseList);
+                    updateCaseListFieldsToClose();
+                    Database.update(selectedCases);
                 } catch(Exception ex) {
                     ApexPages.addMessage(
                         new ApexPages.message(
@@ -678,6 +671,11 @@ public class showMyCasesController extends ListViewController {
                 refreshList = true;
                 clearMassUpdateFields();
             }
+        }
+        else {
+            ApexPages.addMessage(
+                new ApexPages.message(ApexPages.severity.ERROR,'You must select an option for the Case Status AND Recommended Action(s)')
+            );
         }
     }
 

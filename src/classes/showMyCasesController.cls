@@ -638,7 +638,6 @@ public class showMyCasesController extends ListViewController {
         else {
             return true;
         }
-
     }
     public void updateCaseListFieldsToClose () {
 

@@ -1,4 +1,5 @@
-<apex:page controller="CoachPortalMainPageController"
+<apex:page docType="html-5.0"
+           controller="CoachPortalMainPageController"
            standardStylesheets="false"
            showHeader="false"
            sidebar="false"
@@ -12,7 +13,7 @@
 
     <apex:pageMessages />
 
-    <c:ViewAsComponent selectOptions="{!viewAsOptions}"
+    <c:coachPortalViewAsComponent selectOptions="{!viewAsOptions}"
                        hasViewAs="{!hasViewAs}"
                        mimicId="{!$User.Id}"
                        id="viewAsComponent">
@@ -30,7 +31,7 @@
         </apex:form>
 
         <apex:outputPanel id="rerenderMe">
-            <c:SummaryListComponent id="summaryList"
+            <c:CoachPortalSummaryListComponent id="summaryList"
                                     aggregateQuery="{!mySummaryListQuery}"
                                     owner="{!mimicId}"
                                     transferOptions="{!mySubordinateOptions}"
@@ -40,7 +41,7 @@
                                     isCoaching="true"
                                     showSummarySubject="true" showSummaryCount="true" showSummaryFollowupDate="false"
                                     showCaseListSelection="true" showCaseListName="true" showCaseListEMPLID="true" showCaseListSubject="true"
-                                    showCaseListStatus="true" showCaseListFollowupDate="true" showCaseListTransfer="true" showCaseMassEmail="false" 
+                                    showCaseListStatus="true" showCaseListFollowupDate="true" showCaseListTransfer="true" showCaseMassEmail="false"
                                     showProactiveCaseCount="false" showReactiveCaseCount="false" showSearch="true" />
 
             <apex:tabPanel styleClass="buffer" id="tabPanel">
@@ -60,7 +61,7 @@
                           switchType="client"
                           styleClass="wsTabContent"
                           id="proactiveTab">
-                    <c:showMyCases id="proactiveList"
+                    <c:coachPortalShowMyCases id="proactiveList"
                                    queryString="{!myProactiveQuery}"
                                    transferOptions="{!mySubordinateOptions}"
                                    proactiveRTID="{!CoachCaseRTID}"
@@ -79,7 +80,7 @@
                 </apex:tab>
             </apex:tabPanel>
         </apex:outputPanel>
-    </c:ViewAsComponent>
+    </c:coachPortalViewAsComponent>
 
     <div style="text-align:center;padding:25px;">
         <c:DynamicFeedbackButton betaTag="true" carName="Coach Portal"/>

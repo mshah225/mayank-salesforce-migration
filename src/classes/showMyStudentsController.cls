@@ -7,9 +7,68 @@ public class showMyStudentsController extends ListViewController {
     private boolean differentField;
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
-
+    public String studentGroup {get; set;}
+    public string searchString {get; set;}
+    public String campusFilter {get; set;}
+    public String majorFilter {get; set;}
+    public Date persistenceStartDate {get; set;}
+    public Date persistenceEndDate {get; set;}
     public Map<Id,caseWrapper> caseCountMap  {get; set;}
     public List<studentWrapper> studentList {get; set;}
+
+    public String outlookScoreFilter {
+        get {
+            if (outlookScoreFilter == null) {
+                outlookScoreFilter = '--';
+            }
+            return outlookScoreFilter;
+    	}
+        set;
+    }
+
+    public List<SelectOption> outlookScoreOptions {
+        get {
+            if (outlookScoreOptions == null) {
+                outlookScoreOptions = new List<SelectOption>();
+
+                outlookScoreOptions.add(new SelectOption('--', '--'));
+                outlookScoreOptions.add(new SelectOption('1', 'Very Low'));
+                outlookScoreOptions.add(new SelectOption('2', 'Low'));
+                outlookScoreOptions.add(new SelectOption('3', 'Moderate'));
+                outlookScoreOptions.add(new SelectOption('4', 'High'));
+                outlookScoreOptions.add(new SelectOption('5', 'Very High'));
+            }
+            return outlookScoreOptions;
+        }
+
+        set;
+    }
+
+    public String outlookChangeFilter {
+        get {
+            if (outlookChangeFilter == null) {
+                outlookChangeFilter = '--';
+            }
+            return outlookChangeFilter;
+    	}
+        set;
+    }
+
+    public List<SelectOption> outlookChangeOptions {
+        get {
+            if (outlookChangeOptions == null) {
+                outlookChangeOptions = new List<SelectOption>();
+
+                outlookChangeOptions.add(new SelectOption('--', '--'));
+                outlookChangeOptions.add(new SelectOption('1', 'Up'));
+                outlookChangeOptions.add(new SelectOption('-1', 'Down'));
+                outlookChangeOptions.add(new SelectOption('0', 'No Change'));
+            }
+            return outlookChangeOptions;
+        }
+
+        set;
+    }
 
     /*
      * Updats the setCon query with the ORDER BY clause sortField and sortDir
@@ -29,26 +88,26 @@ public class showMyStudentsController extends ListViewController {
             ErrorLogger.log(e, vars, debug);
         }
     }
-    
+
     /*
      * Get the list of students selected by the end user.
      */
     public List<Success_Student__c> selectedStudents {
         get {
             selectedStudents = new List<Success_Student__c>();
-            
+
             for (studentWrapper sw : studentList) {
                 if (sw.selected) {
                     selectedStudents.add(sw.obj);
                 }
             }
-            
+
             return selectedStudents;
         }
-        
+
         set {
             selectedStudents = value;
-            
+
             if (selectedStudents == null) {
                 for (studentWrapper sw : studentList) {
                     sw.selected = false;
@@ -56,7 +115,7 @@ public class showMyStudentsController extends ListViewController {
             }
         }
     }
-    
+
     /*
      * Portal Email object to store user input for mass emails
      */
@@ -68,18 +127,18 @@ public class showMyStudentsController extends ListViewController {
                     Subject__c = 'A Message from your College and Department'
                 );
             }
-            
+
             return tempEmail;
         }
-        
+
         set;
     }
-    
+
     /*
      * Create portal email records for sending emails through marketing cloud
      */
     public void massEmail() {
-        List<String> vars = new List<String>(); 
+        List<String> vars = new List<String>();
         List<Portal_Email__c> emails = new List<Portal_Email__c>();
         try {
             for (Success_Student__c ss : selectedStudents) {
@@ -93,11 +152,11 @@ public class showMyStudentsController extends ListViewController {
                     Email_Template_Name__c = tempEmail.Email_Template_Name__c
                 ));
             }
-           
+
             if (emails.size() > 0) {
                 emailInsertResults = dataBase.insert(emails);
             }
-            
+
             // Reset the tempEmail
             tempEmail = null;
             emailPreviewMode = false;
@@ -106,34 +165,34 @@ public class showMyStudentsController extends ListViewController {
             ErrorLogger.log(e, vars, debug);
         }
     }
-    
+
 
     public override void resetRecordList() {
         Success_Student__c tempStudent;
-        
-        studentList = new List<studentWrapper>(); 
+
+        studentList = new List<studentWrapper>();
         for (SObject so : setCon.getRecords()) {
             tempStudent = (Success_Student__c) so;
             if(tempStudent.Student__c!=null) {
                 studentList.add(new studentWrapper(tempStudent));
             }
         }
-        
+
         resetCaseCounts();
     }
-    
+
     /*
     * Resets the caseCounts map
     */
-    public void resetCaseCounts() {       
+    public void resetCaseCounts() {
         caseCountMap = new Map<Id, caseWrapper>();
         Set<Id> contactIds = new Set<Id>();
-        
+
         if (studentList != null) {
             for (studentWrapper sw : studentList) {
-                contactIds.add(sw.obj.Student__c);    
+                contactIds.add(sw.obj.Student__c);
             }
-            
+
             for (Contact c : [SELECT id,
                               (SELECT RecordTypeId
                                FROM Cases
@@ -150,16 +209,16 @@ public class showMyStudentsController extends ListViewController {
                                   }
                               }
         }
-        
+
     }
-    
+
     /*
      * Used to track the number of proactive and reactive cases at the contact level
      */
      public class caseWrapper {
         public Integer reactiveCount {get; set;}
         public Integer proactiveCount {get; set;}
-        
+
         public caseWrapper() {
             reactiveCount = 0;
             proactiveCount = 0;
@@ -174,11 +233,11 @@ public class showMyStudentsController extends ListViewController {
         public Success_Student__c obj {get; set;}
         public String changeDir {get; set;}
         public String imageName {get; set;}
-        
+
         public studentWrapper(Success_Student__c student) {
             selected = false;
             obj = student;
-            
+
             if (obj.Most_Recent_Outlook_Change_Direction__c == 1) {
                 changeDir = 'Up';
             } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
@@ -188,9 +247,9 @@ public class showMyStudentsController extends ListViewController {
             } else {
                 changeDir = ' ';
             }
-            
+
             if (obj.Curr_Cont_Prediction_Level__c < 4) {
-               imageName = 'icon-1.png'; 
+               imageName = 'icon-1.png';
             } else if (obj.Curr_Cont_Prediction_Level__c < 6) {
                 imageName = 'icon-2.png';
             } else if (obj.Curr_Cont_Prediction_Level__c == 6) {
@@ -202,7 +261,7 @@ public class showMyStudentsController extends ListViewController {
             }
         }
     }
-    
+
     /*
      * Class to hold all of the data needed for Civitas
      */
@@ -211,76 +270,29 @@ public class showMyStudentsController extends ListViewController {
         //Direction is negative for down, 0 for same, and positive for up
         public Integer direction {get; set;}
         public Date changeDate {get; set;}
-        
+
         public CivitasWrapper(Integer oScore, Integer dir, Date change) {
             outlookScore = oScore;
             direction = dir;
             changeDate = change;
         }
     }
-    
-    public boolean searched{
-        get{
-            if(query == NULL || !query.contains('LIKE')){
-                searched = false;
-            }
-            else{
-                searched = true;
-            }
-            return searched;
-        }
-        set;
-    }
-    
-    /**
-    *Used to modify the query based on search parameter inputted by user
-    *
-    */
-    public string searchString{
-        get{
-            return searchString;
-        }
-        set{
-            searchString = value;
-            if(searchString != NULL){
-                String tempQuery = removeSearchString();  
-                Integer loc = tempQuery.indexOf('WHERE');
-                String tempQueryLeft = tempQuery.substring(0, loc + 5);
-                tempQueryLeft = tempQueryLeft.trim();
-                String tempQueryRight = tempQuery.subString(loc + 6);
-                tempQueryRight = tempQueryRight.trim();
-                
-                String searchCon = value.trim();
-                String tmp = tempQueryLeft +' (' +
-                    'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                    'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                ') AND ' + tempQueryRight;
-                query=tmp;
-            }
-        }  
-    }
-    
+
     /*
      * Used to refresh the list to it's orignal state
      */
     public void resetSearch(){
         searchString = NULL;
-        query = removeSearchString();
-    }
-    
-    /*
-     * Trims the query to remove any specific searches
-     */
-    @TestVisible
-    private string removeSearchString(){
-        String tmpQuery = query;
-        if(searched){
-            Integer loc = tmpQuery.indexOf('AND');
-            String left = tmpQuery.substring(0, tmpQuery.indexOf('WHERE')+6);
-            String right = tmpQuery.substring(loc+3);
-            tmpQuery = left + right;
-        }
-        return tmpQuery;
+        campusFilter = NULL;
+        persistenceStartDate = NULL;
+        persistenceEndDate = NULL;
+        studentGroup = NULL;
+        majorFilter = NULL;
+
+        outlookChangeFilter = '--';
+        outlookScoreFilter = '--';
+
+        query = queryAttr;
     }
 
     /*
@@ -293,5 +305,115 @@ public class showMyStudentsController extends ListViewController {
         // because the page wasn't rerendering after mass email and the selections
         // were being re-submitted.
         selectedStudents = null;
+    }
+
+    public void insertFilterIntoQuery() {
+        String modifiedQuery = queryAttr;
+        String filter = createFilterForStudent();
+
+        Integer loc = modifiedQuery.indexOf('WHERE');
+        String leftSideOfQuery = modifiedQuery.substring(0, loc + 5);
+        leftSideOfQuery = leftSideOfQuery.trim();
+        String rightSideOfQuery = modifiedQuery.subString(loc + 6);
+        rightSideOfQuery = rightSideOfQuery.trim();
+
+        modifiedQuery = leftSideOfQuery + filter + rightSideOfQuery;
+        query = modifiedQuery;
+    }
+
+    private String createFilterForStudent() {
+        String filter = createFilterStringForStudentIdSearch();
+        filter += createFilterStringForStudentGroup();
+        filter += createFilterStringForOutlookChange();
+        filter += createFilterStringForOutlookScore();
+        filter += createFilterStringForOutlookDate();
+        filter += createFilterStringForCollegeDegreeAndCampus();
+        return filter;
+    }
+
+    private String createFilterStringForStudentGroup() {
+        if (!String.isEmpty(studentGroup)) {
+            return '(Student__c IN (SELECT SG_Contact__c FROM Student_Group__c ' +
+                    'WHERE SG_PeopleSoft_Code__c LIKE \'%' +
+                    studentGroup + '%\')) AND ';
+        }
+        return ' ';
+    }
+
+    private String createFilterStringForStudentIdSearch() {
+        String searchCon = searchString.trim();
+        String createdQuery = ' ';
+        if (!String.isEmpty(searchCon)) {
+            createdQuery = ' (' +
+                'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
+                'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                'OR ASURiteID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                ') AND ';
+        }
+        return createdQuery;
+    }
+
+    private String createFilterStringForOutlookChange() {
+        if (outlookChangeFilter != '--') {
+            return ' Student__r.Most_Recent_Outlook_Change_Direction__c  = ' + outlookChangeFilter + ' AND ';
+        }
+        return ' ';
+    }
+
+    private String createFilterStringForOutlookScore() {
+        String outlookScoreQueryFilter;
+        switch on outlookScoreFilter {
+            when '1' {
+                outlookScoreQueryFilter = ' Student__r.Curr_Cont_Prediction_Level__c < 4 AND ';
+            }
+            when '2' {
+                outlookScoreQueryFilter = ' Student__r.Curr_Cont_Prediction_Level__c >= 4 AND Student__r.Curr_Cont_Prediction_Level__c < 6 AND ';
+            }
+            when '3' {
+                outlookScoreQueryFilter = ' Student__r.Curr_Cont_Prediction_Level__c = 6 AND ';
+            }
+            when '4' {
+                outlookScoreQueryFilter = ' Student__r.Curr_Cont_Prediction_Level__c = 7 AND ';
+            }
+            when '5' {
+                outlookScoreQueryFilter = ' Student__r.Curr_Cont_Prediction_Level__c > 7 AND ';
+            }
+            when '--' {
+                outlookScoreQueryFilter = '';
+            }
+        }
+        return outlookScoreQueryFilter;
+    }
+
+    private String createFilterStringForOutlookDate() {
+        String createdQuery = ' ';
+        if (persistenceStartDate != null) {
+            String persistenceSearchStartDate = DateTime.newInstance(persistenceStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' Student__r.Change_Date__c >= ' + persistenceSearchStartDate + ' AND ';
+        }
+        if (persistenceEndDate != null) {
+            String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            createdQuery += ' Student__r.Change_Date__c <= ' + persistenceSearchEndDate + ' AND ';
+        }
+        return createdQuery;
+    }
+
+    private String createFilterStringForCollegeDegreeAndCampus() {
+        if (!String.isEmpty(campusFilter) || !String.isEmpty(majorFilter)) {
+            String collegeDegreeAndCampusFilter = ' (Student__c IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
+                   'WHERE Status__c = \'Active in Program\' ';
+
+            if (!String.isEmpty(campusFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Campus__r.Name LIKE \'%' +
+                campusFilter + '%\' ';
+            }
+            if (!String.isEmpty(majorFilter)) {
+                collegeDegreeAndCampusFilter += ' AND Plan_Description__c LIKE \'%' +
+                majorFilter + '%\' ';
+            }
+            collegeDegreeAndCampusFilter += ')) AND ';
+            return collegeDegreeAndCampusFilter;
+        }
+        return ' ';
     }
 }

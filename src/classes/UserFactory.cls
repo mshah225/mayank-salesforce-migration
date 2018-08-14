@@ -4,10 +4,10 @@ public class UserFactory {
         public DefaultUser() {
             super(new User(FirstName = 'Test',
                     LastName = 'User',
-                    Username = 'test.user@test.example.com',
+                    Username = 'test.user.Emperor.Of.Byzantium@test.example.com',
                     Email = 'test.user@test.example.com',
                     Alias = 'testuser',
-                    CommunityNickname = 'testuserCom',
+                    CommunityNickname = 'testuserEmperorOfByzantium',
                     TimeZoneSidKey = 'America/Phoenix',
                     LocaleSidKey = 'en_US',
                     EmailEncodingKey = 'ISO-8859-1',
@@ -15,6 +15,7 @@ public class UserFactory {
                 )
             );
             this.addToFieldsToIncrement('LastName');
+            this.addToFieldsToIncrement('CommunityNickname');
             this.addToFieldsToIncrement('Email');
             this.addToFieldsToIncrement('UserName');
         }

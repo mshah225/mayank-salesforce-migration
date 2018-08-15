@@ -382,48 +382,6 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static ASU_STDNT_RETENTION__x getStudentRetention(String emplId) {
-        List<ASU_STDNT_RETENTION__x> studentRetentions = new List<ASU_STDNT_RETENTION__x>();
-        try {
-            studentRetentions = [
-                SELECT ASR_INDICATOR__c, CI_INDEX_INDICATOR__c,
-                    CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c, EMPLID__c,
-                    ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c, FINANCIAL_HOLD__c,
-                    Id, NEXT_TERM_ENROLLED__c, PROBATION_INDICATOR__c,
-                    STRM__c, TOT_IND__c, AVG_MYASU_COHORT__c,
-                    PAST_DUE_TIP__c, TERM_MYASU_USAGE__c
-                FROM ASU_STDNT_RETENTION__x
-                WHERE EMPLID__c = :emplId
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-
-        return studentRetentions.isEmpty() ? new ASU_STDNT_RETENTION__x() : studentRetentions[0];
-    }
-   
-    @RemoteAction
-    global static List<JBT_RET_TRANSCRIPT_SENT_VW__x> getTranscripts(String emplId) {
-        List<JBT_RET_TRANSCRIPT_SENT_VW__x> transcripts = new List<JBT_RET_TRANSCRIPT_SENT_VW__x>();
-        
-        try {
-            transcripts = [
-                SELECT EMPLID__c, ADDRESS1__c, ADDRESS2__c, ADDRESS3__c,
-                    ADDRESS4__c, CITY__c, COUNTRY__c, SEND_TO_NAME__c,
-                    POSTAL__c, STATE__c, STATUS__c, REQUEST_OR_SENT_DATE__c,
-                    DisplayURL, ExternalId, Id
-                FROM JBT_RET_TRANSCRIPT_SENT_VW__x
-                WHERE EMPLID__c = :emplId
-                ORDER BY REQUEST_OR_SENT_DATE__c DESC, SEND_TO_NAME__c DESC
-            ];
-        } catch (Exception e) {
-            ErrorLogger.log(e, vars, FALSE);
-        }
-        return transcripts;
-    }
-
-    @RemoteAction
     global static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId) {
         List<ASU_STDNT_RETENTION_SNP__x> retentionSnps = new List<ASU_STDNT_RETENTION_SNP__x>();
             

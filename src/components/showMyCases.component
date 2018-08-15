@@ -121,7 +121,7 @@
             onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
             Filters
             </apex:outputLink>
-                <div style="text-align: left; margin-top: 40px; margin-left: 20px; line-height: .92857143 !important;">
+                <div style="text-align: left; margin-top: 40px; margin-left: 20px;">
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
                     <apex:pageBlock >
                         <apex:pageBlockSection columns="3" title="Case Filters">

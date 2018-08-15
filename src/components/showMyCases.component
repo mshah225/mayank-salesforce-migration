@@ -178,8 +178,8 @@
                         <apex:pageBlockSection columns="4">
                             <apex:input styleClass="createdByStartDate" label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>
                             <apex:input styleClass="createdByEndDate" label="To: " value="{!persistenceEndDate}" type="auto"/>
-                            <apex:commandLink style="float:left; margin-bottom: 0px; margin-left: 95px; margin-top: 0px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
-                            <apex:commandLink style="float:left; margin-bottom: 0px; margin-left: 5px; margin-top: 0px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
+                            <apex:commandLink style="float:left; margin-left: 95px; margin-top: 10px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
+                            <apex:commandLink style="float:left; margin-left: 5px; margin-top: 10px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
                         </apex:pageBlockSection>
                     </apex:pageBlock>
                 </apex:outputPanel>

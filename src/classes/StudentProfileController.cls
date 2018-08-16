@@ -382,46 +382,9 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<ASU_STDNT_RETENTION_SNP__x> getRetentionSNP(String emplId) {
-        List<ASU_STDNT_RETENTION_SNP__x> retentionSnps = new List<ASU_STDNT_RETENTION_SNP__x>();
-            
-        try {
-            retentionSnps = [
-                SELECT ASR_INDICATOR__c, AVG_MYASU_COHORT__c, CI_INDEX_INDICATOR__c,
-                    CREATED_EW_DTTM__c, CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c,
-                    EMPLID__c, ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c,
-                    FINANCIAL_HOLD__c, Id, NEXT_TERM_ENROLLED__c, PAST_DUE_TIP__c,
-                    PROBATION_INDICATOR__c, SNP_WEEK__c, STRM__c, TERM_MYASU_USAGE__c,
-                    TRANSCRIPTS_SENT_COUNT__c
-                FROM ASU_STDNT_RETENTION_SNP__x
-                WHERE emplId__c = :emplId
-                ORDER BY CREATED_EW_DTTM__c DESC, STRM__c DESC
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-        
-        return retentionSnps;
-    }
-
-    @RemoteAction
-    global static List<AdvisingNoteWrapper> getPSAdvisorNotes(String emplId) {
+    global static List<AdvisingNoteWrapper> getPSAdvisorNotes(String emplId, String jsonAdvisorNotes) {
         List<AdvisingNoteWrapper> advNoteWrapperList = new List<AdvisingNoteWrapper>();
-        List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = new List<PS_ASU_SP_ADNOTE_V__x>();
-        try {
-            advisingNoteList = [
-                SELECT ACAD_CAREER__c, COMMENTS__c, CREATDTTM__c, CREATEOPRID__c, DisplayUrl,
-                    EMPLID__c, ExternalId, Id, NAME__c, STRM__c
-                FROM PS_ASU_SP_ADNOTE_V__x
-                WHERE EMPLID__c = :emplId
-                ORDER BY CREATDTTM__c DESC
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(e, vars, FALSE);
-            return null;
-        }
+        List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = (List<PS_ASU_SP_ADNOTE_V__x>)JSON.deserialize(jsonAdvisorNotes, List<PS_ASU_SP_ADNOTE_V__x>.class);
 
         List<String> advAsuRiteIds = new List<String>();
         for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList) {
@@ -452,21 +415,8 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<CommentWrapper> getComments(String emplId) {
-        List<PS_ASU_SP_COMMNT_V__x> commentsList = new List<PS_ASU_SP_COMMNT_V__x>();
-        try {
-            commentsList = [
-                SELECT ADMIN_FUNCTION__c, ADMIN_ROLENAME__c, COMMENT_DTTM__c, COMNT_ID__c,
-                    COMMENTS__c, DisplayUrl, EMPLID__c, ExternalId, Id, NAME__c
-                FROM PS_ASU_SP_COMMNT_V__x
-                WHERE EMPLID__c = :emplId
-                ORDER BY COMMENT_DTTM__c DESC
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(e, vars, FALSE);
-            return null;
-        }
+    global static List<CommentWrapper> getComments(String emplId, String jsonAdvisorNotes) {
+        List<PS_ASU_SP_COMMNT_V__x> commentsList = (List<PS_ASU_SP_COMMNT_V__x>)JSON.deserialize(jsonAdvisorNotes, List<PS_ASU_SP_COMMNT_V__x>.class);
 
         Set<String> commenterUserIds = new Set<String>();
         for (PS_ASU_SP_COMMNT_V__x comment: commentsList) {
@@ -494,24 +444,6 @@ global with sharing class StudentProfileController {
             commentWrapperList.add(commentWrapper);
         }
         return commentWrapperList;
-    }
-
-    @RemoteAction
-    global static List<PS_ASU_SP_GUEST_V__x> getGuestAccess(String emplId) {
-        List<PS_ASU_SP_GUEST_V__x> guestAccessList = new List<PS_ASU_SP_GUEST_V__x>();
-        try {
-            guestAccessList = [
-                SELECT AUTHOR__c, COMMENT_DT__c, COMMENTS__c, DisplayUrl, EMPLID__c,    
-                       ExternalId, Id 
-                FROM PS_ASU_SP_GUEST_V__x
-                WHERE EMPLID__c = :emplId
-                ORDER BY COMMENT_DT__c DESC
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-        return guestAccessList;
     }
 
    @RemoteAction
@@ -583,42 +515,9 @@ global with sharing class StudentProfileController {
    }
     
     @RemoteAction
-    global static ClassesWrapper getClassesData(String emplid, String strm) {
-        List<PS_ASU_SP_CLASS_V__x> classList = new List<PS_ASU_SP_CLASS_V__x>();
-        try {
-            classList = [
-                SELECT ACAD_CAREER__c, ASU_SCH_DATES__c, CATALOG_NBR__c, CLASS_DESCR__c, 
-                    CLASS_NBR__c, CRSE_GRADE_OFF__c, CRSE_ID__c, CUM_GPA__c, CUR_GPA__c, 
-                    DisplayUrl, EARN_CREDIT__c, EMPLID__c, ENRL_STATUS_REASON__c, ExternalId, 
-                    FT_FULL_NAME__c, Id, SCH_DAILY_TIME__c, SCH_HTML_DAY1__c, SESSION_CODE__c, 
-                    SSR_CLSTOPIC_DESCR__c, SSR_MTG_LOC_LONG__c, STDNT_ENRL_STATUS__c, STRM__c, 
-                    SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c  
-                FROM PS_ASU_SP_CLASS_V__x 
-                WHERE EMPLID__c = :emplid 
-                ORDER BY STRM__c DESC, CLASS_NBR__c ASC
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
-            vars.add(ErrorLogger.convertStringToJSON('strm', strm));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-
-        
-        List<PS_ASU_SP_ASR_CLSV__x> asrList = new List<PS_ASU_SP_ASR_CLSV__x>();
-        if (!classList.isEmpty()) {
-            try {
-                asrList = [
-                    SELECT CLASS_NBR__c, SESSION_CODE__c, STRM__c 
-                    FROM PS_ASU_SP_ASR_CLSV__x
-                    WHERE EMPLID__c = :emplId 
-                        AND STRM__c = :strm
-                ];
-            } catch (Exception e) {
-                vars.add(ErrorLogger.convertStringToJSON('emplid', emplid));
-                vars.add(ErrorLogger.convertStringToJSON('strm', strm));
-                ErrorLogger.log(e, vars, FALSE);
-            }
-        }
+    global static ClassesWrapper getClassesData(String classListJson, String asrListJson) {
+        List<PS_ASU_SP_CLASS_V__x> classList = (List<PS_ASU_SP_CLASS_V__x>)JSON.deserialize(classListJson, List<PS_ASU_SP_CLASS_V__x>.class);
+        List<PS_ASU_SP_ASR_CLSV__x> asrList = (List<PS_ASU_SP_ASR_CLSV__x>)JSON.deserialize(asrListJson, List<PS_ASU_SP_ASR_CLSV__x>.class);
         
         ClassesWrapper classesData = new ClassesWrapper();
         for (PS_ASU_SP_ASR_CLSV__x asr: asrList) {
@@ -639,150 +538,6 @@ global with sharing class StudentProfileController {
             classesData.classSessions.add('All');
         }
         return classesData;
-    }
-    
-    @RemoteAction
-    global static LIST<PS_ASU_SP_TRNSFR_V__x> getCreditByExamData(String emplId) {
-        List<PS_ASU_SP_TRNSFR_V__x> creditByExamList = new List<PS_ASU_SP_TRNSFR_V__x>();
-        try {
-            creditByExamList = [
-                SELECT ACAD_CAREER__c, COURSE_TITLE__c, DisplayUrl, EMPLID__c, 
-                       ExternalId, Id, SCORE__c, STRM__c, TITLE__c, UNT_TRNSFR__c 
-                FROM PS_ASU_SP_TRNSFR_V__x
-                WHERE EMPLID__c = :emplId
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-
-        return creditByExamList;
-
-    }
-
-    @RemoteAction
-    global static LIST<JBT_RET_CLASS_XFER__x> getTransferWorkData(String emplId) {
-        List<JBT_RET_CLASS_XFER__x> transferWorkList = new List<JBT_RET_CLASS_XFER__x>();
-        try {
-            transferWorkList = [
-                SELECT COURSE__c, DisplayUrl, ECREDIT__c, EMPLID__c, ExternalId, GPAHRS__c, 
-                       GPAPTS__c, GRADE__c, Id, INSTITUTION__c, RCREDIT__c, TERM__c, TITLE__c, 
-                       TOPIC__c 
-                FROM JBT_RET_CLASS_XFER__x 
-                WHERE EMPLID__c = :emplId
-                ORDER BY COURSE__c, TERM__c
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-
-        return transferWorkList;
-    }
-    
-    @RemoteAction
-    global static JBT_RET_FINAID_INDICATORS__x getFinAidIndicator(String emplid) {
-        List<JBT_RET_FINAID_INDICATORS__x> jbtRetFinaidIndicatorsList = new List<JBT_RET_FINAID_INDICATORS__x>();
-        try {
-            jbtRetFinaidIndicatorsList = [
-                SELECT EMPLID__c, FA_IND__c
-                FROM JBT_RET_FINAID_INDICATORS__x
-                WHERE EMPLID__c = :emplid
-                LIMIT 1
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-        
-        return jbtRetFinaidIndicatorsList.isEmpty() ? new JBT_RET_FINAID_INDICATORS__x() : jbtRetFinaidIndicatorsList[0];
-    }
-
-    @RemoteAction
-    global static List<JBT_RET_FINAID_UNRESOLVED__x> getFinAidUnresolved(String emplid, String currentTerm) {
-        List<JBT_RET_FINAID_UNRESOLVED__x> jbtRetFinaidUnresolvedList = new List<JBT_RET_FINAID_UNRESOLVED__x>();
-        
-        try {
-            jbtRetFinaidUnresolvedList = [
-                SELECT ACTION__c, AID_YEAR__c, CHECKLIST_CD__c, CHKLST_ITEM_CD__c, 
-                    STATUS__c, STATUS_DT__c, STRM__c 
-                FROM JBT_RET_FINAID_UNRESOLVED__x
-                WHERE EMPLID__c = :emplid
-                    AND STRM__c = :currentTerm
-                ORDER BY AID_YEAR__c DESC, CHECKLIST_CD__c ASC
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-
-        return jbtRetFinaidUnresolvedList;
-    }
-
-    @RemoteAction
-    global static PS_ASU_SR_INDASR_V__x getAsrIndicator(String emplid, String currentTerm) {
-        List<PS_ASU_SR_INDASR_V__x> psAsuSrIndasrVList = new List<PS_ASU_SR_INDASR_V__x>();
-        
-        try {
-            psAsuSrIndasrVList = [
-                SELECT CLASSCOUNT__c 
-                FROM PS_ASU_SR_INDASR_V__x
-                WHERE EMPLID__c = :emplid
-                    AND STRM__c = :currentTerm 
-                LIMIT 1
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-
-        return psAsuSrIndasrVList.isEmpty() ? new PS_ASU_SR_INDASR_V__x() : psAsuSrIndasrVList[0];
-    }
-    
-    @RemoteAction
-    global static List<PS_ASU_SR_ASR_INDV__x> getAsrInformation(String emplid, String currentTerm) {
-        List<PS_ASU_SR_ASR_INDV__x> asrInformationList = new List<PS_ASU_SR_ASR_INDV__x>();
-
-        try {
-            asrInformationList = [
-                SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, 
-                    CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, 
-                    EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c
-                 FROM PS_ASU_SR_ASR_INDV__x
-                 WHERE EMPLID__c = :emplid
-                    AND STRM__c = :currentTerm
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-
-        return asrInformationList;
-    }
-
-    @RemoteAction
-    global static List<PS_ASU_SP_ENRHLD_V__x> getEnrollmentHolds(String emplid, String currentTerm)
-    {
-        List<PS_ASU_SP_ENRHLD_V__x> enrollmentHoldList = new List<PS_ASU_SP_ENRHLD_V__x>();
-        
-        try {
-            enrollmentHoldList = [
-                SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c
-                FROM PS_ASU_SP_ENRHLD_V__x
-                WHERE EMPLID__c = :emplid
-                    AND (STRM__c >= :currentTerm OR STRM__c = '0000')
-                ORDER BY STRM__c ASC, SRVC_IND_CD__c ASC 
-            ];
-        } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            vars.add(ErrorLogger.convertStringToJSON('currentTerm', currentTerm));
-            ErrorLogger.log(e, vars, FALSE);
-        }
-
-        return enrollmentHoldList;
     }
 
     @RemoteAction

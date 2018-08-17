@@ -140,7 +140,7 @@
                                         styleClass="searchBox"/>
                             <apex:inputText id="majorFilter" label="Major: "
                                         value="{!majorFilter}"
-                                        html-placeholder="All or part of major name"
+                                        html-placeholder="Plan description or Code"
                                         styleClass="searchBox"/>
                             <apex:inputText label="Campus: " id="campusFilter"
                                         value="{!campusFilter}"

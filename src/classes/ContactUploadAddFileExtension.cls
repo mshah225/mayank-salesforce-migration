@@ -15,6 +15,18 @@ public without sharing class ContactUploadAddFileExtension {
         
     }
     
+    public String contactModeSelected {
+    get {
+        if (contactModeSelected == null) {
+            contactModeSelected = 'Subscriber Upload';
+        }
+        return contactModeSelected;
+    }
+    
+    set; 
+        
+    }
+    
     public Attachment newAttachment {
         get {
             if (newAttachment == null) {
@@ -68,9 +80,11 @@ public without sharing class ContactUploadAddFileExtension {
     
     public void contactUploadButton() {
         contactIdMatch = false;
+        contactModeSelected = 'Upload Subscribers';
     }
     
     public void contactMatcherButton() {
         contactIdMatch = true;
+        contactModeSelected = 'Match Contacts';
     }
 }

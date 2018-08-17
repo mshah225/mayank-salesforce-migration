@@ -18,6 +18,12 @@
         <apex:outputPanel rendered="{!attachmentList.size == 0}">
             <apex:form enctype="multipart/form-data">
                 <apex:pageBlockSection showHeader="false" columns="1" id="block1">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="The Selected Mode is: " for="selectedItem"/>
+                        <apex:outputText value="{0}">
+                            <apex:param value="{!contactModeSelected}" />
+                        </apex:outputText>
+                    </apex:pageBlockSectionItem>
                     <apex:pageBlockSectionItem>
                         <apex:outputLabel value="Mode" for="mode"/>
                         <apex:outputPanel>

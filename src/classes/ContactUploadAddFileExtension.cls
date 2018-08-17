@@ -3,12 +3,12 @@ public without sharing class ContactUploadAddFileExtension {
     private final Integer UPLOAD_BATCH_SIZE = 200;
     private final Integer MATCHER_BATCH_SIZE = 500;
     public List<Attachment> attachmentList { get; set; }
-    public Boolean onlyContactIdMatch {
+    public Boolean contactIdMatch {
     get {
-        if (onlyContactIdMatch == null) {
-            onlyContactIdMatch = false;
+        if (contactIdMatch == null) {
+            contactIdMatch = false;
         }
-        return onlyContactIdMatch;
+        return contactIdMatch;
     }
     
     set; 
@@ -51,7 +51,7 @@ public without sharing class ContactUploadAddFileExtension {
         try {
             insert newAttachment;
             queryAttachments();
-            if (onlyContactIdMatch) {
+            if (contactIdMatch) {
                 ContactMatcherBatch batch = new ContactMatcherBatch(newAttachment.Id);
                 Database.executeBatch(batch, MATCHER_BATCH_SIZE);
             } else {
@@ -64,5 +64,13 @@ public without sharing class ContactUploadAddFileExtension {
             newAttachment = new Attachment();
         }
         return null;
+    }
+    
+    public void contactUploadButton() {
+        contactIdMatch = false;
+    }
+    
+    public void contactMatcherButton() {
+        contactIdMatch = true;
     }
 }

@@ -19,8 +19,11 @@
             <apex:form enctype="multipart/form-data">
                 <apex:pageBlockSection showHeader="false" columns="1" id="block1">
                     <apex:pageBlockSectionItem>
-                        <apex:outputLabel value="Contact Id Match Only?" for="file"/>
-                        <apex:inputCheckbox value="{!onlyContactIdMatch}"/>
+                        <apex:outputLabel value="Mode" for="mode"/>
+                        <apex:outputPanel>
+                            <apex:commandButton action="{!contactUploadButton}" value="Upload Subscribers"/>
+                            <apex:commandButton action="{!contactMatcherButton}" value="Match Contacts"/>
+                        </apex:outputPanel>
                     </apex:pageBlockSectionItem>
                     <apex:pageBlockSectionItem >
                         <apex:outputLabel value="File" for="file"/>

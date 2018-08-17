@@ -2413,7 +2413,6 @@
                     } else {
                         document.getElementById('sr_en_holds').innerHTML =
                                 "<span style='color:black'>0</span>";
-                        console.log(result);
                         if (!response.totalSize == 0) {
                             var result = response.records;
                             document.getElementById('sr_en_holds').innerHTML =
@@ -3268,10 +3267,11 @@
 
     //Method to Sort Class List
     function sortEnrolledClassList(paramToSort, direction){
+        var enrolledWrapperJson = JSON.stringify(enrolledWrapper);
         Visualforce.remoting.Manager.invokeAction(
             '{!$RemoteAction.StudentProfileController.sortClasses}',
             paramToSort,
-            enrolledWrapper,
+            enrolledWrapperJson,
             direction,
             function (result, event) {
                 document.getElementById("ps_enrolled_classes").style.display = "initial";

@@ -447,8 +447,9 @@ global with sharing class StudentProfileController {
     }
 
    @RemoteAction
-   global static List<SortableClass> sortClasses(String paramToSortBy, List<PS_ASU_SP_CLASS_V__x> listOfClasses, Boolean sortDirection) {
+   global static List<SortableClass> sortClasses(String paramToSortBy, String listOfClassesJSON, Boolean sortDirection) {
        List<SortableClass> classList = new List<SortableClass>();
+       List<PS_ASU_SP_CLASS_V__x> listOfClasses = (List<PS_ASU_SP_CLASS_V__x>)JSON.deserialize(listOfClassesJSON, List<PS_ASU_SP_CLASS_V__x>.class);
        for (PS_ASU_SP_CLASS_V__x asuClass : listOfClasses) {
            classList.add(new SortableClass(asuClass, paramToSortBy));
        }

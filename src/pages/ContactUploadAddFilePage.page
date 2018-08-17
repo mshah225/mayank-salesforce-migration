@@ -17,19 +17,21 @@
         </apex:outputPanel>
         <apex:outputPanel rendered="{!attachmentList.size == 0}">
             <apex:form enctype="multipart/form-data">
-                <apex:pageBlockSection showHeader="false" columns="1" id="block1">
-                    <apex:pageBlockSectionItem >
-                        <apex:outputLabel value="The Selected Mode is: " for="selectedItem"/>
-                        <apex:outputText value="{0}">
-                            <apex:param value="{!contactModeSelected}" />
-                        </apex:outputText>
-                    </apex:pageBlockSectionItem>
+                <apex:pageBlockSection showHeader="false" columns="1" rendered="{!NOT(modeSelected)}">
                     <apex:pageBlockSectionItem>
                         <apex:outputLabel value="Mode" for="mode"/>
                         <apex:outputPanel>
                             <apex:commandButton action="{!contactUploadButton}" value="Upload Subscribers"/>
                             <apex:commandButton action="{!contactMatcherButton}" value="Match Contacts"/>
                         </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection showHeader="false" columns="1" id="block1" rendered="{!modeSelected}">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="The Selected Mode is: " for="selectedItem"/>
+                        <apex:outputText value="{0}">
+                            <apex:param value="{!contactModeSelected}" />
+                        </apex:outputText>
                     </apex:pageBlockSectionItem>
                     <apex:pageBlockSectionItem >
                         <apex:outputLabel value="File" for="file"/>

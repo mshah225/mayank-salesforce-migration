@@ -3,16 +3,23 @@ public without sharing class ContactUploadAddFileExtension {
     private final Integer UPLOAD_BATCH_SIZE = 200;
     private final Integer MATCHER_BATCH_SIZE = 500;
     public List<Attachment> attachmentList { get; set; }
-    public Boolean contactIdMatch {
-    get {
-        if (contactIdMatch == null) {
-            contactIdMatch = false;
+    public Boolean modeSelected {
+        get {
+            if (modeSelected == null) {
+                modeSelected = false;
+            }
+            return modeSelected;
         }
-        return contactIdMatch;
+        set; 
     }
-    
-    set; 
-        
+    public Boolean contactIdMatch {
+        get {
+            if (contactIdMatch == null) {
+                contactIdMatch = false;
+            }
+            return contactIdMatch;
+        }
+        set; 
     }
     
     public String contactModeSelected {
@@ -81,10 +88,12 @@ public without sharing class ContactUploadAddFileExtension {
     public void contactUploadButton() {
         contactIdMatch = false;
         contactModeSelected = 'Upload Subscribers';
+        modeSelected = true;
     }
     
     public void contactMatcherButton() {
         contactIdMatch = true;
         contactModeSelected = 'Match Contacts';
+        modeSelected = true;
     }
 }

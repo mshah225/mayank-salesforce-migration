@@ -152,9 +152,8 @@ public without sharing class  ErrorLogger {
         return errorLoggerException.getTypeName() + '\n'
             + errorLoggerException.getMessage() + '\n'
             + errorLoggerException.getStackTraceString() + '\n\n'
-            + 'Case Description: \n'
-            + getCaseDescription()
-            + 'caseToCreate: ' + String.valueOf(caseToCreate) + '\n';
+            + 'Case to Create: \n'
+            + '\n' + String.valueOf(caseToCreate) + '\n';
     }
 
     private Id getAdminProfileId() {

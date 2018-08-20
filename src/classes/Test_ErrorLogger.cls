@@ -9,16 +9,21 @@ public class Test_ErrorLogger {
     private static List<Case> exceptionCases;
     private static String subject;
     private static Boolean debug;
+    private static String description;
+    private static Contact testContact;
 
     @testSetup
     static void setup() {
         List<lead> testLeads = TestDataFactory.createLeads(3);
         insert testLeads;
 
-        Contact testContact = TestDataFactory.createContact('contactForUser');
+        Contact userContact = TestDataFactory.createContact('contactForUser');
+        insert userContact;
+
+        Contact testContact = TestDataFactory.createContact('testContact');
         insert testContact;
 
-        User userWithContact = TestDataFactory.createCommunityUser('CommunityUser',testContact.Id);
+        User userWithContact = TestDataFactory.createCommunityUser('CommunityUser',userContact.Id);
         insert userWithContact;
 
         Id profileId = [SELECT Id FROM Profile WHERE name = 'ASU Service - ASU Salesforce Support'].Id;
@@ -35,6 +40,7 @@ public class Test_ErrorLogger {
         userWithContact = [SELECT Id, contactId FROM User WHERE lastName = 'CommunityUser'];
         userWithoutContact = [SELECT Id FROM User WHERE lastName = 'UserWithoutContact'];
         siteGuestUser = [SELECT Id FROM User WHERE lastName = 'siteGuestUser'];
+        testContact = [SELECT Id FROM Contact WHERE lastName = 'testContact'];
         vars = new List<String>();
         userMap = new Map<Id,User>();
         subject = 'Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
@@ -46,19 +52,39 @@ public class Test_ErrorLogger {
         vars.add(ErrorLogger.convertIntegerToJSON('integer', 1));
         vars.add(ErrorLogger.convertStringToJSON('string', 'true'));
         vars.add(ErrorLogger.convertMapToJSON('userMap',userMap));
+
+        description = 'userMap: ' + String.valueOf(userMap);
+    }
+
+    private static Boolean executeErrorLogger() {
+        Boolean debug;
+        ErrorLogger el = new ErrorLogger();
+        el.setException(ex);
+        el.setDetails(description);
+        debug = el.log();
+        return debug;
     }
 
     @isTest
-    private static void checkDebugWithoutCaseForUserWithContact() {
+    private static void checkErrorLoggerToString() {
         setupTestVariables();
+        String debugLog = '';
 
         Test.startTest();
         System.runAs(userWithContact) {
-            debug = ErrorLogger.log(ex, vars, true);
+            ErrorLogger el = new ErrorLogger();
+            el.setException(ex);
+            el.setDetails(description);
+            debugLog = el.toString();
         }
         Test.stopTest();
 
-        System.assertEquals(false, debug);
+        String compareDebugLog = ex.getTypeName() + '\n' +
+        ex.getMessage() + '\n' +
+        ex.getStackTraceString() + '\n' +
+        'User Description: \n' +
+        description + '\n';
+        System.assert(debugLog.contains(compareDebugLog));
     }
 
     @isTest
@@ -67,12 +93,12 @@ public class Test_ErrorLogger {
 
         Test.startTest();
         System.runAs(userWithContact) {
-            debug = ErrorLogger.log(ex, vars, false);
+            debug = executeErrorLogger();
         }
         Test.stopTest();
 
         System.assertEquals(true, debug);
-        validateCreatedCaseAndContactId(1, userWithContact.contactId);
+        validateCreatedCaseAndContactId(1, userWithContact.ContactId);
     }
 
     @isTest
@@ -81,25 +107,12 @@ public class Test_ErrorLogger {
 
         Test.startTest();
         System.runAs(userWithContact) {
-            ErrorLogger.log(ex, vars, false);
-            debug = ErrorLogger.log(ex, vars, false);
+            executeErrorLogger();
+            debug = executeErrorLogger();
         }
         Test.stopTest();
         System.assertEquals(false, debug);
-        validateCreatedCaseAndContactId(1, userWithContact.contactId);
-    }
-
-    @isTest
-    private static void checkDebugWithoutCaseForUserWithoutContact() {
-        setupTestVariables();
-
-        Test.startTest();
-        System.runAs(userWithoutContact) {
-            debug = ErrorLogger.log(ex, vars, true);
-        }
-        Test.stopTest();
-
-        System.assertEquals(false, debug);
+        validateCreatedCaseAndContactId(1, userWithContact.ContactId);
     }
 
     @isTest
@@ -108,7 +121,7 @@ public class Test_ErrorLogger {
 
         Test.startTest();
         System.runAs(userWithoutContact) {
-            debug = ErrorLogger.log(ex, vars, false);
+            debug = executeErrorLogger();
         }
         Test.stopTest();
 
@@ -122,25 +135,12 @@ public class Test_ErrorLogger {
 
         Test.startTest();
         System.runAs(userWithoutContact) {
-            ErrorLogger.log(ex, vars, false);
-            debug = ErrorLogger.log(ex, vars, false);
+            executeErrorLogger();
+            debug = executeErrorLogger();
         }
         Test.stopTest();
         System.assertEquals(true, debug);
         validateCreatedCaseAndContactId(2, null);
-    }
-
-    @isTest
-    private static void checkDebugWithoutCaseForSiteGuestUser() {
-        setupTestVariables();
-
-        Test.startTest();
-        System.runAs(siteGuestUser) {
-            debug = ErrorLogger.log(ex, vars, true);
-        }
-        Test.stopTest();
-
-        System.assertEquals(false, debug);
     }
 
     @isTest
@@ -149,7 +149,7 @@ public class Test_ErrorLogger {
 
         Test.startTest();
         System.runAs(siteGuestUser) {
-            debug = ErrorLogger.log(ex, vars, false);
+            debug = executeErrorLogger();
         }
         Test.stopTest();
 
@@ -163,8 +163,8 @@ public class Test_ErrorLogger {
 
         Test.startTest();
         System.runAs(siteGuestUser) {
-            ErrorLogger.log(ex, vars, false);
-            debug = ErrorLogger.log(ex, vars, false);
+            executeErrorLogger();
+            debug = executeErrorLogger();
         }
         Test.stopTest();
         System.assertEquals(true, debug);
@@ -176,24 +176,49 @@ public class Test_ErrorLogger {
         setupTestVariables();
 
         Test.startTest();
-        debug = ErrorLogger.log(ex, vars, false, null, null);
+        ErrorLogger el = new ErrorLogger();
+        Id nonExistingValidContactId = ID.valueOf('0035B00000Jskt2QAB');
+        el.setContactId(nonExistingValidContactId);
+        debug = el.log();
         Test.stopTest();
 
         System.assertEquals(null, debug);
     }
 
     @isTest
-    private static void checkPassedInContactId() {
+    private static void checkPassedInContactIdForUserWithoutContact() {
         setupTestVariables();
 
         Test.startTest();
         System.runAs(userWithoutContact) {
-            debug = ErrorLogger.log(ex, vars, false, userWithContact.contactId);
+            ErrorLogger el = new ErrorLogger();
+            el.setException(ex);
+            el.setDetails(description);
+            el.setContactId(userWithContact.ContactId);
+            debug = el.log();
         }
         Test.stopTest();
 
         System.assertEquals(true, debug);
-        validateCreatedCaseAndContactId(1, userWithContact.contactId);
+        validateCreatedCaseAndContactId(1, userWithContact.ContactId);
+    }
+
+    @isTest
+    private static void checkPassedInContactIdForUserWithContact() {
+        setupTestVariables();
+
+        Test.startTest();
+        System.runAs(userWithoutContact) {
+            ErrorLogger el = new ErrorLogger();
+            el.setException(ex);
+            el.setDetails(description);
+            el.setContactId(testContact.Id);
+            debug = el.log();
+        }
+        Test.stopTest();
+
+        System.assertEquals(true, debug);
+        validateCreatedCaseAndContactId(1, testContact.Id);
     }
 
     private static void validateCreatedCaseAndContactId(Integer numberOfCasesCreated, Id caseContactId) {
@@ -203,14 +228,45 @@ public class Test_ErrorLogger {
         if (exceptionCases != null) {
             System.assertEquals(numberOfCasesCreated, exceptionCases.size());
         }
-        System.debug(exceptionCases);
 
         if (exceptionCases.size() > 0) {
             for (Case c : exceptionCases) {
-                System.assertEquals(caseContactId, c.contactId);
+                System.assertEquals(caseContactId, c.ContactId);
             }
-
         }
+        delete exceptionCases;
+    }
+
+    @isTest
+    private static void checkDuplicateCaseDescription() {
+        setupTestVariables();
+
+        Test.startTest();
+        System.runAs(userWithContact) {
+            executeErrorLogger();
+            ErrorLogger el = new ErrorLogger();
+            el.setException(ex);
+            el.setDetails(description);
+            debug = el.log();
+        }
+        Test.stopTest();
+
+        System.assertEquals(false, debug);
+
+        List<Case> exceptionCases = [SELECT Id, Description, ContactId FROM Case WHERE Subject = :subject];
+        if (exceptionCases != null) {
+            System.assertEquals(1, exceptionCases.size());
+        }
+
+        if (exceptionCases.size() > 0) {
+            for (Case c : exceptionCases) {
+                System.assertEquals(userWithContact.ContactId, c.ContactId);
+            }
+        }
+        DateTime testDateTime = System.today();
+        System.debug(''+System.now().hour()+':'+System.now().minute());
+        System.assert(exceptionCases[0].description.contains(''+System.now().hour()+':'+System.now().minute()));
+
         delete exceptionCases;
     }
 
@@ -433,14 +489,14 @@ public class Test_ErrorLogger {
 
         // Test to see if Car is being created correctly.
         delete [SELECT Id FROM Case_Assignment_Rule__c WHERE Origin__c = 'Error Logger'];
-        insert ErrorLogger.createDefaultCar();
+        insert CaseAssignmentRuleAccessor.createDefaultCarForErrorLogger();
 
         cars = [SELECT Id FROM Case_Assignment_Rule__c WHERE Origin__c = 'Error Logger'];
 
         system.assertEquals(1, cars.size());
 
         // Test to see if the car is created again, with a different priority
-        insert ErrorLogger.createDefaultCar();
+        insert CaseAssignmentRuleAccessor.createDefaultCarForErrorLogger();
 
         cars = [SELECT Priority__c FROM Case_Assignment_Rule__c WHERE Origin__c = 'Error Logger' ORDER BY Priority__c DESC];
 

@@ -415,8 +415,8 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<CommentWrapper> getComments(String emplId, String jsonAdvisorNotes) {
-        List<PS_ASU_SP_COMMNT_V__x> commentsList = (List<PS_ASU_SP_COMMNT_V__x>)JSON.deserialize(jsonAdvisorNotes, List<PS_ASU_SP_COMMNT_V__x>.class);
+    global static List<CommentWrapper> getComments(String emplId, String jsonComments) {
+        List<PS_ASU_SP_COMMNT_V__x> commentsList = (List<PS_ASU_SP_COMMNT_V__x>)JSON.deserialize(jsonComments, List<PS_ASU_SP_COMMNT_V__x>.class);
 
         Set<String> commenterUserIds = new Set<String>();
         for (PS_ASU_SP_COMMNT_V__x comment: commentsList) {

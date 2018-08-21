@@ -470,28 +470,4 @@ public class Test_ErrorLogger {
         system.assertEquals(expected,result);
     }
 
-    public static testmethod void Test_CreateDefaultCar() {
-        List<Case_Assignment_Rule__c> cars;
-
-        // Test to see if Car is being created correctly.
-        delete [SELECT Id FROM Case_Assignment_Rule__c WHERE Origin__c = 'Error Logger'];
-        insert CaseAssignmentRuleAccessor.createDefaultCarForErrorLogger();
-
-        cars = [SELECT Id FROM Case_Assignment_Rule__c WHERE Origin__c = 'Error Logger'];
-
-        system.assertEquals(1, cars.size());
-
-        // Test to see if the car is created again, with a different priority
-        insert CaseAssignmentRuleAccessor.createDefaultCarForErrorLogger();
-
-        cars = [
-            SELECT Priority__c
-            FROM Case_Assignment_Rule__c
-            WHERE Origin__c = 'Error Logger'
-            ORDER BY Priority__c DESC
-        ];
-
-        system.assertEquals(2, cars.size());
-        system.assertEquals(2, integer.valueOf(cars[0].priority__c));
-    }
 }

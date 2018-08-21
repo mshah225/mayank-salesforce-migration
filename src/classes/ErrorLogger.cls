@@ -53,9 +53,9 @@ public without sharing class  ErrorLogger {
 
     private String getDetailsSafely() {
         String caseTimeStamp = '\n\nThis error occurred: ' +
-        '\n' + 'GMT' +
-        '\n' + getCurrentTimeStamp();
-        if (details == null){
+            '\n' + 'GMT' +
+            '\n' + getCurrentTimeStamp();
+        if (details == null) {
             return caseTimeStamp;
         }
         return 'User Description: \n' + details +
@@ -143,8 +143,8 @@ public without sharing class  ErrorLogger {
         Messaging.SingleEmailMessage newEmail = new Messaging.SingleEmailMessage();
         newEmail.setTargetObjectId(emailUser.Id);
         newEmail.setSaveAsActivity(false);
-        newEmail.plainTextBody = '\n\n\nLogger Failed to insert case:\n\n'
-            + getEmailDescription();
+        newEmail.plainTextBody = '\n\n\nLogger Failed to insert case:\n\n' +
+            getEmailDescription();
         newEmail.subject = caseToCreate.Subject;
         return newEmail;
     }

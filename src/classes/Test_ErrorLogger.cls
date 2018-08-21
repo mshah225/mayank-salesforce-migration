@@ -4,7 +4,6 @@ public class Test_ErrorLogger {
     private static User userWithContact;
     private static User userWithoutContact;
     private static User siteGuestUser;
-    private static List<String> vars;
     private static Map<Id,User> userMap;
     private static List<Case> exceptionCases;
     private static String subject;
@@ -41,18 +40,10 @@ public class Test_ErrorLogger {
         userWithoutContact = [SELECT Id FROM User WHERE lastName = 'UserWithoutContact'];
         siteGuestUser = [SELECT Id FROM User WHERE lastName = 'siteGuestUser'];
         testContact = [SELECT Id FROM Contact WHERE lastName = 'testContact'];
-        vars = new List<String>();
         userMap = new Map<Id,User>();
-        subject = 'Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
-
         userMap.put(userWithContact.Id, userWithContact);
         userMap.put(userWithoutContact.Id, userWithoutContact);
-
-        vars.add(ErrorLogger.convertBooleanToJSON('boolean', true));
-        vars.add(ErrorLogger.convertIntegerToJSON('integer', 1));
-        vars.add(ErrorLogger.convertStringToJSON('string', 'true'));
-        vars.add(ErrorLogger.convertMapToJSON('userMap',userMap));
-
+        subject = 'Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
         description = 'userMap: ' + String.valueOf(userMap);
     }
 
@@ -80,10 +71,10 @@ public class Test_ErrorLogger {
         Test.stopTest();
 
         String compareDebugLog = ex.getTypeName() + '\n' +
-        ex.getMessage() + '\n' +
-        ex.getStackTraceString() + '\n' +
-        'User Description: \n' +
-        description + '\n';
+            ex.getMessage() + '\n' +
+            ex.getStackTraceString() + '\n' +
+            'User Description: \n' +
+            description + '\n';
         System.assert(debugLog.contains(compareDebugLog));
     }
 
@@ -111,7 +102,7 @@ public class Test_ErrorLogger {
             debug = executeErrorLogger();
         }
         Test.stopTest();
-        System.assertEquals(false, debug);
+        System.assertEquals(true, debug);
         validateCreatedCaseAndContactId(1, userWithContact.ContactId);
     }
 
@@ -182,7 +173,9 @@ public class Test_ErrorLogger {
         debug = el.log();
         Test.stopTest();
 
-        System.assertEquals(null, debug);
+        System.assertEquals(false, debug);
+        List<Case> exceptionCases = [SELECT Id, ContactId FROM Case WHERE Subject = :subject];
+        System.assertEquals(true, exceptionCases.isEmpty());
     }
 
     @isTest
@@ -229,7 +222,7 @@ public class Test_ErrorLogger {
             System.assertEquals(numberOfCasesCreated, exceptionCases.size());
         }
 
-        if (exceptionCases.size() > 0) {
+        if (!exceptionCases.isEmpty()) {
             for (Case c : exceptionCases) {
                 System.assertEquals(caseContactId, c.ContactId);
             }
@@ -251,7 +244,7 @@ public class Test_ErrorLogger {
         }
         Test.stopTest();
 
-        System.assertEquals(false, debug);
+        System.assertEquals(true, debug);
 
         List<Case> exceptionCases = [SELECT Id, Description, ContactId FROM Case WHERE Subject = :subject];
         if (exceptionCases != null) {
@@ -263,9 +256,8 @@ public class Test_ErrorLogger {
                 System.assertEquals(userWithContact.ContactId, c.ContactId);
             }
         }
-        DateTime testDateTime = System.today();
-        System.debug(''+System.now().hour()+':'+System.now().minute());
-        System.assert(exceptionCases[0].description.contains(''+System.now().hour()+':'+System.now().minute()));
+        String timeStamp = DateTime.now().hourGmt()+':'+DateTime.now().minuteGmt();
+        System.assert(exceptionCases[0].description.indexOf(timeStamp) < exceptionCases[0].description.lastIndexOf(timeStamp));
 
         delete exceptionCases;
     }
@@ -498,7 +490,12 @@ public class Test_ErrorLogger {
         // Test to see if the car is created again, with a different priority
         insert CaseAssignmentRuleAccessor.createDefaultCarForErrorLogger();
 
-        cars = [SELECT Priority__c FROM Case_Assignment_Rule__c WHERE Origin__c = 'Error Logger' ORDER BY Priority__c DESC];
+        cars = [
+            SELECT Priority__c
+            FROM Case_Assignment_Rule__c
+            WHERE Origin__c = 'Error Logger'
+            ORDER BY Priority__c DESC
+        ];
 
         system.assertEquals(2, cars.size());
         system.assertEquals(2, integer.valueOf(cars[0].priority__c));

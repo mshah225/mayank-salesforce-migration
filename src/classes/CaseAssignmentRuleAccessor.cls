@@ -63,13 +63,16 @@ public with sharing class CaseAssignmentRuleAccessor {
     }
 
     public static Case_Assignment_Rule__c getErrorLoggerCar() {
-        List<Case_Assignment_Rule__c> sfCar = new List<Case_Assignment_Rule__c>([Select Queue_ID__c, CC_Functional_Group__c, CC_Category__c,
-            CC_Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c, Campus__c, Origin__c,
-            Case_Record_Type_Id__c
+        List<Case_Assignment_Rule__c> sfCar = new List<Case_Assignment_Rule__c>([
+            SELECT Queue_ID__c, CC_Functional_Group__c, CC_Category__c, CC_Sub_Category__c, Email_Address__c,
+                Case_Feed_Email_Template_Id__c, Campus__c, Origin__c, Case_Record_Type_Id__c
             FROM Case_Assignment_Rule__c
-            WHERE Origin__c = 'Error Logger' ORDER BY Priority__c DESC LIMIT 1]);
+            WHERE Origin__c = 'Error Logger'
+            ORDER BY Priority__c DESC
+            LIMIT 1
+        ]);
 
-            if (sfCar.size() == 0) {
+            if (sfCar.isEmpty()) {
                 sfCar.add(CaseAssignmentRuleAccessor.createDefaultCarForErrorLogger());
 
                 insert sfCar;

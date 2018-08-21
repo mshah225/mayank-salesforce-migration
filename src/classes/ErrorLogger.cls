@@ -5,8 +5,6 @@ public without sharing class  ErrorLogger {
     private Exception exceptionToLog;
     private String details;
     private Case caseToCreate;
-    private Boolean overrideDuplicateCaseCheck = false;
-    private Boolean noExistingDuplicateCase = true;
     private Exception errorLoggerException;
 
     public ErrorLogger() {
@@ -26,21 +24,6 @@ public without sharing class  ErrorLogger {
         } else {
             caseToCreate.Subject = 'Apex Exception: ' + exceptionToLog.getTypeName() + ' Date: ' + System.today();
         }
-    }
-
-    private List<Case> hasDuplicateCasesFromToday() {
-        if (getContactId() == null) {
-            return new List<Case>();
-        }
-        List<Case> oldCases = [
-            SELECT Id, Description
-            FROM Case
-            WHERE ContactId = :getContactId()
-            AND IsClosed = false
-            AND Subject = :caseToCreate.Subject
-        ];
-
-        return oldCases;
     }
 
     public void setException(Exception exceptionToLog) {
@@ -69,9 +52,14 @@ public without sharing class  ErrorLogger {
     }
 
     private String getDetailsSafely() {
-        return details == null ? '' : 'User Description: \n' + details
-            + '\n\n This error occurred: '
-            + '\n' + getCurrentTimeStamp();
+        String caseTimeStamp = '\n\nThis error occurred: ' +
+        '\n' + 'GMT' +
+        '\n' + getCurrentTimeStamp();
+        if (details == null){
+            return caseTimeStamp;
+        }
+        return 'User Description: \n' + details +
+            caseTimeStamp;
     }
 
 
@@ -95,28 +83,41 @@ public without sharing class  ErrorLogger {
 
     public Boolean log() {
         System.debug(toString());
+        List<Case> oldCases = getDuplicateCasesFromToday();
 
+        if (!oldCases.isEmpty()) {
+            oldCases[0].Description = oldCases[0].Description + '\n' + getCurrentTimeStamp();
+            caseToCreate = oldCases[0];
+        }
         try {
-            List<Case> oldCases = hasDuplicateCasesFromToday();
-            if (oldCases.isEmpty()) {
-                insert caseToCreate;
-                return true;
-            } else {
-                oldCases[0].Description = oldCases[0].Description + '\n' + getCurrentTimeStamp();
-                update oldCases;
-            }
-
+            upsert caseToCreate;
         } catch (Exception errorLoggerException) {
             this.errorLoggerException = errorLoggerException;
             handleLogCaseInsertException();
-            return null;
+            return false;
         }
 
-        return false;
+        return true;
+    }
+
+    private List<Case> getDuplicateCasesFromToday() {
+        if (getContactId() == null) {
+            return new List<Case>();
+        }
+        List<Case> oldCases = [
+            SELECT Id, Description
+            FROM Case
+            WHERE ContactId = :getContactId()
+            AND IsClosed = false
+            AND Subject = :caseToCreate.Subject
+            LIMIT 1
+        ];
+
+        return oldCases;
     }
 
     private String getCurrentTimeStamp() {
-        return System.now().hour() + ':' + System.now().minute() + ':' + System.now().second();
+        return String.valueOfGmt(DateTime.now());
     }
 
     private void handleLogCaseInsertException() {
@@ -149,11 +150,11 @@ public without sharing class  ErrorLogger {
     }
 
     private String getEmailDescription() {
-        return errorLoggerException.getTypeName() + '\n'
-            + errorLoggerException.getMessage() + '\n'
-            + errorLoggerException.getStackTraceString() + '\n\n'
-            + 'Case to Create: \n'
-            + '\n' + String.valueOf(caseToCreate) + '\n';
+        return errorLoggerException.getTypeName() + '\n' +
+            errorLoggerException.getMessage() + '\n' +
+            errorLoggerException.getStackTraceString() + '\n\n' +
+            'Case to Create: \n' +
+            '\n' + String.valueOf(caseToCreate) + '\n';
     }
 
     private Id getAdminProfileId() {
@@ -207,15 +208,12 @@ public without sharing class  ErrorLogger {
     public static boolean log(Exception ex, List<String> variables, Boolean debug, Case newCase, Id contactId) {
         ErrorLogger el = new ErrorLogger();
         el.setException(ex);
-        el.setDetails(String.valueOf(variables));
-        el.setContactId(contactId);
-        if (debug) {
-            System.debug(el);
-            return false;
-        } else {
-            el.log();
-            return true;
+        if (variables != null) {
+            el.setDetails(String.valueOf(variables));
         }
+        el.setContactId(contactId);
+        return el.log();
+
     }
 
     /**

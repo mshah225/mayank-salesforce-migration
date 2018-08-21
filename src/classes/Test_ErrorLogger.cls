@@ -216,16 +216,12 @@ public class Test_ErrorLogger {
 
     private static void validateCreatedCaseAndContactId(Integer numberOfCasesCreated, Id caseContactId) {
         List<Case> exceptionCases;
-
         exceptionCases = [SELECT Id, ContactId FROM Case WHERE Subject = :subject];
-        if (exceptionCases != null) {
-            System.assertEquals(numberOfCasesCreated, exceptionCases.size());
-        }
 
-        if (!exceptionCases.isEmpty()) {
-            for (Case c : exceptionCases) {
-                System.assertEquals(caseContactId, c.ContactId);
-            }
+        System.assertEquals(numberOfCasesCreated, exceptionCases.size());
+
+        for (Case c : exceptionCases) {
+            System.assertEquals(caseContactId, c.ContactId);
         }
         delete exceptionCases;
     }
@@ -247,15 +243,13 @@ public class Test_ErrorLogger {
         System.assertEquals(true, debug);
 
         List<Case> exceptionCases = [SELECT Id, Description, ContactId FROM Case WHERE Subject = :subject];
-        if (exceptionCases != null) {
-            System.assertEquals(1, exceptionCases.size());
+
+        System.assertEquals(1, exceptionCases.size());
+
+        for (Case c : exceptionCases) {
+            System.assertEquals(userWithContact.ContactId, c.ContactId);
         }
 
-        if (exceptionCases.size() > 0) {
-            for (Case c : exceptionCases) {
-                System.assertEquals(userWithContact.ContactId, c.ContactId);
-            }
-        }
         String timeStamp = DateTime.now().hourGmt()+':'+DateTime.now().minuteGmt();
         System.assert(exceptionCases[0].description.indexOf(timeStamp) < exceptionCases[0].description.lastIndexOf(timeStamp));
 

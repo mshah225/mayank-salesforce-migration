@@ -2215,8 +2215,11 @@
                                 result.PROBATION_INDICATOR__c;
                             document.getElementById('sr_next_term_enrolled').innerHTML =
                                 result.NEXT_TERM_ENROLLED__c;
-                            document.getElementById('sr_past_due_tip').innerHTML =
-                                (typeof result.PAST_DUE_TIP__c=="undefined" ? "--" : "<span style='color:red'>" + "$" + result.PAST_DUE_TIP__c.toFixed(2) + "</span>");
+                            if (result.PAST_DUE_TIP__c) {
+                            	document.getElementById('sr_past_due_tip').innerHTML = "<span style='color:red'>" + "$" + result.PAST_DUE_TIP__c.toFixed(2) + "</span>";
+                            } else {
+                                document.getElementById('sr_past_due_tip').innerHTML = "--";
+                            }
                             document.getElementById('sr_financial_hold').innerHTML =
                                 result.FINANCIAL_HOLD__c;
                             document.getElementById('sr_term_myasu_usage').innerHTML =
@@ -2279,7 +2282,7 @@
                         errorHtml += err;
                     } else {
                         if (!response.totalSize == 0) {
-                            results = response.records;
+                            result = response.records;
                             var html = "" +
                                     "<thead>" +
                                         "<th>Aid Year</th>" +
@@ -2888,6 +2891,9 @@
                                 commentDate = (commentDate.getMonth() + 1) + '/' +
                                     commentDate.getDate() + '/' +
                                     commentDate.getFullYear();
+                                if (result[i].AUTHOR__c == null) {
+                                    result[i].AUTHOR__c = '--';
+                                }
                                 html += "" +
                                     "<div class='comments-panel'>" +
                                         "<div class='comments-header'>" +

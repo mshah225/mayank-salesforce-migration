@@ -12,13 +12,13 @@ public class ContactUploadDetailService {
         'State' => 'State__c',
         'Country' => 'Country__c',
         'Postal Code' => 'Postal_Code__c',
-        'Subscription ID' => 'Subscription__c',
-        'EMPLID' => 'EMPLID__c',
-        'Subscriber Status' => 'Subscriber_Status__c'
+        'EMPLID' => 'EMPLID__c'
     };
 
     private Map<Integer, String> columnNames;
     private Id contactUploadId;
+    private Id subscriptionId;
+    private Boolean subscriberStatus;
 
     public ContactUploadDetailService (Id contactUploadIdIn, Map<Integer, String> columnValueIn) {
         contactUploadId = contactUploadIdIn;
@@ -44,11 +44,13 @@ public class ContactUploadDetailService {
             Processing_Notes__c = ' ',
             Contact_Upload__c = contactUploadId,
             Status__c = 'Success',
+            Subscription__c = subscriptionId,
+            Subscriber_Status__c = subscriberStatus,
             Source_Line__c = String.join(contactInformation, ','));
 
         for (Integer i = 0; i < contactInformation.size(); i++) {
             String columnValue = contactInformation[i];
-            String fieldName = columnToFieldNames.get(columnNames.get(i));
+            String fieldName = columnToFieldNames.get((columnNames.get(i)).removeStart('\uFEFF'));
             if (!String.isBlank(columnValue) && fieldName != null) {
                 columnValue = columnValue.trim();
                 detailToPopulate.put(fieldName, columnValue);
@@ -74,5 +76,13 @@ public class ContactUploadDetailService {
                 Subscriber_Status__c = uploadDetail.Subscriber_Status__c);
         }
         return subToCreate;
+    }
+    
+    public void setSubscriptionId(Id subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+    
+    public void setSubscriberStatus(Id subscriberStatus) {
+        this.subscriberStatus = subscriberStatus;
     }
 }

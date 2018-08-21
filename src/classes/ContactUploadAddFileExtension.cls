@@ -74,7 +74,7 @@ public without sharing class ContactUploadAddFileExtension {
                 ContactMatcherBatch batch = new ContactMatcherBatch(newAttachment.Id);
                 Database.executeBatch(batch, MATCHER_BATCH_SIZE);
             } else {
-                ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id);
+                ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id, subscriptionValue, subscriptionStatusValue);
                 Database.executeBatch(batch, UPLOAD_BATCH_SIZE);
             }
         } catch (DMLException e) {
@@ -95,5 +95,51 @@ public without sharing class ContactUploadAddFileExtension {
         contactIdMatch = true;
         contactModeSelected = 'Match Contacts';
         modeSelected = true;
+    }
+    
+    public Id subscriptionValue { get; set; }
+
+    public List<SelectOption> subscriptionOptions {
+        get {
+            if (subscriptionOptions == null) {
+                subscriptionOptions = new List<SelectOption>();
+
+                subscriptionOptions.add(new SelectOption('--', '--'));
+                List<GroupMember> groupList = [SELECT Group.Name 
+                                               FROM GroupMember 
+                                               WHERE UserOrGroupId =: UserInfo.getUserId() 
+                                               AND Group.Type = 'Queue'];
+                List<String> groupNameList = new List<String>();
+                for (GroupMember groupPartOf : groupList) {
+                    groupNameList.add(groupPartOf.Group.Name);
+                }
+                List<Subscription__c> allSubs = [SELECT Id, Name 
+                                                 FROM Subscription__c 
+                                                 WHERE Owner.Name IN: groupNameList
+                                                 ORDER BY Name ASC];
+                for (Subscription__c sub : allSubs) {
+                    subscriptionOptions.add(new SelectOption(sub.Id, sub.Name));
+                }
+            }
+            return subscriptionOptions;
+        }
+
+        set;
+    }
+    
+    public String subscriptionStatusValue { get; set; }
+
+    public List<SelectOption> subscriptionStatusOptions {
+        get {
+            if (subscriptionStatusOptions == null) {
+                subscriptionStatusOptions = new List<SelectOption>();
+
+                subscriptionStatusOptions.add(new SelectOption('Subscribed', 'Subscribed'));
+                subscriptionStatusOptions.add(new SelectOption('Unsubscribed', 'Unsubscribed'));
+            }
+            return subscriptionStatusOptions;
+        }
+
+        set;
     }
 }

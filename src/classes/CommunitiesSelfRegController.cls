@@ -6,51 +6,69 @@ public with sharing class CommunitiesSelfRegController {
     public String firstName {get; set;}
     public String lastName {get; set;}
     public String email {get; set;}
-    public String password {get; set {password = value == null ? value : value.trim(); } }
-    public String confirmPassword {get; set { confirmPassword = value == null ? value : value.trim(); } }
-    public String communityNickname {get; set { communityNickname = value == null ? value : value.trim(); } }
+    public String password {get; set {password = value == null ? value : value.trim();}}
+    public String confirmPassword {get; set {confirmPassword = value == null ? value : value.trim();}}
+    public String communityNickname {get; set {communityNickname = value == null ? value : value.trim();}}
+    
+    public static final String UNABLE_TO_CREATE_PORTAL_USER = 'Unable to create Portal User. Please contact your System Administrator if the problem persists.';
     
     public CommunitiesSelfRegController() {}
-    
-    private boolean isValidPassword() {
-        return password == confirmPassword;
+
+    public PageReference registerAndRedirectUser() {
+        try {
+            throwErrorIfPasswordMismatch();
+            createNewPortalUser();
+            return redirectUser();
+        } catch (Exception ex) {
+            showErrorMsgOnPage(ex.getMessage());
+        }
+        return null;
     }
-
-    public PageReference registerUser() {
     
-           // it's okay if password is null - we'll send the user a random password in that case
-        if (!isValidPassword()) {
-            ApexPages.Message msg = new ApexPages.Message(ApexPages.Severity.ERROR, Label.site.passwords_dont_match);
-            ApexPages.addMessage(msg);
-            return null;
-        }    
-
+    private void throwErrorIfPasswordMismatch() {
+        if (passwordIsNotSame()) {
+            throw new PasswordNoMatchException(Label.Site.PASSWORDS_DONT_MATCH);
+        }
+    }
+    
+    private Boolean passwordIsNotSame() {
+        return password != confirmPassword;
+    }
+    
+    private void createNewPortalUser() {
         String profileId = null; // To be filled in by customer.
         String roleEnum = null; // To be filled in by customer.
         String accountId = ''; // To be filled in by customer.
         
-        String userName = email;
-
-        User u = new User();
-        u.Username = userName;
-        u.Email = email;
-        u.FirstName = firstName;
-        u.LastName = lastName;
-        u.CommunityNickname = communityNickname;
-		u.ProfileId = profileId;
+        User portalUser = new User();
+        portalUser.Username = email;
+        portalUser.Email = email;
+        portalUser.FirstName = firstName;
+        portalUser.LastName = lastName;
+        portalUser.CommunityNickname = communityNickname;
+    portalUser.ProfileId = profileId;
         
-        String userId = Site.createPortalUser(u, accountId, password);
-      
-        if (userId != null) { 
-            if (password != null && password.length() > 1) {
-                return Site.login(userName, password, null);
-            }
-            else {
-                PageReference page = System.Page.CommunitiesSelfRegConfirm;
-                page.setRedirect(true);
-                return page;
-            }
+        String portalUserId = Site.createPortalUser(portalUser, accountId, password);
+        if (portalUserId == null) {
+            throw new CannotCreatePortalUserException(UNABLE_TO_CREATE_PORTAL_USER);
         }
-        return null;
     }
+    
+    private void showErrorMsgOnPage(String errorMsg) {
+        ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR, errorMsg);
+        ApexPages.addMessage(errorMessage);
+    }
+    
+    private PageReference redirectUser() {
+        if (String.isNotBlank(password)) {
+            return Site.login(email, password, null);
+        } else {
+            PageReference sitePage = System.Page.CommunitiesSelfRegConfirm;
+            sitePage.setRedirect(true);
+            return sitePage;
+        }
+    }
+    
+    private class CannotCreatePortalUserException extends Exception {}
+    private class PasswordNoMatchException extends Exception {}
 }

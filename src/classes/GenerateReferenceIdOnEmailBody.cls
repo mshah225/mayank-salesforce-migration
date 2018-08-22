@@ -1,6 +1,6 @@
 public class GenerateReferenceIdOnEmailBody {
     
-    public static String addReferenceIdToEmailBody(String caseId, String emailTextBody) {
+    public static String addReferenceIdToEmailBody(String caseId) {
         if(caseId.length() > 15) {
             caseId = caseId.left(15);
         }
@@ -12,6 +12,6 @@ public class GenerateReferenceIdOnEmailBody {
         emailReferenceId += caseId.left(5);
         emailReferenceId += caseId.right(10).left(5).replace('0','');
         emailReferenceId += caseId.right(5);
-        return emailTextBody + '\n\n' + 'ref:' + emailReferenceId + ':ref';
+        return 'ref:' + emailReferenceId + ':ref';
     }
 }

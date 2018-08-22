@@ -1,12 +1,15 @@
 public with sharing class viewCaseController {
 
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
+    private static final Integer replyAcceptanceThreshold = 14;
     private Date today;
     private Decimal origPin;
     private Term__c termcAC;
     private Term__c termcB;
     private Map<String, String> viewAsMap;
-    public Id caseId { get; set; }
+    private MyAsuViewAs viewAsService;
+    
+    public Id caseId {get;set;}
     public Decimal newPin { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -27,6 +30,7 @@ public with sharing class viewCaseController {
     public List<String> varsForErrorLogging { get; set; }
     public List<Attachment> allCaseAttachments { get; set; }
     public Boolean showCaseAttachments { get; set; }
+    public Boolean showOpenNewCaseAlert { get; set; }
    
     public viewCaseController() {
         viewingAs = false;
@@ -38,6 +42,19 @@ public with sharing class viewCaseController {
         popTerms();
         setCaseId();
         retrieveAttachmentList();
+        displayOpenNewCaseAlert();
+    }
+    
+    public void displayOpenNewCaseAlert() {
+        if (!String.isEmpty(caseId)) {
+            Case caseOnPage = [Select Id, CreatedDate FROM Case WHERE Id =: caseId];
+            Date caseCreatedDate = date.newinstance(caseOnPage.CreatedDate.year(), caseOnPage.CreatedDate.month(), caseOnPage.CreatedDate.day());
+            if (caseCreatedDate.daysBetween(System.Today()) > replyAcceptanceThreshold) {
+                showOpenNewCaseAlert = true;
+            } else {
+                showOpenNewCaseAlert = false;  
+            }
+        }
     }
     
     public void retrieveAttachmentList() {
@@ -64,8 +81,9 @@ public with sharing class viewCaseController {
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
         }
     }
 
@@ -93,15 +111,17 @@ public with sharing class viewCaseController {
         ];
     }
 
-    public void popUserContact() {
-        if (viewingAs) {
-            userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
-            stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
-            viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
+    public void popUserContact(){
+        if (viewAsService != null &&  viewAsService.hasViewAsRights) {
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+            stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
+            viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
+            viewingAs = true;
         } else {
             userContact = ContactService.getLoggedInContact();
         }
-
+        
+        
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
@@ -114,11 +134,9 @@ public with sharing class viewCaseController {
         caseId = ApexPages.currentPage().getParameters().get('id');
     }
     
-     public Case getCaseDetails() {
-        if (viewingAs) {
-            return MyASUViewAs.getViewAsCaseDetails(
-                ApexPages.currentPage().getParameters().get('Id')
-            );
+     public Case getCaseDetails(){
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
+            return viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
         } else {
             Case returnCase = [
                 SELECT Id, CaseNumber, RecordType.Name, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
@@ -152,8 +170,11 @@ public with sharing class viewCaseController {
         emailAddresses.add(userContact.ASU_Gmail__c);
         emailAddresses.add(userContact.Personal_Email__c);
         emailAddresses.add(userContact.EPO_Email__c);
-        if (viewingAs) {
-            return MyASUViewAs.getViewAsCaseEmails(
+        emailAddresses.add(userContact.Lead_Email__c);
+        emailAddresses.add(userContact.Lead_Secondary_Email__c);
+
+        if (viewAsService != null) {
+            return viewAsService.getCaseEmails(
                 EMAILVISIBILITYDATE,
                 ApexPages.currentPage().getParameters().get('id'),
                 emailAddresses
@@ -165,6 +186,7 @@ public with sharing class viewCaseController {
                 emailAddresses
             );
         }
+        
     }
 
     public List<bomgar__Event__c> getChatMessages() {
@@ -288,15 +310,14 @@ public with sharing class viewCaseController {
         submitCaseReply();
         submitAttachmentReply();
         closeReplyBox();
-        
         return null;
     }
     
     private void submitCaseReply() {
         if (!String.isBlank(caseReply)) {
-            RestCallResponse restStatusAndInfo = uploadResponse();
+            RestCallResponse restStatusAndInfo = createAndSendEmailMessage();
             if (restStatusAndInfo.isSuccessfull()) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));        
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));
             } else {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact system admin'));
             }
@@ -316,7 +337,7 @@ public with sharing class viewCaseController {
         }
     }
     
-    private RestCallResponse uploadResponse() {
+    private RestCallResponse createAndSendEmailMessage() {
         String jsonEmailBody = createJsonEmail();
         HttpRequest emailMessageRequest = createEmailMessageRequestWithJsonBody(jsonEmailBody);
         RestCallResponse restStatusAndInfo = sendRequestAndParseResponse(emailMessageRequest);
@@ -333,8 +354,8 @@ public with sharing class viewCaseController {
         }
         String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
         InsertEmailMessageCalloutBody emailMessageObjectBody = new InsertEmailMessageCalloutBody(caseReply, caseId,
-                                                            emailSubject, currentUser.Name, 
-                                                            currentUser.Email, ownerEmail
+                                                            emailSubject, userContact.Name, 
+                                                            userContact.Email, ownerEmail
                                                             );
         String jsonEmailMessageInput = JSON.serialize(emailMessageObjectBody);
         return jsonEmailMessageInput;

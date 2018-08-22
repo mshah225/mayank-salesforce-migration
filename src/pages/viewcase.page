@@ -98,7 +98,6 @@
 
         <script>
             var $j = jQuery.noConflict();
-            
             function validateReply() {
                 var filePresent = false;
                 var replyPresent = false;
@@ -106,17 +105,21 @@
                     if ($(this).val().length > 0)
                         filePresent = true;
                 });
-                                                        
+
                 $j('textarea[id$=replyText]').each( function() {
                     if ($(this).val().trim().length > 0)
                         replyPresent = true;
                 });
-                                                        
+
                 if (filePresent) {
                     return validateFile();
                 }
                 if (replyPresent) {
-                    return true;
+                    if ({!showOpenNewCaseAlert} == true) {
+                        return confirm("This case has been closed for more than 14 days, replying to this case will create a new case. Click OK to create a new case. Click Cancel to go back.");    
+                    } else {
+                        return true;
+                    }
                 } else {
                     document.getElementById('errorDiv').innerHTML = 'Error: Please add a reply or an attachment\n';
                 }
@@ -296,6 +299,40 @@
                             </apex:form>
                         </div>
                     </div>
+                    
+                    <apex:outputPanel id="replySection">
+                        <div class="box">
+                            <div class="content">
+                                <apex:form styleClass="detailsForm">
+                                    <h3 style="word-wrap: break-word;">Attachments</h3>
+                                    <br />
+                                    <br />
+                                    <c:SCAttachmentBox parentId="{!caseId}" />
+                                </apex:form>
+                            </div>
+                         </div>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!showCaseAttachments}" >
+                        <apex:pageBlock >
+                            <div class="row">
+                                <div class="header">
+                                    <h6><b>View Attachments</b></h6>
+                                </div>
+                                <apex:pageBlockTable value="{!allCaseAttachments}" rendered="{!showCaseAttachments}" var="eachAttachment" columns="2">
+                                    <apex:column headerValue="Name">
+                                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color:#990033;" target="_blank">{!eachAttachment.Name}</apex:outputLink>
+                                    </apex:column>
+                                    <apex:column headerValue="Created Date">
+                                        <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}"
+                                            label="Date Opened">
+                                            <apex:param value="{!eachAttachment.CreatedDate}"/>
+                                        </apex:outputText>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                            </div>
+                        </apex:pageBlock>
+                    </apex:outputPanel>
                     
                     <apex:outputPanel id="emailMessagesBox"
                                       rendered="{!IF(EmailMessages.empty,false,true)}">

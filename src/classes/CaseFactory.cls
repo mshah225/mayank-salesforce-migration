@@ -12,7 +12,7 @@ public class CaseFactory {
         }
     }
 
-    
+
     public class ClosedWebformCase extends TestFactory {
         public ClosedWebformCase() {
             super(new Case(
@@ -29,7 +29,7 @@ public class CaseFactory {
             ));
         }
     }
-    
+
     public class ProcessingWebformCase extends TestFactory {
         public ProcessingWebformCase() {
             super(new Case(
@@ -45,6 +45,25 @@ public class CaseFactory {
                 Number_of_Files__c = '1',
                 Visible_By_Contact__c = FALSE
             ));
+        }
+    }
+
+    public class AdvisorOutreachCase extends TestFactory {
+        public AdvisorOutreachCase(Id userId, Id advisorOutReachId, String status,
+            Id functionalGroup, Id category, Id advisorStudent, String mostRecentQueue) {
+            super(new Case(
+                OwnerId = userId,
+                RecordTypeId = advisorOutReachId,
+                Status = status,
+                CC_Functional_Group__c = functionalGroup,
+                CC_Category__c = category,
+                Origin__c = 'Outreach',
+                Subject = 'Case Bloat ',
+                Description = 'Case Bloat',
+                contactId = advisorStudent,
+                Most_Recent_Queue__c = mostRecentQueue
+            ));
+            this.addToFieldsToIncrement('Subject');
         }
     }
 }

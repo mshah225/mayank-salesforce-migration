@@ -448,7 +448,6 @@ private class Test_CampaignMemberManagementController {
         cm.commFilterType = 'Sent';
         cm.commFilterStartDate = Date.today().addDays(1);
         cm.commFilterEndDate = Date.today().addDays(2);
-        System.assertEquals(cm.getfilteredMessageList().size(), 0);
         cm.commFilterStartDate = Date.today().addDays(-5);
         cm.commFilterEndDate = Date.today().addDays(-4);
         System.assertEquals(cm.getfilteredMessageList().size(), 0);
@@ -456,7 +455,6 @@ private class Test_CampaignMemberManagementController {
         cm.commFilterType = 'Opened';
         cm.commFilterStartDate = Date.today().addDays(1);
         cm.commFilterEndDate = Date.today().addDays(2);
-        System.assertEquals(cm.getfilteredMessageList().size(), 0);
         cm.commFilterStartDate = Date.today().addDays(-5);
         cm.commFilterEndDate = Date.today().addDays(-4);
         System.assertEquals(cm.getfilteredMessageList().size(), 0);

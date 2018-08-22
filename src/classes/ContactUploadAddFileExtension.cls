@@ -1,5 +1,6 @@
-public with sharing class ContactUploadAddFileExtension {
+public without sharing class ContactUploadAddFileExtension {
     private final Contact_Upload__c myContactUpload;
+    private final Integer BATCH_SIZE = 200;
     public List<Attachment> attachmentList { get; set; }
 
     public Attachment newAttachment {
@@ -38,11 +39,10 @@ public with sharing class ContactUploadAddFileExtension {
         try {
             insert newAttachment;
             queryAttachments();
-            BatchContactUpload bcu = new BatchContactUpload(newAttachment.Id);
-            Database.executeBatch(bcu, 50);
+            ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id);
+            Database.executeBatch(batch, BATCH_SIZE);
         } catch (DMLException e) {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,'Error uploading attachment'));
-            return null;
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,'Error uploading attachment: ' + e.getMessage()));
         } finally {
             newAttachment = new Attachment();
         }

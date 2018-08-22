@@ -8,11 +8,11 @@ private class GenerateReferenceIdOnEmailBodyTest {
     }
     
     @isTest
-    private static void testReferenceIdOnEmailBody(){
+    private static void testCaseReferenceIdOnEmail(){
         createTestData();
         
         Test.startTest();
-        String emailThreadId = GenerateReferenceIdOnEmailBody.addReferenceIdToEmailBody(testCase.Id, '');
+        String emailThreadId = GenerateReferenceIdOnEmailBody.addReferenceIdToEmailBody(testCase.Id);
         Test.stopTest();
         
         System.assertEquals(testCase.Id, Cases.getCaseIdFromEmailThreadId(emailThreadId));

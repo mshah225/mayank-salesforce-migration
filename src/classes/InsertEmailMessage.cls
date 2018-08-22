@@ -1,6 +1,6 @@
 @RestResource(urlMapping = '/InsertEmailMessage/*')
 global class InsertEmailMessage {
-    
+
     @HttpPost
     global static RestCallResponse createEmailMessage(
             String emailTextBody, 
@@ -14,7 +14,7 @@ global class InsertEmailMessage {
         toAddressAsList.add(toAddress);
         emailResponse.fromAddress = fromAddress;
         emailResponse.fromName = fromName;
-        emailResponse.plainTextBody = GenerateReferenceIdOnEmailBody.addReferenceIdToEmailBody(parentId, emailTextBody);
+        emailResponse.plainTextBody = emailTextBody + '\n\n' + GenerateReferenceIdOnEmailBody.addReferenceIdToEmailBody(parentId);
         emailResponse.toAddresses = toAddressAsList;
         emailResponse.subject = emailSubject;
         
@@ -29,7 +29,7 @@ global class InsertEmailMessage {
             emailResult = caseInboundEmailObject.handleInboundEmail(emailResponse, emailResponseEnvelope);
             if (emailResult.success) {
                 RestCallResponse restResponseObject = new RestCallResponse('success', emailResult.message);
-                return restResponseObject;    
+                return restResponseObject;
             } else {
                 RestCallResponse restResponseObject = new RestCallResponse('failure', emailResult.message);
                 return restResponseObject;

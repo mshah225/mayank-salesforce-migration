@@ -363,12 +363,14 @@ public without sharing class pkb_Controller
         }
     }
 
-    public String pageTitle
-    {
+    public String pageTitle {
         get {
-            String t = siteBaseTitle.replaceAll('_', ' ')+ ' - Home';
-            if (viewingArticle) t = siteBaseTitle.replaceAll('_', ' ')+ ' - ' +theKad.title;
-            return t;
+                if (viewingArticle){
+                    return theKad.title;
+                }
+                else{
+                    return 'Home';
+                }
         }
     }
 

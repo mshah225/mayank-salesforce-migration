@@ -17,7 +17,7 @@
                       <apex:outputLabel value="{!$Label.site.confirm_password}" for="confirmPassword"/>
                       <apex:inputSecret id="confirmPassword" value="{!confirmPassword}"/>
                       <apex:outputText value=""/>
-                      <apex:commandButton action="{!registerUser}" value="{!$Label.site.submit}" id="submit"/>
+                      <apex:commandButton action="{!registerAndRedirectUser}" value="{!$Label.site.submit}" id="submit"/>
                     </apex:panelGrid> 
                   <br/>
 </apex:form>

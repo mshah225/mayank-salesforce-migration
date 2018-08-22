@@ -19,26 +19,15 @@ public class GroupService
 	* Returns a map of the Group Names keyed to its Group Id
 	* @return Map<Id, String> A map containing Strings keyed to Ids
 	*/
-    public static Map<Id, String> mapGroupIdToName()
-    {
-        List<Group> groups = null;
-        Set<Id> groupIds = new Set<Id>();
+    public static Map<Id, Group> mapGroupIdToName(List<Id> ownerIDs)
+    { 
+        Map<ID, Group> groupNameMap;
 
-        try
-        {
-            groups = [SELECT Name, Id FROM Group];
+        try {
+            groupNameMap = new Map<ID, Group>([SELECT Id, Name FROM Group WHERE Id IN: OwnerIds]);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new GroupServiceException('!!!ERROR!!!: An error occurred when trying to get the Group names for this org\n' + e.getMessage());
-        }
-
-        // Iterate throught the list of groups and associate the ids with the names
-        Map<Id, String> groupNameMap = new Map<Id, String>();
-
-        for (Group g : groups)
-        {
-            groupNameMap.put(g.Id, g.Name);
         }
 
         return groupNameMap;

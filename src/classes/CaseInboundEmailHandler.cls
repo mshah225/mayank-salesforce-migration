@@ -713,10 +713,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         insert theEmail;
     }
 
-    private String extractIdRefNew(String searchText)
-    {
-        if (searchtext==null)
-        {
+    private String extractIdRefNew(String searchText) {
+        if (searchtext==null) {
             return null;
         }
 

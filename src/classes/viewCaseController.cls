@@ -1,5 +1,4 @@
-public class viewCaseController{
-
+public with sharing class viewCaseController {
 
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
     private static final Integer replyAcceptanceThreshold = 14;
@@ -33,9 +32,11 @@ public class viewCaseController{
     public Boolean showCaseAttachments { get; set; }
     public Boolean showOpenNewCaseAlert { get; set; }
    
-
-    public viewCaseController(){
+    public viewCaseController() {
         viewingAs = false;
+        showReplyBox = false;
+        showReplyButton = true;
+        replyCaseAttachment = new Attachment();
         checkForViewAs();
         popUserContact();
         popTerms();
@@ -69,9 +70,8 @@ public class viewCaseController{
             showCaseAttachments = true;
         }
     }
-
     
-    public void checkForViewAs(){
+    public void checkForViewAs() {
         if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null){
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
 
@@ -87,7 +87,7 @@ public class viewCaseController{
         }
     }
 
-    public void popTerms(){
+    public void popTerms() {
         today = date.today();
 
         termcAC = [
@@ -130,8 +130,8 @@ public class viewCaseController{
     }
 
 
-    public void setCaseId(){
-        caseId=ApexPages.currentPage().getParameters().get('id');
+    public void setCaseId() {
+        caseId = ApexPages.currentPage().getParameters().get('id');
     }
     
      public Case getCaseDetails(){
@@ -150,20 +150,19 @@ public class viewCaseController{
         }
     }
 
-    public String getSource(){
+    public String getSource() {
         String source = ApexPages.currentPage().getParameters().get('source');
 
-        if (source == null){
+        if (source == null) {
             source = 'studentSC';
-        }
-        else if (source.equals('viewAllCases')){
+        } else if (source.equals('viewAllCases')) {
             source = 'viewAllCases?source=studentSC';
         }
 
         return source;
     }
 
-    public EmailMessage[] getEmailMessages(){
+    public EmailMessage[] getEmailMessages() {
         Date launchDate = EMAILVISIBILITYDATE;
         List<String> emailAddresses = new List<String>();
         emailAddresses.add(userContact.Email);
@@ -201,51 +200,47 @@ public class viewCaseController{
         ];
     }
 
-    public Boolean getNormalPhone(){
+    public Boolean getNormalPhone() {
         return (userContact.CAP__c == null) ? true : false;
     }
 
-    public Boolean getRoverPhone(){
+    public Boolean getRoverPhone() {
         return (userContact.CAP__c != null) ? true : false;
     }
 
-    public Boolean getHelpBox(){
+    public Boolean getHelpBox() {
         if ((oppList == Null && userContact != null)
-            || (oppList.size() == 0 && userContact != null)){
+                || (oppList.size() == 0 && userContact != null)) {
             return true;
-        }
-        else if ((oppList[0].StageName == 'Enrolled'
-            && oppList[0].Career__c == 'Undergraduate'
-            && oppList[0].Admitted_Session__c == 'A/C')
-            && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)){
+        } else if ((oppList[0].StageName == 'Enrolled'
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'A/C')
+                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)) {
             return false;
-        }
-        else if ((oppList[0].StageName == 'Enrolled'
-            && oppList[0].Career__c == 'Undergraduate'
-            && oppList[0].Admitted_Session__c == 'B')
-            && today < date.valueOf(termcB.Session_B_Start_Date__c)){
+        } else if ((oppList[0].StageName == 'Enrolled'
+                && oppList[0].Career__c == 'Undergraduate'
+                && oppList[0].Admitted_Session__c == 'B')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
             return false;
-        }
-        else if (oppList[0].StageName != 'Enrolled'
-            && oppList[0].Career__c == 'Undergraduate'
-            && (userContact.Affiliation_Student__c == 'Current'
-            || userContact.Affiliation_Alumni__c == 'Current'
-            || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-            || userContact.Affiliation_Employee__c == 'Current')
-            && today < date.valueOf(termcB.Session_B_Start_Date__c)){
+        } else if (oppList[0].StageName != 'Enrolled'
+                && oppList[0].Career__c == 'Undergraduate'
+                && (userContact.Affiliation_Student__c == 'Current'
+                || userContact.Affiliation_Alumni__c == 'Current'
+                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+                || userContact.Affiliation_Employee__c == 'Current')
+                && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
             return false;
-        }
-        else{
+        } else {
             return true;
         }
     }
 
-    public Decimal getMyPin(){
+    public Decimal getMyPin() {
         return (viewingAs) ? 111111 : userContact.Self_Service_PIN__c;
     }
 
-    public PageReference changePin(){
-        if (viewingAs){
+    public PageReference changePin() {
+        if (viewingAs) {
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
             go.setRedirect(true);
@@ -253,20 +248,19 @@ public class viewCaseController{
             return go;
         }
 
-        if (origPin == newPin){
+        if (origPin == newPin) {
             return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
         }
 
-        if (ContactService.isPinValid(newPin, userContact.Birthdate)){
+        if (ContactService.isPinValid(newPin, userContact.Birthdate)) {
             userContact.Self_Service_PIN__c = newPin;
-            if (userContact.PIN_lockout__c == true){
+            if (userContact.PIN_lockout__c == true) {
                 userContact.PIN_lockout__c = false;
             }
-            try{
+            try {
                 update userContact;
                 return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
                 vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
@@ -274,14 +268,13 @@ public class viewCaseController{
                 ErrorLogger.log(e,vars,false);
                 return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
             }
-        }
-        else{
+        } else {
             return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
         }
 
     }
 
-    public PageReference redirectWithParams(PageReference page, String param, String value){
+    public PageReference redirectWithParams(PageReference page, String param, String value) {
         PageReference redirect = page;
         redirect.getParameters().put(param, value);
         redirect.setRedirect(true);

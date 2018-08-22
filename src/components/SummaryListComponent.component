@@ -137,9 +137,7 @@
     
     function toggleSummaryModal(ele) {
         var modal = jQuery(ele).parentsUntil('.summaryContainer').parent().find('#summaryCaseListModal');
-        jQuery('.divForm').each(function() {
-            jQuery(this).css("display", "none");
-        });
+        
         jQuery(modal).modal();
     }
     </script>

@@ -3,7 +3,7 @@ before delete, before insert, before update) {
     //TriggerFactory.createAndExecuteHandler(RelationshipHandler.class);
     
     
-    RelationshipDispatcher d = new RelationshipDispatcher(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
+    RelationshipDispatcher d = new RelationshipDispatcher();
     
     if (trigger.isBefore) {
         if (trigger.isUpdate) d.beforeUpdate();

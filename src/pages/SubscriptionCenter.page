@@ -8,8 +8,8 @@
            <!--action="{!init}"-->
 <html lang="en">
     <script>
-        // Google Analytics
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id=&#39;+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-KDWN8Z');
+		// Google Analytics
+    	    	(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-KDWN8Z');
     </script>
 	<head>
         <title>ASU | Subscription Center</title>
@@ -20,23 +20,25 @@
 		<apex:includeScript value="{!URLFOR($Resource.Subscription_Center, 'sub_center/js/jquery.min.js')}"/>
 		<apex:includeScript value="{!URLFOR($Resource.Subscription_Center, 'sub_center/js/multi-switch.js')}"/>
 		<apex:includeScript value="{!URLFOR($Resource.bootstrap_337, '/bootstrap_337/js/bootstrap.min.js')}"/>
+		<c:MultiSwitch />
+		
 		<script>
-	        $j = jQuery.noConflict();
+	        $ = jQuery.noConflict();
 
-	        $j(document).ready(function () {
+	        $(document).ready(function () {
 				//var lastItem = 3;
-	            $j('.multi-switch').multiSwitch({ width: '65px' });
+	            $('.multi-switch').multiSwitch({ width: '65px' });
                 if ({!hasOptedOutOfEmail}) {
-                    $j('#optedOutModal').modal({backdrop: 'static',
-                                                keyboard: false});
-                    $j('#optedOutModal').modal('show');
+                    $('#optedOutModal').modal({backdrop: 'static', 
+												keyboard: false});
+                    $('#optedOutModal').modal('show');
                 }
                 else if ({!updateSuccess}) {
-                    $j('#updateSuccessModal').modal('show');
+                    $('#updateSuccessModal').modal('show');
                 }
-                $j('#searchInput').keypress(function(e){
+                $('#searchInput').keypress(function(e){
                   if(e.keyCode==13)
-                  $j('#searchSubs').click();
+                  $('#searchSubs').click();
                 });
 	        });
 
@@ -180,6 +182,11 @@
                 <div class="modal fade" id="optedOutModal" role="dialog">
                     <div class="modal-dialog modal-md">
                       <div class="modal-content" style="text-align:center;padding:8px;">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                             <div class="modal-body">
                                 <p><span style="font-weight:bold;">{!subscriberEmail}</span> has been unsubscribed from all ASU Communications.</p>
                             </div>
@@ -265,7 +272,7 @@
     									  value="Yes, unsubscribe me"
     									  style="text-decoration:none;margin:15px;background:#8c1d40;"
     									  styleClass="btn"/>
-                        <p><h4>You can also <a href="SubscriptionCenter?subscriberKey={!hashedSubscriberKeyParm}" id="manage1" class="sclink">manage your subscriptions</a>.</h4></p>
+                        <p><h4>You can also <a href="SubscriptionCenter?subscriberKey={!subscriberIdentifier}" id="manage1" class="sclink">manage your subscriptions</a>.</h4></p>
                     </apex:form>
                   </apex:outputPanel>
                 -->
@@ -283,7 +290,7 @@
                 									  value="Yes, unsubscribe me"
                 									  style="text-decoration:none;margin:15px;background:#8c1d40;"
                 									  styleClass="btn"/>
-                                    <p><h4>You can also <a href="SubscriptionCenter?subscriberKey={!hashedSubscriberKeyParm}" id="manage1" class="sclink">manage your subscriptions</a>.</h4></p>
+                                    <p><h4>You can also <a href="SubscriptionCenter?subscriberKey={!subscriberIdentifier}" id="manage1" class="sclink">manage your subscriptions</a>.</h4></p>
                                 </div>
                             </div>
                         </apex:outputPanel>
@@ -294,7 +301,7 @@
                         				<h2><span style="font-weight:bold;">{!subscriberEmail}</span>{!unsubscribeMessage}</h2>
                         			</div>
                                     <apex:outputLink id="manage3"
-                                                      value="SubscriptionCenter?subscriberKey={!hashedSubscriberKeyParm}"
+                                                      value="SubscriptionCenter?subscriberKey={!subscriberIdentifier}"
                 									  style="text-decoration:none;margin:15px;background:#8c1d40;"
                 									  styleClass="btn">Manage My Subscriptions</apex:outputLink>
                                 </div>

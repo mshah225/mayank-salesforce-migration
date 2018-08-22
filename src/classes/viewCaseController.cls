@@ -1,4 +1,5 @@
-public with sharing class viewCaseController {
+public class viewCaseController{
+
 
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
     private static final Integer replyAcceptanceThreshold = 14;
@@ -7,7 +8,9 @@ public with sharing class viewCaseController {
     private Term__c termcAC;
     private Term__c termcB;
     private Map<String, String> viewAsMap;
-    public Id caseId { get; set; }
+    private MyAsuViewAs viewAsService;
+    
+    public Id caseId {get;set;}
     public Decimal newPin { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -30,11 +33,9 @@ public with sharing class viewCaseController {
     public Boolean showCaseAttachments { get; set; }
     public Boolean showOpenNewCaseAlert { get; set; }
    
-    public viewCaseController() {
+
+    public viewCaseController(){
         viewingAs = false;
-        showReplyBox = false;
-        showReplyButton = true;
-        replyCaseAttachment = new Attachment();
         checkForViewAs();
         popUserContact();
         popTerms();
@@ -68,8 +69,9 @@ public with sharing class viewCaseController {
             showCaseAttachments = true;
         }
     }
+
     
-    public void checkForViewAs() {
+    public void checkForViewAs(){
         if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null){
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
 
@@ -79,12 +81,13 @@ public with sharing class viewCaseController {
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
         }
     }
 
-    public void popTerms() {
+    public void popTerms(){
         today = date.today();
 
         termcAC = [
@@ -108,15 +111,17 @@ public with sharing class viewCaseController {
         ];
     }
 
-    public void popUserContact() {
-        if (viewingAs) {
-            userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
-            stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
-            viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
+    public void popUserContact(){
+        if (viewAsService != null &&  viewAsService.hasViewAsRights) {
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+            stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
+            viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
+            viewingAs = true;
         } else {
             userContact = ContactService.getLoggedInContact();
         }
-
+        
+        
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
@@ -125,15 +130,13 @@ public with sharing class viewCaseController {
     }
 
 
-    public void setCaseId() {
-        caseId = ApexPages.currentPage().getParameters().get('id');
+    public void setCaseId(){
+        caseId=ApexPages.currentPage().getParameters().get('id');
     }
     
-     public Case getCaseDetails() {
-        if (viewingAs) {
-            return MyASUViewAs.getViewAsCaseDetails(
-                ApexPages.currentPage().getParameters().get('Id')
-            );
+     public Case getCaseDetails(){
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
+            return viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
         } else {
             Case returnCase = [
                 SELECT Id, CaseNumber, RecordType.Name, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
@@ -147,19 +150,20 @@ public with sharing class viewCaseController {
         }
     }
 
-    public String getSource() {
+    public String getSource(){
         String source = ApexPages.currentPage().getParameters().get('source');
 
-        if (source == null) {
+        if (source == null){
             source = 'studentSC';
-        } else if (source.equals('viewAllCases')) {
+        }
+        else if (source.equals('viewAllCases')){
             source = 'viewAllCases?source=studentSC';
         }
 
         return source;
     }
 
-    public EmailMessage[] getEmailMessages() {
+    public EmailMessage[] getEmailMessages(){
         Date launchDate = EMAILVISIBILITYDATE;
         List<String> emailAddresses = new List<String>();
         emailAddresses.add(userContact.Email);
@@ -169,8 +173,9 @@ public with sharing class viewCaseController {
         emailAddresses.add(userContact.EPO_Email__c);
         emailAddresses.add(userContact.Lead_Email__c);
         emailAddresses.add(userContact.Lead_Secondary_Email__c);
-        if (viewingAs) {
-            return MyASUViewAs.getViewAsCaseEmails(
+
+        if (viewAsService != null) {
+            return viewAsService.getCaseEmails(
                 EMAILVISIBILITYDATE,
                 ApexPages.currentPage().getParameters().get('id'),
                 emailAddresses
@@ -182,6 +187,7 @@ public with sharing class viewCaseController {
                 emailAddresses
             );
         }
+        
     }
 
     public List<bomgar__Event__c> getChatMessages() {
@@ -195,47 +201,51 @@ public with sharing class viewCaseController {
         ];
     }
 
-    public Boolean getNormalPhone() {
+    public Boolean getNormalPhone(){
         return (userContact.CAP__c == null) ? true : false;
     }
 
-    public Boolean getRoverPhone() {
+    public Boolean getRoverPhone(){
         return (userContact.CAP__c != null) ? true : false;
     }
 
-    public Boolean getHelpBox() {
+    public Boolean getHelpBox(){
         if ((oppList == Null && userContact != null)
-                || (oppList.size() == 0 && userContact != null)) {
+            || (oppList.size() == 0 && userContact != null)){
             return true;
-        } else if ((oppList[0].StageName == 'Enrolled'
-                && oppList[0].Career__c == 'Undergraduate'
-                && oppList[0].Admitted_Session__c == 'A/C')
-                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)) {
+        }
+        else if ((oppList[0].StageName == 'Enrolled'
+            && oppList[0].Career__c == 'Undergraduate'
+            && oppList[0].Admitted_Session__c == 'A/C')
+            && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)){
             return false;
-        } else if ((oppList[0].StageName == 'Enrolled'
-                && oppList[0].Career__c == 'Undergraduate'
-                && oppList[0].Admitted_Session__c == 'B')
-                && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
+        }
+        else if ((oppList[0].StageName == 'Enrolled'
+            && oppList[0].Career__c == 'Undergraduate'
+            && oppList[0].Admitted_Session__c == 'B')
+            && today < date.valueOf(termcB.Session_B_Start_Date__c)){
             return false;
-        } else if (oppList[0].StageName != 'Enrolled'
-                && oppList[0].Career__c == 'Undergraduate'
-                && (userContact.Affiliation_Student__c == 'Current'
-                || userContact.Affiliation_Alumni__c == 'Current'
-                || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
-                || userContact.Affiliation_Employee__c == 'Current')
-                && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
+        }
+        else if (oppList[0].StageName != 'Enrolled'
+            && oppList[0].Career__c == 'Undergraduate'
+            && (userContact.Affiliation_Student__c == 'Current'
+            || userContact.Affiliation_Alumni__c == 'Current'
+            || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
+            || userContact.Affiliation_Employee__c == 'Current')
+            && today < date.valueOf(termcB.Session_B_Start_Date__c)){
             return false;
-        } else {
+        }
+        else{
             return true;
         }
     }
 
-    public Decimal getMyPin() {
+    public Decimal getMyPin(){
         return (viewingAs) ? 111111 : userContact.Self_Service_PIN__c;
     }
 
-    public PageReference changePin() {
-        if (viewingAs) {
+    public PageReference changePin(){
+        if (viewingAs){
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
             go.setRedirect(true);
@@ -243,19 +253,20 @@ public with sharing class viewCaseController {
             return go;
         }
 
-        if (origPin == newPin) {
+        if (origPin == newPin){
             return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
         }
 
-        if (ContactService.isPinValid(newPin, userContact.Birthdate)) {
+        if (ContactService.isPinValid(newPin, userContact.Birthdate)){
             userContact.Self_Service_PIN__c = newPin;
-            if (userContact.PIN_lockout__c == true) {
+            if (userContact.PIN_lockout__c == true){
                 userContact.PIN_lockout__c = false;
             }
-            try {
+            try{
                 update userContact;
                 return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
-            } catch (Exception e) {
+            }
+            catch(Exception e){
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
                 vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
@@ -263,13 +274,14 @@ public with sharing class viewCaseController {
                 ErrorLogger.log(e,vars,false);
                 return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
             }
-        } else {
+        }
+        else{
             return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
         }
 
     }
 
-    public PageReference redirectWithParams(PageReference page, String param, String value) {
+    public PageReference redirectWithParams(PageReference page, String param, String value){
         PageReference redirect = page;
         redirect.getParameters().put(param, value);
         redirect.setRedirect(true);

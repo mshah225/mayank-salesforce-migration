@@ -215,10 +215,6 @@ public class LeadService {
         reparentAndUpdateSubscribers(leadList, leadMap);
         reparentAndUpdateMe3s(leadList, leadMap);
 
-        reparentAndUpdateIndividualEmailResults(leadList, leadMap);
-        reparentAndUpdateSubscribers(leadList, leadMap);
-        reparentAndUpdateMe3s(leadList, leadMap);
-
         // Create LeadConvert objects from the leads and batch them up
         for (Integer batchNumber = 0; batchNumber < numberOfBatches; batchNumber++) {
             List<Database.LeadConvert> leadConvertList = new List<Database.LeadConvert>();

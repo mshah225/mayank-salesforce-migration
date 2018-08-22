@@ -19,6 +19,8 @@ private class apiSSC_MessagingAccountCreated_Test {
     
      static private void createTestData()
     {
+        TestDataFactory.createFunctionalGroupWithCategory('ASU Coach Outreach', 'Ad Hoc', 'N/A');
+        
         //Coach POD RT
         String podCoachRecordTypeId = '';
         List<RecordType> rectype1 = [SELECT Id FROM RecordType WHERE DeveloperName =: 'Coach' AND SobjectType = 'Success_POD__c'];

@@ -24,12 +24,11 @@ public with sharing class HTTPRestService_EnterpriseContact {
         try {
             response = http.send(req);
         } catch (System.CalloutException calloutException) {
-			List<String> vars = new List<String>();
+            List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertStringToJSON('Callout Exception Message in GET: ', calloutException.getMessage()));
             ErrorLogger.log(calloutException, vars, false);
         }
-        
-        if (response != null && response.getStatusCode() == 200) {
+         if (response != null && response.getStatusCode() == 200) {
             returnValue = response.getBody();
         }
 
@@ -45,7 +44,7 @@ public with sharing class HTTPRestService_EnterpriseContact {
         JSONGenerator reqBody = JSON.createGenerator(true);
         reqBody.writeStartObject();
         for (String key : parmMap.keySet()) {
-            reqBody.writeStringField(key, EncodingUtil.urlDecode(parmMap.get(key), 'UTF-8'));
+            reqBody.writeStringField(key, parmMap.get(key));
         }
         
         reqBody.writeEndObject();
@@ -62,11 +61,9 @@ public with sharing class HTTPRestService_EnterpriseContact {
             vars.add(ErrorLogger.convertStringToJSON('Callout Exception Message in POST: ', calloutException.getMessage()));
             ErrorLogger.log(calloutException, vars, false);
         }
-
         if (response != null && response.getStatusCode() == 201) {
             returnValue = response.getBody();
         }
-
         return returnValue;
     }
 }

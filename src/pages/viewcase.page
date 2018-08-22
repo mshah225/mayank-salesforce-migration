@@ -174,7 +174,7 @@
                            viewingAs="{!viewingAs}"/>
 
         <script>
-            $j(document).ready(function()
+            $(document).ready(function()
             {
                 var showChar = 250;
                 var ellipsestext = "...";
@@ -182,9 +182,9 @@
                 var lesstext = 'Show Less <span class="dropup"><span class="caret"' +
                     'style="margin-bottom:2px;"></span></span>';
 
-                $j("[id$=emailMore]").each(function()
+                $("[id$=emailMore]").each(function()
                 {
-                    var content = $j(this).clone().html();
+                    var content = $(this).clone().html();
                     if (content.indexOf("Inline image") > 0)
                     {
                         content = content.replace(/\[[^\]]+\]/,'');
@@ -199,36 +199,32 @@
                             '&nbsp;</span><span class="morecontent"><span>' + h +
                             '</span>&nbsp;&nbsp;</span><a href="" class="emailToggle">' +
                             moretext + '</a>';
-                        $j(this).html(html);
+                        $(this).html(html);
                     }
                 });
 
-                $j(".emailToggle").click(function()
+                $(".emailToggle").click(function()
                 {
-                    if ($j(this).hasClass("less"))
+                    if ($(this).hasClass("less"))
                     {
-                        $j(this).removeClass("less");
-                        $j(this).html(moretext);
-                        $j(this).prevAll(".moreellipses:first").toggle();
+                        $(this).removeClass("less");
+                        $(this).html(moretext);
+                        $(this).prevAll(".moreellipses:first").toggle();
                     }
                     else
                     {
-                        $j(this).addClass("less");
-                        $j(this).html(lesstext);
-                        $j(this).prevAll(".moreellipses:first").toggle();
+                        $(this).addClass("less");
+                        $(this).html(lesstext);
+                        $(this).prevAll(".moreellipses:first").toggle();
                     }
-                    $j(this).prev().toggle();
+                    $(this).prev().toggle();
                     return false;
                 });
             });
         </script>
-        
     </head>
 
     <body>
-    
-    <apex:pageMessages id="message" />
-
     <div id="main-search" class="main-search closed"></div>
 
     <c:SCHeader firstName="{!firstName}"
@@ -302,49 +298,15 @@
                     
                     <apex:outputPanel id="replySection">
                         <div class="box">
-                             <div class="header">
-                                    <h6 class="floatleft"><b>Reply to Case or Upload Attachment</b></h6>
-                            </div>
                             <div class="content">
                                 <apex:form styleClass="detailsForm">
-                                    <apex:outputPanel id="replyButton" >
-                                        <apex:commandButton action="{!displayReplyBox}" rendered="{!showReplyButton}"
-                                            value="Reply Or Add Attachment" styleClass="btn kbbtn"
-                                            style="color:#fff;background:#990033;padding:5px;" reRender="replyButton, replyBox" />
-                                    </apex:outputPanel>
+                                    <h3 style="word-wrap: break-word;">Attachments</h3>
+                                    <br />
+                                    <br />
+                                    <c:SCAttachmentBox parentId="{!caseId}" />
                                 </apex:form>
-                                <apex:outputPanel id="replyBox">
-                                     <apex:outputPanel id="replyPanel" rendered="{!showReplyBox}" >
-                                        <apex:form id="replyForm" styleClass="detailsForm">
-                                            <br />
-                                            <apex:inputTextarea value="{!caseReply}" id="replyText" rows="10" cols="98" style="max-width: 100%; max-height: 100%;"/>
-                                            <br />
-                                            <br />
-                                            <div class="box">
-                                                <div class="header">
-                                                    <h6>
-                                                        <b>Upload New Attachments (Max size 25MB) </b>
-                                                    </h6>
-                                                </div>
-                                                <br />
-                                                <apex:inputFile fileName="{!replyCaseAttachment.name}" id="replyFile" value="{!replyCaseAttachment.Body}" style="float:left;"/>
-                                                <br />
-                                            </div>
-                                            <div align="center" draggable="false" >
-                                                <apex:commandButton action="{!clearContentsAndCloseBox}" value="Cancel" styleClass="btn kbbtn"
-                                                style="color:#fff;background:#990033;padding:5px;" />
-                                                <div style="width: 10px; display: inline-block;" />
-                                                <apex:commandButton onclick="return validateReply();" action="{!submitReply}"
-                                                value="Submit" styleClass="btn kbbtn"
-                                                style="color:#fff;background:#990033;padding:5px;" />
-                                            </div>
-                                            <br />
-                                            <div class="errorMsg" id="errorDiv" />
-                                        </apex:form>
-                                    </apex:outputPanel>
-                                </apex:outputPanel>
                             </div>
-                        </div>
+                         </div>
                     </apex:outputPanel>
                     
                     <apex:outputPanel rendered="{!showCaseAttachments}" >
@@ -494,7 +456,7 @@
             var masqCookie = "{!masqScopeIdCookie}";
             var viewingAs = "{!viewingAs}";
             if (masqCookie != "" && viewingAs == "true") {
-                $j("a").each(function() {
+                $("a").each(function() {
                     var href = this.href;
                     if (href.indexOf("force") > -1)
                     {
@@ -504,7 +466,7 @@
                         else {
                             href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
                         }
-                        $j(this).attr("href", href);
+                        $(this).attr("href", href);
                     }
                 });
             }

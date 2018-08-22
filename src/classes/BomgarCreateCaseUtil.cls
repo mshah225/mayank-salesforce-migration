@@ -342,4 +342,6 @@ global class BomgarCreateCaseUtil
             Bomgar.BomgarAPIAccess.RecordError('BomgarCreateCaseUtil assignCase Failure', e);
         }
     }
+    
+    private class BomgarCreateCaseException extends Exception {}
 }

@@ -10,7 +10,7 @@ public abstract class TestFactory {
     protected Sobject template;
     
     public TestFactory(Sobject template) {
-        incrementingCounter = 1;
+        incrementingCounter = 0;
         this.template = template;
         fieldNameToRelatedObjects = new Map<String, List<Sobject>>();
         fieldNamesToIncrement = new List<String>();

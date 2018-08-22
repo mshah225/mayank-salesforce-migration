@@ -88,12 +88,7 @@ private class Test_ServiceCenter {
 
         insert testUserList;
 
-<<<<<<< HEAD
         TestDataFactory.createFunctionalGroupWithCategory('Student-Centric Initiatives', 'Knowledge', 'Test');
-=======
-        TestDataFactory.createFunctionalGroupWithCategory('Student Success Innovations', 'Knowledge', 'Test');
-    }
->>>>>>> 20951783dfd4ce94b1434c36cac0df62f9b4e139
 
         setupEnrolledTestSessionA();
         setUpEnrolledTestSessionB();

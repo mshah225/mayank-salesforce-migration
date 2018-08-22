@@ -475,8 +475,7 @@ public class showMyCasesController extends ListViewController {
             }
             if (!String.isEmpty(majorFilter)) {
                 collegeDegreeAndCampusFilter += ' AND (Plan_Description__c LIKE \'%' +
-                majorFilter + '%\' ' + 'OR Plan_Code__c LIKE \'%' +
-                majorFilter + '%\' )';
+                majorFilter + '%\' ' + 'OR Plan_Code__c LIKE \'%' + majorFilter + '%\' )';
             }
             collegeDegreeAndCampusFilter += ')) AND ';
             return collegeDegreeAndCampusFilter;

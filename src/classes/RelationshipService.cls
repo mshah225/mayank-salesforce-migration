@@ -122,7 +122,7 @@ public class RelationshipService {
                 for (Relationship__c relation : [
                     SELECT Contact__c,  Related_Contact__c, RecordTypeId, Related_Account__c,
                         Relationship_Start_Date__c, Active_Relationship__c, Relationship_Type__c, 
-                        Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c, Title__c
+                        Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c, Title__c, Primary_Parent__c
                     FROM Relationship__c
                     WHERE Id IN :recipToSource.keySet()
                 ]) {
@@ -138,7 +138,8 @@ public class RelationshipService {
                         relation.Relationship_Start_Date__c != rel.Relationship_Start_Date__c ||
                         relation.Relationship_End_Date__c != rel.Relationship_End_Date__c ||
                         relation.Reciprocal_Relationship__c != rel.Id ||
-                        relation.Title__c != rel.Title__c
+                        relation.Title__c != rel.Title__c ||
+                        relation.Primary_Parent__c != rel.Primary_Parent__c
                        ) {
                         relation.Contact__c = rel.Related_Contact__c;
                         relation.Related_Contact__c = rel.Contact__c;
@@ -150,6 +151,7 @@ public class RelationshipService {
                         relation.Relationship_End_Date__c = rel.Relationship_End_Date__c;
                         relation.Reciprocal_Relationship__c = rel.Id;
                         relation.Title__c = rel.Title__c;
+                        relation.Primary_Parent__c = rel.Primary_Parent__c;
 
                         relsToUpdate.add(relation);
                     }

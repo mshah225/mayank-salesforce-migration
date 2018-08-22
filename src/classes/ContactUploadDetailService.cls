@@ -18,7 +18,7 @@ public class ContactUploadDetailService {
     private Map<Integer, String> columnNames;
     private Id contactUploadId;
     private Id subscriptionId;
-    private Boolean subscriberStatus;
+    private String subscriberStatus;
 
     public ContactUploadDetailService (Id contactUploadIdIn, Map<Integer, String> columnValueIn) {
         contactUploadId = contactUploadIdIn;
@@ -82,7 +82,7 @@ public class ContactUploadDetailService {
         this.subscriptionId = subscriptionId;
     }
     
-    public void setSubscriberStatus(Id subscriberStatus) {
+    public void setSubscriberStatus(String subscriberStatus) {
         this.subscriberStatus = subscriberStatus;
     }
 }

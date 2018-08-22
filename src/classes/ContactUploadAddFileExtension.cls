@@ -104,7 +104,6 @@ public without sharing class ContactUploadAddFileExtension {
             if (subscriptionOptions == null) {
                 subscriptionOptions = new List<SelectOption>();
 
-                subscriptionOptions.add(new SelectOption('--', '--'));
                 List<GroupMember> groupList = [SELECT Group.Name 
                                                FROM GroupMember 
                                                WHERE UserOrGroupId =: UserInfo.getUserId() 

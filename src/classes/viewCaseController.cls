@@ -351,7 +351,8 @@ public with sharing class viewCaseController {
         if (currentCase.Owner.Email != null) {
             ownerEmail = currentCase.Owner.Email;
         }
-        String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + ' From ASU Community: ';
+        String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + 
+                ' from the MyASU Service Center at ' + Date.now() + ':';
         InsertEmailMessageCalloutBody emailMessageObjectBody = new InsertEmailMessageCalloutBody(caseReply, caseId,
                                                             emailSubject, userContact.Name, 
                                                             userContact.Email, ownerEmail

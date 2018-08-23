@@ -29,7 +29,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
     public CaseInboundEmailHandler() {}
 
-    global Messaging.InboundEmailResult handleInboundEmail(Messaging.inboundEmail email, Messaging.InboundEnvelope env)
+    global Messaging.v handleInboundEmail(Messaging.inboundEmail email, Messaging.InboundEnvelope env)
     {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
         result.success = true;
@@ -81,6 +81,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     generateLostEmail(email, theCase, 'Filtered Term: ' + filteredTerm);
                 }
                 // If we want to send a reply with a failure message, the result props can be changed
+                result.success = false;
+                result.message = 'Email flagged as spam based on filter: ' + filteredTerm;
                 return result;
             }
 

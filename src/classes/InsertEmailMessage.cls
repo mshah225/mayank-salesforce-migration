@@ -9,6 +9,7 @@ global class InsertEmailMessage {
             String fromName, 
             String fromAddress, 
             String toAddress) {
+
         Messaging.InboundEmail emailResponse = new Messaging.InboundEmail(); 
         List<String> toAddressAsList = new List<String>();
         toAddressAsList.add(toAddress);
@@ -22,11 +23,10 @@ global class InsertEmailMessage {
         emailResponseEnvelope.toAddress = toAddress;
         emailResponseEnvelope.fromAddress = fromAddress;
         
-        CaseInboundEmailHandler caseInboundEmailObject = new CaseInboundEmailHandler(); 
         Messaging.InboundEmailResult emailResult;
         
         try {
-            emailResult = caseInboundEmailObject.handleInboundEmail(emailResponse, emailResponseEnvelope);
+            emailResult = new CaseInboundEmailHandler().handleInboundEmail(emailResponse, emailResponseEnvelope);
             if (emailResult.success) {
                 RestCallResponse restResponseObject = new RestCallResponse('success', emailResult.message);
                 return restResponseObject;

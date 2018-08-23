@@ -1,7 +1,7 @@
 public with sharing class viewCaseController {
 
-    private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 04, 06);
-    private static final Integer replyAcceptanceThreshold = 14;
+    private static final Date EMAIL_VISIBILITY_DATE = Date.newInstance(2015, 04, 06);
+    private static final Integer REPLY_ACCEPTANCE_THRESHOLD = 14;
     private Date today;
     private Decimal origPin;
     private Term__c termcAC;
@@ -42,19 +42,18 @@ public with sharing class viewCaseController {
         popTerms();
         setCaseId();
         retrieveAttachmentList();
-        displayOpenNewCaseAlert();
+        showOpenNewCaseAlert = displayOpenNewCaseAlert();
     }
     
-    public void displayOpenNewCaseAlert() {
+    public Boolean displayOpenNewCaseAlert() {
         if (!String.isEmpty(caseId)) {
-            Case caseOnPage = [Select Id, CreatedDate FROM Case WHERE Id =: caseId];
-            Date caseCreatedDate = date.newinstance(caseOnPage.CreatedDate.year(), caseOnPage.CreatedDate.month(), caseOnPage.CreatedDate.day());
-            if (caseCreatedDate.daysBetween(System.Today()) > replyAcceptanceThreshold) {
-                showOpenNewCaseAlert = true;
-            } else {
-                showOpenNewCaseAlert = false;  
+            Case caseOnPage = [SELECT ClosedDate FROM Case WHERE Id =: caseId];
+            Date caseClosedDate = caseOnPage.ClosedDate.date();
+            if (caseClosedDate.daysBetween(System.Today()) > REPLY_ACCEPTANCE_THRESHOLD) {
+                return true;
             }
         }
+        return false;
     }
     
     public void retrieveAttachmentList() {
@@ -163,7 +162,7 @@ public with sharing class viewCaseController {
     }
 
     public EmailMessage[] getEmailMessages() {
-        Date launchDate = EMAILVISIBILITYDATE;
+        Date launchDate = EMAIL_VISIBILITY_DATE;
         List<String> emailAddresses = new List<String>();
         emailAddresses.add(userContact.Email);
         emailAddresses.add(userContact.ASU_Email__c);
@@ -175,13 +174,13 @@ public with sharing class viewCaseController {
 
         if (viewAsService != null) {
             return viewAsService.getCaseEmails(
-                EMAILVISIBILITYDATE,
+                EMAIL_VISIBILITY_DATE,
                 ApexPages.currentPage().getParameters().get('id'),
                 emailAddresses
             );
         } else {
             return CaseService.getCaseEmailMessages(
-                EMAILVISIBILITYDATE,
+                EMAIL_VISIBILITY_DATE,
                 ApexPages.currentPage().getParameters().get('id'),
                 emailAddresses
             );

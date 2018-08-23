@@ -192,16 +192,16 @@
                         </div>
 
                         <script>
-                            $( "[id$=qmarkPin]" ).click(function() {
-                                $( "[id$=tooltipPin]" ).show();
+                            $j( "[id$=qmarkPin]" ).click(function() {
+                                $j( "[id$=tooltipPin]" ).show();
                             });
 
-                            $( "[id$=closeTooltip]" ).click(function() {
-                                $( "[id$=tooltipPin]" ).hide();
+                            $j( "[id$=closeTooltip]" ).click(function() {
+                                $j( "[id$=tooltipPin]" ).hide();
                             });
 
-                            $(document).mouseup(function (e) {
-                                var container = $( "[id$=tooltipPin]" );
+                            $j(document).mouseup(function (e) {
+                                var container = $j( "[id$=tooltipPin]" );
                                 if (!container.is(e.target) && container.has(e.target).length === 0) {
                                     container.hide();
                                 }
@@ -209,46 +209,46 @@
                         </script>
 
                         <script>
-                            $( "[id$=viewPinBtn]" ).click(function() {
-                                $( "[id$=yourPinHidden]" ).hide();
-                                $( "[id$=viewPinBtn]" ).hide();
-                                $( "[id$=hidePinBtn]" ).show();
-                                $( "[id$=yourPin]" ).show();
+                            $j( "[id$=viewPinBtn]" ).click(function() {
+                                $j( "[id$=yourPinHidden]" ).hide();
+                                $j( "[id$=viewPinBtn]" ).hide();
+                                $j( "[id$=hidePinBtn]" ).show();
+                                $j( "[id$=yourPin]" ).show();
                             });
 
-                            $( "[id$=hidePinBtn]" ).click(function() {
-                                $( "[id$=hidePinBtn]" ).hide();
-                                $( "[id$=yourPin]" ).hide();
-                                $( "[id$=yourPinHidden]" ).show();
-                                $( "[id$=yourPinHidden]" ).val( "••••••••••" );
-                                $( "[id$=viewPinBtn]" ).show();
+                            $j( "[id$=hidePinBtn]" ).click(function() {
+                                $j( "[id$=hidePinBtn]" ).hide();
+                                $j( "[id$=yourPin]" ).hide();
+                                $j( "[id$=yourPinHidden]" ).show();
+                                $j( "[id$=yourPinHidden]" ).val( "••••••••••" );
+                                $j( "[id$=viewPinBtn]" ).show();
                             });
 
-                            $( "[id$=resetPin]" ).click(function() {
-                                $( "[id$=hidePinBtn]" ).hide();
-                                $( "[id$=yourPin]" ).hide();
-                                $( "[id$=yourPinHidden]" ).hide();
-                                $( "[id$=viewPinBtn]" ).hide();
-                                $( "[id$=resetPin]" ).hide();
-                                $( "[id$=newPinInput]" ).show().focus();
-                                $( "[id$=savePinBtn]" ).show();
-                                $( "[id$=cancelPinInput]" ).show();
+                            $j( "[id$=resetPin]" ).click(function() {
+                                $j( "[id$=hidePinBtn]" ).hide();
+                                $j( "[id$=yourPin]" ).hide();
+                                $j( "[id$=yourPinHidden]" ).hide();
+                                $j( "[id$=viewPinBtn]" ).hide();
+                                $j( "[id$=resetPin]" ).hide();
+                                $j( "[id$=newPinInput]" ).show().focus();
+                                $j( "[id$=savePinBtn]" ).show();
+                                $j( "[id$=cancelPinInput]" ).show();
                             });
 
-                            $( "[id$=cancelPinInput]" ).click(function() {
-                                $( "[id$=yourPinHidden]" ).show();
-                                $( "[id$=yourPinHidden]" ).val( "••••••••••" );
-                                $( "[id$=yourPin]" ).hide();
-                                $( "[id$=viewPinBtn]" ).show();
-                                $( "[id$=resetPin]" ).show();
-                                $( "[id$=newPinInput]" ).hide();
-                                $( "[id$=savePinBtn]" ).hide();
-                                $( "[id$=cancelPinInput]" ).hide();
+                            $j( "[id$=cancelPinInput]" ).click(function() {
+                                $j( "[id$=yourPinHidden]" ).show();
+                                $j( "[id$=yourPinHidden]" ).val( "••••••••••" );
+                                $j( "[id$=yourPin]" ).hide();
+                                $j( "[id$=viewPinBtn]" ).show();
+                                $j( "[id$=resetPin]" ).show();
+                                $j( "[id$=newPinInput]" ).hide();
+                                $j( "[id$=savePinBtn]" ).hide();
+                                $j( "[id$=cancelPinInput]" ).hide();
                             });
 
-                            $( document ).ready(function() {
-                                $( "[id$=yourPinHidden]" ).val( "••••••••••" );
-                                $( "[id$=newPinInput]" ).val( "" );
+                            $j( document ).ready(function() {
+                                $j( "[id$=yourPinHidden]" ).val( "••••••••••" );
+                                $j( "[id$=newPinInput]" ).val( "" );
                             });
                         </script>
                     </apex:form>
@@ -273,14 +273,14 @@
                 </div>
 
                 <script>
-                    $( "#bomgarChat" ).click(function() {
-                        $( "#bomgarChatForm" ).slideToggle( "500");
-                        $( "#faChatForm" ).slideUp( "500" );
+                    $j( "#bomgarChat" ).click(function() {
+                        $j( "#bomgarChatForm" ).slideToggle( "500");
+                        $j( "#faChatForm" ).slideUp( "500" );
                     });
 
-                    $( "#faChat" ).click(function() {
-                        $( "#bomgarChatForm" ).slideUp( "500");
-                        $( "#faChatForm" ).slideToggle( "500" );
+                    $j( "#faChat" ).click(function() {
+                        $j( "#bomgarChatForm" ).slideUp( "500");
+                        $j( "#faChatForm" ).slideToggle( "500" );
                     });
                 </script>
 

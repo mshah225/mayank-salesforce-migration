@@ -24,19 +24,19 @@
                 <br />
 
                 <script>
-                    $( "#showNewCase" ).click(function() {
-                        $( "#newCaseForm" ).slideToggle( "500" );
-                        $( "#myCases" ).slideToggle( "500" );
-                        $( "#showNewCase" ).hide();
-                        $( "#cancel" ).show();
-                        $( "#caseSubject" ).focus(600);
+                    $j( "#showNewCase" ).click(function() {
+                        $j( "#newCaseForm" ).slideToggle( "500" );
+                        $j( "#myCases" ).slideToggle( "500" );
+                        $j( "#showNewCase" ).hide();
+                        $j( "#cancel" ).show();
+                        $j( "#caseSubject" ).focus(600);
                     });
 
-                    $( "#cancel" ).click(function() {
-                        $( "#newCaseForm" ).slideToggle( "500" );
-                        $( "#myCases" ).slideToggle( "500" );
-                        $( "#showNewCase" ).show();
-                        $( "#cancel" ).hide();
+                    $j( "#cancel" ).click(function() {
+                        $j( "#newCaseForm" ).slideToggle( "500" );
+                        $j( "#myCases" ).slideToggle( "500" );
+                        $j( "#showNewCase" ).show();
+                        $j( "#cancel" ).hide();
                     });
                 </script>
 

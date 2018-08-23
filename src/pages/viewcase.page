@@ -102,12 +102,12 @@
                 var filePresent = false;
                 var replyPresent = false;
                 $j('input[id$=replyFile]').each( function() {
-                    if ($(this).val().length > 0)
+                    if ($j(this).val().length > 0)
                         filePresent = true;
                 });
 
                 $j('textarea[id$=replyText]').each( function() {
-                    if ($(this).val().trim().length > 0)
+                    if ($j(this).val().trim().length > 0)
                         replyPresent = true;
                 });
 

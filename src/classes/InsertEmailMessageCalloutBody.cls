@@ -13,8 +13,8 @@ public class InsertEmailMessageCalloutBody {
             this.parentId = parentId;
             this.emailSubject = emailSubject;
             this.fromName = fromName;
-            this.fromAddress = fromAddress;
-            this.toAddress = toAddress;
+            this.fromAddress = fromAddress == null ? '': fromAddress;
+            this.toAddress = toAddress == null ? '': toAddress;
         }
 
         public String getEmailTextBody() {

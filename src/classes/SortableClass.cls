@@ -1,12 +1,12 @@
-global class SortableClass {
+global class SortableClass implements Comparable {
     private PS_ASU_SP_CLASS_V__x classInfo;
     private String classParamSort;
-    
+
     global SortableClass(PS_ASU_SP_CLASS_V__x classInfo, String sortBy) {
         this.classInfo = classInfo;
         this.classParamSort = sortBy;
     }
-    
+
     global Integer compareTo(Object compareTo) {
         SortableClass compareToClass = (SortableClass)compareTo;
         Integer sortDir = 0;

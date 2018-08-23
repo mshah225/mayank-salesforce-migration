@@ -73,8 +73,12 @@ public class RelationshipService {
         }
         
         // Insert Reciprocal relationships
-        if (!sourceToRecip.isEmpty()) {
-            insert sourceToRecip.values();
+        try {
+            if (!sourceToRecip.isEmpty()) {
+                insert sourceToRecip.values();
+            }
+        } catch (Exception e) {
+            newRels[0].addError(Label.PrimaryRelationshipError);
         }
         
         if (!sourceToRecipId.isEmpty()) {
@@ -157,8 +161,12 @@ public class RelationshipService {
                     }
                 }
                 
-                if (!relsToUpdate.isEmpty()) {
-                    update relsToUpdate;
+                try {
+                    if (!relsToUpdate.isEmpty()) {
+                        update relsToUpdate;
+                    }
+                } catch (Exception e) {
+                    newRels[0].addError(Label.PrimaryRelationshipError);
                 }
             }
             
@@ -222,8 +230,6 @@ public class RelationshipService {
         for (Relationship__c rel : relList) {
             if (rel.Primary_Parent__c && relatedContactIsDependentOfPrimaryParent(rel)) {
                 contactList.add(rel.Related_Contact__c);
-            } else if (rel.Primary_Parent__c) {
-                contactList.add(rel.Contact__c);
             }
         }
         List<Contact> contactsWithTwoPrimaryParents = [SELECT Id 

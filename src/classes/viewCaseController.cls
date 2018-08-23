@@ -46,12 +46,16 @@ public with sharing class viewCaseController {
     }
     
     public Boolean displayOpenNewCaseAlert() {
-        if (!String.isEmpty(caseId)) {
-            Case caseOnPage = [SELECT ClosedDate FROM Case WHERE Id =: caseId];
-            Date caseClosedDate = caseOnPage.ClosedDate.date();
-            if (caseClosedDate.daysBetween(System.Today()) > REPLY_ACCEPTANCE_THRESHOLD) {
-                return true;
-            }
+        if (String.isEmpty(caseId)) {
+            return false;
+        }
+        Case caseOnPage = [SELECT ClosedDate FROM Case WHERE Id =: caseId];
+        if (caseOnPage.ClosedDate == null) {
+            return false;
+        }
+        Date caseClosedDate = caseOnPage.ClosedDate.date();
+        if (caseClosedDate.daysBetween(System.Today()) > REPLY_ACCEPTANCE_THRESHOLD) {
+            return true;
         }
         return false;
     }

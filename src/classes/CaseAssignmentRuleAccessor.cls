@@ -1,20 +1,46 @@
-public with sharing class CaseAssignmentRuleAccessor {
+public without sharing class CaseAssignmentRuleAccessor {
 
     public static Case_Assignment_Rule__c createDefaultCarForErrorLogger() {
         Case_Assignment_Rule__c defaultCar = new Case_Assignment_Rule__c();
-        List<Case_Classification__c> lstCaseCategory = [SELECT Id, Name, Parent__c FROM Case_Classification__c WHERE Active__c = true AND Name='General' AND Parent__r.Name='ASU Salesforce Support'];
-        List<RecordType> lstRT = [SELECT Id,DeveloperName FROM RecordType WHERE DeveloperName='Functional_Group' OR DeveloperName='Category'];
+        List<Case_Classification__c> lstCaseCategory = [
+            SELECT Id, Name, Parent__c
+            FROM Case_Classification__c
+            WHERE Active__c = true
+            AND Name='General'
+            AND Parent__r.Name='ASU Salesforce Support'
+        ];
+        List<RecordType> lstRT = [
+            SELECT Id,DeveloperName
+            FROM RecordType
+            WHERE DeveloperName='Functional_Group'
+            OR DeveloperName='Category'
+        ];
         Integer priority;
-        String QueueId = [SELECT Id FROM Group WHERE Name = 'ASU Salesforce Support (Case)'].Id;
+        String QueueId = [
+            SELECT Id
+            FROM Group
+            WHERE Name = 'ASU Salesforce Support (Case)'
+        ].Id;
         List<Case_Assignment_Rule__c> highestPriority = new List<Case_Assignment_Rule__c>(
-            [SELECT Priority__c FROM Case_Assignment_Rule__c ORDER By Priority__c DESC LIMIT 1]
+            [
+                SELECT Priority__c
+                FROM Case_Assignment_Rule__c
+                ORDER By Priority__c DESC
+                LIMIT 1
+            ]
         );
-        String recordTypeId = [SELECT Id FROM RecordType WHERE SObjectType = 'Case' AND Name = 'ASU Service' LIMIT 1].Id;
+        String recordTypeId = [
+            SELECT Id
+            FROM RecordType
+            WHERE SObjectType = 'Case'
+            AND Name = 'ASU Service'
+            LIMIT 1
+        ].Id;
 
         if (highestPriority.size() == 1) {
             priority = integer.valueOf(highestPriority[0].Priority__c) + 1;
         } else {
-            priority = 1;
+            priority = 10000;
         }
 
         defaultCar.Customer_Notice_Email_From_Name__c = 'ASU Salesforce Support';

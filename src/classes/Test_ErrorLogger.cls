@@ -250,7 +250,7 @@ public class Test_ErrorLogger {
             System.assertEquals(userWithContact.ContactId, c.ContactId);
         }
 
-        String timeStamp = DateTime.now().hourGmt()+':'+DateTime.now().minuteGmt();
+        String timeStamp = String.valueOf(DateTime.now().dateGMT());
         System.assert(exceptionCases[0].description.indexOf(timeStamp) < exceptionCases[0].description.lastIndexOf(timeStamp));
 
         delete exceptionCases;

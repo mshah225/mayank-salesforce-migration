@@ -22,7 +22,7 @@ private class ContactUploadDetailServiceTest {
         insert subForDetails;
         
         detailService = new ContactUploadDetailService(contactUpload.Id, columnPosToHeaderMap);
-		detailService.setSubscriptionId(subForDetails.Id);
+        detailService.setSubscriptionId(subForDetails.Id);
         detailService.setSubscriberStatus('Subscribed');
         
 

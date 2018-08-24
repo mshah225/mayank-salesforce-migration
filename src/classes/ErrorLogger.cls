@@ -1,4 +1,171 @@
 public without sharing class  ErrorLogger {
+    private static final String DEFAULT_CASE_DESCRIPTION = 'Default';
+    private static final String DEFAULT_CASE_SUBJECT = 'Apex Exception Date: ' + System.today();
+
+    private Exception exceptionToLog;
+    private String details;
+    private Case caseToCreate;
+    private Exception errorLoggerException;
+    private String callerClassName;
+
+    public ErrorLogger() {
+        caseToCreate = CaseAssignmentRuleAccessor.getNewCaseFromCar();
+        caseToCreate.Description = DEFAULT_CASE_DESCRIPTION;
+
+        Contact loggedInContact = ContactService.getLoggedInContact();
+        if (loggedInContact != null) {
+            caseToCreate.ContactId = loggedInContact.Id;
+        }
+        setCaseSubject();
+    }
+
+    private void setCallerClassName(String callerClassName){
+        this.callerClassName = callerClassName;
+    }
+
+    private void setCaseSubject() {
+        if (exceptionToLog == null) {
+            caseToCreate.Subject = DEFAULT_CASE_SUBJECT;
+        } else {
+            caseToCreate.Subject = 'Apex Exception: ' + exceptionToLog.getTypeName() + ' Date: ' + System.today();
+        }
+    }
+
+    public void setException(Exception exceptionToLog) {
+        this.exceptionToLog = exceptionToLog;
+        setCaseSubject();
+        setCaseDescription();
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+        setCaseDescription();
+    }
+
+    private void setCaseDescription() {
+        caseToCreate.Description = getExceptionDetails() + getDetailsSafely();
+    }
+
+    private String getExceptionDetails() {
+        if (exceptionToLog == null) {
+            return 'No exception was set for the ErrorLogger \n';
+        } else {
+            return exceptionToLog.getTypeName() + '\n' +
+                exceptionToLog.getMessage() + '\n' +
+                exceptionToLog.getStackTraceString() + '\n';
+        }
+    }
+
+    private String getDetailsSafely() {
+        String caseTimeStamp = '\n\nThis error occurred: ' +
+            '\n' + 'GMT' +
+            '\n' + getCurrentTimeStamp();
+        if (details == null) {
+            return caseTimeStamp;
+        }
+        return 'User Description: \n' + details +
+            caseTimeStamp;
+    }
+
+
+    public void setContactId(Id contactId) {
+        if (Validator.validateId(contactId, Contact.Class)) {
+            caseToCreate.ContactId = contactId;
+        }
+    }
+
+    public Id getContactId() {
+        return caseToCreate.ContactId;
+    }
+
+    public override String toString() {
+        return getCaseDescription();
+    }
+
+    public String getCaseDescription() {
+        return caseToCreate.Description;
+    }
+
+    public Boolean log() {
+        System.debug(toString());
+        List<Case> oldCases = getDuplicateCasesFromToday();
+
+        if (!oldCases.isEmpty()) {
+            oldCases[0].Description = oldCases[0].Description + '\n' + getCurrentTimeStamp();
+            caseToCreate = oldCases[0];
+        }
+        try {
+            upsert caseToCreate;
+        } catch (Exception errorLoggerException) {
+            this.errorLoggerException = errorLoggerException;
+            handleLogCaseInsertException();
+            return false;
+        }
+
+        return true;
+    }
+
+    private List<Case> getDuplicateCasesFromToday() {
+        if (getContactId() == null) {
+            return new List<Case>();
+        }
+        List<Case> oldCases = [
+            SELECT Id, Description
+            FROM Case
+            WHERE ContactId = :getContactId()
+            AND IsClosed = false
+            AND Subject = :caseToCreate.Subject
+            LIMIT 1
+        ];
+
+        return oldCases;
+    }
+
+    private String getCurrentTimeStamp() {
+        return String.valueOfGmt(DateTime.now());
+    }
+
+    private void handleLogCaseInsertException() {
+        List<Messaging.SendEmailResult> results = Messaging.sendEmail(getEmailList());
+        System.debug(toString());
+    }
+
+    private List<Messaging.SingleEmailMessage> getEmailList() {
+        List<Messaging.SingleEmailMessage> messageList = new List<Messaging.SingleEmailMessage>();
+        for (User emailUser : [
+            SELECT Id, Email
+            FROM User
+            WHERE Receive_Apex_Errors__c = true
+            AND ProfileId = :getAdminProfileId()
+        ]) {
+            messageList.add(getExceptionEmail(emailUser));
+        }
+        return messageList;
+    }
+
+
+    private Messaging.SingleEmailMessage getExceptionEmail(User emailUser) {
+        Messaging.SingleEmailMessage newEmail = new Messaging.SingleEmailMessage();
+        newEmail.setTargetObjectId(emailUser.Id);
+        newEmail.setSaveAsActivity(false);
+        newEmail.plainTextBody = '\n\n\nLogger Failed to insert case:\n\n' +
+            getEmailDescription();
+        newEmail.subject = caseToCreate.Subject;
+        return newEmail;
+    }
+
+    private String getEmailDescription() {
+        return errorLoggerException.getTypeName() + '\n' +
+            errorLoggerException.getMessage() + '\n' +
+            errorLoggerException.getStackTraceString() + '\n\n' +
+            'Case to Create: \n' +
+            '\n' + String.valueOf(caseToCreate) + '\n';
+    }
+
+    private Id getAdminProfileId() {
+        return [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+    }
+
     /**
      * Report exceptions via desired method (system debug logs or cases). If case fails to
      * insert, send an email alert.
@@ -12,7 +179,7 @@ public without sharing class  ErrorLogger {
     public static boolean log(Exception ex, List<String> variables, Boolean debug) {
         return log(ex, variables, debug, new Case(), null);
     }
-    
+
     /**
      * Report exceptions via desired method (system debug logs or cases). If case fails to
      * insert, send an email alert.
@@ -28,7 +195,7 @@ public without sharing class  ErrorLogger {
     public static boolean log(Exception ex, List<String> variables, Boolean debug, Id contactId) {
         return log(ex, variables, debug, new Case(), contactId);
     }
-    
+
     /**
      * Overload provided for testing only. Pass an invalid case to this overload to force an
      * exception for code coverage.
@@ -43,185 +210,17 @@ public without sharing class  ErrorLogger {
      * will be used, If no user is logged in, no contact will be associated
      * @return Boolean True if case is inserted, False if case is not inserted, Null if error
      */
-    public static boolean log(Exception ex, List<String> variables, Boolean debug, Case newCase, Id contactId) {        
-        if (debug) {
-            // Report exception via system debug logs
-            debug(ex, variables);
-            
-            return false;
-        } else {
-            List<Case> oldCases; // Existing cases with the same subject
-            List<Case_Assignment_Rule__c> sfCar; //The CAR to be used to assign the case to SF Support
-            Group queue; // Owner of the case to be created
-            string subject; // Case/Email subject
-            Boolean createCase = false; // Determine if a case should be created
-            string EMPLId;
-            Contact loggedInContact; // Contact Record for the logged in user
-            
-            
-            try {
-                // Get the contactId of the logged in user
-                subject = 'Apex Exception: ' + ex.getTypeName() + ' Date: ' + system.today();
-                
-                // Get contact for case
-                // The contact that is passed is not valid
-                if (!Validator.validateId(contactId, Contact.Class)) {
-                    
-                    //retrive logged in contact
-                    loggedInContact=ContactService.getLoggedInContact();
-                }
-                    
-                // Check to see if the logged in user has an open case
-                // with the same subject for de-duping
-                if (loggedInContact != null) {
-                    
-                    system.debug('errorLogger 78: ' + limits.getQueryRows());
-                    oldCases = [SELECT Subject, IsClosed 
-                       FROM Case 
-                       WHERE (ContactId = :loggedInContact.Id)
-                       AND IsClosed = false 
-                       AND subject = :subject];
-                    system.debug('errorLogger 84: ' + limits.getQueryRows());
-                       
-                   if (oldCases.size() > 0) {
-                       createCase = false;
-                       debug(ex, variables);
-                   } else {
-                       createCase = true;
-                   }
-                } else { // If no contact Id is found, create a case
-                    createCase = true;
-                }
-                
-                if (createCase) {
-                    sfCar = new List<Case_Assignment_Rule__c>([Select Queue_ID__c, CC_Functional_Group__c, CC_Category__c,
-                        CC_Sub_Category__c, Email_Address__c, Case_Feed_Email_Template_Id__c, Campus__c, Origin__c,
-                        Case_Record_Type_Id__c
-                        FROM Case_Assignment_Rule__c
-                        WHERE Origin__c = 'Error Logger' ORDER BY Priority__c DESC LIMIT 1]);
-                       
-                    if (sfCar.size() == 0) {
-                        sfCar.add(createDefaultCar());
-                        
-                        insert sfCar;
-                    }
-                
-                    queue = [SELECT Id
-                        FROM Group 
-                        WHERE Name = 'ASU Salesforce Support (Case)' 
-                        AND Type = 'Queue' LIMIT 1];
-                    
-                    newCase.OwnerId = sfCar[0].Queue_ID__c;
-                    newCase.CC_Functional_Group__c = sfCar[0].CC_Functional_Group__c;
-                    newCase.CC_Category__c = sfCar[0].CC_Category__c;
-                    newCase.CC_Sub_Category__c = sfCar[0].CC_Sub_Category__c;
-                    newCase.Case_Feed_Email__c = sfCar[0].Email_Address__c;
-                    newCase.Case_Feed_Email_Template_Id__C = sfCar[0].Case_Feed_Email_Template_Id__c;
-                    newCase.Campus__c = sfCar[0].Campus__c;
-                    newCase.Origin__c = sfCar[0].Origin__c;
-                    newCase.Subject = subject;
-                    newCase.Visible_by_Contact__c = false;
-                    if (contactId != null && Validator.validateId((String) contactId, contact.class)) {
-                        newCase.contactId = contactId;
-                    } else {
-                        if (loggedInContact != null){
-                            newCase.contactId = loggedInContact.Id;
-                        }
-                    }
-                    
-                    newCase.Description = ex.getMessage() + '\n'
-                        + ex.getStackTraceString() + '\n'
-                        + 'Variable Snap Shot:';
-                    
-                    if (variables.size() > 0) {
-                        for (String s : variables) {
-                            newCase.description = newCase.Description + '\n' + s;
-                        }
-                    }
-                    
-                    debug(ex, variables);
-                    insert newCase;
-                    
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (Exception nex) {
-                Messaging.SingleEmailMessage newEmail = new Messaging.SingleEmailMessage();
-                List<Messaging.SingleEmailMessage> messageList = new List<Messaging.SingleEmailMessage>();
-                List<Messaging.SendEmailResult> results;
-                List<String> addresses = new List<String>();
-                List<Id> recipientObjectIds = new List<Id>();
-                List<String> vars = new List<String>();
-                Id adminProfileId = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
-                
-                // Uses targetObjectId to send Emails
-                // uses the Recieve_Apex_errors__c field on user object to determine the users to which the Error email needs to be sent.
-                
-                for(User emailUser : [
-                    SELECT id, Email
-                    FROM User
-                    WHERE Receive_Apex_Errors__c = true
-                    AND ProfileId = :adminProfileId
-                ]){
-                    newEmail = new Messaging.SingleEmailMessage();
-                    newEmail.setTargetObjectId(emailUser.Id);
-                    newEmail.subject = subject;
-                    newEmail.setSaveAsActivity(false);
-                    newEmail.plainTextBody = ex.getMessage() + '\n'
-                    + ex.getStackTraceString() + '\n'
-                    + 'Variable Snap Shot:';
-                
-                    if (variables.size() > 0) {
-                        for (String s : variables) {
-                        newEmail.plainTextBody = newEmail.plainTextBody + '\n' + s;
-                        }
-                    }
-                
-                
-                    // Add exception info for why the case failed to create
-                    newEmail.plainTextBody = newEmail.plainTextBody + '\n\n\nLogger Failed to insert case:\n'
-                        + nex.getTypeName() + '\n'
-                        + nex.getMessage() + '\n'
-                        + nex.getStackTraceString() + '\n'
-                        + 'Variable Snap Shot:';
-                        
-                    vars.add(convertSObjectToJSON('newCase',newCase));
-                    vars.add(convertListToJSON('oldCases',oldCases));
-                    if (loggedInContact != null){
-                        vars.add(convertIdToJSON('loggedInContactId',loggedInContact.Id));
-                    }
-                    
-                    vars.add(convertSObjectToJSON('queue',queue));
-                    vars.add(convertStringToJSON('subject',subject));
-                    vars.add(convertBooleanToJSON('createCase',createCase));
-                    
-                    for (String s : vars) {
-                        newEmail.plainTextBody = newEmail.plainTextBody + '\n' + s;
-                    }
-                    
-                    debug(ex, variables);
-                    debug(nex, vars);
-                    messageList.add(newEmail);
-                        
-                }    
-                results = messaging.sendEmail(messageList);
-                    
-                return null;
-            }
+    public static boolean log(Exception ex, List<String> variables, Boolean debug, Case newCase, Id contactId) {
+        ErrorLogger el = new ErrorLogger();
+        el.setException(ex);
+        if (variables != null) {
+            el.setDetails(String.valueOf(variables));
         }
+        el.setContactId(contactId);
+        return el.log();
+
     }
-    
-    private static void debug(Exception ex, List<String> variables) {
-        system.debug(ex.getMessage());
-        system.debug(ex.getStackTraceString());
-        system.debug('Variable snap shot');
-        
-        for (String s : variables) {
-            system.debug(s);
-        }
-    }
-    
+
     /**
      * Convert Supplied List of SObjects to a JSON string
      *
@@ -238,7 +237,7 @@ public without sharing class  ErrorLogger {
              return '{' + varName + ':{size:0, objects[]}}';
          }
     }
-    
+
     /**
      * Convert Supplied List of Ids to a JSON string
      *
@@ -255,7 +254,7 @@ public without sharing class  ErrorLogger {
              return '{' + varName + ':{size:0, objects[]}}';
          }
     }
-    
+
     /**
      * Convert Supplied Set of Ids to a JSON string
      *
@@ -272,7 +271,7 @@ public without sharing class  ErrorLogger {
              return '{' + varName + ':{size:0, objects[]}}';
          }
     }
-    
+
     /**
      * Convert Supplied Map - Ids to SObjects - to a JSON string
      *
@@ -289,7 +288,7 @@ public without sharing class  ErrorLogger {
              return '{' + varName + ':{size:0, objects[]}}';
          }
     }
-    
+
     /**
      * Convert Supplied Map - Ids to Integers - to a JSON string
      *
@@ -306,7 +305,7 @@ public without sharing class  ErrorLogger {
              return '{' + varName + ':{size:0, objects[]}}';
          }
     }
-    
+
     /**
      * Convert Supplied Boolean value to a JSON string
      *
@@ -317,7 +316,7 @@ public without sharing class  ErrorLogger {
     public static string convertBooleanToJSON(String varName, Boolean value) {
         return '{' + varName + ':' + String.valueOf(value) + '}';
     }
-    
+
     /**
      * Convert Supplied Integer value to a JSON string
      *
@@ -328,7 +327,7 @@ public without sharing class  ErrorLogger {
     public static string convertIntegerToJSON(String varName, Integer value) {
         return '{' + varName + ':' + String.valueOf(value) + '}';
     }
-    
+
     /**
      * Convert Supplied String value to a JSON string
      *
@@ -339,7 +338,7 @@ public without sharing class  ErrorLogger {
     public static string convertStringToJSON(String varName, String value) {
         return '{' + varName + ':' + value + '}';
     }
-    
+
     /**
      * Convert Supplied Double value to a JSON string
      *
@@ -350,7 +349,7 @@ public without sharing class  ErrorLogger {
     public static string convertDoubleToJSON(String varName, Double value) {
         return '{' + varName + ':' + String.valueOf(value) + '}';
     }
-    
+
     /**
      * Convert Supplied Id value to a JSON string
      *
@@ -361,7 +360,7 @@ public without sharing class  ErrorLogger {
     public static string convertIdToJSON(String varName, Id value) {
         return '{' + varName + ':' + String.valueOf(value) + '}';
     }
-    
+
     /**
      * Convert supplied SObject into a JSON string
      *
@@ -371,83 +370,5 @@ public without sharing class  ErrorLogger {
      */
     public static string convertSObjectToJSON(String varName, SObject value) {
         return '{' + varName + ':{' + String.valueOf(value) + '}}';
-    }
-    
-    /**
-     * Creates a Default Case Assignment Rule for the Error Logger
-     * <p>
-     * I opted to use this rout for 3 reasons:
-     * -Reduce potential for errors in the error logger
-     * -Ensure that test classes do not need to create CARs themselves
-     * -Can function in any environment (developer sandbox) without setup
-     * </p>
-     *
-     * @return Case_Assignment_Rule__c The new case assignment rule
-     */
-    public static Case_Assignment_Rule__c createDefaultCar() {
-        Case_Assignment_Rule__c defaultCar = new Case_Assignment_Rule__c();
-        List<Case_Classification__c> lstCaseCategory = [SELECT Id, Name, Parent__c FROM Case_Classification__c WHERE Active__c = true AND Name='General' AND Parent__r.Name='ASU Salesforce Support'];  // query category and functional group from case classification if it exists
-        List<RecordType> lstRT = [SELECT Id,DeveloperName FROM RecordType WHERE DeveloperName='Functional_Group' OR DeveloperName='Category']; // query record types of case classification object
-        Integer priority; // Priority of the new CAR
-        String QueueId = [SELECT Id FROM Group WHERE Name = 'ASU Salesforce Support (Case)'].Id; // Owner of the new CAR
-        List<Case_Assignment_Rule__c> highestPriority = new List<Case_Assignment_Rule__c>(
-            [SELECT Priority__c FROM Case_Assignment_Rule__c ORDER By Priority__c DESC LIMIT 1]
-        ); // Used to get the next sequential priority
-        String recordTypeId = [SELECT Id FROM RecordType WHERE SObjectType = 'Case' AND Name = 'ASU Service' LIMIT 1].Id;
-        
-        if (highestPriority.size() == 1) {
-            priority = integer.valueOf(highestPriority[0].Priority__c) + 1;
-        } else {
-            priority = 1;
-        }
-        
-        // Required Fields
-        defaultCar.Customer_Notice_Email_From_Name__c = 'ASU Salesforce Support';
-        defaultCar.Queue_ID__c = QueueId.left(15);
-        defaultCar.Priority__c = priority;
-        
-        // Other fields required by Error Logger
-        // Assign Functional Group and Category if they exist
-        if(lstCaseCategory!=null && lstCaseCategory.size()>0) {
-            defaultCar.CC_Functional_Group__c = lstCaseCategory[0].Parent__c;
-            defaultCar.CC_Category__c = lstCaseCategory[0].Id;
-        }
-        // Create Functional Group and Category Record and then assign it to default CAR
-        else {
-            Case_Classification__c defaultFuncGroup=new Case_Classification__c();
-            defaultFuncGroup.Name='ASU Salesforce Support';
-            defaultFuncGroup.Record_Types__c='ASU Coach Outreach; ASU Service';
-            defaultFuncGroup.Record_Types_String__c='ASU Coach Outreach;ASU Service';
-            defaultFuncGroup.Active__c=true;
-            defaultFuncGroup.Visible__c=true;
-            if(lstRT[0].DeveloperName=='Functional_Group')
-                defaultFuncGroup.RecordTypeId=lstRT[0].Id;
-            else 
-                defaultFuncGroup.RecordTypeId=lstRT[1].Id;
-            
-            insert defaultFuncGroup;
-            
-            Case_Classification__c defaultCategory= new Case_Classification__c();
-            defaultCategory.Name='General';
-            defaultCategory.Active__c=true;
-            defaultCategory.Visible__c=true;
-            defaultCategory.Parent__c=defaultFuncGroup.Id;
-            if(lstRT[0].DeveloperName=='Category')
-                defaultCategory.RecordTypeId=lstRT[0].Id;
-            else 
-                defaultCategory.RecordTypeId=lstRT[1].Id;
-            
-            insert defaultCategory;
-            
-            defaultCar.CC_Functional_Group__c = defaultCategory.Parent__c;
-            defaultCar.CC_Category__c = defaultCategory.Id;
-        }
-        defaultCar.Email_Address__c = ''; //ToDo see if we should add SF email here
-        defaultCar.Case_Feed_Email_Template_Id__c = '';
-        defaultCar.Campus__c = '';
-        defaultCar.Origin__c ='Error Logger';
-        defaultCar.Case_Record_Type_Id__c = recordTypeId.left(15);
-        
-        return defaultCar;
     }
 }

@@ -103,18 +103,29 @@ public without sharing class ContactUploadAddFileExtension {
         get {
             if (subscriptionOptions == null) {
                 subscriptionOptions = new List<SelectOption>();
-
-                List<GroupMember> groupList = [SELECT Group.Name 
-                                               FROM GroupMember 
-                                               WHERE UserOrGroupId =: UserInfo.getUserId() 
-                                               AND Group.Type = 'Queue'];
-                List<String> groupNameList = new List<String>();
-                for (GroupMember groupPartOf : groupList) {
-                    groupNameList.add(groupPartOf.Group.Name);
+                
+                Id userId = UserInfo.getUserId();
+                List<GroupMember> groupsOfUser = [SELECT UserOrGroupId, 
+                                                  Group.Id FROM GroupMember  
+                                                  WHERE  UserOrGroupId =: userId];
+                List<Id> groupIdsUserIsIn = new List<Id>();
+                groupIdsUserIsIn.add(userId);
+                for (GroupMember groups : groupsOfUser) {
+                    groupIdsUserIsIn.add(groups.GroupId);
                 }
+                List<GroupMember> queueUserIsIn = [SELECT UserOrGroupId, Group.Name, Group.Id
+                                                   FROM GroupMember 
+                                                   WHERE  Group.Type = 'Queue' AND
+                                                   UserOrGroupId IN: groupIdsUserIsIn];
+                
+                List<Id> queueIdList = new List<Id>();
+                for (GroupMember queues : queueUserIsIn) {
+                    queueIdList.add(queues.GroupId);
+                }
+                
                 List<Subscription__c> allSubs = [SELECT Id, Name 
                                                  FROM Subscription__c 
-                                                 WHERE Owner.Name IN: groupNameList
+                                                 WHERE Owner.Id IN: queueIdList
                                                  ORDER BY Name ASC];
                 for (Subscription__c sub : allSubs) {
                     subscriptionOptions.add(new SelectOption(sub.Id, sub.Name));

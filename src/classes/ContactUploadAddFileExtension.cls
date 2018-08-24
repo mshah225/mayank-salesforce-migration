@@ -105,8 +105,8 @@ public without sharing class ContactUploadAddFileExtension {
                 subscriptionOptions = new List<SelectOption>();
                 
                 Id userId = UserInfo.getUserId();
-                List<GroupMember> groupsOfUser = [SELECT UserOrGroupId, 
-                                                  Group.Id FROM GroupMember  
+                List<GroupMember> groupsOfUser = [SELECT UserOrGroupId, Group.Id 
+                                                  FROM GroupMember  
                                                   WHERE  UserOrGroupId =: userId];
                 List<Id> groupIdsUserIsIn = new List<Id>();
                 groupIdsUserIsIn.add(userId);

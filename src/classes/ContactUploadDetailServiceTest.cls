@@ -15,17 +15,18 @@ private class ContactUploadDetailServiceTest {
         columnPosToHeaderMap.put(1, 'First Name');
         columnPosToHeaderMap.put(2, 'Last Name');
         columnPosToHeaderMap.put(3, 'Email Address');
-        columnPosToHeaderMap.put(4, 'Subscription ID');
-        columnPosToHeaderMap.put(5, 'EMPLID');
-        columnPosToHeaderMap.put(6, 'Subscriber Status');
-
-        detailService = new ContactUploadDetailService(contactUpload.Id, columnPosToHeaderMap);
+        columnPosToHeaderMap.put(4, 'EMPLID');
 
         SubscriptionFactory.ParentSubscription subscriptionCreator = new SubscriptionFactory.ParentSubscription();
         subForDetails = (Subscription__c)subscriptionCreator.create(1)[0];
         insert subForDetails;
+        
+        detailService = new ContactUploadDetailService(contactUpload.Id, columnPosToHeaderMap);
+		detailService.setSubscriptionId(subForDetails.Id);
+        detailService.setSubscriberStatus('Subscribed');
+        
 
-        contactValues = new List<String>{'tester', 'Test', 'Person', 'test@test.com', subForDetails.Id, '1234567890', 'Subscribed'};
+        contactValues = new List<String>{'tester', 'Test', 'Person', 'test@test.com', '1234567890'};
     }
 
     @isTest

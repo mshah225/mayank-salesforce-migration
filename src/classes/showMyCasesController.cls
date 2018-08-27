@@ -751,4 +751,22 @@ public class showMyCasesController extends ListViewController {
         }
         set;
     }
+
+    public List<SelectOption> campusFilterOptions {
+        get {
+            if (campusFilterOptions == null || campusFilterOptions.isEmpty()) {
+                campusFilterOptions = new List<SelectOption>();
+                campusFilterOptions.add(new SelectOption('--', '--'));
+
+                List<Location__c> campusLocationOptions = [SELECT Name FROM Location__c];
+
+                for (Location__c campusOption : campusLocationOptions) {
+                    campusFilterOptions.add(new SelectOption(campusOption.Name, campusOption.Name));
+                }
+                campusFilterOptions.sort();
+            }
+            return campusFilterOptions;
+        }
+        set;
+    }
 }

@@ -163,11 +163,9 @@
                                         value="{!majorFilter}"
                                         html-placeholder="All or part of major name"
                                         styleClass="searchBox"/>
-                            <apex:inputText label="Campus: " id="campusFilter"
-                                        value="{!campusFilter}"
-                                        html-placeholder="All or part of campus name"
-                                        styleClass="searchBox"
-                                        style="width:190px"/>
+                            <apex:selectList label="Campus: " value="{!campusFilter}" size="1" required="false">
+                                <apex:selectOptions value="{!campusFilterOptions}"/>
+                            </apex:selectList>
                             <apex:selectList label="Outlook Score" value="{!outlookScoreFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookScoreOptions}"/>
                             </apex:selectList>

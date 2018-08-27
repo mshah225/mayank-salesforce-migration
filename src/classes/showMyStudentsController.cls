@@ -404,8 +404,8 @@ public class showMyStudentsController extends ListViewController {
                    'WHERE Status__c = \'Active in Program\' ';
 
             if (!String.isEmpty(campusFilter)) {
-                collegeDegreeAndCampusFilter += ' AND Campus__r.Name LIKE \'%' +
-                campusFilter + '%\' ';
+                collegeDegreeAndCampusFilter += ' AND Campus__c = \'' +
+                campusFilter + '\' ';
             }
             if (!String.isEmpty(majorFilter)) {
                 collegeDegreeAndCampusFilter += ' AND Plan_Description__c LIKE \'%' +
@@ -423,10 +423,10 @@ public class showMyStudentsController extends ListViewController {
                 campusFilterOptions = new List<SelectOption>();
                 campusFilterOptions.add(new SelectOption('--', '--'));
 
-                List<Location__c> campusLocationOptions = [SELECT Name FROM Location__c];
+                List<Location__c> campusLocationOptions = [SELECT Name FROM Location__c WHERE Location_Status__c = true];
 
                 for (Location__c campusOption : campusLocationOptions) {
-                    campusFilterOptions.add(new SelectOption(campusOption.Name, campusOption.Name));
+                    campusFilterOptions.add(new SelectOption(campusOption.Name, campusOption.Id));
                 }
                 campusFilterOptions.sort();
             }

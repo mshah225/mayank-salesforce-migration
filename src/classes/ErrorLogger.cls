@@ -16,25 +16,14 @@ public without sharing class  ErrorLogger {
         if (loggedInContact != null) {
             caseToCreate.ContactId = loggedInContact.Id;
         }
-        setCaseSubject();
     }
 
     public void setClassName(String className){
         this.className = className;
-        setCaseSubject();
-    }
-
-    private void setCaseSubject() {
-        if (exceptionToLog == null) {
-            caseToCreate.Subject = className + ' ' + DEFAULT_CASE_SUBJECT;
-        } else {
-            caseToCreate.Subject = className + ' Apex Exception: ' + exceptionToLog.getTypeName() + ' Date: ' + System.today();
-        }
     }
 
     public void setException(Exception exceptionToLog) {
         this.exceptionToLog = exceptionToLog;
-        setCaseSubject();
         setCaseDescription();
     }
 
@@ -68,7 +57,6 @@ public without sharing class  ErrorLogger {
             caseTimeStamp;
     }
 
-
     public void setContactId(Id contactId) {
         if (Validator.validateId(contactId, Contact.Class)) {
             caseToCreate.ContactId = contactId;
@@ -87,8 +75,17 @@ public without sharing class  ErrorLogger {
         return caseToCreate.Description;
     }
 
+    public String getSubject() {
+        String classNameClause = String.isBlank(className) ? '' : className;
+        String exceptionClause = exceptionToLog == null ? DEFAULT_CASE_SUBJECT : 'Apex Exception: ' + exceptionToLog.getTypeName();
+        String dateClause = 'Date: ' + System.today();
+        return classNameClause + ' ' + exceptionClause + ' ' + dateClause;
+    }
+
     public Boolean log() {
         System.debug(toString());
+
+        caseToCreate.Subject = getSubject();
         List<Case> oldCases = getDuplicateCasesFromToday();
 
         if (!oldCases.isEmpty()) {

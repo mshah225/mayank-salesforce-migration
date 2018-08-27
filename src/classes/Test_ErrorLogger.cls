@@ -50,13 +50,11 @@ public class Test_ErrorLogger {
     }
 
     private static Boolean executeErrorLogger() {
-        Boolean debug;
         ErrorLogger el = new ErrorLogger();
         el.setClassName(className);
         el.setException(ex);
         el.setDetails(description);
-        debug = el.log();
-        return debug;
+        return el.log();
     }
 
     @isTest
@@ -83,14 +81,17 @@ public class Test_ErrorLogger {
 
     private static void validateCreatedCaseAndContactId(Integer numberOfCasesCreated, Id caseContactId) {
         List<Case> exceptionCases;
-        exceptionCases = [SELECT Id, ContactId FROM Case WHERE Subject = :subject];
+        exceptionCases = [
+            SELECT Id, ContactId
+            FROM Case
+            WHERE Subject = :subject
+        ];
 
         System.assertEquals(numberOfCasesCreated, exceptionCases.size());
 
         for (Case c : exceptionCases) {
             System.assertEquals(caseContactId, c.ContactId);
         }
-        delete exceptionCases;
     }
 
     @isTest
@@ -189,7 +190,11 @@ public class Test_ErrorLogger {
         Test.stopTest();
 
         System.assertEquals(false, debug);
-        List<Case> exceptionCases = [SELECT Id, ContactId FROM Case WHERE Subject = :subject];
+        List<Case> exceptionCases = [
+            SELECT Id, ContactId
+            FROM Case
+            WHERE Subject = :subject
+        ];
         System.assertEquals(true, exceptionCases.isEmpty());
     }
 
@@ -248,7 +253,11 @@ public class Test_ErrorLogger {
 
         System.assertEquals(true, debug);
 
-        List<Case> exceptionCases = [SELECT Id, Description, ContactId FROM Case WHERE Subject = :subject];
+        List<Case> exceptionCases = [
+            SELECT Id, Description, ContactId
+            FROM Case
+            WHERE Subject = :subject
+        ];
 
         System.assertEquals(1, exceptionCases.size());
 
@@ -283,7 +292,6 @@ public class Test_ErrorLogger {
         subject = 'testClass Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
 
         validateCreatedCaseAndContactId(1, userWithContact.ContactId);
-
     }
 
     /**

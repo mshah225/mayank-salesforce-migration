@@ -6,12 +6,12 @@ public without sharing class  ErrorLogger {
     private String details;
     private Case caseToCreate;
     private Exception errorLoggerException;
-    private String callerClassName;
+    private String className;
 
     public ErrorLogger() {
         caseToCreate = CaseAssignmentRuleAccessor.getNewCaseFromCar();
         caseToCreate.Description = DEFAULT_CASE_DESCRIPTION;
-
+        className = '';
         Contact loggedInContact = ContactService.getLoggedInContact();
         if (loggedInContact != null) {
             caseToCreate.ContactId = loggedInContact.Id;
@@ -19,15 +19,16 @@ public without sharing class  ErrorLogger {
         setCaseSubject();
     }
 
-    private void setCallerClassName(String callerClassName){
-        this.callerClassName = callerClassName;
+    public void setClassName(String className){
+        this.className = className;
+        setCaseSubject();
     }
 
     private void setCaseSubject() {
         if (exceptionToLog == null) {
-            caseToCreate.Subject = DEFAULT_CASE_SUBJECT;
+            caseToCreate.Subject = className + ' ' + DEFAULT_CASE_SUBJECT;
         } else {
-            caseToCreate.Subject = 'Apex Exception: ' + exceptionToLog.getTypeName() + ' Date: ' + System.today();
+            caseToCreate.Subject = className + ' Apex Exception: ' + exceptionToLog.getTypeName() + ' Date: ' + System.today();
         }
     }
 

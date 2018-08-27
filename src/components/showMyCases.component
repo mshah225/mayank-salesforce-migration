@@ -180,8 +180,8 @@
                             <apex:input styleClass="createdByEndDate" label="To: " value="{!persistenceEndDate}" type="auto"/>
                         </apex:pageBlockSection>
                     </apex:pageBlock>
-                    <apex:commandLink style="float:left; margin-right:10px; margin-top: 5px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
-                    <apex:commandLink style="float:left; margin-right:10px; margin-top: 5px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
+                    <apex:commandLink style="float:left; margin-right:10px; margin-top: 5px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="tableForm" oncomplete="focusSearch()"/>
+                    <apex:commandLink style="float:left; margin-right:10px; margin-top: 5px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="tableForm"/>
                 </apex:outputPanel>
             </div>
             <div style="height: 10px; width = 100%">

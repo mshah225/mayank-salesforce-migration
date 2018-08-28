@@ -107,7 +107,7 @@ public class ContactUploadDetailService {
         this.subscriberStatus = subscriberStatus;
     }
     
-    private Boolean isUnsubbed(Subscriber subToCheck) {
-        return subscriberStatusMap.get(subToCreate.Unique_Key__c) != null && subscriberStatusMap.get(subToCreate.Unique_Key__c) == 'Unsubscribed';
+    private Boolean isUnsubbed(Subscriber__c subToCheck) {
+        return subscriberStatusMap.get(subToCheck.Unique_Key__c) != null && subscriberStatusMap.get(subToCheck.Unique_Key__c) == 'Unsubscribed';
     }
 }

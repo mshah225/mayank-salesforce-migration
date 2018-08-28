@@ -19,6 +19,7 @@ public class ContactUploadDetailService {
     private Id contactUploadId;
     private Id subscriptionId;
     private String subscriberStatus;
+    private Map<String, String> subscriberStatusMap;
 
     public ContactUploadDetailService (Id contactUploadIdIn, Map<Integer, String> columnValueIn) {
         contactUploadId = contactUploadIdIn;
@@ -72,10 +73,30 @@ public class ContactUploadDetailService {
                 Contact__c = uploadDetail.Contact__c,
                 Subscription__c = uploadDetail.Subscription__c,
                 Unique_Key__c = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' +
-                    String.valueOf(uploadDetail.Contact__c).left(15),
-                Subscriber_Status__c = uploadDetail.Subscriber_Status__c);
+                String.valueOf(uploadDetail.Contact__c).left(15));
+            if (subscriberStatusMap.get(subToCreate.Unique_Key__c) != null && subscriberStatusMap.get(subToCreate.Unique_Key__c) == 'Unsubscribed') {
+                subToCreate.Subscriber_Status__c = 'Unsubscribed';
+                uploadDetail.Processing_Notes__c += ' Subscriber Status cannot be updated from Unsubscribed To Subscribed.';
+            } else {
+                subToCreate.Subscriber_Status__c = uploadDetail.Subscriber_Status__c;
+            }
         }
         return subToCreate;
+    }
+    
+    public void createSubscriberStatusMap(List<Contact_Upload_Detail__c> details) {
+        List<Id> contactsInDetails = new List<Id>();
+        for (Contact_Upload_Detail__c cud : details) {
+            contactsInDetails.add(cud.Contact__c);
+        }
+        List<Subscriber__c> currentSubscriber = [SELECT Unique_Key__c, Subscriber_Status__c 
+                                                 FROM Subscriber__c 
+                                                 WHERE Contact__c IN: contactsInDetails
+                                                 AND Subscription__c =: subscriptionId];
+        subscriberStatusMap = new Map<String, String>();
+        for (Subscriber__c sub : currentSubscriber) {
+            subscriberStatusMap.put(sub.Unique_Key__c, sub.Subscriber_Status__c);
+        }
     }
     
     public void setSubscriptionId(Id subscriptionId) {

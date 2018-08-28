@@ -41,6 +41,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
         }
         ContactUploadSearcher searcher = new ContactUploadSearcher(detailsToProcess);
         searcher.searchAndCreateContacts();
+        detailCreator.createSubscriberStatusMap(detailsToProcess);
         List<Subscriber__c> subscriberList = new List<Subscriber__c>();
         for (Contact_Upload_Detail__c uploadDetail : detailsToProcess) {
             Subscriber__c subToAdd = detailCreator.createSubscriberForUploadDetail(uploadDetail);

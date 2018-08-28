@@ -74,7 +74,7 @@ public class ContactUploadDetailService {
                 Subscription__c = uploadDetail.Subscription__c,
                 Unique_Key__c = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' +
                 String.valueOf(uploadDetail.Contact__c).left(15));
-            if (subscriberStatusMap.get(subToCreate.Unique_Key__c) != null && subscriberStatusMap.get(subToCreate.Unique_Key__c) == 'Unsubscribed') {
+            if (isUnsubbed(subToCreate)) {
                 subToCreate.Subscriber_Status__c = 'Unsubscribed';
                 uploadDetail.Processing_Notes__c += ' Subscriber Status cannot be updated from Unsubscribed To Subscribed.';
             } else {
@@ -105,5 +105,9 @@ public class ContactUploadDetailService {
     
     public void setSubscriberStatus(String subscriberStatus) {
         this.subscriberStatus = subscriberStatus;
+    }
+    
+    private Boolean isUnsubbed(Subscriber subToCheck) {
+        return subscriberStatusMap.get(subToCreate.Unique_Key__c) != null && subscriberStatusMap.get(subToCreate.Unique_Key__c) == 'Unsubscribed';
     }
 }

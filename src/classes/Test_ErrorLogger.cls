@@ -267,8 +267,6 @@ public class Test_ErrorLogger {
 
         String timeStamp = String.valueOf(DateTime.now().dateGMT());
         System.assert(exceptionCases[0].description.indexOf(timeStamp) < exceptionCases[0].description.lastIndexOf(timeStamp));
-
-        delete exceptionCases;
     }
 
     @isTest

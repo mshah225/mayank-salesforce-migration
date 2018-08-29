@@ -279,7 +279,6 @@ public without sharing class ContactUploadSearcher {
             MailingCity = unmatchedDetail.City__c,
             MailingCountry = unmatchedDetail.Country__c,
             Email = unmatchedDetail.Email__c,
-            EMPLID__c = unmatchedDetail.EmplId__c,
             FirstName = unmatchedDetail.First_Name__c,
             LastName = unmatchedDetail.Last_Name__c,
             Phone = unmatchedDetail.Phone__c,
@@ -295,7 +294,11 @@ public without sharing class ContactUploadSearcher {
                 continue;
             }
             unmatchedDetail.Contact__c = unmappedDetailToContact.get(unmatchedDetail).Id;
-            unmatchedDetail.Processing_Notes__c += ' Created new Contact: ' + unmatchedDetail.Contact__c;
+            if (unmatchedDetail.EMPLID__c != null) {
+                unmatchedDetail.Processing_Notes__c += ' No matching EMPLID; Created new SF Mastered Contact: ' + unmatchedDetail.Contact__c;
+            } else {
+                unmatchedDetail.Processing_Notes__c += ' Created new Contact: ' + unmatchedDetail.Contact__c;
+            }
         }
     }
 }

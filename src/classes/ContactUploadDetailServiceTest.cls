@@ -48,7 +48,9 @@ private class ContactUploadDetailServiceTest {
 
         Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         cudBeingCreated.Contact__c = createdContact.Id;
-
+        List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>();
+        cudList.add(cudBeingCreated);
+        detailService.createSubscriberStatusMap(cudList);
         Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         System.assertEquals(createdContact.Id, subCreated.Contact__c);
     }
@@ -75,7 +77,9 @@ private class ContactUploadDetailServiceTest {
         Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
         cudBeingCreated.Contact__c = createdContact.Id;
         cudBeingCreated.Subscriber_Status__c = 'Subscribed';
-
+        List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>();
+        cudList.add(cudBeingCreated);
+        detailService.createSubscriberStatusMap(cudList);
         Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         System.assertEquals(subCreated.Subscriber_Status__c, 'Subscribed');
 
@@ -90,6 +94,9 @@ private class ContactUploadDetailServiceTest {
         cudBeingCreated.Contact__c = createdContact.Id;
         cudBeingCreated.Subscriber_Status__c = 'Unsubscribed';
 
+        List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>();
+        cudList.add(cudBeingCreated);
+        detailService.createSubscriberStatusMap(cudList);
         Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         System.assertEquals(subCreated.Subscriber_Status__c, 'Unsubscribed');
     }

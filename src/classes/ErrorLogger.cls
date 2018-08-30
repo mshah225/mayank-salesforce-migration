@@ -76,10 +76,10 @@ public without sharing class  ErrorLogger {
     }
 
     public String getSubject() {
-        String classNameClause = String.isBlank(className) ? '' : className;
-        String exceptionClause = exceptionToLog == null ? DEFAULT_CASE_SUBJECT : 'Apex Exception: ' + exceptionToLog.getTypeName();
+        String classNameClause = String.isBlank(className) ? '' : className + ' ';
+        String exceptionClause = exceptionToLog == null ? DEFAULT_CASE_SUBJECT + ' ': 'Apex Exception: ' + exceptionToLog.getTypeName() + ' ';
         String dateClause = 'Date: ' + System.today();
-        return classNameClause + ' ' + exceptionClause + ' ' + dateClause;
+        return classNameClause + exceptionClause + dateClause;
     }
 
     public Boolean log() {

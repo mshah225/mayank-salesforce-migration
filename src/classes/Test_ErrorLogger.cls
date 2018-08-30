@@ -57,6 +57,13 @@ public class Test_ErrorLogger {
         return el.log();
     }
 
+    private static Boolean executeErrorLoggerWithoutClassName() {
+        ErrorLogger el = new ErrorLogger();
+        el.setException(ex);
+        el.setDetails(description);
+        return el.log();
+    }
+
     @isTest
     private static void checkErrorLoggerToString() {
         setupTestVariables();
@@ -270,7 +277,7 @@ public class Test_ErrorLogger {
     }
 
     @isTest
-    private static void checkCaseDeDuplication() {
+    private static void checkCaseDeDuplicationWithClassName() {
         setupTestVariables();
 
         Test.startTest();
@@ -289,6 +296,21 @@ public class Test_ErrorLogger {
 
         subject = 'testClass Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
 
+        validateCreatedCaseAndContactId(1, userWithContact.ContactId);
+    }
+
+    @isTest
+    private static void checkCaseDeDuplicationWithoutClassName() {
+        setupTestVariables();
+        subject = 'Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
+        Test.startTest();
+        System.runAs(userWithContact) {
+            executeErrorLoggerWithoutClassName();
+            executeErrorLoggerWithoutClassName();
+        }
+        Test.stopTest();
+
+        System.assertEquals(true, debug);
         validateCreatedCaseAndContactId(1, userWithContact.ContactId);
     }
 

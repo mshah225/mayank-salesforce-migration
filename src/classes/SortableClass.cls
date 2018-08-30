@@ -15,7 +15,9 @@ global class SortableClass implements Comparable {
         } else if (classParamSort.equals('Class')) {
             sortDir = compareToClass.classInfo.CLASS_NBR__c.compareTo(this.classInfo.CLASS_NBR__c);
         } else if (classParamSort.equals('Course')) {
-            sortDir = compareToClass.classInfo.SUBJECT__c.compareTo(this.classInfo.SUBJECT__c);
+            String thatCourseText = String.valueOf(compareToClass.classInfo.SUBJECT__c) + String.valueOf(compareToClass.classInfo.CATALOG_NBR__c);
+            String thisCourseText = String.valueOf(this.classInfo.SUBJECT__c) + String.valueOf(this.classInfo.CATALOG_NBR__c);
+            sortDir = thatCourseText.compareTo(thisCourseText);
         } else if (classParamSort.equals('Title')) {
             sortDir = compareToClass.classInfo.CLASS_DESCR__c.compareTo(this.classInfo.CLASS_DESCR__c);
         } else if (classParamSort.equals('Topic')) {

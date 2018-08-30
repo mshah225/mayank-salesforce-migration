@@ -12,10 +12,10 @@ public class CaseClassificationFactory {
             this.addToFieldsToIncrement('Name');
         }
     }
-    
+
     public class DefaultCategory extends TestFactory {
         public DefaultCategory() {
-            
+
             super(new Case_Classification__c(
                 Name = 'Test Category',
                 RecordTypeId = [SELECT Name, Id FROM RecordType WHERE Name = 'Category'].Id,
@@ -25,10 +25,10 @@ public class CaseClassificationFactory {
             this.addToFieldsToIncrement('Name');
         }
     }
-    
+
     public class DefaultSubCategory extends TestFactory {
         public DefaultSubCategory() {
-            
+
             super(new Case_Classification__c(
                 Name = 'Test Sub Category',
                 RecordTypeId = [SELECT Name, Id FROM RecordType WHERE Name = 'Sub Category'].Id,
@@ -38,26 +38,85 @@ public class CaseClassificationFactory {
             this.addToFieldsToIncrement('Name');
         }
     }
-    
+
+    public class NotVisibleFunctionalGroup extends TestFactory {
+       public NotVisibleFunctionalGroup() {
+           super(new Case_Classification__c(
+               Name = 'Not Visible Functional Group',
+               RecordTypeId = [SELECT Name, Id FROM RecordType WHERE Name = 'Functional Group' LIMIT 1].Id,
+               Active__c = true,
+               Visible__c = false
+           ));
+           this.addToFieldsToIncrement('Name');
+       }
+   }
+
+   public class NotVisibleCategory extends TestFactory {
+       public NotVisibleCategory() {
+
+           super(new Case_Classification__c(
+               Name = 'Not Visible Category',
+               RecordTypeId = [SELECT Name, Id FROM RecordType WHERE Name = 'Category'].Id,
+               Active__c = true,
+               Visible__c = false
+           ));
+           this.addToFieldsToIncrement('Name');
+       }
+   }
+
+   public class NotVisibleSubCategory extends TestFactory {
+       public NotVisibleSubCategory() {
+
+           super(new Case_Classification__c(
+               Name = 'Not Visible Sub Category',
+               RecordTypeId = [SELECT Name, Id FROM RecordType WHERE Name = 'Sub Category'].Id,
+               Active__c = true,
+               Visible__c = false
+           ));
+           this.addToFieldsToIncrement('Name');
+       }
+   }
+
     public List<Case_Classification__c> createAndInsertSetOfCaseClassification () {
         List<Case_Classification__c> caseClassificationsToReturn = new List<Case_Classification__c>();
         DefaultFunctionalGroup fgMaker = new DefaultFunctionalGroup();
         Case_Classification__c functionalGroup = (Case_Classification__c)fgMaker.create(1)[0];
         insert functionalGroup;
         caseClassificationsToReturn.add(functionalGroup);
-        
+
         DefaultCategory catMaker = new DefaultCategory();
         Case_Classification__c category = (Case_Classification__c)catMaker.create(1)[0];
         category.Parent__c = functionalGroup.Id;
         insert category;
         caseClassificationsToReturn.add(category);
-        
+
         DefaultSubCategory subCatMaker = new DefaultSubCategory();
         Case_Classification__c subCat = (Case_Classification__c)subCatMaker.create(1)[0];
         subCat.Parent__c = category.Id;
         insert subCat;
         caseClassificationsToReturn.add(subCat);
-        
+
+        return caseClassificationsToReturn;
+    }
+    public List<Case_Classification__c> createAndInsertSetOfNotVisibleCaseClassification () {
+        List<Case_Classification__c> caseClassificationsToReturn = new List<Case_Classification__c>();
+        NotVisibleFunctionalGroup nvfgMaker = new NotVisibleFunctionalGroup();
+        Case_Classification__c notVisibleFunctionalGroup = (Case_Classification__c)nvfgMaker.create(1)[0];
+        insert notVisibleFunctionalGroup;
+        caseClassificationsToReturn.add(notVisibleFunctionalGroup);
+
+        NotVisibleCategory nvcatMaker = new NotVisibleCategory();
+        Case_Classification__c notVisibleCategory = (Case_Classification__c)nvcatMaker.create(1)[0];
+        notVisibleCategory.Parent__c = notVisibleFunctionalGroup.Id;
+        insert notVisibleCategory;
+        caseClassificationsToReturn.add(notVisibleCategory);
+
+        NotVisibleSubCategory nvsubCatMaker = new NotVisibleSubCategory();
+        Case_Classification__c notVisibleSubCategory = (Case_Classification__c)nvsubCatMaker.create(1)[0];
+        notVisibleSubCategory.Parent__c = notVisibleCategory.Id;
+        insert notVisibleSubCategory;
+        caseClassificationsToReturn.add(notVisibleSubCategory);
+
         return caseClassificationsToReturn;
     }
 }

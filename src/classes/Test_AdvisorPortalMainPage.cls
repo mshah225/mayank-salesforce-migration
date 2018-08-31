@@ -18,7 +18,7 @@ public class Test_AdvisorPortalMainPage {
         numberOfCases = 1;
         numberOfStudents = 10;
         numberOfTabsForUser = 2;
-        numberOfBlankOptionsForUser = 1;
+        numberOfBlankOptionsForUser = 0;
         numberOfTabsForManager = 3;
         numberOfBlankOptionsForManager = 2;
         numbeOfAdvisorsForManager = 1;

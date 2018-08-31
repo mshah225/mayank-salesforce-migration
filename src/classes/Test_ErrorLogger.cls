@@ -306,7 +306,7 @@ public class Test_ErrorLogger {
         Test.startTest();
         System.runAs(userWithContact) {
             executeErrorLoggerWithoutClassName();
-            executeErrorLoggerWithoutClassName();
+            debug = executeErrorLoggerWithoutClassName();
         }
         Test.stopTest();
 

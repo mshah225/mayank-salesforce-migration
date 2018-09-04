@@ -20,7 +20,8 @@ private class BomgarCreateCaseUtilTest
         testContact.ASURite_Id__c = 'testuser';
         insert testContact;
 
-        List<User> userList = UserService.createMultipleTestUsers(2);
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        List<User> userList = userCreator.create(2);
 
         User testUser = userList[0];
         testUser.ProfileId = p.Id;

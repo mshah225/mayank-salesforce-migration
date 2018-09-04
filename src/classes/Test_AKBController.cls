@@ -1,7 +1,9 @@
 @isTest
 public class Test_AKBController
 {
-    @testSetup static void setupData()
+    public static User testUser;
+    
+    static void setupData()
     {
         for (Integer i = 0; i < 30; i++)
         {
@@ -56,15 +58,17 @@ public class Test_AKBController
 
         insert testContact;
 
-        User testUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        testUser = (User)userCreator.create(1)[0];
         testUser.ProfileId = p.Id;
         testUser.ContactId = testContact.Id;
 
         insert testUser;
     }
-
+    
     @isTest static void testAKBControllerFAQ()
     {
+        setupData();
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
             FROM KnowledgeArticleVersion
@@ -74,7 +78,6 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -95,6 +98,7 @@ public class Test_AKBController
 
     @isTest static void testHelpfulYes()
     {
+        setupData();
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
             FROM KnowledgeArticleVersion
@@ -104,7 +108,6 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -128,7 +131,6 @@ public class Test_AKBController
                 LIMIT 1
             ];
 
-            testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
             testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
             akbPage = Page.akb;
             Test.setCurrentPage(akbPage);
@@ -143,6 +145,7 @@ public class Test_AKBController
 
     @isTest static void testHelpfulNo()
     {
+        setupData();
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
             FROM KnowledgeArticleVersion
@@ -152,7 +155,6 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -177,7 +179,6 @@ public class Test_AKBController
                 LIMIT 1
             ];
 
-            testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
             testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
             akbPage = Page.akb;
             Test.setCurrentPage(akbPage);
@@ -193,6 +194,7 @@ public class Test_AKBController
 
     @isTest static void testFeedbackVisible()
     {
+        setupData();
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
             FROM KnowledgeArticleVersion
@@ -202,7 +204,6 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -223,7 +224,8 @@ public class Test_AKBController
     }
 
     @isTest static void testFeedbackNotVisible()
-    {
+    {   
+        setupData();
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
             FROM KnowledgeArticleVersion
@@ -233,7 +235,6 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);
@@ -256,6 +257,7 @@ public class Test_AKBController
 
     @isTest static void testChangeLinks()
     {
+        setupData();
         List<KnowledgeArticleVersion> articleTest = [
             SELECT KnowledgeArticleId
             FROM KnowledgeArticleVersion
@@ -266,7 +268,6 @@ public class Test_AKBController
             LIMIT 1
         ];
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
         Contact testContact = [SELECT Id FROM Contact WHERE LastName = 'Contact' LIMIT 1];
         PageReference akbPage = Page.akb;
         Test.setCurrentPage(akbPage);

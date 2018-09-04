@@ -41,7 +41,7 @@ public class ContactUploadDetailService {
 
         for (Integer i = 0; i < contactInformation.size(); i++) {
             String columnValue = contactInformation[i];
-            String fieldName = columnToFieldNames.get(columnNames.get(i));
+            String fieldName = columnToFieldNames.get((columnNames.get(i)).removeStart('\uFEFF'));
             if (!String.isBlank(columnValue) && fieldName != null) {
                 columnValue = columnValue.trim();
                 detailToPopulate.put(fieldName, columnValue);

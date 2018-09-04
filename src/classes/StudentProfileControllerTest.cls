@@ -58,22 +58,7 @@ private class StudentProfileControllerTest {
             ObjectService.getFieldLabelsToList('Case');
         } catch (Exception e) {}
 
-        StudentProfileController.getStudentRetention('1203436008');
-        StudentProfileController.getRetentionSNP('1203436008');
-        StudentProfileController.getPSAdvisorNotes('1203436008');
-        StudentProfileController.getComments('1203436008');
-        StudentProfileController.getTranscripts('1203436008');
-        StudentProfileController.getGuestAccess('1203436008');
-        StudentProfileController.getClassesData('1203436008', '');
-        StudentProfileController.getCreditByExamData('1203436008');
-        StudentProfileController.getTransferWorkData('1203436008');
-        StudentProfileController.getFinAidUnresolved('1203436008', '2177');
-        StudentProfileController.getAsrIndicator('1203436008', '2177');
-        StudentProfileController.getAsrInformation('1203436008', '2177');
-        StudentProfileController.getEnrollmentHolds('1203436008', '2177');
-        StudentProfileController.getFinAidIndicator('1203436008');
         StudentProfileController.getSunCardPhotoRa('asurite', '1203436008');
-        StudentProfileController.sortClasses('sortBy', new List<PS_ASU_SP_CLASS_V__x>(), true);
         StudentProfileController.sortExams('sortBy', new List<PS_ASU_SP_TRNSFR_V__x>(), true);
         StudentProfileController.sortTransfers('sortBy', new List<JBT_RET_CLASS_XFER__x>(), true);
         StudentProfileController.createCase('Description', 'Subject', '1203436008');

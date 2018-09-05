@@ -29,7 +29,8 @@ private class Test_ServiceCenter{
         testContactList[3].Affiliation_Alumni__c = 'Current';
         insert testContactList;
 
-        List<User> testUserList = UserService.createMultipleTestUsers(4);
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        List<User> testUserList = userCreator.create(4);
 
         for (Integer i = 0; i < testUserList.size(); i++)
         {
@@ -109,7 +110,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test0'
+            WHERE LastName = 'User0'
         ];
 
         List<Opportunity> oppList = [
@@ -169,7 +170,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId,ASURite_Id__c
             FROM User
-            WHERE FirstName = 'Test1'
+            WHERE LastName = 'User0'
         ];
 
         List<Opportunity> oppList = [
@@ -224,7 +225,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test2'
+            WHERE LastName = 'User2'
         ];
 
         List<Opportunity> oppList = [
@@ -260,7 +261,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test3'
+            WHERE LastName = 'User3'
         ];
 
         List<Opportunity> oppList = [
@@ -291,7 +292,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test3'
+            WHERE LastName = 'User3'
         ];
 
         List<Opportunity> oppList = [
@@ -324,7 +325,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test0'
+            WHERE LastName = 'User0'
         ];
 
         PageReference serviceCenter = Page.studentSC;
@@ -358,7 +359,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test0'
+            WHERE LastName = 'User0'
         ];
         
         PageReference serviceCenter = Page.studentSC;
@@ -386,7 +387,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test0'
+            WHERE LastName = 'User0'
         ];
 
         Contact testContact = [
@@ -425,7 +426,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test0'
+            WHERE LastName = 'User0'
         ];
 
 
@@ -458,7 +459,7 @@ private class Test_ServiceCenter{
              User testUser = [
              SELECT Id, ContactId
              FROM User
-             WHERE FirstName = 'Test0'
+             WHERE LastName = 'User0'
          ];
 	
          Contact testContact = [
@@ -521,7 +522,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test0'
+            WHERE LastName = 'User0'
         ];
 
         PageReference serviceCenter = Page.studentSC;
@@ -546,7 +547,7 @@ private class Test_ServiceCenter{
         User testUser = [
             SELECT Id, ContactId, Contact.BirthDate, Contact.Self_Service_PIN__c, Contact.FirstName, Contact.LastName
             FROM User
-            WHERE FirstName = 'Test0'
+            WHERE LastName = 'User0'
         ];
 
         System.runAs(testUser){
@@ -566,7 +567,7 @@ private class Test_ServiceCenter{
             User testUser = [
             SELECT Id, ContactId
             FROM User
-            WHERE FirstName = 'Test0'
+            WHERE LastName = 'User0'
         ];
 
             Contact testContact = [

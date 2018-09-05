@@ -3,7 +3,8 @@ public class Test_UserHandler
 {
     @isTest static void changeKnowledgePermission()
     {
-        User updateUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User updateUser = (User)userCreator.create(1)[0];
         Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
         updateUser.ProfileId = sysAdminProfile;
         insert updateUser;
@@ -37,7 +38,10 @@ public class Test_UserHandler
         testGroup.SG_Contact__c = testContact.Id;
         insert testGroup;
 
-        User testUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User)userCreator.create(1)[0];
+        testUser.Username += 'community';
+        testUser.CommunityNickname += 'community';
         Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
         testUser.ProfileId = communityProfile;
 
@@ -54,7 +58,10 @@ public class Test_UserHandler
 
     @isTest static void insertNonCAPUser()
     {
-        User testUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User)userCreator.create(1)[0];
+        testUser.Username += 'chatter';
+        testUser.CommunityNickname += 'chatter';
         Id chatterProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'].Id;
         testUser.ProfileId = chatterProfile;
         testUser.FederationIdentifier = 'testuser@asu.edu';

@@ -222,26 +222,9 @@ public with sharing class ServiceCenter
     }
     
     private PageReference refreshPageWithPinUpdate() {
-        if (userContact == null || origPin == newPin || !ContactService.isPinValid(newPin, userContact.Birthdate)) {
-            return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-        } else {
-            userContact.Self_Service_PIN__c = newPin;
-            if (userContact.PIN_lockout__c == true) {
-                userContact.PIN_lockout__c = false;
-            }
+        String updateResult = ContactPinUtility.updatePin(userContact, origPin, newPin);
+        return redirectWithParams(ApexPages.currentPage(), 'PIN', updateResult);
             
-            try {
-                update userContact;
-                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
-            } catch(Exception e) {
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
-                vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
-                vars.add(ErrorLogger.convertStringToJSON('Employee Id',userContact.EMPLId__c));
-                ErrorLogger.log(e,vars,false);
-                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-            }
-        }
     }
 
     public PageReference redirectWithParams(PageReference page, String param, String value){

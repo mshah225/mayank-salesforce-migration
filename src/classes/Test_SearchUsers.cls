@@ -10,7 +10,8 @@ private class Test_SearchUsers
             LIMIT 1
         ];
 
-        User testUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User)userCreator.create(1)[0];
         testUser.FederationIdentifier = 'testSU@admin.asu.edu';
         testUser.ProfileId = p.Id;
         insert testUser;

@@ -7,7 +7,7 @@ private class Test_FeedbackController
 	private static FeedbackController fc;
 	private static ServiceCenter sc;
 
-	@testSetup static void setUp()
+	static void setUp()
 	{
 		Term__c termAC = new Term__c();
 		Date dTac = Date.today().adddays(365);
@@ -28,7 +28,8 @@ private class Test_FeedbackController
 		testContact = ContactService.createTestContact();
 		insert testContact;
 
-		testUser = UserService.createTestUser();
+		UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        testUser = (User)userCreator.create(1)[0];
 		testUser.ProfileId = p.Id;
 		testUser.ContactId = testContact.Id;
 		insert testUser;
@@ -36,7 +37,8 @@ private class Test_FeedbackController
 
 	@isTest static void testFeedbackCase()
 	{
-		testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+		setUp();
+		testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
 		PageReference setPage = Page.feedback;
 		Test.setCurrentPage(setPage);
 		System.runAs(testUser)
@@ -52,7 +54,8 @@ private class Test_FeedbackController
 
 	@isTest static void testViewAsFeedback()
 	{
-		testUser = [SELECT Id FROM User WHERE Username = 'test.user@test.example.com' LIMIT 1];
+		setUp();
+		testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0' LIMIT 1];
 		PageReference setPage = Page.feedback;
 		Test.setCurrentPage(setPage);
 		System.runAs(testUser)

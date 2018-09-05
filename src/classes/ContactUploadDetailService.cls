@@ -76,7 +76,9 @@ public class ContactUploadDetailService {
                 String.valueOf(uploadDetail.Contact__c).left(15));
             if (isUnsubbed(subToCreate)) {
                 subToCreate.Subscriber_Status__c = 'Unsubscribed';
-                uploadDetail.Processing_Notes__c += ' Subscriber Status cannot be updated from Unsubscribed To Subscribed.';
+                if (uploadDetail.Subscriber_Status__c == 'Subscribed') {
+                	uploadDetail.Processing_Notes__c += ' Subscriber Status cannot be updated from Unsubscribed To Subscribed.';
+                }
             } else {
                 subToCreate.Subscriber_Status__c = uploadDetail.Subscriber_Status__c;
             }

@@ -1,12 +1,12 @@
-global class SortableClass {
+global class SortableClass implements Comparable {
     private PS_ASU_SP_CLASS_V__x classInfo;
     private String classParamSort;
-    
+
     global SortableClass(PS_ASU_SP_CLASS_V__x classInfo, String sortBy) {
         this.classInfo = classInfo;
         this.classParamSort = sortBy;
     }
-    
+
     global Integer compareTo(Object compareTo) {
         SortableClass compareToClass = (SortableClass)compareTo;
         Integer sortDir = 0;
@@ -15,7 +15,9 @@ global class SortableClass {
         } else if (classParamSort.equals('Class')) {
             sortDir = compareToClass.classInfo.CLASS_NBR__c.compareTo(this.classInfo.CLASS_NBR__c);
         } else if (classParamSort.equals('Course')) {
-            sortDir = compareToClass.classInfo.CRSE_ID__c.compareTo(this.classInfo.CRSE_ID__c);
+            String thatCourseText = String.valueOf(compareToClass.classInfo.SUBJECT__c) + String.valueOf(compareToClass.classInfo.CATALOG_NBR__c);
+            String thisCourseText = String.valueOf(this.classInfo.SUBJECT__c) + String.valueOf(this.classInfo.CATALOG_NBR__c);
+            sortDir = thatCourseText.compareTo(thisCourseText);
         } else if (classParamSort.equals('Title')) {
             sortDir = compareToClass.classInfo.CLASS_DESCR__c.compareTo(this.classInfo.CLASS_DESCR__c);
         } else if (classParamSort.equals('Topic')) {

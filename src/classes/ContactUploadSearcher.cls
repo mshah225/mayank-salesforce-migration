@@ -14,18 +14,18 @@ public without sharing class ContactUploadSearcher {
     private List<Contact> matchedContacts;
     private List<Contact_Upload_Detail__c> unmatchedDetails = new List<Contact_Upload_Detail__c>();
     private Map<Contact_Upload_Detail__c, Contact> unmappedDetailToContact = new Map<Contact_Upload_Detail__c, Contact>();
-    
+
     public ContactUploadSearcher(List<Contact_Upload_Detail__c> detailsToSearch) {
         this.detailsToSearch = detailsToSearch;
     }
-    
+
     public void searchAndCreateContacts() {
         createDataMappingForSearch();
         searchContactsForMappedValues();
         associateDetailsWithMatchedContacts();
         insertContactsForUnmatchedDetails();
     }
-    
+
     private void createDataMappingForSearch() {
         for (Contact_Upload_Detail__c detail : detailsToSearch) {
             mapEmplIdIfPresent(detail);
@@ -33,19 +33,19 @@ public without sharing class ContactUploadSearcher {
             mapFirstNameAndEmailIfPresent(detail);
         }
     }
-    
+
     private void mapEmplIdIfPresent(Contact_Upload_Detail__c detail) {
         if (!String.isBlank(detail.Emplid__c)) {
             emplIdToOriginalDetail.put((detail.Emplid__c).toLowerCase(), detail);
         }
     }
-    
+
     private void mapAsuRiteIfPresent(Contact_Upload_Detail__c detail) {
         if (!String.isBlank(detail.ASURITE__c)) {
             asuriteToOriginalDetail.put((detail.ASURITE__c).toLowerCase(), detail);
         }
     }
-    
+
     private void mapFirstNameAndEmailIfPresent(Contact_Upload_Detail__c detail) {
         if (!String.isBlank(detail.First_Name__c) && !String.isBlank(detail.Email__c)) {
             firstNameAndEmailToOriginalDetail.put((detail.First_Name__c + detail.Email__c).toLowerCase(), detail);
@@ -53,14 +53,14 @@ public without sharing class ContactUploadSearcher {
             emailSet.add(detail.Email__c);
         }
     }
-    
+
     private void mapFirstLastBirthdateAndPostalIfPresent(Contact_Upload_Detail__c detail) {
-        if (!String.isBlank(detail.First_Name__c) && 
-                !String.isBlank(detail.Last_Name__c) && 
+        if (!String.isBlank(detail.First_Name__c) &&
+                !String.isBlank(detail.Last_Name__c) &&
                 !String.isBlank(detail.Birthdate__c) &&
                 !String.isBlank(detail.Postal_Code__c)) {
             firstLastBirthdatePostalToOriginalDetail.put(
-                (detail.First_Name__c + detail.Last_Name__c + Date.valueOf(detail.Birthdate__c) + detail.Postal_Code__c).toLowerCase(), 
+                (detail.First_Name__c + detail.Last_Name__c + Date.valueOf(detail.Birthdate__c) + detail.Postal_Code__c).toLowerCase(),
                 detail);
             firstNameSet.add(detail.First_Name__c);
             lastNameSet.add(detail.Last_Name__c);
@@ -68,7 +68,7 @@ public without sharing class ContactUploadSearcher {
             postalCodeSet.add(detail.Postal_Code__c);
         }
     }
-    
+
     private void mapFirstLastAndPhoneIfPresent(Contact_Upload_Detail__c detail) {
         if (!String.isBlank(detail.First_Name__c) && !String.isBlank(detail.Last_Name__c) && !String.isBlank(detail.Phone__c)) {
             firstLastPhoneToOriginalDetail.put((detail.First_Name__c + detail.Last_Name__c + detail.Phone__c).toLowerCase(), detail);
@@ -77,17 +77,15 @@ public without sharing class ContactUploadSearcher {
             phoneSet.add(detail.Phone__c);
         }
     }
-    
+
     private void searchContactsForMappedValues() {
         matchedContacts = [
-            SELECT EMPLID__c, AsuRite_Id__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c, 
+            SELECT EMPLID__c, AsuRite_Id__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c,
                 ASU_Email__c, ASU_Gmail__c, EPO_Email__c, LastName, Birthdate, MailingPostalCode, HomePhone,
                 MobilePhone, SF_Mobile__c, Phone, OtherPhone, MailingStreet
             FROM Contact
-            WHERE EMPLID__c IN :emplIdToOriginalDetail.keySet()
-            OR AsuRite_Id__c IN :asuriteToOriginalDetail.keySet()
-            OR (
-                FirstName IN :firstNameSet 
+            WHERE (
+                FirstName IN :firstNameSet
                 AND (Email IN :emailSet
                     OR Lead_Email__c IN :emailSet
                     OR Lead_Secondary_Email__c IN :emailSet
@@ -96,69 +94,56 @@ public without sharing class ContactUploadSearcher {
                     OR ASU_Gmail__c IN :emailSet
                     OR EPO_Email__c IN :emailSet
                 )
-            ) OR ( 
-                FirstName IN :firstNameSet 
-                AND LastName IN :lastNameSet 
-                AND Birthdate IN :birthdateSet 
-                AND MailingPostalCode IN :postalCodeSet
-            ) OR (
-                FirstName IN :firstNameSet 
-                AND LastName IN :lastNameSet 
-                AND (
-                    HomePhone IN :phoneSet 
-                    OR MobilePhone IN :phoneSet 
-                    OR SF_Mobile__c IN :phoneSet 
-                    OR Phone IN :phoneSet 
-                    OR OtherPhone IN :phoneSet
-                )
             )
+            OR AsuRite_Id__c IN :asuriteToOriginalDetail.keySet()
+            OR EMPLID__c IN :emplIdToOriginalDetail.keySet()
         ];
     }
-    
+
     private void associateDetailsWithMatchedContacts() {
         for (Contact contactMatch : matchedContacts) {
             if (matchByEmplId(contactMatch)) {}
             else if (matchByAsurite(contactMatch)) {}
-            else if (matchByFirstNameAndEmail(contactMatch)) {} 
-            else if (matchByFirstNameAndLeadEmail(contactMatch)) {} 
-            else if (matchByFirstNameAndLeadSecondaryEmail(contactMatch)) {} 
-            else if (matchByFirstNameAndPersonalEmail(contactMatch)) {} 
-            else if (matchByFirstNameAndAsuGmail(contactMatch)) {} 
-            else if (matchByFirstNameAndEpoEmail(contactMatch)) {} 
+            else if (matchByFirstNameAndEmail(contactMatch)) {}
+            else if (matchByFirstNameAndLeadEmail(contactMatch)) {}
+            else if (matchByFirstNameAndLeadSecondaryEmail(contactMatch)) {}
+            else if (matchByFirstNameAndPersonalEmail(contactMatch)) {}
+            else if (matchByFirstNameAndAsuGmail(contactMatch)) {}
+            else if (matchByFirstNameAndEpoEmail(contactMatch)) {}
             else if (matchByFirstNameAndAsuEmail(contactMatch)) {}
         }
     }
-    
+
     private Boolean matchByEmplId(Contact contactMatch) {
         if (contactMatch.EMPLID__c != null && emplIdToOriginalDetail.containsKey((contactMatch.EMPLID__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = emplIdToOriginalDetail.get((contactMatch.EMPLID__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
-            matchedDetail.Processing_Notes__c += 
-                String.format('Found existing Contact ID: {0} Based on EmplId match: {1}', 
+            matchedDetail.Processing_Notes__c +=
+                String.format(' Found existing Contact ID: {0} Based on EmplId match: {1}',
                     new String[] {contactMatch.Id, contactMatch.EMPLID__c});
             return true;
         }
         return false;
     }
-    
+
     private Boolean matchByAsurite(Contact contactMatch) {
         if (contactMatch.AsuRite_Id__c != null && asuriteToOriginalDetail.containsKey((contactMatch.AsuRite_Id__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = asuriteToOriginalDetail.get((contactMatch.AsuRite_Id__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
-            matchedDetail.Processing_Notes__c += 
-                String.format('Found existing Contact ID: {0} Based on ASURITE match: {1}', 
+            matchedDetail.Processing_Notes__c +=
+                String.format(' Found existing Contact ID: {0} Based on ASURITE match: {1}',
                     new String[] {contactMatch.Id, contactMatch.AsuRite_Id__c});
             return true;
         }
         return false;
     }
-    
+
     private Boolean matchByFirstNameAndEmail(Contact contactMatch) {
         if (contactMatch.FirstName != null && contactMatch.Email != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Email).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.Email).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
-            matchedDetail.Processing_Notes__c += 
-                String.format('Found existing Contact ID: {0} Based on email match: {1} and name match: {2}', 
+            matchedDetail.Processing_Notes__c +=
+                String.format(' Found existing Contact ID: {0} Based on email match: {1} and name match: {2}',
                     new String[] {contactMatch.Id, contactMatch.Email, contactMatch.FirstName});
             return true;
         }
@@ -169,8 +154,8 @@ public without sharing class ContactUploadSearcher {
         if (contactMatch.FirstName != null && contactMatch.Lead_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Lead_Email__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.Lead_Email__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
-            matchedDetail.Processing_Notes__c += 
-                String.format('Found existing Contact ID: {0} Based on lead email match: {1} and name match: {2}', 
+            matchedDetail.Processing_Notes__c +=
+                String.format(' Found existing Contact ID: {0} Based on lead email match: {1} and name match: {2}',
                     new String[] {contactMatch.Id, contactMatch.Lead_Email__c, contactMatch.FirstName});
             return true;
         }
@@ -181,8 +166,8 @@ public without sharing class ContactUploadSearcher {
         if (contactMatch.FirstName != null && contactMatch.Lead_Secondary_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Lead_Secondary_Email__c).toLowerCase())) {
            Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.Lead_Secondary_Email__c).toLowerCase());
            matchedDetail.Contact__c = contactMatch.Id;
-           matchedDetail.Processing_Notes__c += 
-               String.format('Found existing Contact ID: {0} Based on lead secondary email match: {1} and name match: {2}', 
+           matchedDetail.Processing_Notes__c +=
+               String.format(' Found existing Contact ID: {0} Based on lead secondary email match: {1} and name match: {2}',
                    new String[] {contactMatch.Id, contactMatch.Lead_Secondary_Email__c, contactMatch.FirstName});
            return true;
        }
@@ -193,8 +178,8 @@ public without sharing class ContactUploadSearcher {
         if (contactMatch.FirstName != null && contactMatch.Personal_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.Personal_Email__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.Personal_Email__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
-            matchedDetail.Processing_Notes__c += 
-                String.format('Found existing Contact ID: {0} Based on personal email match: {1} and name match: {2}', 
+            matchedDetail.Processing_Notes__c +=
+                String.format(' Found existing Contact ID: {0} Based on personal email match: {1} and name match: {2}',
                     new String[] {contactMatch.Id, contactMatch.Personal_Email__c, contactMatch.FirstName});
             return true;
         }
@@ -205,8 +190,8 @@ public without sharing class ContactUploadSearcher {
         if (contactMatch.FirstName != null && contactMatch.ASU_Gmail__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.ASU_Gmail__c).toLowerCase())) {
            Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.ASU_Gmail__c).toLowerCase());
            matchedDetail.Contact__c = contactMatch.Id;
-           matchedDetail.Processing_Notes__c += 
-               String.format('Found existing Contact ID: {0} Based on ASU Gmail email match: {1} and name match: {2}', 
+           matchedDetail.Processing_Notes__c +=
+               String.format(' Found existing Contact ID: {0} Based on ASU Gmail email match: {1} and name match: {2}',
                    new String[] {contactMatch.Id, contactMatch.ASU_Gmail__c, contactMatch.FirstName});
            return true;
        }
@@ -217,8 +202,8 @@ public without sharing class ContactUploadSearcher {
         if (contactMatch.FirstName != null && contactMatch.EPO_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.EPO_Email__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.EPO_Email__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
-            matchedDetail.Processing_Notes__c += 
-              String.format('Found existing Contact ID: {0} Based on EPO email match: {1} and name match: {2}', 
+            matchedDetail.Processing_Notes__c +=
+              String.format(' Found existing Contact ID: {0} Based on EPO email match: {1} and name match: {2}',
                   new String[] {contactMatch.Id, contactMatch.EPO_Email__c, contactMatch.FirstName});
             return true;
          }
@@ -229,14 +214,14 @@ public without sharing class ContactUploadSearcher {
         if (contactMatch.FirstName != null && contactMatch.ASU_Email__c != null && firstNameAndEmailToOriginalDetail.containsKey((contactMatch.FirstName + contactMatch.ASU_Email__c).toLowerCase())) {
             Contact_Upload_Detail__c matchedDetail = firstNameAndEmailToOriginalDetail.get((contactMatch.FirstName + contactMatch.ASU_Email__c).toLowerCase());
             matchedDetail.Contact__c = contactMatch.Id;
-            matchedDetail.Processing_Notes__c += 
-             String.format('Found existing Contact ID: {0} Based on ASU email match: {1} and name match: {2}', 
+            matchedDetail.Processing_Notes__c +=
+             String.format(' Found existing Contact ID: {0} Based on ASU email match: {1} and name match: {2}',
                  new String[] {contactMatch.Id, contactMatch.ASU_Email__c, contactMatch.FirstName});
             return true;
         }
         return false;
     }
-    
+
     private void markUnmatchedDetails() {
         for (Contact_Upload_Detail__c processedDetail : detailsToSearch) {
             if (processedDetail.Contact__c == null) {
@@ -244,7 +229,7 @@ public without sharing class ContactUploadSearcher {
             }
         }
     }
-    
+
     private void insertContactsForUnmatchedDetails() {
         List<Contact> newUnmatchedContacts = new List<Contact>();
         List<Contact_Upload_Detail__c> unmatchedDetails = new List<Contact_Upload_Detail__c>();
@@ -256,7 +241,7 @@ public without sharing class ContactUploadSearcher {
                 unmappedDetailToContact.put(processedDetail, createdContact);
             }
         }
-        
+
         Database.SaveResult[] saveResults = Database.insert(newUnmatchedContacts, false);
         for (Integer i = 0; i < saveResults.size(); i++) {
             if (!saveResults[i].isSuccess()) {
@@ -270,7 +255,7 @@ public without sharing class ContactUploadSearcher {
         }
         associateContactsToUploadDetails();
     }
-    
+
     private Contact createContact(Contact_Upload_Detail__c unmatchedDetail) {
         Contact createdContact = new Contact(
             MailingStreet = unmatchedDetail.Address__c,
@@ -288,7 +273,7 @@ public without sharing class ContactUploadSearcher {
         );
         return createdContact;
     }
-    
+
     private void associateContactsToUploadDetails() {
         for (Contact_Upload_Detail__c unmatchedDetail : unmappedDetailToContact.keySet()) {
             if (unmatchedDetail.Status__c == 'Error') {

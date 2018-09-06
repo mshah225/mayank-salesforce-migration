@@ -1819,7 +1819,7 @@
                             <div class="col-sm-4">
                                 <apex:outputPanel>
                                     <a href="#"
-                                       onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}','Active Cases');return false"
+                                       onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}','All Cases');return false"
                                        class="pull-right sideBoxMoreLink">
                                         See all cases...
                                     </a>

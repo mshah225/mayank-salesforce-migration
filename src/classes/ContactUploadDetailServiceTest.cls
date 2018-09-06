@@ -101,6 +101,31 @@ private class ContactUploadDetailServiceTest {
         System.assertEquals(subCreated.Subscriber_Status__c, 'Unsubscribed');
     }
 
+    @isTest
+    private static void tryForcingUnsubbedSubscriberToBeSubbed() {
+        setup();
+        Contact createdContact = createAndInsertNewTestContact();
+
+        Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
+        cudBeingCreated.Contact__c = createdContact.Id;
+        cudBeingCreated.Subscriber_Status__c = 'Unsubscribed';
+        List<Contact_Upload_Detail__c> cudList = new List<Contact_Upload_Detail__c>();
+        cudList.add(cudBeingCreated);
+        detailService.createSubscriberStatusMap(cudList);
+        Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
+        System.assertEquals(subCreated.Subscriber_Status__c, 'Unsubscribed');
+        
+        Contact_Upload_Detail__c cudBeingUpdated = detailService.createAndValidateRow(contactValues);
+        cudBeingCreated.Contact__c = createdContact.Id;
+        cudBeingCreated.Subscriber_Status__c = 'Subscribed';
+
+        List<Contact_Upload_Detail__c> cudListUpdated = new List<Contact_Upload_Detail__c>();
+        cudListUpdated.add(cudBeingUpdated);
+        detailService.createSubscriberStatusMap(cudListUpdated);
+        Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingUpdated);
+        System.assertEquals(subCreated.Subscriber_Status__c, 'Unsubscribed');
+    }
+    
     private static Contact createAndInsertNewTestContact() {
         ContactFactory.DefaultContact contactCreator = new ContactFactory.DefaultContact();
         Contact createdContact = (Contact)contactCreator.create(1)[0];

@@ -113,17 +113,19 @@ private class ContactUploadDetailServiceTest {
         cudList.add(cudBeingCreated);
         detailService.createSubscriberStatusMap(cudList);
         Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
+        insert subCreated;
         System.assertEquals(subCreated.Subscriber_Status__c, 'Unsubscribed');
         
         Contact_Upload_Detail__c cudBeingUpdated = detailService.createAndValidateRow(contactValues);
-        cudBeingCreated.Contact__c = createdContact.Id;
-        cudBeingCreated.Subscriber_Status__c = 'Subscribed';
+        cudBeingUpdated.Contact__c = createdContact.Id;
+        cudBeingUpdated.Subscriber_Status__c = 'Subscribed';
 
         List<Contact_Upload_Detail__c> cudListUpdated = new List<Contact_Upload_Detail__c>();
         cudListUpdated.add(cudBeingUpdated);
         detailService.createSubscriberStatusMap(cudListUpdated);
-        Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingUpdated);
-        System.assertEquals(subCreated.Subscriber_Status__c, 'Unsubscribed');
+        Subscriber__c subUpdated = detailService.createSubscriberForUploadDetail(cudBeingUpdated);
+        System.assertEquals(subUpdated.Subscriber_Status__c, 'Unsubscribed');
+        System.assert(cudListUpdated[0].Processing_Notes__c.contains('Subscriber Status cannot be updated from Unsubscribed To Subscribed'));
     }
     
     private static Contact createAndInsertNewTestContact() {

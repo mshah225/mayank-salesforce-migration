@@ -1,0 +1,54 @@
+<apex:page showHeader="false">
+
+    <script type='text/javascript'>
+    (function() {
+        function handlePageLoad() {
+            var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)");
+            document.getElementById('prechatForm').setAttribute('action',
+                                                                decodeURIComponent(endpointMatcher.exec(document.location.search)[1]));
+        } if (window.addEventListener) {
+            window.addEventListener('load', handlePageLoad, false);
+        } else { window.attachEvent('onload', handlePageLoad, false);
+               }})();
+
+    </script>
+
+    <form method='post' id='prechatForm'>
+        Issue: <input type='text' name='liveagent.prechat:CaseSubject' id='subject' /><br />
+        
+        <input type="hidden" name="liveagent.prechat:CaseStatus" value="New" /><br />
+        
+        <input type="hidden" name="liveagent.prechat:CaseOrigin" value="Chat" /><br />
+        <input type="hidden" name="liveagent.prechat:CaseRecordType" value="012d0000000x2VT" />
+        <input type="hidden" name="liveagent.prechat.name" id="prechat_field_name" />
+        <input type='hidden' name='liveagent.prechat:ContactId' id='contactId' value='{!$User.ContactId}'/><br />
+        <input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="Id, ContactId" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.map:Case" value="Subject,CaseSubject;Status,CaseStatus;Origin,CaseOrigin;RecordTypeId,CaseRecordType" />
+        
+        <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Id,true" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="Id,true" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Case" value="Subject,true;Status,true;Origin,true;RecordTypeId,true" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.linkToEntity:Contact" value="Case,ContactId" />
+
+        <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value="true" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Case" value="true" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Contact" value="ContactId" />
+        <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Case" value="CaseId" />
+        <input type='submit' value='Chat Now' id='prechat_submit' onclick="setName()"/>
+
+        <script type="text/javascript">
+        window.onload = function() {
+            //document.getElementById('prechat_submit').click();
+        }
+        function setName() {
+            document.getElementById("prechat_field_name").value =
+                document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
+        }
+        </script>
+
+        <style type="text/css">
+            p {font-weight: bolder }
+        </style>
+
+    </form>
+</apex:page>

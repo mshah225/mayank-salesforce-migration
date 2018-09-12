@@ -6,29 +6,25 @@ public without sharing class  ErrorLogger {
     private String details;
     private Case caseToCreate;
     private Exception errorLoggerException;
+    private String className;
+
 
     public ErrorLogger() {
         caseToCreate = CaseAssignmentRuleAccessor.getNewCaseFromCar();
         caseToCreate.Description = DEFAULT_CASE_DESCRIPTION;
-
+        className = '';
         Contact loggedInContact = ContactService.getLoggedInContact();
         if (loggedInContact != null) {
             caseToCreate.ContactId = loggedInContact.Id;
         }
-        setCaseSubject();
     }
 
-    private void setCaseSubject() {
-        if (exceptionToLog == null) {
-            caseToCreate.Subject = DEFAULT_CASE_SUBJECT;
-        } else {
-            caseToCreate.Subject = 'Apex Exception: ' + exceptionToLog.getTypeName() + ' Date: ' + System.today();
-        }
+    public void setClassName(String className){
+        this.className = className;
     }
 
     public void setException(Exception exceptionToLog) {
         this.exceptionToLog = exceptionToLog;
-        setCaseSubject();
         setCaseDescription();
     }
 
@@ -62,7 +58,6 @@ public without sharing class  ErrorLogger {
             caseTimeStamp;
     }
 
-
     public void setContactId(Id contactId) {
         if (Validator.validateId(contactId, Contact.Class)) {
             caseToCreate.ContactId = contactId;
@@ -81,8 +76,17 @@ public without sharing class  ErrorLogger {
         return caseToCreate.Description;
     }
 
+    public String getSubject() {
+        String classNameClause = String.isBlank(className) ? '' : className + ' ';
+        String exceptionClause = exceptionToLog == null ? DEFAULT_CASE_SUBJECT + ' ': 'Apex Exception: ' + exceptionToLog.getTypeName() + ' ';
+        String dateClause = 'Date: ' + System.today();
+        return classNameClause + exceptionClause + dateClause;
+    }
+
     public Boolean log() {
         System.debug(toString());
+
+        caseToCreate.Subject = getSubject();
         List<Case> oldCases = getDuplicateCasesFromToday();
 
         if (!oldCases.isEmpty()) {

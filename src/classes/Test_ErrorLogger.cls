@@ -11,7 +11,7 @@ public class Test_ErrorLogger {
     private static String description;
     private static Contact testContact;
     private static String className;
-
+  
     @testSetup
     static void setup() {
         List<lead> testLeads = TestDataFactory.createLeads(3);
@@ -110,7 +110,6 @@ public class Test_ErrorLogger {
             debug = executeErrorLogger();
         }
         Test.stopTest();
-
         System.assertEquals(true, debug);
         validateCreatedCaseAndContactId(1, userWithContact.ContactId);
     }

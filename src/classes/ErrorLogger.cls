@@ -8,6 +8,7 @@ public without sharing class  ErrorLogger {
     private Exception errorLoggerException;
     private String className;
 
+
     public ErrorLogger() {
         caseToCreate = CaseAssignmentRuleAccessor.getNewCaseFromCar();
         caseToCreate.Description = DEFAULT_CASE_DESCRIPTION;

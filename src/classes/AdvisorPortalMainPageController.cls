@@ -178,9 +178,9 @@ public class AdvisorPortalMainPageController {
                 }
 
                 for (Success_Resource_Pod_Association__c srpa : [
-                    SELECT Success_Resource__r.Resource__c, Success_Resource__r.Resource__r.Name, Success_Resource__r.Resource__r.Alias
+                    SELECT Success_Resource__r.Resource__c, Success_Resource__r.Resource__r.Name, Success_Resource__r.Resource__r.Alias, Success_Resource__r.IsActive__c
                     FROM Success_Resource_Pod_Association__c
-                    WHERE Success_Pod__c IN :podIds
+                    WHERE (Success_Resource__r.IsActive__c = true) AND Success_Pod__c IN :podIds
                     ORDER BY Success_Resource__r.Resource__r.Name ASC
                 ]) {
                     subordinateDisplayName = srpa.Success_Resource__r.Resource__r.Name;

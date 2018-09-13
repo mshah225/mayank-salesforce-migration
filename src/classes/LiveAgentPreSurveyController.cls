@@ -5,6 +5,7 @@ public class LiveAgentPreSurveyController {
     public String caseFunctionalGroup {set; get;}
     public String caseCategory {set; get;}
     public String caseSubCategory {set; get;}
+    public String caseSubject {set; get;}
     public String presurveyQuestion {set; get;}
 
     public LiveAgentPreSurveyController() {
@@ -26,13 +27,13 @@ public class LiveAgentPreSurveyController {
         caseFunctionalGroup = carForButton.CC_Functional_Group__c;
         caseCategory = carForButton.CC_Category__c;
         caseSubCategory = carForButton.CC_Sub_Category__c;
-        caseOwnerId = carForButton.OwnerId;
+        setCaseOwnerAndSubject(carForButton);
     }
     
     private Case_Assignment_Rule__c getCarFromButton() {
         String emailForCarFilter = buttonPressed.toLowerCase() + '@asu.edu';
         
-        Case_Assignment_Rule__c carFromButton = [SELECT Case_Record_Type_Id__c, CC_Functional_Group__c, CC_Category__c, CC_Sub_Category__c, OwnerId 
+        Case_Assignment_Rule__c carFromButton = [SELECT Case_Record_Type_Id__c, CC_Functional_Group__c, CC_Category__c, Queue_ID__c, CC_Sub_Category__c, OwnerId 
                                                  FROM Case_Assignment_Rule__c
                                                  WHERE Email_Address__c =: emailForCarFilter LIMIT 1];
         return carFromButton;
@@ -40,5 +41,18 @@ public class LiveAgentPreSurveyController {
     
     private void setPresurveyQuestion() {
         presurveyQuestion = Label.PreSurveyQuestion;
+    }
+    
+    private void setCaseOwnerAndSubject(Case_Assignment_Rule__c car) {
+        if (car.Queue_ID__c.subString(0,3) == '00G') {
+        	List<Group> potentialQueue = [SELECT Id, Name FROM Group WHERE Id =: car.Queue_ID__c];
+            caseOwnerId = potentialQueue[0].Id;
+            caseSubject = potentialQueue[0].Name + ' Live Chat';
+        } else if (car.Queue_ID__c.subString(0,3) == '005') {
+            List<User> potentialUser = [SELECT Id, Name FROM User WHERE Id =: car.Queue_ID__c];
+            caseOwnerId = potentialUser[0].Id;
+            caseSubject = potentialUser[0].Name + ' Live Chat';
+        }
+        
     }
 }

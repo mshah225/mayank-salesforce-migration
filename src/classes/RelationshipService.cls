@@ -256,9 +256,9 @@ public class RelationshipService {
         List<Relationship__c> relListRemoved = new List<Relationship__c>();
         
         for(Id relIds : relMapOld.keySet()) {
-            if (!relMapOld.get(relIds).Primary_Parent__c && relMapNew.get(relIds).Primary_Parent__c) {
+            if ((!relMapOld.get(relIds).Primary_Parent__c && relMapNew.get(relIds).Primary_Parent__c) || (relMapNew.get(relIds).Primary_Parent__c && !relMapOld.get(relIds).Active_Relationship__c && relMapNew.get(relIds).Active_Relationship__c)) {
                 relListAdded.add(relMapNew.get(relIds));
-            } else if (relMapOld.get(relIds).Primary_Parent__c && !relMapNew.get(relIds).Primary_Parent__c) {
+            } else if ((relMapOld.get(relIds).Primary_Parent__c && !relMapNew.get(relIds).Primary_Parent__c) || !relMapNew.get(relIds).Active_Relationship__c) {
                 relListRemoved.add(relMapNew.get(relIds));
             }
         }

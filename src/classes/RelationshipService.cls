@@ -261,10 +261,6 @@ public class RelationshipService {
             } else if (primaryParentRemovedOrIsNotActive(relMapOld.get(relIds), relMapNew.get(relIds))) {
                 relListRemoved.add(relMapNew.get(relIds));
             }
-            if (relMapOld.get(relIds).Contact__c != relMapNew.get(relIds).Contact__c || relMapOld.get(relIds).Related_Contact__c != relMapNew.get(relIds).Related_Contact__c) {
-                relListRemoved.add(relMapNew.get(relIds));
-                relListAdded.add(relMapNew.get(relIds));
-            }
         }
         
         Boolean validChange = verifyTwoPrimary(relListAdded);

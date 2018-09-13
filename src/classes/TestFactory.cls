@@ -44,6 +44,10 @@ public abstract class TestFactory {
         return create(1); 
     }
     
+    public Sobject createOne() {
+        return create(1)[0]; 
+    }
+    
     public List<Sobject> create(Integer numberToCreate) {
         List<Sobject> createdTestObjects = new List<Sobject>();
         for (Integer index = 0; index < numberToCreate; index ++) {

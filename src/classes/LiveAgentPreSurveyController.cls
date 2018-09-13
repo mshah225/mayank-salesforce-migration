@@ -44,11 +44,11 @@ public class LiveAgentPreSurveyController {
     }
     
     private void setCaseOwnerAndSubject(Case_Assignment_Rule__c car) {
-        if (car.Queue_ID__c.subString(0,3) == '00G') {
+        if (car.Queue_ID__c.subString(0,3) == Group.SObjectType.getDescribe().getKeyPrefix()) {
         	List<Group> potentialQueue = [SELECT Id, Name FROM Group WHERE Id =: car.Queue_ID__c];
             caseOwnerId = potentialQueue[0].Id;
             caseSubject = potentialQueue[0].Name + ' Live Chat';
-        } else if (car.Queue_ID__c.subString(0,3) == '005') {
+        } else if (car.Queue_ID__c.subString(0,3) == User.SObjectType.getDescribe().getKeyPrefix()) {
             List<User> potentialUser = [SELECT Id, Name FROM User WHERE Id =: car.Queue_ID__c];
             caseOwnerId = potentialUser[0].Id;
             caseSubject = potentialUser[0].Name + ' Live Chat';

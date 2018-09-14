@@ -123,7 +123,7 @@
             </apex:outputLink>
                 <div style="text-align: left; margin-top: 40px; margin-left: 20px;">
                 <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
-                    <apex:pageBlock >
+                    <apex:pageBlock id="filterListPageBlockSection">
                         <apex:pageBlockSection columns="3" title="Case Filters">
                             <apex:selectList label="Status: " value="{!caseStatusFilter}" size="1" required="false"
                                     style="margin-right:10px;">&nbsp;&nbsp;
@@ -181,7 +181,7 @@
                         </apex:pageBlockSection>
                     </apex:pageBlock>
                     <apex:commandLink style="float:left; margin-right:10px; margin-top: 5px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="pageSizeSection, tableForm" oncomplete="focusSearch()"/>
-                    <apex:commandLink style="float:left; margin-right:10px; margin-top: 5px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="filterListPanel, pageSizeSection, tableForm"/>
+                    <apex:commandLink style="float:left; margin-right:10px; margin-top: 5px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="filterListPageBlockSection, pageSizeSection, tableForm"/>
                 </apex:outputPanel>
             </div>
             <div style="height: 10px; width = 100%">

@@ -12,7 +12,7 @@ public abstract class TestFactory {
     public TestFactory(Sobject template) {
         incrementingCounter = 0;
         this.template = template;
-        fieldNameToRelatedObjects = new Map<String, List<Sobject>>();
+        fieldNameToRelatedObjects = new Map<String, List<Object>>();
         fieldNamesToIncrement = new List<String>();
     }
     
@@ -42,10 +42,6 @@ public abstract class TestFactory {
     
     public List<Sobject> create() {
         return create(1); 
-    }
-    
-    public Sobject createOne() {
-        return create(1)[0]; 
     }
     
     public List<Sobject> create(Integer numberToCreate) {

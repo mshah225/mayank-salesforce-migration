@@ -10,7 +10,8 @@ public class Test_ErrorLogger {
     private static Boolean debug;
     private static String description;
     private static Contact testContact;
-
+    private static String className;
+  
     @testSetup
     static void setup() {
         List<lead> testLeads = TestDataFactory.createLeads(3);
@@ -43,17 +44,24 @@ public class Test_ErrorLogger {
         userMap = new Map<Id,User>();
         userMap.put(userWithContact.Id, userWithContact);
         userMap.put(userWithoutContact.Id, userWithoutContact);
-        subject = 'Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
+        className = 'Test_ErrorLogger';
+        subject = className + ' Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
         description = 'userMap: ' + String.valueOf(userMap);
     }
 
     private static Boolean executeErrorLogger() {
-        Boolean debug;
+        ErrorLogger el = new ErrorLogger();
+        el.setClassName(className);
+        el.setException(ex);
+        el.setDetails(description);
+        return el.log();
+    }
+
+    private static Boolean executeErrorLoggerWithoutClassName() {
         ErrorLogger el = new ErrorLogger();
         el.setException(ex);
         el.setDetails(description);
-        debug = el.log();
-        return debug;
+        return el.log();
     }
 
     @isTest
@@ -78,6 +86,21 @@ public class Test_ErrorLogger {
         System.assert(debugLog.contains(compareDebugLog));
     }
 
+    private static void validateCreatedCaseAndContactId(Integer numberOfCasesCreated, Id caseContactId) {
+        List<Case> exceptionCases;
+        exceptionCases = [
+            SELECT Id, ContactId
+            FROM Case
+            WHERE Subject = :subject
+        ];
+
+        System.assertEquals(numberOfCasesCreated, exceptionCases.size());
+
+        for (Case c : exceptionCases) {
+            System.assertEquals(caseContactId, c.ContactId);
+        }
+    }
+
     @isTest
     private static void checkDebugWithCaseForUserWithContact() {
         setupTestVariables();
@@ -87,7 +110,6 @@ public class Test_ErrorLogger {
             debug = executeErrorLogger();
         }
         Test.stopTest();
-
         System.assertEquals(true, debug);
         validateCreatedCaseAndContactId(1, userWithContact.ContactId);
     }
@@ -174,7 +196,11 @@ public class Test_ErrorLogger {
         Test.stopTest();
 
         System.assertEquals(false, debug);
-        List<Case> exceptionCases = [SELECT Id, ContactId FROM Case WHERE Subject = :subject];
+        List<Case> exceptionCases = [
+            SELECT Id, ContactId
+            FROM Case
+            WHERE Subject = :subject
+        ];
         System.assertEquals(true, exceptionCases.isEmpty());
     }
 
@@ -185,6 +211,7 @@ public class Test_ErrorLogger {
         Test.startTest();
         System.runAs(userWithoutContact) {
             ErrorLogger el = new ErrorLogger();
+            el.setClassName(className);
             el.setException(ex);
             el.setDetails(description);
             el.setContactId(userWithContact.ContactId);
@@ -203,6 +230,7 @@ public class Test_ErrorLogger {
         Test.startTest();
         System.runAs(userWithoutContact) {
             ErrorLogger el = new ErrorLogger();
+            el.setClassName(className);
             el.setException(ex);
             el.setDetails(description);
             el.setContactId(testContact.Id);
@@ -214,18 +242,6 @@ public class Test_ErrorLogger {
         validateCreatedCaseAndContactId(1, testContact.Id);
     }
 
-    private static void validateCreatedCaseAndContactId(Integer numberOfCasesCreated, Id caseContactId) {
-        List<Case> exceptionCases;
-        exceptionCases = [SELECT Id, ContactId FROM Case WHERE Subject = :subject];
-
-        System.assertEquals(numberOfCasesCreated, exceptionCases.size());
-
-        for (Case c : exceptionCases) {
-            System.assertEquals(caseContactId, c.ContactId);
-        }
-        delete exceptionCases;
-    }
-
     @isTest
     private static void checkDuplicateCaseDescription() {
         setupTestVariables();
@@ -234,6 +250,7 @@ public class Test_ErrorLogger {
         System.runAs(userWithContact) {
             executeErrorLogger();
             ErrorLogger el = new ErrorLogger();
+            el.setClassName(className);
             el.setException(ex);
             el.setDetails(description);
             debug = el.log();
@@ -242,7 +259,11 @@ public class Test_ErrorLogger {
 
         System.assertEquals(true, debug);
 
-        List<Case> exceptionCases = [SELECT Id, Description, ContactId FROM Case WHERE Subject = :subject];
+        List<Case> exceptionCases = [
+            SELECT Id, Description, ContactId
+            FROM Case
+            WHERE Subject = :subject
+        ];
 
         System.assertEquals(1, exceptionCases.size());
 
@@ -252,8 +273,44 @@ public class Test_ErrorLogger {
 
         String timeStamp = String.valueOf(DateTime.now().dateGMT());
         System.assert(exceptionCases[0].description.indexOf(timeStamp) < exceptionCases[0].description.lastIndexOf(timeStamp));
+    }
 
-        delete exceptionCases;
+    @isTest
+    private static void checkCaseDeDuplicationWithClassName() {
+        setupTestVariables();
+
+        Test.startTest();
+        System.runAs(userWithContact) {
+            executeErrorLogger();
+            ErrorLogger el = new ErrorLogger();
+            el.setClassName('testClass');
+            el.setException(ex);
+            el.setDetails(description);
+            debug = el.log();
+        }
+        Test.stopTest();
+
+        System.assertEquals(true, debug);
+        validateCreatedCaseAndContactId(1, userWithContact.ContactId);
+
+        subject = 'testClass Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
+
+        validateCreatedCaseAndContactId(1, userWithContact.ContactId);
+    }
+
+    @isTest
+    private static void checkCaseDeDuplicationWithoutClassName() {
+        setupTestVariables();
+        subject = 'Apex Exception: ' + ex.getTypeName() + ' Date: ' + System.today();
+        Test.startTest();
+        System.runAs(userWithContact) {
+            executeErrorLoggerWithoutClassName();
+            debug = executeErrorLoggerWithoutClassName();
+        }
+        Test.stopTest();
+
+        System.assertEquals(true, debug);
+        validateCreatedCaseAndContactId(1, userWithContact.ContactId);
     }
 
     /**

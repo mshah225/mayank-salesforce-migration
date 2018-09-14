@@ -1,5 +1,14 @@
 @isTest
-public class LeadFactory {
+public class LeadFactory extends TestFactory {
+    public static final Lead DEFAULT_LEAD = new Lead(
+        FirstName = 'Mister',
+        LastName = 'Test',
+        Company = 'Test Inc'
+    );
+
+    public LeadFactory(Lead testLead) {
+        super(testLead);
+    }
 
     public class DefaultLead extends TestFactory {
         public DefaultLead() {
@@ -12,7 +21,7 @@ public class LeadFactory {
             this.addToFieldsToIncrement('Company');
         }
     }
-    
+
     public class AllEmailAndBirthdayLead extends TestFactory {
         public AllEmailAndBirthdayLead() {
             super(new Lead(

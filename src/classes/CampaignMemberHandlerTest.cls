@@ -1,5 +1,5 @@
 @isTest
-public class Test_CampaignMemberHandler {
+public class CampaignMemberHandlerTest {
     private static ContactFactory defaultContactFactory = new ContactFactory(ContactFactory.DEFAULT_CONTACT);
     private static OpportunityFactory opportunityFactory = new OpportunityFactory();
 
@@ -1264,6 +1264,6 @@ public class Test_CampaignMemberHandler {
         lead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :lead.Id];
         System.assert(cm1.Is_Primary_Interest__c);
         System.assert(!cm2.Is_Primary_Interest__c);
-        System.assertEquals(camp.Id, lead.Primary_Interest__c);
+                    System.assertEquals(camp.Id, lead.Primary_Interest__c);
     }
 }

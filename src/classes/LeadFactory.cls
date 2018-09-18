@@ -4,10 +4,26 @@ public class LeadFactory extends TestFactory {
         FirstName = 'Mister',
         LastName = 'Test',
         Company = 'Test Inc'
+        Email = 'test@test.test',
+        LeadSource = 'Email'
     );
+
+    public LeadFactory() {
+        super(DEFAULT_LEAD);
+        this.addToFieldsToIncrement('Email');
+        this.addToFieldsToIncrement('LastName');
+        this.addToFieldsToIncrement('Company');
+    }
 
     public LeadFactory(Lead testLead) {
         super(testLead);
+        this.addToFieldsToIncrement('Email');
+        this.addToFieldsToIncrement('LastName');
+        this.addToFieldsToIncrement('Company');
+    }
+    
+    public Lead createOne() {
+        return (Lead) this.create()[0];
     }
 
     public class DefaultLead extends TestFactory {

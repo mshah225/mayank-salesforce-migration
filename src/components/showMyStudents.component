@@ -56,7 +56,7 @@
                                          Filters
                          </apex:outputLink>
                     </apex:outputPanel>
-                    <div style="text-align: -webkit-center;">
+                    <div style="text-align: left; margin-top: 40px; margin-left: 20px;">
                         <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
                             <apex:pageBlock >
                                 <apex:pageBlockSection columns="3" title="Student Filters">

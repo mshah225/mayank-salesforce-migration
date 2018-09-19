@@ -330,7 +330,7 @@ public class CaseListTransferController {
             }
 
             for (Case c : this.cs) {
-                if (c.Is_Private_To_Functional_Group__c == true) {
+                if (c.Is_Private_To_Functional_Group__c) {
                     isPrivateCase = true;
                 }
                 /*
@@ -380,7 +380,7 @@ public class CaseListTransferController {
             nextPage = new ApexPages.action('{!list}').invoke();
         }
 
-        if (transferToPrivate == true && isPrivateCase == false) {
+        if (transferToPrivate && !isPrivateCase) {
             page = 5;
             return ApexPages.currentPage();
         }

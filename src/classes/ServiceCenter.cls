@@ -7,7 +7,7 @@ public with sharing class ServiceCenter
     private Decimal origPin;  
     private Term__c termcAC;
     private Term__c termcB;
-    private Map<String, String> viewAsMap;
+    private MyAsuViewAs viewAsService;
     
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
@@ -24,6 +24,7 @@ public with sharing class ServiceCenter
     public String asurite { get; set; }
     public String userAsurite;
     public String mMessage;
+    
 
     public ServiceCenter(){
         suggestAnArticle = new Case();
@@ -42,18 +43,19 @@ public with sharing class ServiceCenter
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
         }
     }
 
     public void popUserContact(){
-        if (viewingAs){
-            userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
-            stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
-            viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
-        }
-        else{
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+            stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
+            viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
+            viewingAs = true;
+        } else {
             userContact = ContactService.getLoggedInContact();
         }
         firstName = userContact.FirstName;
@@ -220,26 +222,9 @@ public with sharing class ServiceCenter
     }
     
     private PageReference refreshPageWithPinUpdate() {
-        if (userContact == null || origPin == newPin || !ContactService.isPinValid(newPin, userContact.Birthdate)) {
-            return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-        } else {
-            userContact.Self_Service_PIN__c = newPin;
-            if (userContact.PIN_lockout__c == true) {
-                userContact.PIN_lockout__c = false;
-            }
+        String updateResult = ContactPinUtility.updatePin(userContact, origPin, newPin);
+        return redirectWithParams(ApexPages.currentPage(), 'PIN', updateResult);
             
-            try {
-                update userContact;
-                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
-            } catch(Exception e) {
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
-                vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
-                vars.add(ErrorLogger.convertStringToJSON('Employee Id',userContact.EMPLId__c));
-                ErrorLogger.log(e,vars,false);
-                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-            }
-        }
     }
 
     public PageReference redirectWithParams(PageReference page, String param, String value){

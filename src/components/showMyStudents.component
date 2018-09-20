@@ -5,11 +5,11 @@
     <apex:stylesheet value="{! URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
     <apex:stylesheet value="{! URLFOR($Resource.showMyStudentsResources, 'showMyStudents.css') }"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
-    
+
     <apex:attribute name="queryString" type="String" description="" assignTo="{!queryAttr}" />
     <apex:attribute name="proactiveRTID" type="Id" description="" assignTo="{!proactiveCaseRTID}"/>
     <apex:attribute name="emailRTID" type="Id" description="" assignTo="{!portalEmailRTID}" />
-    
+
     <apex:attribute name="showSelection" type="boolean" description="" default="false" />
     <apex:attribute name="showName" type="boolean" description="" default="false" />
     <apex:attribute name="showEMPLID" type="boolean" description="" default="false" />
@@ -18,59 +18,87 @@
     <apex:attribute name="showReactiveCases" type="boolean" description="" default="false" />
     <apex:attribute name="showSearch" type="boolean" description="" default="false" />
     <apex:attribute name="showRefresh" type="boolean" description="" default="false" />
-    
+
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
         <apex:form >
+            <script>
+                function toggleFilterListPanel(filterListPanelId){
+                    var filterListPanel = document.getElementById(filterListPanelId);
+
+                    if (filterListPanel.style.display === 'none') {
+                        filterListPanel.style.display = 'block';
+                    } else {
+                        filterListPanel.style.display = 'none';
+                    }
+                }
+
+                function focusSearch() {
+                    var input = document.getElementById('{!$Component.myStudentsInput}');
+                    input.select();
+                    var tmpStr = input.value;
+                    input.value = '';
+                    input.value = tmpStr;
+                }
+            </script>
+            <style>
+                .createdByStartDate::-webkit-calendar-picker-indicator,
+                .createdByEndDate::-webkit-calendar-picker-indicator {
+                    opacity: 1;
+                }
+    		</style>
             <div class="headerFooter">
                 <div class="toolbar">
-                    <apex:outputPanel layout="inline" styleClass="button-group"> 
-                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px"
+                    <apex:outputPanel layout="inline" styleClass="button-group">
+                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="float: left; margin-top: 5px; margin-right:10px"
                                          onclick="toggleEmailModal(this)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
+                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="float: left; margin-top: 5px; margin-right:10px; background-color: #8C1D40 !important; color: white !important;"
+                                          onclick="toggleFilterListPanel('{!$Component.filterListPanel}')">
+                                         Filters
+                         </apex:outputLink>
                     </apex:outputPanel>
-                    <apex:outputPanel styleClass="input-group" style="width:100%;max-width:250px; margin-top: 5px;" rendered="{! showSearch}">
-                        <apex:inputText id="myStudentsInput"
-                                        value="{!searchString}"
-                                        html-placeholder="Filter Students"
-                                        onkeypress="return noenter(event);"
-                                        style="padding:6px 12px;vertical-align:middle;border-radius:4px;border:solid 1px #ccc;max-width:300px;width:100%;font-size:11pt;border-top-right-radius:0;border-bottom-right-radius:0;border-right:none;"/>
-                        <span class="input-group-addon">
-                            <apex:commandLink id="searchStudentsBtn" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
-                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                            </apex:commandLink>
-                        </span>
-                        
-                        <script>
-                        function focusSearch() {
-                            var input = document.getElementById('{!$Component.myStudentsInput}');
-                            input.select();
-                            var tmpStr = input.value;
-                            input.value = '';
-                            input.value = tmpStr;
-                        }
-                        
-                        jQuery(document).ready(function(){
-                            var search = document.getElementById('{!$Component.myStudentsInput}');
-                            jQuery(search).keypress(function( event ) {
-                                if ( event.which == 13 ) {
-                                    event.preventDefault();
-                                    var ele = document.getElementById('{!$Component.searchStudentsBtn}');
-                                    ele.click();
-                                    focusSearch();
-                                }                          
-                            });
-                        });
-                        </script>
-                        
-                        <span class="input-group-addon">
-                            <apex:commandLink action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;">
-                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                            </apex:commandLink>
-                        </span>
-                    </apex:outputPanel>
-                    
+                    <div style="text-align: left; margin-top: 40px; margin-left: 20px;">
+                        <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
+                            <apex:pageBlock id="filterListPageBlockSection">
+                                <apex:pageBlockSection columns="3" title="Student Filters">
+                                    <apex:inputText id="studentFilterInput"
+                                                    value="{!searchString}"
+                                                    label="Student: "
+                                                    html-placeholder=" Name, EmplID or ASURiteID"
+                                                    onkeypress="return noenter(event);"
+                                                    styleClass="searchBox"
+                                                    style="width:190px"/>
+                                    <apex:inputText id="studentGroupFilterInput"
+                                                    label="Student Group: "
+                                                    value="{!studentGroup}"
+                                                    html-placeholder="All or part of code"
+                                                    onkeypress="return noenter(event);"
+                                                    styleClass="searchBox"/>
+                                    <apex:inputText id="majorFilter" label="Major: "
+                                                    value="{!majorFilter}"
+                                                    html-placeholder="All or part of major name"
+                                                    styleClass="searchBox"/>
+                                    <apex:inputText label="Campus: " id="campusFilter"
+                                                    value="{!campusFilter}"
+                                                    html-placeholder="All or part of campus name"
+                                                    styleClass="searchBox"/>
+                                    <apex:selectList label="Outlook Score" value="{!outlookScoreFilter}" size="1" required="false">
+                                        <apex:selectOptions value="{!outlookScoreOptions}"/>
+                                    </apex:selectList>
+                                    <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
+                                        <apex:selectOptions value="{!outlookChangeOptions}"/>
+                                    </apex:selectList>
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSection columns="2">
+                                    <apex:input styleClass="createdByStartDate" label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>
+                                    <apex:input styleClass="createdByEndDate" label="To: " value="{!persistenceEndDate}" type="auto"/>
+                                </apex:pageBlockSection>
+                            </apex:pageBlock>
+                            <apex:commandLink style="float:left; margin-right: 5px; margin-top: 25px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="pageSizeSection, tableForm" oncomplete="focusSearch()"/>
+                            <apex:commandLink style="float:left; margin-right: 5px; margin-top: 25px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="filterListPageBlockSection, pageSizeSection, tableForm"/>
+                        </apex:outputPanel>
+                    </div>
                 </div>
-                
-                <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
+                <apex:outputPanel id="pageSizeSection" layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
                     <apex:commandLink action="{!setCon.previous}" value="<< Prev" rendered="{!setCon.HasPrevious}"
                                       style="float:left;" styleClass="standardLink" reRender="rerenderMe"
                                       status="ASUAjaxStatus" />
@@ -102,7 +130,7 @@
                                     Mass Email
                                 </h4>
                             </div>
-                            
+
                             <div class="modal-body">
                                 <apex:outputPanel layout="none" rendered="{!AND(NOT(emailPreviewMode), ISBLANK(emailInsertResults))}">
                                     <h5 style="margin-bottom:0px;">
@@ -139,7 +167,7 @@
                                     {!emailInsertResults.size} Email(s) Sent.
                                 </apex:outputPanel>
                             </div>
-                            
+
                             <div class="modal-footer">
                                 <apex:outputPanel layout="none" rendered="{!AND(NOT(emailPreviewMode), ISBLANK(emailInsertResults))}">
                                     <apex:actionFunction name="progressToEmailPreviewStudent" reRender="EmailModalContent" >
@@ -177,7 +205,7 @@
                         <input type="checkbox" class="selectAll"  onchange="checkAll(this);" />
                     </apex:facet>
                 </apex:column>
-                
+
                 <apex:column headerValue="Name" value="{!c.obj.Student_Name__c}" rendered="{! showName}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
@@ -195,7 +223,7 @@
                         </apex:commandLink>
                     </apex:facet>
                 </apex:column>
-                
+
                 <apex:column headerValue="EMPLID" rendered="{! showEMPLID}"
                              headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">

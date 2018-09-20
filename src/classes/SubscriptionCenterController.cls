@@ -9,6 +9,7 @@ public without sharing class SubscriptionCenterController {
     private String subscriptionIdParm;
     private String subscriberKeyParm;
     public String hashedSubscriberKeyParm { get; set; }
+    public String subscriberIdentifier { get; set; }
     public String searchTerms { get; set; }
     public String subscriberEmail { get; set; }
     public Boolean hasOptedOutOfEmail { get; set; }
@@ -35,24 +36,34 @@ public without sharing class SubscriptionCenterController {
     public List<String>  availableSubsBUMapKeys { get; set; }
 
     public SubscriptionCenterController() {
-        hashedSubscriberKeyParm = ApexPages.currentPage().getParameters().get('subscriberKey'); // Id of a Contact or Lead record
+        subscriberIdentifier = ApexPages.currentPage().getParameters().get('subscriberKey'); // Id of a Contact or Lead record
         String hashedSubscriptionIdParm = ApexPages.currentPage().getParameters().get('subscriptionId'); // Id of a Subscription__c record
         String hashedCampaignIdParm = ApexPages.currentPage().getParameters().get('campaignId'); // Id of a Campaign record
         String hashedSubscriberIdParm = ApexPages.currentPage().getParameters().get('subscriberId'); // Id of a Subscriber__c record
         actionParm = ApexPages.currentPage().getParameters().get('action'); // String describing what action to take
 
-        if (hashedSubscriberKeyParm != null) {
-            if (!Test.isRunningTest()) {
-                hashedSubscriberKeyParm = EncodingUtil.urlEncode(hashedSubscriberKeyParm, 'UTF-8');
-            }
+        if (subscriberIdentifier != null) {
+            String encodedSubscriberKeyParm = EncodingUtil.urlEncode(subscriberIdentifier, 'UTF-8');
+            
             List<Contact> tmpList = new List<Contact>();
-            tmpList = [SELECT Id FROM Contact WHERE HashContactId__c =: hashedSubscriberKeyParm];
+            tmpList = [SELECT Id FROM Contact 
+                        WHERE HashContactId__c =: encodedSubscriberKeyParm 
+                        OR Id =: subscriberIdentifier 
+                        OR SSB_CRMSYSTEM_CONTACT_ID__c =: subscriberIdentifier
+                        ORDER BY RecordType.Name ASC, CreatedDate DESC
+                        LIMIT 1
+                        ];
             if (!tmpList.isEmpty()) {
-                System.debug(tmpList);
                 subscriberKeyParm = tmpList[0].Id;
             } else {
                 List<Lead> tmpLeadList = new List<Lead>();
-                tmpLeadList = [Select Id FROM Lead WHERE HashLeadId__c =: hashedSubscriberKeyParm];
+                tmpLeadList = [SELECT Id, Convert_Contact__c FROM Lead 
+                                WHERE HashLeadId__c =: encodedSubscriberKeyParm
+                                OR Id =: subscriberIdentifier 
+                                OR SSB_CRMSYSTEM_CONTACT_ID__c =: subscriberIdentifier
+                                ORDER BY RecordType.Name ASC, CreatedDate DESC
+                                LIMIT 1
+                                ];
                 if (!tmpLeadList.isEmpty()) {
                     subscriberKeyParm = tmpLeadList[0].Id;
                 }
@@ -60,9 +71,8 @@ public without sharing class SubscriptionCenterController {
         }
         
         if (hashedSubscriptionIdParm != null) {
-            if (!Test.isRunningTest()) {
-            	hashedSubscriptionIdParm = EncodingUtil.urlEncode(hashedSubscriptionIdParm, 'UTF-8');
-            }
+            hashedSubscriptionIdParm = EncodingUtil.urlEncode(hashedSubscriptionIdParm, 'UTF-8');
+            
             List<Subscription__c> tmpList = new List<Subscription__c>();
             tmpList = [SELECT Id FROM Subscription__c WHERE HashSubscriptionId__c =: hashedSubscriptionIdParm];
             if (!tmpList.isEmpty()) {
@@ -71,9 +81,8 @@ public without sharing class SubscriptionCenterController {
         }
         
         if (hashedCampaignIdParm != null) {
-            if (!Test.isRunningTest()) {
-            	hashedCampaignIdParm = EncodingUtil.urlEncode(hashedCampaignIdParm, 'UTF-8');
-            }
+            hashedCampaignIdParm = EncodingUtil.urlEncode(hashedCampaignIdParm, 'UTF-8');
+            
             List<Campaign> tmpList = new List<Campaign>();
             tmpList = [SELECT Id FROM Campaign WHERE HashCampaignId__c =: hashedCampaignIdParm];
             if (!tmpList.isEmpty()) {
@@ -82,9 +91,8 @@ public without sharing class SubscriptionCenterController {
         }
         
         if (hashedSubscriberIdParm != null) {
-            if (!Test.isRunningTest()) {
-            	hashedSubscriberIdParm = EncodingUtil.urlEncode(hashedSubscriberIdParm, 'UTF-8');
-            }
+            hashedSubscriberIdParm = EncodingUtil.urlEncode(hashedSubscriberIdParm, 'UTF-8');
+            
             List<Subscriber__c> tmpList = new List<Subscriber__c>();
             tmpList = [SELECT Id FROM Subscriber__c WHERE HashSubscriberId__c =: hashedSubscriberIdParm];
             if (!tmpList.isEmpty()) {
@@ -258,9 +266,6 @@ public without sharing class SubscriptionCenterController {
                 availableParentSubIds.remove(subId);
             }
         }
-        system.debug('subscriptionList: ' + subscriptionList);
-        system.debug('parentSubIds: ' + parentSubIds);
-        system.debug('availableParentSubIds: ' + availableParentSubIds);
 
         for (String s : parentSubIds) {
             subsByParentSubIdMap.put(s, new List<SubscriberWrapper>());
@@ -415,9 +420,6 @@ public without sharing class SubscriptionCenterController {
             }
 
             for (SubscriberWrapper sw : subsByParentSubIdMap.get(parentSubId)) {
-                system.debug('sw.subscriberStatus: ' + sw.subscriberStatus);
-                system.debug('sw.dbSubscriberStatus: ' + sw.dbSubscriberStatus);
-                system.debug('sw: ' + sw);
                 if (parentSubUnsubscribed && sw.subscriber != null) {
                     sw.subscriber.Subscriber_Status__c = UNSUBSCRIBED;
                     subsToUpdate.add(sw.subscriber);

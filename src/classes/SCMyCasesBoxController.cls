@@ -19,16 +19,17 @@ public with sharing class SCMyCasesBoxController{
     public String userAsurite;
     public String asurite { get; set; }
     public String masqScopeIdCookie { get; set; }
+    public MyAsuViewAs viewAsService;
 
     public SCMyCasesBoxController(){
         newCase=new Case();
         viewingAs = false;
-        checkForViewAs();
+        createViewAs();
         popUserContact();
         popTerms();
     }
 
-    public void checkForViewAs()
+    public void createViewAs()
     {
         if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null)
         {
@@ -41,24 +42,22 @@ public with sharing class SCMyCasesBoxController{
                 WHERE Id = :UserInfo.getUserId()
             ].ASURite_Id__C;
 
-            viewAsMap = MyASUViewAs.getCalloutResponseContents(masqScopeIdCookie, userAsurite);
-            viewingAs = MyASUViewAs.checkViewAsRights(viewAsMap, userAsurite);
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
         }
     }
 
     public void popUserContact()
     {
-        if (viewingAs)
-        {
-            userContact = MyASUViewAs.getViewAsContact(viewAsMap.get('effectiveAsurite'));
-            stopViewAsUrl = String.valueOf(viewAsMap.get('stopViewAsUrl'));
-            viewAsUrl = String.valueOf(viewAsMap.get('viewAsUrl'));
-        }
-        else
-        {
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+            stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
+            viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
+            viewingAs = true;
+        } else {
             userContact = ContactService.getLoggedInContact();
         }
-
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
@@ -98,12 +97,9 @@ public with sharing class SCMyCasesBoxController{
         List<Contact> contacts = new List<Contact>{ userContact };
         Map<Id, List<Case>> closedCaseMap;
 
-        if (viewingAs)
-        {
-            closedCaseMap = MyASUViewAs.getViewAsClosedCases(contacts);
-        }
-        else
-        {
+        if (viewAsService != null) {
+            closedCaseMap = viewAsService.getClosedCases(contacts);
+        } else {
             closedCaseMap = CaseService.getVisibleClosedCases(contacts);
         }
 
@@ -182,13 +178,9 @@ public with sharing class SCMyCasesBoxController{
     {
         List<Contact> contacts = new List<Contact> { userContact };
         Map<Id, List<Case>> openCaseMap;
-
-        if (viewingAs)
-        {
-            openCaseMap = MyASUViewAs.getViewAsOpenCases(contacts);
-        }
-        else
-        {
+        if (viewAsService != null) {
+            openCaseMap = viewAsService.getOpenCases(contacts);
+        } else {
             openCaseMap = CaseService.getVisibleOpenCases(contacts);
         }
 

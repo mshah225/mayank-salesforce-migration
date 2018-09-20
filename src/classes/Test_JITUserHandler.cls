@@ -5,7 +5,8 @@ private class Test_JITUserHandler
     {
         Profile p = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
 
-        User testUser = UserService.createTestUser();
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User)userCreator.create(1)[0];
         testUser.ProfileId = p.Id;
 
         insert testUser;

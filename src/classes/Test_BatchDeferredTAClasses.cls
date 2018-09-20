@@ -1,9 +1,12 @@
 @isTest
 private class Test_BatchDeferredTAClasses {
 
-    @testSetup static void setup()
+	private static List<User> testUsers;
+	
+    static void setup()
     {
-        List<User> testUsers = UserService.createMultipleTestUsers(2);
+    	UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        testUsers = userCreator.create(2);
 
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
@@ -16,8 +19,9 @@ private class Test_BatchDeferredTAClasses {
     }
 
     @isTest static void testBatchAccountDeferredLeadTA() {
-	    User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
-	    User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+    	setup();
+	    User TestUser = testUsers[0];
+	    User TestUser2 = testUsers[1];
 
 	    Key_Value__c KVHS = new Key_Value__c();
 	    KVHS.Geomarket_ZIP__c = '84108';
@@ -68,8 +72,9 @@ private class Test_BatchDeferredTAClasses {
     }
 
     @isTest static void testBatchAccountDeferredOppTA() {
-        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
-        User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+    	setup();
+        User TestUser = testUsers[0];
+	    User TestUser2 = testUsers[1];
 
         Account HS = new Account();
 	    HS.Name = 'Test High School';
@@ -122,8 +127,9 @@ private class Test_BatchDeferredTAClasses {
     }
 
     @isTest static void testBatchTARDeferredLeadTA() {
-        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
-        User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+    	setup();
+        User TestUser = testUsers[0];
+	    User TestUser2 = testUsers[1];
 
         Territory_Assignment_Rule__c Atar1 = new Territory_Assignment_Rule__c();
 	    Atar1.Rule_Type__c = 'Default User';
@@ -158,7 +164,6 @@ private class Test_BatchDeferredTAClasses {
         while (QLI.hasNext())
         {
             Lead l = (Lead)QLI.next();        
-            System.debug(l);
             leadList.add(l);
         }               
         tarDeferredLeadTA.execute(BC, leadList);
@@ -166,8 +171,9 @@ private class Test_BatchDeferredTAClasses {
     }
 
     @isTest static void testBatchTARDeferredOppTA() {
-        User TestUser = [SELECT Id FROM User WHERE Username = 'test.user0@test.example.com'];
-        User TestUser2 = [SELECT Id FROM User WHERE Username = 'test.user1@test.example.com'];
+    	setup();
+        User TestUser = testUsers[0];
+	    User TestUser2 = testUsers[1];
 
         Contact Con = new Contact();
 	    Con.FirstName = 'TestFirstName';
@@ -205,8 +211,7 @@ private class Test_BatchDeferredTAClasses {
         Database.QueryLocatorIterator QLI =  QL.iterator();
         while (QLI.hasNext())
         {
-            Opportunity o = (Opportunity)QLI.next();        
-            System.debug(o);
+            Opportunity o = (Opportunity)QLI.next();       
             oppList.add(o);
         }               
         tarDeferredOppTA.execute(BC, oppList);

@@ -4,10 +4,10 @@ public class UserFactory {
         public DefaultUser() {
             super(new User(FirstName = 'Test',
                     LastName = 'User',
-                    Username = 'test.user@test.example.com',
+                    Username = 'test.user.Emperor.Of.Byzantium@test.example.com',
                     Email = 'test.user@test.example.com',
                     Alias = 'testuser',
-                    CommunityNickname = 'testuserCom',
+                    CommunityNickname = 'testuserEmperorOfByzantium',
                     TimeZoneSidKey = 'America/Phoenix',
                     LocaleSidKey = 'en_US',
                     EmailEncodingKey = 'ISO-8859-1',
@@ -15,6 +15,7 @@ public class UserFactory {
                 )
             );
             this.addToFieldsToIncrement('LastName');
+            this.addToFieldsToIncrement('CommunityNickname');
             this.addToFieldsToIncrement('Email');
             this.addToFieldsToIncrement('UserName');
         }
@@ -74,11 +75,11 @@ public class UserFactory {
         // This can and has happened in the real world so we are accounting for it here
         List<Case> cases = new List<Case>();
         CaseClassificationFactory caseClassificationsMaker = new CaseClassificationFactory();
-        caseClassificationsMaker.createAndInsertSetOfAdvisorOutreachCaseClassification();
+        List<Case_Classification__c> classifications = caseClassificationsMaker.createAndInsertSetOfAdvisorOutreachCaseClassification();
 
-        Id functionalGroup = [Select Id FROM case_classification__c WHERE name = 'ASU Advisor Outreach' LIMIT 1].Id;
-        Id categoryOutreach = [Select Id FROM case_classification__c WHERE name = 'Outreach' LIMIT 1].Id;
-        Id categoryWatchlist = [Select Id FROM case_classification__c WHERE name = 'Watchlist' LIMIT 1].Id;
+        Id functionalGroup = classifications[0].Id;
+        Id categoryOutreach = classifications[1].Id;
+        Id categoryWatchlist = classifications[2].Id;
         // Cases for pods
         for (Success_Pod__c sp : myAdvisorPods) {
             for (Integer i = 0; i < numberOfCases; i++) {

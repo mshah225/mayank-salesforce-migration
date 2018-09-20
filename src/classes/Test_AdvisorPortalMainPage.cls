@@ -12,6 +12,8 @@ public class Test_AdvisorPortalMainPage {
 
     /*
      * Static initialization code to mimize repeat code between test methods
+     * values take into consideration user having themselves as a viewAsOptions
+     * for success resources of type 'User'
      */
     static {
         numberOfPods = 3;

@@ -470,8 +470,8 @@ public class showMyCasesController extends ListViewController {
                    'WHERE Status__c = \'Active in Program\' ';
 
             if (!String.isEmpty(campusFilter)) {
-                collegeDegreeAndCampusFilter += ' AND Campus__r.Name LIKE \'%' +
-                campusFilter + '%\' ';
+                collegeDegreeAndCampusFilter += ' AND Campus__c = \'' +
+                campusFilter + '\' ';
             }
             if (!String.isEmpty(majorFilter)) {
                 collegeDegreeAndCampusFilter += ' AND (Plan_Description__c LIKE \'%' +
@@ -753,6 +753,24 @@ public class showMyCasesController extends ListViewController {
             }
             caseSubjectOptions.sort();
             return caseSubjectOptions;
+        }
+        set;
+    }
+
+    public List<SelectOption> campusFilterOptions {
+        get {
+            if (campusFilterOptions == null || campusFilterOptions.isEmpty()) {
+                campusFilterOptions = new List<SelectOption>();
+                campusFilterOptions.add(new SelectOption('--', '--'));
+
+                List<Location__c> campusLocationOptions = [SELECT Name FROM Location__c WHERE Location_Status__c = true];
+
+                for (Location__c campusOption : campusLocationOptions) {
+                    campusFilterOptions.add(new SelectOption(campusOption.Id, campusOption.Name));
+                }
+                campusFilterOptions.sort();
+            }
+            return campusFilterOptions;
         }
         set;
     }

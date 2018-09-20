@@ -12,6 +12,7 @@
         } else { window.attachEvent('onload', handlePageLoad, false);
                }})();
     </script>
+    <c:LiveAgentNotices />
     <body style="background-color:#F5F5F5">
         <form method='post' id='prechatForm' >
             <div style="padding: 10px;">
@@ -33,10 +34,10 @@
                 <input type='hidden' name='liveagent.prechat:ContactId' id='contactId' value='{!$User.ContactId}'/>
                 <input type='hidden' name='liveagent.prechat:ContactName' id='contactName' value='{!$User.FirstName} {!$User.LastName}'/>
                 <input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="Id, ContactId; Name, contactName" />
-                <input type="hidden" name="liveagent.prechat.findorcreate.map:Case" value="Subject,CaseSubject; Description, CaseDescription; Status,CaseStatus;Origin,CaseOrigin;RecordTypeId,CaseRecordType; OwnerId, CaseOwner; CC_Functional_Group__c, CaseFunctionalGroup; CC_Category__c, CaseCategory; CC_Sub_Category__c, CaseSubCategory;" />       
+                <input type="hidden" name="liveagent.prechat.findorcreate.map:Case" value="Subject,CaseSubject; Description, CaseDescription; Status,CaseStatus;Origin__c,CaseOrigin;RecordTypeId,CaseRecordType; OwnerId, CaseOwner; CC_Functional_Group__c, CaseFunctionalGroup; CC_Category__c, CaseCategory; CC_Sub_Category__c, CaseSubCategory;" />       
                 <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Id,true" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="Id,true;" />
-                <input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Case" value="Subject,true; Description, true; Status,true;Origin,true;RecordTypeId,true; OwnerId, true; CC_Functional_Group__c, true; CC_Category__c, true; CC_Sub_Category__c, true;" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Case" value="Subject,true; Description, true; Status,true;Origin__c,true;RecordTypeId,true; OwnerId, true; CC_Functional_Group__c, true; CC_Category__c, true; CC_Sub_Category__c, true;" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.linkToEntity:Contact" value="Case,ContactId" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value="true" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Case" value="true" />
@@ -53,7 +54,7 @@
                 <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseSubCategory" value="false" />
             </div>
             <div style="padding: 10px;">
-                <input type='submit' style="max-width: 300px !important; width:25% !important; height: 15% !important; font-size:2em !important" value='Chat Now' id='prechat_submit' onclick="setName()" class ="kbbtn searchBtn" />
+                <input type='submit' style="max-width: 300px !important; width:25% !important; height: 15% !important; font-size:4vw !important" value='Chat Now' id='prechat_submit' onclick="setName()" class ="kbbtn searchBtn" />
             </div>
         <script type="text/javascript">
         var detailCallback = function (details){
@@ -68,13 +69,9 @@
                 document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
         }
         </script>
-
         <style type="text/css">
             p {font-weight: bolder }
         </style>
-
     </form>
-        
-        
     </body>
 </apex:page>

@@ -3349,10 +3349,11 @@
 
     //Method to Sort Dropped Class List
     function sortDroppedClassList(paramToSort, direction){
+        var droppedWrapperJson = JSON.stringify(droppedWrapper);
         Visualforce.remoting.Manager.invokeAction(
             '{!$RemoteAction.StudentProfileController.sortClasses}',
             paramToSort,
-            droppedWrapper,
+            droppedWrapperJson,
             direction,
             function (result, event) {
                 if (result.length > 0) {

@@ -161,8 +161,9 @@
                                         styleClass="searchBox"/>
                             <apex:inputText id="majorFilter" label="Major: "
                                         value="{!majorFilter}"
-                                        html-placeholder="All or part of major name"
-                                        styleClass="searchBox"/>
+                                        html-placeholder="All or part of name or code"
+                                        styleClass="searchBox"
+                                        size="30"/>
                             <apex:inputText label="Campus: " id="campusFilter"
                                         value="{!campusFilter}"
                                         html-placeholder="All or part of campus name"

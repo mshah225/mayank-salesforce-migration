@@ -1,0 +1,18 @@
+<apex:page >
+    <a id="liveagent_button_online_5730S0000008Ojk" class="chat-link" style="display: none; cursor: pointer" onclick="startChatForTechnicalSupport()" >Live Agent - Unauthenticated</a>
+    <a id="liveagent_button_offline_5730S0000008Ojk" class="chat-link" style="display: none;" >Live Agent - UNa Offline</a>
+    <script type="text/javascript">
+    function startChatForTechnicalSupport() {
+        liveagent.startChat('5730S0000008Ojk');
+    }
+    if (!window._laq) { window._laq = []; }
+    window._laq.push(function(){
+        liveagent.showWhenOnline('5730S0000008Ojk', document.getElementById('liveagent_button_online_5730S0000008Ojk'));
+        liveagent.showWhenOffline('5730S0000008Ojk', document.getElementById('liveagent_button_offline_5730S0000008Ojk'));
+    });
+    </script>
+    <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
+    <script type='text/javascript'>
+        liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2S', '00D0S0000008uTn');
+    </script>
+</apex:page>

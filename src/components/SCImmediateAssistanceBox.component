@@ -279,25 +279,22 @@
                                     liveagent.showWhenOffline('5730S0000008OjX', document.getElementById('liveagent_button_offline_5730S0000008OjX'));
                                 });
                             </script>
-                            <script type='text/javascript' src='https://c.la1-c1cs-ord.salesforceliveagent.com/content/g/js/43.0/deployment.js'></script>
+                            <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
                             <script type='text/javascript'>
                                 liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2A', '00D0S0000008uTn');
                             </script>
                         </li>
                         <li>
-                            <a id="liveagent_button_online_5730S0000008OjZ" class="chat-link" style="display: none; cursor: pointer" onclick="startChatForTechnicalSupport()" >Live Agent - Technical Support</a>
+                            <a id="liveagent_button_online_5730S0000008OjZ" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730S0000008OjZ');" >Live Agent - Technical Support</a>
                             <a id="liveagent_button_offline_5730S0000008OjZ" class="chat-link" style="display: none;" >Live Agent - Technical Support Offline</a>
                             <script type="text/javascript">
-                            	function startChatForTechnicalSupport() {
-                                    liveagent.startChat('5730S0000008OjZ');
-                                }
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
                                     liveagent.showWhenOnline('5730S0000008OjZ', document.getElementById('liveagent_button_online_5730S0000008OjZ'));
                                     liveagent.showWhenOffline('5730S0000008OjZ', document.getElementById('liveagent_button_offline_5730S0000008OjZ'));
                                 });
                             </script>
-                            <script type='text/javascript' src='https://c.la1-c1cs-ord.salesforceliveagent.com/content/g/js/43.0/deployment.js'></script>
+                            <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
                             <script type='text/javascript'>
                                 liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2C', '00D0S0000008uTn');
                             </script>
@@ -312,7 +309,7 @@
                                     liveagent.showWhenOffline('5730S0000008OjY', document.getElementById('liveagent_button_offline_5730S0000008OjY'));
                                 });
                             </script>
-                            <script type='text/javascript' src='https://c.la1-c1cs-ord.salesforceliveagent.com/content/g/js/43.0/deployment.js'></script>
+                            <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
                             <script type='text/javascript'>
                                 liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2B', '00D0S0000008uTn');
                             </script>

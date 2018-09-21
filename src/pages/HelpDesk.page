@@ -500,7 +500,7 @@
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
                                             <apex:actionRegion >
                                                 <apex:selectList id="categoryOptions" value="{!selectedCategory}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateSubCategories}" />
+                                                    <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" />
                                                     <apex:selectOptions value="{!categoryOptions}"/>
                                                 </apex:selectList>
                                             </apex:actionRegion>

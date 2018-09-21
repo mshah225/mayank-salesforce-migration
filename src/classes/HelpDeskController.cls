@@ -38,9 +38,8 @@ public with sharing class HelpDeskController
                                          WHERE Name = 'Category'
                                          LIMIT 1
                                         ].Id;
-                List<Case_Classification__c> categories = [SELECT Name, Parent__c, Parent__r.Name
+                List<Case_Classification__c> categories = [SELECT Name, Parent__c, Parent__r.Name, Default_Case_Description__c
                                                            FROM Case_Classification__c
-
                                                            WHERE RecordTypeId =: categoryRecordType
                                                            AND Active__c =: TRUE
                                                            AND Visible__c =: TRUE

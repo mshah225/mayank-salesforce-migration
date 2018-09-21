@@ -469,7 +469,7 @@ public class showMyCasesController extends ListViewController {
             String collegeDegreeAndCampusFilter = ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
                    'WHERE Status__c = \'Active in Program\' ';
 
-            if (!String.isEmpty(campusFilter)) {
+            if (!String.isEmpty(campusFilter) && campusFilter != '--') {
                 collegeDegreeAndCampusFilter += ' AND Campus__c = \'' +
                 campusFilter + '\' ';
             }

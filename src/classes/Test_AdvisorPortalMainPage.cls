@@ -12,15 +12,17 @@ public class Test_AdvisorPortalMainPage {
 
     /*
      * Static initialization code to mimize repeat code between test methods
+     * values take into consideration user having themselves as a viewAsOptions
+     * for success resources of type 'User'
      */
     static {
         numberOfPods = 3;
         numberOfCases = 1;
         numberOfStudents = 10;
         numberOfTabsForUser = 2;
-        numberOfBlankOptionsForUser = 0;
+        numberOfBlankOptionsForUser = 1;
         numberOfTabsForManager = 3;
-        numberOfBlankOptionsForManager = 1;
+        numberOfBlankOptionsForManager = 2;
         numbeOfAdvisorsForManager = 1;
         apmpc = new AdvisorPortalMainPageController();
     }
@@ -34,6 +36,7 @@ public class Test_AdvisorPortalMainPage {
         Test.stopTest();
 
         validateUserOptionsSize(listToTest);
+        validateCurrentUserOption(listToTest);
         validateBlankOptionsForUser(listToTest);
         validateTabsForUser(listToTest);
         validateCommitteesGroupId(listToTest);
@@ -90,6 +93,7 @@ public class Test_AdvisorPortalMainPage {
         Test.stopTest();
 
         validateManagerOptionsSize(listToTest);
+        validateCurrentUserOption(listToTest);
         validateBlankOptionsForManager(listToTest);
         validateTabsForDepartmentManager(listToTest);
         validateCommitteesGroupId(listToTest);
@@ -104,6 +108,7 @@ public class Test_AdvisorPortalMainPage {
         Test.stopTest();
 
         validateManagerOptionsSize(listToTest);
+        validateCurrentUserOption(listToTest);
         validateBlankOptionsForManager(listToTest);
         validateTabsForCollegeManager(listToTest);
         validateCommitteesGroupId(listToTest);
@@ -114,49 +119,56 @@ public class Test_AdvisorPortalMainPage {
     }
 
     private static void validateManagerOptionsSize(List<SelectOption> listToTest) {
-        Integer listSize = listToTest.size();
-        Integer actualSize = numberOfTabsForManager + numberOfBlankOptionsForManager + numberOfPods + numbeOfAdvisorsForManager;
-        System.assertEquals(listToTest.size(), actualSize);
+        System.assertEquals(numberOfTabsForManager + numberOfBlankOptionsForManager + numbeOfAdvisorsForManager + numberOfPods, listToTest.size());
+    }
+
+    private static void validateCurrentUserOption(List<SelectOption> listToTest) {
+        System.assertEquals(UserInfo.getName(), listToTest[0].getLabel());
+        System.assertEquals(UserInfo.getUserId(), listToTest[0].getValue());
     }
 
     private static void validateBlankOptionsForUser(List<SelectOption> listToTest) {
-        System.assertEquals('', listToTest[0].getLabel());
-        System.assertEquals('', listToTest[0].getValue());
-        System.assert(listToTest[0].getDisabled());
+        System.assertEquals('', listToTest[1].getLabel());
+        System.assertEquals('', listToTest[1].getValue());
+        System.assert(listToTest[1].getDisabled());
     }
 
     private static void validateBlankOptionsForManager(List<SelectOption> listToTest) {
-        System.assertEquals('', listToTest[0].getLabel());
-        System.assertEquals('', listToTest[0].getValue());
-        System.assert(listToTest[0].getDisabled());
+        System.assertEquals('', listToTest[1].getLabel());
+        System.assertEquals('', listToTest[1].getValue());
+        System.assert(listToTest[1].getDisabled());
+
+        System.assertEquals('', listToTest[6].getLabel());
+        System.assertEquals('', listToTest[6].getValue());
+        System.assert(listToTest[6].getDisabled());
     }
 
     private static void validateTabsForUser(List<SelectOption> listToTest) {
-        System.assertEquals('--My Committees--', listToTest[1].getLabel());
-        System.assertEquals('', listToTest[1].getValue());
-        System.assert(listToTest[1].getDisabled());
+        System.assertEquals('--My Committees--', listToTest[2].getLabel());
+        System.assertEquals('', listToTest[2].getValue());
+        System.assert(listToTest[2].getDisabled());
     }
 
     private static void validateTabsForDepartmentManager(List<SelectOption> listToTest) {
-        System.assertEquals('--Department Committees--', listToTest[1].getLabel());
-        System.assertEquals('', listToTest[1].getValue());
-        System.assert(listToTest[1].getDisabled());
+        System.assertEquals('--Department Committees--', listToTest[2].getLabel());
+        System.assertEquals('', listToTest[2].getValue());
+        System.assert(listToTest[2].getDisabled());
 
-        System.assertEquals('--Department Advisors--', listToTest[6].getLabel());
-        System.assertEquals('', listToTest[6].getValue());
-        System.assert(listToTest[6].getDisabled());
+        System.assertEquals('--Department Advisors--', listToTest[7].getLabel());
+        System.assertEquals('', listToTest[7].getValue());
+        System.assert(listToTest[7].getDisabled());
     }
 
     private static void validateTabsForCollegeManager(List<SelectOption> listToTest) {
-        System.assertEquals('--College Advisors--', listToTest[6].getLabel());
-        System.assertEquals('', listToTest[6].getValue());
-        System.assert(listToTest[6].getDisabled());
+        System.assertEquals('--College Advisors--', listToTest[7].getLabel());
+        System.assertEquals('', listToTest[7].getValue());
+        System.assert(listToTest[7].getDisabled());
     }
 
     private static void validateCommitteesGroupId(List<SelectOption> listToTest) {
         Validator.setPrefix(Group.class);
         Integer firstCommitteeOptionIndex = 3;
-        for (Integer i = firstCommitteeOptionIndex; i < firstCommitteeOptionIndex + numberOfPods - 1; i++) {
+        for (Integer i = firstCommitteeOptionIndex; i < firstCommitteeOptionIndex + numberOfPods; i++) {
             System.assert(Validator.validateId(listToTest[i].getValue()));
         }
     }

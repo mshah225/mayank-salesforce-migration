@@ -1,8 +1,39 @@
 public without sharing class ContactUploadAddFileExtension {
     private final Contact_Upload__c myContactUpload;
-    private final Integer BATCH_SIZE = 200;
+    private final Integer UPLOAD_BATCH_SIZE = 200;
+    private final Integer MATCHER_BATCH_SIZE = 500;
     public List<Attachment> attachmentList { get; set; }
-
+    public Boolean modeSelected {
+        get {
+            if (modeSelected == null) {
+                modeSelected = false;
+            }
+            return modeSelected;
+        }
+        set; 
+    }
+    public Boolean contactIdMatch {
+        get {
+            if (contactIdMatch == null) {
+                contactIdMatch = false;
+            }
+            return contactIdMatch;
+        }
+        set; 
+    }
+    
+    public String contactModeSelected {
+    get {
+        if (contactModeSelected == null) {
+            contactModeSelected = 'Subscriber Upload';
+        }
+        return contactModeSelected;
+    }
+    
+    set; 
+        
+    }
+    
     public Attachment newAttachment {
         get {
             if (newAttachment == null) {
@@ -39,13 +70,86 @@ public without sharing class ContactUploadAddFileExtension {
         try {
             insert newAttachment;
             queryAttachments();
-            ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id);
-            Database.executeBatch(batch, BATCH_SIZE);
+            if (contactIdMatch) {
+                ContactMatcherBatch batch = new ContactMatcherBatch(newAttachment.Id);
+                Database.executeBatch(batch, MATCHER_BATCH_SIZE);
+            } else {
+                ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id, subscriptionValue, subscriptionStatusValue);
+                Database.executeBatch(batch, UPLOAD_BATCH_SIZE);
+            }
         } catch (DMLException e) {
             ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR,'Error uploading attachment: ' + e.getMessage()));
         } finally {
             newAttachment = new Attachment();
         }
         return null;
+    }
+    
+    public void contactUploadButton() {
+        contactIdMatch = false;
+        contactModeSelected = 'Upload Subscribers';
+        modeSelected = true;
+    }
+    
+    public void contactMatcherButton() {
+        contactIdMatch = true;
+        contactModeSelected = 'Match Contacts';
+        modeSelected = true;
+    }
+    
+    public Id subscriptionValue { get; set; }
+
+    public List<SelectOption> subscriptionOptions {
+        get {
+            if (subscriptionOptions == null) {
+                subscriptionOptions = new List<SelectOption>();
+                
+                Id userId = UserInfo.getUserId();
+                List<GroupMember> groupsOfUser = [SELECT UserOrGroupId, Group.Id 
+                                                  FROM GroupMember  
+                                                  WHERE  UserOrGroupId =: userId];
+                List<Id> groupIdsUserIsIn = new List<Id>();
+                groupIdsUserIsIn.add(userId);
+                for (GroupMember groups : groupsOfUser) {
+                    groupIdsUserIsIn.add(groups.GroupId);
+                }
+                List<GroupMember> queueUserIsIn = [SELECT UserOrGroupId, Group.Name, Group.Id
+                                                   FROM GroupMember 
+                                                   WHERE  Group.Type = 'Queue' AND
+                                                   UserOrGroupId IN: groupIdsUserIsIn];
+                
+                List<Id> queueIdList = new List<Id>();
+                for (GroupMember queues : queueUserIsIn) {
+                    queueIdList.add(queues.GroupId);
+                }
+                
+                List<Subscription__c> allSubs = [SELECT Id, Name 
+                                                 FROM Subscription__c 
+                                                 WHERE Owner.Id IN: queueIdList
+                                                 ORDER BY Name ASC];
+                for (Subscription__c sub : allSubs) {
+                    subscriptionOptions.add(new SelectOption(sub.Id, sub.Name));
+                }
+            }
+            return subscriptionOptions;
+        }
+
+        set;
+    }
+    
+    public String subscriptionStatusValue { get; set; }
+
+    public List<SelectOption> subscriptionStatusOptions {
+        get {
+            if (subscriptionStatusOptions == null) {
+                subscriptionStatusOptions = new List<SelectOption>();
+
+                subscriptionStatusOptions.add(new SelectOption('Subscribed', 'Subscribed'));
+                subscriptionStatusOptions.add(new SelectOption('Unsubscribed', 'Unsubscribed'));
+            }
+            return subscriptionStatusOptions;
+        }
+
+        set;
     }
 }

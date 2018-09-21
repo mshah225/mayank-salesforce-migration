@@ -65,8 +65,7 @@
             }
         };
         function setName() {
-            document.getElementById("prechat_field_name").value =
-                document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
+            document.getElementById("prechat_field_name").value = '{!$User.FirstName} {!$User.LastName}';
         }
         </script>
         <style type="text/css">

@@ -23,10 +23,8 @@
                 <br /><input type='textarea' class='searchBox' style="width:100% !important;" id="contactMiddleName"/><br />
                 <label for="contactLastName">Last Name: </label>
                 <br /><input type='textarea' class='searchBox' style="width:100% !important;" id="contactLastName"/><br />
-                <label for="contactAsurite">ASURITE: </label>
-                <br /><input type='textarea' class='searchBox' style="width:100% !important;" id="contactAsurite"/><br />
-                <label for="contactEmplid">EMPLID: </label>
-                <br /><input type='textarea' class='searchBox' style="width:100% !important;" id="contactEmplid"/><br />
+                <label for="contactAsurite">ASU Id Number or ASURITE: </label>
+                <br /><input type='textarea' class='searchBox' style="width:100% !important;" id="contactAsuriteOrEmplid"/><br />
                 <label for="caseProblem">{!presurveyQuestion}</label>
                 <br /><input type='textarea' class='searchBox' style="width:100% !important;" name='liveagent.prechat:CaseProblem' id='caseProblem' placeholder="Enter a brief description of your issue."/><br />
                 <input type='hidden' name='liveagent.prechat:CaseDescription' id="caseDescription" value=""/><br />
@@ -90,11 +88,8 @@
                 if (document.getElementById("contactLastName").value) {
                     document.getElementById("caseDescription").value += 'Last Name: ' + document.getElementById("contactLastName").value + '\n';
                 }
-                if (document.getElementById("contactAsurite").value) {
-                    document.getElementById("caseDescription").value += 'Asurite: ' + document.getElementById("contactAsurite").value + '\n';
-                }
-                if (document.getElementById("contactEmplid").value) {
-                    document.getElementById("caseDescription").value += 'Emplid: ' + document.getElementById("contactEmplid").value + '\n';
+                if (document.getElementById("contactAsuriteOrEmplid").value) {
+                    document.getElementById("caseDescription").value += 'Asurite/Emplid: ' + document.getElementById("contactAsuriteOrEmplid").value + '\n';
                 }
                 if (document.getElementById("caseProblem").value) {
                     document.getElementById("caseDescription").value += 'Problem: ' + document.getElementById("caseProblem").value + '\n';

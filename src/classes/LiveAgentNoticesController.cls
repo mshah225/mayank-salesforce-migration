@@ -1,17 +1,12 @@
 public class LiveAgentNoticesController {
     public List<List<String>> noticeList {set; get;}
     private String buttonPressed {set; get;}
+    private static final Integer LEFT_URL_OFFSET = 12;
+    private static final Integer RIGHT_URL_OFFSET = 27;
     
     public LiveAgentNoticesController() {
-        getButtonIdFromURL();
+        buttonPressed = LiveAgentUtils.getButtonIdFromURL();
         getNotices();
-    }
-    
-    private void getButtonIdFromURL() {
-        String buttonParam = ApexPages.currentPage().getURL();
-        Integer indexOf = buttonParam.indexOf('button_id');
-        buttonParam = buttonParam.substring(indexOf+12, indexOf+27);
-        buttonPressed = [SELECT DeveloperName FROM LiveChatButton WHERE Id =: buttonParam LIMIT 1].DeveloperName;
     }
     
     private void getNotices() {

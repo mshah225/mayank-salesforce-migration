@@ -21,7 +21,7 @@
                 </h1>  
             </div>
             <div style="padding: 10px;">
-                <input type='textarea' class='searchBox' style="width:100% !important;" name='liveagent.prechat:CaseDescription' id='subject' placeholder="Enter a brief description of your issue." required="true"/><br />
+                <input type='textarea' class='searchBox' style="width:100% !important;" name='liveagent.prechat:CaseDescription' id='caseDescription' placeholder="Enter a brief description of your issue." required="true"/><br />
                 <input type="hidden" name="liveagent.prechat:CaseStatus" value="New" />
                 <input type="hidden" name="liveagent.prechat:CaseSubject" value="{!caseSubject}" />
                 <input type="hidden" name="liveagent.prechat:CaseOrigin" value="Chat" />

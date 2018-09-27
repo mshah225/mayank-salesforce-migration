@@ -98,7 +98,6 @@ public with sharing class HelpDeskController
                 if (!subCategories.isEmpty()) {
                     Map<String, Case_Classification__c> uniqueParentMap = new Map<String, Case_Classification__c>();
                     uniqueParentMap.put('--', null);
-                    String currentParent = subCategories[0].Parent__r.Name;
                     String currentParentId = subCategories[0].Parent__c;
                     for (Case_Classification__c subCat : subCategories) {
                         if (currentParentId == subCat.Parent__c) {
@@ -107,7 +106,6 @@ public with sharing class HelpDeskController
                             allsubCategories.put(currentParentId, uniqueParentMap);
                             uniqueParentMap = new Map<String, Case_Classification__c>();
                             uniqueParentMap.put('--', null);
-                            currentParent = subCat.Parent__r.Name;
                             currentParentId = subCat.Parent__c;
                             uniqueParentMap.put(subCat.Name, subCat);
                         }

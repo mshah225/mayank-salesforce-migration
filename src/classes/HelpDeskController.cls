@@ -1084,17 +1084,12 @@ public with sharing class HelpDeskController
     }
 
     private void addCaseClassificationToCase() {
-        System.debug(selectedFunctionalGroup);
-        System.debug(allFunctionalGroups);
         Case_Classification__c functionalGroupToAdd = allFunctionalGroups.get(selectedFunctionalGroup);
 
         if (functionalGroupToAdd != null) {
-            System.debug(functionalGroupToAdd);
             myCase.CC_Functional_Group__c = functionalGroupToAdd.Id;
-            System.debug(myCase.CC_Functional_Group__c);
             if (allCategories.get(functionalGroupToAdd.Name) == NULL || selectedCategory.equals('--')) {
                 myCase.CC_Category__c = null;
-                System.debug(myCase.CC_Functional_Group__c);
             } else {
                 String categoryName = [SELECT Name FROM Case_Classification__c WHERE Id =: selectedCategory].Name;
                 Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(categoryName);
@@ -1103,7 +1098,6 @@ public with sharing class HelpDeskController
                     if (allSubCategories.get(selectedCategory) == NULL) {
                         myCase.CC_Sub_Category__c = null;
                     } else {
-                        System.debug(myCase.CC_Functional_Group__c);
                         Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Id).get(selectedSubCategory);
                         if (subCategoryToAdd != null) {
                             myCase.CC_Sub_Category__c = subCategoryToAdd.Id;
@@ -1112,13 +1106,8 @@ public with sharing class HelpDeskController
                         }
                     }
                 } else {
-					System.debug(myCase.CC_Functional_Group__c);
                     myCase.CC_Category__c = null;
                 }
-                
-                System.debug(myCase.CC_Functional_Group__c);
-                System.debug(myCase.CC_Category__c);
-                System.debug(myCase.CC_Sub_Category__c);
             }
         }
     }

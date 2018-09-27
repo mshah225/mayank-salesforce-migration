@@ -287,6 +287,7 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
             SELECT Id, Contact__c, National_Merit_Semifinalist__c, Primary_Interest__c 
             FROM Opportunity 
             WHERE Contact__c IN :contactIDsInTrigger
+            ORDER BY IsClosed DESC, CloseDate DESC, CreatedDate DESC
         ];
 
         for (Opportunity o : opportunitiesInTrigger) {

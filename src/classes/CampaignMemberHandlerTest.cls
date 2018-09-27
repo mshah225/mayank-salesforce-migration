@@ -1264,6 +1264,133 @@ public class CampaignMemberHandlerTest {
         lead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :lead.Id];
         System.assert(cm1.Is_Primary_Interest__c);
         System.assert(!cm2.Is_Primary_Interest__c);
-                    System.assertEquals(camp.Id, lead.Primary_Interest__c);
+        System.assertEquals(camp.Id, lead.Primary_Interest__c);
+    }
+    
+    @isTest
+    private static void mostRecentOppportunityAssigned() {
+        insert createContacts(2);
+        List<Contact> testContacts = [SELECT LastName, AccountId FROM Contact];
+
+        List<Opportunity> testOpportunities = new List<Opportunity>();
+        testOpportunities.addAll(createOpportunities(testContacts));
+        testOpportunities.addAll(createOpportunities(testContacts));
+        testOpportunities.addAll(createOpportunities(testContacts));
+        insert testOpportunities;
+        
+        List<Campaign> campaigns = new List<Campaign>();
+        campaigns.add(createCampaign('Test Non PSMajor', 'Academic'));
+        campaigns.add(createCampaign('Test Non PSMajor 2', 'Academic'));
+        campaigns.add(createCampaign('Test Non PSMajor 3', 'Academic'));
+        update campaigns;
+        
+        List<CampaignMember> testMembers = new List<CampaignMember>();
+        testMembers.add(createCampaignMemberNoInsert(testContacts[0], campaigns[0].Id));
+        testMembers.add(createCampaignMemberNoInsert(testContacts[1], campaigns[1].Id));
+        
+        Test.startTest();
+        insert testMembers;
+        Test.stopTest();
+        
+        List<CampaignMember> postTestMembers = [
+            SELECT Opportunity__c
+            FROM CampaignMember
+        ];
+        
+        System.assertEquals(testOpportunities[testOpportunities.size() - 2].Id, postTestMembers[0].Opportunity__c);
+        System.assertEquals(testOpportunities[testOpportunities.size() - 1].Id, postTestMembers[1].Opportunity__c);
+    }
+    
+    @isTest
+    private static void closedOpportunitiesAreNotAssigned() {
+        insert createContacts(2);
+        List<Contact> testContacts = [SELECT LastName, AccountId FROM Contact];
+
+        List<Opportunity> testOpportunities = new List<Opportunity>();
+        testOpportunities.addAll(createOpportunities(testContacts));
+        testOpportunities.addAll(createOpportunities(testContacts));
+        testOpportunities.addAll(createOpportunities(testContacts));
+        insert testOpportunities;
+        
+        testOpportunities[testOpportunities.size() - 2].CloseDate = Date.today();
+        testOpportunities[testOpportunities.size() - 1].CloseDate = Date.today();
+        testOpportunities[testOpportunities.size() - 2].StageName = 'Closed - Won';
+        testOpportunities[testOpportunities.size() - 1].StageName = 'Closed - Won';
+        
+        update testOpportunities;
+        
+        List<Campaign> campaigns = new List<Campaign>();
+        campaigns.add(createCampaign('Test Non PSMajor', 'Academic'));
+        campaigns.add(createCampaign('Test Non PSMajor 2', 'Academic'));
+        campaigns.add(createCampaign('Test Non PSMajor 3', 'Academic'));
+        update campaigns;
+        
+        List<CampaignMember> testMembers = new List<CampaignMember>();
+        testMembers.add(createCampaignMemberNoInsert(testContacts[0], campaigns[0].Id));
+        testMembers.add(createCampaignMemberNoInsert(testContacts[1], campaigns[1].Id));
+        
+        Test.startTest();
+        insert testMembers;
+        Test.stopTest();
+        
+        List<CampaignMember> postTestMembers = [
+            SELECT Opportunity__c
+            FROM CampaignMember
+        ];
+        
+        Map<Id, Opportunity> closedOpps = new Map<Id, Opportunity>([SELECT IsClosed FROM Opportunity]);
+        
+        System.assert(closedOpps.get(testOpportunities[testOpportunities.size() - 2].Id).IsClosed);
+        System.assert(closedOpps.get(testOpportunities[testOpportunities.size() - 1].Id).IsClosed);
+        System.assertNotEquals(testOpportunities[testOpportunities.size() - 2].Id, postTestMembers[0].Opportunity__c);
+        System.assertNotEquals(testOpportunities[testOpportunities.size() - 1].Id, postTestMembers[1].Opportunity__c);
+        System.assertEquals(testOpportunities[testOpportunities.size() - 4].Id, postTestMembers[0].Opportunity__c);
+        System.assertEquals(testOpportunities[testOpportunities.size() - 3].Id, postTestMembers[1].Opportunity__c);
+    }
+    
+    @isTest
+    private static void mostRecentlyClosedIsSelectedIfAllClosed() {
+        insert createContacts(2);
+        List<Contact> testContacts = [SELECT LastName, AccountId FROM Contact];
+
+        List<Opportunity> testOpportunities = new List<Opportunity>();
+        testOpportunities.addAll(createOpportunities(testContacts));
+        testOpportunities.addAll(createOpportunities(testContacts));
+        testOpportunities.addAll(createOpportunities(testContacts));
+        insert testOpportunities;
+        
+        for (Opportunity opp : testOpportunities) {
+            opp.CloseDate = Date.today();
+            opp.StageName = 'Closed - Won';
+        }
+        testOpportunities[2].CloseDate = Date.today().addDays(-2);
+        testOpportunities[3].CloseDate = Date.today().addDays(-2);
+        
+        update testOpportunities;
+        
+        List<Campaign> campaigns = new List<Campaign>();
+        campaigns.add(createCampaign('Test Non PSMajor', 'Academic'));
+        campaigns.add(createCampaign('Test Non PSMajor 2', 'Academic'));
+        campaigns.add(createCampaign('Test Non PSMajor 3', 'Academic'));
+        update campaigns;
+        
+        List<CampaignMember> testMembers = new List<CampaignMember>();
+        testMembers.add(createCampaignMemberNoInsert(testContacts[0], campaigns[0].Id));
+        testMembers.add(createCampaignMemberNoInsert(testContacts[1], campaigns[1].Id));
+        
+        Test.startTest();
+        insert testMembers;
+        Test.stopTest();
+        
+        List<CampaignMember> postTestMembers = [
+            SELECT Opportunity__c
+            FROM CampaignMember
+        ];
+        
+        Map<Id, Opportunity> closedOpps = new Map<Id, Opportunity>([SELECT IsClosed FROM Opportunity WHERE IsClosed = TRUE]);
+        
+        System.assertEquals(testOpportunities.size(), closedOpps.size());
+        System.assertEquals(testOpportunities[2].Id, postTestMembers[0].Opportunity__c);
+        System.assertEquals(testOpportunities[3].Id, postTestMembers[1].Opportunity__c);
     }
 }

@@ -433,16 +433,19 @@ private class Test_HelpDeskController
                                         LIMIT 1];
        myCase.CC_Functional_Group__r.Name='Help Desk';
        update myCase.CC_Functional_Group__r;
+        
+       Case_Classification__c categoryCreated = [SELECT Id, Name FROM Case_Classification__c WHERE Name = 'Test Category0'];
 
        controller.newCase();
 
-       controller.selectedCategory = 'Test Category0';
+       controller.selectedCategory = categoryCreated.Id;
 
        System.assertEquals(1, controller.functionalGroupOptions.size());
        System.assertEquals(2, controller.categoryOptions.size());
        System.assertEquals(2, controller.subCategoryOptions.size());
 
        Test.startTest();
+       controller.selectedCategory = '--';
        controller.updateCategoryAndSubCategory();
        Test.stopTest();
 

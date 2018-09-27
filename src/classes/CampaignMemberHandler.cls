@@ -60,7 +60,7 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
             }
             if (cm.ContactId != null) {
                 Opportunity opp = opportunitiesByContact.get(cm.ContactId);
-                if(opp != null) {
+                if (opp != null) {
                     cm.Opportunity__c = opp.Id;
                 }
             }

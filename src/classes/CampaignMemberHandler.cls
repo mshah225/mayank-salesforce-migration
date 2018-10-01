@@ -178,8 +178,8 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
                 member.Last_Member_Status_Change__c = Datetime.now();
             }
         } else if (Trigger.isUpdate) {
-            CampaignMember oldCM = (CampaignMember) Trigger.oldMap.get(member.Id); 
-            if (oldCM.Status != member.Status) {
+            CampaignMember oldMember = (CampaignMember) Trigger.oldMap.get(member.Id); 
+            if (oldMember.Status != member.Status) {
                 member.Last_Member_Status_Change__c = Datetime.now();
             }
         }

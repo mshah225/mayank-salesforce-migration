@@ -46,9 +46,9 @@ public class CampaignMemberHandlerTest {
     }
 
     private static CampaignMember createCampaignMember(SObject attachObject, Id campaignId) {
-        CampaignMember cm = createCampaignMemberNoInsert(attachObject, campaignId);
-        insert cm;
-        return cm;
+        CampaignMember member = createCampaignMemberNoInsert(attachObject, campaignId);
+        insert member;
+        return member;
     }
 
     private static CampaignMember createCampaignMemberNoInsert(SObject attachObject, Id campaignId) {
@@ -81,36 +81,36 @@ public class CampaignMemberHandlerTest {
         Opportunity opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         System.assertEquals(null, opp.Primary_Interest__c);
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp1.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        System.assert(!cm1.Is_Primary_Interest__c);
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp1.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        System.assert(!member1.Is_Primary_Interest__c);
 
-        //Test that inserting a new cm sets its opportunity to primary
-        insert cm1;
+        //Test that inserting a new member sets its opportunity to primary
+        insert member1;
 
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
-        cm1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
+        member1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
 
-        System.assertEquals(opp.Id, cm1.Opportunity__c);
-        System.assert(cm1.Is_Primary_Interest__c);
+        System.assertEquals(opp.Id, member1.Opportunity__c);
+        System.assert(member1.Is_Primary_Interest__c);
         System.assertEquals(camp1.Id, opp.primary_interest__c);
 
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        System.assert(cm2.Is_Primary_Interest__c == false);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        System.assert(member2.Is_Primary_Interest__c == false);
 
-        //Test that inserting a second cm that doesn't update the primary does not update the opportunity
+        //Test that inserting a second member that doesn't update the primary does not update the opportunity
         Test.startTest();
-        insert cm2;
+        insert member2;
         Test.stopTest();
         
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
-        cm1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
-        cm2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
+        member1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
+        member2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
 
-        System.assertEquals(opp.Id, cm1.Opportunity__c);
-        System.assertEquals(opp.Id, cm2.Opportunity__c);
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        System.assertEquals(opp.Id, member1.Opportunity__c);
+        System.assertEquals(opp.Id, member2.Opportunity__c);
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
         System.assertEquals(camp1.Id, opp.primary_interest__c);
     }
 
@@ -136,28 +136,28 @@ public class CampaignMemberHandlerTest {
         Opportunity opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         System.assertEquals(null, opp.Primary_Interest__c);
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp1.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        System.assert(!cm1.Is_Primary_Interest__c);
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp1.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        System.assert(!member1.Is_Primary_Interest__c);
 
-        insert cm1;
+        insert member1;
 
-        CampaignMember cm3 = createCampaignMemberNoInsert(contact, camp3.Id);
-        System.assert(!cm3.Is_Primary_Interest__c);
+        CampaignMember member3 = createCampaignMemberNoInsert(contact, camp3.Id);
+        System.assert(!member3.Is_Primary_Interest__c);
 
-        //Test that inserting a new primary cm updates the opportunity
+        //Test that inserting a new primary member updates the opportunity
         Test.startTest();
-        insert cm3;
+        insert member3;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
+        member1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
-        cm3 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp3.Id LIMIT 1];
+        member3 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp3.Id LIMIT 1];
 
-        System.assertEquals(opp.Id, cm1.Opportunity__c);
-        System.assertEquals(opp.Id, cm3.Opportunity__c);
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(cm3.Is_Primary_Interest__c);
+        System.assertEquals(opp.Id, member1.Opportunity__c);
+        System.assertEquals(opp.Id, member3.Opportunity__c);
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(member3.Is_Primary_Interest__c);
         System.assertEquals(camp3.Id, opp.primary_interest__c);
     }
 
@@ -182,30 +182,30 @@ public class CampaignMemberHandlerTest {
         Opportunity opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         System.assertEquals(null, opp.Primary_Interest__c);
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp1.Id);
-        System.assert(!cm1.Is_Primary_Interest__c);
-        insert cm1;
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp1.Id);
+        System.assert(!member1.Is_Primary_Interest__c);
+        insert member1;
 
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
-        cm1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
+        member1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
 
-        System.assertEquals(opp.Id, cm1.Opportunity__c);
-        System.assert(cm1.Is_Primary_Interest__c);
+        System.assertEquals(opp.Id, member1.Opportunity__c);
+        System.assert(member1.Is_Primary_Interest__c);
         System.assertEquals(camp1.Id, opp.primary_interest__c);
 
         Test.startTest();
-        delete cm1;
+        delete member1;
         Test.stopTest();
 
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
         System.assertEquals(opp.primary_interest__c, null);
 
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        System.assert(!member2.Is_Primary_Interest__c);
 
-        insert cm2;
+        insert member2;
         opp = [SELECT Id, Primary_interest__c FROM Opportunity WHERE Contact__c = :contact.Id LIMIT 1];
-        cm2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
+        member2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
 
         System.assertEquals(opp.primary_interest__c, camp2.Id);
     }
@@ -223,45 +223,45 @@ public class CampaignMemberHandlerTest {
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
         Campaign camp3 = createCampaign('Test PSMajor 2', 'PSMajors');
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(testLead, camp1.Id);
-        System.assert(!cm1.Is_Primary_Interest__c);
+        CampaignMember member1 = createCampaignMemberNoInsert(testLead, camp1.Id);
+        System.assert(!member1.Is_Primary_Interest__c);
 
-        insert cm1;
+        insert member1;
 
         testLead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :testLead.Id];
-        cm1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
+        member1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
 
-        System.assert(cm1.Is_Primary_Interest__c);
+        System.assert(member1.Is_Primary_Interest__c);
         System.assertEquals(camp1.Id, testLead.primary_interest__c);
 
-        CampaignMember cm2 = createCampaignMemberNoInsert(testLead, camp2.Id);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        CampaignMember member2 = createCampaignMemberNoInsert(testLead, camp2.Id);
+        System.assert(!member2.Is_Primary_Interest__c);
 
-        insert cm2;
+        insert member2;
         testLead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :testLead.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
+        member2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
 
-        System.assert(cm1.Is_Primary_Interest__c);
+        System.assert(member1.Is_Primary_Interest__c);
         System.assertEquals(camp1.Id, testLead.Primary_Interest__c);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        update cm1;
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        update member1;
         testLead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :testLead.Id];
-        cm1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
-        System.assert(cm1.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
+        System.assert(member1.Is_Primary_Interest__c);
         System.assertEquals(camp1.Id, testLead.Primary_Interest__c);
 
-        CampaignMember cm3 = createCampaignMemberNoInsert(testLead, camp3.Id);
-        System.assert(!cm3.Is_Primary_Interest__c);
+        CampaignMember member3 = createCampaignMemberNoInsert(testLead, camp3.Id);
+        System.assert(!member3.Is_Primary_Interest__c);
 
         Test.startTest();
-        insert cm3;
+        insert member3;
         Test.stopTest();
 
         testLead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :testLead.Id];
-        cm3 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp3.Id LIMIT 1];
+        member3 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp3.Id LIMIT 1];
 
-        System.assert(cm3.Is_Primary_Interest__c);
+        System.assert(member3.Is_Primary_Interest__c);
         System.assertEquals(camp3.Id, testLead.Primary_Interest__c);
     }
 
@@ -277,30 +277,30 @@ public class CampaignMemberHandlerTest {
         Campaign camp1 = createCampaign('Test PSMajor 1', 'PSMajors');
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(testLead, camp1.Id);
-        System.assert(!cm1.Is_Primary_Interest__c);
+        CampaignMember member1 = createCampaignMemberNoInsert(testLead, camp1.Id);
+        System.assert(!member1.Is_Primary_Interest__c);
 
-        insert cm1;
+        insert member1;
 
         testLead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :testLead.Id];
-        cm1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
+        member1 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp1.Id LIMIT 1];
 
-        System.assert(cm1.Is_Primary_Interest__c == true);
+        System.assert(member1.Is_Primary_Interest__c == true);
         System.assertEquals(camp1.Id, testLead.Primary_Interest__c);
 
         Test.startTest();
-        delete cm1;
+        delete member1;
         Test.stopTest();
 
         testLead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :testLead.Id];
         System.assertEquals(testLead.Primary_Interest__c, null);
 
-        CampaignMember cm2 = createCampaignMemberNoInsert(testLead, camp2.Id);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        CampaignMember member2 = createCampaignMemberNoInsert(testLead, camp2.Id);
+        System.assert(!member2.Is_Primary_Interest__c);
 
-        insert cm2;
+        insert member2;
         testLead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :testLead.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
+        member2 = [SELECT Id, Is_Primary_Interest__c, Opportunity__c, ContactId FROM CampaignMember WHERE CampaignId = :camp2.Id LIMIT 1];
 
         System.assertEquals(testLead.Primary_Interest__c, camp2.Id);
     }
@@ -330,13 +330,13 @@ public class CampaignMemberHandlerTest {
         );
         insert camp;
 
-        List<CampaignMember> cmList = new List<CampaignMember>();
+        List<CampaignMember> memberList = new List<CampaignMember>();
         for (Contact c: contactList) {
-            cmList.add(createCampaignMemberNoInsert(c, camp.Id));
+            memberList.add(createCampaignMemberNoInsert(c, camp.Id));
         }
 
         Test.startTest();
-        insert cmList;
+        insert memberList;
         Test.stopTest();
 
         List<Opportunity> newOppList = [
@@ -354,18 +354,18 @@ public class CampaignMemberHandlerTest {
         List<Contact> contacts = createContacts(200);
         insert contacts;
 
-        List<CampaignMember> cms = new List<CampaignMember>();
+        List<CampaignMember> members = new List<CampaignMember>();
         Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
         for (Contact contact : contacts) {
-            cms.add(createCampaignMemberNoInsert(contact, camp.Id));
+            members.add(createCampaignMemberNoInsert(contact, camp.Id));
         }
 
         Test.startTest();
-        insert cms;
+        insert members;
         Test.stopTest();
 
-        cms = [SELECT Is_Primary_Interest__c FROM CampaignMember WHERE CampaignId = :camp.Id];
-        for (CampaignMember member : cms) {
+        members = [SELECT Is_Primary_Interest__c FROM CampaignMember WHERE CampaignId = :camp.Id];
+        for (CampaignMember member : members) {
             System.assert(member.Is_Primary_Interest__c == TRUE);
         }
     }
@@ -377,28 +377,28 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMember(contact, camp.Id);
-        System.assert(!cm1.Is_Primary_Interest__c);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
+        CampaignMember member1 = createCampaignMember(contact, camp.Id);
+        System.assert(!member1.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        System.assert(member1.Is_Primary_Interest__c);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        update cm1;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        update member1;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        System.assert(member1.Is_Primary_Interest__c);
 
         //Inserting PSMajor CM w/ Contact, preexisting PSMajor Primary
         Campaign camp2 = createCampaign('Test PSMajor 2', 'PSMajors');
 
         Test.startTest(); 
-        CampaignMember cm2 = createCampaignMember(contact, camp2.Id);
+        CampaignMember member2 = createCampaignMember(contact, camp2.Id);
         Test.stopTest();
 
-        System.assert(!cm2.Is_Primary_Interest__c);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(cm2.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -408,27 +408,27 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMember(contact, camp.Id);
-        System.assert(!cm1.Is_Primary_Interest__c);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
+        CampaignMember member1 = createCampaignMember(contact, camp.Id);
+        System.assert(!member1.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        System.assert(member1.Is_Primary_Interest__c);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        update cm1;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        update member1;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        System.assert(member1.Is_Primary_Interest__c);
 
         //Inserting Non-PSMajor Cm w/ Contact, preexisting PSMajor Primary
         Campaign camp2 = createCampaign('Test Non-PSMajor', 'Academic');
 
         Test.startTest();
-        CampaignMember cm2 = createCampaignMember(contact, camp2.Id);
+        CampaignMember member2 = createCampaignMember(contact, camp2.Id);
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -438,28 +438,28 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMember(contact, camp.Id);
-        System.assert(!cm1.Is_Primary_Interest__c);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
+        CampaignMember member1 = createCampaignMember(contact, camp.Id);
+        System.assert(!member1.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        System.assert(member1.Is_Primary_Interest__c);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        update cm1;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        update member1;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        System.assert(member1.Is_Primary_Interest__c);
 
         //Inserting PSMajor CM w/ Contact, preexisting Non PSMajor Primary
         Campaign camp2 = createCampaign('Test PSMajor 2', 'PSMajors');
 
         Test.startTest();
-        CampaignMember cm2 = createCampaignMember(contact, camp2.Id);
+        CampaignMember member2 = createCampaignMember(contact, camp2.Id);
         Test.stopTest();
 
-        System.assert(!cm2.Is_Primary_Interest__c);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(cm2.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -469,28 +469,28 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMember(contact, camp.Id);
-        System.assert(!cm1.Is_Primary_Interest__c);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
+        CampaignMember member1 = createCampaignMember(contact, camp.Id);
+        System.assert(!member1.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        System.assert(member1.Is_Primary_Interest__c);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        update cm1;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        update member1;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        System.assert(member1.Is_Primary_Interest__c);
 
         //Inserting Non PSMajor CM w/ Contact, preexisting Non PSMajor Primary
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
 
         Test.startTest();
-        CampaignMember cm2 = createCampaignMember(contact, camp2.Id);
+        CampaignMember member2 = createCampaignMember(contact, camp2.Id);
         Test.stopTest();
 
-        System.assert(!cm2.Is_Primary_Interest__c);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(cm2.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -500,38 +500,38 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
 
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
 
         //Updating Non PSMajor CM w/ Contact, no preexisting primary
-        cm1.Is_Primary_Interest__c = FALSE;
-        cm2.Is_Primary_Interest__c = FALSE;
-        cm1.Status = 'Required';
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Is_Primary_Interest__c = FALSE;
+        member2.Is_Primary_Interest__c = FALSE;
+        member1.Status = 'Required';
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -541,33 +541,33 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
         //Updating Non PSMajor CM w/ Contact, no preexisting primary
-        cm1.Is_Primary_Interest__c = FALSE;
-        cm1.Status = 'Required';
-        cm2.Is_Primary_Interest__c = TRUE;
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Is_Primary_Interest__c = FALSE;
+        member1.Status = 'Required';
+        member2.Is_Primary_Interest__c = TRUE;
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     private static testMethod void updateContactPSMajorPSMajorPrimaryPreexisting() {
@@ -576,29 +576,29 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
-        cm1.Status = 'Required';
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Status = 'Required';
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -608,30 +608,30 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
 
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
-        cm2.Status = 'No Longer Interested';
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member2.Status = 'No Longer Interested';
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -641,32 +641,32 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
-        cm1.Is_Primary_Interest__c = FALSE;
-        cm2.Is_Primary_Interest__c = FALSE;
-        cm1.Status = 'Required';
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Is_Primary_Interest__c = FALSE;
+        member2.Is_Primary_Interest__c = FALSE;
+        member1.Status = 'Required';
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -676,31 +676,31 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
 
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
-        cm1.Status = 'Required';
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Status = 'Required';
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -710,31 +710,31 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
 
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
         //Updating Non PSMajor CM w/ Contact, PSMajor preexisting primary
-        cm2.Status = 'Required';
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member2.Status = 'Required';
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -750,41 +750,41 @@ public class CampaignMemberHandlerTest {
         Opportunity opp = createOpportunity(contact);
         insert opp;
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        CampaignMember cm3 = createCampaignMemberNoInsert(contact, camp3.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        CampaignMember member3 = createCampaignMemberNoInsert(contact, camp3.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
 
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
-        System.assert(!cm3.Is_Primary_Interest__c);
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
+        System.assert(!member3.Is_Primary_Interest__c);
         System.assertEquals(null, opp.Primary_Interest__c);
 
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        cmsToUpdate.add(cm3);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        membersToUpdate.add(member3);
 
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        cm3 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm3.Id];
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        member3 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member3.Id];
         opp = [SELECT Id, Primary_Interest__c FROM Opportunity WHERE Id = :opp.Id];
 
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
-        System.assert(cm3.Is_Primary_Interest__c);
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
+        System.assert(member3.Is_Primary_Interest__c);
         System.assertEquals(camp3.Id, opp.Primary_Interest__c);
 
         Test.startTest();
-        delete cm3;
+        delete member3;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
         opp = [SELECT Id, Primary_Interest__c FROM Opportunity WHERE Id = :opp.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
         System.assertEquals(camp.Id, opp.Primary_Interest__c);
     }
 
@@ -796,28 +796,28 @@ public class CampaignMemberHandlerTest {
         Contact contact = createContact();
         insert contact;
 
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
 
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
 
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
 
         Test.startTest();
-        delete cm1;
+        delete member1;
         Test.stopTest(); 
 
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm2.Is_Primary_Interest__c);
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -829,37 +829,37 @@ public class CampaignMemberHandlerTest {
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
         Campaign camp3 = createCampaign('Test Non PSMajor 3', 'Academic');
         
-        CampaignMember cm1 = createCampaignMemberNoInsert(contact, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(contact, camp2.Id);
-        CampaignMember cm3 = createCampaignMemberNoInsert(contact, camp3.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        CampaignMember member1 = createCampaignMemberNoInsert(contact, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(contact, camp2.Id);
+        CampaignMember member3 = createCampaignMemberNoInsert(contact, camp3.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
         
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        cmsToUpdate.add(cm3);
-        insert cmsToUpdate;
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        membersToUpdate.add(member3);
+        insert membersToUpdate;
         
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        cm3 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm3.Id];
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        member3 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member3.Id];
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        update cmsToUpdate;
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        update membersToUpdate;
 
         Test.startTest();
-        delete cm3;
+        delete member3;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -869,23 +869,23 @@ public class CampaignMemberHandlerTest {
         insert lead;
         
         Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
-        CampaignMember cm1 = createCampaignMember(lead, camp.Id);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        update cm1;
+        CampaignMember member1 = createCampaignMember(lead, camp.Id);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        update member1;
         
         //Inserting PSMajor CM w/ Lead, preexisting PSMajor Primary
         Campaign camp2 = createCampaign('Test PSMajor 2', 'PSMajors');
 
         Test.startTest();
-        CampaignMember cm2 = createCampaignMember(lead, camp2.Id);
+        CampaignMember member2 = createCampaignMember(lead, camp2.Id);
         Test.stopTest();
 
-        System.assert(cm2.Is_Primary_Interest__c == FALSE);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c == FALSE);
-        System.assert(cm2.Is_Primary_Interest__c == TRUE);
+        System.assert(member2.Is_Primary_Interest__c == FALSE);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c == FALSE);
+        System.assert(member2.Is_Primary_Interest__c == TRUE);
     }
 
     @isTest
@@ -895,20 +895,20 @@ public class CampaignMemberHandlerTest {
         insert lead;
         
         Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
-        CampaignMember cm1 = createCampaignMember(lead, camp.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        update cm1;
+        CampaignMember member1 = createCampaignMember(lead, camp.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        update member1;
         //Inserting Non-PSMajor Cm w/ Lead, preexisting PSMajor Primary
         Campaign camp2 = createCampaign('Test Non-PSMajor', 'Academic');
 
         Test.startTest();
-        CampaignMember cm2 = createCampaignMember(lead, camp2.Id);
+        CampaignMember member2 = createCampaignMember(lead, camp2.Id);
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c == TRUE);
-        System.assert(cm2.Is_Primary_Interest__c == FALSE);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c == TRUE);
+        System.assert(member2.Is_Primary_Interest__c == FALSE);
     }
 
     @isTest
@@ -918,22 +918,22 @@ public class CampaignMemberHandlerTest {
         insert lead;
         
         Campaign camp = createCampaign('Test Non PSMajor', 'Academic');
-        CampaignMember cm1 = createCampaignMember(lead, camp.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        update cm1;
+        CampaignMember member1 = createCampaignMember(lead, camp.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        update member1;
 
         //Inserting PSMajor CM w/ Lead, preexisting Non PSMajor Primary
         Campaign camp2 = createCampaign('Test PSMajor 2', 'PSMajors');
 
         Test.startTest();
-        CampaignMember cm2 = createCampaignMember(lead, camp2.Id);
+        CampaignMember member2 = createCampaignMember(lead, camp2.Id);
         Test.stopTest();
 
-        System.assert(!cm2.Is_Primary_Interest__c);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(cm2.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -943,23 +943,23 @@ public class CampaignMemberHandlerTest {
         insert lead;
         
         Campaign camp = createCampaign('Test Non PSMajor', 'Academic');
-        CampaignMember cm1 = createCampaignMember(lead, camp.Id);
+        CampaignMember member1 = createCampaignMember(lead, camp.Id);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        update cm1;
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        update member1;
 
         //Inserting Non PSMajor CM w/ Lead, preexisting Non PSMajor Primary
         Campaign camp2 = createCampaign('Test PSMajor 2', 'PSMajors');
 
         Test.startTest();
-        CampaignMember cm2 = createCampaignMember(lead, camp2.Id);
+        CampaignMember member2 = createCampaignMember(lead, camp2.Id);
         Test.stopTest();
 
-        System.assert(!cm2.Is_Primary_Interest__c);
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(!cm1.Is_Primary_Interest__c);
-        System.assert(cm2.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(!member1.Is_Primary_Interest__c);
+        System.assert(member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -969,32 +969,32 @@ public class CampaignMemberHandlerTest {
         
         Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
-        CampaignMember cm1 = createCampaignMemberNoInsert(lead, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(lead, camp2.Id);
+        CampaignMember member1 = createCampaignMemberNoInsert(lead, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(lead, camp2.Id);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
 
         //Updating Non PSMajor CM w/ Lead, no preexisting primary
-        cm1.Is_Primary_Interest__c = FALSE;
-        cm2.Is_Primary_Interest__c = FALSE;
-        cm1.Status = 'Required';
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Is_Primary_Interest__c = FALSE;
+        member2.Is_Primary_Interest__c = FALSE;
+        member1.Status = 'Required';
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -1004,32 +1004,32 @@ public class CampaignMemberHandlerTest {
         
         Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
-        CampaignMember cm1 = createCampaignMemberNoInsert(lead, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(lead, camp2.Id);
+        CampaignMember member1 = createCampaignMemberNoInsert(lead, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(lead, camp2.Id);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
 
         //Updating Non PSMajor CM w/ Lead, no preexisting primary
-        cm1.Is_Primary_Interest__c = FALSE;
-        cm1.Status = 'Required';
-        cm2.Is_Primary_Interest__c = TRUE;
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Is_Primary_Interest__c = FALSE;
+        member1.Status = 'Required';
+        member2.Is_Primary_Interest__c = TRUE;
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -1039,30 +1039,30 @@ public class CampaignMemberHandlerTest {
         
         Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
         Campaign camp2 = createCampaign('Test PSMajor 2', 'PSMajors');
-        CampaignMember cm1 = createCampaignMemberNoInsert(lead, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(lead, camp2.Id);
+        CampaignMember member1 = createCampaignMemberNoInsert(lead, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(lead, camp2.Id);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
-        cm1.Status = 'Required';
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Status = 'Required';
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -1073,33 +1073,33 @@ public class CampaignMemberHandlerTest {
         
         Campaign camp = createCampaign('Test Non PSMajor', 'Academic');
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
-        CampaignMember cm1 = createCampaignMemberNoInsert(lead, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(lead, camp2.Id);
+        CampaignMember member1 = createCampaignMemberNoInsert(lead, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(lead, camp2.Id);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
-        cm1.Is_Primary_Interest__c = FALSE;
-        cm2.Is_Primary_Interest__c = FALSE;
-        cm1.Status = 'Required';
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Is_Primary_Interest__c = FALSE;
+        member2.Is_Primary_Interest__c = FALSE;
+        member1.Status = 'Required';
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -1109,31 +1109,31 @@ public class CampaignMemberHandlerTest {
         
         Campaign camp = createCampaign('Test Non PSMajor', 'Academic');
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
-        CampaignMember cm1 = createCampaignMemberNoInsert(lead, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(lead, camp2.Id);
+        CampaignMember member1 = createCampaignMemberNoInsert(lead, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(lead, camp2.Id);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
-        cm1.Status = 'Required';
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member1.Status = 'Required';
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -1143,31 +1143,31 @@ public class CampaignMemberHandlerTest {
         
         Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
-        CampaignMember cm1 = createCampaignMemberNoInsert(lead, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(lead, camp2.Id);
+        CampaignMember member1 = createCampaignMemberNoInsert(lead, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(lead, camp2.Id);
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
 
         //Updating Non PSMajor CM w/ Lead, PSMajor preexisting primary
-        cm2.Status = 'Required';
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
+        member2.Status = 'Required';
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
 
         Test.startTest();
-        update cmsToUpdate;
+        update membersToUpdate;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -1178,25 +1178,25 @@ public class CampaignMemberHandlerTest {
         Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
         Campaign camp3 = createCampaign('Test PSMajor 3', 'PSMajors');
-        CampaignMember cm1 = createCampaignMemberNoInsert(lead, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(lead, camp2.Id);
-        CampaignMember cm3 = createCampaignMemberNoInsert(lead, camp3.Id);
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        CampaignMember member1 = createCampaignMemberNoInsert(lead, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(lead, camp2.Id);
+        CampaignMember member3 = createCampaignMemberNoInsert(lead, camp3.Id);
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
 
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        cmsToUpdate.add(cm3);
-        insert cmsToUpdate;
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        membersToUpdate.add(member3);
+        insert membersToUpdate;
 
         Test.startTest();
-        delete cm3;
+        delete member3;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -1206,20 +1206,20 @@ public class CampaignMemberHandlerTest {
 
         Campaign camp = createCampaign('Test PSMajor', 'PSMajors');
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
-        CampaignMember cm1 = createCampaignMemberNoInsert(lead, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(lead, camp2.Id);
+        CampaignMember member1 = createCampaignMemberNoInsert(lead, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(lead, camp2.Id);
 
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        insert cmsToUpdate;
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        insert membersToUpdate;
 
         Test.startTest();
-        delete cm1;
+        delete member1;
         Test.stopTest();
 
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        System.assert(cm2.Is_Primary_Interest__c);
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        System.assert(member2.Is_Primary_Interest__c);
     }
 
     @isTest
@@ -1232,38 +1232,38 @@ public class CampaignMemberHandlerTest {
         Campaign camp = createCampaign('Test Non PSMajor', 'Academic');
         Campaign camp2 = createCampaign('Test Non PSMajor 2', 'Academic');
         Campaign camp3 = createCampaign('Test Non PSMajor 3', 'Academic');
-        CampaignMember cm1 = createCampaignMemberNoInsert(lead, camp.Id);
-        CampaignMember cm2 = createCampaignMemberNoInsert(lead, camp2.Id);
-        CampaignMember cm3 = createCampaignMemberNoInsert(lead, camp3.Id);
+        CampaignMember member1 = createCampaignMemberNoInsert(lead, camp.Id);
+        CampaignMember member2 = createCampaignMemberNoInsert(lead, camp2.Id);
+        CampaignMember member3 = createCampaignMemberNoInsert(lead, camp3.Id);
         
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        List<CampaignMember> cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        cmsToUpdate.add(cm3);
-        insert cmsToUpdate;
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        membersToUpdate.add(member3);
+        insert membersToUpdate;
         
-        cm1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
-        cm3 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm3.Id];
+        member1 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
+        member3 = [SELECT Id, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member3.Id];
 
-        cm1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
-        cm2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
-        cmsToUpdate = new List<CampaignMember>();
-        cmsToUpdate.add(cm1);
-        cmsToUpdate.add(cm2);
-        update cmsToUpdate;
+        member1.Last_Member_Status_Change__c = Datetime.now().addDays(-1);
+        member2.Last_Member_Status_Change__c = Datetime.now().addDays(-2);
+        membersToUpdate = new List<CampaignMember>();
+        membersToUpdate.add(member1);
+        membersToUpdate.add(member2);
+        update membersToUpdate;
 
         Test.startTest();
-        delete cm3;
+        delete member3;
         Test.stopTest();
 
-        cm1 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm1.Id];
-        cm2 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :cm2.Id];
+        member1 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member1.Id];
+        member2 = [SELECT Id, Status, Last_Member_Status_Change__c, Is_Primary_Interest__c FROM CampaignMember WHERE Id = :member2.Id];
         lead = [SELECT Id, Primary_Interest__c FROM Lead WHERE Id = :lead.Id];
-        System.assert(cm1.Is_Primary_Interest__c);
-        System.assert(!cm2.Is_Primary_Interest__c);
+        System.assert(member1.Is_Primary_Interest__c);
+        System.assert(!member2.Is_Primary_Interest__c);
         System.assertEquals(camp.Id, lead.Primary_Interest__c);
     }
     

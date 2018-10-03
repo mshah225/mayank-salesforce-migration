@@ -281,7 +281,8 @@
                             </script>
                             <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
                             <script type='text/javascript'>
-                                liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2A', '00D0S0000008uTn');
+                                liveagent.setName('{!$User.FirstName} {!$User.LastName}');
+                            	liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2A', '00D0S0000008uTn');
                             </script>
                         </li>
                         <li>
@@ -296,6 +297,7 @@
                             </script>
                             <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
                             <script type='text/javascript'>
+                                liveagent.setName('{!$User.FirstName} {!$User.LastName}');
                                 liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2C', '00D0S0000008uTn');
                             </script>
                         </li>
@@ -310,7 +312,9 @@
                                 });
                             </script>
                             <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
+                            
                             <script type='text/javascript'>
+                                liveagent.setName('{!$User.FirstName} {!$User.LastName}');
                                 liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2B', '00D0S0000008uTn');
                             </script>
                         </li>

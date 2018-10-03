@@ -33,7 +33,7 @@
             setTimeout(function(){ 
                 document.getElementById('liveagent_button_online_5730S0000008Ojk').click();
                 liveagent.startChatWithWindow('573250000008OLT', 'window'); 
-            }, 250);
+            }, 1000);
         }
         
         initLiveAgent(() => startChat());

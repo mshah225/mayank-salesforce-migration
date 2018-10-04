@@ -3,7 +3,7 @@ public class LeadFactory extends TestFactory {
     public static final Lead DEFAULT_LEAD = new Lead(
         FirstName = 'Mister',
         LastName = 'Test',
-        Company = 'Test Inc'
+        Company = 'Test Inc',
         Email = 'test@test.test',
         LeadSource = 'Email'
     );

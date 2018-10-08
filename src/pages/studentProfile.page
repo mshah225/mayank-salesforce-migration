@@ -265,14 +265,14 @@
                                                 <tr>
                                                     <th>ASU Email</th>
                                                     <td>
-                                                        <a href="mailto:{!theContact.Email}">{!theContact.Email}</a>
+                                                        <a href="mailto:{!theContact.ASU_Gmail__c}">{!theContact.ASU_Gmail__c}</a>
                                                     </td>
                                                 </tr>
 
                                                 <tr>
                                                     <th>Other Email</th>
                                                     <td>
-                                                        <a href="mailto:{!theContact.EPO_Email__c}">{!theContact.Personal_Email__c}</a>
+                                                        <a href="mailto:{!theContact.Personal_Email__c}">{!theContact.Personal_Email__c}</a>
                                                     </td>
                                                 </tr>
 

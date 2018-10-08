@@ -265,7 +265,7 @@
                                                 <tr>
                                                     <th>ASU Email</th>
                                                     <td>
-                                                        <a href="mailto:{!theContact.ASU_Gmail__c}">{!theContact.ASU_Gmail__c}</a>
+                                                        <a href="mailto:{!theContact.Asu_Gmail__c}">{!theContact.Asu_Gmail__c}</a>
                                                     </td>
                                                 </tr>
 

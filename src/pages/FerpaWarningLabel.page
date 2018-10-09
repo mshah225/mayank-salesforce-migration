@@ -1,3 +1,0 @@
-<apex:page standardController="Contact">
-    <apex:pageMessage severity="Warning" strength="2" summary="{!$Label.FerpaWarning}"/>
-</apex:page>

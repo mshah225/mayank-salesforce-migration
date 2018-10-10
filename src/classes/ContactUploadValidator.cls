@@ -14,6 +14,10 @@ public class ContactUploadValidator {
         checkRequiredFields();
     }
     
+    public void validateDataForMatcher() {
+        hasMinimumFields();
+    }
+    
     private void checkRequiredFields() {
         checkSubscription();
         hasMinimumFields();

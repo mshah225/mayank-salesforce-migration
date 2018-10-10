@@ -161,7 +161,7 @@
     <apex:outputPanel id="wrapper"
                       layout="block"
                       style="margin-top:10px;min-width:1300px;overflow:auto;padding:10px;">
-        <apex:form id="myform" html-novalidate="novalidate">        
+        <apex:form id="myform" html-novalidate="novalidate">
             <apex:actionFunction name="reRenderMessagePanel" reRender="messages" />
             <apex:pageMessages id="messages"/>
             <div id="first">
@@ -293,11 +293,11 @@
                                         </apex:outputLink>
                                     </apex:pageBlockSectionItem>
                                 </apex:pageBlockSection>
-                                
+
                                 <i>Note: Due to platform limitations on date searches, searching
                                 Birthdate may take longer than usual.</i>
                             </div>
-                            
+
                             <div style="text-align:center;border-top:1px solid #dbdbdb;padding-top:10px;margin-top:10px;">
                                 <apex:commandButton id="searchBtn"
                                                     value="Search"
@@ -486,7 +486,7 @@
                                         <apex:inputField value="{!mycase.Campus__c}"/>
 
                                         <apex:inputField value="{!mycase.Affiliation__c}"/>
-                                        
+
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
                                             <apex:actionRegion >
@@ -514,9 +514,9 @@
                                                 </apex:selectList>
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
-                                        
+
                                         <apex:pageBlockSectionItem />
-                                        
+
                                         <apex:inputField value="{!mycase.Reporting_Category__c}" />
 
                                         <apex:inputField value="{!mycase.Status}"/>
@@ -762,7 +762,7 @@
 
                                     <apex:outputField value="{!contact.CAP__c}"/>
                                 </apex:column>
-                                
+
                                 <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="FERPA Hold"

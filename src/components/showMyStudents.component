@@ -56,9 +56,9 @@
                                          Filters
                          </apex:outputLink>
                     </apex:outputPanel>
-                    <div style="text-align: -webkit-center;">
+                    <div style="text-align: left; margin-top: 40px; margin-left: 20px;">
                         <apex:outputPanel id="filterListPanel" style="display: none; margin-top: 5px;">
-                            <apex:pageBlock >
+                            <apex:pageBlock id="filterListPageBlockSection">
                                 <apex:pageBlockSection columns="3" title="Student Filters">
                                     <apex:inputText id="studentFilterInput"
                                                     value="{!searchString}"
@@ -75,12 +75,12 @@
                                                     styleClass="searchBox"/>
                                     <apex:inputText id="majorFilter" label="Major: "
                                                     value="{!majorFilter}"
-                                                    html-placeholder="All or part of major name"
-                                                    styleClass="searchBox"/>
-                                    <apex:inputText label="Campus: " id="campusFilter"
-                                                    value="{!campusFilter}"
-                                                    html-placeholder="All or part of campus name"
-                                                    styleClass="searchBox"/>
+                                                    html-placeholder="All or part of name or code"
+                                                    styleClass="searchBox"
+                                                    size="30"/>
+                                    <apex:selectList label="Campus: " value="{!campusFilter}" size="1" required="false">
+                                        <apex:selectOptions value="{!campusFilterOptions}"/>
+                                    </apex:selectList>
                                     <apex:selectList label="Outlook Score" value="{!outlookScoreFilter}" size="1" required="false">
                                         <apex:selectOptions value="{!outlookScoreOptions}"/>
                                     </apex:selectList>
@@ -93,12 +93,12 @@
                                     <apex:input styleClass="createdByEndDate" label="To: " value="{!persistenceEndDate}" type="auto"/>
                                 </apex:pageBlockSection>
                             </apex:pageBlock>
-                            <apex:commandLink style="float:left; margin-right: 5px; margin-top: 25px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="rerenderMe" oncomplete="focusSearch()"/>
-                            <apex:commandLink style="float:left; margin-right: 5px; margin-top: 25px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe"/>
+                            <apex:commandLink style="float:left; margin-right: 5px; margin-top: 25px;" value="Apply Filters" styleClass="btn btn-default asu-primary" id="searchStudentsBtn" action="{!insertFilterIntoQuery}" status="ASUAjaxStatus" reRender="pageSizeSection, tableForm" oncomplete="focusSearch()"/>
+                            <apex:commandLink style="float:left; margin-right: 5px; margin-top: 25px;" value="Clear Filters" styleClass="btn btn-default asu-primary" action="{!resetSearch}" status="ASUAjaxStatus" reRender="filterListPageBlockSection, pageSizeSection, tableForm"/>
                         </apex:outputPanel>
                     </div>
                 </div>
-                <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
+                <apex:outputPanel id="pageSizeSection" layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
                     <apex:commandLink action="{!setCon.previous}" value="<< Prev" rendered="{!setCon.HasPrevious}"
                                       style="float:left;" styleClass="standardLink" reRender="rerenderMe"
                                       status="ASUAjaxStatus" />

@@ -5,7 +5,7 @@ public class UserService
         User testUser = new User();
         testUser.FirstName = 'Test';
         testUser.LastName = 'User';
-        testUser.Username = 'test.user@test.example.com';
+        testUser.Username = 'test.user.emperor.of.Byzantium@test.example.com';
         testUser.Email = 'test.user@test.example.com';
         testUser.Alias = 'testuser';
         testUser.CommunityNickname = 'testuserCom';
@@ -26,7 +26,7 @@ public class UserService
             User tUser = createTestUser();
             tUser.FirstName = 'Test' + i;
             tUser.LastName = 'User' + i;
-            tUser.Username = 'test.user' + i + '@test.example.com';
+            tUser.Username = 'test.user.emperor.of.Byzantium' + i + '@test.example.com';
             tUser.Email = 'test.user' + i + '@test.example.com';
             tUser.Alias = 'test' + i;
             tUser.CommunityNickname = 'testuser' + i;

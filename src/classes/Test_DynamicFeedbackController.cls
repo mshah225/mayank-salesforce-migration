@@ -254,7 +254,7 @@ public class Test_DynamicFeedbackController {
                     Campus__c, contactId, Description
                     FROM Case];
         
-        system.assertEquals(2, cases.size());
+        system.assertEquals(1, cases.size());
         system.assertEquals('Error Logger', cases[0].Origin__c);
         
         delete cases;

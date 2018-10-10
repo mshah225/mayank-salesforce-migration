@@ -1349,7 +1349,7 @@ public class CampaignMemberHandlerTest {
     }
     
     @isTest
-    private static void mostRecentlyClosedIsSelectedIfAllClosed() {
+    private static void noOpportunityAssignedIfAllClosed() {
         insert createContacts(2);
         List<Contact> testContacts = [SELECT LastName, AccountId FROM Contact];
 
@@ -1390,7 +1390,7 @@ public class CampaignMemberHandlerTest {
         Map<Id, Opportunity> closedOpps = new Map<Id, Opportunity>([SELECT IsClosed FROM Opportunity WHERE IsClosed = TRUE]);
         
         System.assertEquals(testOpportunities.size(), closedOpps.size());
-        System.assertEquals(testOpportunities[2].Id, postTestMembers[0].Opportunity__c);
-        System.assertEquals(testOpportunities[3].Id, postTestMembers[1].Opportunity__c);
+        System.assertEquals(null, postTestMembers[0].Opportunity__c);
+        System.assertEquals(null, postTestMembers[1].Opportunity__c);
     }
 }

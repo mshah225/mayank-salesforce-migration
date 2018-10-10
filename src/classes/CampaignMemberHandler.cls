@@ -280,7 +280,7 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
             SELECT Id, Contact__c, National_Merit_Semifinalist__c, Primary_Interest__c 
             FROM Opportunity 
             WHERE Contact__c IN :contactIDsInTrigger
-            AND CloseDate > Date.today()
+            AND ClosedDate > Date.today()
             ORDER BY CreatedDate DESC
         ];
 

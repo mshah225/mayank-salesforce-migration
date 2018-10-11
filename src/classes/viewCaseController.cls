@@ -320,9 +320,13 @@ public with sharing class viewCaseController {
         if (!String.isBlank(caseReply)) {
             RestCallResponse restStatusAndInfo = createAndSendEmailMessage();
             if (restStatusAndInfo.isSuccessfull()) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Your response to the case was submitted successfully.'));
             } else {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact system admin'));
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact a system administrator.'));
+                ErrorLogger error = new ErrorLogger();
+                error.setClassName('viewCaseController');
+                error.setDetails('Error submitting case reply from service center. Error: ' + restStatusAndInfo.getMessage());
+                error.log();
             }
         }
         clearReplyContents();

@@ -256,9 +256,9 @@ public class RelationshipService {
         List<Relationship__c> relListRemoved = new List<Relationship__c>();
         
         for(Id relIds : relMapOld.keySet()) {
-            if (!relMapOld.get(relIds).Primary_Parent__c && relMapNew.get(relIds).Primary_Parent__c) {
+            if (primaryParentAddedAndIsActive(relMapOld.get(relIds), relMapNew.get(relIds))) {
                 relListAdded.add(relMapNew.get(relIds));
-            } else if (relMapOld.get(relIds).Primary_Parent__c && !relMapNew.get(relIds).Primary_Parent__c) {
+            } else if (primaryParentRemovedOrIsNotActive(relMapOld.get(relIds), relMapNew.get(relIds))) {
                 relListRemoved.add(relMapNew.get(relIds));
             }
         }
@@ -382,5 +382,14 @@ public class RelationshipService {
         } else {
             return false;
         }
+    }
+    
+    private static boolean primaryParentAddedAndIsActive(Relationship__c oldRel, Relationship__c newRel) {
+        return (!oldRel.Primary_Parent__c && newRel.Primary_Parent__c) 
+                || (newRel.Primary_Parent__c && !oldRel.Active_Relationship__c && newRel.Active_Relationship__c);
+    }
+    
+    private static boolean primaryParentRemovedOrIsNotActive(Relationship__c oldRel, Relationship__c newRel) {
+        return (oldRel.Primary_Parent__c && !newRel.Primary_Parent__c) || !newRel.Active_Relationship__c;
     }
 }

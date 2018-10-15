@@ -7,3 +7,7 @@
     display: list-item;
     text-align: -webkit-match-parent;
 }
+
+.THIS .fieldDescription {
+    color:grey;
+}

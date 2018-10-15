@@ -64,7 +64,6 @@ global class JIRAWebserviceCallout {
         try {
             //Send endpoint to JIRA
             for (Integer i = 0 ; i < watchersToAdd.size(); i++) {
-                System.debug(watchersToAdd);
                 req.setHeader('Authorization', authorizationHeader);
                 req.setHeader('Content-Type','application/json');
                 req.setMethod('POST');
@@ -85,7 +84,6 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         HttpRequest req = new HttpRequest();
-        
         Blob headerValue = Blob.valueOf(USERNAME + ':' + PASSWORD);
         String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
         String endpoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey;  
@@ -167,7 +165,6 @@ global class JIRAWebserviceCallout {
     
     private static String getStatusKey(String statusName) {
         String statusKey;
-        System.debug(statusName);
         switch on statusName {
             when 'Open' {
                 statusKey = '11';
@@ -180,7 +177,6 @@ global class JIRAWebserviceCallout {
             }
             when 'New Development Request' {
                 statusKey = '161';
-                System.debug(statusKey);
             }
             when 'New' {
                 statusKey = '3';

@@ -1,0 +1,47 @@
+<aura:component controller="JiraReportIssueController" implements="forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="type" type="String" access="global" />
+    <aura:attribute name="questionOne" type="String" access="global" />
+	<aura:attribute name="questionTwo" type="String" access="global" />
+    <aura:attribute name="questionThree" type="String" access="global" />
+
+    <aura:attribute name="message" type= "String"/>
+    <aura:attribute name="link" type= "String"/>
+    <aura:attribute name="title" type= "String"/>
+    <aura:attribute name="answerOne" type= "String"/>
+    <aura:attribute name="answerTwo" type= "String"/>
+    <aura:attribute name="answerThree" type= "String"/>
+    <aura:attribute name="watchers" type= "String"/>
+    
+    
+    <html>
+        <body >
+            <h1><center>{!v.type}</center> </h1>
+            <h3 style="color:MediumSeaGreen;" ><center>{!v.message}</center></h3>
+            <h3 style="color:blue;" ><center>{!v.link}</center></h3>
+            
+            <form class="slds-form--stacked">          
+                <lightning:textarea  label="Summary of the problem (Title): "
+                                    value="{!v.title}"
+                                    maxlength="255"/> 
+                <p style="color:grey;">FIELD LIMIT: This field must be 255 characters or less </p>
+                
+                <lightning:textarea  label="{!v.questionOne}"
+                                     value="{!v.answerOne}"/>
+                <lightning:textarea  label="{!v.questionTwo}"
+                                     value="{!v.answerTwo}"/>
+                <lightning:textarea  label="{!v.questionThree}"
+                                     value="{!v.answerThree}"/>
+                <lightning:textarea  label="Watchers for the ticket: "
+                                     value="{!v.watchers}"/>
+                <p style="color:grey;">Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with a comma</p>
+                
+                <lightning:button label="Submit" 
+                                  class="RED"
+                                  variant="brand"
+                                  onclick="{!c.submitIssueForm}"
+                                  />
+            </form> 
+        </body>
+        
+    </html>
+</aura:component>

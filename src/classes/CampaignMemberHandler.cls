@@ -281,7 +281,7 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
             FROM Opportunity 
             WHERE Contact__c IN :contactIDsInTrigger
             AND CloseDate > :Date.today()
-            ORDER BY CreatedDate DESC
+            ORDER BY CreatedDate ASC
         ];
 
         for (Opportunity o : opportunitiesInTrigger) {

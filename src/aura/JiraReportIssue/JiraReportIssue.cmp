@@ -23,7 +23,7 @@
                 <lightning:textarea  label="Summary of the problem (Title): "
                                     value="{!v.title}"
                                     maxlength="255"/> 
-                <p style="color:grey;">FIELD LIMIT: This field must be 255 characters or less </p>
+                <p class="fieldDescription">FIELD LIMIT: This field must be 255 characters or less </p>
                 
                 <lightning:textarea  label="{!v.questionOne}"
                                      value="{!v.answerOne}"/>
@@ -33,7 +33,7 @@
                                      value="{!v.answerThree}"/>
                 <lightning:textarea  label="Watchers for the ticket: "
                                      value="{!v.watchers}"/>
-                <p style="color:grey;">Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with a comma</p>
+                <p class="fieldDescription">Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with a comma</p>
                 
                 <lightning:button label="Submit" 
                                   class="RED"

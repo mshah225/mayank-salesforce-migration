@@ -56,7 +56,7 @@ global class JIRAWebserviceCallout {
         
         
         //Construct Endpoint
-        String endpoint = JIRA_URL + '/rest/api/3/issue/' + jiraKey + '/watchers';
+        String endpoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey + '/watchers';
         
         //Set Method and Endpoint and Body
         
@@ -64,11 +64,12 @@ global class JIRAWebserviceCallout {
         try {
             //Send endpoint to JIRA
             for (Integer i = 0 ; i < watchersToAdd.size(); i++) {
+                System.debug(watchersToAdd);
                 req.setHeader('Authorization', authorizationHeader);
                 req.setHeader('Content-Type','application/json');
                 req.setMethod('POST');
                 req.setEndpoint(endpoint);
-                req.setBody(watchersToAdd[i]);
+                req.setBody('"' + watchersToAdd[i] + '"');
                 res = http.send(req);
             }
         } catch(System.CalloutException e) {

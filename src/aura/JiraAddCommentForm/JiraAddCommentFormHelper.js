@@ -14,33 +14,34 @@
         var answerFive = component.get("v.answerFive");
         var answerSix = component.get("v.answerSix");
         var jiraKey = component.get("v.ticketKey");
-        var action = component.get('c.submitForm');
         var ticketComment = "";
+        ticketComment += this.addToTicketComment(questionOne, answerOne);
+        console.log(ticketComment);
+        ticketComment += this.addToTicketComment(questionTwo, answerTwo);
+        ticketComment += this.addToTicketComment(questionThree, answerThree);
+        ticketComment += this.addToTicketComment(questionFour, answerFour);
+        ticketComment += this.addToTicketComment(questionFive, answerFive);
+        ticketComment += this.addToTicketComment(questionSix, answerSix);
         
-        if (questionOne != undefined && answerOne != undefined) {
-            ticketComment += questionOne + '\\n' + answerOne.replace('\n', "\\n") + '\\n';
-        }
-        if (questionTwo != undefined && answerTwo != undefined) {
-            ticketComment += questionTwo + '\\n' + answerTwo.replace('\n', "\\n") + '\\n';
-        }
-        if (questionThree != undefined && answerThree != undefined) {
-            ticketComment += questionThree + '\\n' + answerThree.replace('\n', "\\n") + '\\n';
-        }
-        if (questionFour != undefined && answerFour != undefined) {
-            ticketComment += questionFour + '\\n' + answerFour.replace('\n', "\\n") + '\\n';
-        }
-        if (questionFive != undefined && !answerFive != undefined) {
-            ticketComment += questionFive + '\\n' + answerFive.replace('\n', "\\n") + '\\n';
-        }
-        if (questionSix != undefined && answerSix != undefined) {
-            ticketComment += questionSix + '\\n' + answerSix.replace('\n', "\\n") + '\\n';
-        }
+        
+        var action = component.get('c.submitForm');
         action.setParams({
             'ticketComment': ticketComment,
             'jiraKey' : jiraKey,
             'status' : status
         })
         $A.enqueueAction(action);
+    },
+    
+    addToTicketComment : function (question, answer, comment) {
+        console.log(question);
+        console.log(answer);
+        if (question != undefined && answer != undefined) {
+             return question + '\\n' + answer.replace('\n', "\\n") + '\\n';
+        } else {
+            return '';
+        }
+        
     },
     
     removeUnusedQuestions : function (component) {

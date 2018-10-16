@@ -1,11 +1,5 @@
 ({
-    clearForm : function(component, event, helper) {
-        component.set("v.message",null);
-        component.set("v.link",null);
-        component.set("v.report",null);
-	},
-    
-    submitIssueForm : function (component, event, helper) {
+    submitIssueForm : function (component) {
         var title = component.get("v.title");
         var questionOne = component.get("v.questionOne");
         var questionTwo = component.get("v.questionTwo");
@@ -15,11 +9,12 @@
         var answerThree = component.get("v.answerThree").replace("\n", "\\n");
         var watchers = component.get("v.watchers");
         var type = component.get("v.type");
-       	var action= component.get('c.callout');
         
         var problemDescription = questionOne + '\\n' + answerOne + '\\n'
         					+ questionTwo + '\\n' + answerTwo + '\\n'
         					+ questionThree + '\\n' + answerThree + '\\n';
+        
+       	var action= component.get('c.callout');
         action.setParams({
             'title': title,
             'description': problemDescription,
@@ -33,11 +28,8 @@
             component.set("v.message","Jira Issue Successfully Created");
             var link = "Created Issue: https://asudev.jira.com/browse/" + key;
             component.set("v.link", link);
-            window.setTimeout(
-                $A.getCallback(function() {
-                    helper.clearForm(component,event,helper);
-            	}), 10000
-        	);
+        } else {
+            component.set("v.message","Jira Issue could not be created!");
         }
       });
       $A.enqueueAction(action);

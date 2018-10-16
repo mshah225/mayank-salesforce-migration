@@ -25,7 +25,7 @@
 	                    </h2>
 	                    <div id="asu_universal_nav">
 	                        <ul>
-	                            <li><a style="border-bottom: none !important;" href="https://www.asu.edu/" target="_top">ASU Home</a></li>
+	                            <li><a href="https://www.asu.edu/" target="_top">ASU Home</a></li>
 	                            <li><a href="https://my.asu.edu/" target="_top">My ASU</a></li>
 	                            <li><a href="https://www.asu.edu/contactasu/" target="_top" title="Directory, Index and other info">Directory</a></li>
 	                        </ul>

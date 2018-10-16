@@ -1,8 +1,8 @@
 global class JIRAWebserviceCallout {
-    static final Boolean DEBUG = false;
-    static final String USERNAME = ApiUser__c.getValues('Jira').Username__c;
-    static final String PASSWORD = ApiUser__c.getValues('Jira').Password__c;
-    static final String JIRA_URL = ApiUser__c.getValues('Jira').Url__c;
+    private static final Boolean DEBUG = false;
+    private static final String USERNAME = ApiUser__c.getValues('Jira').Username__c;
+    private static final String PASSWORD = ApiUser__c.getValues('Jira').Password__c;
+    private static final String JIRA_URL = ApiUser__c.getValues('Jira').Url__c;
     
     WebService static String createNewIssue(String summary, String description, String addUsers, String type) {
         List<String> errorLoggerVars = new List<String>();
@@ -11,21 +11,20 @@ global class JIRAWebserviceCallout {
         HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
-        Blob headerValue = Blob.valueOf(USERNAME + ':' + PASSWORD);
-        String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
-        req.setHeader('Authorization', authorizationHeader);
-        req.setHeader('Content-Type','application/json');
         
-        String endpoint = JIRA_URL + '/rest/api/3/issue';
-        req.setMethod('POST');
-        req.setEndpoint(endpoint);
-        String  jsonstr='{"fields":'+
-            '{   "project":     {      "id": "17074"      }, '+
-            '"summary": "' + summary + '",  '+
-            '"description": { "type": "doc","version": 1,"content": [{"type": "paragraph","content": [{  "type": "text", "text": "'+ description +'" }  ]  } ] },'+
+        String endPoint = JIRA_URL + '/rest/api/3/issue';
+        
+        String body = '{"fields":' +
+            '{   "project":     {      "id": "17074"      }, ' +
+            '"summary": "' + summary + '",  ' +
+            '"description": { "type": "doc","version": 1,"content": [{"type": "paragraph","content": [{  "type": "text", "text": "' + description + '" }  ]  } ] },'+
             ' "issuetype": {  "name": "' + type + '"     }'+
             '   }}';
-        req.setBody(jsonstr);
+        
+        setHeader(req);
+        setEndpoint(req, endpoint, 'POST');
+        setBody(req, body);
+        
         try {
             res = http.send(req);
             Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
@@ -39,7 +38,7 @@ global class JIRAWebserviceCallout {
         } catch (System.CalloutException e) {
             errorLoggerVars.add(res.toString());
             errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(jsonstr);
+            errorLoggerVars.add(body);
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
         
@@ -51,24 +50,16 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
 		HttpRequest req = new HttpRequest();
-        Blob headerValue = Blob.valueOf(USERNAME + ':' + PASSWORD);
-        String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
         
-        
-        //Construct Endpoint
         String endpoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey + '/watchers';
-        
-        //Set Method and Endpoint and Body
         
         String[] watchersToAdd = watchers.split(',');
         try {
             //Send endpoint to JIRA
             for (Integer i = 0 ; i < watchersToAdd.size(); i++) {
-                req.setHeader('Authorization', authorizationHeader);
-                req.setHeader('Content-Type','application/json');
-                req.setMethod('POST');
-                req.setEndpoint(endpoint);
-                req.setBody('"' + watchersToAdd[i] + '"');
+                setHeader(req);
+                setEndPoint(req, endPoint, 'POST');
+                setBody(req, '"' + watchersToAdd[i] + '"');
                 res = http.send(req);
             }
         } catch(System.CalloutException e) {
@@ -84,22 +75,18 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         HttpRequest req = new HttpRequest();
-        Blob headerValue = Blob.valueOf(USERNAME + ':' + PASSWORD);
-        String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
-        String endpoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey;  
-        String jsonComment = '{"update": { "comment": [ { "add": { "body": "' + comment + '" }}]}}';
+        String endPoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey;  
+        String body = '{"update": { "comment": [ { "add": { "body": "' + comment + '" }}]}}';
         
         try {
-            req.setHeader('Authorization', authorizationHeader);
-            req.setHeader('Content-Type','application/json');
-            req.setMethod('PUT');
-            req.setEndpoint(endpoint);
-            req.setBody(jsonComment);
+        	setHeader(req);
+            setEndpoint(req, endPoint, 'PUT');
+            setBody(req, body);
             res = http.send(req);
         } catch (System.CalloutException e) {
             errorLoggerVars.add(res.toString());
             errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(jsonComment);
+            errorLoggerVars.add(body);
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
     }
@@ -109,23 +96,18 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         HttpRequest req = new HttpRequest();
-        
-        Blob headerValue = Blob.valueOf(USERNAME + ':' + PASSWORD);
-        String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
-        String endpoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey + '/transitions';
-        String jsonStatus = '{"transition": {"id": "' + getStatusKey(status) + '"}}';
+        String endPoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey + '/transitions';
+        String body = '{"transition": {"id": "' + getStatusKey(status) + '"}}';
         
         try {
-            req.setHeader('Authorization', authorizationHeader);
-            req.setHeader('Content-Type','application/json');
-            req.setMethod('POST');
-            req.setEndpoint(endpoint);
-            req.setBody(jsonStatus);
+            setHeader(req);
+            setEndpoint(req, endPoint, 'POST');
+            setBody(req, body);
             res = http.send(req);
         } catch (System.CalloutException e) {
             errorLoggerVars.add(res.toString());
             errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(jsonStatus);
+            errorLoggerVars.add(body);
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
     }
@@ -134,33 +116,40 @@ global class JIRAWebserviceCallout {
         List<String> errorLoggerVars = new List<String>();
         String responseBody;
         
-        //Construct HTTP request and response
         HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         
-        //Construct Authorization and Content header
-        Blob headerValue = Blob.valueOf(USERNAME + ':' + PASSWORD);
-        String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
-        req.setHeader('Authorization', authorizationHeader);
-        req.setHeader('Content-Type','application/json');
-        
-        //Construct Endpoint
-        String endpoint = JIRA_URL +'/rest/api/2/search?jql=assignee%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3DMigrated&fields=id,summary';
-        //Set Method and Endpoint and Body
-        req.setMethod('GET');
-        req.setEndpoint(endpoint);
+        String endPoint = JIRA_URL +'/rest/api/2/search?jql=assignee%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3DMigrated&fields=id,summary';
+
         try {
-            //Send endpoint to JIRA
+            setHeader(req);
+            setEndPoint(req, endPoint, 'GET');
             res = http.send(req);
             responseBody = res.getBody();
         } catch(System.CalloutException e) {
             errorLoggerVars.add(res.toString());
             errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(endpoint);
+            errorLoggerVars.add(endPoint);
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
         return responseBody;
+    }
+    
+    private static void setHeader(HttpRequest req) {
+        Blob headerValue = Blob.valueOf(USERNAME + ':' + PASSWORD);
+        String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
+        req.setHeader('Authorization', authorizationHeader);
+        req.setHeader('Content-Type','application/json');
+    }
+    
+    private static void setEndPoint(HttpRequest req, String endPoint, String method) {
+        req.setMethod('POST');
+        req.setEndpoint(endPoint);
+    }
+    
+    private static void setBody(HttpRequest req, String body) {
+        req.setBody(body);
     }
     
     private static String getStatusKey(String statusName) {

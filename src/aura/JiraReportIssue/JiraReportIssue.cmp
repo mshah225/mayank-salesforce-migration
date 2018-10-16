@@ -1,8 +1,8 @@
 <aura:component controller="JiraReportIssueController" implements="forceCommunity:availableForAllPageTypes" access="global" >
-    <aura:attribute name="type" type="String" access="global" />
-    <aura:attribute name="questionOne" type="String" access="global" />
-	<aura:attribute name="questionTwo" type="String" access="global" />
-    <aura:attribute name="questionThree" type="String" access="global" />
+    <aura:attribute name="type" type="String" access="public" />
+    <aura:attribute name="questionOne" type="String" access="public" />
+	<aura:attribute name="questionTwo" type="String" access="public" />
+    <aura:attribute name="questionThree" type="String" access="public" />
 
     <aura:attribute name="message" type= "String"/>
     <aura:attribute name="link" type= "String"/>
@@ -22,15 +22,19 @@
             <form class="slds-form--stacked">          
                 <lightning:textarea  label="Summary of the problem (Title): "
                                     value="{!v.title}"
-                                    maxlength="255"/> 
+                                    maxlength="255"
+                                    required="true"/> 
                 <p class="fieldDescription">FIELD LIMIT: This field must be 255 characters or less </p>
                 
                 <lightning:textarea  label="{!v.questionOne}"
-                                     value="{!v.answerOne}"/>
+                                     value="{!v.answerOne}"
+                                     required = "true"/>
                 <lightning:textarea  label="{!v.questionTwo}"
-                                     value="{!v.answerTwo}"/>
+                                     value="{!v.answerTwo}"
+                                     required="true"/>
                 <lightning:textarea  label="{!v.questionThree}"
-                                     value="{!v.answerThree}"/>
+                                     value="{!v.answerThree}"
+                                     required="true"/>
                 <lightning:textarea  label="Watchers for the ticket: "
                                      value="{!v.watchers}"/>
                 <p class="fieldDescription">Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with a comma</p>

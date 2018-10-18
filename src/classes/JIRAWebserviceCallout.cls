@@ -144,7 +144,7 @@ global class JIRAWebserviceCallout {
     }
     
     private static void setEndPoint(HttpRequest req, String endPoint, String method) {
-        req.setMethod('POST');
+        req.setMethod(method);
         req.setEndpoint(endPoint);
     }
     

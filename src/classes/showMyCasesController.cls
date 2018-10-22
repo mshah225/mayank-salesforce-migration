@@ -364,6 +364,7 @@ public class showMyCasesController extends ListViewController {
         picklistValuesForCaseStatus.add('Outreach Required');
         picklistValuesForCaseStatus.add('Unable to Leave Voicemail');
         picklistValuesForCaseStatus.add('Wrong number');
+        picklistValuesForCaseStatus.add('Customer Replied');
 
         return pickListValuesForCaseStatus;
     }

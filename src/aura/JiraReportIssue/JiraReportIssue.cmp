@@ -20,7 +20,7 @@
             <h3 style="color:blue;" ><center>{!v.link}</center></h3>
             
             <form class="slds-form--stacked">    
-                <lightning:textarea  label="Summary of the problem (Title): "
+                <lightning:textarea  label="Summary of the issue (Title): "
                                     value="{!v.title}"
                                     maxlength="255"
                                     required="true"/> 

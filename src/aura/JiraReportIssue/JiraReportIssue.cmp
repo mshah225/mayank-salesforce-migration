@@ -19,7 +19,7 @@
             <h3 style="color:MediumSeaGreen;" ><center>{!v.message}</center></h3>
             <h3 style="color:blue;" ><center>{!v.link}</center></h3>
             
-            <form class="slds-form--stacked">          
+            <form class="slds-form--stacked">    
                 <lightning:textarea  label="Summary of the problem (Title): "
                                     value="{!v.title}"
                                     maxlength="255"
@@ -27,16 +27,16 @@
                 <p class="fieldDescription">FIELD LIMIT: This field must be 255 characters or less </p>
                 
                 <lightning:textarea  label="{!v.questionOne}"
-                                     value="{!v.answerOne}"
-                                     required = "true"/>
+                                    value="{!v.answerOne}"
+                                    required = "true"/>
                 <lightning:textarea  label="{!v.questionTwo}"
-                                     value="{!v.answerTwo}"
-                                     required="true"/>
+                                    value="{!v.answerTwo}"
+                                    required="true"/>
                 <lightning:textarea  label="{!v.questionThree}"
-                                     value="{!v.answerThree}"
-                                     required="true"/>
+                                    value="{!v.answerThree}"
+                                    required="true"/>
                 <lightning:textarea  label="Watchers for the ticket: "
-                                     value="{!v.watchers}"/>
+                                    value="{!v.watchers}"/>
                 <p class="fieldDescription">Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with a comma</p>
                 
                 <lightning:button label="Submit" 

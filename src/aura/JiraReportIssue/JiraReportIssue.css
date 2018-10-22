@@ -11,3 +11,7 @@
 .THIS .fieldDescription {
     color:grey;
 }
+
+.THIS .slds-form-element__label {
+    font-size: 24px !important;
+}

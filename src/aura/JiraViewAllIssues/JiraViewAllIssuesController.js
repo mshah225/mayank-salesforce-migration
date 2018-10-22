@@ -1,6 +1,7 @@
 ({
 	doInit : function(component, event, helper) {
        	helper.getIssues(component);
+        helper.getWatchedIssues(component);
     },
     
     openQA : function(component, event, helper) {
@@ -42,7 +43,7 @@
                 "questionTwo": "What was the QA Test Plan?",
                 "questionThree": "Name of Admin who tested and signed off:",
                 "questionFour": "Name of stakeholder representative who signed off:",
-                "questionFive": "What metadata is migration?",
+                "questionFive": "What metadata needs to be migrated?",
                 "questionSix": "What configurations need to be made before or after deploy?",
                 "status": "2nd Technical Review",
                 "modalHeader" : "Second Tech Form for " + event.target.getAttribute('name')

@@ -7,6 +7,13 @@ public class JiraViewAllIssuesController {
         return createMapFromResponse(jiraResponse);
     }
     
+    @AuraEnabled
+    public static List<JiraIssue> getWatchedIssuesForUser() {
+        String asurite = [SELECT Alias FROM User WHERE Id =: UserInfo.getUserId() LIMIT 1].Alias;
+        String jiraResponse = JiraWebserviceCallout.getWatchedIssues(asurite);
+        return createMapFromResponse(jiraResponse);
+    }
+    
     private static List<JiraIssue> createMapFromResponse(String jiraResponse) {
         List<JiraIssue> issuesForUser = new List<JiraIssue>();
         Map<String, Object> deserializedResponse = (Map<String, Object>) JSON.deserializeUntyped(jiraResponse);
@@ -14,7 +21,8 @@ public class JiraViewAllIssuesController {
         for(Object issue : jiraIssues) {
             Map<String, Object> issueData = (Map<String, Object>)issue;
             Map<String, Object> fieldData = (Map<String, Object>)issueData.get('fields');
-            JiraIssue issueForUser = new JiraIssue((String)issueData.get('id'), (String)fieldData.get('summary'), (String)issueData.get('key'));
+            Map<String, Object> typeData = (Map<String, Object>)fieldData.get('issuetype');
+            JiraIssue issueForUser = new JiraIssue((String)issueData.get('id'), (String)fieldData.get('summary'), (String)issueData.get('key'), (String)typeData.get('name'));
             issuesForUser.add(issueForUser);
         }
         return issuesForUser;
@@ -24,11 +32,13 @@ public class JiraViewAllIssuesController {
         @AuraEnabled public String issueId {set; get;}
         @AuraEnabled public String summary {set; get;}
         @AuraEnabled public String key {set; get;}
+        @AuraEnabled public String issueType {set; get;}
         
-        public JiraIssue(String issueId, String summary, String key) {
+        public JiraIssue(String issueId, String summary, String key, String issueType) {
             this.issueId = issueId;
             this.summary = summary;
             this.key = key;
+            this.issueType = issueType;
         }
     }
 }

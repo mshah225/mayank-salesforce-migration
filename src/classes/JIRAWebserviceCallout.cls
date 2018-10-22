@@ -120,7 +120,31 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         
-        String endPoint = JIRA_URL +'/rest/api/2/search?jql=assignee%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3DMigrated&fields=id,summary';
+        String endPoint = JIRA_URL +'/rest/api/2/search?jql=assignee%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3DMigrated%20order%20by%20updated%20DESC&fields=id,summary,issuetype';
+
+        try {
+            setHeader(req);
+            setEndPoint(req, endPoint, 'GET');
+            res = http.send(req);
+            responseBody = res.getBody();
+        } catch(System.CalloutException e) {
+            errorLoggerVars.add(res.toString());
+            errorLoggerVars.add(req.toString());
+            errorLoggerVars.add(endPoint);
+            ErrorLogger.log(e, errorLoggerVars, DEBUG);
+        }
+        return responseBody;
+    }
+    
+    WebService static String getWatchedIssues(String asurite) {
+        List<String> errorLoggerVars = new List<String>();
+        String responseBody;
+        
+        HttpRequest req = new HttpRequest();
+        HttpResponse res = new HttpResponse();
+        Http http = new Http();
+        
+        String endPoint = JIRA_URL +'/rest/api/2/search?jql=watcher%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3DMigrated%20order%20by%20updated%20DESC&fields=id,summary,issuetype';
 
         try {
             setHeader(req);

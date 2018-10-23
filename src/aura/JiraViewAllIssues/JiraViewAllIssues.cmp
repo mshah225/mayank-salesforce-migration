@@ -20,7 +20,10 @@
                     <div class="slds-truncate" title="Summary">Summary</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="QA Request Form">QA Request Form</div>
+                    <div class="slds-truncate" title="Status">Status</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Testing Form">Testing Form</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
                     <div class="slds-truncate" title="Second Tech Form">Second Tech Form</div>
@@ -39,9 +42,12 @@
                     <td data-label="Contact" style="max-width: 200px;">
                         <div class="slds-truncate">{!issue.summary}</div>
                     </td>
+                    <td data-label="Contact" style="max-width: 200px;">
+                        <div class="slds-truncate">{!issue.status}</div>
+                    </td>
                     <td data-label="QA">
                         <div class="slds-truncate">
-                            <button class="slds-button slds-button_brand" id="{!issue.issueId}" name="{!issue.key}" label="QA Request Form" onclick="{!c.openQA}">QA Request Form</button>
+                            <button class="slds-button slds-button_brand" id="{!issue.issueId}" name="{!issue.key}" label="Testing Form" onclick="{!c.openTest}">Testing Form</button>
                         </div>
                     </td>
                     <td data-label="Second Tech">
@@ -67,7 +73,10 @@
                     <div class="slds-truncate" title="Summary">Summary</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="QA Request Form">QA Request Form</div>
+                    <div class="slds-truncate" title="Status">Status</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Testing Form">Testing Form</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
                     <div class="slds-truncate" title="Second Tech Form">Second Tech Form</div>
@@ -86,9 +95,12 @@
                     <td data-label="Contact" style="max-width: 200px;">
                         <div class="slds-truncate">{!issue.summary}</div>
                     </td>
+                    <td data-label="Contact" style="max-width: 200px;">
+                        <div class="slds-truncate">{!issue.status}</div>
+                    </td>
                     <td data-label="QA">
                         <div class="slds-truncate">
-                            <button class="slds-button slds-button_brand" id="{!issue.issueId}" name="{!issue.key}" label="QA Request Form" onclick="{!c.openQA}">QA Request Form</button>
+                            <button class="slds-button slds-button_brand" id="{!issue.issueId}" name="{!issue.key}" label="Testing Form" onclick="{!c.openTest}">Testing Form</button>
                         </div>
                     </td>
                     <td data-label="Second Tech">

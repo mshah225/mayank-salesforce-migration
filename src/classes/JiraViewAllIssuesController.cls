@@ -22,7 +22,8 @@ public class JiraViewAllIssuesController {
             Map<String, Object> issueData = (Map<String, Object>)issue;
             Map<String, Object> fieldData = (Map<String, Object>)issueData.get('fields');
             Map<String, Object> typeData = (Map<String, Object>)fieldData.get('issuetype');
-            JiraIssue issueForUser = new JiraIssue((String)issueData.get('id'), (String)fieldData.get('summary'), (String)issueData.get('key'), (String)typeData.get('name'));
+            Map<String, Object> statusData = (Map<String, Object>)fieldData.get('status');
+            JiraIssue issueForUser = new JiraIssue((String)issueData.get('id'), (String)fieldData.get('summary'), (String)issueData.get('key'), (String)typeData.get('name'), (String)statusData.get('name'));
             issuesForUser.add(issueForUser);
         }
         return issuesForUser;
@@ -33,12 +34,14 @@ public class JiraViewAllIssuesController {
         @AuraEnabled public String summary {set; get;}
         @AuraEnabled public String key {set; get;}
         @AuraEnabled public String issueType {set; get;}
+        @AuraEnabled public String status {set; get;}
         
-        public JiraIssue(String issueId, String summary, String key, String issueType) {
+        public JiraIssue(String issueId, String summary, String key, String issueType, String Status) {
             this.issueId = issueId;
             this.summary = summary;
             this.key = key;
             this.issueType = issueType;
+            this.status = status;
         }
     }
 }

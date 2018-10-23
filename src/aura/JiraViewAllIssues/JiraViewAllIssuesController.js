@@ -4,18 +4,18 @@
         helper.getWatchedIssues(component);
     },
     
-    openQA : function(component, event, helper) {
+    openTest : function(component, event, helper) {
         $A.createComponent(
             "c:JiraAddCommentForm",
             {
                 "aura:id": "findableAuraId",
                 "ticketKey": event.target.id,
                 "questionOne": "What environment will be used for testing?",
-                "questionTwo": "QA test plan (including test cases):",
-                "questionThree": "QA tester(s):",
+                "questionTwo": "Test plan (including test cases):",
+                "questionThree": "Tester(s):",
                 "questionFour" : "What configuration changes need to be made?",
                 "status": "Ready For QA Testing",
-                "modalHeader" : "QA Request Form for " + event.target.getAttribute('name')
+                "modalHeader" : "Testing Form for " + event.target.getAttribute('name')
             },
             function(newModal, status, errorMessage){
                 if (status === "SUCCESS") {
@@ -44,7 +44,7 @@
                 "questionThree": "Name of Admin who tested and signed off:",
                 "questionFour": "Name of stakeholder representative who signed off:",
                 "questionFive": "What metadata needs to be migrated?",
-                "questionSix": "What configurations need to be made before or after deploy?",
+                "questionSix": "What configuration and security changes need to be made before or after deploy?",
                 "status": "2nd Technical Review",
                 "modalHeader" : "Second Tech Form for " + event.target.getAttribute('name')
             },

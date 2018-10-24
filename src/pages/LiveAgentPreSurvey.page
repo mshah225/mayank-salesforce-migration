@@ -1,0 +1,76 @@
+<apex:page showHeader="false" controller="LiveAgentPreSurveyController">
+    <apex:image url="{!$Resource.LiveAgentlogo}" />
+    <c:myasustyles />
+    <script type='text/javascript'>
+    (function() {
+        function handlePageLoad() {
+            var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)");
+            document.getElementById('prechatForm').setAttribute('action',
+                                                                decodeURIComponent(endpointMatcher.exec(document.location.search)[1]));
+        } if (window.addEventListener) {
+            window.addEventListener('load', handlePageLoad, false);
+        } else { window.attachEvent('onload', handlePageLoad, false);
+               }})();
+    </script>
+    <c:LiveAgentNotices />
+    <body style="background-color:#F5F5F5">
+        <form method='post' id='prechatForm' >
+            <div style="padding: 10px;">
+                <h1 style="font-size:x-large;">
+                    {!presurveyQuestion}<br />
+                </h1>  
+            </div>
+            <div style="padding: 10px;">
+                <input type='textarea' class='searchBox' style="width:100% !important;" name='liveagent.prechat:CaseDescription' id='caseDescription' placeholder="Enter a brief description of your issue." required="true"/><br />
+                <input type="hidden" name="liveagent.prechat:CaseStatus" value="New" />
+                <input type="hidden" name="liveagent.prechat:CaseSubject" value="{!caseSubject}" />
+                <input type="hidden" name="liveagent.prechat:CaseOrigin" value="Chat" />
+                <input type="hidden" name="liveagent.prechat:CaseRecordType" value="{!caseRecordType}" />
+                <input type="hidden" name="liveagent.prechat:CaseFunctionalGroup" value="{!caseFunctionalGroup}" />
+                <input type="hidden" name="liveagent.prechat:CaseCategory" value="{!caseCategory}" />
+                <input type="hidden" name="liveagent.prechat:CaseSubCategory" value="{!caseSubCategory}" />
+                <input type="hidden" name="liveagent.prechat:CaseOwner" value="{!caseOwnerId}" />
+                <input type="hidden" name="liveagent.prechat.name" id="prechat_field_name" />
+                <input type='hidden' name='liveagent.prechat:ContactId' id='contactId' value='{!$User.ContactId}'/>
+                <input type='hidden' name='liveagent.prechat:ContactName' id='contactName' value='{!$User.FirstName} {!$User.LastName}'/>
+                <input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="Id, ContactId; Name, contactName" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.map:Case" value="Subject,CaseSubject; Description, CaseDescription; Status,CaseStatus;Origin__c,CaseOrigin;RecordTypeId,CaseRecordType; OwnerId, CaseOwner; CC_Functional_Group__c, CaseFunctionalGroup; CC_Category__c, CaseCategory; CC_Sub_Category__c, CaseSubCategory;" />       
+                <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Id,true" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="Id,true;" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Case" value="Subject,true; Description, true; Status,true;Origin__c,true;RecordTypeId,true; OwnerId, true; CC_Functional_Group__c, true; CC_Category__c, true; CC_Sub_Category__c, true;" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.linkToEntity:Contact" value="Case,ContactId" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value="true" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Case" value="true" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Contact" value="ContactId" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Case" value="CaseId" />        
+                <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseRecordType" value="false" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseStatus" value="false" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:ContactId" value="false" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseOrigin" value="false" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseSubject" value="false" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseOwner" value="false" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseFunctionalGroup" value="false" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseCategory" value="false" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseSubCategory" value="false" />
+            </div>
+            <div style="padding: 10px;">
+                <input type='submit' style="max-width: 300px !important; width:25% !important; height: 15% !important; font-size:4vw !important" value='Chat Now' id='prechat_submit' onclick="setName()" class ="kbbtn searchBtn" />
+            </div>
+        <script type="text/javascript">
+        var detailCallback = function (details){
+            for (var i = 0; i < details.customDetails.length; i++) {
+                if(details.customDetails[i].label == 'test'){
+                    console.log(details.customDetails[i].value);
+                }
+            }
+        };
+        function setName() {
+            document.getElementById("prechat_field_name").value = '{!$User.FirstName} {!$User.LastName}';
+        }
+        </script>
+        <style type="text/css">
+            p {font-weight: bolder }
+        </style>
+    </form>
+    </body>
+</apex:page>

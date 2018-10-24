@@ -1,5 +1,5 @@
 public without sharing class NonAuthenticatedLiveAgentController {
-    public String buttonPressed {set; get;} 
+	public String buttonPressed {set; get;} 
     public String caseDescription {set; get;}
     public String caseRecordType {set; get;}
     public String caseOwnerId {set; get;}
@@ -9,12 +9,18 @@ public without sharing class NonAuthenticatedLiveAgentController {
     public String caseSubject {set; get;}
     public String presurveyQuestion {set; get;}
     public String contactId {set; get;}
-    private static final NON_AFFILIATE_CAR_EMAIL = 'non_affiliate_live_chat@asu.edu';
 
     public NonAuthenticatedLiveAgentController() {
-        buttonPressed = LiveAgentUtils.getButtonIdFromURL();
+        getButtonIdFromURL();
         setCaseDetails();
         setPresurveyQuestion();
+    }
+    
+    private void getButtonIdFromURL() {
+        String buttonParam = ApexPages.currentPage().getURL();
+        Integer indexOf = buttonParam.indexOf('button_id');
+        buttonParam = buttonParam.substring(indexOf+12, indexOf+27);
+        buttonPressed = [SELECT DeveloperName FROM LiveChatButton WHERE Id =: buttonParam LIMIT 1].DeveloperName;
     }
     
     private void setCaseDetails() {
@@ -27,7 +33,7 @@ public without sharing class NonAuthenticatedLiveAgentController {
     }
     
     private Case_Assignment_Rule__c getCarFromButton() {
-        String emailForCarFilter = 	NON_AFFILIATE_CAR_EMAIL;
+        String emailForCarFilter = 	'non_affiliate_live_chat@asu.edu';
         
         Case_Assignment_Rule__c carFromButton = [SELECT Case_Record_Type_Id__c, CC_Functional_Group__c, CC_Category__c, Queue_ID__c, CC_Sub_Category__c, OwnerId 
                                                  FROM Case_Assignment_Rule__c
@@ -40,15 +46,16 @@ public without sharing class NonAuthenticatedLiveAgentController {
     }
     
     private void setCaseOwnerAndSubject(Case_Assignment_Rule__c car) {
-        if (car.Queue_ID__c.subString(0,3) == IDHelper.findPrefixFromObjectName('Group')) {
+        if (car.Queue_ID__c.subString(0,3) == Group.SObjectType.getDescribe().getKeyPrefix()) {
         	List<Group> potentialQueue = [SELECT Id, Name FROM Group WHERE Id =: car.Queue_ID__c];
             caseOwnerId = potentialQueue[0].Id;
-            caseSubject = potentialQueue[0].Name + ' ' + buttonPressed.replace('_', ' ');
-        } else if (car.Queue_ID__c.subString(0,3) == IDHelper.findPrefixFromObjectName('User')) {
+            caseSubject = potentialQueue[0].Name + ' Live Chat';
+        } else if (car.Queue_ID__c.subString(0,3) == User.SObjectType.getDescribe().getKeyPrefix()) {
             List<User> potentialUser = [SELECT Id, Name FROM User WHERE Id =: car.Queue_ID__c];
             caseOwnerId = potentialUser[0].Id;
-            caseSubject = potentialUser[0].Name + ' ' + buttonPressed.replace('_', ' ');
+            caseSubject = potentialUser[0].Name + ' Live Chat';
         }
+        
     }
     
     private void setNonAffiliatedContact() {

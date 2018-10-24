@@ -9,9 +9,16 @@ public class LiveAgentPreSurveyController {
     public String presurveyQuestion {set; get;}
 
     public LiveAgentPreSurveyController() {
-        buttonPressed = LiveAgentUtils.getButtonIdFromURL();
+        getButtonIdFromURL();
         setCaseDetails();
         setPresurveyQuestion();
+    }
+    
+    private void getButtonIdFromURL() {
+        String buttonParam = ApexPages.currentPage().getURL();
+        Integer indexOf = buttonParam.indexOf('button_id');
+        buttonParam = buttonParam.substring(indexOf+12, indexOf+27);
+        buttonPressed = [SELECT DeveloperName FROM LiveChatButton WHERE Id =: buttonParam LIMIT 1].DeveloperName;
     }
     
     private void setCaseDetails() {
@@ -36,14 +43,15 @@ public class LiveAgentPreSurveyController {
     }
     
     private void setCaseOwnerAndSubject(Case_Assignment_Rule__c car) {
-        if (car.Queue_ID__c.subString(0,3) == IDHelper.findPrefixFromObjectName('Group')) {
+        if (car.Queue_ID__c.subString(0,3) == Group.SObjectType.getDescribe().getKeyPrefix()) {
         	List<Group> potentialQueue = [SELECT Id, Name FROM Group WHERE Id =: car.Queue_ID__c];
             caseOwnerId = potentialQueue[0].Id;
             caseSubject = potentialQueue[0].Name + ' ' + buttonPressed.replace('_', ' ');
-        } else if (car.Queue_ID__c.subString(0,3) == IDHelper.findPrefixFromObjectName('User')) {
+        } else if (car.Queue_ID__c.subString(0,3) == User.SObjectType.getDescribe().getKeyPrefix()) {
             List<User> potentialUser = [SELECT Id, Name FROM User WHERE Id =: car.Queue_ID__c];
             caseOwnerId = potentialUser[0].Id;
             caseSubject = potentialUser[0].Name + ' ' + buttonPressed.replace('_', ' ');
         }
+        
     }
 }

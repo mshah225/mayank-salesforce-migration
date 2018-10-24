@@ -4,7 +4,7 @@ public abstract class TestFactory {
     private static final Boolean RESET_TIMESTAMPS = false;
     private static final Boolean USE_NEW_AUTONUMBERS = false;
     private static Integer incrementingCounter;
-    private Map<String, List<Sobject>> fieldNameToRelatedObjects;
+    private Map<String, List<Object>> fieldNameToRelatedObjects;
     private List<String> fieldNamesToIncrement;
     private Sobject newObject;
     protected Sobject template;
@@ -12,7 +12,7 @@ public abstract class TestFactory {
     public TestFactory(Sobject template) {
         incrementingCounter = 0;
         this.template = template;
-        fieldNameToRelatedObjects = new Map<String, List<Sobject>>();
+        fieldNameToRelatedObjects = new Map<String, List<Object>>();
         fieldNamesToIncrement = new List<String>();
     }
     
@@ -21,6 +21,14 @@ public abstract class TestFactory {
     }
     
     public void setRelatedObject(String fieldName, List<Sobject> relatedTo) {
+        fieldNameToRelatedObjects.put(fieldName, relatedTo);
+    }
+    
+    public void setRelatedField(String fieldName, Object relatedTo) {
+        setRelatedField(fieldName, new List<Object> {relatedTo});
+    }
+    
+    public void setRelatedField(String fieldName, List<Object> relatedTo) {
         fieldNameToRelatedObjects.put(fieldName, relatedTo);
     }
     
@@ -57,9 +65,10 @@ public abstract class TestFactory {
     
     private void setNewObjectRelatedObjectFields(Integer currentIndex) {
         for (String fieldName : fieldNameToRelatedObjects.keySet()) {
-            List<Sobject> relatedObjects = fieldNameToRelatedObjects.get(fieldName);
-            Sobject interleavedRelatedObject = relatedObjects.get(Math.mod(currentIndex, relatedObjects.size()));
-            newObject.put(fieldName, interleavedRelatedObject.Id);
+            List<Object> relatedObjects = fieldNameToRelatedObjects.get(fieldName);
+            Object interleavedRelatedObject = relatedObjects.get(Math.mod(currentIndex, relatedObjects.size()));
+            interleavedRelatedObject = interleavedRelatedObject instanceOf Sobject ? ((Sobject) interleavedRelatedObject).Id : interleavedRelatedObject;
+            newObject.put(fieldName, interleavedRelatedObject);
         }
     }
     

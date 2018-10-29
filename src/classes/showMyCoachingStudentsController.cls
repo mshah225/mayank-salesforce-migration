@@ -320,12 +320,27 @@ public class showMyCoachingStudentsController {
             'AND (' +
                 'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(trimmed) + '%\' ' +
                 'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(trimmed) + '%\'' +
+            	checkFirstAndLastName(trimmed) +
             ')';
 
         query = studentsQuery;
-        System.debug('merf query after mystudentssearch: ' + query);
     }
 
+    public static String checkFirstAndLastName(String searchTerm){
+        String queryPart = '';
+        List<String> dividedSearchTerm = searchTerm.split('\\s+');
+        String firstName = dividedSearchTerm.remove(0);
+        String lastName = '';
+        for (String partOfLastName : dividedSearchTerm) {
+            lastName += partOfLastName + ' ';
+        }
+        lastName = lastName.trim();
+        if (!String.isEmpty(firstName) && !String.isEmpty(lastName)) {
+            queryPart = 'OR (Student__r.FirstName LIKE \'' + String.escapeSingleQuotes(firstName) + '\' ' +
+                'AND Student__r.LastName LIKE \'' + String.escapeSingleQuotes(lastName) + '\')';
+        }
+        return queryPart;
+    }
     /*
      * Resets the myStudentsQuery to initial value
      */

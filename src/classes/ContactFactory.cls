@@ -1,12 +1,29 @@
 @isTest
-public class ContactFactory {
+public class ContactFactory extends TestFactory {
+    public static final Contact DEFAULT_CONTACT = new Contact(
+        FirstName = 'Test',
+        LastName = 'Contact',
+        Email = 'test@test.com',
+        EmplId__c = '12000'
+    );
+    
+    public ContactFactory(Contact testContact) {
+        super(testContact);
+        this.addToFieldsToIncrement('LastName');
+        this.addToFieldsToIncrement('EmplId__c');
+    }
+    
+    public Contact createOne() {
+        return (Contact) this.create(1)[0];
+    }
+    
     public class DefaultContact extends TestFactory {
         public DefaultContact() {
             super(new Contact(
                 FirstName = 'Test',
                 LastName = 'Contact',
                 Email = 'test@test.com',
-                EmplId__c = '12345678'
+                EmplId__c = '123456'
             ));
             this.addToFieldsToIncrement('LastName');
             this.addToFieldsToIncrement('EmplId__c');

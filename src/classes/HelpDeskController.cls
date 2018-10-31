@@ -1363,6 +1363,9 @@ public with sharing class HelpDeskController
     }
 
     private String getCategoryDescription() {
+        if (selectedCategory == null || selectedCategory == '--') {
+            return '';
+        }
         String categoryDefaultCaseDescription = [SELECT Default_Case_Description__c FROM Case_Classification__c WHERE Id =: selectedCategory].Default_Case_Description__c;
         return categoryDefaultCaseDescription == null ? '' : categoryDefaultCaseDescription;
     }

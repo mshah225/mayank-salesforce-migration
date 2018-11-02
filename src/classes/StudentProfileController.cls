@@ -317,7 +317,7 @@ global with sharing class StudentProfileController {
                    Name, Pell_Eligibility__c, Promise_Cohort__c, SystemModstamp 
             FROM Financial_Aid_Package__c
             WHERE Contact__c = :theContact.Id
-            AND Aid_Year__c = :String.valueOf(Date.today().year())
+            AND Aid_Year__c = :String.valueOf(Date.today().addMonths(6).year())
             LIMIT 1
         ];
         financialAidPackage = financesPackageList.isEmpty() ? new Financial_Aid_Package__c() : financesPackageList[0];

@@ -364,6 +364,7 @@ public class showMyCasesController extends ListViewController {
         picklistValuesForCaseStatus.add('Outreach Required');
         picklistValuesForCaseStatus.add('Unable to Leave Voicemail');
         picklistValuesForCaseStatus.add('Wrong number');
+        picklistValuesForCaseStatus.add('Customer Replied');
 
         return pickListValuesForCaseStatus;
     }
@@ -465,7 +466,7 @@ public class showMyCasesController extends ListViewController {
     }
 
     private String createFilterStringForCollegeDegreeAndCampus() {
-        if (!String.isEmpty(campusFilter) || !String.isEmpty(majorFilter)) {
+        if (campusFilter != '--' || !String.isEmpty(majorFilter)) {
             String collegeDegreeAndCampusFilter = ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
                    'WHERE Status__c = \'Active in Program\' ';
 

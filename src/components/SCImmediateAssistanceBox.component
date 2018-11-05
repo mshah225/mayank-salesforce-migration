@@ -270,52 +270,52 @@
 
                         <li><a id="bomgarChat" class="chat-link">Bomgar Chat - Other</a></li>
                         <li>
-                            <a id="liveagent_button_online_5730S0000008OjX" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730S0000008OjX');" >Live Agent - Finances</a>
-                            <a id="liveagent_button_offline_5730S0000008OjX" class="chat-link" style="display: none;" >Live Agent - Finances Offline</a>
+                            <a id="liveagent_button_online_5730m0000008OXx" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXx');" >Live Agent - Finances</a>
+                            <a id="liveagent_button_offline_5730m0000008OXx" class="chat-link" style="display: none;" >Live Agent - Finances Offline</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
-                                    liveagent.showWhenOnline('5730S0000008OjX', document.getElementById('liveagent_button_online_5730S0000008OjX'));
-                                    liveagent.showWhenOffline('5730S0000008OjX', document.getElementById('liveagent_button_offline_5730S0000008OjX'));
+                                    liveagent.showWhenOnline('5730m0000008OXx', document.getElementById('liveagent_button_online_5730m0000008OXx'));
+                                    liveagent.showWhenOffline('5730m0000008OXx', document.getElementById('liveagent_button_offline_5730m0000008OXx'));
                                 });
                             </script>
                             <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
                             <script type='text/javascript'>
                                 liveagent.setName('{!$User.FirstName} {!$User.LastName}');
-                            	liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2A', '00D0S0000008uTn');
+                            	liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
                             </script>
                         </li>
                         <li>
-                            <a id="liveagent_button_online_5730S0000008OjZ" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730S0000008OjZ');" >Live Agent - Technical Support</a>
-                            <a id="liveagent_button_offline_5730S0000008OjZ" class="chat-link" style="display: none;" >Live Agent - Technical Support Offline</a>
+                            <a id="liveagent_button_online_5730m0000008OXz" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXz');" >Live Agent - Technical Support</a>
+                            <a id="liveagent_button_offline_5730m0000008OXz" class="chat-link" style="display: none;" >Live Agent - Technical Support Offline</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
-                                    liveagent.showWhenOnline('5730S0000008OjZ', document.getElementById('liveagent_button_online_5730S0000008OjZ'));
-                                    liveagent.showWhenOffline('5730S0000008OjZ', document.getElementById('liveagent_button_offline_5730S0000008OjZ'));
+                                    liveagent.showWhenOnline('5730m0000008OXz', document.getElementById('liveagent_button_online_5730m0000008OXz'));
+                                    liveagent.showWhenOffline('5730m0000008OXz', document.getElementById('liveagent_button_offline_5730m0000008OXz'));
                                 });
                             </script>
                             <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
                             <script type='text/javascript'>
                                 liveagent.setName('{!$User.FirstName} {!$User.LastName}');
-                                liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2C', '00D0S0000008uTn');
+                                liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
                             </script>
                         </li>
                         <li>
-                            <a id="liveagent_button_online_5730S0000008OjY" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat('5730S0000008OjY')">Live Agent - Student Services</a>
-                            <a id="liveagent_button_offline_5730S0000008OjY" class="chat-link" style="display: none; border: 0px none; ">Live Agent - Student Services Offline</a>
+                            <a id="liveagent_button_online_5730m0000008OXy" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXy')">Live Agent - Student Services</a>
+                            <a id="liveagent_button_offline_5730m0000008OXy" class="chat-link" style="display: none; border: 0px none; ">Live Agent - Student Services Offline</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
-                                    liveagent.showWhenOnline('5730S0000008OjY', document.getElementById('liveagent_button_online_5730S0000008OjY'));
-                                    liveagent.showWhenOffline('5730S0000008OjY', document.getElementById('liveagent_button_offline_5730S0000008OjY'));
+                                    liveagent.showWhenOnline('5730m0000008OXy', document.getElementById('liveagent_button_online_5730m0000008OXy'));
+                                    liveagent.showWhenOffline('5730m0000008OXy', document.getElementById('liveagent_button_offline_5730m0000008OXy'));
                                 });
                             </script>
                             <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
                             
                             <script type='text/javascript'>
                                 liveagent.setName('{!$User.FirstName} {!$User.LastName}');
-                                liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2B', '00D0S0000008uTn');
+                                liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
                             </script>
                         </li>
 

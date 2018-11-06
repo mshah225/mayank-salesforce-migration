@@ -28,7 +28,7 @@ public class CaseListTransferController {
         collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
 
         this.cs = [
-            SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c, Is_Private_To_Functional_Group__c
+            SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c, CC_Functional_Group__r.Sharing_Group__c
             FROM Case
             WHERE Id = :((Case) stdController.getRecord()).Id
         ];
@@ -78,7 +78,7 @@ public class CaseListTransferController {
 	        }
         }
 
-        this.cs = [SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c, Is_Private_To_Functional_Group__c
+        this.cs = [SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c, CC_Functional_Group__r.Sharing_Group__c
             FROM Case WHERE Id IN :CaseIds];
 
         for (Case c : this.cs) {
@@ -312,7 +312,6 @@ public class CaseListTransferController {
     public PageReference transferCase() {
         PageReference nextPage;
         boolean allSubsAndDescsValidated = true;
-        boolean isPrivateCase = false;
         boolean transferToPrivate = false;
 
         // Verify that all cases have descriptions and subjects
@@ -325,14 +324,13 @@ public class CaseListTransferController {
         if (allSubsAndDescsValidated) {
             Case_Assignment_Rule__c selectedCar;
             if (!toUser) {
-                selectedCar = CARService.getCAR(selectedId);
-                transferToPrivate = selectedCar.Cases_Created_as_Private__c;
+                selectedCar = CARService.getCARWithSharingGroup(selectedId);
+                if (selectedCar.CC_Functional_Group__r.Sharing_Group__c != null && selectedCar.CC_Functional_Group__r.Sharing_Group__c != '') {
+                    transferToPrivate = true;
+                }
             }
 
             for (Case c : this.cs) {
-                if (c.Is_Private_To_Functional_Group__c) {
-                    isPrivateCase = true;
-                }
                 /*
                 * Transfer to a department by setting the case information
                 * according to the selected CAR
@@ -352,10 +350,9 @@ public class CaseListTransferController {
                     c.Case_Feed_Email_Template_Id__c = selectedCar.Case_Feed_Email_Template_Id__c;
                     c.Campus__c = selectedCar.Campus__c;
                     c.RecordTypeId = selectedCar.Case_Record_Type_Id__c;
-                    c.Is_Private_To_Functional_Group__c = selectedCar.Cases_Created_as_Private__c;
+                    //c.CC_Functional_Group__r.Sharing_Group__c = selectedCar.Cases_Created_as_Private__c;
                 }
             }
-
             try {
                 update this.cs;
             } catch (Exception e) {
@@ -369,7 +366,6 @@ public class CaseListTransferController {
                     'Description are required fields for case transfer. Please fill ' +
                     'out the missing fields before transferring the case.')
             );
-
             return null;
         }
 
@@ -380,11 +376,10 @@ public class CaseListTransferController {
             nextPage = new ApexPages.action('{!list}').invoke();
         }
 
-        if (transferToPrivate && !isPrivateCase) {
+        if (transferToPrivate) {
             page = 5;
             return ApexPages.currentPage();
         }
-
         return nextPage;
     }
 

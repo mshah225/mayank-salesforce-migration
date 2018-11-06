@@ -74,4 +74,16 @@ public with sharing class CARService
 
         return theCAR;
     }
+
+    public static Case_Assignment_Rule__c getCARWithSharingGroup(Id selectedId) {
+        String CARFields = CARFieldsToString();
+
+        String queryString = 'SELECT ' + CARFields + ', CC_Functional_Group__r.Sharing_Group__c ' +
+            'FROM Case_Assignment_Rule__c ' +
+            'WHERE Id = :selectedId';
+
+        Case_Assignment_Rule__c theCAR = Database.query(queryString);
+
+        return theCAR;
+    }
 }

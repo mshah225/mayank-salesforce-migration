@@ -350,7 +350,6 @@ public class CaseListTransferController {
                     c.Case_Feed_Email_Template_Id__c = selectedCar.Case_Feed_Email_Template_Id__c;
                     c.Campus__c = selectedCar.Campus__c;
                     c.RecordTypeId = selectedCar.Case_Record_Type_Id__c;
-                    //c.CC_Functional_Group__r.Sharing_Group__c = selectedCar.Cases_Created_as_Private__c;
                 }
             }
             try {

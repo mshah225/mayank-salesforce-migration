@@ -35,26 +35,26 @@ public without sharing class CaseHandler implements ITrigger {
             Set<Id> caseContactIdSet = new Set<ID>();
             Set<Id> campaignIdSet = new Set<Id>();
 
-            for (Case c: (List<Case>)Trigger.new) {
-                if (c.RecordTypeId == recruitmentCaseRT[0].Id) {
-                    campaignIdSet.add(c.Case_Source__c);
+            for (Case newCase: (List<Case>)Trigger.new) {
+                if (newCase.RecordTypeId == recruitmentCaseRT[0].Id) {
+                    campaignIdSet.add(newCase.Case_Source__c);
                     // Case "a"
                     // SFR-1109; removed boolean check here to correct bug on webform submissions
-                    //if (c.Associate_Case_to_Active_Opportunity__c == true) {
-                    caseContactIdSet.add(c.ContactId);
+                    //if (newCase.Associate_Case_to_Active_Opportunity__c == true) {
+                    caseContactIdSet.add(newCase.ContactId);
                     //}
 				}
 
 				// Check each incoming case for valid classification fields.
-				CaseClassifier classifier = new CaseClassifier(c);
+				CaseClassifier classifier = new CaseClassifier(newCase);
 				if (classifier.hasInvalidCaseClassification()) {
 					caseClassificationsToQuery.addAll(classifier.getMissingClassifications());
 					casesToClassify.add(classifier);
 				}
 				// populate CaseClassification Ids into list for a bulk query
-				setOfCaseClassficationId.add(c.CC_Functional_Group__c);
-				setOfCaseClassficationId.add(c.CC_Category__c);
-				setOfCaseClassficationId.add(c.CC_Sub_Category__c);
+				setOfCaseClassficationId.add(newCase.CC_Functional_Group__c);
+				setOfCaseClassficationId.add(newCase.CC_Category__c);
+				setOfCaseClassficationId.add(newCase.CC_Sub_Category__c);
 			}
 
             LogSuite.log('query', 'Calling related contact map query');
@@ -108,20 +108,20 @@ public without sharing class CaseHandler implements ITrigger {
             }
             groupNameMap = GroupService.mapGroupIdToName(ownerIdForCasesBeingInserted);
         } else if (Trigger.isUpdate) {
-            for (Case c : (List<Case>)Trigger.new) {
-                Case previousCaseState = (Case) Trigger.oldMap.get(c.Id);
-                CaseWebformCloser closer = new CaseWebformCloser(c, previousCaseState);
+            for (Case newCase : (List<Case>)Trigger.new) {
+                Case previousCaseState = (Case) Trigger.oldMap.get(newCase.Id);
+                CaseWebformCloser closer = new CaseWebformCloser(newCase, previousCaseState);
                 closer.handleWebformCase();
 				// Check each incoming case for valid classification fields.
-				CaseClassifier classifier = new CaseClassifier(c);
+				CaseClassifier classifier = new CaseClassifier(newCase);
 				if (classifier.hasInvalidCaseClassification()) {
 					caseClassificationsToQuery.addAll(classifier.getMissingClassifications());
 					casesToClassify.add(classifier);
 				}
 				// after classification has been done, populate CaseClassification Ids into list for a bulk query
-				setOfCaseClassficationId.add(c.CC_Functional_Group__c);
-				setOfCaseClassficationId.add(c.CC_Category__c);
-				setOfCaseClassficationId.add(c.CC_Sub_Category__c);
+				setOfCaseClassficationId.add(newCase.CC_Functional_Group__c);
+				setOfCaseClassficationId.add(newCase.CC_Category__c);
+				setOfCaseClassficationId.add(newCase.CC_Sub_Category__c);
             }
 
             // SFE-11309 - Refactor, needs this query to be run atleast once
@@ -183,23 +183,23 @@ public without sharing class CaseHandler implements ITrigger {
     */
     public void beforeInsert(SObject so)
     {
-        Case c = (Case)so;
+        Case newCase = (Case)so;
 
         // Set system info field for Most Recent Queue
-        if (groupNameMap.containsKey(c.OwnerId))
+        if (groupNameMap.containsKey(newCase.OwnerId))
         {
-            c.Most_Recent_Queue__c = groupNameMap.get(c.OwnerId).Name;
+            newCase.Most_Recent_Queue__c = groupNameMap.get(newCase.OwnerId).Name;
         }
         // Set system info field for Most Recent Functional Group
-        if (c.Functional_Group__c != 'External Unit' && c.Functional_Group__c != null)
+        if (newCase.Functional_Group__c != 'External Unit' && newCase.Functional_Group__c != null)
         {
-            c.Most_Recent_Functional_Group__c = c.Functional_Group__c;
+            newCase.Most_Recent_Functional_Group__c = newCase.Functional_Group__c;
         }
 
         //Support for Drupal Webforms
-        if(c.Status == 'Processing')
+        if(newCase.Status == 'Processing')
         {
-            List<String> subjectSplit = c.Subject.split('%');
+            List<String> subjectSplit = newCase.Subject.split('%');
             if(subjectSplit.size() >= 4)
             {
                 String emplid = '';
@@ -234,7 +234,7 @@ public without sharing class CaseHandler implements ITrigger {
                     List<Contact> contactUsers = [SELECT Id FROM Contact WHERE EMPLID__c = :emplid LIMIT 1];
                     if(contactUsers != null && contactUsers.size() > 0)
                     {
-                        c.ContactId = contactUsers[0].Id;
+                        newCase.ContactId = contactUsers[0].Id;
                     }
                     else
                     {
@@ -242,19 +242,19 @@ public without sharing class CaseHandler implements ITrigger {
                     }
                 }
 
-                if(c.ContactId == null && first != null && first != '' && last != null && last != '')
+                if(newCase.ContactId == null && first != null && first != '' && last != null && last != '')
                 {
                     conToCreate.FirstName = first;
                     conToCreate.LastName = last;
                     insert conToCreate;
-                    c.ContactId = conToCreate.Id;
+                    newCase.ContactId = conToCreate.Id;
                 }
             }
         }
 
-        if (recruitmentCaseRT.size() > 0 && c.RecordTypeId == recruitmentCaseRT[0].Id)
+        if (recruitmentCaseRT.size() > 0 && newCase.RecordTypeId == recruitmentCaseRT[0].Id)
         {
-            Contact con = relatedContactMap.get(c.ContactId);
+            Contact con = relatedContactMap.get(newCase.ContactId);
             List<Opportunity> opList = new List<Opportunity>();
             Case_Assignment_Rule__c defaultCAR;
             boolean ownerSet = false;
@@ -265,9 +265,9 @@ public without sharing class CaseHandler implements ITrigger {
             }
 
             // SFR-1109; moved boolean check here to correct bug on webform submissions
-            if (c.Associate_Case_to_Active_Opportunity__c == true && opList != null && opList.size() > 0)
+            if (newCase.Associate_Case_to_Active_Opportunity__c == true && opList != null && opList.size() > 0)
             {
-                c.Opportunity__c = opList[0].Id;
+                newCase.Opportunity__c = opList[0].Id;
             }
 
             // Special handling for API users below for webform integrations'
@@ -277,20 +277,20 @@ public without sharing class CaseHandler implements ITrigger {
                 if (opList != null && opList.size() > 0)
                 {
                     // Case "b"
-                    if (c.Type_of_Additional_Assignment_Needed__c == 'Territory Manager' && c.Associate_Case_to_Active_Opportunity__c == true)
+                    if (newCase.Type_of_Additional_Assignment_Needed__c == 'Territory Manager' && newCase.Associate_Case_to_Active_Opportunity__c == true)
                     {
                         if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false)
                         {
-                            c.OwnerId = opList[0].OwnerId;
+                            newCase.OwnerId = opList[0].OwnerId;
                             ownerSet = true;
                         }
                     }
-                    // Case "c"
-                    else if (c.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach' && c.Associate_Case_to_Active_Opportunity__c == true)
+                    // Case "newCase"
+                    else if (newCase.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach' && newCase.Associate_Case_to_Active_Opportunity__c == true)
                     {
                         if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false)
                         {
-                            c.OwnerId = opList[0].Enrollment_Coach__c;
+                            newCase.OwnerId = opList[0].Enrollment_Coach__c;
                             ownerSet = true;
                         }
                     }
@@ -299,9 +299,9 @@ public without sharing class CaseHandler implements ITrigger {
             // Case for API users (webforms)
             else
             {
-                if (sourceMap.containsKey(c.Case_Source__c))
+                if (sourceMap.containsKey(newCase.Case_Source__c))
                 {
-                    Campaign source = sourceMap.get(c.Case_Source__c);
+                    Campaign source = sourceMap.get(newCase.Case_Source__c);
                     // Did we find a related Case Assignment Rule?
                     if (source.Case_Assignment_Rule__c != null)
                     {
@@ -313,18 +313,18 @@ public without sharing class CaseHandler implements ITrigger {
                             {
                                 if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false)
                                 {
-                                    c.OwnerId = opList[0].OwnerId;
-                                    c.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
+                                    newCase.OwnerId = opList[0].OwnerId;
+                                    newCase.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
                                     ownerSet = true;
                                 }
                             }
-                            // Case "c"
+                            // Case "newCase"
                             else if (source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach')
                             {
                                 if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false)
                                 {
-                                    c.OwnerId = opList[0].Enrollment_Coach__c;
-                                    c.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
+                                    newCase.OwnerId = opList[0].Enrollment_Coach__c;
+                                    newCase.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
                                     ownerSet = true;
                                 }
                             }
@@ -332,23 +332,23 @@ public without sharing class CaseHandler implements ITrigger {
 
                         if (!ownerSet && source.Case_Assignment_Rule__r.Queue_ID__c != null)
                         {
-                            c.OwnerId = ID.valueOf(source.Case_Assignment_Rule__r.Queue_ID__c);
+                            newCase.OwnerId = ID.valueOf(source.Case_Assignment_Rule__r.Queue_ID__c);
                         }
                         if (source.Case_Assignment_Rule__r.Origin__c != null)
                         {
-                            c.Origin__c = source.Case_Assignment_Rule__r.Origin__c;
+                            newCase.Origin__c = source.Case_Assignment_Rule__r.Origin__c;
                         }
                         if (source.Case_Assignment_Rule__r.CC_Category__c != null)
                         {
-                            c.CC_Category__c = source.Case_Assignment_Rule__r.CC_Category__c;
+                            newCase.CC_Category__c = source.Case_Assignment_Rule__r.CC_Category__c;
                         }
                         if (source.Case_Assignment_Rule__r.CC_Sub_Category__c != null)
                         {
-                            c.CC_Sub_Category__c = source.Case_Assignment_Rule__r.CC_Sub_Category__c;
+                            newCase.CC_Sub_Category__c = source.Case_Assignment_Rule__r.CC_Sub_Category__c;
                         }
                         if (source.Case_Assignment_Rule__r.CC_Functional_Group__c != null)
                         {
-                            c.CC_Functional_Group__c =source.Case_Assignment_Rule__r.CC_Functional_Group__c;
+                            newCase.CC_Functional_Group__c =source.Case_Assignment_Rule__r.CC_Functional_Group__c;
                         }
                     }
                     else
@@ -356,7 +356,7 @@ public without sharing class CaseHandler implements ITrigger {
                         // No related Case Assignment Rule found; use the Territory Manager if found
                         if (opList != null && opList.size() > 0 && opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true)
                         {
-                            c.OwnerId = opList[0].OwnerId;
+                            newCase.OwnerId = opList[0].OwnerId;
                         }
                         else
                         {
@@ -375,41 +375,41 @@ public without sharing class CaseHandler implements ITrigger {
                                         {
                                             if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false)
                                             {
-                                                c.OwnerId = opList[0].OwnerId;
-                                                c.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
+                                                newCase.OwnerId = opList[0].OwnerId;
+                                                newCase.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
                                                 ownerSet = true;
                                             }
                                         }
-                                        // Case "c"
+                                        // Case "newCase"
                                         else if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach')
                                         {
                                             if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false)
                                             {
-                                                c.OwnerId = opList[0].Enrollment_Coach__c;
-                                                c.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
+                                                newCase.OwnerId = opList[0].Enrollment_Coach__c;
+                                                newCase.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
                                                 ownerSet = true;
                                             }
                                         }
                                     }
                                     if (!ownerSet && defaultCar.Queue_ID__c != null)
                                     {
-                                        c.OwnerId = ID.valueOf(defaultCar.Queue_ID__c);
+                                        newCase.OwnerId = ID.valueOf(defaultCar.Queue_ID__c);
 
                                         if (defaultCAR.Origin__c != null)
                                         {
-                                            c.Origin__c = defaultCAR.Origin__c;
+                                            newCase.Origin__c = defaultCAR.Origin__c;
                                         }
                                         if (defaultCAR.CC_Category__c != null)
                                         {
-                                            c.CC_Category__c = defaultCAR.CC_Category__c;
+                                            newCase.CC_Category__c = defaultCAR.CC_Category__c;
                                         }
                                         if (defaultCAR.CC_Sub_Category__c != null)
                                         {
-                                            c.CC_Sub_Category__c = defaultCAR.CC_Sub_Category__c;
+                                            newCase.CC_Sub_Category__c = defaultCAR.CC_Sub_Category__c;
                                         }
                                         if (defaultCAR.CC_Functional_Group__c != null)
                                         {
-                                            c.CC_Functional_Group__c = defaultCAR.CC_Functional_Group__c;
+                                            newCase.CC_Functional_Group__c = defaultCAR.CC_Functional_Group__c;
                                         }
                                     }
                                 }
@@ -479,19 +479,21 @@ public without sharing class CaseHandler implements ITrigger {
     */
     public void afterUpdate(SObject oldSo, SObject so)
     {
-        Case c = (Case)so;
-        Case oldc = (Case)oldSo;
+        Case newCase = (Case) so;
+        Case oldCase = (Case) oldSo;
 
         //Forward the email and attach any case attachments as well
-        if (c.Status == 'Closed: Forwarded' && oldC.Status != 'Closed: Forwarded')
-        {
+        if (shouldForwardCase(newCase, oldCase)) {
             //Prevent recursive update and sending of mail
-            if(!CaseUtilities.emailForwarded)
-            {
+            if (!CaseUtilities.emailForwarded) {
+                CaseUtilities.forwardCaseAttachments(newCase.Id, newCase.Forward_To_Email__c , newCase.Forward_To_Email_Calculation__c);
                 CaseUtilities.emailForwarded = true;
-                CaseUtilities.forwardCaseAttachments(c.Id, c.Forward_To_Email__c , c.Forward_To_Email_Calculation__c);
             }
         }
+    }
+    
+    private Boolean shouldForwardCase(Case newCase, Case oldCase) {
+        return newCase.Status == 'Closed: Forwarded' && oldCase.Status != 'Closed: Forwarded' && newCase.Forward_To_Unit__c != CaseUtilities.getForwardToUnit('ServiceNow');
     }
 
     /**

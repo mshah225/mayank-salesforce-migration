@@ -168,8 +168,7 @@ public without sharing class CaseHandler implements ITrigger {
      * This method is called prior to execution of an AFTER trigger. Use this to cache
      * any data required into maps prior execution of the trigger.
      */
-    public void bulkAfter() {
-    }
+    public void bulkAfter() {}
 
     /**
      * beforeInsert
@@ -265,14 +264,11 @@ public without sharing class CaseHandler implements ITrigger {
                         }
                     }
                 }
-            }
-            // Case for API users (webforms)
-            else{
+            } else { 
                 if (sourceMap.containsKey(newCase.Case_Source__c)) {
                     Campaign source = sourceMap.get(newCase.Case_Source__c);
                     // Did we find a related Case Assignment Rule?
                     if (source.Case_Assignment_Rule__c != null) {
-                        // SFE-690 Apply TM/EC logic to API users as well as non-API users
                         if (opList != null && opList.size() > 0) {
                             // Case "b"
                             if (source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c == 'Territory Manager') {
@@ -307,28 +303,24 @@ public without sharing class CaseHandler implements ITrigger {
                         if (source.Case_Assignment_Rule__r.CC_Functional_Group__c != null) {
                             newCase.CC_Functional_Group__c = source.Case_Assignment_Rule__r.CC_Functional_Group__c;
                         }
-                    }else  {
+                    } else {
                         // No related Case Assignment Rule found; use the Territory Manager if found
                         if (opList != null && opList.size() > 0 && opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true) {
                             newCase.OwnerId = opList[0].OwnerId;
-                        }else  {
+                        } else {
                             // No valid Territory Manager found; use default Case Assignment Rule
                             if (defaultCAR == null) {
                                 LogSuite.log('query', 'Calling default CAR query');
                                 defaultCar = [SELECT Id, Queue_ID__c, Origin__c, CC_Category__c, CC_Sub_Category__c, CC_Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
                                 if (!(defaultCAR == null)) {
-                                    // SFE-690 Apply TM/EC logic to API users as well as non-API users
                                     if (opList != null && opList.size() > 0) {
-                                        // Case "b"
                                         if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Territory Manager') {
                                             if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false) {
                                                 newCase.OwnerId = opList[0].OwnerId;
                                                 newCase.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
                                                 ownerSet = true;
                                             }
-                                        }
-                                        // Case "newCase"
-                                        else if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach') {
+                                        } else if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach') {
                                             if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false) {
                                                 newCase.OwnerId = opList[0].Enrollment_Coach__c;
                                                 newCase.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';

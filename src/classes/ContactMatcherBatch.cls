@@ -1,12 +1,14 @@
 public without sharing class ContactMatcherBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
-    private Id attachmentId;
+    private Id attachmentId
+    private Id subscriptionId;
     private String contactUploadId;
     private Map<Integer, String> columnMap;
     private Boolean headerRow;
     private String updatedCSVBody = '';
 
-    public ContactMatcherBatch(Id attachmentId) {
+    public ContactMatcherBatch(Id attachmentId, Id subscriptionId) {
         this.attachmentId = attachmentId;
+        this.subscriptionId = subscriptionId;
     }
 
     public Iterable<String> start(Database.BatchableContext batchableContext) {
@@ -27,6 +29,7 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
         List<Contact_Upload_Detail__c> detailsInError = new List<Contact_Upload_Detail__c>();
         List<Contact_Upload_Detail__c> allDetailsFromLines = new List<Contact_Upload_Detail__c>();
         ContactUploadDetailService detailCreator = new ContactUploadDetailService(contactUploadId, columnMap);
+        detailCreator.setSubscriptionId(subscriptionId);
         for (List<String> lineValues: csvLines) {
             Contact_Upload_Detail__c detailFromLine = detailCreator.createAndValidateRowForMatcher(lineValues);
             if (detailFromLine.Status__c != 'Error') {

@@ -10,7 +10,7 @@ public without sharing class ContactUploadAddFileExtension {
             }
             return modeSelected;
         }
-        set; 
+        set;
     }
     public Boolean contactIdMatch {
         get {
@@ -19,9 +19,9 @@ public without sharing class ContactUploadAddFileExtension {
             }
             return contactIdMatch;
         }
-        set; 
+        set;
     }
-    
+
     public String contactModeSelected {
     get {
         if (contactModeSelected == null) {
@@ -29,11 +29,11 @@ public without sharing class ContactUploadAddFileExtension {
         }
         return contactModeSelected;
     }
-    
-    set; 
-        
+
+    set;
+
     }
-    
+
     public Attachment newAttachment {
         get {
             if (newAttachment == null) {
@@ -44,7 +44,7 @@ public without sharing class ContactUploadAddFileExtension {
         set;
     }
 
-    /** 
+    /**
     * The extension constructor initializes the private member
     * variable mysObject by using the getRecord method from the standard
     * controller.
@@ -56,8 +56,8 @@ public without sharing class ContactUploadAddFileExtension {
 
     private void queryAttachments() {
         attachmentList = new List<Attachment>([
-            SELECT Id, Name, Description, CreatedDate, CreatedById, CreatedBy.Name 
-            FROM Attachment 
+            SELECT Id, Name, Description, CreatedDate, CreatedById, CreatedBy.Name
+            FROM Attachment
             WHERE ParentId = :myContactUpload.Id
         ]);
     }
@@ -84,29 +84,29 @@ public without sharing class ContactUploadAddFileExtension {
         }
         return null;
     }
-    
+
     public void contactUploadButton() {
         contactIdMatch = false;
         contactModeSelected = 'Upload Subscribers';
         modeSelected = true;
     }
-    
+
     public void contactMatcherButton() {
         contactIdMatch = true;
         contactModeSelected = 'Match Contacts';
         modeSelected = true;
     }
-    
+
     public Id subscriptionValue { get; set; }
 
     public List<SelectOption> subscriptionOptions {
         get {
             if (subscriptionOptions == null) {
                 subscriptionOptions = new List<SelectOption>();
-                
+
                 Id userId = UserInfo.getUserId();
-                List<GroupMember> groupsOfUser = [SELECT UserOrGroupId, Group.Id 
-                                                  FROM GroupMember  
+                List<GroupMember> groupsOfUser = [SELECT UserOrGroupId, Group.Id
+                                                  FROM GroupMember
                                                   WHERE  UserOrGroupId =: userId];
                 List<Id> groupIdsUserIsIn = new List<Id>();
                 groupIdsUserIsIn.add(userId);
@@ -114,21 +114,24 @@ public without sharing class ContactUploadAddFileExtension {
                     groupIdsUserIsIn.add(groups.GroupId);
                 }
                 List<GroupMember> queueUserIsIn = [SELECT UserOrGroupId, Group.Name, Group.Id
-                                                   FROM GroupMember 
+                                                   FROM GroupMember
                                                    WHERE  Group.Type = 'Queue' AND
                                                    UserOrGroupId IN: groupIdsUserIsIn];
-                
+
                 List<Id> queueIdList = new List<Id>();
                 for (GroupMember queues : queueUserIsIn) {
                     queueIdList.add(queues.GroupId);
                 }
-                
-                List<Subscription__c> allSubs = [SELECT Id, Name 
-                                                 FROM Subscription__c 
+
+                List<Subscription__c> allSubs = [SELECT Id, Name
+                                                 FROM Subscription__c
                                                  WHERE Owner.Id IN: queueIdList
                                                  ORDER BY Name ASC];
                 for (Subscription__c sub : allSubs) {
                     subscriptionOptions.add(new SelectOption(sub.Id, sub.Name));
+                }
+                if (contactIdMatch) {
+                    subscriptionOptions.add(new SelectOption(null, '--'));
                 }
             }
             return subscriptionOptions;
@@ -136,7 +139,7 @@ public without sharing class ContactUploadAddFileExtension {
 
         set;
     }
-    
+
     public String subscriptionStatusValue { get; set; }
 
     public List<SelectOption> subscriptionStatusOptions {

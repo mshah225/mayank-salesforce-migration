@@ -1,0 +1,65 @@
+<apex:page showHeader="false">
+    <apex:image url="{!$Resource.LiveAgentlogo}" />
+    <c:myasustyles />
+    <button style="max-width: 300px !important; width:15% !important; height: 15% !important; margin-top:10px !important;" class ="kbbtn searchBtn" onclick="getTranscript();">Save Chat.</button>
+    <br/>
+    <apex:outputPanel >
+        <h2 style="font-size:30px">
+            <br/> Thank you! <br/>
+        </h2>
+        <apex:outputText style="font-size: 15px" value="Thanks for reaching out for support. We'd appreciate it if you could fill out a small survey linked below so that we can improve our customer service."/>
+        <apex:outputText style="display: none;" id ="transcript" value='{!$CurrentPage.parameters.transcript}'/>
+        <button class ="kbbtn searchBtn" style="margin-top: 10px !important; max-width: 3000px !important; width:50% !important; height: 15% !important; font-size:4vw !important" onclick="goToSurvey();">Click Here For Survey</button>
+        
+    </apex:outputPanel>
+    <script type='text/javascript'>
+    var chatDetails = JSON.parse('{!$CurrentPage.parameters.chatDetails}');
+    var mergeFieldObject = {
+        chat_key: '{!$CurrentPage.parameters.chatKey}',
+        chat_start_time: '{!$CurrentPage.parameters.startTime}',
+        chat_request_time: '{!$CurrentPage.parameters.requestTime}',
+        chat_agent_id: typeof chatDetails.agent !== 'undefined' ? chatDetails.agent.userId : '',
+        chat_agent_name: typeof chatDetails.agent !== 'undefined' ? chatDetails.agent.agentName : '',
+        chat_last_visited_page: '{!$CurrentPage.parameters.lastVisitedPage}',
+        chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}'
+    };
+    var customDetails = {}
+    if (typeof chatDetails.customDetails !== 'undefined') {
+        customDetails = chatDetails.customDetails.reduce(function(memo, detail) {
+            memo['chat_custom_' + toSnakeCase(detail.label)] = detail.value;
+            return memo;
+        }, {});
+    }
+    Object.assign(mergeFieldObject, customDetails, JSON.parse('{!$CurrentPage.parameters.attachedRecords}'))
+    var mergeFields = [];
+    for (var prop in mergeFieldObject) {
+        mergeFields.push(prop + '=' + mergeFieldObject[prop])
+    }
+    console.log(document.getElementById('j_id0:transcript'));
+    
+    function download(filename, text) {
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', filename);
+    
+      element.style.display = 'none';
+      document.body.appendChild(element);
+    
+      element.click();
+    
+      document.body.removeChild(element);
+    }
+    
+    function getTranscript() {
+        var chatBody = document.getElementById('j_id0:transcript').innerHTML;
+    	console.log(chatBody)
+    	download("Transcript.txt", chatBody);
+    }
+    function goToSurvey() {
+    	window.location = 'https://www.getfeedback.com/r/WS21ASwZ?' + mergeFields.join('&')    
+    }
+    function toSnakeCase(str) {
+        return str.trim().toLowerCase().replace(/\W/g, '_').replace(/(^_|_$)/g, '')
+    }
+    </script>
+</apex:page>

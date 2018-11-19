@@ -1,5 +1,5 @@
 public without sharing class ContactMatcherBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
-    private Id attachmentId
+    private Id attachmentId;
     private Id subscriptionId;
     private String contactUploadId;
     private Map<Integer, String> columnMap;

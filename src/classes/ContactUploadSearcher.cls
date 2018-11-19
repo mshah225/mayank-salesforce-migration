@@ -84,34 +84,21 @@ public without sharing class ContactUploadSearcher {
 
     private void searchContactsForMappedValues() {
         if (detailsToSearch[0].Subscription__c != null) {
-            matchedContacts = [
-                SELECT EMPLID__c, AsuRite_Id__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c,
-                    ASU_Email__c, ASU_Gmail__c, EPO_Email__c, LastName, Birthdate, MailingPostalCode, HomePhone,
-                    MobilePhone, SF_Mobile__c, Phone, OtherPhone, MailingStreet
-                FROM Contact
-                WHERE (
-                    (
-                        FirstName IN :firstNameSet
-                        AND (Email IN :emailSet
-                            OR Lead_Email__c IN :emailSet
-                            OR Lead_Secondary_Email__c IN :emailSet
-                            OR Personal_Email__c IN :emailSet
-                            OR ASU_Email__c IN :emailSet
-                            OR ASU_Gmail__c IN :emailSet
-                            OR EPO_Email__c IN :emailSet
-                        )
-                    )
-                    OR AsuRite_Id__c IN :asuriteToOriginalDetail.keySet()
-                    OR EMPLID__c IN :emplIdToOriginalDetail.keySet()
-                ) AND Id IN (SELECT Contact__c FROM Subscriber__c WHERE Subscription__c = :detailsToSearch[0].Subscription__c)
-            ];
+            matchedContacts = getContactsMatchedByMappedValuesAndSubscriptionId();
         } else {
-            matchedContacts = [
-                SELECT EMPLID__c, AsuRite_Id__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c,
-                    ASU_Email__c, ASU_Gmail__c, EPO_Email__c, LastName, Birthdate, MailingPostalCode, HomePhone,
-                    MobilePhone, SF_Mobile__c, Phone, OtherPhone, MailingStreet
-                FROM Contact
-                WHERE (
+            matchedContacts = getContactsMatchedByMappedValues();
+        }
+
+    }
+
+    private List<Contact> getContactsMatchedByMappedValuesAndSubscriptionId() {
+        return [
+            SELECT EMPLID__c, AsuRite_Id__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c,
+                ASU_Email__c, ASU_Gmail__c, EPO_Email__c, LastName, Birthdate, MailingPostalCode, HomePhone,
+                MobilePhone, SF_Mobile__c, Phone, OtherPhone, MailingStreet
+            FROM Contact
+            WHERE (
+                (
                     FirstName IN :firstNameSet
                     AND (Email IN :emailSet
                         OR Lead_Email__c IN :emailSet
@@ -124,9 +111,30 @@ public without sharing class ContactUploadSearcher {
                 )
                 OR AsuRite_Id__c IN :asuriteToOriginalDetail.keySet()
                 OR EMPLID__c IN :emplIdToOriginalDetail.keySet()
-            ];
-        }
+            ) AND Id IN (SELECT Contact__c FROM Subscriber__c WHERE Subscription__c = :detailsToSearch[0].Subscription__c)
+        ];
+    }
 
+    private List<Contact> getContactsMatchedByMappedValues() {
+        return [
+            SELECT EMPLID__c, AsuRite_Id__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c,
+                ASU_Email__c, ASU_Gmail__c, EPO_Email__c, LastName, Birthdate, MailingPostalCode, HomePhone,
+                MobilePhone, SF_Mobile__c, Phone, OtherPhone, MailingStreet
+            FROM Contact
+            WHERE (
+                FirstName IN :firstNameSet
+                AND (Email IN :emailSet
+                    OR Lead_Email__c IN :emailSet
+                    OR Lead_Secondary_Email__c IN :emailSet
+                    OR Personal_Email__c IN :emailSet
+                    OR ASU_Email__c IN :emailSet
+                    OR ASU_Gmail__c IN :emailSet
+                    OR EPO_Email__c IN :emailSet
+                )
+            )
+            OR AsuRite_Id__c IN :asuriteToOriginalDetail.keySet()
+            OR EMPLID__c IN :emplIdToOriginalDetail.keySet()
+        ];
     }
 
     private void associateDetailsWithMatchedContacts() {

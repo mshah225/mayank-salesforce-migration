@@ -71,10 +71,10 @@ public without sharing class ContactUploadAddFileExtension {
             insert newAttachment;
             queryAttachments();
             if (contactIdMatch) {
-                ContactMatcherBatch batch = new ContactMatcherBatch(newAttachment.Id, subscriptionValue);
+                ContactMatcherBatch batch = new ContactMatcherBatch(newAttachment.Id, subscriptionId);
                 Database.executeBatch(batch, MATCHER_BATCH_SIZE);
             } else {
-                ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id, subscriptionValue, subscriptionStatusValue);
+                ContactUploadBatch batch = new ContactUploadBatch(newAttachment.Id, subscriptionId, subscriptionStatusValue);
                 Database.executeBatch(batch, UPLOAD_BATCH_SIZE);
             }
         } catch (DMLException e) {
@@ -97,7 +97,17 @@ public without sharing class ContactUploadAddFileExtension {
         modeSelected = true;
     }
 
-    public Id subscriptionValue { get; set; }
+    public String subscriptionValue { get; set; }
+
+    public Id subscriptionId {
+        get {
+            if (subscriptionValue == '--') {
+                return null;
+            } else {
+                return Id.valueOf(subscriptionValue);
+            }
+        }
+    }
 
     public List<SelectOption> subscriptionOptions {
         get {
@@ -131,7 +141,7 @@ public without sharing class ContactUploadAddFileExtension {
                     subscriptionOptions.add(new SelectOption(sub.Id, sub.Name));
                 }
                 if (contactIdMatch) {
-                    subscriptionOptions.add(new SelectOption(null, '--'));
+                    subscriptionOptions.add(new SelectOption('--', 'All Contacts'));
                 }
             }
             return subscriptionOptions;

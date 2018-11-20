@@ -1,17 +1,32 @@
 <apex:page showHeader="false">
+    <div style="background-color: black; width: 100%; height: 40px;" >
+        <button style="max-width: 300px !important; width:15% !important; height: 30px !important; margin-top:5px !important; margin-left: 12px !important; background-color:#6D7391 !important;" class ="kbbtn searchBtn" onclick="getTranscript();">Save Chat</button>
+        <button class ="kbbtn searchBtn" style="margin-top: 5px !important; margin-right: 20px !important; max-width: 3000px !important; width:120px !important; height: 30px !important; font-size:3vw !important; float: right;" onclick="goToSurvey();">Take Survey</button>
+    </div>
     <apex:image url="{!$Resource.LiveAgentlogo}" />
     <c:myasustyles />
-    <button style="max-width: 300px !important; width:15% !important; height: 15% !important; margin-top:10px !important;" class ="kbbtn searchBtn" onclick="getTranscript();">Save Chat.</button>
+    
     <br/>
-    <apex:outputPanel >
-        <h2 style="font-size:30px">
-            <br/> Thank you! <br/>
-        </h2>
-        <apex:outputText style="font-size: 15px" value="Thanks for reaching out for support. We'd appreciate it if you could fill out a small survey linked below so that we can improve our customer service."/>
-        <apex:outputText style="display: none;" id ="transcript" value='{!$CurrentPage.parameters.transcript}'/>
-        <button class ="kbbtn searchBtn" style="margin-top: 10px !important; max-width: 3000px !important; width:50% !important; height: 15% !important; font-size:4vw !important" onclick="goToSurvey();">Click Here For Survey</button>
-        
-    </apex:outputPanel>
+    <body style="background-color:#F5F5F5">
+        <apex:outputPanel>
+            <h2 style="font-size:30px">
+                Previous Conversation <br/>
+            </h2>
+            <div id="tempId" style="max-height:200px; overflow: auto;"></div>
+            <apex:outputText style="display: none;" id="transcript" value="{!$CurrentPage.parameters.transcript}"/>
+            <table class="nav" align="center">
+                <tr>
+                    <td>
+                        <div class="nav_button">
+                            <div class="b_left"></div>
+                            <button class ="kbbtn searchBtn" style="margin-top: 10px !important; max-width: 3000px !important; width:300px !important; height: 15% !important; font-size:4vw !important" onclick="goToSurvey();">Click Here For Survey</button>
+                            <div class="b_right"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+    </body>
     <script type='text/javascript'>
     var chatDetails = JSON.parse('{!$CurrentPage.parameters.chatDetails}');
     var mergeFieldObject = {
@@ -35,8 +50,11 @@
     for (var prop in mergeFieldObject) {
         mergeFields.push(prop + '=' + mergeFieldObject[prop])
     }
-    console.log(document.getElementById('j_id0:transcript'));
-    
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById('j_id0:transcript').innerHTML));
+	document.body.appendChild(element);
+    var transcript = document.getElementById('j_id0:transcript').innerHTML;
+    document.getElementById('tempId').innerHTML = transcript.replace(/\n/g, '<br/>');
     function download(filename, text) {
       var element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -52,7 +70,6 @@
     
     function getTranscript() {
         var chatBody = document.getElementById('j_id0:transcript').innerHTML;
-    	console.log(chatBody)
     	download("Transcript.txt", chatBody);
     }
     function goToSurvey() {

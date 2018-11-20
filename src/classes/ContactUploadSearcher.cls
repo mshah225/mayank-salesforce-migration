@@ -26,6 +26,12 @@ public without sharing class ContactUploadSearcher {
 
     public void searchForContacts() {
         createDataMappingForSearch();
+        getContactsMatchedByMappedValues();
+        associateDetailsWithMatchedContacts();
+    }
+
+    public void searchContactsToMatch() {
+        createDataMappingForSearch();
         searchContactsForMappedValues();
         associateDetailsWithMatchedContacts();
     }
@@ -83,16 +89,15 @@ public without sharing class ContactUploadSearcher {
     }
 
     private void searchContactsForMappedValues() {
-        if (detailsToSearch[0].Subscription__c != null) {
-            matchedContacts = getContactsMatchedByMappedValuesAndSubscriptionId();
+        if (!(detailsToSearch.isEmpty()) && detailsToSearch[0].Subscription__c != null) {
+            getContactsMatchedByMappedValuesAndSubscriptionId();
         } else {
-            matchedContacts = getContactsMatchedByMappedValues();
+            getContactsMatchedByMappedValues();
         }
-
     }
 
-    private List<Contact> getContactsMatchedByMappedValuesAndSubscriptionId() {
-        return [
+    private void getContactsMatchedByMappedValuesAndSubscriptionId() {
+        matchedContacts =  [
             SELECT EMPLID__c, AsuRite_Id__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c,
                 ASU_Email__c, ASU_Gmail__c, EPO_Email__c, LastName, Birthdate, MailingPostalCode, HomePhone,
                 MobilePhone, SF_Mobile__c, Phone, OtherPhone, MailingStreet
@@ -115,8 +120,8 @@ public without sharing class ContactUploadSearcher {
         ];
     }
 
-    private List<Contact> getContactsMatchedByMappedValues() {
-        return [
+    private void getContactsMatchedByMappedValues() {
+        matchedContacts =  [
             SELECT EMPLID__c, AsuRite_Id__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c,
                 ASU_Email__c, ASU_Gmail__c, EPO_Email__c, LastName, Birthdate, MailingPostalCode, HomePhone,
                 MobilePhone, SF_Mobile__c, Phone, OtherPhone, MailingStreet

@@ -40,7 +40,7 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
             allDetailsFromLines.add(detailFromLine);
         }
         ContactUploadSearcher searcher = new ContactUploadSearcher(detailsToProcess);
-        searcher.searchForContacts();
+        searcher.searchContactsToMatch();
         addContactIdToCSV(scope, allDetailsFromLines);
         detailsToProcess.addAll(detailsInError);
         if (detailsToProcess.size() > 0) {

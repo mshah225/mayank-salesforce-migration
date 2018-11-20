@@ -101,7 +101,7 @@ public without sharing class ContactUploadAddFileExtension {
 
     public Id subscriptionId {
         get {
-            if (subscriptionValue == '--') {
+            if (subscriptionValue == '--' || subscriptionValue == null) {
                 return null;
             } else {
                 return Id.valueOf(subscriptionValue);

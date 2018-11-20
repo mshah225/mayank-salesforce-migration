@@ -1,14 +1,13 @@
 <apex:page showHeader="false">
     <div style="background-color: black; width: 100%; height: 40px;" >
         <button class ="kbbtn searchBtn saveChat" onclick="getTranscript();">Save Chat</button>
-        <button class ="kbbtn searchBtn topSurvey" onclick="goToSurvey();">Take Survey</button>
     </div>
     <apex:image url="{!$Resource.LiveAgentlogo}" />
     <c:myasustyles />
     
     <br/>
     <body style="background-color:#F5F5F5">
-        <apex:outputPanel>
+        <apex:outputPanel >
             <h2 style="font-size:30px">
                 Previous Conversation <br/>
             </h2>
@@ -38,6 +37,7 @@
         chat_last_visited_page: '{!$CurrentPage.parameters.lastVisitedPage}',
         chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}'
     };
+    console.log(mergeFieldObject);
     var customDetails = {}
     if (typeof chatDetails.customDetails !== 'undefined') {
         customDetails = chatDetails.customDetails.reduce(function(memo, detail) {
@@ -55,6 +55,24 @@
     document.body.appendChild(element);
     var transcript = document.getElementById('j_id0:transcript').innerHTML;
     document.getElementById('tempId').innerHTML = transcript.replace(/\n/g, '<br/>');
+    createTimestampAndDisconnect();
+    
+    function checkTime(i) {
+        return (i < 10) ? "0" + i : i;
+    }
+    
+    function createTimestampAndDisconnect() {
+        var today = new Date();
+        h = checkTime(today.getHours()),
+        m = checkTime(today.getMinutes()),
+        s = checkTime(today.getSeconds());
+        var timeStamp = '(' + h + ':' + m + ':' + s + ')';
+        if ('{!$CurrentPage.parameters.disconnectedBy}' == 'client') {
+        	document.getElementById('tempId').innerHTML += timeStamp + 'You have disconnected this chat';
+    	} else {
+        	document.getElementById('tempId').innerHTML += timeStamp + 'Chat was disconnected by agent';
+    	}
+    }
     function download(filename, text) {
       var element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -87,15 +105,6 @@
             margin-top:5px !important; 
             margin-left: 12px !important; 
             background-color:#6D7391 !important;
-        }
-        .topSurvey {
-            margin-top: 5px !important; 
-            margin-right: 20px !important; 
-            max-width: 3000px !important; 
-            width:120px !important; 
-            height: 30px !important; 
-            font-size:3vw !important; 
-            float: right;
         }
         .bottomSurvey {
             margin-top: 10px !important; 

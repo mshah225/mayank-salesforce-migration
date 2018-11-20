@@ -52,7 +52,7 @@
     }
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById('j_id0:transcript').innerHTML));
-	document.body.appendChild(element);
+    document.body.appendChild(element);
     var transcript = document.getElementById('j_id0:transcript').innerHTML;
     document.getElementById('tempId').innerHTML = transcript.replace(/\n/g, '<br/>');
     function download(filename, text) {
@@ -70,10 +70,10 @@
     
     function getTranscript() {
         var chatBody = document.getElementById('j_id0:transcript').innerHTML;
-    	download("Transcript.txt", chatBody);
+        download("Transcript.txt", chatBody);
     }
     function goToSurvey() {
-    	window.location = 'https://www.getfeedback.com/r/WS21ASwZ?' + mergeFields.join('&')    
+        window.location = 'https://www.getfeedback.com/r/WS21ASwZ?' + mergeFields.join('&')    
     }
     function toSnakeCase(str) {
         return str.trim().toLowerCase().replace(/\W/g, '_').replace(/(^_|_$)/g, '')

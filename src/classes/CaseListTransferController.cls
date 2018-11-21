@@ -28,7 +28,7 @@ public class CaseListTransferController {
         collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
 
         this.cs = [
-            SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c, CC_Functional_Group__r.Sharing_Group__c
+            SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c, CC_Functional_Group__r.Is_Functional_Group_Private__c
             FROM Case
             WHERE Id = :((Case) stdController.getRecord()).Id
         ];
@@ -78,7 +78,7 @@ public class CaseListTransferController {
 	        }
         }
 
-        this.cs = [SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c, CC_Functional_Group__r.Sharing_Group__c
+        this.cs = [SELECT Subject, Description, CC_Sub_Category__c, CC_Category__c, CC_Functional_Group__c, CC_Functional_Group__r.Is_Functional_Group_Private__c
             FROM Case WHERE Id IN :CaseIds];
 
         for (Case c : this.cs) {
@@ -325,9 +325,7 @@ public class CaseListTransferController {
             Case_Assignment_Rule__c selectedCar;
             if (!toUser) {
                 selectedCar = CARService.getCARWithSharingGroup(selectedId);
-                if (selectedCar.CC_Functional_Group__r.Sharing_Group__c != null && selectedCar.CC_Functional_Group__r.Sharing_Group__c != '') {
-                    transferToPrivate = true;
-                }
+                transferToPrivate = selectedCar.CC_Functional_Group__r.Is_Functional_Group_Private__c;
             }
 
             for (Case c : this.cs) {

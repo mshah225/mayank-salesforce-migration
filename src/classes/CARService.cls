@@ -78,7 +78,7 @@ public with sharing class CARService
     public static Case_Assignment_Rule__c getCARWithSharingGroup(Id selectedId) {
         String CARFields = CARFieldsToString();
 
-        String queryString = 'SELECT ' + CARFields + ', CC_Functional_Group__r.Sharing_Group__c ' +
+        String queryString = 'SELECT ' + CARFields + ', CC_Functional_Group__r.Is_Functional_Group_Private__c ' +
             'FROM Case_Assignment_Rule__c ' +
             'WHERE Id = :selectedId';
 

@@ -190,6 +190,8 @@ private class ContactUploadAddFileExtensionTest {
     @isTest
     private static void allContactsOptionAvailable() {
         setTestData();
+        List<SelectOption> subscriptionOptions = new List<SelectOption>();
+
         System.runAs(adminUser) {
             PageReference pageRef = Page.ContactUploadAddFilePage;
             Test.setCurrentPage(pageRef);
@@ -201,10 +203,12 @@ private class ContactUploadAddFileExtensionTest {
             Test.startTest();
             contactUploadExtension.contactMatcherButton();
             Test.stopTest();
+
+            subscriptionOptions = contactUploadExtension.subscriptionOptions;
         }
 
-        System.assertEquals('--', contactUploadExtension.subscriptionOptions.get(0).getValue());
-        System.assertEquals(1, contactUploadExtension.subscriptionOptions.size());
+        System.assertEquals('--', subscriptionOptions.get(0).getValue());
+        System.assertEquals(1, subscriptionOptions.size());
     }
 
 }

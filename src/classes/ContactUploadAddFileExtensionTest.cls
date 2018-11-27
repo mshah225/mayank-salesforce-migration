@@ -201,10 +201,10 @@ private class ContactUploadAddFileExtensionTest {
             Test.startTest();
             contactUploadExtension.contactMatcherButton();
             Test.stopTest();
-
-            System.assertEquals('--', contactUploadExtension.subscriptionOptions.get(0).getValue());
-            System.assertEquals(1, contactUploadExtension.subscriptionOptions.size());
         }
+
+        System.assertEquals('--', contactUploadExtension.subscriptionOptions.get(0).getValue());
+        System.assertEquals(1, contactUploadExtension.subscriptionOptions.size());
     }
 
 }

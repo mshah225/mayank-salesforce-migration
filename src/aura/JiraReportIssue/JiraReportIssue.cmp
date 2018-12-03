@@ -16,15 +16,16 @@
     <html>
         <body >
             <h1><center>{!v.type}</center> </h1>
-            <h3 style="color:MediumSeaGreen;" ><center>{!v.message}</center></h3>
-            <h3 style="color:blue;" ><center>{!v.link}</center></h3>
+            <h3 style="color:DarkOrange;" ><center>{!v.message}</center></h3>
+            <h3 style="color:blue;" class="slds-text-link_faux slds-align_absolute-center
+ " onclick="{!c.navigateToIssue}" >{!v.link}</h3>
             
             <form class="slds-form--stacked">    
                 <lightning:textarea  label="Summary of the issue (Title): "
                                     value="{!v.title}"
-                                    maxlength="255"
+                                    maxlength="254"
                                     required="true"/> 
-                <p class="fieldDescription">FIELD LIMIT: This field must be 255 characters or less </p>
+                <p class="fieldDescription">FIELD LIMIT: This field must be less than 255 characters.</p>
                 
                 <lightning:textarea  label="{!v.questionOne}"
                                     value="{!v.answerOne}"
@@ -37,13 +38,14 @@
                                     required="true"/>
                 <lightning:textarea  label="Watchers for the ticket: "
                                     value="{!v.watchers}"/>
-                <p class="fieldDescription">Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with a comma</p>
+                <p class="fieldDescription">Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with a comma.</p>
                 
-                <lightning:button label="Submit" 
+                <lightning:button aura:id="submitButton"
+                                  disabled="false"
+                                  label="Submit" 
                                   class="RED"
                                   variant="brand"
-                                  onclick="{!c.submitIssueForm}"
-                                  />
+                                  onclick="{!c.submitIssueForm}"/>
             </form> 
         </body>
         

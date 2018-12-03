@@ -34,7 +34,9 @@ global class JIRAWebserviceCallout {
             } else {
                 updateStatus(jiraKey, 'New Development Request');
             }
-            addWatchers(jiraKey,addUsers);
+            if (addUsers != null) {
+	            addWatchers(jiraKey,addUsers);
+            }
         } catch (System.CalloutException e) {
             errorLoggerVars.add(res.toString());
             errorLoggerVars.add(req.toString());

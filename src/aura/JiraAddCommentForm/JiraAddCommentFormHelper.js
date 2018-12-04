@@ -14,15 +14,14 @@
         var answerFive = component.get("v.answerFive");
         var answerSix = component.get("v.answerSix");
         var jiraKey = component.get("v.ticketKey");
+        
         var ticketComment = "";
         ticketComment += this.addToTicketComment(questionOne, answerOne);
-        console.log(ticketComment);
         ticketComment += this.addToTicketComment(questionTwo, answerTwo);
         ticketComment += this.addToTicketComment(questionThree, answerThree);
         ticketComment += this.addToTicketComment(questionFour, answerFour);
         ticketComment += this.addToTicketComment(questionFive, answerFive);
         ticketComment += this.addToTicketComment(questionSix, answerSix);
-        
         
         var action = component.get('c.submitForm');
         action.setParams({
@@ -31,17 +30,20 @@
             'status' : status
         })
         $A.enqueueAction(action);
+        var statusChange = component.getEvent("statusChange");
+        statusChange.setParams({
+            "status" : status,
+            "issueKey" : jiraKey
+        });
+        statusChange.fire();
     },
     
     addToTicketComment : function (question, answer, comment) {
-        console.log(question);
-        console.log(answer);
         if (question != undefined && answer != undefined) {
              return question + '\\n' + answer.replace('\n', "\\n") + '\\n';
         } else {
             return '';
         }
-        
     },
     
     removeUnusedQuestions : function (component) {

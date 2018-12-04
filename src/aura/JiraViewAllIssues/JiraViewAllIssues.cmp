@@ -4,6 +4,7 @@
     <aura:attribute name="selectedIssue" type="String"/>
     
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="statusChange" event="c:JiraIssueChange" action="{!c.handleStatusChange}"/>
     {!v.body}
 
     <h3>Tickets Assigned To Me: </h3>

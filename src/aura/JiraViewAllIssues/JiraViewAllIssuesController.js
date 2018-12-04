@@ -62,5 +62,9 @@
                 }
             }
         );
-	}
+	},
+    
+    handleStatusChange : function(component, event, helper) {
+        helper.handleStatusChange(component, event);
+    }
 })

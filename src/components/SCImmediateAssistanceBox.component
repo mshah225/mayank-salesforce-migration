@@ -6,6 +6,12 @@
     <apex:attribute name="myPin" description="The user's contact's PIN" type="Decimal"/>
     <apex:attribute name="newPin" description="The new PIN" type="Decimal"/>
     <apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action"/>
+    
+    <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
+    <script type='text/javascript'>
+        liveagent.setName('{!$User.FirstName} {!$User.LastName}');
+        liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
+    </script>
 
     <apex:outputPanel >
         <div class="box">
@@ -266,116 +272,37 @@
                     </button>
 
                     <ul class="dropdown-menu">
-                        <li><a id="faChat" class="chat-link">Bomgar Chat - Finances</a></li>
-
-                        <li><a id="bomgarChat" class="chat-link">Bomgar Chat - Other</a></li>
                         <li>
                             <a id="liveagent_button_online_5730m0000008OXx" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXx');" >Live Agent - Finances</a>
-                            <a id="liveagent_button_offline_5730m0000008OXx" class="chat-link" style="display: none;" >Live Agent - Finances Offline</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
                                     liveagent.showWhenOnline('5730m0000008OXx', document.getElementById('liveagent_button_online_5730m0000008OXx'));
-                                    liveagent.showWhenOffline('5730m0000008OXx', document.getElementById('liveagent_button_offline_5730m0000008OXx'));
+                                    liveagent.showWhenOffline('5730m0000008OXx', document.getElementById('liveagent_button_online_5730m0000008OXx'));
                                 });
-                            </script>
-                            <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
-                            <script type='text/javascript'>
-                                liveagent.setName('{!$User.FirstName} {!$User.LastName}');
-                            	liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
                             </script>
                         </li>
                         <li>
                             <a id="liveagent_button_online_5730m0000008OXz" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXz');" >Live Agent - Technical Support</a>
-                            <a id="liveagent_button_offline_5730m0000008OXz" class="chat-link" style="display: none;" >Live Agent - Technical Support Offline</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
                                     liveagent.showWhenOnline('5730m0000008OXz', document.getElementById('liveagent_button_online_5730m0000008OXz'));
-                                    liveagent.showWhenOffline('5730m0000008OXz', document.getElementById('liveagent_button_offline_5730m0000008OXz'));
+                                    liveagent.showWhenOffline('5730m0000008OXz', document.getElementById('liveagent_button_online_5730m0000008OXz'));
                                 });
-                            </script>
-                            <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
-                            <script type='text/javascript'>
-                                liveagent.setName('{!$User.FirstName} {!$User.LastName}');
-                                liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
                             </script>
                         </li>
                         <li>
                             <a id="liveagent_button_online_5730m0000008OXy" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXy')">Live Agent - Student Services</a>
-                            <a id="liveagent_button_offline_5730m0000008OXy" class="chat-link" style="display: none; border: 0px none; ">Live Agent - Student Services Offline</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
                                     liveagent.showWhenOnline('5730m0000008OXy', document.getElementById('liveagent_button_online_5730m0000008OXy'));
-                                    liveagent.showWhenOffline('5730m0000008OXy', document.getElementById('liveagent_button_offline_5730m0000008OXy'));
+                                    liveagent.showWhenOffline('5730m0000008OXy', document.getElementById('liveagent_button_online_5730m0000008OXy'));
                                 });
                             </script>
-                            <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
-                            
-                            <script type='text/javascript'>
-                                liveagent.setName('{!$User.FirstName} {!$User.LastName}');
-                                liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
-                            </script>
                         </li>
-
                     </ul>
-                </div>
-
-                <script>
-                    $j( "#bomgarChat" ).click(function() {
-                        $j( "#bomgarChatForm" ).slideToggle( "500");
-                        $j( "#faChatForm" ).slideUp( "500" );
-                    });
-
-                    $j( "#faChat" ).click(function() {
-                        $j( "#bomgarChatForm" ).slideUp( "500");
-                        $j( "#faChatForm" ).slideToggle( "500" );
-                    });
-                </script>
-
-                <div id="faChatForm" style="margin-top:20px;display:none;">
-                    <apex:pageBlock >
-                        <h5>Get Help with Finances</h5>
-                        <br />
-                        <br />
-                        <textarea id="FADesc"
-                                  placeholder="Enter a brief description of your issue"
-                                  rows="6"
-                                  style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea>
-                        <br />
-                        <apex:pageBlockButtons location="bottom">
-                            <button id="faChatBtn"
-                                    name="chat"
-                                    class="btn kbbtn"
-                                    style="color:#fff;background:#990033;padding:5px;width:60px;"
-                                    onClick="startFAChat();">
-                                Start Chat
-                            </button>
-                        </apex:pageBlockButtons>
-                    </apex:pageBlock>
-                </div>
-
-                <div id="bomgarChatForm" style="margin-top:20px;display:none;">
-                    <apex:pageBlock >
-                        <h5>Get Help</h5>
-                        <br />
-                        <br />
-                        <textarea id="SFDCDesc"
-                                  placeholder="Enter a brief description of your issue"
-                                  rows="6"
-                                  style="width:100%;max-width:300px;resize:none;padding: 5px;border-radius: 2px;border: solid 1px #999;"></textarea>
-                        <br />
-                        <apex:pageBlockButtons location="bottom">
-                            <button id="otherChatBtn"
-                                    name="chat"
-                                    class="btn kbbtn"
-                                    style="color:#fff;background:#990033;padding:5px;width:60px;"
-                                    onClick="startSFDCChat();">
-                                Start Chat
-                            </button>
-                        </apex:pageBlockButtons>
-                    </apex:pageBlock>
                 </div>
             </div>
         </div>

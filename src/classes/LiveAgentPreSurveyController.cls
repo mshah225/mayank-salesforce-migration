@@ -7,11 +7,13 @@ public class LiveAgentPreSurveyController {
     public String caseSubCategory {set; get;}
     public String caseSubject {set; get;}
     public String presurveyQuestion {set; get;}
+    public String agentOfflineMessage {set; get;}
 
     public LiveAgentPreSurveyController() {
         getButtonIdFromURL();
         setCaseDetails();
         setPresurveyQuestion();
+        setAgentOfflineMessage();
     }
     
     private void getButtonIdFromURL() {
@@ -32,9 +34,11 @@ public class LiveAgentPreSurveyController {
     
     private Case_Assignment_Rule__c getCarFromButton() {
         String emailForCarFilter = buttonPressed.toLowerCase() + '@asu.edu';
-        Case_Assignment_Rule__c carFromButton = [SELECT Case_Record_Type_Id__c, CC_Functional_Group__c, CC_Category__c, Queue_ID__c, CC_Sub_Category__c, OwnerId 
-                                                 FROM Case_Assignment_Rule__c
-                                                 WHERE Email_Address__c =: emailForCarFilter LIMIT 1];
+        Case_Assignment_Rule__c carFromButton = [
+            SELECT Case_Record_Type_Id__c, CC_Functional_Group__c, CC_Category__c, Queue_ID__c, CC_Sub_Category__c, OwnerId 
+            FROM Case_Assignment_Rule__c
+            WHERE Email_Address__c =: emailForCarFilter LIMIT 1
+        ];
         return carFromButton;
     }
     
@@ -52,6 +56,15 @@ public class LiveAgentPreSurveyController {
             caseOwnerId = potentialUser[0].Id;
             caseSubject = potentialUser[0].Name + ' ' + buttonPressed.replace('_', ' ');
         }
-        
+    }
+    
+    private void setAgentOfflineMessage() {
+        List<LiveAgent_Custom_Message__c> offlineMessages = [
+            SELECT Custom_Message__c 
+            FROM LiveAgent_Custom_Message__c 
+            WHERE LiveAgent_Button__c = 'Agent Offline'
+            ORDER BY CreatedDate DESC
+        ];
+        agentOfflineMessage = offlineMessages.isEmpty() ? 'No agents are available.' : offlineMessages[0].Custom_Message__c;
     }
 }

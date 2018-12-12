@@ -310,13 +310,19 @@ public with sharing class viewCaseController {
     }
     
     public PageReference submitReply() {
-        submitCaseReply();
-        submitAttachmentReply();
-        closeReplyBox();
-        return null;
+        Boolean isCaseReplySuccess = submitCaseReply();
+        Boolean isAttachmentSuccess = submitAttachmentReply();
+        if (isCaseReplySuccess && isAttachmentSuccess) {
+            closeReplyBox();
+            PageReference page = new PageReference(ApexPages.currentPage().getUrl());
+            page.setRedirect(true);
+            return page;
+        } else {
+            return null;
+        }
     }
     
-    private void submitCaseReply() {
+    private Boolean submitCaseReply() {
         if (!String.isBlank(caseReply)) {
             RestCallResponse restStatusAndInfo = createAndSendEmailMessage();
             if (restStatusAndInfo.isSuccessfull()) {
@@ -327,21 +333,24 @@ public with sharing class viewCaseController {
                 error.setClassName('viewCaseController');
                 error.setDetails('Error submitting case reply from service center. Error: ' + restStatusAndInfo.getMessage());
                 error.log();
+                return false;
             }
         }
-        clearReplyContents();
+        return true;
     }
     
-    private void submitAttachmentReply() {
+    private Boolean submitAttachmentReply() {
         if (replyCaseAttachment.Name != null && replyCaseAttachment.Body != null && caseId != null) {
             String attachmentUploadResponse = uploadAttachment();
             if (attachmentUploadResponse.contains('success')) {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Attachment to Case submitted Successfully'));
-                retrieveAttachmentList();     
+                retrieveAttachmentList();
             } else {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not upload attachment, please try again'));
+                return false;
             }
         }
+        return true;
     }
     
     private RestCallResponse createAndSendEmailMessage() {

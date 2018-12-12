@@ -45,10 +45,10 @@ public class CaseService
             Subject, TextBody, FromAddress, ToAddress, CCAddress
             FROM EmailMessage
             WHERE ParentId = :ApexPages.currentPage().getParameters().get('id')
-            AND Incoming = false
             AND Status !='5'
             AND CreatedDate > :launchDate
-            AND ToAddress IN :contactEmails
+            AND (ToAddress IN :contactEmails
+                OR FromAddress IN: contactEmails)
             ORDER BY CreatedDate DESC
         ];
     }

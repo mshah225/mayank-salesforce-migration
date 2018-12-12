@@ -12,8 +12,9 @@ private class Test_HelpDeskController
         testContacts[1].LastName = 'Caller';
 
         insert testContacts;
+
         TestDataFactory.createFunctionalGroup('Help Desk');
-        
+
     }
 
     @isTest static void testCreateContactCreateCaseSaveCase()
@@ -49,41 +50,41 @@ private class Test_HelpDeskController
 
         Test.startTest();
 
-        HelpDeskController hdc = new HelpDeskController();
+        HelpDeskController controller = new HelpDeskController();
 
         // Test cancel new contact after case selection
-        hdc.selectedContactId = testContact.Id;
-        hdc.selectedCaseId = caseList[0].Id;
-        hdc.setAsCase();
-        hdc.newContact();
-        hdc.cancelNewContact();
+        controller.selectedContactId = testContact.Id;
+        controller.selectedCaseId = caseList[0].Id;
+        controller.setAsCase();
+        controller.newContact();
+        controller.cancelNewContact();
 
         // Clear out search
-        hdc.clearContactSearch();
+        controller.clearContactSearch();
 
         // Create the new contact.
-        hdc.newContact();
-        hdc.mycontact.lastname = 'Doe';
-        hdc.saveContact();
+        controller.newContact();
+        controller.mycontact.lastname = 'Doe';
+        controller.saveContact();
 
         // Create the new Case and back out for coverage.
-        hdc.newCase();
-        hdc.cancelCase();
+        controller.newCase();
+        controller.cancelCase();
 
         // This flags an error on sub and desc.
-        hdc.newCase();
-        hdc.saveCase();
+        controller.newCase();
+        controller.saveCase();
 
         // Fill out the sub and desc to properly save the case.
-        hdc.mycase.Subject = 'test';
-        hdc.mycase.Description = 'test';
-        hdc.saveCase();
+        controller.mycase.Subject = 'test';
+        controller.mycase.Description = 'test';
+        controller.saveCase();
 
         Test.stopTest();
 
-        PageReference control = new PageReference('/' + hdc.mycase.Id);
+        PageReference control = new PageReference('/' + controller.mycase.Id);
 
-        System.assertEquals(control.getUrl(), hdc.saveCase().getUrl());
+        System.assertEquals(control.getUrl(), controller.saveCase().getUrl());
     }
 
     @isTest static void testCreateCaseSaveAndClose()
@@ -115,23 +116,23 @@ private class Test_HelpDeskController
 
         Test.startTest();
 
-        HelpDeskController hdc = new HelpDeskController();
+        HelpDeskController controller = new HelpDeskController();
 
         // Flip these just to render the page back and forth.
-        hdc.newContact();
-        hdc.cancelNewContact();
-        hdc.setAsHelpDeskProvidedPhone();
+        controller.newContact();
+        controller.cancelNewContact();
+        controller.setAsHelpDeskProvidedPhone();
 
         // Test null search
-        hdc.buildSearchString();
+        controller.buildSearchString();
 
         // Search phone sizes.
         ApexPages.currentPage().getParameters().put('birthdate', '08/12/1989');
         ApexPages.currentPage().getParameters().put('phone', '111');
-        hdc.buildSearchString();
+        controller.buildSearchString();
 
         ApexPages.currentPage().getParameters().put('phone', '1111');
-        hdc.buildSearchString();
+        controller.buildSearchString();
 
         // Search name only.
         ApexPages.currentPage().getParameters().put('ANI', '');
@@ -143,7 +144,7 @@ private class Test_HelpDeskController
         ApexPages.currentPage().getParameters().put('emplid', '');
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
-        hdc.buildSearchString();
+        controller.buildSearchString();
 
         // Search phone only.
         ApexPages.currentPage().getParameters().put('ANI', '');
@@ -155,7 +156,7 @@ private class Test_HelpDeskController
         ApexPages.currentPage().getParameters().put('emplid', '');
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
-        hdc.buildSearchString();
+        controller.buildSearchString();
 
         // Search email fields.
         ApexPages.currentPage().getParameters().put('ANI', '');
@@ -167,7 +168,7 @@ private class Test_HelpDeskController
         ApexPages.currentPage().getParameters().put('emplid', '');
         ApexPages.currentPage().getParameters().put('directoryemail', 'test@nomail.com');
         ApexPages.currentPage().getParameters().put('personalemail', 'test@nomail.com');
-        hdc.buildSearchString();
+        controller.buildSearchString();
 
         // Test full date search
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
@@ -179,9 +180,9 @@ private class Test_HelpDeskController
         ApexPages.currentPage().getParameters().put('emplid', '1111111111');
         ApexPages.currentPage().getParameters().put('directoryemail', 'test@nomail.com');
         ApexPages.currentPage().getParameters().put('personalemail', 'test@nomail.com');
-        hdc.buildSearchString();
-        hdc.sortField = 'firstname';
-        hdc.toggleSort();
+        controller.buildSearchString();
+        controller.sortField = 'firstname';
+        controller.toggleSort();
 
         // Test full no date search
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
@@ -193,24 +194,24 @@ private class Test_HelpDeskController
         ApexPages.currentPage().getParameters().put('emplid', '1111111111');
         ApexPages.currentPage().getParameters().put('directoryemail', 'test@nomail.com');
         ApexPages.currentPage().getParameters().put('personalemail', 'test@nomail.com');
-        hdc.buildSearchString();
+        controller.buildSearchString();
 
         // Create new case to save and close
-        hdc.newCase();
+        controller.newCase();
 
         // Get sub and desc error to trigger
-        hdc.saveAndCloseCase();
-        hdc.cancelCloseCase();
+        controller.saveAndCloseCase();
+        controller.cancelCloseCase();
 
         // Add sub and desc to save
-        hdc.mycase.Subject = 'Test';
-        hdc.mycase.Description = 'Testing';
-        hdc.saveAndCloseCase();
+        controller.mycase.Subject = 'Test';
+        controller.mycase.Description = 'Testing';
+        controller.saveAndCloseCase();
 
         // Get index 1 for close status, so its not --Select--
-        List<SelectOption> closeStatuses = hdc.getcloseCaseStatusOptions();
-        hdc.selectedCloseCaseStatusOption = closeStatuses[1].getValue();
-        hdc.saveCloseCase();
+        List<SelectOption> closeStatuses = controller.getcloseCaseStatusOptions();
+        controller.selectedCloseCaseStatusOption = closeStatuses[1].getValue();
+        controller.saveCloseCase();
 
         Test.stopTest();
 
@@ -221,7 +222,7 @@ private class Test_HelpDeskController
         List<Case> testCase1 = [
             SELECT Id, Status
             FROM Case
-            WHERE Id = :hdc.mycase.Id
+            WHERE Id = :controller.mycase.Id
         ];
 
         if (testCase1.size() > 0)
@@ -290,24 +291,24 @@ private class Test_HelpDeskController
 
         Test.startTest();
 
-        HelpDeskController hdc = new HelpDeskController();
-        hdc.selectedCaseId = caseList[0].Id;
-        hdc.setAsCase();
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedCaseId = caseList[0].Id;
+        controller.setAsCase();
 
         // Make this fail with no sub and des
-        hdc.mycase.Subject = '';
-        hdc.mycase.Description = '';
-        hdc.saveAndTransferCase();
+        controller.mycase.Subject = '';
+        controller.mycase.Description = '';
+        controller.saveAndTransferCase();
 
         // Add sub and desc and save again
-        hdc.mycase.Subject = 'Test';
-        hdc.mycase.Description = 'Testing desc';
-        hdc.saveAndTransferCase();
+        controller.mycase.Subject = 'Test';
+        controller.mycase.Description = 'Testing desc';
+        controller.saveAndTransferCase();
 
         Test.stopTest();
 
-        PageReference control = new PageReference('/apex/CaseTransfer?id=' + hdc.mycase.Id);
-        System.assertEquals(control.getUrl(), hdc.saveAndTransferCase().getUrl());
+        PageReference control = new PageReference('/apex/CaseTransfer?id=' + controller.mycase.Id);
+        System.assertEquals(control.getUrl(), controller.saveAndTransferCase().getUrl());
     }
 
     @isTest static void testKnowledgeSearchAttachAndRemove()
@@ -391,22 +392,22 @@ private class Test_HelpDeskController
 
         Test.startTest();
 
-        HelpDeskController hdc = new HelpDeskController();
-        hdc.selectedContactId = testContact.Id;
-        hdc.setAsContact();
-        hdc.selectedCaseId = caseList[0].Id;
-        hdc.setAsCase();
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.setAsContact();
+        controller.selectedCaseId = caseList[0].Id;
+        controller.setAsCase();
 
         // Test null search for knowledge
-        hdc.knowledgeSearch();
+        controller.knowledgeSearch();
 
         // Test with string
-        hdc.knowString = 'test';
-        hdc.knowledgeSearch();
-        hdc.selectedKnowledgeArticleId = faqArticle.KnowledgeArticleId;
-        hdc.articleDetails();
-        hdc.attachArticleToCase();
-        hdc.removeArticleFromCase();
+        controller.knowString = 'test';
+        controller.knowledgeSearch();
+        controller.selectedKnowledgeArticleId = faqArticle.KnowledgeArticleId;
+        controller.articleDetails();
+        controller.attachArticleToCase();
+        controller.removeArticleFromCase();
 
         Test.stopTest();
 
@@ -418,36 +419,70 @@ private class Test_HelpDeskController
 
         System.assertEquals(0, caseArtList.size());
     }
-    
+
     @isTest
     private static void caseClassificationCorrectSelectOptions() {
-        CaseFactory.DefaultCase caseMaker = new CaseFactory.DefaultCase();
-        Case caseToEditDescription = (Case)caseMaker.create(1)[0];
-        CaseClassificationFactory ccMaker = new CaseClassificationFactory();
-        ccMaker.createAndInsertSetOfCaseClassification();
-        Case_Classification__c categoryToAddDescription = [SELECT Id FROM Case_Classification__c WHERE Name = 'Test Category0' LIMIT 1];
-        categoryToAddDescription.Default_Case_Description__c = 'A';
-        update categoryToAddDescription;
+       HelpDeskController controller = new HelpDeskController();
+
+       CaseClassificationFactory ccMaker = new CaseClassificationFactory();
+       ccMaker.createAndInsertSetOfCaseClassification();
+       Case myCase = new Case();
+       myCase.CC_Functional_Group__r = [SELECT Id, Name FROM Case_Classification__c
+                                        WHERE RecordType.Name = 'Functional Group'
+                                        AND Name = 'Test Functional Group0'
+                                        LIMIT 1];
+       myCase.CC_Functional_Group__r.Name='Help Desk';
+       update myCase.CC_Functional_Group__r;
         
-        HelpDeskController hdc = new HelpDeskController();
-        hdc.mycase = caseToEditDescription;
-        hdc.selectedFunctionalGroup = 'Test Functional Group0';
-        hdc.selectedCategory = '--';
-        hdc.selectedSubCategory = '--';
-        
-        hdc.updateCategoryAndSubCategory();
-        
-        System.assertEquals(1, hdc.functionalGroupOptions.size());
-        System.assertEquals(2, hdc.categoryOptions.size());
-        System.assertEquals(1, hdc.subCategoryOptions.size());
-        Test.startTest();
-        hdc.selectedCategory = 'Test Category0';
-        hdc.updateOnCategoryChange();
-        Test.stopTest();
-        System.assertEquals(1, hdc.functionalGroupOptions.size());
-        System.assertEquals(2, hdc.categoryOptions.size());
-        System.assertEquals(2, hdc.subCategoryOptions.size());
-        
-        System.assertEquals('Test Description0A', hdc.mycase.Description);
+       Case_Classification__c categoryCreated = [SELECT Id, Name FROM Case_Classification__c WHERE Name = 'Test Category0'];
+
+       controller.newCase();
+
+       controller.selectedCategory = categoryCreated.Id;
+
+       System.assertEquals(1, controller.functionalGroupOptions.size());
+       System.assertEquals(2, controller.categoryOptions.size());
+       System.assertEquals(2, controller.subCategoryOptions.size());
+
+       Test.startTest();
+       controller.selectedCategory = '--';
+       controller.updateCategoryAndSubCategory();
+       Test.stopTest();
+
+       System.assertEquals(1, controller.functionalGroupOptions.size());
+       System.assertEquals(2, controller.categoryOptions.size());
+       System.assertEquals(1, controller.subCategoryOptions.size());
+    }
+
+    @isTest
+    private static void noVisibleCategoriesUnderFunctionalGroup() {
+       HelpDeskController controller = new HelpDeskController();
+
+       CaseClassificationFactory ccMaker = new CaseClassificationFactory();
+       ccMaker.createAndInsertSetOfCaseClassification();
+       ccMaker.createAndInsertSetOfNotVisibleCaseClassification();
+       Case myCase = new Case();
+       myCase.CC_Functional_Group__r = [SELECT Id, Name FROM Case_Classification__c
+                                        WHERE RecordType.Name = 'Functional Group'
+                                        AND Name = 'Not Visible Functional Group0'
+                                        LIMIT 1];
+       myCase.CC_Functional_Group__r.Visible__c=true;
+       update myCase.CC_Functional_Group__r;
+       controller.myCase=myCase;
+
+       controller.selectedFunctionalGroup = 'Not Visible Functional Group0';
+       controller.selectedCategory= '--';
+
+       System.assertEquals(2, controller.functionalGroupOptions.size());
+       System.assertEquals(1, controller.categoryOptions.size());
+       System.assertEquals(1, controller.subCategoryOptions.size());
+
+       Test.startTest();
+       controller.updateCategoryAndSubCategory();
+       Test.stopTest();
+
+       System.assertEquals('Not Visible Functional Group0', controller.functionalGroupOptions.get(0).getValue());
+       System.assertEquals('--', controller.categoryOptions.get(0).getValue());
+       System.assertEquals('--', controller.subCategoryOptions.get(0).getValue());
     }
 }

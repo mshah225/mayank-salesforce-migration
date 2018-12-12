@@ -8,41 +8,34 @@
            <!--action="{!init}"-->
 <html lang="en">
     <script>
-		// Google Analytics
-    	    	(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-KDWN8Z');
+    // Google Analytics
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-KDWN8Z');
     </script>
-	<head>
+    <c:asu_responsive_header_section />
+    <head>
         <title>ASU | Subscription Center</title>
-		<link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
-		<c:asu_responsive_header_section />
-		<apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.min.css')}"/>
-		<apex:stylesheet value="{!URLFOR($Resource.Subscription_Center, 'sub_center/css/multi-switch.min.css')}"/>
-		<apex:includeScript value="{!URLFOR($Resource.Subscription_Center, 'sub_center/js/jquery.min.js')}"/>
-		<apex:includeScript value="{!URLFOR($Resource.Subscription_Center, 'sub_center/js/multi-switch.js')}"/>
-		<apex:includeScript value="{!URLFOR($Resource.bootstrap_337, '/bootstrap_337/js/bootstrap.min.js')}"/>
-		<c:MultiSwitch />
-		
-		<script>
-	        $ = jQuery.noConflict();
+        <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
+        <apex:stylesheet value="{!URLFOR($Resource.Subscription_Center, 'sub_center/css/multi-switch.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.min.css')}"/>
+        <c:MultiSwitch />
 
-	        $(document).ready(function () {
-				//var lastItem = 3;
-	            $('.multi-switch').multiSwitch({ width: '65px' });
-                if ({!hasOptedOutOfEmail}) {
-                    $('#optedOutModal').modal({backdrop: 'static', 
-												keyboard: false});
-                    $('#optedOutModal').modal('show');
+        <script>
+        $ = jQuery.noConflict();
+        $(document).ready(function () {
+            $('.multi-switch').multiSwitch({width: '65px'});
+            if ({!hasOptedOutOfEmail}) {
+                $('#optedOutModal').modal({backdrop: 'static', keyboard: false});
+                $('#optedOutModal').modal('show');
+            } else if ({!updateSuccess}) {
+                $('#updateSuccessModal').modal('show');
+            }
+            $('#searchInput').keypress(function(pressedKey) {
+                if (pressedKey.keyCode == 13) {
+                    $('#searchSubs').click();
                 }
-                else if ({!updateSuccess}) {
-                    $('#updateSuccessModal').modal('show');
-                }
-                $('#searchInput').keypress(function(e){
-                  if(e.keyCode==13)
-                  $('#searchSubs').click();
-                });
-	        });
-
-		</script>
+            });
+        });
+        </script>
 		<style>
 
 			.panel-heading .accordion-toggle:after {

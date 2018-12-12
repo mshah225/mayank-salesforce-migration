@@ -2,8 +2,12 @@
 public class ContactUploadBatchTest {
     
     private static List<Contact_Upload_Detail__c> contactUploadDetailToInsert;
+    private static List<Subscription__c> createdSubscriptions;
     
     private static void setup() {
+        SubscriptionFactory.DefaultSubscription subscriptionCreator= new SubscriptionFactory.DefaultSubscription();
+        createdSubscriptions = subscriptionCreator.create(1);
+        insert createdSubscriptions;
         ContactFactory.DefaultContact contactCreator = new ContactFactory.DefaultContact();
         List <Contact> contactToInsert = contactCreator.create(1);
         contactToInsert[0].EMPLID__C = '1000000000';
@@ -21,7 +25,7 @@ public class ContactUploadBatchTest {
     @isTest
     public static void modifyDuplicateEmplIds() {
         setup();
-        ContactUploadBatch batch = new ContactUploadBatch(null);
+        ContactUploadBatch batch = new ContactUploadBatch(null, createdSubscriptions[0].Id, 'Subscribed');
         
         ContactUploadSearcher searcher = new ContactUploadSearcher(contactUploadDetailToInsert);
         searcher.searchAndCreateContacts();

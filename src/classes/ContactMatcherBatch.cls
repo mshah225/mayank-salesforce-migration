@@ -1,15 +1,12 @@
-public without sharing class ContactUploadBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
+public without sharing class ContactMatcherBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
     private Id attachmentId;
-    private Id subscriptionId;
-    private String subscriberStatus;
     private String contactUploadId;
     private Map<Integer, String> columnMap;
     private Boolean headerRow;
+    private String updatedCSVBody = '';
 
-    public ContactUploadBatch(Id attachmentId, Id subscriptionId, String subscriberStatus) {
+    public ContactMatcherBatch(Id attachmentId) {
         this.attachmentId = attachmentId;
-        this.subscriptionId = subscriptionId;
-        this.subscriberStatus = subscriberStatus;
     }
 
     public Iterable<String> start(Database.BatchableContext batchableContext) {
@@ -28,54 +25,20 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
 
         List<Contact_Upload_Detail__c> detailsToProcess = new List<Contact_Upload_Detail__c>();
         List<Contact_Upload_Detail__c> detailsInError = new List<Contact_Upload_Detail__c>();
+        List<Contact_Upload_Detail__c> allDetailsFromLines = new List<Contact_Upload_Detail__c>();
         ContactUploadDetailService detailCreator = new ContactUploadDetailService(contactUploadId, columnMap);
-        detailCreator.setSubscriptionId(subscriptionId);
-        detailCreator.setSubscriberStatus(subscriberStatus);
         for (List<String> lineValues: csvLines) {
-            Contact_Upload_Detail__c detailFromLine = detailCreator.createAndValidateRow(lineValues);
+            Contact_Upload_Detail__c detailFromLine = detailCreator.createAndValidateRowForMatcher(lineValues);
             if (detailFromLine.Status__c != 'Error') {
                 detailsToProcess.add(detailFromLine);
             } else {
                 detailsInError.add(detailFromLine);
             }
+            allDetailsFromLines.add(detailFromLine);
         }
         ContactUploadSearcher searcher = new ContactUploadSearcher(detailsToProcess);
-        searcher.searchAndCreateContacts();
-        detailCreator.createSubscriberStatusMap(detailsToProcess);
-        List<Subscriber__c> subscriberList = new List<Subscriber__c>();
-        for (Contact_Upload_Detail__c uploadDetail : detailsToProcess) {
-            Subscriber__c subToAdd = detailCreator.createSubscriberForUploadDetail(uploadDetail);
-            if (subtoAdd != null) {
-                subscriberList.add(subToAdd);
-            } else {
-                uploadDetail.Status__c = 'Error';
-                uploadDetail.Processing_Notes__c += 'Failed to create subscriber record. ';
-            }
-        }
-
-        if (subscriberList.size() > 0) {
-            Database.upsert(subscriberList, Subscriber__c.Unique_Key__c, false);
-        }
-
-        Map<String, Id> uniqueKeyToSubscriberId = new Map<String, Id>();
-        for (Subscriber__c upsertedSubscriber : subscriberList) {
-            uniqueKeyToSubscriberId.put(upsertedSubscriber.Unique_Key__c, upsertedSubscriber.Id);
-        }
-
-        for (Contact_Upload_Detail__c uploadDetail: detailsToProcess) {
-            if (uploadDetail.Status__c != 'Error') {
-                String uniqueKey = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' +
-                    String.valueOf(uploadDetail.Contact__c).left(15);
-                Id subscriberId = uniqueKeyToSubscriberId.get(uniqueKey);
-                if (subscriberId == null) {
-                    uploadDetail.Status__c = 'Error';
-                    uploadDetail.Processing_Notes__c += ' Failed to create subscriber record. ';
-                } else {
-                    uploadDetail.Subscriber__c = uniqueKeyToSubscriberId.get(uniqueKey);
-                }
-            }
-        }
-
+        searcher.searchForContacts();
+        addContactIdToCSV(scope, allDetailsFromLines);
         detailsToProcess.addAll(detailsInError);
         if (detailsToProcess.size() > 0) {
             Database.insert(detailsToProcess, false);
@@ -109,6 +72,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
     }
 
     public void finish(Database.BatchableContext batchableContext) {
+        createNewAttachment();
         if (hasSuccessfulRecords() && noErroredRecords()) {
             updateUploadStatus('Complete with no errors');
         } else {
@@ -145,5 +109,42 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             Id = contactUploadId,
             Status__c = status);
         update cu;
+    }
+    
+    private void addContactIdToCSV(List<String> tableOfContacts, List<Contact_Upload_Detail__c> contactDetails) {
+        Integer contactDetailRow = 0;
+        if (String.isEmpty(updatedCSVBody)) {
+            createHeaderForContactMatcher();
+            tableOfContacts.remove(0);
+        }
+        for (String row : tableOfContacts) {
+            if (contactDetails[contactDetailRow].Contact__c == null) {
+                updatedCSVBody += row + ', \r';
+            } else {
+                updatedCSVBody += row + ',' + contactDetails[contactDetailRow].Contact__c + '\r';
+            }
+            contactDetailRow++;
+        }
+    }
+    
+    private void createHeaderForContactMatcher() {
+        for (String headerColumnName : columnMap.values()) {
+            updatedCSVBody += headerColumnName + ',';
+        }
+        updatedCSVBody += 'Contact Id\r';
+    }
+    
+    private void createNewAttachment() {
+        Attachment updatedAttachment = [SELECT Name, ParentId, Body, Description FROM Attachment WHERE Id =: attachmentId LIMIT 1];
+        updatedAttachment.Body = Blob.valueOf(updatedCSVBody);
+        updatedAttachment.Id = null;
+        updatedAttachment.Name = updateFileName(updatedAttachment.Name); 
+        insert updatedAttachment;
+    }
+    
+    private String updateFileName(String oldFileName) {
+        String fileName = oldFileName;
+        fileName = fileName.substring(0, fileName.indexOf('.'));
+        return fileName + '(With Ids).csv'; 
     }
 }

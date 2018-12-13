@@ -1,121 +1,313 @@
-<apex:page showHeader="false" controller="LiveAgentPreSurveyController">
-    <apex:image url="{!$Resource.LiveAgentlogo}" />
-    <c:myasustyles />
+<apex:component allowDML="true">
+    <!-- This component renders the Immediate Assitance Box -->
+    <apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean"/>
+    <apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean"/>
+    <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean"/>
+    <apex:attribute name="myPin" description="The user's contact's PIN" type="Decimal"/>
+    <apex:attribute name="newPin" description="The new PIN" type="Decimal"/>
+    <apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action"/>
+    
+    <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
     <script type='text/javascript'>
-    (function() {
-        function handlePageLoad() {
-            var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)");
-            document.getElementById('prechatForm').setAttribute('action',decodeURIComponent(endpointMatcher.exec(document.location.search)[1]));
-        } if (window.addEventListener) {
-            window.addEventListener('load', handlePageLoad, false);
-        } else { window.attachEvent('onload', handlePageLoad, false);
-               }})();
+        liveagent.setName('{!$User.FirstName} {!$User.LastName}');
+        liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
     </script>
-    <c:LiveAgentNotices />
-    <body style="background-color:#F5F5F5">
-        <span id='offlineMessage' style="display: none;" >
-            <div style="padding: 2px;">
-                <div class="slds-notify_container slds-is-relative">
-                    <div class="slds-notify slds-notify_toast slds-theme_info" style="float: left; background-color: #8C1D40 !important; width: 75% !important; min-width:50px !important;" role="status">
-                        <div class="slds-notify__content">
-                            <ul style="list-style-type:none">
-                                <li style="padding: 5px 0px;">{!agentOfflineMessage}</li>
-                            </ul>
+
+    <apex:outputPanel >
+        <div class="box">
+            <div class="header">
+                <h6><b>Immediate Assistance</b></h6>
+            </div>
+
+            <div class="content">
+                <p>
+                    Please contact us if you need immediate assistance.
+                    We're available 24/7 to answer your questions.
+                </p>
+
+                <div id="normalPhone">
+                    <apex:outputLink styleClass="btn kbbtn btnLink"
+                                     rendered="{!NormalPhone}"
+                                     style="width:160px;color:#fff;background:#990033;padding:5px;"
+                                     value="tel:1-855-278-5080">
+                        <span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>
+                        &nbsp;&nbsp;&nbsp;1-855-ASU-5080
+                    </apex:outputLink>
+                </div>
+
+                <div id="roverPhone">
+                    <apex:outputLink styleClass="btn kbbtn btnLink"
+                                     rendered="{!RoverPhone}"
+                                     style="width:160px;color:#fff;background:#990033;padding:5px;"
+                                     value="tel:1-844-278-6693">
+                        <span class="glyphicon glyphicon-earphone pull-left" style="padding-left:10px;"></span>
+                        &nbsp;&nbsp;&nbsp;1-844-ASU-6693
+                    </apex:outputLink>
+                </div>
+                <hr />
+                <apex:outputPanel id="pinPanel" rendered="{!IF(myPin != null,true,false)}">
+                    <apex:form id="pinForm" styleClass="pinForm">
+                        <div id="pinFormDiv" style="margin-left:30px;">
+                            <h5>ASU Finances PIN</h5>&nbsp;
+
+                            <button type="button"
+                                    class="qMarkMobile"
+                                    data-toggle="modal"
+                                    data-target="#finPinMobile"
+                                    style="display:none">
+                                <img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png"
+                                     width="14"
+                                     height="14"
+                                     alt="qmark"
+                                     style="margin-bottom:3px;cursor:pointer;"/>
+                            </button>
+
+                            <div class="modal fade"
+                                 id="finPinMobile"
+                                 tabindex="-1"
+                                 role="dialog"
+                                 aria-labelledby="myModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button"
+                                                    class="close"
+                                                    data-dismiss="modal">
+                                                <span aria-hidden="true">&times;</span>
+                                                <span class="sr-only">Close</span>
+                                            </button>
+
+                                            <span class="glyphicon glyphicon-info-sign"></span>
+                                            &nbsp;&nbsp;
+                                            <h6 class="modal-title" id="myModalLabel">
+                                                ASU Finances PIN Help
+                                            </h6>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <p>
+                                                Use this PIN to access information about your
+                                                financial aid and account balance when you call
+                                                the number above. The PIN should be used to access
+                                                your confidential account information and should
+                                                not be shared with anyone. To choose another
+                                                PIN select Reset and enter your own six digit PIN
+                                                selection.
+                                            </p>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <div class="pull-left">
+                                                <button type="button"
+                                                        class="btn btn-default"
+                                                        data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="tooltipPin" class="tooltipBox" style="margin-left:-190px;margin-top:-22px;display:none;position:absolute;width:100%;max-width:300px;height:auto;background:#eee;color:#000;z-index:200;box-shadow: 5px 4px 5px 0px rgba(0,0,0,0.5);">
+                                <div id="tooltipArrow"></div>
+                                <div style="width:100%;background:#ddd;padding:3px;padding-left:5px;border-bottom:solid 2px #cdcdcd;">
+                                    <h6>ASU Finances PIN Help</h6>
+
+                                    <span id="closeTooltip" class="pull-right" style="padding-right:5px;cursor:pointer;">
+                                        <a href="">x</a>
+                                    </span>
+                                </div>
+
+                                <div style="padding:5px;font-size:8pt;">
+                                    <p>
+                                        Use this PIN to access information about your financial
+                                        aid and account balance when you call the number above.
+                                        The PIN should be used to access your confidential account
+                                        information and should not be shared with anyone. To
+                                        choose another PIN select Reset and enter your own six
+                                        digit PIN selection.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <a id="qmarkPin" href="">
+                                <img src="https://webapp4.asu.edu/myasu/images/icon-qmark.png"
+                                     width="14"
+                                     height="14"
+                                     alt="qmark"
+                                     style="margin-bottom:3px;cursor:pointer;"/>
+                            </a>
+                            <br />
+                            <input id="yourPinHidden"
+                                   class="hiddenPinBox"
+                                   style="padding-right:30px;width:60px;border:none;padding:6px;"
+                                   disabled="true"/>
+
+                            <button id="viewPinBtn"
+                                    class="viewPin"
+                                    type="button">
+                                View
+                            </button>
+
+                            <apex:outputText id="yourPin"
+                                             styleClass="pinBox"
+                                             style="display:none"
+                                             value="{!myPin}"/>
+
+                            <button id="hidePinBtn"
+                                    class="viewPin"
+                                    type="button"
+                                    style="display:none;">
+                                Hide PIN
+                            </button>
+
+                            <button id="resetPin"
+                                    class="resetPin kbbtn"
+                                    type="button">
+                                Reset
+                            </button>
+
+                            <apex:input id="newPinInput"
+                                        value="{!newPin}"
+                                        html-placeholder="New Pin"
+                                        onkeypress="return inputLimiter(event,'Numbers');"
+                                        styleClass="pinBoxInput"
+                                        style="display:none;"
+                                        type="number"/>
+
+                            <apex:commandButton id="savePinBtn"
+                                                value="Save"
+                                                action="{!changePin}"
+                                                styleClass="savePin"
+                                                style="display:none;"/>
+
+                            <button id="cancelPinInput"
+                                    class="resetPin kbbtn"
+                                    onclick="this.form.reset();"
+                                    style="display:none;"
+                                    type="button">
+                                Cancel
+                            </button>
+
+                            <p style="margin-top:5px;">
+                                Select <b>View</b> when calling to access confidential
+                                information about your financial aid and account balance.
+                            </p>
                         </div>
-                    </div>
+
+                        <script>
+                            $j( "[id$=qmarkPin]" ).click(function() {
+                                $j( "[id$=tooltipPin]" ).show();
+                            });
+
+                            $j( "[id$=closeTooltip]" ).click(function() {
+                                $j( "[id$=tooltipPin]" ).hide();
+                            });
+
+                            $j(document).mouseup(function (e) {
+                                var container = $j( "[id$=tooltipPin]" );
+                                if (!container.is(e.target) && container.has(e.target).length === 0) {
+                                    container.hide();
+                                }
+                            });
+                        </script>
+
+                        <script>
+                            $j( "[id$=viewPinBtn]" ).click(function() {
+                                $j( "[id$=yourPinHidden]" ).hide();
+                                $j( "[id$=viewPinBtn]" ).hide();
+                                $j( "[id$=hidePinBtn]" ).show();
+                                $j( "[id$=yourPin]" ).show();
+                            });
+
+                            $j( "[id$=hidePinBtn]" ).click(function() {
+                                $j( "[id$=hidePinBtn]" ).hide();
+                                $j( "[id$=yourPin]" ).hide();
+                                $j( "[id$=yourPinHidden]" ).show();
+                                $j( "[id$=yourPinHidden]" ).val( "••••••••••" );
+                                $j( "[id$=viewPinBtn]" ).show();
+                            });
+
+                            $j( "[id$=resetPin]" ).click(function() {
+                                $j( "[id$=hidePinBtn]" ).hide();
+                                $j( "[id$=yourPin]" ).hide();
+                                $j( "[id$=yourPinHidden]" ).hide();
+                                $j( "[id$=viewPinBtn]" ).hide();
+                                $j( "[id$=resetPin]" ).hide();
+                                $j( "[id$=newPinInput]" ).show().focus();
+                                $j( "[id$=savePinBtn]" ).show();
+                                $j( "[id$=cancelPinInput]" ).show();
+                            });
+
+                            $j( "[id$=cancelPinInput]" ).click(function() {
+                                $j( "[id$=yourPinHidden]" ).show();
+                                $j( "[id$=yourPinHidden]" ).val( "••••••••••" );
+                                $j( "[id$=yourPin]" ).hide();
+                                $j( "[id$=viewPinBtn]" ).show();
+                                $j( "[id$=resetPin]" ).show();
+                                $j( "[id$=newPinInput]" ).hide();
+                                $j( "[id$=savePinBtn]" ).hide();
+                                $j( "[id$=cancelPinInput]" ).hide();
+                            });
+
+                            $j( document ).ready(function() {
+                                $j( "[id$=yourPinHidden]" ).val( "••••••••••" );
+                                $j( "[id$=newPinInput]" ).val( "" );
+                            });
+                        </script>
+                    </apex:form>
+                </apex:outputPanel>
+                <hr />
+                <div class="dropdown" style="display:inline-block">
+                    <button type="button"
+                            class="btn kbbtn dropdown-toggle"
+                            style="width:160px;color:#fff;background:#990033;padding:5px;"
+                            data-toggle="dropdown"
+                            href="//asu.edu/helpchat">
+                        <span class="glyphicon glyphicon-comment pull-left" style="padding-left:10px;"></span>
+                        Live Chat &nbsp;
+                        <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a id="liveagent_button_online_5730m0000008OXx" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXx');" >Live Agent - Finances</a>
+                            <a id="liveagent_button_offline_5730m0000008OXx" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXx');" >Live Agent - Finances</a>
+                            <script type="text/javascript">
+                                if (!window._laq) { window._laq = []; }
+                                window._laq.push(function(){
+                                    liveagent.showWhenOnline('5730m0000008OXx', document.getElementById('liveagent_button_online_5730m0000008OXx'));
+                                    liveagent.showWhenOffline('5730m0000008OXx', document.getElementById('liveagent_button_offline_5730m0000008OXx'));
+                                });
+                            </script>
+                        </li>
+                        <li>
+                            <a id="liveagent_button_online_5730m0000008OXz" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXz');" >Live Agent - Technical Support</a>
+                            <a id="liveagent_button_offline_5730m0000008OXz" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXz');" >Live Agent - Technical Support</a>
+                            <script type="text/javascript">
+                                if (!window._laq) { window._laq = []; }
+                                window._laq.push(function(){
+                                    liveagent.showWhenOnline('5730m0000008OXz', document.getElementById('liveagent_button_online_5730m0000008OXz'));
+                                    liveagent.showWhenOffline('5730m0000008OXz', document.getElementById('liveagent_button_offline_5730m0000008OXz'));
+                                });
+                            </script>
+                        </li>
+                        <li>
+                            <a id="liveagent_button_online_5730m0000008OXy" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXy')">Live Agent - Student Services</a>
+                            <a id="liveagent_button_offline_5730m0000008OXyz" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat('5730m0000008OXy')">Live Agent - Student Services</a>
+                            <script type="text/javascript">
+                                if (!window._laq) { window._laq = []; }
+                                window._laq.push(function(){
+                                    liveagent.showWhenOnline('5730m0000008OXy', document.getElementById('liveagent_button_online_5730m0000008OXy'));
+                                    liveagent.showWhenOffline('5730m0000008OXy', document.getElementById('liveagent_button_offline_5730m0000008OXyz'));
+                                });
+                            </script>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div style="clear:both"/>
-        </span>
-        <span id='inputForm' style="display: none;" >
-            <form method='post' id='prechatForm'>
-                <div style="padding: 10px;">
-                    <h1 style="font-size:x-large;">
-                        {!presurveyQuestion}*<br/>
-                    </h1>
-                </div>
-                <div style="padding: 10px;">
-                    <input 
-                        type='textarea' 
-                        class='searchBox' 
-                        style="width:100% !important;" 
-                        name='liveagent.prechat:CaseDescription' 
-                        id='subject' 
-                        placeholder="Enter a brief description of your issue." 
-                        required="true"/><br/>
-                    <p>*Designates a required field.</p>
-                    <input type="hidden" name="liveagent.prechat:CaseStatus" value="New"/>
-                    <input type="hidden" name="liveagent.prechat:CaseSubject" value="{!caseSubject}"/>
-                    <input type="hidden" name="liveagent.prechat:CaseOrigin" value="Chat"/>
-                    <input type="hidden" name="liveagent.prechat:CaseRecordType" value="{!caseRecordType}"/>
-                    <input type="hidden" name="liveagent.prechat:CaseFunctionalGroup" value="{!caseFunctionalGroup}"/>
-                    <input type="hidden" name="liveagent.prechat:CaseCategory" value="{!caseCategory}"/>
-                    <input type="hidden" name="liveagent.prechat:CaseSubCategory" value="{!caseSubCategory}"/>
-                    <input type="hidden" name="liveagent.prechat:CaseOwner" value="{!caseOwnerId}"/>
-                    <input type="hidden" name="liveagent.prechat.name" id="prechat_field_name"/>
-                    <input type='hidden' name='liveagent.prechat:ContactId' id='contactId' value='{!$User.ContactId}'/>
-                    <input type='hidden' name='liveagent.prechat:ContactName' id='contactName' value='{!$User.FirstName} {!$User.LastName}'/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="Id, ContactId; Name, contactName"/>
-                    <input
-                        type="hidden"
-                        name="liveagent.prechat.findorcreate.map:Case"
-                        value="Subject,CaseSubject; Description, CaseDescription; Status,CaseStatus;Origin__c,CaseOrigin;RecordTypeId,CaseRecordType; OwnerId, CaseOwner; CC_Functional_Group__c, CaseFunctionalGroup; CC_Category__c, CaseCategory; CC_Sub_Category__c, CaseSubCategory;"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Id,true"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="Id,true;"/>
-                    <input
-                        type="hidden"
-                        name="liveagent.prechat.findorcreate.map.doCreate:Case"
-                        value="Subject,true; Description, true; Status,true;Origin__c,true;RecordTypeId,true; OwnerId, true; CC_Functional_Group__c, true; CC_Category__c, true; CC_Sub_Category__c, true;"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.linkToEntity:Contact" value="Case,ContactId"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value="true"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Case" value="true"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Contact" value="ContactId"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Case" value="CaseId"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseRecordType" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseStatus" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:ContactId" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseOrigin" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseSubject" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseOwner" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseFunctionalGroup" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseCategory" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseSubCategory" value="false"/>
-                </div>
-                <div style="padding: 10px;">
-                    <input type='submit' style="max-width: 300px !important; width:25% !important; height: 15% !important; font-size:4vw !important" value='Chat Now' id='prechat_submit' onclick="setName()" class="kbbtn searchBtn"/>
-                </div>
-                <script type="text/javascript">
-                    var detailCallback = function (details) {
-                        for (var i = 0; i < details.customDetails.length; i++) {
-                            if (details.customDetails[i].label == 'test') {
-                                console.log(details.customDetails[i].value);
-                            }
-                        }
-                    };
-                    function setName() {
-                        document.getElementById("prechat_field_name").value = '{!$User.FirstName} {!$User.LastName}';
-                    }
-                    if (!window._laq) { window._laq = []; }
-                    window._laq.push(function() {
-                        liveagent.showWhenOnline('5730m0000008OXz', document.getElementById('inputForm'));
-                        liveagent.showWhenOffline('5730m0000008OXz', document.getElementById('offlineMessage'));
-                    });
-                </script>
-                <style type="text/css">
-                    p {
-                        font-weight: bolder;
-                    }
-                </style>
-            </form>
-        </span>
-    </body>
-    <ul>
-        <li>
-            <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
-            
-            <script type='text/javascript'>
-                liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
-            </script>
-        </li>
-    </ul>
-</apex:page>
+        </div>
+    </apex:outputPanel>
+</apex:component>

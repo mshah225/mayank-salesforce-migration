@@ -1,24 +1,26 @@
-<apex:page showHeader="false">
-    <div style="background-color: black; width: 100%; height: 40px;" >
-        <button class ="kbbtn searchBtn saveChat" onclick="getTranscript();">Save Chat</button>
+<apex:page showHeader="false" controller="LiveAgentPostSurveyController">
+    <div style="background-color: black; width: 100%; height: 40px;">
+        <button class="kbbtn searchBtn saveChat" onclick="getTranscript();">Save Chat</button>
     </div>
-    <apex:image url="{!$Resource.LiveAgentlogo}" />
-    <c:myasustyles />
-    
+    <apex:image url="{!$Resource.LiveAgentlogo}"/>
+    <c:myasustyles/>
+
     <br/>
-    <body style="background-color:#F5F5F5">
+    <body style="background-color:#F5F5F5; overflow-x: hidden;">
         <apex:outputPanel >
             <h2 style="font-size:30px">
-                Previous Conversation <br/>
+                &nbsp;Previous Conversation
+                <br/>
             </h2>
-            <div id="tempId" style="max-height:200px; overflow: auto;"></div>
-            <apex:outputText style="display: none;" id="transcript" value="{!$CurrentPage.parameters.transcript}"/>
+            <div id="chatTranscript" style="max-height:200px; overflow: auto; padding: 5px 15px 5px 15px;">
+                <apex:outputText style="display: none;" id="transcript" value="{!$CurrentPage.parameters.transcript}"/>
+            </div>
             <table class="nav" align="center">
                 <tr>
                     <td>
                         <div class="nav_button">
                             <div class="b_left"></div>
-                            <button class ="kbbtn searchBtn bottomSurvey" onclick="goToSurvey();">Click Here For Survey</button>
+                            <button class="kbbtn searchBtn bottomSurvey" onclick="goToSurvey();">Click Here For Survey</button>
                             <div class="b_right"></div>
                         </div>
                     </td>
@@ -27,91 +29,96 @@
         </apex:outputPanel>
     </body>
     <script type='text/javascript'>
-    var chatDetails = JSON.parse('{!$CurrentPage.parameters.chatDetails}');
-    var mergeFieldObject = {
-        chat_key: '{!$CurrentPage.parameters.chatKey}',
-        chat_start_time: '{!$CurrentPage.parameters.startTime}',
-        chat_request_time: '{!$CurrentPage.parameters.requestTime}',
-        chat_agent_id: typeof chatDetails.agent !== 'undefined' ? chatDetails.agent.userId : '',
-        chat_agent_name: typeof chatDetails.agent !== 'undefined' ? chatDetails.agent.agentName : '',
-        chat_last_visited_page: '{!$CurrentPage.parameters.lastVisitedPage}',
-        chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}'
-    };
-    console.log(mergeFieldObject);
-    var customDetails = {}
-    if (typeof chatDetails.customDetails !== 'undefined') {
-        customDetails = chatDetails.customDetails.reduce(function(memo, detail) {
-            memo['chat_custom_' + toSnakeCase(detail.label)] = detail.value;
-            return memo;
-        }, {});
-    }
-    Object.assign(mergeFieldObject, customDetails, JSON.parse('{!$CurrentPage.parameters.attachedRecords}'))
-    var mergeFields = [];
-    for (var prop in mergeFieldObject) {
-        mergeFields.push(prop + '=' + mergeFieldObject[prop])
-    }
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById('j_id0:transcript').innerHTML));
-    document.body.appendChild(element);
-    var transcript = document.getElementById('j_id0:transcript').innerHTML;
-    document.getElementById('tempId').innerHTML = transcript.replace(/\n/g, '<br/>');
-    createTimestampAndDisconnect();
-    
-    function checkTime(i) {
-        return (i < 10) ? "0" + i : i;
-    }
-    
-    function createTimestampAndDisconnect() {
-        var today = new Date();
-        h = checkTime(today.getHours()),
-        m = checkTime(today.getMinutes()),
-        s = checkTime(today.getSeconds());
-        var timeStamp = '(' + h + ':' + m + ':' + s + ')';
-        if ('{!$CurrentPage.parameters.disconnectedBy}' == 'client') {
-        	document.getElementById('tempId').innerHTML += timeStamp + 'You have disconnected this chat';
-    	} else {
-        	document.getElementById('tempId').innerHTML += timeStamp + 'Chat was disconnected by agent';
-    	}
-    }
-    function download(filename, text) {
-      var element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-      element.setAttribute('download', filename);
-    
-      element.style.display = 'none';
-      document.body.appendChild(element);
-    
-      element.click();
-    
-      document.body.removeChild(element);
-    }
-    
-    function getTranscript() {
-        var chatBody = document.getElementById('j_id0:transcript').innerHTML;
-        download("Transcript.txt", chatBody);
-    }
-    function goToSurvey() {
-        window.location = 'https://www.getfeedback.com/r/WS21ASwZ?' + mergeFields.join('&')    
-    }
-    function toSnakeCase(str) {
-        return str.trim().toLowerCase().replace(/\W/g, '_').replace(/(^_|_$)/g, '')
-    }
+        var chatDetails = JSON.parse('{!$CurrentPage.parameters.chatDetails}');
+        var mergeFieldObject = {
+            chat_key: '{!$CurrentPage.parameters.chatKey}',
+            chat_start_time: '{!$CurrentPage.parameters.startTime}',
+            chat_request_time: '{!$CurrentPage.parameters.requestTime}',
+            chat_agent_id: typeof chatDetails.agent !== 'undefined'
+                ? chatDetails.agent.userId
+                : '',
+            chat_agent_name: typeof chatDetails.agent !== 'undefined'
+                ? chatDetails.agent.agentName
+                : '',
+            chat_last_visited_page: '{!$CurrentPage.parameters.lastVisitedPage}',
+            chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}'
+        };
+        console.log(mergeFieldObject);
+        var customDetails = {}
+        if (typeof chatDetails.customDetails !== 'undefined') {
+            customDetails = chatDetails.customDetails.reduce(function (memo, detail) {
+                memo['chat_custom_' + toSnakeCase(detail.label)] = detail.value;
+                return memo;
+            }, 
+            {});
+        }
+        Object.assign(mergeFieldObject, customDetails, JSON.parse('{!$CurrentPage.parameters.attachedRecords}'))
+        var mergeFields = [];
+        for (var prop in mergeFieldObject) {
+            mergeFields.push(prop + '=' + mergeFieldObject[prop])
+        }
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById('j_id0:transcript').innerHTML));
+        document.body.appendChild(element);
+        var transcript = document.getElementById('j_id0:transcript').innerHTML;
+        document.getElementById('chatTranscript').innerHTML = transcript.replace(/\n/g, '<br/>');
+        createTimestampAndDisconnect();
+
+        function checkTime(i) {
+            return (i < 10) ? "0" + i : i;
+        }
+
+        function createTimestampAndDisconnect() {
+            var today = new Date();
+            h = checkTime(today.getHours()),
+            m = checkTime(today.getMinutes()),
+            s = checkTime(today.getSeconds());
+            var timeStamp = '(' + h + ':' + m + ':' + s + ')';
+            if ('{!$CurrentPage.parameters.disconnectedBy}' == 'client') {
+                document.getElementById('chatTranscript').innerHTML += timeStamp + ':You have disconnected this chat';
+            } else {
+                document.getElementById('chatTranscript').innerHTML += timeStamp + ':Chat was disconnected by agent';
+            }
+        }
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+        function getTranscript() {
+            var chatBody = document.getElementById('j_id0:transcript').innerHTML;
+            download("Transcript.txt", chatBody);
+        }
+        function goToSurvey() {
+            window.location = '{!postChatSurveyLink}?' + mergeFields.join('&')
+        }
+        function toSnakeCase(str) {
+            return str.trim().toLowerCase().replace(/\W/g, '_').replace(/(^_|_$)/g, '')
+        }
     </script>
     <style>
         .saveChat {
-            max-width: 300px !important; 
-            width:15% !important; 
-            height: 30px !important; 
-            margin-top:5px !important; 
-            margin-left: 12px !important; 
-            background-color:#6D7391 !important;
+            max-width: 300px !important;
+            width: 15% !important;
+            height: 30px !important;
+            margin-top: 5px !important;
+            margin-left: 12px !important;
+            background-color: #6D7391 !important;
         }
         .bottomSurvey {
-            margin-top: 10px !important; 
-            max-width: 3000px !important; 
-            width:300px !important; 
-            height: 15% !important; 
-            font-size:4vw !important
+            margin-top: 10px !important;
+            max-width: 3000px !important;
+            width: 300px !important;
+            height: 15% !important;
+            font-size: 4vw !important;
         }
     </style>
 </apex:page>

@@ -98,7 +98,8 @@
             download("Transcript.txt", chatBody);
         }
         function goToSurvey() {
-            window.location = '{!postChatSurveyLink}?' + mergeFields.join('&')
+            var parameters = mergeFields == undefined ? '' : mergeFields.join('&');
+            window.location = '{!postChatSurveyLink}?' + parameters;
         }
         function toSnakeCase(str) {
             return str.trim().toLowerCase().replace(/\W/g, '_').replace(/(^_|_$)/g, '')

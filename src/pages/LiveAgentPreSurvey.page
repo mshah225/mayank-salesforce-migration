@@ -1,16 +1,6 @@
 <apex:page showHeader="false" controller="LiveAgentPreSurveyController">
     <apex:image url="{!$Resource.LiveAgentlogo}" />
     <c:myasustyles />
-    <script type='text/javascript'>
-    (function() {
-        function handlePageLoad() {
-            var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)");
-            document.getElementById('prechatForm').setAttribute('action',decodeURIComponent(endpointMatcher.exec(document.location.search)[1]));
-        } if (window.addEventListener) {
-            window.addEventListener('load', handlePageLoad, false);
-        } else { window.attachEvent('onload', handlePageLoad, false);
-               }})();
-    </script>
     <c:LiveAgentNotices />
     <body style="background-color:#F5F5F5">
         <span id='offlineMessage' style="display: none;" >
@@ -36,16 +26,17 @@
                 </div>
                 <div style="padding: 10px;">
                     <input 
+                        id='caseDescriptionInput'
                         type='textarea' 
                         class='searchBox' 
                         style="width:100% !important;" 
-                        name='liveagent.prechat:CaseDescription' 
-                        id='subject' 
                         placeholder="Enter a brief description of your issue." 
-                        required="true"/><br/>
+                        required="true"
+                        onchange="setCaseDescription()"/><br/>
                     <p>*Designates a required field.</p>
-                    <input type="hidden" name="liveagent.prechat:CaseStatus" value="New"/>
                     <input type="hidden" name="liveagent.prechat:CaseSubject" value="{!caseSubject}"/>
+                    <input id="caseDescription" type="hidden" name="liveagent.prechat:CaseDescription"/>
+                    <input type="hidden" name="liveagent.prechat:CaseStatus" value="New"/>
                     <input type="hidden" name="liveagent.prechat:CaseOrigin" value="Chat"/>
                     <input type="hidden" name="liveagent.prechat:CaseRecordType" value="{!caseRecordType}"/>
                     <input type="hidden" name="liveagent.prechat:CaseFunctionalGroup" value="{!caseFunctionalGroup}"/>
@@ -59,46 +50,73 @@
                     <input
                         type="hidden"
                         name="liveagent.prechat.findorcreate.map:Case"
-                        value="Subject,CaseSubject; Description, CaseDescription; Status,CaseStatus;Origin__c,CaseOrigin;RecordTypeId,CaseRecordType; OwnerId, CaseOwner; CC_Functional_Group__c, CaseFunctionalGroup; CC_Category__c, CaseCategory; CC_Sub_Category__c, CaseSubCategory;"/>
+                        value="Subject, CaseSubject; Description, CaseDescription; Status, CaseStatus; Origin__c, CaseOrigin; RecordTypeId, CaseRecordType; OwnerId, CaseOwner; CC_Functional_Group__c, CaseFunctionalGroup; CC_Category__c, CaseCategory; CC_Sub_Category__c, CaseSubCategory;"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Id,true"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="Id,true;"/>
                     <input
                         type="hidden"
                         name="liveagent.prechat.findorcreate.map.doCreate:Case"
-                        value="Subject,true; Description, true; Status,true;Origin__c,true;RecordTypeId,true; OwnerId, true; CC_Functional_Group__c, true; CC_Category__c, true; CC_Sub_Category__c, true;"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.linkToEntity:Contact" value="Case,ContactId"/>
+                        value="Subject, true; Description, true; Status, true; Origin__c, true; RecordTypeId, true; OwnerId, true; CC_Functional_Group__c, true; CC_Category__c, true; CC_Sub_Category__c, true;"/>
+                    <input type="hidden" name="liveagent.prechat.findorcreate.linkToEntity:Contact" value="Case, ContactId"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value="true"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Case" value="true"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Contact" value="ContactId"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Case" value="CaseId"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseRecordType" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseStatus" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:ContactId" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseOrigin" value="false"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseSubject" value="false"/>
-                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseOwner" value="false"/>
+                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseDescription" value="true"/>
+                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseStatus" value="false"/>
+                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseOrigin" value="false"/>
+                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseRecordType" value="false"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseFunctionalGroup" value="false"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseCategory" value="false"/>
                     <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseSubCategory" value="false"/>
+                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseOwner" value="false"/>
+                    <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:ContactId" value="false"/>
                 </div>
                 <div style="padding: 10px;">
                     <input type='submit' style="max-width: 300px !important; width:25% !important; height: 15% !important; font-size:4vw !important" value='Chat Now' id='prechat_submit' onclick="setName()" class="kbbtn searchBtn"/>
                 </div>
-                <script type="text/javascript">
-                    var detailCallback = function (details) {
+                <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
+                <script type='text/javascript' src='https://c.la1c1.salesforceliveagent.com/content/g/js/32.0/prechat.js'></script>
+                <script type='text/javascript'>
+                    var orgId = '{!$Organization.Id}'.slice(0,15);
+                    var chatDeploymentId = '5720m0000008OPp';
+                    var chatButtonId = '5730m0000008OXz';
+                    var chatEndpoint = 'https://d.la3-c2cs-dfw.salesforceliveagent.com/chat';
+                    
+                    (function() {
+                        function handlePageLoad() {
+                            var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)");
+                            document.getElementById('prechatForm').setAttribute('action',decodeURIComponent(endpointMatcher.exec(document.location.search)[1]));
+                        } if (window.addEventListener) {
+                            window.addEventListener('load', handlePageLoad, false);
+                        } else { window.attachEvent('onload', handlePageLoad, false);
+                    }})();
+                    
+                    liveagent.init(chatEndpoint, chatDeploymentId, orgId);
+                    liveagent.details.preChatInit(chatEndpoint,'getCustomDetails');
+                    
+                    var customDetails = "--- User Details ---\n";
+                    var getCustomDetails = function (details) {
                         for (var i = 0; i < details.customDetails.length; i++) {
-                            if (details.customDetails[i].label == 'test') {
-                                console.log(details.customDetails[i].value);
-                            }
+                            customDetails += details.customDetails[i].label + ': ' + details.customDetails[i].value + '\n'
                         }
                     };
+                    
+                    var setCaseDescription = function() {
+                        console.log(document.getElementById('caseDescriptionInput').value);
+                        document.getElementById('caseDescription').value = document.getElementById('caseDescriptionInput').value + '\n' + customDetails;
+                        console.log(document.getElementById('caseDescription').value);
+                    }
+                    
                     function setName() {
                         document.getElementById("prechat_field_name").value = '{!$User.FirstName} {!$User.LastName}';
                     }
+                    
                     if (!window._laq) { window._laq = []; }
                     window._laq.push(function() {
-                        liveagent.showWhenOnline('5730m0000008OXz', document.getElementById('inputForm'));
-                        liveagent.showWhenOffline('5730m0000008OXz', document.getElementById('offlineMessage'));
+                        liveagent.showWhenOnline(chatButtonId, document.getElementById('inputForm'));
+                        liveagent.showWhenOffline(chatButtonId, document.getElementById('offlineMessage'));
                     });
                 </script>
                 <style type="text/css">
@@ -109,13 +127,4 @@
             </form>
         </span>
     </body>
-    <ul>
-        <li>
-            <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
-            
-            <script type='text/javascript'>
-                liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720m0000008OPp', '00D0m000000D8bG');
-            </script>
-        </li>
-    </ul>
 </apex:page>

@@ -96,7 +96,7 @@
                     liveagent.init(chatEndpoint, chatDeploymentId, orgId);
                     liveagent.details.preChatInit(chatEndpoint,'getCustomDetails');
                     
-                    var customDetails = "--- User Details ---\n";
+                    var customDetails = "\n--- User Details ---\n";
                     var getCustomDetails = function (details) {
                         for (var i = 0; i < details.customDetails.length; i++) {
                             customDetails += details.customDetails[i].label + ': ' + details.customDetails[i].value + '\n'

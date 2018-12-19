@@ -80,7 +80,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                 if(loggingSettings.Spam_Logging__c) {
                     generateLostEmail(email, theCase, 'Filtered Term: ' + filteredTerm);
                 }
-                // If we want to send a reply with a failure message, the result props can be changed
+                result.success = false;
+                result.message = 'Email flagged as spam based on filter: ' + filteredTerm;
                 return result;
             }
 
@@ -713,10 +714,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         insert theEmail;
     }
 
-    private String extractIdRefNew(String searchText)
-    {
-        if (searchtext==null)
-        {
+    private String extractIdRefNew(String searchText) {
+        if (searchtext==null) {
             return null;
         }
 

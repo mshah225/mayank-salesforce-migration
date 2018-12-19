@@ -1363,12 +1363,11 @@ public with sharing class HelpDeskController
     }
 
     private String getCategoryDescription() {
-        Case_Classification__c categoryWithDescription = allCategories.get(selectedFunctionalGroup).get(selectedCategory);
-        if (categoryWithDescription != null && categoryWithDescription.Default_Case_Description__c != null) {
-            return categoryWithDescription.Default_Case_Description__c;
-        } else {
+        if (selectedCategory == null || selectedCategory == '--') {
             return '';
         }
+        String categoryDefaultCaseDescription = [SELECT Default_Case_Description__c FROM Case_Classification__c WHERE Id =: selectedCategory].Default_Case_Description__c;
+        return categoryDefaultCaseDescription == null ? '' : categoryDefaultCaseDescription;
     }
 
     private void addCategoryDescription() {

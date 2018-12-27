@@ -66,7 +66,7 @@
         }
 
         #first {
-            width: 550px;
+            width: 480px;
             float: left; /* add this */
             padding-right: 10px;
         }
@@ -75,8 +75,8 @@
             overflow: hidden; /* if you don't want #second to wrap below #first */
         }
 
-        #third {
-            width: 80%;
+        select {
+            width: 100%;
         }
 
         .pbTitle {
@@ -119,10 +119,6 @@
             padding: 3px;
         }
 
-        td, tr, th.labelCol {
-            vertical-align: middle !important;
-        }
-
         .list tr, .list td {
             padding: 10px !important;
         }
@@ -148,7 +144,8 @@
             text-transform: uppercase;
         }
 
-        .labelCol {
+        th.labelCol {
+            padding-top: 10px !important;
             color: #546990 !important;
         }
     </style>
@@ -408,7 +405,7 @@
                                               && NOT(isExistingCaseSelected)
                                               && NOT(isCloseCase)}">
                         <apex:pageBlock title="Cases" id="opencasespb">
-                            <div style="height:335px;overflow-y:auto;border-bottom: solid 1px
+                            <div style="height:330px;overflow-y:auto;border-bottom: solid 1px
                             #ccc;">
                                 <apex:pageBlockTable value="{!cases}"
                                                      var="case"
@@ -473,7 +470,7 @@
                                       layout="block"
                                       rendered="{!(isNewCaseSelected || isExistingCaseSelected) && NOT(isCloseCase)}">
                         <apex:pageBlock title="Case Details - {!mycase.CaseNumber}" id="case">
-                            <div style="height:335px;overflow-y:auto;margin:-10px;">
+                            <div style="height:350px;overflow-y:auto;margin:-10px;">
                                 <fieldset id="caseFieldset">
                                     <apex:pageBlockSection columns="2"
                                                            collapsible="false"
@@ -481,7 +478,7 @@
 
                                         <apex:inputField value="{!mycase.Subject}"
                                                          html-autofocus="true"
-                                                         style="width:90%;"/>
+                                                         style="width:95%;"/>
 
                                         <apex:inputField value="{!mycase.Campus__c}"/>
 
@@ -519,7 +516,9 @@
 
                                         <apex:inputField value="{!mycase.Reporting_Category__c}" />
 
-                                        <apex:inputField value="{!mycase.Status}"/>
+                                        <apex:inputField value="{!mycase.Status}">
+                                            <apex:actionSupport event="onchange" reRender="innersecondNewCase"/>
+                                        </apex:inputField>
 
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel for="originSelect"
@@ -531,11 +530,35 @@
                                             </apex:selectList>
                                         </apex:pageBlockSectionItem>
 
+                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
+                                            <apex:outputLabel value="Forward To Unit" for="forwardToUnit"/>
+                                            <apex:inputField id="forwardToUnit" value="{!mycase.Forward_To_Unit__c}" style="width:100%;">
+                                                <apex:actionSupport event="onchange" reRender="innersecondNewCase"/>
+                                            </apex:inputField>
+                                        </apex:pageBlockSectionItem>
+
+                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
+                                            <apex:outputLabel value="Forward Case Comments" for="forwardCaseComments"/>
+                                            <apex:inputField id="forwardCaseComments" value="{!mycase.Forward_Case_Comments__c}" style="width:95%;height:90px;"/>
+                                        </apex:pageBlockSectionItem>
+
+                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && mycase.Forward_To_Unit__c == OTHER_UNIT}">
+                                            <apex:outputLabel value="Forward To Email" for="forwardToEmail"/>
+                                            <apex:inputField id="forwardToEmail" value="{!mycase.Forward_To_Email__c}"/>
+                                        </apex:pageBlockSectionItem>
+
+                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && mycase.Forward_To_Unit__c == SERVICE_NOW}">
+                                            <apex:outputLabel value="Service Now Ticket Number" for="serviceNowTicketNumber"/>
+                                            <apex:inputField id="serviceNowTicketNumber" value="{!mycase.Service_Now_Ticket_Number__c}"/>
+                                        </apex:pageBlockSectionItem>
+
+                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && (mycase.Forward_To_Unit__c == SERVICE_NOW || mycase.Forward_To_Unit__c == OTHER_UNIT)}"/>
+
                                         <apex:inputField value="{!mycase.Description}"
-                                                         style="width:90%;height:120px;"/>
+                                                         style="width:95%;height:90px;"/>
 
                                         <apex:inputField value="{!mycase.Private_Note_Help_Desk__c}"
-                                                         style="width:90%;height:120px;"/>
+                                                         style="width:95%;height:90px;"/>
                                     </apex:pageBlockSection>
                                 </fieldset>
                             </div>

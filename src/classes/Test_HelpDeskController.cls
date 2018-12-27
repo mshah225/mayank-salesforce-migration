@@ -485,4 +485,97 @@ private class Test_HelpDeskController
        System.assertEquals('--', controller.categoryOptions.get(0).getValue());
        System.assertEquals('--', controller.subCategoryOptions.get(0).getValue());
     }
+
+    @isTest static void testCreateContactCreateCaseSaveCaseWithErrors()
+    {
+        setUpTest();
+        PageReference pageRef = Page.HelpDesk;
+        Test.setCurrentPage(pageRef);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        List<Case> caseList = CaseService.createTestCases(2, testContact);
+
+        insert caseList;
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+        ApexPages.currentPage().getParameters().put('phone', '');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', '');
+        ApexPages.currentPage().getParameters().put('lastname', '');
+        ApexPages.currentPage().getParameters().put('asuriteid', '');
+        ApexPages.currentPage().getParameters().put('emplid', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', '');
+        ApexPages.currentPage().getParameters().put('personalemail', '');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        Test.startTest();
+
+        HelpDeskController controller = new HelpDeskController();
+
+        // Test cancel new contact after case selection
+        controller.selectedContactId = testContact.Id;
+        controller.selectedCaseId = caseList[0].Id;
+        controller.setAsCase();
+        controller.newContact();
+        controller.cancelNewContact();
+
+        // Clear out search
+        controller.clearContactSearch();
+
+        // Create the new contact.
+        controller.newContact();
+        controller.mycontact.LastName = 'Doe';
+        controller.saveContact();
+
+        // Create the new Case and back out for coverage.
+        controller.newCase();
+        controller.cancelCase();
+
+        // This flags an error on sub and desc.
+        controller.newCase();
+        controller.saveCase();
+
+        // Fill out the sub and desc, move status to Closed Forwarded to error on Forward To Unit Required.
+        controller.myCase.Subject = 'test';
+        controller.myCase.Description = 'test';
+        controller.myCase.Status = 'Closed: Forwarded';
+        controller.saveCase();
+
+        Boolean foundError = false;
+        for (ApexPages.Message msg : ApexPages.getMessages()) if (msg.getDetail().contains('Forward to Unit is required')) foundError = true;
+        System.assert(foundError, '\'Forward to Unit is required\' should have shown up as a Page error.');
+
+        controller.myCase.Forward_To_Unit__c = 'Other Unit';
+        controller.saveCase();
+
+        foundError = false;
+        for (ApexPages.Message msg : ApexPages.getMessages()) if (msg.getDetail().contains('Forward to Email is required')) foundError = true;
+        System.assert(foundError, '\'Forward to Email is required\' should have shown up as a Page error.');
+
+        controller.myCase.Forward_To_Unit__c = 'Service Now';
+        controller.saveCase();
+
+        foundError = false;
+        for (ApexPages.Message msg : ApexPages.getMessages()) if (msg.getDetail().contains('Service Now Ticket Number is required')) foundError = true;
+        System.assert(foundError, '\'Service Now Ticket Number is required\' should have shown up as a Page error.');
+
+        controller.myCase.Forward_To_Unit__c = 'Other Unit';
+        controller.myCase.Forward_To_Email__c = 'someforward@nomail.com';
+        controller.saveCase();
+
+        Test.stopTest();
+
+        PageReference control = new PageReference('/' + controller.mycase.Id);
+
+        System.assertEquals(control.getUrl(), controller.saveCase().getUrl());
+    }
 }

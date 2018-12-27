@@ -2,6 +2,9 @@
 public with sharing class HelpDeskController
 {
     public Boolean isPageLoaded;
+    public static final String CLOSED_FORWARDED { get { return 'Closed: Forwarded'; } set; }
+    public static final String OTHER_UNIT { get { return 'Other Unit'; } set; }
+    public static final String SERVICE_NOW { get { return 'Service Now'; } set; }
     private String soql { get; set; }
 
     public Map<String, Case_Classification__c> allFunctionalGroups {
@@ -263,7 +266,7 @@ public with sharing class HelpDeskController
 
         for (CaseStatus cs: [Select Id, MasterLabel From CaseStatus Where IsClosed = true])
         {
-            if (!(cs.MasterLabel == 'Closed: Forwarded'))
+            if (!(cs.MasterLabel == CLOSED_FORWARDED))
             {
                 closeCaseStatusOptions.add(new SelectOption(cs.Id, cs.MasterLabel));
             }
@@ -1026,59 +1029,61 @@ public with sharing class HelpDeskController
         }
     }
 
-    public PageReference saveCase()
-    {
-        if (!validCase(myCase)) {
-            ApexPages.addMessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'You must enter both a Subject and Description to save the Case.'
-                )
-            );
-            return null;
-        }
+    public PageReference saveCase() {
+        if (!validCase(myCase)) return null;
+
         try {
             addCaseClassificationToCase();
-
             upsert myCase;
 
             return redirectPage(myCase);
-        }
-        catch(DMLException e) {
-            if (e.getDMLType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
+        } catch(DmlException e) {
+            if (e.getDmlType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertStringToJSON('caseSubj',myCase.Subject));
                 vars.add(ErrorLogger.convertStringToJSON('caseDescription', myCase.Description));
                 vars.add(ErrorLogger.convertStringToJSON('Case Contact Id', myCase.ContactId));
                 ErrorLogger.log(e,vars,false);
-                ApexPages.addMessage(
-                    new ApexPages.Message(
-                        ApexPages.Severity.ERROR,
-                        'Case has been logged with an admin due to ' + e.getMessage()
-                    )
-                );
+                ApexPages.addMessage(new ApexPages.Message(
+                    ApexPages.Severity.ERROR, 'Case has been logged with an admin due to ' + e.getMessage()));
             }
-            return null;
 
-        }
-        catch(Exception e) {
+            return null;
+        } catch(Exception e) {
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertStringToJSON('caseSubj No DML',myCase.Subject));
             vars.add(ErrorLogger.convertStringToJSON('caseDescription No DML', myCase.Description));
             vars.add(ErrorLogger.convertStringToJSON('Case Contact Id No DML', myCase.ContactId));
             ErrorLogger.log(e,vars,false);
-            ApexPages.addMessage(
-                new ApexPages.Message(
-                    ApexPages.Severity.ERROR,
-                    'Case has been logged with an admin due to ' + e.getMessage()
-                )
-            );
+            ApexPages.addMessage(new ApexPages.Message(
+                ApexPages.Severity.ERROR, 'Case has been logged with an admin due to ' + e.getMessage()));
+
             return null;
         }
     }
 
-    private boolean validCase(Case caseToValidate) {
-        return !String.isEmpty(caseToValidate.Subject) || !String.isEmpty(caseToValidate.Description);
+    private Boolean validCase(Case caseToValidate) {
+        if (String.isEmpty(caseToValidate.Subject) || String.isEmpty(caseToValidate.Description)) {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'You must enter both a Subject and Description to save the Case.'));
+            return false;
+        }
+
+        if (caseToValidate.Status == CLOSED_FORWARDED && String.isBlank(caseToValidate.Forward_To_Unit__c)) {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Forward to Unit is required.'));
+            return false;
+        }
+
+        if (caseToValidate.Status == CLOSED_FORWARDED && caseToValidate.Forward_To_Unit__c == OTHER_UNIT && String.isBlank(caseToValidate.Forward_To_Email__c)) {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Forward to Email is required.'));
+            return false;
+        }
+
+        if (caseToValidate.Status == CLOSED_FORWARDED && caseToValidate.Forward_To_Unit__c == SERVICE_NOW && String.isBlank(caseToValidate.Service_Now_Ticket_Number__c)) {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Service Now Ticket Number is required.'));
+            return false;
+        }
+
+        return true;
     }
 
     private void addCaseClassificationToCase() {

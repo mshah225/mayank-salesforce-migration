@@ -1030,10 +1030,9 @@ public with sharing class HelpDeskController
     }
 
     public PageReference saveCase() {
-        if (!validCase(myCase)) return null;
-
         try {
             addCaseClassificationToCase();
+            System.debug('merf: ' + myCase);
             upsert myCase;
 
             return redirectPage(myCase);
@@ -1046,6 +1045,8 @@ public with sharing class HelpDeskController
                 ErrorLogger.log(e,vars,false);
                 ApexPages.addMessage(new ApexPages.Message(
                     ApexPages.Severity.ERROR, 'Case has been logged with an admin due to ' + e.getMessage()));
+            } else {
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, e.getDmlMessage(0)));
             }
 
             return null;
@@ -1060,30 +1061,6 @@ public with sharing class HelpDeskController
 
             return null;
         }
-    }
-
-    private Boolean validCase(Case caseToValidate) {
-        if (String.isEmpty(caseToValidate.Subject) || String.isEmpty(caseToValidate.Description)) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'You must enter both a Subject and Description to save the Case.'));
-            return false;
-        }
-
-        if (caseToValidate.Status == CLOSED_FORWARDED && String.isBlank(caseToValidate.Forward_To_Unit__c)) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Forward to Unit is required.'));
-            return false;
-        }
-
-        if (caseToValidate.Status == CLOSED_FORWARDED && caseToValidate.Forward_To_Unit__c == OTHER_UNIT && String.isBlank(caseToValidate.Forward_To_Email__c)) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Forward to Email is required.'));
-            return false;
-        }
-
-        if (caseToValidate.Status == CLOSED_FORWARDED && caseToValidate.Forward_To_Unit__c == SERVICE_NOW && String.isBlank(caseToValidate.Service_Now_Ticket_Number__c)) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Service Now Ticket Number is required.'));
-            return false;
-        }
-
-        return true;
     }
 
     private void addCaseClassificationToCase() {

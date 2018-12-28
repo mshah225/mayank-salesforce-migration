@@ -160,7 +160,7 @@
                       style="margin-top:10px;min-width:1300px;overflow:auto;padding:10px;">
         <apex:form id="myform" html-novalidate="novalidate">
             <apex:actionFunction name="reRenderMessagePanel" reRender="messages" />
-            <apex:pageMessages id="messages"/>
+            <apex:pageMessages id="messages" escape="false"/>
             <div id="first">
                 <apex:outputPanel id="innerfirst" layout="block">
                     <apex:outputPanel id="innerfirstSearchContact"
@@ -549,7 +549,7 @@
 
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && mycase.Forward_To_Unit__c == SERVICE_NOW}">
                                             <apex:outputLabel value="Service Now Ticket Number" for="serviceNowTicketNumber"/>
-                                            <apex:inputField id="serviceNowTicketNumber" value="{!mycase.Service_Now_Ticket_Number__c}"/>
+                                            <apex:inputField id="serviceNowTicketNumber" value="{!mycase.ServiceNow_Ticket_Number__c}"/>
                                         </apex:pageBlockSectionItem>
 
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && (mycase.Forward_To_Unit__c == SERVICE_NOW || mycase.Forward_To_Unit__c == OTHER_UNIT)}"/>

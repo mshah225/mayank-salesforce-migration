@@ -192,16 +192,43 @@ public with sharing class viewCaseController {
         
     }
 
-    public List<bomgar__Event__c> getChatMessages() {
-        return [
-            SELECT bomgar__DestinationValue__c, bomgar__EventDateTime__c, bomgar__EventType__c, bomgar__PerformedByType__c, 
-                bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId 
-            FROM bomgar__Event__c 
-            WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c =  :ApexPages.currentPage().getParameters().get('Id')
-            AND (bomgar__PerformedByType__c = 'representative' OR bomgar__PerformedByType__c  = 'customer') 
+    public List<ChatMessage> getChatMessages() {
+        List<ChatMessage> allChatMessages = new List<ChatMessage>();
+        allChatMessages.addAll(getBomgarChatMessages());
+        allChatMessages.addAll(getLiveChatMessages());
+        return allChatMessages;
+    }
+    
+    private List<ChatMessage> getBomgarChatMessages() {
+        List<bomgar__Event__c> bomgarMessages = [
+            SELECT bomgar__DestinationValue__c, bomgar__EventDateTime__c, bomgar__EventType__c, bomgar__PerformedByType__c,
+            bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId
+            FROM bomgar__Event__c
+            WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c = :ApexPages.currentPage().getParameters().get('Id')
+            AND(bomgar__PerformedByType__c = 'representative' OR bomgar__PerformedByType__c = 'customer')
             AND bomgar__DestinationValue__c = 'everyone' order by bomgar__EventDateTime__c asc
         ];
+        
+        List<ChatMessage> bomgarChatMessages = new List<ChatMessage>();
+        for (bomgar__Event__c bomgarMessage : bomgarMessages) {
+            bomgarChatMessages.add(new ChatMessage(bomgarMessage));
+        }
+        return bomgarChatMessages;
     }
+
+    private List<ChatMessage> getLiveChatMessages() {
+        List<Chat_Message__c> chatMessages = [
+            SELECT Body__c 
+            FROM Chat_Message__c
+            WHERE Case__c = :ApexPages.currentPage().getParameters().get('Id')
+        ];
+        List<ChatMessage> liveChatMessages = new List<ChatMessage>();
+        for (Chat_Message__c message : chatMessages) {
+            liveChatMessages.add(new ChatMessage(message));
+        }
+        return liveChatMessages;
+    }
+
 
     public Boolean getNormalPhone() {
         return (userContact.CAP__c == null) ? true : false;

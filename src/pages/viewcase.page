@@ -436,7 +436,7 @@
                                             <div class="chatUserInfo">
                                                 <apex:outputText id="chatUserInfo" value="{!message.performedBy}"/>
                                             </div>
-                                            <apex:outputText value="{!message.text}"/>
+                                            <apex:outputText value="{!message.text}" escape="false"/>
                                         </div>
                                     </div>
                                 </apex:repeat>

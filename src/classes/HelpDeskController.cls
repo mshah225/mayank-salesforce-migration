@@ -1032,7 +1032,6 @@ public with sharing class HelpDeskController
     public PageReference saveCase() {
         try {
             addCaseClassificationToCase();
-            System.debug('merf: ' + myCase);
             upsert myCase;
 
             return redirectPage(myCase);

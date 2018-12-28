@@ -4,7 +4,7 @@ public with sharing class HelpDeskController
     public Boolean isPageLoaded;
     public static final String CLOSED_FORWARDED { get { return 'Closed: Forwarded'; } set; }
     public static final String OTHER_UNIT { get { return 'Other Unit'; } set; }
-    public static final String SERVICE_NOW { get { return 'Service Now'; } set; }
+    public static final String SERVICE_NOW { get { return 'ServiceNow'; } set; }
     private String soql { get; set; }
 
     public Map<String, Case_Classification__c> allFunctionalGroups {

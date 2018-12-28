@@ -561,7 +561,7 @@ private class Test_HelpDeskController
         for (ApexPages.Message msg : ApexPages.getMessages()) if (msg.getDetail().contains('Forward to Email is required')) foundError = true;
         System.assert(foundError, '\'Forward to Email is required\' should have shown up as a Page error.');
 
-        controller.myCase.Forward_To_Unit__c = 'Service Now';
+        controller.myCase.Forward_To_Unit__c = 'ServiceNow';
         controller.saveCase();
 
         foundError = false;

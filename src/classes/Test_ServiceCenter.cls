@@ -178,6 +178,14 @@ private class Test_ServiceCenter {
         ];
         
     }
+    
+    private static void insertLiveAgentMessages(Integer num) {
+        List<Chat_Message__c> chatMessages = new List<Chat_Message__c>();
+        for (Integer i = 0; i < num; i++) {
+            chatMessages.add(new Chat_Message__c(Body__c = 'Test Body Message', Case__c = caseOnTestUser.Id));
+        }
+        insert chatMessages;
+    }
 
     @isTest 
     private static void testStudentSCPageAC() {
@@ -588,15 +596,38 @@ private class Test_ServiceCenter {
         loadTestDataWithUserByLastName('User0');
         setCurrentPageAsViewCase();
         
-        List<bomgar__Event__c> fetchedBomgarEvent;
+        List<ChatMessage> fetchedChatMessages;
         Test.startTest();
         System.runAs(testUser) {
             vcc = new viewCaseController();
-            fetchedBomgarEvent = vcc.getChatMessages();
+            fetchedChatMessages = vcc.getChatMessages();
         }
         Test.stopTest();
         List<bomgar__Event__c> bomgarForAssert = [SELECT Id, bomgar__BomgarSession__r.bomgar__relatedcase__c from bomgar__Event__c LIMIT 1];
         System.assertEquals(bomgarForAssert[0].bomgar__BomgarSession__r.bomgar__relatedcase__c, caseOnTestUser.Id);
+    }
+    
+    @isTest
+    private static void correctNumberOfChatMessages() {
+        loadTestDataWithUserByLastName('User0');
+        insertLiveAgentMessages(1);
+        setCurrentPageAsViewCase();
+        
+        List<ChatMessage> fetchedChatMessages;
+        Test.startTest();
+        System.runAs(testUser) {
+            vcc = new viewCaseController();
+            fetchedChatMessages = vcc.getChatMessages();
+        }
+        Test.stopTest();
+        List<bomgar__Event__c> bomgarForAssert = [SELECT bomgar__DestinationValue__c, bomgar__EventDateTime__c, bomgar__EventType__c, bomgar__PerformedByType__c,
+                bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId
+            FROM bomgar__Event__c
+            WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c = :ApexPages.currentPage().getParameters().get('Id')
+            AND(bomgar__PerformedByType__c = 'representative' OR bomgar__PerformedByType__c = 'customer')
+            AND bomgar__DestinationValue__c = 'everyone' order by bomgar__EventDateTime__c asc];
+        List<Chat_Message__c> chatMessages = [SELECT Body__c FROM Chat_Message__c];
+        System.assertEquals(bomgarForAssert.size() + chatMessages.size(), fetchedChatMessages.size());
     }
     
     @isTest

@@ -10,11 +10,11 @@
     <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
     <script type='text/javascript'>
         var orgId = '{!$Organization.Id}'.slice(0,15);
-        var chatEndpoint = 'https://d.la3-c2cs-dfw.salesforceliveagent.com/chat';
-        var chatDeploymentId = '5720m0000008OPp';
-        var financesChatId = '5730m0000008OXx';
-        var studentServiceChatId = '5730m0000008OXy';
-        var techSupportChatId = '5730m0000008OXz';
+        var chatEndpoint = 'https://d.la4-c1cs-dfw.salesforceliveagent.com/chat';
+        var chatDeploymentId = '572180000004CHb';
+        var financesChatId = '573180000004CWb';
+        var studentServiceChatId = '573180000004CWb';
+        var techSupportChatId = '573180000004CWc';
         
         liveagent.setName('{!$User.FirstName} {!$User.LastName}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);

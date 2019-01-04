@@ -7,7 +7,7 @@
     <apex:attribute name="newPin" description="The new PIN" type="Decimal"/>
     <apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action"/>
     
-    <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
+    <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
     <script type='text/javascript'>
         var orgId = '{!$Organization.Id}'.slice(0,15);
         var chatEndpoint = 'https://d.la4-c1cs-dfw.salesforceliveagent.com/chat';
@@ -280,8 +280,8 @@
 
                     <ul class="dropdown-menu">
                         <li>
-                            <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >Live Agent - Finances</a>
-                            <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >Live Agent - Finances</a>
+                            <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >Live Chat - Finances</a>
+                            <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >Live Chat - Finances</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
@@ -291,8 +291,8 @@
                             </script>
                         </li>
                         <li>
-                            <a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >Live Agent - Technical Support</a>
-                            <a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >Live Agent - Technical Support</a>
+                            <a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >Live Chat - Technical Support</a>
+                            <a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >Live Chat - Technical Support</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
@@ -302,8 +302,8 @@
                             </script>
                         </li>
                         <li>
-                            <a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">Live Agent - Student Services</a>
-                            <a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">Live Agent - Student Services</a>
+                            <a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">Live Chat - Student Services</a>
+                            <a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">Live Chat - Student Services</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){

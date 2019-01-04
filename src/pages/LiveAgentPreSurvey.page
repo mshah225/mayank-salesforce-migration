@@ -76,8 +76,8 @@
                 <div style="padding: 10px;">
                     <input type='submit' style="max-width: 300px !important; width:25% !important; height: 15% !important; font-size:4vw !important" value='Chat Now' id='prechat_submit' onclick="setName()" class="kbbtn searchBtn"/>
                 </div>
-                <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
-                <script type='text/javascript' src='https://c.la1c1.salesforceliveagent.com/content/g/js/32.0/prechat.js'></script>
+                <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
+                <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/32.0/prechat.js'></script>
                 <script type='text/javascript'>
                     var orgId = '{!$Organization.Id}'.slice(0,15);
                     var chatDeploymentId = '572180000004CHb';

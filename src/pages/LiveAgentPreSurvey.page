@@ -80,9 +80,9 @@
                 <script type='text/javascript' src='https://c.la1c1.salesforceliveagent.com/content/g/js/32.0/prechat.js'></script>
                 <script type='text/javascript'>
                     var orgId = '{!$Organization.Id}'.slice(0,15);
-                    var chatDeploymentId = '5720m0000008OPp';
-                    var chatButtonId = '5730m0000008OXz';
-                    var chatEndpoint = 'https://d.la3-c2cs-dfw.salesforceliveagent.com/chat';
+                    var chatDeploymentId = '572180000004CHb';
+                    var chatButtonId = '573180000004CWb';
+                    var chatEndpoint = 'https://d.la4-c1cs-dfw.salesforceliveagent.com/chat';
                     
                     (function() {
                         function handlePageLoad() {

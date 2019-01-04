@@ -12,27 +12,31 @@
         </div>
         <div style="margin-top: 50px; margin-left: 5%;">
             <a id="liveagent_button_online_5730S0000008Ojk" class ="kbbtn searchBtn" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730S0000008Ojk');" >Chat Now!</a>
-            <a id="liveagent_button_offline_5730S0000008Ojk" class ="kbbtn searchBtn" style="display: none;" >No Agents are currentely available!</a>
+            <a id="liveagent_button_offline_5730S0000008Ojk" class ="kbbtn searchBtn" style="display: none; cursor: pointer" onclick="liveagent.startChat('5730S0000008Ojk');" >Chat Now</a>
         </div>
         <script type="text/javascript">
         if (!window._laq) { window._laq = []; }
         window._laq.push(function(){
-            liveagent.showWhenOnline('5730S0000008Ojk', document.getElementById('liveagent_button_online_5730S0000008Ojk'));
-            liveagent.showWhenOffline('5730S0000008Ojk', document.getElementById('liveagent_button_offline_5730S0000008Ojk'));
+            liveagent.showWhenOnline(chatButtonId, document.getElementById('liveagent_button_online_5730S0000008Ojk'));
+            liveagent.showWhenOffline(chatButtonId, document.getElementById('liveagent_button_offline_5730S0000008Ojk'));
         });
         </script>
         <script type='text/javascript' src='https://c.la3-c2cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
         <script type='text/javascript'>
+        var orgId = '{!$Organization.Id}'.slice(0,15);
+        var chatDeploymentId = '572180000004CHb';
+        var chatButtonId = '573180000004CWd';
+        var chatEndpoint = 'https://d.la4-c1cs-dfw.salesforceliveagent.com/chat';
             
             function initLiveAgent(_callback) {
-            liveagent.init('https://d.la3-c2cs-dfw.salesforceliveagent.com/chat', '5720S0000008P2S', '00D0S0000008uTn'); 
+            liveagent.init(chatEndpoint, chatDeploymentId, orgId); 
             _callback();	
         }
         
         function startChat() {
             setTimeout(function(){ 
                 document.getElementById('liveagent_button_online_5730S0000008Ojk').click();
-                liveagent.startChatWithWindow('573250000008OLT', 'window'); 
+                liveagent.startChatWithWindow(chatButtonId, 'window'); 
             }, 1000);
         }
         

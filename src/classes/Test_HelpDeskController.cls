@@ -207,8 +207,7 @@ private class Test_HelpDeskController {
 
         // Get index 1 for close status, so its not --Select--
         List<SelectOption> closeStatuses = controller.getcloseCaseStatusOptions();
-        controller.selectedCloseCaseStatusOption = closeStatuses[1].getValue();
-        controller.saveCloseCase();
+        controller.saveAndCloseCase();
 
         Test.stopTest();
 

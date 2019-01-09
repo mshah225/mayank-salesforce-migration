@@ -1190,8 +1190,8 @@ public with sharing class Test_CaseInboundEmailHandler {
     
     @isTest
     private static void emailWithAttachmentAndNewContactNoError() {
-        
-        Contact sender = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+        ContactFactory factory = new ContactFactory(ContactFactory.DEFAULT_CONTACT);
+        Contact sender = factory.createOne();
 
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
@@ -1233,8 +1233,8 @@ public with sharing class Test_CaseInboundEmailHandler {
     
     @isTest
     private static void emailWithBadAttachmentAndNewContactCausesError() {
-        
-        Contact sender = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+        ContactFactory factory = new ContactFactory(ContactFactory.DEFAULT_CONTACT);
+        Contact sender = factory.createOne();
 
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();

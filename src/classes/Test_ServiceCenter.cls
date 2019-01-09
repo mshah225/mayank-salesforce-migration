@@ -682,7 +682,7 @@ private class Test_ServiceCenter {
             vcc.submitReply();  
             Test.stopTest();
         }
-        System.assertEquals(vcc.caseReply, 'Test Message');
+        System.assertEquals(vcc.caseReply, 'Test Message'); 
     }
     
     @isTest 
@@ -701,6 +701,6 @@ private class Test_ServiceCenter {
             vcc.submitReply();  
             Test.stopTest();
         }
-        System.assertEquals(vcc.caseReply, 'Test Message');
+        System.assertEquals(vcc.caseReply, 'Test Message'); 
     }
 }

@@ -112,7 +112,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         EmailTemplate e2;
         System.runAs(new User(Id = Userinfo.getUserId()))
         {
-            e2 = new EmailTemplate (developerName = 'test2', TemplateType= 'Text', Name = 'test2', FolderId = f.Id, IsActive=true);
+            String htmlBody = 'Body in HTML: {!Contact.FirstName}, {!Contact.LastName}, {!Case.Thread_Id}, {!failedAttachmentsList}';
+            String textBody = 'Body in text: {!Contact.FirstName}, {!Contact.LastName}, {!Case.Thread_Id}, {!failedAttachmentsList}';
+            e2 = new EmailTemplate (developerName = 'test2', TemplateType= 'Text', Name = 'test2', Subject = 'Rejected Attachment Case-{}', HtmlValue = htmlBody, Body = textBody, FolderId = f.Id, IsActive=true);
             insert e2;
         }
 
@@ -125,6 +127,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         insert etcc2;
         insert etcc3;
         insert etcc4;
+        
+        Email_Logging__c logging = new Email_Logging__c(Name = 'Current_Settings', Spam_Logging__c = true, Attachment_Logging__c = true);
+        insert logging;
     }
 
     @isTest static void newContact()
@@ -181,6 +186,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
     }
 
     @isTest static void newContactLongName()
@@ -237,6 +245,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
     }
 
     @isTest static void existingContact()
@@ -274,6 +285,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals('New', createdCase.Status);
         System.assertEquals(fg.Id, createdCase.CC_Functional_Group__c);
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
     @isTest static void existingContactCcOnly()
@@ -315,6 +329,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals(fg.Id, createdCase.CC_Functional_Group__c);
 
         Test.stopTest();
+        
+        lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
     }
 
 
@@ -354,6 +371,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
     }
 
     @isTest static void existingContactDefaultRule()
@@ -380,6 +400,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         Test.startTest();
         emailServiceObj.handleInboundEmail(email, env );
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
 
     }
 
@@ -537,6 +560,9 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assertEquals(CFG, createdCase.CC_Functional_Group__c, 'External Unit case was not re-opened to most recent functional group');
         System.assertEquals('Re-Opened', createdCase.Status, 'Case was not reopened correctly');
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
     }
 
     @isTest static void createACaseWithEmptySubject()
@@ -569,6 +595,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         ];
 
         System.assertEquals('New', createdCase.Status);
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
     }
 
     @isTest static void testDebugLog()
@@ -620,6 +649,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals('New', createdCase.Status);
         System.assertEquals(fg.Id, createdCase.CC_Functional_Group__c);
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
     @isTest static void testRMMPartialMatchPartial()
@@ -658,6 +690,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals(fg.Id, createdCase.CC_Functional_Group__c);
 
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
   @isTest static void testBothBodiesPopulated()
@@ -695,6 +730,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assert(createdCase.Description == 'This is a plaintext body');
 
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
    @isTest static void testHTMLBodyPopulated()
@@ -732,6 +770,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assert(createdCase.Description == 'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\nThis is a HTML body');
 
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
    @isTest static void testNoBodiesPopulatedNoAttachment()
@@ -768,6 +809,9 @@ public with sharing class Test_CaseInboundEmailHandler {
 		System.assert(createdCase.Description != null);
         System.assert(createdCase.Description.contains('without email body or attachment'));
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
    @isTest static void testNoBodiesPopulatedBinaryAttachment()
@@ -812,6 +856,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assert(createdCase.Description != null);
         System.assert(createdCase.Description.contains('Attachment received at'));
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
    @isTest static void testNoBodiesPopulatedTextAttachment()
@@ -857,6 +904,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assert(createdCase.Description != null);
         System.assert(createdCase.Description.contains('Attachment received at'));
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
    @isTest static void testOriginalEmailPresent()
@@ -907,6 +957,9 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assert(createdCase.Intended_Recipient__c == 'gwgmer@gmail.com');
 
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
    @isTest static void testOriginalEmailNotPresent1()
@@ -956,6 +1009,9 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assert(createdCase.Intended_Recipient__c == null);
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
 
    @isTest static void testOriginalEmailNotPresent2()
@@ -991,6 +1047,9 @@ public with sharing class Test_CaseInboundEmailHandler {
 
         System.assert(createdCase.Intended_Recipient__c == null);
         Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
    }
    
    @IsTest
@@ -1020,6 +1079,9 @@ public with sharing class Test_CaseInboundEmailHandler {
        CaseInboundEmailHandler handler = new CaseInboundEmailHandler();
        handler.handleInboundEmail(email, env);
        Test.stopTest();
+       
+       List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+       System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
        
        Contact contactAfterTest = [SELECT Email, Last_Case_Email_Used__c FROM Contact WHERE Id = :testContact[0].Id];
        
@@ -1056,6 +1118,9 @@ public with sharing class Test_CaseInboundEmailHandler {
        CaseInboundEmailHandler handler = new CaseInboundEmailHandler();
        handler.handleInboundEmail(email, env);
        Test.stopTest();
+       
+       List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+       System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
        
        Contact contactAfterTest = [SELECT Email, Last_Case_Email_Used__c FROM Contact];
        
@@ -1119,8 +1184,97 @@ public with sharing class Test_CaseInboundEmailHandler {
         handler.handleInboundEmail(email, env);
         Test.stopTest();
         
-        List<LostEmail__c> rejectedMessages = [Select Id FROM LostEmail__c];
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+    }
+    
+    @isTest
+    private static void emailWithAttachmentAndNewContactNoError() {
         
-        System.assertEquals(0, rejectedMessages.size());
+        Contact sender = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        // set the body of the attachment
+        inAtt.body = Blob.valueOf('test');
+        inAtt.fileName = 'attach.txt';
+        inAtt.mimeTypeSubType = 'plain/txt';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { inAtt };
+
+
+        List<String> toAddresses = new List<String>();
+        toAddresses.add('service12345123451234512345@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = sender.Email;
+        email.fromName = sender.LastName + ', ' + sender.FirstName;
+        email.plainTextBody = 'Test Body';
+        email.htmlBody = 'Test Body';
+        env.fromAddress = sender.Personal_Email__c;
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        Test.startTest();
+        emailServiceObj.handleInboundEmail(email, env);
+        Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+        
+        Case createdCase = [SELECT Id FROM Case LIMIT 1];
+        
+        Attachment attachment = [SELECT Name, Body, ParentId FROM Attachment LIMIT 1];
+        System.assertEquals(inAtt.fileName, attachment.Name);
+        System.assertEquals(inAtt.body.toString(), attachment.Body.toString());
+        System.assertEquals(createdCase.Id, attachment.ParentId);
+    }
+    
+    @isTest
+    private static void emailWithBadAttachmentAndNewContactCausesError() {
+        
+        Contact sender = new Contact(FirstName='First', LastName='Last', Email='user@acme.com.test', Personal_Email__c='user2@acme.com.test');
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        // set the body of the attachment
+        inAtt.body = Blob.valueOf('test');
+        inAtt.fileName = 'attach.txt' + 'BAD';
+        inAtt.mimeTypeSubType = 'plain/txt';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { inAtt };
+
+		
+        String sendTo = 'service12345123451234512345@test.test';
+        List<String> toAddresses = new List<String>();
+        toAddresses.add(sendTo);
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = sender.Email;
+        email.fromName = sender.LastName + ', ' + sender.FirstName;
+        email.plainTextBody = 'Test Body';
+        email.htmlBody = 'Test Body';
+        env.fromAddress = sender.Personal_Email__c;
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        Test.startTest();
+        emailServiceObj.handleInboundEmail(email, env);
+        Test.stopTest();
+        
+        List<LostEmail__c> lostEmails = [SELECT Sender__c, Subject__c, PlainTextBody__c, HtmlTextBody__c, Cause__c, Recipient__c, CarbonCopies__c, RejectedAttachments__c FROM LostEmail__c];
+        System.assert(!lostEmails.isEmpty(), 'No lost email generated.');
+        
+        LostEmail__c lostEmail = lostEmails[0];
+        System.assertEquals(email.fromAddress, lostEmail.Sender__c);
+        System.assertEquals(email.subject, lostEmail.Subject__c);
+        System.assert(lostEmail.PlainTextBody__c.contains(email.plainTextBody));
+        System.assertEquals(email.htmlBody, lostEmail.HtmlTextBody__c);
+        System.assertEquals('Attachment is invalid', lostEmail.Cause__c);
+        System.assertEquals(sendTo, lostEmail.Recipient__c);
+        System.assertEquals(null, lostEmail.CarbonCopies__c);
+        System.assertEquals(true, lostEmail.RejectedAttachments__c);
     }
 }

@@ -443,8 +443,6 @@
                             </div>
                         </div>
                     </apex:outputPanel>
-
-                    
                 </div><!-- end col-md-8 -->
                 <div class="col-md-5">
                     <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}"

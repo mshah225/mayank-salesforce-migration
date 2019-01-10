@@ -565,8 +565,8 @@ private class Test_UnifiedProspectPageController
         System.assert(c.Subject == 'Test');
     }
     
-    private static testmethod void testCaseClassification()
-    {
+    @isTest
+    private static void testCaseClassification() {
         Test.startTest();
         setUpController();
 

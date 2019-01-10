@@ -427,9 +427,9 @@
                                         <apex:outputPanel id="wrapper">
                                             <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
                                             <apex:actionRegion >
-                                                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!selectedFunctionalGroup}" size="1">
+                                                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}" size="1">
                                                     <apex:actionSupport event="onchange" action="{!updateCategoryAndSubCategory}" rerender="wrapper"/>
-                                                    <apex:selectOptions value="{!functionalGroupOptions}"/>
+                                                    <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}"/>
                                                 </apex:selectList>
                                             </apex:actionRegion>
                                             <br />
@@ -437,17 +437,17 @@
                                             
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
                                             <apex:actionRegion >
-                                                <apex:selectList id="categoryOptions" value="{!selectedCategory}" size="1">
+                                                <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
                                                     <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="wrapper"/>
-                                                    <apex:selectOptions value="{!categoryOptions}"/>
+                                                    <apex:selectOptions value="{!ccPicklist.categoryOptions}"/>
                                                 </apex:selectList>
                                             </apex:actionRegion>
                                             <br />
                                             <br />
                                             <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
                                             <apex:actionRegion >
-                                                <apex:selectList label="Case Sub Category" value="{!selectedSubCategory}" size="1">
-                                                    <apex:selectOptions id="subCategoryOptions" value="{!subCategoryOptions}"/>
+                                                <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
+                                                    <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}"/>
                                                 </apex:selectList>
                                             </apex:actionRegion>
                                             <br />

@@ -343,11 +343,12 @@ public class UnifiedProspectPageController
 
     public Boolean save() {
         getCaseC();
+        addCaseClassificationToCase();
         List<CampaignMember> cams = new List<CampaignMember>();
         Savepoint spException = Database.setSavepoint();
         try {
             error = false;
-
+			
             if (contact.Phone == null && contact.MailingPostalCode == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
@@ -706,6 +707,299 @@ public class UnifiedProspectPageController
             // Validation fails and PageMessage is shown
             Database.rollback(spValidation);
             return null;
+        }
+    }
+    
+    public Map<String, Case_Classification__c> allFunctionalGroups {
+        get {
+            if (allFunctionalGroups == null) {
+                allFunctionalGroups = new Map<String, Case_Classification__c>();
+                Id functionalGroupRecordType = [SELECT Id
+                                                FROM RecordType
+                                                WHERE Name = 'Functional Group'
+                                                LIMIT 1
+                                               ].Id;
+                List<Case_Classification__c> functionalGroups = [SELECT Name
+                                                                 FROM Case_Classification__c
+                                                                 WHERE RecordTypeId =: functionalGroupRecordType
+                                                                 AND Active__c =: TRUE
+                                                                 AND Visible__c =: TRUE
+                                                                 ORDER By Name
+                                                                ];
+                for (Case_Classification__c functionalGroup : functionalGroups) {
+                    allFunctionalGroups.put(functionalGroup.Name, functionalGroup);
+                }
+            }
+            return allFunctionalGroups;
+        }
+        set;
+    }
+
+    public Map<String, Map<String, Case_Classification__c>> allCategories {
+        get {
+            if (allCategories == null) {
+                allCategories = new Map<String, Map<String, Case_Classification__c>>();
+                Id categoryRecordType = [SELECT Id
+                                         FROM RecordType
+                                         WHERE Name = 'Category'
+                                         LIMIT 1
+                                        ].Id;
+                List<Case_Classification__c> categories = [SELECT Name, Parent__c, Parent__r.Name, Default_Case_Description__c
+                                                           FROM Case_Classification__c
+                                                           WHERE RecordTypeId =: categoryRecordType
+                                                           AND Active__c =: TRUE
+                                                           AND Visible__c =: TRUE
+                                                           ORDER By Parent__r.Name, Name
+                                                          ];
+                if (!categories.isEmpty()) {
+                    Map<String, Case_Classification__c> uniqueParentMap = new Map<String, Case_Classification__c>();
+                    uniqueParentMap.put('--', null);
+                    String currentParent = categories[0].Parent__r.Name;
+                    for (Case_Classification__c cat : categories) {
+                        if (currentParent == cat.Parent__r.Name) {
+                            uniqueParentMap.put(cat.Name, cat);
+                        } else {
+                            allCategories.put(currentParent, uniqueParentMap);
+                            uniqueParentMap = new Map<String, Case_Classification__c>();
+                            uniqueParentMap.put('--', null);
+                            currentParent = cat.Parent__r.Name;
+                            uniqueParentMap.put(cat.Name, cat);
+                        }
+                    }
+                    allCategories.put(currentParent, uniqueParentMap);
+
+                    Map<String, Case_Classification__c> noSelectOption = new Map<String, Case_Classification__c>();
+                    noSelectOption.put('--', null);
+                    allCategories.put('--',  noSelectOption);
+                }
+                for (String functionalGroupName : allFunctionalGroups.keySet()) {
+                    if (allCategories.get(functionalGroupName) == null ) {
+                    Map<String, Case_Classification__c> noSelectOption = new Map<String, Case_Classification__c>();
+                    noSelectOption.put('--', null);
+                    allCategories.put(functionalGroupName,  noSelectOption);
+                    }
+                }
+            }
+            return allCategories;
+        }
+        set;
+    }
+
+    public Map<String, Map<String, Case_Classification__c>> allSubCategories {
+        get {
+            if (allSubCategories == null) {
+                allSubCategories = new Map<String, Map<String, Case_Classification__c>>();
+                Id subCategoryRecordType = [SELECT Id
+                                            FROM RecordType
+                                            WHERE Name = 'Sub Category'
+                                            LIMIT 1
+                                           ].Id;
+                List<Case_Classification__c> subCategories = [SELECT Name, Parent__c, Parent__r.Name
+                                                              FROM Case_Classification__c
+                                                              WHERE RecordTypeId =: subCategoryRecordType
+                                                              AND Active__c =: TRUE
+                                                              AND Visible__c =: TRUE
+                                                              ORDER By Parent__c, Parent__r.Name, Name
+                                                             ];
+                if (!subCategories.isEmpty()) {
+                    Map<String, Case_Classification__c> uniqueParentMap = new Map<String, Case_Classification__c>();
+                    uniqueParentMap.put('--', null);
+                    String currentParentId = subCategories[0].Parent__c;
+                    for (Case_Classification__c subCat : subCategories) {
+                        if (currentParentId == subCat.Parent__c) {
+                            uniqueParentMap.put(subCat.Name, subCat);
+                        } else {
+                            allsubCategories.put(currentParentId, uniqueParentMap);
+                            uniqueParentMap = new Map<String, Case_Classification__c>();
+                            uniqueParentMap.put('--', null);
+                            currentParentId = subCat.Parent__c;
+                            uniqueParentMap.put(subCat.Name, subCat);
+                        }
+                    }
+                    allsubCategories.put(currentParentId, uniqueParentMap);
+
+                    Map<String, Case_Classification__c> noSelectOption = new Map<String, Case_Classification__c>();
+                    noSelectOption.put('--', null);
+                    allSubCategories.put('--',  noSelectOption);
+                }
+            }
+            return allSubCategories;
+        }
+        set;
+    }
+
+    public String selectedFunctionalGroup {
+        get {
+            if (selectedFunctionalGroup == null) {
+                selectedFunctionalGroup = '--';
+            }
+            return selectedFunctionalGroup;
+        }
+        set;
+    }
+    public String selectedCategory {
+        get {
+            if (selectedCategory == null) {
+                selectedCategory = '--';
+            }
+            return selectedCategory;
+        }
+        set;
+    }
+
+    public String selectedSubCategory {
+        get {
+            if (selectedSubCategory == null) {
+                selectedSubCategory = '--';
+            }
+            return selectedSubCategory;
+        }
+        set;
+    }
+
+    public List<SelectOption> functionalGroupOptions {
+        get {
+            if (functionalGroupOptions == null) {
+                functionalGroupOptions = new List<SelectOption>();
+				functionalGroupOptions.add(new SelectOption('--', '--', true));
+                for (String functionalGroupOption : allFunctionalGroups.keyset()) {
+                    functionalGroupOptions.add(new SelectOption(functionalGroupOption, functionalGroupOption, false));
+                }
+            }
+            return functionalGroupOptions;
+        }
+
+        set;
+    }
+
+    public List<SelectOption> categoryOptions {
+        get {
+            if (categoryOptions == null) {
+                categoryOptions = new List<SelectOption>();
+                if (allCategories != null && selectedFunctionalGroup != null) {
+                    Map<String, Case_Classification__c> categoriesForFunctionalGroup = allCategories.get(selectedFunctionalGroup);
+                    if (categoriesForFunctionalGroup != null && !categoriesForFunctionalGroup.isEmpty()) {
+                        for (String categoryOption : categoriesForFunctionalGroup.keySet()) {
+                            if (categoryOption.equals('--')) {
+                                categoryOptions.add(new SelectOption('--', '--', false));
+                            } else {
+                            	categoryOptions.add(new SelectOption(categoriesForFunctionalGroup.get(categoryOption).Id, categoryOption, false));
+                            }
+                        }
+                    } else {
+                        categoryOptions.add(new SelectOption('--', '--', false));
+                    }
+                } else {
+                    categoryOptions.add(new SelectOption('--', '--', false));
+                }
+            }
+            return categoryOptions;
+        }
+
+        set;
+    }
+
+    public List<SelectOption> subCategoryOptions {
+        get {
+            if (subCategoryOptions == null) {
+                subCategoryOptions = new List<SelectOption>();
+                if (allSubCategories != null && selectedCategory != null) {
+                    Map<String, Case_Classification__c> subCategoriesForParent = allsubCategories.get(selectedCategory);
+
+                    if (subCategoriesForParent != null && !subCategoriesForParent.isEmpty()) {
+                        for (String subCategoryOption : subCategoriesForParent.keySet()) {
+                            subCategoryOptions.add(new SelectOption(subCategoryOption, subCategoryOption, false));
+                        }
+                    } else {
+                        subCategoryOptions.add(new SelectOption('--', '--', false));
+                    }
+                } else {
+                    subCategoryOptions.add(new SelectOption('--', '--', false));
+                }
+            }
+            return subCategoryOptions;
+        }
+
+        set;
+    }
+    
+    public PageReference updateCategoryAndSubCategory() {
+        updateCategories();
+        updateOnCategoryChange();
+
+        return null;
+    }
+    public PageReference  updateCategories() {
+        categoryOptions = new List<SelectOption>();
+        System.debug(allCategories);
+        System.debug('Selected Functional Group: ' + selectedFunctionalGroup);
+        Map<String, Case_Classification__c> categoriesForParent = allCategories.get(selectedFunctionalGroup);
+        Boolean firstCategoryUpdated = false;
+        if (categoriesForParent != NULL && !categoriesForParent.isEmpty()) {
+            for (String categoryName : categoriesForParent.keySet()) {
+                if (categoryName.equals('--')) {
+                    categoryOptions.add(new SelectOption(categoryName, categoryName, false));
+                } else {
+                	categoryOptions.add(new SelectOption(categoriesForParent.get(categoryName).Id, categoryName, false));
+                }
+            }
+        } else {
+            categoryOptions.add(new SelectOption('--', '--', false));
+        }
+        System.debug('categoryOptions' + categoryOptions);
+        return null;
+    }
+
+    public PageReference updateOnCategoryChange() {
+        updateSubCategories();
+        return null;
+    }
+    
+    public PageReference updateSubCategories() {
+        subCategoryOptions = new List<SelectOption>();
+        Map<String, Case_Classification__c> subCategoriesForParent = allsubCategories.get(selectedCategory);
+        Boolean firstSubCategoryUpdated = false;
+        if (subCategoriesForParent != NULL && !subCategoriesForParent.isEmpty()) {
+            for (String subCategoryName : subCategoriesForParent.keySet()) {
+                subCategoryOptions.add(new SelectOption(subCategoryName, subCategoryName, false));
+                if (!firstSubCategoryUpdated) {
+                    selectedSubCategory = subCategoryName;
+                    firstSubCategoryUpdated = true;
+                }
+            }
+        } else {
+            subCategoryOptions.add(new SelectOption('--', '--', false));
+        }
+
+        return null;
+    }
+    
+    private void addCaseClassificationToCase() {
+        Case_Classification__c functionalGroupToAdd = allFunctionalGroups.get(selectedFunctionalGroup);
+
+        if (functionalGroupToAdd != null) {
+            caseC.CC_Functional_Group__c = functionalGroupToAdd.Id;
+            if (allCategories.get(functionalGroupToAdd.Name) == NULL || selectedCategory.equals('--')) {
+                caseC.CC_Category__c = null;
+            } else {
+                String categoryName = [SELECT Name FROM Case_Classification__c WHERE Id =: selectedCategory].Name;
+                Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(categoryName);
+                if (categoryToAdd != null) {
+                    caseC.CC_Category__c = categoryToAdd.Id;
+                    if (allSubCategories.get(selectedCategory) == NULL) {
+                        caseC.CC_Sub_Category__c = null;
+                    } else {
+                        Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Id).get(selectedSubCategory);
+                        if (subCategoryToAdd != null) {
+                            caseC.CC_Sub_Category__c = subCategoryToAdd.Id;
+                        } else {
+                            caseC.CC_Sub_Category__c = null;
+                        }
+                    }
+                } else {
+                    caseC.CC_Category__c = null;
+                }
+            }
         }
     }
 }

@@ -9,7 +9,8 @@ private class Test_UnifiedProspectPageController
 
     @testSetup static void setUpTest()
     {
-        TestDataFactory.createFunctionalGroup('Test Group');
+        CaseClassificationFactory ccMaker = new CaseClassificationFactory();
+        ccMaker.createAndInsertSetOfCaseClassification();
 
         Account testAccount = new Account(
             Name = 'Test School'
@@ -156,8 +157,6 @@ private class Test_UnifiedProspectPageController
         contact.Phone = '4803805555';
         contact.MobilePhone = '4803806666';
         uppc.smsText = TRUE;
-
-        fgroup = TestDataFactory.createFunctionalGroup('TestFG');
     }
 
     private static testmethod void testUndergradCaseCreationCaseNoInterest()
@@ -565,6 +564,60 @@ private class Test_UnifiedProspectPageController
 
         System.assert(c.Subject == 'Test');
     }
+    
+    private static testmethod void testCaseClassification()
+    {
+        Test.startTest();
+        setUpController();
+
+        Case_Classification__c functionalGroupCreated = [SELECT Id, Name FROM Case_Classification__c WHERE Name = 'Test Functional Group0'];
+        Case_Classification__c categoryCreated = [SELECT Id, Name FROM Case_Classification__c WHERE Name = 'Test Category0'];
+        Case_Classification__c subCategoryCreated = [SELECT Id, Name FROM Case_Classification__c WHERE Name = 'Test Sub Category0'];
+
+        System.assertEquals(2, uppc.functionalGroupOptions.size());
+        System.assertEquals(1, uppc.categoryOptions.size());
+        System.assertEquals(1, uppc.subCategoryOptions.size());
+		uppc.selectedFunctionalGroup = functionalGroupCreated.Name;
+		uppc.updateCategories();
+		System.assertEquals(2, uppc.functionalGroupOptions.size());
+        System.assertEquals(2, uppc.categoryOptions.size());
+        System.assertEquals(1, uppc.subCategoryOptions.size());
+        uppc.career = 'undergraduate';
+        Term__c testTerm = [SELECT Id FROM Term__c WHERE Name = 'Spring 2017' LIMIT 1];
+        opportunity.Term__c = testTerm.Id;
+        opportunity.Type = 'First Time Freshman';
+
+        uppc.originSelection = 'Email';
+        uppc.selectedCategory = categoryCreated.Id;
+		uppc.updateOnCategoryChange();
+        uppc.selectedSubCategory = subCategoryCreated.Name;
+        c.Subject = 'Test';
+        c.Description = 'Test';
+
+        uppc.setContact(contact);
+        uppc.setOpportunity(opportunity);
+        uppc.setCaseC(c);
+
+        uppc.pickSelection = '--Select--';
+
+        Boolean result = uppc.save();
+
+        Test.stopTest();
+
+        c = [
+            SELECT Subject, Status, Case_Source__c, Origin__c, CC_Functional_Group__c, CC_Category__c, CC_Sub_Category__c
+            FROM Case
+            WHERE CC_Functional_Group__c = :functionalGroupCreated.Id
+            LIMIT 1
+        ];
+		System.assert(c.CC_Functional_Group__c == functionalGroupCreated.Id);
+        System.assert(c.CC_Category__c == categoryCreated.Id);
+        System.assert(c.CC_Sub_Category__c == subCategoryCreated.Id);
+        System.assert(c.Status == 'Closed: Resolved');
+        System.assert(c.Origin__c == 'Email');
+        System.assert(c.Subject == 'Test');
+    }
+    
     private static testmethod void testGetContact()
     {
         Test.startTest();

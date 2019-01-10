@@ -348,7 +348,7 @@ public class UnifiedProspectPageController
         Savepoint spException = Database.setSavepoint();
         try {
             error = false;
-			
+            
             if (contact.Phone == null && contact.MailingPostalCode == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
@@ -861,7 +861,7 @@ public class UnifiedProspectPageController
         get {
             if (functionalGroupOptions == null) {
                 functionalGroupOptions = new List<SelectOption>();
-				functionalGroupOptions.add(new SelectOption('--', '--', true));
+                functionalGroupOptions.add(new SelectOption('--', '--', true));
                 for (String functionalGroupOption : allFunctionalGroups.keyset()) {
                     functionalGroupOptions.add(new SelectOption(functionalGroupOption, functionalGroupOption, false));
                 }
@@ -883,7 +883,7 @@ public class UnifiedProspectPageController
                             if (categoryOption.equals('--')) {
                                 categoryOptions.add(new SelectOption('--', '--', false));
                             } else {
-                            	categoryOptions.add(new SelectOption(categoriesForFunctionalGroup.get(categoryOption).Id, categoryOption, false));
+                                categoryOptions.add(new SelectOption(categoriesForFunctionalGroup.get(categoryOption).Id, categoryOption, false));
                             }
                         }
                     } else {
@@ -940,7 +940,7 @@ public class UnifiedProspectPageController
                 if (categoryName.equals('--')) {
                     categoryOptions.add(new SelectOption(categoryName, categoryName, false));
                 } else {
-                	categoryOptions.add(new SelectOption(categoriesForParent.get(categoryName).Id, categoryName, false));
+                    categoryOptions.add(new SelectOption(categoriesForParent.get(categoryName).Id, categoryName, false));
                 }
             }
         } else {

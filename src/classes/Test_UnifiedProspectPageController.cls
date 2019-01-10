@@ -577,9 +577,9 @@ private class Test_UnifiedProspectPageController
         System.assertEquals(2, uppc.functionalGroupOptions.size());
         System.assertEquals(1, uppc.categoryOptions.size());
         System.assertEquals(1, uppc.subCategoryOptions.size());
-		uppc.selectedFunctionalGroup = functionalGroupCreated.Name;
-		uppc.updateCategories();
-		System.assertEquals(2, uppc.functionalGroupOptions.size());
+        uppc.selectedFunctionalGroup = functionalGroupCreated.Name;
+        uppc.updateCategories();
+        System.assertEquals(2, uppc.functionalGroupOptions.size());
         System.assertEquals(2, uppc.categoryOptions.size());
         System.assertEquals(1, uppc.subCategoryOptions.size());
         uppc.career = 'undergraduate';
@@ -589,7 +589,7 @@ private class Test_UnifiedProspectPageController
 
         uppc.originSelection = 'Email';
         uppc.selectedCategory = categoryCreated.Id;
-		uppc.updateOnCategoryChange();
+        uppc.updateOnCategoryChange();
         uppc.selectedSubCategory = subCategoryCreated.Name;
         c.Subject = 'Test';
         c.Description = 'Test';
@@ -610,7 +610,7 @@ private class Test_UnifiedProspectPageController
             WHERE CC_Functional_Group__c = :functionalGroupCreated.Id
             LIMIT 1
         ];
-		System.assert(c.CC_Functional_Group__c == functionalGroupCreated.Id);
+        System.assert(c.CC_Functional_Group__c == functionalGroupCreated.Id);
         System.assert(c.CC_Category__c == categoryCreated.Id);
         System.assert(c.CC_Sub_Category__c == subCategoryCreated.Id);
         System.assert(c.Status == 'Closed: Resolved');

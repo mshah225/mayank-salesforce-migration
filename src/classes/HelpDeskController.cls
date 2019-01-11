@@ -1030,27 +1030,29 @@ public with sharing class HelpDeskController
     }
 
     public PageReference saveCase() {
-        return saveCaseAndGoTo(redirectPage(myCase));
+        Boolean isSaveSuccess = upsertCase();
+        return isSaveSuccess ? redirectPage(myCase) : null;
     }
     
     public PageReference saveAndTransferCase() {
+        Boolean isSaveSuccess = upsertCase();
         PageReference page = new PageReference('/apex/CaseTransfer?id=' + myCase.Id);
         page.setRedirect(true);
-        return saveCaseAndGoTo(page);
+        return isSaveSuccess ? page : null;
     }
 
-    // Upsert Case and set bool value to render the close status panel.
     public PageReference saveAndCloseCase() {
+        Boolean isSaveSuccess = upsertCase();
         myCase.Status = myCase.Status.contains('Closed') ? myCase.Status : 'Closed: Resolved';
-        return saveCaseandGoTo(redirectPage(myCase));
+        return isSaveSuccess ? redirectPage(myCase) : null;
     }
     
-    private PageReference saveCaseAndGoTo(PageReference page) {
+    private Boolean upsertCase() {
         try {
             addCaseClassificationToCase();
             upsert myCase;
             
-            return page;
+            return true;
         } catch (DmlException e) {
             if (e.getDmlType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
                 List<String> vars = new List<String>();
@@ -1064,7 +1066,7 @@ public with sharing class HelpDeskController
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, e.getDmlMessage(0)));
             }
 
-            return null;
+            return false;
         } catch(Exception e) {
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertStringToJSON('caseSubj No DML',myCase.Subject));
@@ -1074,7 +1076,7 @@ public with sharing class HelpDeskController
             ApexPages.addMessage(new ApexPages.Message(
                 ApexPages.Severity.ERROR, 'Case has been logged with an admin due to ' + e.getMessage()));
 
-            return null;
+            return false;
         }
     }
 

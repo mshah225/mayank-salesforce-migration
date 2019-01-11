@@ -256,29 +256,32 @@ public class CaseClassificationPicklistService {
     public void addCaseClassificationToCase(Case caseToAddClassification) {
         Case_Classification__c functionalGroupToAdd = allFunctionalGroups.get(selectedFunctionalGroup);
 
-        if (functionalGroupToAdd != null) {
-            caseToAddClassification.CC_Functional_Group__c = functionalGroupToAdd.Id;
-            if (allCategories.get(functionalGroupToAdd.Name) == NULL || selectedCategory.equals('--')) {
-                caseToAddClassification.CC_Category__c = null;
-            } else {
-                String categoryName = [SELECT Name FROM Case_Classification__c WHERE Id =: selectedCategory].Name;
-                Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(categoryName);
-                if (categoryToAdd != null) {
-                    caseToAddClassification.CC_Category__c = categoryToAdd.Id;
-                    if (allSubCategories.get(selectedCategory) == NULL) {
-                        caseToAddClassification.CC_Sub_Category__c = null;
-                    } else {
-                        Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Id).get(selectedSubCategory);
-                        if (subCategoryToAdd != null) {
-                            caseToAddClassification.CC_Sub_Category__c = subCategoryToAdd.Id;
-                        } else {
-                            caseToAddClassification.CC_Sub_Category__c = null;
-                        }
-                    }
-                } else {
-                    caseToAddClassification.CC_Category__c = null;
-                }
-            }
+        if (functionalGroupToAdd == null) {
+            return;
+        }
+
+        caseToAddClassification.CC_Functional_Group__c = functionalGroupToAdd.Id;
+
+        if (allCategories.get(functionalGroupToAdd.Name) == NULL || selectedCategory.equals('--')) {
+            return;
+        }
+        
+        String categoryName = [SELECT Name FROM Case_Classification__c WHERE Id =: selectedCategory].Name;
+        Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(categoryName);
+        
+        if (categoryToAdd == null) {
+            return;
+        }
+        
+        caseToAddClassification.CC_Category__c = categoryToAdd.Id;
+        
+        if (allSubCategories.get(selectedCategory) == NULL) {
+            return;
+        }
+        
+        Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Id).get(selectedSubCategory);
+        if (subCategoryToAdd != null) {
+            caseToAddClassification.CC_Sub_Category__c = subCategoryToAdd.Id;
         }
     }
 }

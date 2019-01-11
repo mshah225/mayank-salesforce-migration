@@ -518,7 +518,11 @@ private class Test_HelpDeskController {
         Test.stopTest();
 
         Boolean foundError = false;
-        for (ApexPages.Message msg : ApexPages.getMessages()) if (msg.getDetail().contains('A &quot;Closed: Forwarded&quot; Case must have a recipient')) foundError = true;
+        for (ApexPages.Message msg : ApexPages.getMessages()){
+            if (msg.getDetail().contains('Closed: Forwarded')) {
+                foundError = true;
+            }
+        }
         System.assert(foundError, 'Forward to Unit is required, so the validation rule should have shown up as a Page error.');
     }
 
@@ -559,7 +563,11 @@ private class Test_HelpDeskController {
         Test.stopTest();
 
         Boolean foundError = false;
-        for (ApexPages.Message msg : ApexPages.getMessages()) if (msg.getDetail().contains('A &quot;Closed: Forwarded&quot; Case must have a recipient')) foundError = true;
+        for (ApexPages.Message msg : ApexPages.getMessages()) { 
+            if (msg.getDetail().contains('Closed: Forwarded')) {
+                foundError = true;
+            }
+        }
         System.assert(foundError, 'Forward to Unit should have been required, so the validation rule should have shown up as a Page error.');
     }
 
@@ -600,7 +608,47 @@ private class Test_HelpDeskController {
         Test.stopTest();
 
         Boolean foundError = false;
-        for (ApexPages.Message msg : ApexPages.getMessages()) if (msg.getDetail().contains('ServiceNow Ticket Number field is required when')) foundError = true;
+        for (ApexPages.Message msg : ApexPages.getMessages()) {
+            if (msg.getDetail().contains('ServiceNow')) {
+                foundError = true;
+            }
+        }
         System.assert(foundError, 'ServiceNow Ticket Number field should have been required, so the validation rule should have shown up as a Page error.');
+    }
+    
+    @isTest
+    private static void createNewCaseCloseSaveAndTransferErrorBug() {
+        setUpTest();
+        Test.setCurrentPage(Page.HelpDesk);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.newCase();
+
+        controller.myCase.Subject = 'test';
+        controller.myCase.Description = 'test';
+        controller.myCase.Status = 'Closed: Forwarded';
+        controller.myCase.Forward_To_Unit__c = 'ServiceNow';
+        controller.myCase.ServiceNow_Ticket_Number__c = 'sn-1212';
+
+        Test.startTest();
+        PageReference page = controller.saveAndTransferCase();
+        Test.stopTest();
+
+        System.assertNotEquals(null, page);
+        System.assertEquals(page.getUrl(), '/apex/CaseTransfer?id=' + controller.myCase.Id);
     }
 }

@@ -258,9 +258,6 @@ public class CaseClassificationPicklistService {
 
         if (functionalGroupToAdd != null) {
             caseToAddClassification.CC_Functional_Group__c = functionalGroupToAdd.Id;
-            System.debug('FG: ' + selectedFunctionalGroup);
-            System.debug('Cat: ' + selectedCategory);
-            System.debug('SC: ' + selectedSubCategory);
             if (allCategories.get(functionalGroupToAdd.Name) == NULL || selectedCategory.equals('--')) {
                 caseToAddClassification.CC_Category__c = null;
             } else {

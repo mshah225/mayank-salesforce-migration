@@ -712,14 +712,12 @@ public class UnifiedProspectPageController
         }
     }
     
-    public PageReference updateCategoryAndSubCategory() {
+    public void updateCategoryAndSubCategory() {
         ccPicklist.updateCategories();
-        ccPicklist.updateOnCategoryChange();
-        return null;
+        ccPicklist.updateSubCategories();
     }
     
-    public PageReference updateOnCategoryChange() {
+    public void updateSubCategories() {
         ccPicklist.updateSubCategories();
-        return null;
     }
 }

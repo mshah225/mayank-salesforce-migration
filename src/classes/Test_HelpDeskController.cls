@@ -651,4 +651,130 @@ private class Test_HelpDeskController {
         System.assertNotEquals(null, page);
         System.assertEquals(page.getUrl(), '/apex/CaseTransfer?id=' + controller.myCase.Id);
     }
+    
+    @isTest
+    private static void saveAndCloseCaseStatusChanged() {
+        setUpTest();
+        Test.setCurrentPage(Page.HelpDesk);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.newCase();
+
+        controller.myCase.Subject = 'test to close';
+        controller.myCase.Description = 'test';
+        
+        Test.startTest();
+        PageReference page = controller.saveAndCloseCase();
+        Test.stopTest();
+        
+        Case savedCase = [SELECT Status FROM Case WHERE Subject = 'test to close' LIMIT 1];
+        
+        System.assertEquals('Closed: Resolved', savedCase.Status);
+    }
+    
+    @isTest
+    private static void saveAndCloseCaseStatusUnchangedWhenClosed() {
+        setUpTest();
+        Test.setCurrentPage(Page.HelpDesk);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.newCase();
+
+        controller.myCase.Subject = 'test to close';
+        controller.myCase.Description = 'test';
+        controller.myCase.Status = 'Closed: Forwarded';
+        controller.myCase.Forward_To_Unit__c = 'ServiceNow';
+        controller.myCase.ServiceNow_Ticket_Number__c = 'sn-1212';
+        
+        Test.startTest();
+        PageReference page = controller.saveAndCloseCase();
+        Test.stopTest();
+        
+        Case savedCase = [SELECT Status FROM Case WHERE Subject = 'test to close' LIMIT 1];
+        
+        System.assertNotEquals('Closed: Resolved', savedCase.Status);
+        System.assertEquals(controller.myCase.Status, savedCase.Status);
+    }
+    
+    @isTest
+    private static void selectCaseEditCancelChangesCleared() {
+        setUpTest();
+        Test.setCurrentPage(Page.HelpDesk);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+        
+        CaseFactory.DefaultCase factory = new CaseFactory.DefaultCase();
+        factory.setRelatedObject('ContactId', testContact);
+        Integer numberOfCases = 2;
+        List<Case> cases = factory.create(numberOfCases);
+        insert cases;
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+        
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.setAsContact();
+        
+        controller.selectedCaseId = cases[0].Id;
+        controller.setAsCase();
+        
+        String originalSubject = controller.myCase.Subject;
+        String originalStatus = controller.myCase.Status;
+        
+        String testValue = 'TestStringValue Should Not Be Changed';
+        controller.myCase.Subject = testValue;
+        controller.myCase.Status = testValue;
+        
+        Test.startTest();
+        controller.cancelCase();
+        Test.stopTest();
+        
+        controller.selectedCaseId = cases[0].Id;
+        controller.setAsCase();
+        
+        System.assertNotEquals(testValue, controller.myCase.Subject);
+        System.assertNotEquals(testValue, controller.myCase.Status);
+        System.assertEquals(originalSubject, controller.myCase.Subject);
+        System.assertEquals(originalStatus, controller.myCase.Status);
+        
+        List<Case> totalCases = [SELECT Id FROM Case];
+        System.assertEquals(numberOfCases, totalCases.size());
+    }
 }

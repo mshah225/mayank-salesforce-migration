@@ -986,13 +986,14 @@ public with sharing class HelpDeskController
         isKnowledgeSearch = true;
         isKnowSearchBox = false;
         isArticleDetails = false;
-        Map<Id, CaseWrapper> m = new Map<Id, CaseWrapper>();
+        Map<Id, CaseWrapper> caseWrappers = new Map<Id, CaseWrapper>();
 
         for (CaseWrapper cas : cases) {
-            m.put(cas.Ca.Id, cas);
+            caseWrappers.put(cas.Ca.Id, cas);
         }
 
-        myCase = (Case) m.get(selectedCaseId).Ca;
+        Case orignalCase = (Case) caseWrappers.get(selectedCaseId).Ca;
+        myCase = orignalCase.clone(true, true, true, true);
 
         if (myCase.CC_Functional_Group__r.Name != NULL) {
             selectedFunctionalGroup = myCase.CC_Functional_Group__r.Name;
@@ -1042,8 +1043,8 @@ public with sharing class HelpDeskController
     }
 
     public PageReference saveAndCloseCase() {
-        Boolean isSaveSuccess = upsertCase();
         myCase.Status = myCase.Status.contains('Closed') ? myCase.Status : 'Closed: Resolved';
+        Boolean isSaveSuccess = upsertCase();
         return isSaveSuccess ? redirectPage(myCase) : null;
     }
     

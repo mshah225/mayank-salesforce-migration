@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>CommentBody</fullName>
+    </fields>
+    <fields>
+        <fullName>IdeaId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>IsPublished</fullName>
+    </fields>
+    <enableFeeds>false</enableFeeds>
+</CustomObject>

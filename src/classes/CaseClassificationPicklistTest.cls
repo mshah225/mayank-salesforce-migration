@@ -25,9 +25,8 @@ private class CaseClassificationPicklistTest {
     {
         picklistService = new CaseClassificationPicklistService();
         picklistService.selectedFunctionalGroup = 'Test Functional Group0';
-		//picklistService.updateCategories();
-        
-		System.assertEquals(2, picklistService.functionalGroupOptions.size());
+
+        System.assertEquals(2, picklistService.functionalGroupOptions.size());
         System.assertEquals(2, picklistService.categoryOptions.size());
         System.assertEquals(1, picklistService.subCategoryOptions.size());
     }
@@ -40,7 +39,7 @@ private class CaseClassificationPicklistTest {
         picklistService.selectedFunctionalGroup = 'Test Functional Group0';
         picklistService.selectedCategory = caseClassificationMap.get('Test Category0').Id;
         
-		System.assertEquals(2, picklistService.functionalGroupOptions.size());
+        System.assertEquals(2, picklistService.functionalGroupOptions.size());
         System.assertEquals(2, picklistService.categoryOptions.size());
         System.assertEquals(2, picklistService.subCategoryOptions.size());
     }
@@ -58,7 +57,7 @@ private class CaseClassificationPicklistTest {
         picklistService.selectedSubCategory = 'Test Sub Category0';
         picklistService.addCaseClassificationToCase(createdCase);
         
-		System.assertEquals(createdCase.CC_Functional_Group__c, caseClassificationMap.get('Test Functional Group0').Id);
+        System.assertEquals(createdCase.CC_Functional_Group__c, caseClassificationMap.get('Test Functional Group0').Id);
         System.assertEquals(createdCase.CC_Category__c, caseClassificationMap.get('Test Category0').Id);
         System.assertEquals(createdCase.CC_Sub_Category__c, caseClassificationMap.get('Test Sub Category0').Id);
     }

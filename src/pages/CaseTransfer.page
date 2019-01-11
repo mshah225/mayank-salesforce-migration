@@ -417,7 +417,7 @@
         Successfully Transferred Case to {!selectedGroupName}.
         <hr />
         <br />
-        <apex:form>
+        <apex:form >
             <apex:actionFunction name="goToSource" action="{!goBack}"/>
             <a class="regBtn" href="#" onclick="goToSource()" target="_self">
                 <i class="fa fa-chevron-circle-left"></i>

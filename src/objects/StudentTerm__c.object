@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>CurrTerm__c</fullName>
+        <description>Current Term at ASU</description>
+        <externalId>false</externalId>
+        <label>CurrTerm</label>
+        <length>4</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NextTerm__c</fullName>
+        <description>Next Term Coming up</description>
+        <externalId>false</externalId>
+        <label>NextTerm</label>
+        <length>4</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PrevTerm__c</fullName>
+        <description>Previous term at ASU</description>
+        <externalId>false</externalId>
+        <label>PrevTerm</label>
+        <length>4</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>Contains the previous, current, and future term.</description>
+    <enableFeeds>false</enableFeeds>
+    <label>StudentTerm</label>
+    <visibility>Public</visibility>
+</CustomObject>

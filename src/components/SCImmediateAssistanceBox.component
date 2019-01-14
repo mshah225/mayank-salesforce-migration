@@ -1,4 +1,4 @@
-<apex:component allowDML="true">
+<apex:component allowDML="true" controller="SCImmediateAssistanceController">
     <!-- This component renders the Immediate Assitance Box -->
     <apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean"/>
     <apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean"/>
@@ -9,12 +9,12 @@
     
     <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
     <script type='text/javascript'>
-        var orgId = '{!$Organization.Id}'.slice(0,15);
-        var chatEndpoint = 'https://d.la4-c1cs-dfw.salesforceliveagent.com/chat';
-        var chatDeploymentId = '572180000004CHb';
-        var financesChatId = '573180000004CWb';
-        var studentServiceChatId = '573180000004CWb';
-        var techSupportChatId = '573180000004CWc';
+        var orgId = '{!financeChatButton.Org_Id__c}';
+        var chatEndpoint = '{!financeChatButton.Chat_Endpoint__c}';
+        var chatDeploymentId = '{!financeChatButton.Chat_Deployment__c}';
+        var financesChatId = '{!financeChatButton.Chat_Button_Id__c}';
+        var studentServiceChatId = '{!studentServicesChatButton.Chat_Button_Id__c}';
+        var techSupportChatId = '{!technicalSupportChatButton.Chat_Button_Id__c}';
         
         liveagent.setName('{!$User.FirstName} {!$User.LastName}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);

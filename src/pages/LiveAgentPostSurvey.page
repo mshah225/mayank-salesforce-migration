@@ -3,7 +3,7 @@
         <button class="kbbtn searchBtn saveChat" onclick="getTranscript();">Save Chat</button>
     </div>
     <apex:image url="{!$Resource.LiveAgentlogo}"/>
-    <c:myasustyles/>
+    <c:myasustyles />
 
     <br/>
     <body style="background-color:#F5F5F5; overflow-x: hidden;">

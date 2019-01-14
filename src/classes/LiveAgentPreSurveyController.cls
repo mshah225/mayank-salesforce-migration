@@ -8,9 +8,11 @@ public class LiveAgentPreSurveyController {
     public String caseSubject {set; get;}
     public String presurveyQuestion {set; get;}
     public String agentOfflineMessage {set; get;}
-
+    public Live_Agent_Button__c buttonConfig {set; get;}
+    
     public LiveAgentPreSurveyController() {
         getButtonIdFromURL();
+        setButtonInformation();
         setCaseDetails();
         setPresurveyQuestion();
         setAgentOfflineMessage();
@@ -21,6 +23,10 @@ public class LiveAgentPreSurveyController {
         Integer indexOf = buttonParam.indexOf('button_id');
         buttonParam = buttonParam.substring(indexOf+12, indexOf+27);
         buttonPressed = [SELECT DeveloperName FROM LiveChatButton WHERE Id =: buttonParam LIMIT 1].DeveloperName;
+    }
+    
+    private void setButtonInformation() {
+        buttonConfig = Live_Agent_Button__c.getInstance(buttonPressed);
     }
     
     private void setCaseDetails() {

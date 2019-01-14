@@ -23,10 +23,10 @@
         </script>
         <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
         <script type='text/javascript'>
-        var orgId = '{!$Organization.Id}'.slice(0,15);
-        var chatDeploymentId = '572180000004CHW';
-        var chatButtonId = '573180000004CWd';
-        var chatEndpoint = 'https://d.la4-c1cs-dfw.salesforceliveagent.com/chat';
+        var orgId = '{!nonAuthenticatedButton.Chat_Endpoint__c}';
+        var chatDeploymentId = '{!nonAuthenticatedButton.Chat_Deployment__c}';
+        var chatButtonId = '{!nonAuthenticatedButton.Chat_Button_Id__c}';
+        var chatEndpoint = '{!nonAuthenticatedButton.Chat_Endpoint__c}';
             
         function initLiveAgent(_callback) {
             liveagent.init(chatEndpoint, chatDeploymentId, orgId); 

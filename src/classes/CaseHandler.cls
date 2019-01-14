@@ -205,9 +205,9 @@ public without sharing class CaseHandler implements ITrigger {
                     if (tokenSplit.size() >= 2 && tokenSplit[1] != '') {
                         if (tokenSplit[0] == 'ASURITE') {
                             emplid = tokenSplit[1];
-                        }else if (tokenSplit[0] == 'First') {
+                        } else if (tokenSplit[0] == 'First') {
                             first = tokenSplit[1];
-                        }else if (tokenSplit[0] == 'Last') {
+                        } else if (tokenSplit[0] == 'Last') {
                             last = tokenSplit[1];
                         }
                     }
@@ -220,7 +220,7 @@ public without sharing class CaseHandler implements ITrigger {
                     List<Contact> contactUsers = [SELECT Id FROM Contact WHERE EMPLID__c = :emplid LIMIT 1];
                     if (contactUsers != null && contactUsers.size() > 0) {
                         c.ContactId = contactUsers[0].Id;
-                    }else  {
+                    } else {
                         conToCreate.EMPLID__c = emplid;
                     }
                 }
@@ -310,11 +310,11 @@ public without sharing class CaseHandler implements ITrigger {
                         if (source.Case_Assignment_Rule__r.CC_Functional_Group__c != null) {
                             c.CC_Functional_Group__c = source.Case_Assignment_Rule__r.CC_Functional_Group__c;
                         }
-                    }else  {
+                    } else {
                         // No related Case Assignment Rule found; use the Territory Manager if found
                         if (opList != null && opList.size() > 0 && opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true) {
                             c.OwnerId = opList[0].OwnerId;
-                        }else  {
+                        } else {
                             // No valid Territory Manager found; use default Case Assignment Rule
                             if (defaultCAR == null) {
                                 LogSuite.log('query', 'Calling default CAR query');
@@ -411,6 +411,16 @@ public without sharing class CaseHandler implements ITrigger {
      * has modified any values. The record is 'read only' by this point.
      */
     public void afterInsert(SObject so) {
+        Case c = (Case) so;
+
+        //Forward the email and attach any case attachments as well
+        if (c.Status == 'Closed: Forwarded') {
+            //Prevent recursive update and sending of mail
+            if (!CaseUtilities.emailForwarded) {
+                CaseUtilities.emailForwarded = true;
+                CaseUtilities.forwardCaseAttachments(c.Id, c.Forward_To_Email__c, c.Forward_To_Email_Calculation__c);
+            }
+        }
     }
 
     /**

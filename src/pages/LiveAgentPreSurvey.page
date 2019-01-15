@@ -96,16 +96,16 @@
                     liveagent.init(chatEndpoint, chatDeploymentId, orgId);
                     liveagent.details.preChatInit(chatEndpoint,'getCustomDetails');
                     
-                    var customDetails = "\n--- User Details ---\n";
+                var customDetails = "<br>--- User Details ---<br>";
                     var getCustomDetails = function (details) {
                         for (var i = 0; i < details.customDetails.length; i++) {
-                            customDetails += details.customDetails[i].label + ': ' + details.customDetails[i].value + '\n'
+                            customDetails += details.customDetails[i].label + ': ' + details.customDetails[i].value + '<br>'
                         }
                     };
                     
                     var setCaseDescription = function() {
                         console.log(document.getElementById('caseDescriptionInput').value);
-                        document.getElementById('caseDescription').value = document.getElementById('caseDescriptionInput').value + '\n' + customDetails;
+                        document.getElementById('caseDescription').value = document.getElementById('caseDescriptionInput').value + '<br>' + customDetails;
                         console.log(document.getElementById('caseDescription').value);
                     }
                     

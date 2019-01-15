@@ -1,5 +1,13 @@
 <apex:component >
     <style>
+        
+        label, p {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+        line-height: 1.44 !important;
+        color: #2a2a2a !important;
+        background-color: white !important;	
+        }
+        
         .btn {
         -moz-user-select: none !important;
         background-image: none !important;
@@ -52,6 +60,14 @@
         .btn-primary .badge {
         background-color: white !important;
         color: #8C1D40 !important;
+        
+        .messageBody {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+        font-weight: 200 !important;
+        line-height: 1.44 !important;
+        color: #2a2a2a !important;
+        background-color: white !important;
+        }
         
         body {
         font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important;

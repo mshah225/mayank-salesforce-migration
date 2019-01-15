@@ -8,7 +8,7 @@
     <c:SCHeader />
     
     <apex:stylesheet value="{! URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
-    <body>
+    <body class="messageBody">
         
         <div style="margin-top: 50px; margin-left: 5%;">
             Please wait while we redirect your chat! If the chat window doesn't appear, please click the link below!

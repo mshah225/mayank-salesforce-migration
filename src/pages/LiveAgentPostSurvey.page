@@ -46,7 +46,6 @@
             chat_last_visited_page: '{!$CurrentPage.parameters.lastVisitedPage}',
             chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}'
         };
-        console.log(mergeFieldObject);
         var customDetails = {}
         if (typeof chatDetails.customDetails !== 'undefined') {
             customDetails = chatDetails.customDetails.reduce(function (memo, detail) {

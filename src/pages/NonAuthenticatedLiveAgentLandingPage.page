@@ -29,7 +29,6 @@
         var chatButtonId = '{!nonAuthenticatedButton.Chat_Button_Id__c}';
         var chatEndpoint = '{!nonAuthenticatedButton.Chat_Endpoint__c}';
         
-        console.log(orgId);
         function initLiveAgent(_callback) {
             liveagent.init(chatEndpoint, chatDeploymentId, orgId); 
             _callback();	

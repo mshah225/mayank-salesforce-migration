@@ -5,7 +5,6 @@
         font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
         line-height: 1.44 !important;
         color: #2a2a2a !important;
-        background-color: white !important;	
         }
         
         .btn {

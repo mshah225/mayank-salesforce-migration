@@ -1,6 +1,6 @@
 <apex:page showHeader="false" controller="LiveAgentPreSurveyController">
     <apex:image url="{!$Resource.LiveAgentlogo}" />
-    <c:myasustyles />
+    <c:ASUWebStandards />
     <c:LiveAgentNotices />
     <body style="background-color:#F5F5F5">
         <span id='offlineMessage' style="display: none;" >
@@ -21,7 +21,9 @@
             <form method='post' id='prechatForm'>
                 <div style="padding: 10px;">
                     <h1 style="font-size:x-large;">
-                        {!presurveyQuestion}*<br/>
+                        <p>
+                            {!presurveyQuestion}*<br/>
+                        </p>
                     </h1>
                 </div>
                 <div style="padding: 10px;">
@@ -74,7 +76,7 @@
                     <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:ContactId" value="false"/>
                 </div>
                 <div style="padding: 10px;">
-                    <input type='submit' style="max-width: 300px !important; width:25% !important; height: 15% !important; font-size:4vw !important" value='Chat Now' id='prechat_submit' onclick="setName()" class="kbbtn searchBtn"/>
+                    <input type='submit' style="height: 15% !important; font-size:4vw !important" value='Chat Now' id='prechat_submit' onclick="setName()" class ="btn btn-primary btn-lg"/>
                 </div>
                 <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
                 <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/32.0/prechat.js'></script>
@@ -104,9 +106,7 @@
                     };
                     
                     var setCaseDescription = function() {
-                        console.log(document.getElementById('caseDescriptionInput').value);
                         document.getElementById('caseDescription').value = document.getElementById('caseDescriptionInput').value + '<br>' + customDetails;
-                        console.log(document.getElementById('caseDescription').value);
                     }
                     
                     function setName() {

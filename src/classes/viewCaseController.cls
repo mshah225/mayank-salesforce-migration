@@ -4,24 +4,24 @@ public with sharing class viewCaseController {
     private static final Integer REPLY_ACCEPTANCE_THRESHOLD = 14;
     private Date today;
     private Decimal origPin;
-    private Term__c termcAC;
-    private Term__c termcB;
+    private Term__c termAc;
+    private Term__c termB;
     private Map<String, String> viewAsMap;
     private MyAsuViewAs viewAsService;
-    
-    public Id caseId {get;set;}
-    public Decimal newPin { get; set; }
-    public String firstName { get; set; }
-    public String lastName { get; set; }
-    public String emplId { get; set; }
-    public String asurite { get; set; }
-    public Boolean viewingAs { get; set; }
-    public String stopViewAsUrl { get; set; }
-    public String masqScopeIdCookie { get; set; }
+
+    public Id caseId {get; set;}
+    public Decimal newPin {get; set;}
+    public String firstName {get; set;}
+    public String lastName {get; set;}
+    public String emplId {get; set;}
+    public String asurite {get; set;}
+    public Boolean viewingAs {get; set;}
+    public String stopViewAsUrl {get; set;}
+    public String masqScopeIdCookie {get; set;}
     public String userAsurite;
     public Contact userContact;
-    public String viewAsUrl { get; set; }
-    public String caseFunctionalGroup { get; set; }
+    public String viewAsUrl {get; set;}
+    public String caseFunctionalGroup {get; set;}
     public List<Opportunity> oppList;
     public Boolean showReplyBox { get; set; }
     public Boolean showReplyButton { get; set; }
@@ -93,14 +93,14 @@ public with sharing class viewCaseController {
     public void popTerms() {
         today = date.today();
 
-        termcAC = [
+        termAc = [
             SELECT Session_A_C_Start_Date__c
             FROM Term__c
             WHERE session_A_C_Start_Date__c > :System.today()
             LIMIT 1
         ];
 
-        termcB = [
+        termB = [
             SELECT Session_B_Start_Date__c
             FROM Term__c
             WHERE session_B_Start_Date__c > :System.today()
@@ -114,8 +114,8 @@ public with sharing class viewCaseController {
         ];
     }
 
-    public void popUserContact(){
-        if (viewAsService != null &&  viewAsService.hasViewAsRights) {
+    public void popUserContact() {
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
             userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
             stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
@@ -123,8 +123,7 @@ public with sharing class viewCaseController {
         } else {
             userContact = ContactService.getLoggedInContact();
         }
-        
-        
+
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
@@ -132,23 +131,22 @@ public with sharing class viewCaseController {
         origPin = userContact.Self_Service_PIN__c;
     }
 
-
     public void setCaseId() {
         caseId = ApexPages.currentPage().getParameters().get('id');
     }
-    
-     public Case getCaseDetails(){
+
+    public Case getCaseDetails() {
         if (viewAsService != null && viewAsService.hasViewAsRights) {
             return viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
         } else {
             Case returnCase = [
                 SELECT Id, CaseNumber, RecordType.Name, CC_Functional_Group__c, CC_Functional_Group__r.Name, Subject, Description,
-                    Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
+                Feedback_Link__c, CreatedDate, Status, Origin, Created_By_Name__c, ClosedDate
                 FROM Case
                 WHERE Id = :ApexPages.currentPage().getParameters().get('Id')
-                LIMIT 1
+                           LIMIT 1
             ];
-        
+
             return returnCase;
         }
     }
@@ -189,19 +187,45 @@ public with sharing class viewCaseController {
                 emailAddresses
             );
         }
-        
     }
 
-    public List<bomgar__Event__c> getChatMessages() {
-        return [
-            SELECT bomgar__DestinationValue__c, bomgar__EventDateTime__c, bomgar__EventType__c, bomgar__PerformedByType__c, 
-                bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId 
-            FROM bomgar__Event__c 
-            WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c =  :ApexPages.currentPage().getParameters().get('Id')
-            AND (bomgar__PerformedByType__c = 'representative' OR bomgar__PerformedByType__c  = 'customer') 
+    public List<ChatMessage> getChatMessages() {
+        List<ChatMessage> allChatMessages = new List<ChatMessage>();
+        allChatMessages.addAll(getBomgarChatMessages());
+        allChatMessages.addAll(getLiveChatMessages());
+        return allChatMessages;
+    }
+    
+    private List<ChatMessage> getBomgarChatMessages() {
+        List<bomgar__Event__c> bomgarMessages = [
+            SELECT bomgar__DestinationValue__c, bomgar__EventDateTime__c, bomgar__EventType__c, bomgar__PerformedByType__c,
+            bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId
+            FROM bomgar__Event__c
+            WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c = :ApexPages.currentPage().getParameters().get('Id')
+            AND(bomgar__PerformedByType__c = 'representative' OR bomgar__PerformedByType__c = 'customer')
             AND bomgar__DestinationValue__c = 'everyone' order by bomgar__EventDateTime__c asc
         ];
+        
+        List<ChatMessage> bomgarChatMessages = new List<ChatMessage>();
+        for (bomgar__Event__c bomgarMessage : bomgarMessages) {
+            bomgarChatMessages.add(new ChatMessage(bomgarMessage));
+        }
+        return bomgarChatMessages;
     }
+
+    private List<ChatMessage> getLiveChatMessages() {
+        List<Chat_Message__c> chatMessages = [
+            SELECT Body__c 
+            FROM Chat_Message__c
+            WHERE Case__c = :ApexPages.currentPage().getParameters().get('Id')
+        ];
+        List<ChatMessage> liveChatMessages = new List<ChatMessage>();
+        for (Chat_Message__c message : chatMessages) {
+            liveChatMessages.add(new ChatMessage(message));
+        }
+        return liveChatMessages;
+    }
+
 
     public Boolean getNormalPhone() {
         return (userContact.CAP__c == null) ? true : false;
@@ -218,12 +242,12 @@ public with sharing class viewCaseController {
         } else if ((oppList[0].StageName == 'Enrolled'
                 && oppList[0].Career__c == 'Undergraduate'
                 && oppList[0].Admitted_Session__c == 'A/C')
-                && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)) {
+                && today < date.valueOf(termAc.Session_A_C_Start_Date__c)) {
             return false;
         } else if ((oppList[0].StageName == 'Enrolled'
                 && oppList[0].Career__c == 'Undergraduate'
                 && oppList[0].Admitted_Session__c == 'B')
-                && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
+                && today < date.valueOf(termB.Session_B_Start_Date__c)) {
             return false;
         } else if (oppList[0].StageName != 'Enrolled'
                 && oppList[0].Career__c == 'Undergraduate'
@@ -231,7 +255,7 @@ public with sharing class viewCaseController {
                 || userContact.Affiliation_Alumni__c == 'Current'
                 || userContact.Affiliation_Courtesy_Affiliate__c == 'Current'
                 || userContact.Affiliation_Employee__c == 'Current')
-                && today < date.valueOf(termcB.Session_B_Start_Date__c)) {
+                && today < date.valueOf(termB.Session_B_Start_Date__c)) {
             return false;
         } else {
             return true;
@@ -247,43 +271,53 @@ public with sharing class viewCaseController {
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
             go.setRedirect(true);
-
             return go;
         }
+        
+        Boolean isUpdateSuccess = true;
 
-        if (origPin == newPin) {
-            return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-        }
-
-        if (ContactService.isPinValid(newPin, userContact.Birthdate)) {
-            userContact.Self_Service_PIN__c = newPin;
-            if (userContact.PIN_lockout__c == true) {
-                userContact.PIN_lockout__c = false;
-            }
-            try {
-                update userContact;
-                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'success');
-            } catch (Exception e) {
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
-                vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
-                vars.add(ErrorLogger.convertStringToJSON('Employee Id',userContact.EMPLId__c));
-                ErrorLogger.log(e,vars,false);
-                return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
-            }
+        if (origPin == newPin || !ContactService.isPinValid(newPin, userContact.Birthdate)) {
+            isUpdateSuccess = false;
         } else {
-            return redirectWithParams(ApexPages.currentPage(), 'PIN', 'error');
+            isUpdateSuccess = updateContactWithPin();
         }
-
+        
+        return isUpdateSuccess ? getPinSuccessPage() : getPinErrorPage();
+    }
+    
+    private PageReference getPinErrorPage() {
+        return redirectWithParams('PIN', 'error');
+    }
+    
+    private PageReference getPinSuccessPage() {
+        return redirectWithParams('PIN', 'success');
     }
 
-    public PageReference redirectWithParams(PageReference page, String param, String value) {
-        PageReference redirect = page;
+    private PageReference redirectWithParams(String param, String value) {
+        PageReference redirect = ApexPages.currentPage();
         redirect.getParameters().put(param, value);
         redirect.setRedirect(true);
         return redirect;
     }
     
+    private Boolean updateContactWithPin() {
+        userContact.Self_Service_PIN__c = newPin;
+        if (userContact.PIN_lockout__c == true) {
+            userContact.PIN_lockout__c = false;
+        }
+        try {
+            update userContact;
+            return true;
+        } catch (Exception e) {
+            ErrorLogger logger = new ErrorLogger();
+            logger.setException(e);
+            logger.setDetails(String.format('First Name: {0}\n Last Name: {1}\n Employee Id: {2}\n',
+                new List<String>{userContact.FirstName, userContact.LastName, userContact.EMPLId__c}));
+            logger.log();
+            return false;
+        }
+    }
+
     public void displayReplyBox() {
         showReplyBox = true;
         showReplyButton = false;
@@ -310,47 +344,34 @@ public with sharing class viewCaseController {
     }
     
     public PageReference submitReply() {
-        Boolean isCaseReplySuccess = submitCaseReply();
-        Boolean isAttachmentSuccess = submitAttachmentReply();
-        if (isCaseReplySuccess && isAttachmentSuccess) {
-            closeReplyBox();
-            PageReference page = new PageReference(ApexPages.currentPage().getUrl());
-            page.setRedirect(true);
-            return page;
-        } else {
-            return null;
-        }
+        submitCaseReply();
+        submitAttachmentReply();
+        closeReplyBox();
+        return null;
     }
     
-    private Boolean submitCaseReply() {
+    private void submitCaseReply() {
         if (!String.isBlank(caseReply)) {
             RestCallResponse restStatusAndInfo = createAndSendEmailMessage();
             if (restStatusAndInfo.isSuccessfull()) {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Your response to the case was submitted successfully.'));
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully'));
             } else {
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact a system administrator.'));
-                ErrorLogger error = new ErrorLogger();
-                error.setClassName('viewCaseController');
-                error.setDetails('Error submitting case reply from service center. Error: ' + restStatusAndInfo.getMessage());
-                error.log();
-                return false;
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not add response to case. Please try again or contact system admin'));
             }
         }
-        return true;
+        clearReplyContents();
     }
     
-    private Boolean submitAttachmentReply() {
+    private void submitAttachmentReply() {
         if (replyCaseAttachment.Name != null && replyCaseAttachment.Body != null && caseId != null) {
             String attachmentUploadResponse = uploadAttachment();
             if (attachmentUploadResponse.contains('success')) {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Attachment to Case submitted Successfully'));
-                retrieveAttachmentList();
+                retrieveAttachmentList();     
             } else {
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Could not upload attachment, please try again'));
-                return false;
             }
         }
-        return true;
     }
     
     private RestCallResponse createAndSendEmailMessage() {

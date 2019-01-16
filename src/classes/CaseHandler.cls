@@ -410,15 +410,15 @@ public without sharing class CaseHandler implements ITrigger {
      * trigger. Always put field validation in the 'After' methods in case another trigger
      * has modified any values. The record is 'read only' by this point.
      */
-    public void afterInsert(SObject so) {
-        Case c = (Case) so;
+    public void afterInsert(SObject newObject) {
+        Case newCase = (Case) newObject;
 
         //Forward the email and attach any case attachments as well
-        if (c.Status == 'Closed: Forwarded') {
+        if (newCase.Status == 'Closed: Forwarded') {
             //Prevent recursive update and sending of mail
             if (!CaseUtilities.emailForwarded) {
                 CaseUtilities.emailForwarded = true;
-                CaseUtilities.forwardCaseAttachments(c.Id, c.Forward_To_Email__c, c.Forward_To_Email_Calculation__c);
+                CaseUtilities.forwardCaseAttachments(newCase.Id, newCase.Forward_To_Email__c, newCase.Forward_To_Email_Calculation__c);
             }
         }
     }
@@ -430,15 +430,15 @@ public without sharing class CaseHandler implements ITrigger {
      * trigger.
      */
     public void afterUpdate(SObject oldSo, SObject so) {
-        Case c = (Case) so;
-        Case oldc = (Case) oldSo;
+        Case newCase = (Case) so;
+        Case oldCase = (Case) oldSo;
 
         //Forward the email and attach any case attachments as well
-        if (c.Status == 'Closed: Forwarded' && oldC.Status != 'Closed: Forwarded') {
+        if (newCase.Status == 'Closed: Forwarded' && oldCase.Status != 'Closed: Forwarded') {
             //Prevent recursive update and sending of mail
             if (!CaseUtilities.emailForwarded) {
                 CaseUtilities.emailForwarded = true;
-                CaseUtilities.forwardCaseAttachments(c.Id, c.Forward_To_Email__c, c.Forward_To_Email_Calculation__c);
+                CaseUtilities.forwardCaseAttachments(newCase.Id, newCase.Forward_To_Email__c, newCase.Forward_To_Email_Calculation__c);
             }
         }
     }

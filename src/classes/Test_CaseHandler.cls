@@ -1346,4 +1346,40 @@ public with sharing class Test_CaseHandler {
             system.assertEquals(ca.RecordTypeId, CaseRecordTypeInfo.get('ASU Service').getRecordTypeId());
         }
     }
+    
+    @isTest
+    private static void newClosedForwardCaseSendsEmailOnSave() {
+        Case testCase = createTestCaseToForward();
+        testCase.Status = 'Closed: Forwarded';
+        testCase.Forward_To_Email__c = 'test@example.com';
+        
+        Test.startTest();
+        insert testCase;
+        Test.stopTest();
+        
+        System.assert(CaseUtilities.emailForwarded);
+    }
+    
+    private static Case createTestCaseToForward() {
+        Contact testContact = createContact();
+        CaseFactory caseMaker = new CaseFactory(CaseFactory.DEFAULT_CASE);
+        Case testCase = caseMaker.create();
+        testCase.Status = 'New';
+        return testCase;
+    }
+    
+    @isTest
+    private static void updateToClosedForwardCaseSendsEmailOnSave() {
+        Case testCase = createTestCaseToForward();
+        insert testCase;
+        
+        testCase.Status = 'Closed: Forwarded';
+        testCase.Forward_To_Email__c = 'test@example.com';
+        
+        Test.startTest();
+        update testCase;
+        Test.stopTest();
+        
+        System.assert(CaseUtilities.emailForwarded);
+    }
 }

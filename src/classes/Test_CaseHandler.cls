@@ -1363,7 +1363,7 @@ public with sharing class Test_CaseHandler {
     private static Case createTestCaseToForward() {
         Contact testContact = createContact();
         CaseFactory caseMaker = new CaseFactory(CaseFactory.DEFAULT_CASE);
-        Case testCase = caseMaker.create();
+        Case testCase = caseMaker.createOne();
         testCase.Status = 'New';
         return testCase;
     }

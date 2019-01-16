@@ -33,7 +33,7 @@ public without sharing class NonAuthenticatedLiveAgentController {
     }
     
     private Case_Assignment_Rule__c getCarFromButton() {
-        String emailForCarFilter = 	'non_affiliate_live_chat@asu.edu';
+        String emailForCarFilter = 	'non_authenticated_live_chat@asu.edu';
         
         Case_Assignment_Rule__c carFromButton = [SELECT Case_Record_Type_Id__c, CC_Functional_Group__c, CC_Category__c, Queue_ID__c, CC_Sub_Category__c, OwnerId 
                                                  FROM Case_Assignment_Rule__c
@@ -58,9 +58,9 @@ public without sharing class NonAuthenticatedLiveAgentController {
         
     }
     
-    private void setNonAffiliatedContact() {
-        Contact nonAffiliatedContact = [SELECT Id FROM Contact WHERE Name = 'Non-Affiliate Chat Caller'];
-        contactId = nonAffiliatedContact.Id;
+    private void setNonAuthenticatedContact() {
+        Contact nonAuthenticatedContact = [SELECT Id FROM Contact WHERE Name = 'Non-Authenticated Chat Caller'];
+        contactId = nonAuthenticatedContact.Id;
     }
     
 }

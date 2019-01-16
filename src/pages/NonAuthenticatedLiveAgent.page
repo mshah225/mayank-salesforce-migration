@@ -1,6 +1,8 @@
 <apex:page showHeader="false" controller="NonAuthenticatedLiveAgentController">
-    <apex:image url="{!$Resource.LiveAgentlogo}" />
-    <c:myasustyles />
+    <h1>
+        <apex:image url="{!$Resource.LiveAgentlogo}" />        
+        <c:ASUWebStandards />
+    </h1>
     <script type='text/javascript'>
     (function() {
         function handlePageLoad() {
@@ -60,19 +62,12 @@
                 <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseDescription" value="false" />
             </div>
             <div style="padding: 10px;">
-                <input type='submit' style="max-width: 300px !important; width:25% !important; height: 15% !important; font-size:4vw !important" value='Chat Now' id='prechat_submit' onclick="setFields()" class ="kbbtn searchBtn" />
+                <input type='submit' style="height: 15% !important; font-size:4vw !important" value='Chat Now' id='prechat_submit' onclick="setFields()" class ="btn btn-primary btn-lg" />
             </div>
             <script type="text/javascript">
-            var detailCallback = function (details){
-                for (var i = 0; i < details.customDetails.length; i++) {
-                    if(details.customDetails[i].label == 'test'){
-                        console.log(details.customDetails[i].value);
-                    }
-                }
-            };
             
             function setFields() {
-            	setDescription();
+                setDescription();
                 setName();
             }
             

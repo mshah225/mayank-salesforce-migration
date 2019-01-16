@@ -280,8 +280,8 @@
 
                     <ul class="dropdown-menu">
                         <li>
-                            <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >Live Chat - Finances</a>
-                            <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >Live Chat - Finances</a>
+                            <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >{!financeChatButton.Display_Name__c}</a>
+                            <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >{!financeChatButton.Display_Name__c}</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
@@ -291,8 +291,8 @@
                             </script>
                         </li>
                         <li>
-                            <a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >Live Chat - Technical Support</a>
-                            <a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >Live Chat - Technical Support</a>
+                            <a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >{!technicalSupportChatButton.Display_Name__c}</a>
+                            <a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >{!technicalSupportChatButton.Display_Name__c}</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
@@ -302,8 +302,8 @@
                             </script>
                         </li>
                         <li>
-                            <a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">Live Chat - Student Services</a>
-                            <a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">Live Chat - Student Services</a>
+                            <a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesChatButton.Display_Name__c}</a>
+                            <a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesChatButton.Display_Name__c}</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){

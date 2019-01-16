@@ -1,5 +1,5 @@
 public without sharing class NonAuthenticatedLiveAgentController {
-    public String buttonPressed {set; get;} 
+	public String buttonPressed {set; get;} 
     public String caseDescription {set; get;}
     public String caseRecordType {set; get;}
     public String caseOwnerId {set; get;}
@@ -47,7 +47,7 @@ public without sharing class NonAuthenticatedLiveAgentController {
     
     private void setCaseOwnerAndSubject(Case_Assignment_Rule__c car) {
         if (car.Queue_ID__c.subString(0,3) == Group.SObjectType.getDescribe().getKeyPrefix()) {
-            List<Group> potentialQueue = [SELECT Id, Name FROM Group WHERE Id =: car.Queue_ID__c];
+        	List<Group> potentialQueue = [SELECT Id, Name FROM Group WHERE Id =: car.Queue_ID__c];
             caseOwnerId = potentialQueue[0].Id;
             caseSubject = potentialQueue[0].Name + ' Live Chat';
         } else if (car.Queue_ID__c.subString(0,3) == User.SObjectType.getDescribe().getKeyPrefix()) {

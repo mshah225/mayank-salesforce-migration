@@ -1,7 +1,7 @@
 <apex:page showHeader="false" controller="NonAuthenticatedLiveAgentController">
     <h1>
         <apex:image url="{!$Resource.LiveAgentlogo}" />        
-        <c:asuwebstandards/>
+        <c:ASUWebStandards />
     </h1>
     <script type='text/javascript'>
     (function() {

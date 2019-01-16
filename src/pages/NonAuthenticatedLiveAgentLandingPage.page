@@ -3,14 +3,13 @@
     <title>ASU |Live Chat Support</title>
     
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
-    <c:asuwebstandards/>
+    <c:ASUWebStandards />
     <c:asu_responsive_header_section />
     <c:SCHeader />
     
     <apex:stylesheet value="{! URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
-    <body class="messageBody">
-        
-        <div style="margin-top: 50px; margin-left: 5%;">
+    <body>
+        <div style="margin-top: 50px; margin-left: 5%; font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif !important;">
             Please wait while we redirect your chat! If the chat window doesn't appear, please click the link below!
         </div>
         <div style="margin-top: 50px; margin-left: 5%;">

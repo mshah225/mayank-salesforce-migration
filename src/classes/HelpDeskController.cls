@@ -967,6 +967,7 @@ public with sharing class HelpDeskController
 
         try
         {
+            ccPicklist.addCaseClassificationToCase(myCase);
             upsert myCase;
             return null;
         }

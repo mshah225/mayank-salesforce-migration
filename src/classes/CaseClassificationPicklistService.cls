@@ -37,7 +37,13 @@ public class CaseClassificationPicklistService {
             }
             return selectedFunctionalGroup;
         }
-        set;
+        set {
+            if (value == null) {
+                selectedFunctionalGroup = '--';
+            } else {
+                selectedFunctionalGroup = value;
+            }
+        }
     }
     
     public String selectedCategory {
@@ -47,7 +53,13 @@ public class CaseClassificationPicklistService {
             }
             return selectedCategory;
         }
-        set;
+        set {
+            if (value == null) {
+                selectedCategory = '--';
+            } else {
+                selectedCategory = value;
+            }
+        }
     }
 
     public String selectedSubCategory {
@@ -57,7 +69,13 @@ public class CaseClassificationPicklistService {
             }
             return selectedSubCategory;
         }
-        set;
+        set {
+            if (value == null) {
+                selectedSubCategory = '--';
+            } else {
+                selectedSubCategory = value;
+            }
+        }
     }
 
     public List<SelectOption> functionalGroupOptions {
@@ -66,7 +84,7 @@ public class CaseClassificationPicklistService {
                 functionalGroupOptions = new List<SelectOption>();
                 functionalGroupOptions.add(new SelectOption('--', '--', true));
                 for (String functionalGroupOption : allFunctionalGroups.keyset()) {
-                    functionalGroupOptions.add(new SelectOption(functionalGroupOption, functionalGroupOption, false));
+                    functionalGroupOptions.add(new SelectOption(functionalGroupOption, allFunctionalGroups.get(functionalGroupOption).Name, false));
                 }
             }
             return functionalGroupOptions;
@@ -110,7 +128,7 @@ public class CaseClassificationPicklistService {
         ];
         Map<String, Case_Classification__c> allFgs = new Map<String, Case_Classification__c>();                                        
         for (Case_Classification__c functionalGroup : functionalGroups) {
-            allFgs.put(functionalGroup.Name, functionalGroup);
+            allFgs.put(functionalGroup.Id, functionalGroup);
         }
         return allFgs;
     }
@@ -119,26 +137,26 @@ public class CaseClassificationPicklistService {
         Map<String, Map<String, Case_Classification__c>> categoryToFunctionalGroup = new Map<String, Map<String, Case_Classification__c>>();
         Id categoryRecordType = IDHelper.getRecordTypeId('Case_Classification__c', 'Category');
         List<Case_Classification__c> categories = [
-            SELECT Name, Parent__c, Parent__r.Name, Default_Case_Description__c
+            SELECT Name, Parent__c, Parent__r.Id, Default_Case_Description__c
             FROM Case_Classification__c
             WHERE RecordTypeId =: categoryRecordType
             AND Active__c =: TRUE
             AND Visible__c =: TRUE
-            ORDER By Parent__c, Parent__r.Name, Name
+            ORDER By Parent__c, Parent__r.Id, Name
         ];
         if (!categories.isEmpty()) {
             Map<String, Case_Classification__c> uniqueParentMap = new Map<String, Case_Classification__c>();
             uniqueParentMap.put('--', null);
-            String currentParent = categories[0].Parent__r.Name;
+            String currentParent = categories[0].Parent__r.Id;
             for (Case_Classification__c cat : categories) {
-                if (currentParent == cat.Parent__r.Name) {
-                    uniqueParentMap.put(cat.Name, cat);
+                if (currentParent == cat.Parent__r.Id) {
+                    uniqueParentMap.put(cat.Id, cat);
                 } else {
                     categoryToFunctionalGroup.put(currentParent, uniqueParentMap);
                     uniqueParentMap = new Map<String, Case_Classification__c>();
                     uniqueParentMap.put('--', null);
-                    currentParent = cat.Parent__r.Name;
-                    uniqueParentMap.put(cat.Name, cat);
+                    currentParent = cat.Parent__r.Id;
+                    uniqueParentMap.put(cat.Id, cat);
                 }
             }
             categoryToFunctionalGroup.put(currentParent, uniqueParentMap);
@@ -166,7 +184,7 @@ public class CaseClassificationPicklistService {
             WHERE RecordTypeId =: subCategoryRecordType
             AND Active__c =: TRUE
             AND Visible__c =: TRUE
-            ORDER By Parent__c, Parent__r.Name, Name
+            ORDER By Parent__c, Parent__r.Id, Name
         ];
         if (!subCategories.isEmpty()) {
             Map<String, Case_Classification__c> uniqueParentMap = new Map<String, Case_Classification__c>();
@@ -174,13 +192,13 @@ public class CaseClassificationPicklistService {
             String currentParentId = subCategories[0].Parent__c;
             for (Case_Classification__c subCat : subCategories) {
                 if (currentParentId == subCat.Parent__c) {
-                    uniqueParentMap.put(subCat.Name, subCat);
+                    uniqueParentMap.put(subCat.Id, subCat);
                 } else {
                     subCategoriesToCategory.put(currentParentId, uniqueParentMap);
                     uniqueParentMap = new Map<String, Case_Classification__c>();
                     uniqueParentMap.put('--', null);
                     currentParentId = subCat.Parent__c;
-                    uniqueParentMap.put(subCat.Name, subCat);
+                    uniqueParentMap.put(subCat.Id, subCat);
                 }
             }
             subCategoriesToCategory.put(currentParentId, uniqueParentMap);
@@ -201,7 +219,7 @@ public class CaseClassificationPicklistService {
                     if (categoryOption.equals('--')) {
                         optionsForCategory.add(new SelectOption('--', '--', false));
                     } else {
-                        optionsForCategory.add(new SelectOption(categoriesForFunctionalGroup.get(categoryOption).Id, categoryOption, false));
+                        optionsForCategory.add(new SelectOption(categoryOption, categoriesForFunctionalGroup.get(categoryOption).Name, false));
                     }
                 }
             } else {
@@ -220,7 +238,11 @@ public class CaseClassificationPicklistService {
 
             if (subCategoriesForParent != null && !subCategoriesForParent.isEmpty()) {
                 for (String subCategoryOption : subCategoriesForParent.keySet()) {
-                    optionsForSubCategory.add(new SelectOption(subCategoryOption, subCategoryOption, false));
+                    if (subCategoryOption.equals('--')) {
+                        optionsForSubCategory.add(new SelectOption('--', '--', false));
+                    } else {
+                        optionsForSubCategory.add(new SelectOption(subCategoryOption, subCategoriesForParent.get(subCategoryOption).Name, false));
+                    }
                 }
             } else {
                 optionsForSubCategory.add(new SelectOption('--', '--', false));
@@ -231,26 +253,14 @@ public class CaseClassificationPicklistService {
         return optionsForSubCategory;
     }
     
-    public PageReference updateCategoryAndSubCategory() {
-        updateCategories();
-        updateOnCategoryChange();
-        return null;
-    }
-    
-    public PageReference updateCategories() {
+    public void updateCategoryAndSubCategory() {
         categoryOptions = setOptionsForCategory();
         selectedCategory = '--';
-        return null;
-    }
-
-    public PageReference updateOnCategoryChange() {
         updateSubCategories();
-        return null;
     }
     
-    public PageReference updateSubCategories() {
+    public void updateSubCategories() {
         subCategoryOptions = setOptionsForSubCategory();
-        return null;
     }
     
     public void addCaseClassificationToCase(Case caseToAddClassification) {
@@ -261,14 +271,12 @@ public class CaseClassificationPicklistService {
         }
 
         caseToAddClassification.CC_Functional_Group__c = functionalGroupToAdd.Id;
-
-        if (allCategories.get(functionalGroupToAdd.Name) == NULL || selectedCategory.equals('--')) {
+        if (allCategories.get(functionalGroupToAdd.Id) == NULL || selectedCategory.equals('--')) {
             return;
         }
         
-        String categoryName = [SELECT Name FROM Case_Classification__c WHERE Id =: selectedCategory].Name;
-        Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(categoryName);
-        
+        Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Id).get(selectedCategory);
+
         if (categoryToAdd == null) {
             return;
         }

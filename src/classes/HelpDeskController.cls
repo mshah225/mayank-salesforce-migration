@@ -3,233 +3,8 @@ public with sharing class HelpDeskController
 {
     public Boolean isPageLoaded;
     private String soql { get; set; }
+    public CaseClassificationPicklistService ccPicklist {get; set;} 
 
-    public Map<String, Case_Classification__c> allFunctionalGroups {
-        get {
-            if (allFunctionalGroups == null) {
-                allFunctionalGroups = new Map<String, Case_Classification__c>();
-                Id functionalGroupRecordType = [SELECT Id
-                                                FROM RecordType
-                                                WHERE Name = 'Functional Group'
-                                                LIMIT 1
-                                               ].Id;
-                List<Case_Classification__c> functionalGroups = [SELECT Name
-                                                                 FROM Case_Classification__c
-                                                                 WHERE RecordTypeId =: functionalGroupRecordType
-                                                                 AND Active__c =: TRUE
-                                                                 AND Visible__c =: TRUE
-                                                                 ORDER By Name
-                                                                ];
-                for (Case_Classification__c functionalGroup : functionalGroups) {
-                    allFunctionalGroups.put(functionalGroup.Name, functionalGroup);
-                }
-            }
-            return allFunctionalGroups;
-        }
-        set;
-    }
-
-    public Map<String, Map<String, Case_Classification__c>> allCategories {
-        get {
-            if (allCategories == null) {
-                allCategories = new Map<String, Map<String, Case_Classification__c>>();
-                Id categoryRecordType = [SELECT Id
-                                         FROM RecordType
-                                         WHERE Name = 'Category'
-                                         LIMIT 1
-                                        ].Id;
-                List<Case_Classification__c> categories = [SELECT Name, Parent__c, Parent__r.Name, Default_Case_Description__c
-                                                           FROM Case_Classification__c
-                                                           WHERE RecordTypeId =: categoryRecordType
-                                                           AND Active__c =: TRUE
-                                                           AND Visible__c =: TRUE
-                                                           ORDER By Parent__r.Name, Name
-                                                          ];
-                if (!categories.isEmpty()) {
-                    Map<String, Case_Classification__c> uniqueParentMap = new Map<String, Case_Classification__c>();
-                    uniqueParentMap.put('--', null);
-                    String currentParent = categories[0].Parent__r.Name;
-                    for (Case_Classification__c cat : categories) {
-                        if (currentParent == cat.Parent__r.Name) {
-                            uniqueParentMap.put(cat.Name, cat);
-                        } else {
-                            allCategories.put(currentParent, uniqueParentMap);
-                            uniqueParentMap = new Map<String, Case_Classification__c>();
-                            uniqueParentMap.put('--', null);
-                            currentParent = cat.Parent__r.Name;
-                            uniqueParentMap.put(cat.Name, cat);
-                        }
-                    }
-                    allCategories.put(currentParent, uniqueParentMap);
-
-                    Map<String, Case_Classification__c> noSelectOption = new Map<String, Case_Classification__c>();
-                    noSelectOption.put('--', null);
-                    allCategories.put('--',  noSelectOption);
-                }
-                for (String functionalGroupName : allFunctionalGroups.keySet()) {
-                    if (allCategories.get(functionalGroupName) == null ) {
-                    Map<String, Case_Classification__c> noSelectOption = new Map<String, Case_Classification__c>();
-                    noSelectOption.put('--', null);
-                    allCategories.put(functionalGroupName,  noSelectOption);
-                    }
-                }
-            }
-            return allCategories;
-        }
-        set;
-    }
-
-    public Map<String, Map<String, Case_Classification__c>> allSubCategories {
-        get {
-            if (allSubCategories == null) {
-                allSubCategories = new Map<String, Map<String, Case_Classification__c>>();
-                Id subCategoryRecordType = [SELECT Id
-                                            FROM RecordType
-                                            WHERE Name = 'Sub Category'
-                                            LIMIT 1
-                                           ].Id;
-                List<Case_Classification__c> subCategories = [SELECT Name, Parent__c, Parent__r.Name
-                                                              FROM Case_Classification__c
-                                                              WHERE RecordTypeId =: subCategoryRecordType
-                                                              AND Active__c =: TRUE
-                                                              AND Visible__c =: TRUE
-                                                              ORDER By Parent__c, Parent__r.Name, Name
-                                                             ];
-                if (!subCategories.isEmpty()) {
-                    Map<String, Case_Classification__c> uniqueParentMap = new Map<String, Case_Classification__c>();
-                    uniqueParentMap.put('--', null);
-                    String currentParentId = subCategories[0].Parent__c;
-                    for (Case_Classification__c subCat : subCategories) {
-                        if (currentParentId == subCat.Parent__c) {
-                            uniqueParentMap.put(subCat.Name, subCat);
-                        } else {
-                            allsubCategories.put(currentParentId, uniqueParentMap);
-                            uniqueParentMap = new Map<String, Case_Classification__c>();
-                            uniqueParentMap.put('--', null);
-                            currentParentId = subCat.Parent__c;
-                            uniqueParentMap.put(subCat.Name, subCat);
-                        }
-                    }
-                    allsubCategories.put(currentParentId, uniqueParentMap);
-
-                    Map<String, Case_Classification__c> noSelectOption = new Map<String, Case_Classification__c>();
-                    noSelectOption.put('--', null);
-                    allSubCategories.put('--',  noSelectOption);
-                }
-            }
-            return allSubCategories;
-        }
-        set;
-    }
-
-    public String selectedFunctionalGroup {
-        get {
-            if (selectedFunctionalGroup == null) {
-                if (isNewCaseSelected) {
-                    selectedFunctionalGroup = 'Help Desk';
-                } else if (myCase.CC_Functional_Group__c != null) {
-                	selectedFunctionalGroup = myCase.CC_Functional_Group__r.Name;
-                } else {
-                    selectedFunctionalGroup = '--';
-                }
-            }
-            return selectedFunctionalGroup;
-        }
-        set;
-    }
-    public String selectedCategory {
-        get {
-            if (selectedCategory == null) {
-                if (myCase.CC_Category__c != null) {
-                	selectedCategory = myCase.CC_Category__r.Id;
-                } else {
-                    selectedCategory = '--';
-                }
-            }
-            return selectedCategory;
-        }
-        set;
-    }
-
-    public String selectedSubCategory {
-        get {
-            if (selectedSubCategory == null) {
-                if (myCase.CC_Sub_Category__c != null) {
-                	selectedSubCategory = myCase.CC_Sub_Category__r.Name;
-                } else {
-                    selectedSubCategory = '--';
-                }
-            }
-            return selectedSubCategory;
-        }
-        set;
-    }
-
-    public List<SelectOption> functionalGroupOptions {
-        get {
-            if (functionalGroupOptions == null) {
-                functionalGroupOptions = new List<SelectOption>();
-
-                for (String functionalGroupOption : allFunctionalGroups.keyset()) {
-                    functionalGroupOptions.add(new SelectOption(functionalGroupOption, functionalGroupOption, false));
-                }
-            }
-            return functionalGroupOptions;
-        }
-
-        set;
-    }
-
-    public List<SelectOption> categoryOptions {
-        get {
-            if (categoryOptions == null) {
-                categoryOptions = new List<SelectOption>();
-                if (allCategories != null && selectedFunctionalGroup != null) {
-                    Map<String, Case_Classification__c> categoriesForFunctionalGroup = allCategories.get(selectedFunctionalGroup);
-                    if (categoriesForFunctionalGroup != null && !categoriesForFunctionalGroup.isEmpty()) {
-                        for (String categoryOption : categoriesForFunctionalGroup.keySet()) {
-                            if (categoryOption.equals('--')) {
-                                categoryOptions.add(new SelectOption('--', '--', false));
-                            } else {
-                            	categoryOptions.add(new SelectOption(categoriesForFunctionalGroup.get(categoryOption).Id, categoryOption, false));
-                            }
-                        }
-                    } else {
-                        categoryOptions.add(new SelectOption('--', '--', false));
-                    }
-                } else {
-                    categoryOptions.add(new SelectOption('--', '--', false));
-                }
-            }
-            return categoryOptions;
-        }
-
-        set;
-    }
-
-    public List<SelectOption> subCategoryOptions {
-        get {
-            if (subCategoryOptions == null) {
-                subCategoryOptions = new List<SelectOption>();
-                if (allSubCategories != null && selectedCategory != null) {
-                    Map<String, Case_Classification__c> subCategoriesForParent = allsubCategories.get(selectedCategory);
-
-                    if (subCategoriesForParent != null && !subCategoriesForParent.isEmpty()) {
-                        for (String subCategoryOption : subCategoriesForParent.keySet()) {
-                            subCategoryOptions.add(new SelectOption(subCategoryOption, subCategoryOption, false));
-                        }
-                    } else {
-                        subCategoryOptions.add(new SelectOption('--', '--', false));
-                    }
-                } else {
-                    subCategoryOptions.add(new SelectOption('--', '--', false));
-                }
-            }
-            return subCategoryOptions;
-        }
-
-        set;
-    }
     public Boolean isNewCaseSelected { get; set; }
     public Boolean isArticleDetails { get; set; }
     public Boolean isExistingCaseSelected { get; set; }
@@ -349,7 +124,7 @@ public with sharing class HelpDeskController
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
         contacts = new List<Contact>();
-
+        ccPicklist = new CaseClassificationPicklistService();
         if (ApexPages.currentPage().getParameters().containsKey('ANI'))
         {
             if (ApexPages.currentPage().getParameters().get('ANI') != '')
@@ -854,6 +629,8 @@ public with sharing class HelpDeskController
         myCase.Status = 'New';
         myCase.Campus__c = 'Tempe';
         myCase.CC_Functional_Group__c = [Select Id, Name FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Help Desk' LIMIT 1].Id;
+        ccPicklist.selectedFunctionalGroup = myCase.CC_Functional_Group__c;
+        ccPicklist.updateCategoryAndSubCategory();
     }
 
     public void newContact() {
@@ -991,23 +768,13 @@ public with sharing class HelpDeskController
 
         myCase = (Case) m.get(selectedCaseId).Ca;
 
-        if (myCase.CC_Functional_Group__r.Name != NULL) {
-            selectedFunctionalGroup = myCase.CC_Functional_Group__r.Name;
-        } else {
-            selectedFunctionalGroup = '--';
-        }
-        updateCategories();
-        if (myCase.CC_Category__r.Name != NULL) {
-            selectedCategory = myCase.CC_Category__r.Id;
-        } else {
-            selectedCategory = '--';
-        }
-        updateSubCategories();
-        if (myCase.CC_Sub_Category__r.Name != NULL) {
-            selectedSubCategory = myCase.CC_Sub_Category__r.Name;
-        } else {
-            selectedSubCategory = '--';
-        }
+        ccPicklist.selectedFunctionalGroup = myCase.CC_Functional_Group__c;
+        
+        ccPicklist.updateCategoryAndSubCategory();
+        ccPicklist.selectedCategory = myCase.CC_Category__c;
+        
+        ccPicklist.updateSubCategories();
+        ccPicklist.selectedSubCategory =myCase.CC_Sub_Category__c;
 
         // Query for CaseArticle(s) attached to the Case.
         Set<Id> caseArticleIds = getCaseArticleIds();
@@ -1038,8 +805,7 @@ public with sharing class HelpDeskController
             return null;
         }
         try {
-            addCaseClassificationToCase();
-
+            ccPicklist.addCaseClassificationToCase(myCase);
             upsert myCase;
 
             return redirectPage(myCase);
@@ -1081,35 +847,6 @@ public with sharing class HelpDeskController
         return !String.isEmpty(caseToValidate.Subject) || !String.isEmpty(caseToValidate.Description);
     }
 
-    private void addCaseClassificationToCase() {
-        Case_Classification__c functionalGroupToAdd = allFunctionalGroups.get(selectedFunctionalGroup);
-
-        if (functionalGroupToAdd != null) {
-            myCase.CC_Functional_Group__c = functionalGroupToAdd.Id;
-            if (allCategories.get(functionalGroupToAdd.Name) == NULL || selectedCategory.equals('--')) {
-                myCase.CC_Category__c = null;
-            } else {
-                String categoryName = [SELECT Name FROM Case_Classification__c WHERE Id =: selectedCategory].Name;
-                Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Name).get(categoryName);
-                if (categoryToAdd != null) {
-                    myCase.CC_Category__c = categoryToAdd.Id;
-                    if (allSubCategories.get(selectedCategory) == NULL) {
-                        myCase.CC_Sub_Category__c = null;
-                    } else {
-                        Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Id).get(selectedSubCategory);
-                        if (subCategoryToAdd != null) {
-                            myCase.CC_Sub_Category__c = subCategoryToAdd.Id;
-                        } else {
-                            myCase.CC_Sub_Category__c = null;
-                        }
-                    }
-                } else {
-                    myCase.CC_Category__c = null;
-                }
-            }
-        }
-    }
-
     private PageReference redirectPage(Case caseToTrasferTo) {
         PageReference page = new PageReference('/' + caseToTrasferTo.Id);
         page.setRedirect(true);
@@ -1122,9 +859,6 @@ public with sharing class HelpDeskController
         isExistingCaseSelected = false;
         isKnowledgeSearch = false;
         myCase = null;
-        selectedFunctionalGroup = null;
-        selectedCategory = null;
-        selectedSubCategory = null;
         ApexPages.getMessages().clear();
     }
 
@@ -1144,8 +878,7 @@ public with sharing class HelpDeskController
             return null;
         }
         try{
-
-            addCaseClassificationToCase();
+            ccPicklist.addCaseClassificationToCase(myCase);
             upsert myCase;
 
             PageReference page = new PageReference('/apex/CaseTransfer?id=' + myCase.Id);
@@ -1192,7 +925,7 @@ public with sharing class HelpDeskController
 
         myCase.Status = 'Closed: Resolved';
         try{
-            addCaseClassificationToCase();
+            ccPicklist.addCaseClassificationToCase(myCase);
             upsert myCase;
             savedAndClosed = true;
             return;
@@ -1331,42 +1064,16 @@ public with sharing class HelpDeskController
         }
     }
 
-    public PageReference updateCategoryAndSubCategory() {
-        updateCategories();
-        updateOnCategoryChange();
-
-        return null;
-    }
-    public PageReference  updateCategories() {
-        categoryOptions = new List<SelectOption>();
-        Map<String, Case_Classification__c> categoriesForParent = allCategories.get(selectedFunctionalGroup);
-
-        Boolean firstCategoryUpdated = false;
-        if (categoriesForParent != NULL && !categoriesForParent.isEmpty()) {
-            for (String categoryName : categoriesForParent.keySet()) {
-                if (categoryName.equals('--')) {
-                    categoryOptions.add(new SelectOption(categoryName, categoryName, false));
-                } else {
-                	categoryOptions.add(new SelectOption(categoriesForParent.get(categoryName).Id, categoryName, false));
-                }
-            }
-        } else {
-            categoryOptions.add(new SelectOption('--', '--', false));
-        }
-        return null;
-    }
-
-    public PageReference updateOnCategoryChange() {
+    public void updateOnCategoryChange() {
+        ccPicklist.updateSubCategories();
         addCategoryDescription();
-        updateSubCategories();
-        return null;
     }
 
     private String getCategoryDescription() {
-        if (selectedCategory == null || selectedCategory == '--') {
+        if (ccPicklist.selectedCategory == null || ccPicklist.selectedCategory == '--') {
             return '';
         }
-        String categoryDefaultCaseDescription = [SELECT Default_Case_Description__c FROM Case_Classification__c WHERE Id =: selectedCategory].Default_Case_Description__c;
+        String categoryDefaultCaseDescription = [SELECT Default_Case_Description__c FROM Case_Classification__c WHERE Id =: ccPicklist.selectedCategory].Default_Case_Description__c;
         return categoryDefaultCaseDescription == null ? '' : categoryDefaultCaseDescription;
     }
 
@@ -1378,22 +1085,4 @@ public with sharing class HelpDeskController
         myCase.Description += categoryDescription;
     }
 
-    public PageReference updateSubCategories() {
-        subCategoryOptions = new List<SelectOption>();
-        Map<String, Case_Classification__c> subCategoriesForParent = allsubCategories.get(selectedCategory);
-        Boolean firstSubCategoryUpdated = false;
-        if (subCategoriesForParent != NULL && !subCategoriesForParent.isEmpty()) {
-            for (String subCategoryName : subCategoriesForParent.keySet()) {
-                subCategoryOptions.add(new SelectOption(subCategoryName, subCategoryName, false));
-                if (!firstSubCategoryUpdated) {
-                    selectedSubCategory = subCategoryName;
-                    firstSubCategoryUpdated = true;
-                }
-            }
-        } else {
-            subCategoryOptions.add(new SelectOption('--', '--', false));
-        }
-
-        return null;
-    }
 }

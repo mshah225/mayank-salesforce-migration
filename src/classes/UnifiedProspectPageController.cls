@@ -711,13 +711,4 @@ public class UnifiedProspectPageController
             return null;
         }
     }
-    
-    public void updateCategoryAndSubCategory() {
-        ccPicklist.updateCategories();
-        ccPicklist.updateSubCategories();
-    }
-    
-    public void updateSubCategories() {
-        ccPicklist.updateSubCategories();
-    }
 }

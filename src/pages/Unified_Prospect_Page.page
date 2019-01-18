@@ -428,7 +428,7 @@
                                             <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
                                             <apex:actionRegion >
                                                 <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateCategoryAndSubCategory}" rerender="wrapper"/>
+                                                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper"/>
                                                     <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}"/>
                                                 </apex:selectList>
                                             </apex:actionRegion>
@@ -438,7 +438,7 @@
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
                                             <apex:actionRegion >
                                                 <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateSubCategories}" rerender="wrapper"/>
+                                                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateSubCategories}" rerender="wrapper"/>
                                                     <apex:selectOptions value="{!ccPicklist.categoryOptions}"/>
                                                 </apex:selectList>
                                             </apex:actionRegion>

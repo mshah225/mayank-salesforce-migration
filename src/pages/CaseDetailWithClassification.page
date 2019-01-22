@@ -1,17 +1,48 @@
 <apex:page standardController="Case" extensions="CaseDetailWithClassificationController" sidebar="false">
-    <div class="bPageBlock brandSecondaryBrd bEditBlock bLayoutBlock secondaryPalette" id="ep">
-        <div class="pbHeader">
-            <table border="0" cellPadding="0" cellSpacing="0" style="margin: 0px auto;">
-                <tbody>
-                    <tr style="display:none" id="caseDetailInlineButtons">
-                        <td class="pbButton">
-                            <input class="btn" name="save" value="Save" type="button" onclick="updateCaseWithCaseClassification()"></input>
-                            <input class="btn" name="clear" value="Clear" type="button" onclick="clearCaseClassificationDetails()"></input>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <apex:form id="caseDetailsForm">
+        <div class="bPageBlock brandSecondaryBrd bEditBlock bLayoutBlock secondaryPalette" id="ep">
+            <div class="pbHeader">
+                <table border="0" cellPadding="0" cellSpacing="0" style="margin: 0px auto;">
+                    <tbody>
+                        <tr style="display:none" id="caseDetailInlineButtons">
+                            <td class="pbButton">
+                                <input class="btn" name="save" value="Save" type="button" onclick="updateCaseWithCaseClassification()"></input>
+                        <input class="btn" name="clear" value="Clear" type="button" onclick="clearCaseClassificationDetails()"></input>
+            				</td>
+        				</tr>
+    				</tbody>
+        		</table>
+        	</div>
+		</div>
+        <apex:outputPanel id="wrapper">
+            <apex:outputLabel value="Case Functional Group: " for="functionalGroupOptions" />
+            <apex:actionRegion >
+                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}" size="1">
+                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper"/>
+                    <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}"/>
+                </apex:selectList>
+            </apex:actionRegion>
+            <br />
+            <br />
+            
+            <apex:outputLabel value="Case Category: " for="categoryOptions" />
+            <apex:actionRegion >
+                <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
+                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateSubCategories}" rerender="wrapper"/>
+                    <apex:selectOptions value="{!ccPicklist.categoryOptions}"/>
+                </apex:selectList>
+            </apex:actionRegion>
+            <br />
+            <br />
+            <apex:outputLabel value="Case Sub Category: " for="subCategoryOptions" />
+            <apex:actionRegion >
+                <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
+                    <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}"/>
+                </apex:selectList>
+            </apex:actionRegion>
+            <br />
+            <br />
+        </apex:outputPanel>
         <div class="pbBody">
             <div class="efdFields">
                 <div class="pbSubsection">
@@ -38,8 +69,8 @@
                 </div>
             </div>
         </div>
-    </div>
-
+        
+	</apex:form>
     <apex:includeScript value="../../soap/ajax/36.0/connection.js"/>
     <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
     <apex:includeScript value="{! $Resource.jQuery_3_1_1}"/>

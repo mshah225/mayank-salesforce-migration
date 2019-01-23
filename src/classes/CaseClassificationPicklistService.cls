@@ -272,18 +272,23 @@ public class CaseClassificationPicklistService {
 
         caseToAddClassification.CC_Functional_Group__c = functionalGroupToAdd.Id;
         if (allCategories.get(functionalGroupToAdd.Id) == NULL || selectedCategory.equals('--')) {
+            caseToAddClassification.CC_Category__c = null;
+            caseToAddClassification.CC_Sub_Category__c = null;
             return;
         }
         
         Case_Classification__c categoryToAdd = allCategories.get(functionalGroupToAdd.Id).get(selectedCategory);
 
         if (categoryToAdd == null) {
+            caseToAddClassification.CC_Category__c = null;
+            caseToAddClassification.CC_Sub_Category__c = null;
             return;
         }
         
         caseToAddClassification.CC_Category__c = categoryToAdd.Id;
         
         if (allSubCategories.get(selectedCategory) == NULL) {
+            caseToAddClassification.CC_Sub_Category__c = null;
             return;
         }
         
@@ -291,5 +296,18 @@ public class CaseClassificationPicklistService {
         if (subCategoryToAdd != null) {
             caseToAddClassification.CC_Sub_Category__c = subCategoryToAdd.Id;
         }
+    }
+    
+    public Map<Id, Case_Classification__c> getCCNames() {
+        List<Id> caseClassificationIds = new List<Id>();
+        caseClassificationIds.add(selectedFunctionalGroup);
+        if (selectedCategory != null) {
+            caseClassificationIds.add(selectedCategory);
+        }
+
+        if (selectedSubCategory != null) {
+            caseClassificationIds.add(selectedSubCategory);
+        }
+        return new Map<Id, Case_Classification__c>([SELECT Name FROM Case_Classification__c WHERE Id IN: caseClassificationIds]);
     }
 }

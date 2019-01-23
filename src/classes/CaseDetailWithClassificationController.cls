@@ -3,11 +3,14 @@ global with sharing class CaseDetailWithClassificationController {
     public Case caseRecord { get; set; }
     public String caseStatus { get; set; }
     public CaseClassificationPicklistService ccPicklist { get; set; }
+    public List<SelectOption> statusOptions { get; set; }
+    public String selectedStatus { get; set; }
 
     public CaseDetailWithClassificationController(ApexPages.StandardController stdController) {
         caseRecordId = ApexPages.currentPage().getParameters().get('id');
         caseRecord = [
-            SELECT CC_Functional_Group__c, CC_Category__c, CC_Sub_Category__c, RecordTypeId, Id 
+            SELECT CC_Functional_Group__c, CC_Category__c, CC_Sub_Category__c, RecordTypeId, 
+            	Status, Id 
             FROM Case 
             WHERE Id =: caseRecordId
         ];
@@ -17,7 +20,6 @@ global with sharing class CaseDetailWithClassificationController {
     }
 
     private void setCurrentCaseClassification() {
-        
         ccPicklist.selectedFunctionalGroup = caseRecord.CC_Functional_Group__c;
         ccPicklist.updateCategoryAndSubCategory();
         ccPicklist.selectedCategory = caseRecord.CC_Category__c;
@@ -25,17 +27,28 @@ global with sharing class CaseDetailWithClassificationController {
         ccPicklist.selectedSubCategory = caseRecord.CC_Sub_Category__c;
     }
     
-    public void updateCaseWithCaseClassification() {
-        update new Case(
-            Id = caseRecordId,
-            CC_Functional_Group__c = ccPicklist.selectedFunctionalGroup,
-            CC_Category__c = ccPicklist.selectedCategory,
-            CC_Sub_Category__c = ccPicklist.selectedSubCategory,
-            Status = caseStatus
-        );
+    public void saveCase() {
+        Case caseToUpdate = new Case(Id = caseRecordId);
+        if (selectedStatus != null) {
+            caseToUpdate.Status = selectedStatus;
+        }
+        ccPicklist.addCaseClassificationToCase(caseToUpdate);
+        System.debug(caseToUpdate);
+        update caseToUpdate;
     }
     
     public void buildCaseStatusPicklist() {
+        List<String> caseStatuses = makeCalloutToGetStatusOptions();
+        createSelectOptions(caseStatuses);
+        setSelectedStatus();
+    }
+    
+    public void resetDetails() {
+        setCurrentCaseClassification();
+        setSelectedStatus();
+    }
+    
+    private List<String> makeCalloutToGetStatusOptions() {
         List<String> caseStatuses = new List<String>();
         Http h = new Http();
         HttpRequest req = new HttpRequest();
@@ -47,24 +60,30 @@ global with sharing class CaseDetailWithClassificationController {
         HttpResponse res = h.send(req);
         Map<String, Object> responseBody = (Map<String, Object>)JSON.deserializeUntyped(res.getBody());
         
-        List<Object> responseValues = (List<Object>)responseBody.get('values');
-        
+        List<Object> responseValues = (List<Object>)responseBody.get('values');       
         for (Object response : responseValues) {
             Map<String, Object> mappedResponse = (Map<String, Object>)response;
-            caseStatuses.add((String)mappedResponse.get('label'));
+            caseStatuses.add((String)mappedResponse.get('value'));
         }
         
-        System.debug(caseStatuses);
+        return caseStatuses;
     }
     
-    @RemoteAction
-    global static void updateCaseWithCaseClassification(Id caseId, Id functionalGroup, Id category, Id subCategory, String caseStatus) {
-        update new Case(
-            Id = caseId,
-            CC_Functional_Group__c = functionalGroup,
-            CC_Category__c = category,
-            CC_Sub_Category__c = subCategory,
-            Status = caseStatus
-        );
+    private void createSelectOptions(List<String> optionsToAdd) {
+        List<CaseStatus> nonClosedStatuses = [SELECT ApiName, MasterLabel FROM CaseStatus WHERE IsClosed = FALSE];
+        List<String> availableStatuses = new List<String>();
+        for (CaseStatus nonClosedStatus : nonClosedStatuses) {
+            availableStatuses.add(nonClosedStatus.ApiName);
+        }
+        statusOptions = new List<SelectOption>();
+        for (String optionName : optionsToAdd) {
+            if (availableStatuses.contains(optionName)) {
+            	statusOptions.add(new SelectOption(optionName, optionName, false));
+            }
+        }
+    }
+    
+    private void setSelectedStatus() {
+        selectedStatus = caseRecord.Status;
     }
 }

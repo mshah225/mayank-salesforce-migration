@@ -6,29 +6,36 @@
                     <tbody>
                         <tr style="display:none" id="caseDetailInlineButtons">
                             <td class="pbButton">
-                                <input class="btn" name="save" value="Save" type="button" onclick="updateCaseWithCaseClassification()"></input>
-                        <input class="btn" name="clear" value="Clear" type="button" onclick="clearCaseClassificationDetails()"></input>
+                                <apex:commandButton action="{!saveCase}" value="Save"/>
+                                <apex:commandButton action="{!resetDetails}" value="Clear"/>
             				</td>
         				</tr>
     				</tbody>
         		</table>
         	</div>
 		</div>
+        <apex:outputLabel value="Case Status: " for="statusOptions" />
+        <apex:actionRegion >
+            <apex:selectList id="statusOptions" label="Case Status" value="{!selectedStatus}" size="1" onchange="showButtons();">
+                <apex:selectOptions value="{!statusOptions}"/>
+            </apex:selectList>
+        </apex:actionRegion>
+        <br />
+        <br />
         <apex:outputPanel id="wrapper">
             <apex:outputLabel value="Case Functional Group: " for="functionalGroupOptions" />
             <apex:actionRegion >
-                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}" size="1">
-                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper"/>
+                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}" size="1" >
+                    <apex:actionSupport event="onchange" onsubmit="showButtons();" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper"/>
                     <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}"/>
                 </apex:selectList>
             </apex:actionRegion>
             <br />
             <br />
-            
             <apex:outputLabel value="Case Category: " for="categoryOptions" />
             <apex:actionRegion >
                 <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
-                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateSubCategories}" rerender="wrapper"/>
+                    <apex:actionSupport event="onchange" onsubmit="showButtons();" action="{!ccPicklist.updateSubCategories}" rerender="wrapper"/>
                     <apex:selectOptions value="{!ccPicklist.categoryOptions}"/>
                 </apex:selectList>
             </apex:actionRegion>
@@ -36,40 +43,13 @@
             <br />
             <apex:outputLabel value="Case Sub Category: " for="subCategoryOptions" />
             <apex:actionRegion >
-                <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
+                <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1" onchange="showButtons();">
                     <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}"/>
                 </apex:selectList>
             </apex:actionRegion>
             <br />
             <br />
         </apex:outputPanel>
-        <div class="pbBody">
-            <div class="efdFields">
-                <div class="pbSubsection">
-                    <table class="detailList" border="0" cellPadding="0" cellSpacing="0">
-                        <tbody>
-                            <tr>
-                                <td class="labelCol">Status </td>
-                                <td class="dataCol" id="caseStatusPicklist"></td>
-                            </tr>
-                            <tr>
-                                <td class="labelCol">Case Functional Group</td>
-                                <td class="dataCol" id="functionalGroupPicklist"></td>
-                            </tr>
-                            <tr>
-                                <td class="labelCol">Case Category</td>
-                                <td class="dataCol" id="categoryPicklist"></td>
-                            </tr>
-                            <tr>
-                                <td class="labelCol">Case Sub-Category</td>
-                                <td class="dataCol" id="subCategoryPicklist"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        
 	</apex:form>
     <apex:includeScript value="../../soap/ajax/36.0/connection.js"/>
     <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
@@ -77,314 +57,7 @@
     <apex:includeScript value="/support/console/43.0/integration.js"/>
 
     <script>
-        var __sfdcSessionId = '{!GETSESSIONID()}';
-        var allCaseStatus = [];
-        var allFunctionalGroups;
-        var functionalGroupMap = {};
-        var allCategories;
-        var categoryToFGMap = {};
-        var allSubCategories;
-        var subCategoryToCategoryMap = {};
-        var currentCaseStatus;
-        var currentFunctionalGroupId;
-        var currentCategoryId;
-        var currentSubCategoryId;
-        var caseId;
-
-        $( document ).ready(function() {
-            getCurrentCaseInformation();
-            getAllCaseClassifications();
-        });
-
-        function getCurrentCaseInformation() {
-            caseId = '{!caseRecordId}';
-            var query = "SELECT Id, Status, CC_Functional_Group__c, CC_Category__c, CC_Sub_Category__c FROM Case WHERE Id = '" + caseId + "'";
-            var queryResult = sforce.connection.query(query);
-            var caseResults = queryResult.getArray('records');
-            if (caseResults[0].CC_Functional_Group__c != null) {
-                currentFunctionalGroupId = caseResults[0].CC_Functional_Group__c;
-            }
-            if (caseResults[0].CC_Category__c != null) {
-                currentCategoryId = caseResults[0].CC_Category__c;
-            }
-            if (caseResults[0].CC_Sub_Category__c != null) {
-                currentSubCategoryId = caseResults[0].CC_Sub_Category__c;
-            }
-            if (caseResults[0].Status != null) {
-                currentCaseStatus = caseResults[0].Status;
-            }
-        }
-
-        function getAllCaseClassifications() {
-            getAllFunctionalGroups();
-            getAllCategories();
-            getAllSubCategories();
-            getAllCaseStatusAndPopulatePicklists();
-        }
-
-        function createFunctionalGroupPicklist() {
-            var functionalGroupSelection = document.getElementById("functionalGroupPicklist");
-            functionalGroupSelection.innerText = '';
-            var select = document.createElement("select");
-            select.setAttribute("id", "functionalGroup");
-            select.setAttribute("disabled", "disabled");
-            select.onchange = function() { createCategoryPicklist(); createSubCategoryPicklist(); showButtons();};
-            allFunctionalGroups.forEach(function(fg) {
-                if (fg.Id == currentFunctionalGroupId) {
-                    select.options.add(new Option(fg.Name, fg.Id, true, true));
-                } else {
-                    select.options.add(new Option(fg.Name, fg.Id));
-                }
-            });
-
-            var frag = document.createDocumentFragment();
-            frag.appendChild(select);
-            functionalGroupSelection.appendChild(frag);
-        }
-
-        function createCategoryPicklist() {
-            var catSelection = document.getElementById("categoryPicklist");
-            catSelection.innerText = '';
-            var selectedFunctionalGroup = document.getElementById("functionalGroup").value;
-            var select = document.createElement("select");
-            select.setAttribute("id", "category");
-            select.onchange = function() { createSubCategoryPicklist(); showButtons();};
-            if (categoryToFGMap[selectedFunctionalGroup] == null){
-                select.options.add(new Option('--', '--'));
-            }
-            else {
-                var categoryList = Object.values(categoryToFGMap[selectedFunctionalGroup]);
-                categoryList.forEach(function(cat) {
-                    if (cat == null) {
-                        select.options.add(new Option('--', '--'));
-                    } else if (cat.Id == currentCategoryId) {
-                        select.options.add(new Option(cat.Name, cat.Id, true, true));
-                    } else {
-                        select.options.add(new Option(cat.Name, cat.Id));
-                    }
-                });
-            }
-            var frag = document.createDocumentFragment();
-            frag.appendChild(select);
-            catSelection.appendChild(frag);
-        }
-
-        function createSubCategoryPicklist() {
-            var subCatSelection = document.getElementById("subCategoryPicklist");
-            subCatSelection.innerText = '';
-            var selectedCategory = document.getElementById("category").value;
-            var select = document.createElement("select");
-            select.setAttribute("id", "subcategory");
-            select.onchange = function() { showButtons();};
-            if (selectedCategory == '--') {
-                select.options.add(new Option('--', '--'));
-            } else {
-                if (subCategoryToCategoryMap[selectedCategory] == null) {
-                    select.options.add(new Option('--', '--'));
-                }
-                else {
-                    var subCategoryList = Object.values(subCategoryToCategoryMap[selectedCategory]);
-                    subCategoryList.forEach(function(subCat) {
-                        if (subCat == null) {
-                            select.options.add(new Option('--', '--'));
-                        } else if (subCat.Id == currentSubCategoryId) {
-                            select.options.add(new Option(subCat.Name, subCat.Id, true, true));
-                        } else {
-                            select.options.add(new Option(subCat.Name, subCat.Id));
-                        }
-                    });
-                }
-            }
-            var frag = document.createDocumentFragment();
-            frag.appendChild(select);
-            subCatSelection.appendChild(frag);
-        }
-
-        function createCaseStatusPicklist() {
-            var caseStatusSelection = document.getElementById("caseStatusPicklist");
-            caseStatusSelection.innerText = '';
-            var select = document.createElement("select");
-            select.setAttribute("id", "caseStatus");
-            select.onchange = function() { showButtons(); };
-            if (!allCaseStatus.includes(currentCaseStatus)) {
-                select.options.add(new Option(currentCaseStatus, currentCaseStatus, true, true));
-            }
-            allCaseStatus.forEach(function(status) {
-                status = status.trim();
-                if (currentCaseStatus == status) {
-                    select.options.add(new Option(status, status, true, true));
-                } else {
-                    select.options.add(new Option(status, status));
-                }
-            });
-            var frag = document.createDocumentFragment();
-            frag.appendChild(select);
-            caseStatusSelection.appendChild(frag);
-        }
-
-        function getAllFunctionalGroups() {
-            var query = "SELECT Id FROM RecordType WHERE Name = 'Functional Group' LIMIT 1";
-            var queryResult = sforce.connection.query(query);
-            var recordType = queryResult.getArray('records')[0].Id;
-
-            query = "SELECT Id, Name, Parent__c, Parent__r.Id "
-                        + "FROM Case_Classification__c "
-                        + "WHERE RecordTypeId = '" + recordType + "' "
-                        + "AND Active__c = true AND Visible__c = true "
-                        + "ORDER By Parent__r.Name, Name";
-            queryResult = sforce.connection.query(query);
-            allFunctionalGroups = queryResult.getArray('records');
-            createFunctionalGroupMap();
-        }
-
-        function createFunctionalGroupMap() {
-            allFunctionalGroups.forEach(function(fg) {
-                functionalGroupMap[fg.Id] = fg;
-            });
-        }
-
-        function getAllCategories() {
-            var query = "SELECT Id FROM RecordType WHERE Name = 'Category' LIMIT 1";
-            var queryResult = sforce.connection.query(query);
-            var recordType = queryResult.getArray('records')[0].Id;
-
-            query = "SELECT Id, Name, Parent__c, Parent__r.Id "
-                        + "FROM Case_Classification__c "
-                        + "WHERE RecordTypeId = '" + recordType + "' "
-                        + "AND Active__c = true AND Visible__c = true "
-                        + "ORDER By Parent__r.Name, Name";
-            queryResult = sforce.connection.query(query);
-            allCategories = queryResult.getArray('records');
-            createCategoryMap();
-        }
-
-        function createCategoryMap() {
-            var categoriesWithSameParent = {};
-            var parentId = allCategories[0].Parent__r.Id;
-            categoriesWithSameParent['--'] = null;
-            allCategories.forEach(function(cat) {
-                if (parentId == cat.Parent__r.Id) {
-                    categoriesWithSameParent[cat.Id] = cat;
-                } else {
-                    categoryToFGMap[parentId] = categoriesWithSameParent;
-                    categoriesWithSameParent = {};
-                    categoriesWithSameParent['--'] = null;
-                    parentId = cat.Parent__r.Id;
-                    categoriesWithSameParent[cat.Id] = cat;
-                }
-            });
-            categoryToFGMap[parentId] = categoriesWithSameParent;
-            var nullParentMap = {};
-            nullParentMap['--'] = null;
-            categoryToFGMap['--'] = nullParentMap;
-        }
-
-        function getAllSubCategories() {
-            var query = "SELECT Id FROM RecordType WHERE Name = 'Sub Category' LIMIT 1";
-            var queryResult = sforce.connection.query(query);
-            var recordType = queryResult.getArray('records')[0].Id;
-
-            query = "SELECT Id, Name, Parent__c, Parent__r.Id "
-                        + "FROM Case_Classification__c "
-                        + "WHERE RecordTypeId = '" + recordType + "' "
-                        + "AND Active__c = true AND Visible__c = true "
-                        + "ORDER By Parent__r.Name, Name";
-            queryResult = sforce.connection.query(query);
-            allSubCategories = queryResult.getArray('records');
-            createSubCategoryMap();
-        }
-
-        function createSubCategoryMap() {
-            var subCategoriesWithSameParent = {};
-            var parentId = allSubCategories[0].Parent__r.Id;
-            subCategoriesWithSameParent['--'] = null;
-            allSubCategories.forEach(function(subCat) {
-                if (parentId == subCat.Parent__r.Id) {
-                    subCategoriesWithSameParent[subCat.Id] = subCat;
-                } else {
-                    subCategoryToCategoryMap[parentId] = subCategoriesWithSameParent;
-                    subCategoriesWithSameParent = {};
-                    subCategoriesWithSameParent['--'] = null;
-                    parentId = subCat.Parent__r.Id;
-                    subCategoriesWithSameParent[subCat.Id] = subCat;
-                }
-            });
-            subCategoryToCategoryMap[parentId] = subCategoriesWithSameParent;
-            var nullParentMap = {};
-            nullParentMap['--'] = null;
-            subCategoryToCategoryMap['--'] = nullParentMap;
-        }
-
-        function getAllCaseStatusAndPopulatePicklists() {
-            allCaseStatus = [];
-            let openStatuses = [];
-
-            let openStatusConn = new jsforce.Connection({ accessToken: '{!$Api.Session_Id}' });
-            openStatusConn.query("SELECT ApiName, MasterLabel FROM CaseStatus WHERE IsClosed = FALSE", function(err, res) {
-                if (err) { return console.error(err.toString()); }
-
-                for (let i = 0; i < res["records"].length; i++) {
-                    openStatuses.push(res["records"][i]["ApiName"]);
-                }
-
-                let _request = {
-                    body: "",
-                    header: { "Content-Type": "application/json" },
-                    method: "get",
-                    url: "/services/data/v43.0/ui-api/object-info/Case/picklist-values/{!caseRecord.RecordTypeId}/Status"
-                };
-
-                let valuesConn = new jsforce.Connection({ accessToken: '{!$Api.Session_Id}' });
-                valuesConn.request(_request, function(err, res) {
-                    if (err) { return console.error(err.toString()); }
-
-                    for (let i = 0; i < res["values"].length; i++) {
-                        if (openStatuses.includes(res["values"][i]["value"])) {
-                            allCaseStatus.push(res["values"][i]["value"]);
-                        }
-                    }
-
-                    createCaseStatusPicklist();
-                    createFunctionalGroupPicklist();
-                    createCategoryPicklist();
-                    createSubCategoryPicklist();
-                });
-            });
-        }
-
-        function updateCaseWithCaseClassification() {
-            hideButtons();
-            var functionalGroupID = functionalGroupMap[document.getElementById("functionalGroup").value].Id;
-            currentFunctionalGroupId = functionalGroupID;
-
-            var categoryId = null
-            if ([document.getElementById("category").value] != "--") {
-                categoryId = categoryToFGMap[document.getElementById("functionalGroup").value][document.getElementById("category").value];
-                categoryId = categoryId.Id;
-            }
-            currentCategoryId = categoryId;
-
-            var subCategoryId = null;
-            if ([document.getElementById("subcategory").value] != "--"){
-                subCategoryId = subCategoryToCategoryMap[document.getElementById("category").value][document.getElementById("subcategory").value];
-                subCategoryId = subCategoryId.Id;
-            }
-            currentSubCategoryId = subCategoryId;
-
-            currentCaseStatus = document.getElementById("caseStatus").value;
-
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.CaseDetailWithClassificationController.updateCaseWithCaseClassification}',
-                caseId, functionalGroupID, categoryId, subCategoryId, currentCaseStatus,
-                function(result, event){}
-            );
-        }
-
         function clearCaseClassificationDetails() {
-            createCaseStatusPicklist();
-            createFunctionalGroupPicklist();
-            createCategoryPicklist();
-            createSubCategoryPicklist();
             hideButtons();
         }
 

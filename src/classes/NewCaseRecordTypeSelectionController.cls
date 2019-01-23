@@ -50,8 +50,8 @@ public with sharing class NewCaseRecordTypeSelectionController {
         editPageURL.getParameters().put('retURL', ApexPages.currentPage().getParameters().get('retURL'));
         editPageURL.getParameters().put('nooverride', '1');
         editPageURL.getParameters().put('RecordType',selectedRecordType);
-        
-        Map<Id, Case_Classification__c> caseClassificationNames = getCCNames();
+
+        Map<Id, Case_Classification__c> caseClassificationNames = ccPicklist.getCCNames();
         
         editPageURL.getParameters().put(functionalGroupLookupFieldId, ccPicklist.selectedFunctionalGroup);
         editPageURL.getParameters().put(functionalGroupLookupFieldName, caseClassificationNames.get(ccPicklist.selectedFunctionalGroup).Name);
@@ -71,24 +71,10 @@ public with sharing class NewCaseRecordTypeSelectionController {
 
     }
 
-    private Map<Id, Case_Classification__c> getCCNames() {
-        List<Id> caseClassificationIds = new List<Id>();
-        caseClassificationIds.add(ccPicklist.selectedFunctionalGroup);
-        if (ccPicklist.selectedCategory != null) {
-            caseClassificationIds.add(ccPicklist.selectedCategory);
-        }
-
-        if (ccPicklist.selectedSubCategory != null) {
-            caseClassificationIds.add(ccPicklist.selectedSubCategory);
-        }
-        return new Map<Id, Case_Classification__c>([SELECT Name FROM Case_Classification__c WHERE Id IN: caseClassificationIds]);
-    }
-    
     public PageReference cancel() {
         PageReference returnURL;
 
         returnURL = new PageReference(ApexPages.currentPage().getParameters().get('retURL'));
         return returnURL;
     }
-
 }

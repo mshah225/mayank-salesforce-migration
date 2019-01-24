@@ -34,7 +34,6 @@
     <script type='text/javascript'>
         var cleanedString = '{!$CurrentPage.parameters.chatDetails}';
         cleanedString = cleanedString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        console.log(cleanedString);
         var chatDetails = JSON.parse(cleanedString);
         var mergeFieldObject = {
             chat_key: '{!$CurrentPage.parameters.chatKey}',

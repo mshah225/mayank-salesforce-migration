@@ -38,8 +38,8 @@
                 <input type="hidden" name="liveagent.prechat:CaseSubCategory" value="{!caseSubCategory}" />
                 <input type="hidden" name="liveagent.prechat:CaseOwner" value="{!caseOwnerId}" />
                 <input type="hidden" name="liveagent.prechat.name" id="prechat_field_name" />
-                <input type='hidden' name='liveagent.prechat:ContactId' id='contactId' value='0030S00000DJTZg'/>
-                <input type='hidden' name='liveagent.prechat:Contact_Name' id='contactName' value='Non-Affiliate Chat Caller'/>
+                <input type='hidden' name='liveagent.prechat:ContactId' id='contactId' value='{!contactId}'/>
+                <input type='hidden' name='liveagent.prechat:Contact_Name' id='contactName' value='Non-Authenticated Caller'/>
                 <input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="Id, ContactId; Name, contactName" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.map:Case" value="Subject,CaseSubject; Description, CaseDescription; Status,CaseStatus;Origin__c,CaseOrigin;RecordTypeId,CaseRecordType; OwnerId, CaseOwner; CC_Functional_Group__c, CaseFunctionalGroup; CC_Category__c, CaseCategory; CC_Sub_Category__c, CaseSubCategory;" />       
                 <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Id,true" />
@@ -74,16 +74,16 @@
             function setDescription() {
                 
                 if (document.getElementById("contactFirstName").value) {
-                    document.getElementById("caseDescription").value += 'First Name: ' + document.getElementById("contactFirstName").value + '\n';
+                    document.getElementById("caseDescription").value += 'First Name: ' + document.getElementById("contactFirstName").value + ' ';
                 }
                 if (document.getElementById("contactLastName").value) {
-                    document.getElementById("caseDescription").value += 'Last Name: ' + document.getElementById("contactLastName").value + '\n';
+                    document.getElementById("caseDescription").value += 'Last Name: ' + document.getElementById("contactLastName").value + ' ';
                 }
                 if (document.getElementById("contactAsuriteOrEmplid").value) {
-                    document.getElementById("caseDescription").value += 'Asurite/Emplid: ' + document.getElementById("contactAsuriteOrEmplid").value + '\n';
+                    document.getElementById("caseDescription").value += 'Asurite/Emplid: ' + document.getElementById("contactAsuriteOrEmplid").value + ' ';
                 }
                 if (document.getElementById("caseProblem").value) {
-                    document.getElementById("caseDescription").value += 'Problem: ' + document.getElementById("caseProblem").value + '\n';
+                    document.getElementById("caseDescription").value += 'Problem: ' + document.getElementById("caseProblem").value + ' ';
                 }
             }
             function setName() {

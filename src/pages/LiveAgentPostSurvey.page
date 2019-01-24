@@ -32,7 +32,10 @@
         </apex:outputPanel>
     </body>
     <script type='text/javascript'>
-        var chatDetails = JSON.parse('{!$CurrentPage.parameters.chatDetails}');
+        var cleanedString = '{!$CurrentPage.parameters.chatDetails}';
+        cleanedString = cleanedString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        console.log(cleanedString);
+        var chatDetails = JSON.parse(cleanedString);
         var mergeFieldObject = {
             chat_key: '{!$CurrentPage.parameters.chatKey}',
             chat_start_time: '{!$CurrentPage.parameters.startTime}',
@@ -71,11 +74,7 @@
         }
 
         function createTimestampAndDisconnect() {
-            var today = new Date();
-            h = checkTime(today.getHours()),
-            m = checkTime(today.getMinutes()),
-            s = checkTime(today.getSeconds());
-            var timeStamp = '(' + h + ':' + m + ':' + s + ')';
+            var timeStamp = '(' + new Date().toLocaleTimeString() + ')';
             if ('{!$CurrentPage.parameters.disconnectedBy}' == 'client') {
                 document.getElementById('chatTranscript').innerHTML += timeStamp + ':You have disconnected this chat';
             } else {

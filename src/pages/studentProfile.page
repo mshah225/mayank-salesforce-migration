@@ -142,6 +142,10 @@
                         </div>
                     </div>
 
+                    <div style="{!IF(URLParamsExistAndAreValid, 'display: none', 'border-style: solid; border-width: 2px; border-color: #9f2b50; background: #f2f2f2; margin-bottom: 3px; margin-top: 20px')}">
+                        <apex:pageMessages ></apex:pageMessages>
+                    </div>
+
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs responsive" id="mainTabs" role="tablist">
                         <li role="presentation" class="active">

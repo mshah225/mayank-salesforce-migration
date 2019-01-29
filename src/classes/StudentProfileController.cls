@@ -1,9 +1,10 @@
-global with sharing class StudentProfileController { 
+global with sharing class StudentProfileController {
     private static List<String> vars = new List<String>();
 
     private Boolean isContactId;
     private String contactId;
-    
+
+    public boolean URLParamsExistAndAreValid {get; set;}
     public Contact theContact { get; set; }
     public List<Case> openCases { get; set; }
     public List<Student_Group__c> sGroupList { get; set; }
@@ -28,74 +29,94 @@ global with sharing class StudentProfileController {
     public String currentTermName { get; set; }
     public String nextTermName { get; set; }
     public String subPlanString { get; set; }
-    
+
     public Student_Program_Plan__c ugStudentProgram { get {
             return ugProgramPlans.isEmpty() ? new Student_Program_Plan__c() : ugProgramPlans[0];
         }
-        set; 
+        set;
     }
-    
+
     public Student_Program_Plan__c gradStudentProgram { get {
             return gradProgramPlans.isEmpty() ? new Student_Program_Plan__c() : gradProgramPlans[0];
         }
         set;
     }
-    
+
     public StudentProfileController() {
+        UrlParamsExistAndAreValid = true;
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
+        } else {
+            UrlParamsExistAndAreValid = false;
+            testUndergradScoreList = new List<Test_Score__c>();
+            testGradScoreList = new List<Test_Score__c>();
+            studentMilestonesUGrad = new List<Student_Milestone__c>();
+            studentMilestonesGrad = new List<Student_Milestone__c>();
+            faWrapper = new FinancialAidWrapper();
+            openCases = new List<Case>();
+            serviceIndicators = new List<Service_Indicator__c>();
+            sGroupList = new List<Student_Group__c>();
+            ugStudentProgramAdvisors = new List<Student_Program_Plan_Advisor__c>();
+            gradStudentProgramAdvisors = new List<Student_Program_Plan_Advisor__c>();
         }
         subPlanString = '';
         ugProgramPlans = new List<Student_Program_Plan__c>();
         gradProgramPlans = new List<Student_Program_Plan__c>();
     }
-    
+
     public void init() {
-        setContactRecord();
-        setDeceased();
-        setMilestones();   
-        setCurrentAndNextTerms();
-        setOpenCases();
-        setStudentGroups();
-        setServiceIndicators();
-        setStudentProgramsAndAdvisors();
-        setTestScores();
-        setFinancials();
-        setMe3Results();
+        if (UrlParamsExistAndAreValid) {
+            setContactRecord();
+            setDeceased();
+            setMilestones();
+            setCurrentAndNextTerms();
+            setOpenCases();
+            setStudentGroups();
+            setServiceIndicators();
+            setStudentProgramsAndAdvisors();
+            setTestScores();
+            setFinancials();
+            setMe3Results();
+        } else {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
+        }
+
     }
-    
+
     private void setContactRecord() {
+
         if (Validator.validateId(contactId, Contact.class)) {
             isContactId = true;
         } else if (Validator.validateEMPLId(contactId)) {
             isContactId = false;
         } else {
             throw new StudentProfileException('URL Parameters are missing or invalid');
+
         }
-        
+
         if (isContactId) {
             theContact = ContactService.getContactInformation(contactId, '');
         } else {
             theContact = ContactService.getContactInformation('', String.valueOf(contactId));
         }
-        
+
         if (theContact == null || theContact.EMPLID__c == null) {
             throw new StudentProfileException('Contact missing EMPLId');
         }
     }
-    
+
     private void setDeceased() {
         deceased = theContact.Deceased__c ? 'Deceased' : '';
     }
-    
+
     private void setMilestones() {
         setStudentMilestoneUGrad();
         setStudentMilestoneGrad();
     }
-    
+
     private void setStudentMilestoneUGrad() {
         studentMilestonesUGrad = [
-            SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c, 
+            SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c,
                 Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
                 Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effdt__c
             FROM Student_Milestone__c WHERE Contact__c = :theContact.Id

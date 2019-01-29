@@ -310,4 +310,12 @@ public class CaseClassificationPicklistService {
         }
         return new Map<Id, Case_Classification__c>([SELECT Name FROM Case_Classification__c WHERE Id IN: caseClassificationIds]);
     }
+    
+    public void setCurrentCaseClassification(Case caseWithDetails) {
+        selectedFunctionalGroup = caseWithDetails.CC_Functional_Group__c;
+        updateCategoryAndSubCategory();
+        selectedCategory = caseWithDetails.CC_Category__c;
+        updateSubCategories();
+        selectedSubCategory = caseWithDetails.CC_Sub_Category__c;
+    }
 }

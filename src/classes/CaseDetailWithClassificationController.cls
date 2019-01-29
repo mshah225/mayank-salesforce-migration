@@ -15,16 +15,8 @@ global with sharing class CaseDetailWithClassificationController {
             WHERE Id =: caseRecordId
         ];
         ccPicklist = new CaseClassificationPicklistService();
-        setCurrentCaseClassification();
+        ccPicklist.setCurrentCaseClassification(caseRecord);
         buildCaseStatusPicklist();
-    }
-
-    private void setCurrentCaseClassification() {
-        ccPicklist.selectedFunctionalGroup = caseRecord.CC_Functional_Group__c;
-        ccPicklist.updateCategoryAndSubCategory();
-        ccPicklist.selectedCategory = caseRecord.CC_Category__c;
-        ccPicklist.updateSubCategories();
-        ccPicklist.selectedSubCategory = caseRecord.CC_Sub_Category__c;
     }
     
     public void saveCase() {
@@ -33,7 +25,6 @@ global with sharing class CaseDetailWithClassificationController {
             caseToUpdate.Status = selectedStatus;
         }
         ccPicklist.addCaseClassificationToCase(caseToUpdate);
-        System.debug(caseToUpdate);
         update caseToUpdate;
     }
     
@@ -44,7 +35,7 @@ global with sharing class CaseDetailWithClassificationController {
     }
     
     public void resetDetails() {
-        setCurrentCaseClassification();
+        ccPicklist.setCurrentCaseClassification(caseRecord);
         setSelectedStatus();
     }
     
@@ -57,15 +48,32 @@ global with sharing class CaseDetailWithClassificationController {
         req.setHeader('Authorization','Bearer ' + UserInfo.getSessionId());
         req.setHeader('Content-Type', 'application/json');
         
-        HttpResponse res = h.send(req);
+        try {
+            HttpResponse res = h.send(req);
+            caseStatuses = parseStatusResponse(res);
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(req.toString());
+            ErrorLogger.log(e, vars, false);
+        }
+        
+        return caseStatuses;
+    }
+    
+    private List<String> parseStatusResponse(HttpResponse res) {
+        List<String> caseStatuses = new List<String>();
         Map<String, Object> responseBody = (Map<String, Object>)JSON.deserializeUntyped(res.getBody());
+        if (responseBody.get('values') == null) {
+            return caseStatuses;
+        }
         
         List<Object> responseValues = (List<Object>)responseBody.get('values');       
         for (Object response : responseValues) {
             Map<String, Object> mappedResponse = (Map<String, Object>)response;
-            caseStatuses.add((String)mappedResponse.get('value'));
+            if (mappedResponse.get('value') != null) {
+                caseStatuses.add((String)mappedResponse.get('value'));
+            }
         }
-        
         return caseStatuses;
     }
     

@@ -57,6 +57,17 @@
         .hide {
             display: none;
        }
+        .errorM3 .msgIcon, .errorSmall {
+            background-image: none !important;
+       }
+        .customErrorMessage .message {
+            background: none  !important;
+            border: none !important;
+            margin-top:0px !important;
+       }
+        .customErrorMessage .message .h4, h4 {
+            color: #9f2b50 !important
+       }
         </style>
     </head>
     <body>
@@ -73,7 +84,7 @@
                             </div>
                             <apex:outputPanel id="photoRerenderPanel" layout="none">
                                 <apex:form >
-                                <div id="sundevilImgDiv">
+                                <div id="sundevilImgDiv" style="{!IF(URLParamsExistAndAreValid, 'display:block', 'display:none')}">
                                     <img id="studentPhotoImg2" src=" {!if(ISBLANK(suncardPhotoURL), URLFOR($Resource.blankAvatar), suncardPhotoURL)}"
                                      alt="suncard photo"
                                      class="img-responsive intro"
@@ -86,6 +97,12 @@
                         <div class="col-sm-8" style="margin-top:5px;">
                             <div style="display:inline;float:left;">
                             <span style="color:#6e7d83;font-weight:200">
+                                <h2 style="{!IF(!URLParamsExistAndAreValid, 'display:block', 'display:none')}" class="intro">
+                                    <span style="color:#9f2b50">
+                                        {!contactName}
+                                    </span>
+
+                                </h2>
                                 <h2 style=";margin-top:0px;" class="intro">
                                     <span style="color:#9f2b50">
                                         {!theContact.FirstName} {!theContact.LastName}
@@ -142,8 +159,11 @@
                         </div>
                     </div>
 
-                    <div style="{!IF(URLParamsExistAndAreValid, 'display: none', 'border-style: solid; border-width: 2px; border-color: #9f2b50; background: #f2f2f2; margin-bottom: 3px; margin-top: 20px')}">
-                        <apex:pageMessages ></apex:pageMessages>
+                    <div style="{!IF(URLParamsExistAndAreValid, 'display: none', 'border-style: solid; border-width: 2px; border-color: #9f2b50; background: #fff; margin-bottom: 3px; margin-top: 20px')}">
+                        <apex:outputPanel styleClass="customErrorMessage">
+                        	<apex:pageMessages></apex:pageMessages>
+                        </apex:outputPanel>
+
                     </div>
 
                     <!-- Nav tabs -->

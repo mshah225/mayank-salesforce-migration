@@ -1,8 +1,10 @@
 public without sharing class LiveAgentPostSurveyController {
     public String postChatSurveyLink {get; set;}
+    public String agentOfflineMessage {get; set;}
     
     public LiveAgentPostSurveyController() {
         setPostChatSurveyLink();
+        setAgentOfflineMessage();
     }
     
     private void setPostChatSurveyLink() {
@@ -14,5 +16,15 @@ public without sharing class LiveAgentPostSurveyController {
         ];
         
         postChatSurveyLink = settings.isEmpty() ? '' : settings[0].Value__c;
+    }
+    
+    private void setAgentOfflineMessage() {
+        List<LiveAgent_Custom_Message__c> offlineMessages = [
+            SELECT Custom_Message__c 
+            FROM LiveAgent_Custom_Message__c 
+            WHERE LiveAgent_Button__c = 'Agent Offline'
+            ORDER BY CreatedDate DESC
+        ];
+        agentOfflineMessage = offlineMessages.isEmpty() ? 'No agents are available.' : offlineMessages[0].Custom_Message__c;
     }
 }

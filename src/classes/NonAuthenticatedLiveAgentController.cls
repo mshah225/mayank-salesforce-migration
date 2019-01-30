@@ -14,6 +14,7 @@ public without sharing class NonAuthenticatedLiveAgentController {
         getButtonIdFromURL();
         setCaseDetails();
         setPresurveyQuestion();
+        setNonAuthenticatedContact();
     }
     
     private void getButtonIdFromURL() {
@@ -59,8 +60,13 @@ public without sharing class NonAuthenticatedLiveAgentController {
     }
     
     private void setNonAuthenticatedContact() {
-        Contact nonAuthenticatedContact = [SELECT Id FROM Contact WHERE Name = 'Non-Authenticated Chat Caller'];
-        contactId = nonAuthenticatedContact.Id;
+        List<Live_Agent_Setting__mdt> callerIdSetting = [
+            SELECT Value__c 
+            FROM Live_Agent_Setting__mdt 
+            WHERE DeveloperName = 'Non_Authenticated_CallerId'
+            LIMIT 1
+        ];
+        contactId = callerIdSetting[0].Value__c;
     }
     
 }

@@ -10,7 +10,7 @@
 
     <br/>
     <body style="background-color:#F5F5F5; overflow-x: hidden;">
-        <apex:outputPanel >
+        <apex:outputPanel id="successfulChatBody">
             <h2 style="font-size:30px">
                 &nbsp;Previous Conversation
                 <br/>
@@ -30,9 +30,27 @@
                 </tr>
             </table>
         </apex:outputPanel>
+        <apex:outputPanel id="failedChatBody">
+            <h2 style="font-size:30px">
+                &nbsp;Unable to Connect to an Agent
+                <br/>
+            </h2>
+            <div id="errorMessage" style="max-height:200px; overflow: auto; padding: 5px 15px 5px 15px;">
+                <apex:outputText value="{!agentOfflineMessage}"/>
+            </div>
+        </apex:outputPanel>
     </body>
     <script type='text/javascript'>
-        var chatDetails = JSON.parse('{!$CurrentPage.parameters.chatDetails}');
+    	var chatTranscript = document.getElementById('j_id0:transcript').innerHTML;
+    	if (!chatTranscript || 0 === chatTranscript.length) {
+            document.getElementById("j_id0:successfulChatBody").style.display = "none";
+            document.getElementById("saveChat").setAttribute('style', 'display:none !important');
+        } else {
+            document.getElementById("j_id0:failedChatBody").style.display = "none";
+        }
+        var cleanedString = '{!$CurrentPage.parameters.chatDetails}';
+        cleanedString = cleanedString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        var chatDetails = JSON.parse(cleanedString);
         var mergeFieldObject = {
             chat_key: '{!$CurrentPage.parameters.chatKey}',
             chat_start_time: '{!$CurrentPage.parameters.startTime}',
@@ -71,11 +89,7 @@
         }
 
         function createTimestampAndDisconnect() {
-            var today = new Date();
-            h = checkTime(today.getHours()),
-            m = checkTime(today.getMinutes()),
-            s = checkTime(today.getSeconds());
-            var timeStamp = '(' + h + ':' + m + ':' + s + ')';
+            var timeStamp = '(' + new Date().toLocaleTimeString() + ')';
             if ('{!$CurrentPage.parameters.disconnectedBy}' == 'client') {
                 document.getElementById('chatTranscript').innerHTML += timeStamp + ':You have disconnected this chat';
             } else {

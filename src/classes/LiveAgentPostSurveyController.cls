@@ -25,6 +25,6 @@ public without sharing class LiveAgentPostSurveyController {
             WHERE LiveAgent_Button__c = 'Agent Offline'
             ORDER BY CreatedDate DESC
         ];
-        agentOfflineMessage = offlineMessages.isEmpty() ? 'No agents are available.' : offlineMessages[0].Custom_Message__c;
+        agentOfflineMessage = offlineMessages.isEmpty() ? 'We apologize for the inconvenience. We are having trouble connecting you with a representative. Please call 1-855-278-5080 to speak to a representative immediately.' : offlineMessages[0].Custom_Message__c;
     }
 }

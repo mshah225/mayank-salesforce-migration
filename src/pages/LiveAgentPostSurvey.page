@@ -48,7 +48,6 @@
         } else {
             document.getElementById("j_id0:failedChatBody").style.display = "none";
         }
-    	console.log(chatTranscript);
         var cleanedString = '{!$CurrentPage.parameters.chatDetails}';
         cleanedString = cleanedString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         var chatDetails = JSON.parse(cleanedString);

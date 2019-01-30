@@ -57,6 +57,17 @@
         .hide {
             display: none;
        }
+        .headerTextColor {
+            color:#9f2b50;
+       }
+        .customErrorBox {
+            border-style: solid;
+            border-width: 2px;
+            border-color: #9f2b50;
+            background: #fff;
+            margin-bottom: 10px;
+            margin-top: 20px;
+       }
         .errorM3 .msgIcon, .errorSmall {
             background-image: none !important;
        }
@@ -98,7 +109,7 @@
                             <div style="display:inline;float:left;">
                             <span style="color:#6e7d83;font-weight:200">
                                 <h2 style="{!IF(!urlParamsExistAndAreValid, 'display:block', 'display:none')}" class="intro">
-                                    <span style="color:#9f2b50">
+                                    <span class="headerTextColor">
                                         {!contactName}
                                     </span>
 
@@ -159,7 +170,7 @@
                         </div>
                     </div>
 
-                    <div style="{!IF(urlParamsExistAndAreValid, 'display: none', 'border-style: solid; border-width: 2px; border-color: #9f2b50; background: #fff; margin-bottom: 10px; margin-top: 20px')}">
+                    <div class="customErrorBox" style="{!IF(urlParamsExistAndAreValid, 'display: none', 'display:block')}">
                         <apex:outputPanel styleClass="customErrorMessage">
                         	<apex:pageMessages></apex:pageMessages>
                         </apex:outputPanel>

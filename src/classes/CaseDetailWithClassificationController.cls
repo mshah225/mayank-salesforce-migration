@@ -25,7 +25,13 @@ global with sharing class CaseDetailWithClassificationController {
             caseToUpdate.Status = selectedStatus;
         }
         ccPicklist.addCaseClassificationToCase(caseToUpdate);
+        updateLocalCaseWhenSaved();
         update caseToUpdate;
+    }
+    
+    private void updateLocalCaseWhenSaved() {
+        caseRecord.Status = selectedStatus;
+        ccPickList.addCaseClassificationToCase(caseRecord);
     }
     
     public void buildCaseStatusPicklist() {

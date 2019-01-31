@@ -301,11 +301,10 @@ public class CaseClassificationPicklistService {
     public Map<Id, Case_Classification__c> getCCNames() {
         List<Id> caseClassificationIds = new List<Id>();
         caseClassificationIds.add(selectedFunctionalGroup);
-        if (selectedCategory != null) {
+        if (!selectedCategory.equals('--')) {
             caseClassificationIds.add(selectedCategory);
         }
-
-        if (selectedSubCategory != null) {
+        if (!selectedSubCategory.equals('--')) {
             caseClassificationIds.add(selectedSubCategory);
         }
         return new Map<Id, Case_Classification__c>([SELECT Name FROM Case_Classification__c WHERE Id IN: caseClassificationIds]);

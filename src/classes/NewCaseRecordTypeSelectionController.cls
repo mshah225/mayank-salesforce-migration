@@ -56,12 +56,12 @@ public with sharing class NewCaseRecordTypeSelectionController {
         editPageURL.getParameters().put(functionalGroupLookupFieldId, ccPicklist.selectedFunctionalGroup);
         editPageURL.getParameters().put(functionalGroupLookupFieldName, caseClassificationNames.get(ccPicklist.selectedFunctionalGroup).Name);
 
-        if (ccPicklist.selectedCategory != null) {
+        if (!ccPicklist.selectedCategory.equals('--')) {
             editPageURL.getParameters().put(categoryLookupFieldId, ccPicklist.selectedCategory);
             editPageURL.getParameters().put(categoryLookupFieldName, caseClassificationNames.get(ccPicklist.selectedCategory).Name);
         }
 
-        if (ccPicklist.selectedSubCategory != null) {
+        if (!ccPicklist.selectedSubCategory.equals('--')) {
             editPageURL.getParameters().put(subCategoryLookupFieldId, ccPicklist.selectedSubCategory);
             editPageURL.getParameters().put(subCategoryLookupFieldName, caseClassificationNames.get(ccPicklist.selectedSubCategory).Name);
         }

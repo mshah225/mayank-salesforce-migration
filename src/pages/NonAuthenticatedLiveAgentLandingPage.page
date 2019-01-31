@@ -9,34 +9,43 @@
     
     <apex:stylesheet value="{! URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
     <body>
-        <div style="margin-top: 50px; margin-left: 5%; font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif !important;">
-            Please wait while we redirect your chat! If the chat window doesn't appear, please click the link below!
+        <div id="online"> 
+            <div style="margin-top: 50px; margin-left: 5%; font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif !important;">
+                Please wait while we redirect your chat! If the chat window doesn't appear, please click the link below!
+            </div>
+            <div style="margin-top: 50px; margin-left: 5%;">
+                <a id="liveagent_button_online" class ="btn btn-primary btn-lg" style="cursor: pointer" onclick="liveagent.startChat(chatButtonId);" >Chat Now!</a>
+            </div>
         </div>
-        <div style="margin-top: 50px; margin-left: 5%;">
-            <a id="liveagent_button_online" class ="btn btn-primary btn-lg" onclick="liveagent.startChat(chatButtonId);" >Chat Now!</a>
+        <div id="offline"> 
+            <div style="margin-top: 50px; margin-left: 5%; font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif !important;">
+                {!agentOfflineMessage}
+            </div>
+            <div style="margin-top: 50px; margin-left: 5%;">
+                <a id="liveagent_button_offline" class="btn btn-primary btn-lg" style="cursor: pointer">Offline</a>
+            </div>
         </div>
-        <script type="text/javascript">
-        if (!window._laq) { window._laq = []; }
-        window._laq.push(function(){
-            liveagent.showWhenOnline(chatButtonId, document.getElementById('liveagent_button_online'));
-            liveagent.showWhenOffline(chatButtonId, document.getElementById('liveagent_button_offline'));
-        });
-        </script>
         <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
         <script type='text/javascript'>
         var orgId = '{!nonAuthenticatedButton.Org_Id__c}';
         var chatDeploymentId = '{!nonAuthenticatedButton.Chat_Deployment__c}';
         var chatButtonId = '{!nonAuthenticatedButton.Chat_Button_Id__c}';
         var chatEndpoint = '{!nonAuthenticatedButton.Chat_Endpoint__c}';
-        
+
+        if (!window._laq) { window._laq = []; }
+        window._laq.push(function() {
+            liveagent.showWhenOnline(chatButtonId, document.getElementById('online'));
+            liveagent.showWhenOffline(chatButtonId, document.getElementById('offline'));
+        });
+
         function initLiveAgent(_callback) {
             liveagent.init(chatEndpoint, chatDeploymentId, orgId); 
             _callback();	
         }
         
         function startChat() {
-            setTimeout(function(){ 
-                liveagent.startChatWithWindow(chatButtonId, 'window'); 
+            setTimeout(function() { 
+                document.getElementById("liveagent_button_online").click();
             }, 1000);
         }
         

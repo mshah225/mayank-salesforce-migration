@@ -23,8 +23,8 @@
                 <br /><input type='textarea' name='liveagent.prechat:First_Name' class='searchBox' style="width:100% !important;" id="contactFirstName" required="true"/><br />
                 <label for="contactLastName">Last Name*: </label>
                 <br /><input type='textarea' name='liveagent.prechat:Last_Name' class='searchBox' style="width:100% !important;" id="contactLastName" required="true"/><br />
-                <label for="contactAsurite">ASU Id Number or ASURITE*: </label>
-                <br /><input type='textarea' name='liveagent.prechat:ASU_ID' class='searchBox' style="width:100% !important;" id="contactAsuriteOrEmplid" required="true"/><br />
+                <label for="contactAsurite">ASU Id Number or ASURITE: </label>
+                <br /><input type='textarea' name='liveagent.prechat:ASU_ID' class='searchBox' style="width:100% !important;" id="contactAsuriteOrEmplid"/><br />
                 <label for="caseProblem">{!presurveyQuestion}*</label>
                 <br /><input type='textarea' class='searchBox' style="width:100% !important;" name='liveagent.prechat:Case_Problem' id='caseProblem' required="true" placeholder="Enter a brief description of your issue."/><br />
                 <p>*Designates a required field.</p>

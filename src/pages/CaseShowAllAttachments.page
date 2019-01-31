@@ -10,7 +10,7 @@
                 window.parent.location.replace('/'+recid + '?saveURL=%2F{!caseId}&retURL=%2F{!caseId}');
             } else {
                 if (!sforce.console.isInConsole()) {
-                    window.parent.location.replace('/'+recid);
+                    window.parent.location.replace('/' + recid + '?saveURL=%2F{!caseId}&retURL=%2F{!caseId}');
                 } else {
                     sforce.console.getEnclosingPrimaryTabId(function(result) {
                         sforce.console.openSubtab(result.id, '/'+recid , true, recname, null);

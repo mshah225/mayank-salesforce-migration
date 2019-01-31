@@ -367,6 +367,9 @@ public with sharing class viewCaseController {
         String ownerEmail = '';
         if (currentCase.Owner.Email != null) {
             ownerEmail = currentCase.Owner.Email;
+        } else {
+            Email_To_Case_Configuration__c defaultEmail = Email_To_Case_Configuration__c.getValues('Default Org Wide Email Address');
+            ownerEmail = defaultEmail.Value__c;
         }
         String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + 
                 ' from the MyASU Service Center at ' + DateTime.now() + ':';

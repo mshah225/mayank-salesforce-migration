@@ -360,6 +360,7 @@ public with sharing class viewCaseController {
         return restStatusAndInfo;
     }
     
+    @TestVisible
     private String createJsonEmail() {
         User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         Case currentCase = [SELECT Id, Owner.Email FROM Case WHERE Id = :caseId LIMIT 1];

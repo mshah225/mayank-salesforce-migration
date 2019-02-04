@@ -295,6 +295,8 @@ public class CaseClassificationPicklistService {
         Case_Classification__c subCategoryToAdd = allSubCategories.get(categoryToAdd.Id).get(selectedSubCategory);
         if (subCategoryToAdd != null) {
             caseToAddClassification.CC_Sub_Category__c = subCategoryToAdd.Id;
+        } else {
+            caseToAddClassification.CC_Sub_Category__c = null;
         }
     }
     

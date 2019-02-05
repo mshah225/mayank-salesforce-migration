@@ -27,10 +27,6 @@ private class Test_ViewAllCasesController
         testUser.ContactId = testContact.Id;
         insert testUser;
 
-        
-        Email_To_Case_Configuration__c defaultEmail = new Email_To_Case_Configuration__c(Name = 'Default Org Wide Email Address', Value__c = 'testemail@test.com');
-        insert defaultEmail;
-        
         List<Case> testCases = CaseService.createTestCases(10, testContact);
 
         // Set the first three testCases to closed
@@ -70,27 +66,5 @@ private class Test_ViewAllCasesController
         Test.stopTest();
 
         System.assertEquals(7, closedCases.size());
-    }
-    
-    @isTest
-    private static void testCreateJsonEmail() {
-        setup();
-        PageReference viewAllCasesPage = Page.viewAllCases;
-        Test.setCurrentPage(viewAllCasesPage);
-        String jsonEmail;
-        ServiceCenter sc;
-        ViewAllCasesController vac;
-        List<Case> closedCases = null;
-
-        Test.startTest();
-        System.runAs(testUser)
-        {
-            vac = new ViewAllCasesController();
-
-            jsonEmail = vac.createJsonEmail();
-        }
-        Test.stopTest();
-
-        System.assert(jsonEmail.contains('testemail@test.com'));
     }
 }

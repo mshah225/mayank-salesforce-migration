@@ -32,6 +32,16 @@
                     <br/>Review all error messages below to correct your data.
                 </div>
                 <div class="pbSubsection" style="width: 30%; margin: 0 auto;">
+                    <apex:outputPanel>
+                        <apex:outputLabel value="Record Type of new record: " for="ecord Types" />
+                        <apex:actionRegion >
+                            <apex:selectList label="Record Types" value="{!selectedRecordType}" multiselect="false" size="1">
+                                <apex:selectOptions value="{!recordTypeOptions}"/>
+                            </apex:selectList>
+                        </apex:actionRegion>
+                        <br />
+                        <br />
+                    </apex:outputPanel>
                     <apex:outputPanel id="wrapper">
                         <apex:outputLabel value="Case Functional Group: " for="functionalGroupOptions" />
                         <apex:actionRegion >
@@ -56,14 +66,6 @@
                         <apex:actionRegion >
                             <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
                                 <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}"/>
-                            </apex:selectList>
-                        </apex:actionRegion>
-                        <br />
-                        <br />
-                        <apex:outputLabel value="Record Type of new record: " for="ecord Types" />
-                        <apex:actionRegion >
-                            <apex:selectList label="Record Types" value="{!selectedRecordType}" multiselect="false" size="1">
-                                <apex:selectOptions value="{!recordTypeOptions}"/>
                             </apex:selectList>
                         </apex:actionRegion>
                         <br />

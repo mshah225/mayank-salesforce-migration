@@ -672,4 +672,36 @@ private class Test_ServiceCenter {
         }
         System.assertEquals(vcc.caseReply, 'Test Message');
     }
+    
+    @isTest 
+    private static void testCorrectReplyToEmail() {
+        loadTestDataWithUserByLastName('User0');
+        caseOnTestUser.Intended_Recipient__c = 'testEmail@test.com';
+        update caseOnTestUser;
+        setCurrentPageAsViewCase();
+        String jsonEmail;
+        System.runAs(testUser) {
+            vcc = new viewCaseController();
+            Test.startTest();
+            jsonEmail = vcc.createJsonEmail();
+            Test.stopTest();
+        }
+        System.assert(jsonEmail.contains('testEmail@test.com')); 
+    }
+    
+    @isTest 
+    private static void testNoIntendedReplyToEmail() {
+        loadTestDataWithUserByLastName('User0');
+        setCurrentPageAsViewCase();
+        Email_To_Case_Configuration__c defaultEmail = new Email_To_Case_Configuration__c(Name = 'Default Org Wide Email Address', Value__c = 'noEmail@test.com');
+        insert defaultEmail;
+        String jsonEmail;
+        System.runAs(testUser) {
+            vcc = new viewCaseController();
+            Test.startTest();
+            jsonEmail = vcc.createJsonEmail();
+            Test.stopTest();
+        }
+        System.assert(jsonEmail.contains('noEmail@test.com')); 
+    }
 }

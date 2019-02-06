@@ -1086,4 +1086,7 @@ public with sharing class HelpDeskController
         myCase.Description += categoryDescription;
     }
 
+    public void saveDescription() {
+        myCase.Description = myCase.Description;
+    }
 }

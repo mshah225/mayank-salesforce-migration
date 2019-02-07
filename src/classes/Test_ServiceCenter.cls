@@ -29,6 +29,9 @@ private class Test_ServiceCenter {
         List<Contact> testContactList = contactFactoy.create(4);
         testContactList[3].Affiliation_Alumni__c = 'Current';
         insert testContactList;
+        
+        Email_To_Case_Configuration__c defaultEmail = new Email_To_Case_Configuration__c(Name = 'Default Org Wide Email Address', Value__c = 'noEmail@test.com');
+        insert defaultEmail;
 
         UserFactory.DefaultUser userFactory = new UserFactory.DefaultUser();
         List<User> testUserList = userFactory.create(4);
@@ -693,8 +696,6 @@ private class Test_ServiceCenter {
     private static void testNoIntendedReplyToEmail() {
         loadTestDataWithUserByLastName('User0');
         setCurrentPageAsViewCase();
-        Email_To_Case_Configuration__c defaultEmail = new Email_To_Case_Configuration__c(Name = 'Default Org Wide Email Address', Value__c = 'noEmail@test.com');
-        insert defaultEmail;
         String jsonEmail;
         System.runAs(testUser) {
             vcc = new viewCaseController();
@@ -704,4 +705,5 @@ private class Test_ServiceCenter {
         }
         System.assert(jsonEmail.contains('noEmail@test.com')); 
     }
+    
 }

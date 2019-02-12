@@ -32,23 +32,6 @@ public class Test_ShowMyCases {
         TestDataFactory.makeMeAnAdvisorUser(numberOfPods, numberOfCases, numberOfStudents);
     }
 
-    @isTest
-    private static void checkForNullCategoryOptions() {
-        ShowMyCasesController showMyCasesController = new ShowMyCasesController();
-        showMyCasesController.queryAttr = query;
-        Id functionalGroup = [Select Id FROM case_classification__c WHERE name = 'ASU Advisor Outreach' LIMIT 1].Id;
-        Case caseToTest = new Case(
-            OwnerId = pod[0].OwnerId,
-            RecordTypeId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach'),
-            Status = 'Outreach Required',
-            CC_Functional_Group__c = functionalGroup,
-            Origin__c = 'Outreach',
-            Subject = 'Case Bloat ' ,
-            Description = 'Case Bloat',
-        );
-        insert caseToTest;
-    }
-
     /*
      * Tests caseList's getter
      */

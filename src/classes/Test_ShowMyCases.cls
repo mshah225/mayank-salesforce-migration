@@ -317,7 +317,7 @@ public class Test_ShowMyCases {
         List<SelectOption> caseCategoryOptions = showMyCasesController.caseCategoryOptions;
         Test.stopTest();
 
-        System.assertEquals(caseCategoryOptions.size(),1);
+        System.assertEquals(1,caseCategoryOptions.size());
 
     }
 }

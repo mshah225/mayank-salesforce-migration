@@ -309,7 +309,6 @@ public class Test_ShowMyCases {
     @isTest
     private static void checkForNullCategoryOptions() {
         ShowMyCasesController showMyCasesController = new ShowMyCasesController();
-        showMyCasesController.queryAttr = query;
         Case caseToTest = new Case();
         showMyCasesController.caseList = new List<ShowMyCasesController.CaseWrapper>();
         showMyCasesController.caseList.add(new ShowMyCasesController.CaseWrapper(caseToTest));

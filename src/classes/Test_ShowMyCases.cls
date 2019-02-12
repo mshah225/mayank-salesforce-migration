@@ -32,6 +32,23 @@ public class Test_ShowMyCases {
         TestDataFactory.makeMeAnAdvisorUser(numberOfPods, numberOfCases, numberOfStudents);
     }
 
+    @isTest
+    private static void checkForNullCategoryOptions() {
+        ShowMyCasesController showMyCasesController = new ShowMyCasesController();
+        showMyCasesController.queryAttr = query;
+        Id functionalGroup = [Select Id FROM case_classification__c WHERE name = 'ASU Advisor Outreach' LIMIT 1].Id;
+        Case caseToTest = new Case(
+            OwnerId = pod[0].OwnerId,
+            RecordTypeId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach'),
+            Status = 'Outreach Required',
+            CC_Functional_Group__c = functionalGroup,
+            Origin__c = 'Outreach',
+            Subject = 'Case Bloat ' ,
+            Description = 'Case Bloat',
+        );
+        insert caseToTest;
+    }
+
     /*
      * Tests caseList's getter
      */
@@ -304,5 +321,21 @@ public class Test_ShowMyCases {
         System.assert(outlookChangeOptions.get(0).getValue() == '--' && outlookChangeOptions.get(0).getLabel().equals('--'));
         System.assert(outlookChangeOptions.get(1).getValue() == '1' && outlookChangeOptions.get(1).getLabel().equals('Up'));
         System.assert(outlookChangeOptions.get(2).getValue() == '-1' && outlookChangeOptions.get(2).getLabel().equals('Down'));
+    }
+
+    @isTest
+    private static void checkForNullCategoryOptions() {
+        ShowMyCasesController showMyCasesController = new ShowMyCasesController();
+        showMyCasesController.queryAttr = query;
+        Case caseToTest = new Case();
+        showMyCasesController.caseList = new List<ShowMyCasesController.CaseWrapper>();
+        showMyCasesController.caseList.add(new ShowMyCasesController.CaseWrapper(caseToTest));
+
+        Test.startTest();
+        List<SelectOption> caseCategoryOptions = showMyCasesController.caseCategoryOptions;
+        Test.stopTest();
+
+        System.assertEquals(caseCategoryOptions.size(),1);
+
     }
 }

@@ -1,5 +1,5 @@
 <apex:component controller="showMyCasesController" allowDML="true" >
-<apex:includeScript value="/support/console/38.0/integration.js"/>
+<apex:includeScript value="/support/console/42.0/integration.js"/>
 <apex:includeScript value="{! $Resource.jQuery_3_1_1}"/>
 <apex:includeScript value="{! URLFOR($Resource.showMyCasesResources, 'showMyCasesResources/showMyCases.js') }" />
 <apex:stylesheet value="{! URLFOR($Resource.showMyCasesResources, 'showMyCasesResources/showMyCases.css') }"/>

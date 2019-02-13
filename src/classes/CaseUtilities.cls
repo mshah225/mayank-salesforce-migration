@@ -1,6 +1,8 @@
 public class CaseUtilities {
 	public static boolean emailForwarded = false;
 
+    private static List<Schema.PicklistEntry> caseForwardToUnitOptions = Case.Forward_To_Unit__c.getDescribe().getPicklistValues(); 
+
     public static void forwardCaseAttachments(Id caseId, string forwardToEmail, string forwardToEmailCalc) {
 
         String dummyContactId;
@@ -9,13 +11,10 @@ public class CaseUtilities {
 
 		if (forwardToEmailCalc != null && forwardToEmailCalc != '') {
 			recipientEmailAddress = forwardToEmailCalc;
-		}
-		else if (forwardToEmail != null && forwardToEmail != '') {
+		} else if (forwardToEmail != null && forwardToEmail != '') {
 			recipientEmailAddress = forwardToEmail;
-		}
-		else {
+		} else {
 			// Nowhere to send our email
-			//
 			return;
 		} 
 
@@ -137,5 +136,14 @@ public class CaseUtilities {
         theEmail.FromName = email.getSenderDisplayName();
 
         insert theEmail;
+    }
+
+    public static String getForwardToUnit(String unitApiName) {
+        for (Schema.PicklistEntry entry : caseForwardToUnitOptions) {
+            if (entry.getValue() == unitApiName) {
+                return entry.getLabel();
+            }
+        }
+        return '';
     }
 }

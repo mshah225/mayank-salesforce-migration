@@ -72,7 +72,7 @@
             }
             
             function setDescription() {
-                
+                document.getElementById("caseDescription").value = '';
                 if (document.getElementById("contactFirstName").value) {
                     document.getElementById("caseDescription").value += 'First Name: ' + document.getElementById("contactFirstName").value + ' ';
                 }

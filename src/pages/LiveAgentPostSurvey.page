@@ -49,7 +49,7 @@
             document.getElementById("j_id0:failedChatBody").style.display = "none";
         }
         var cleanedString = '{!$CurrentPage.parameters.chatDetails}';
-        cleanedString = cleanedString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        cleanedString = cleanedString.replace(/[\n]/g, '').replace(/[\r]/g, '');
         var chatDetails = JSON.parse(cleanedString);
         var mergeFieldObject = {
             chat_key: '{!$CurrentPage.parameters.chatKey}',

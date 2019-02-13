@@ -3,7 +3,7 @@ private class CaseUtilitiesTest {
     @isTest
     private static void forwardToUnitReturnsServiceNow() {
         String unitApiName = 'ServiceNow';
-        String unitLabel;
+        String unitLabel = '';
 
         for (Schema.PicklistEntry entry : Case.Forward_To_Unit__c.getDescribe().getPicklistValues()) {
             if (entry.getValue() == unitApiName) {

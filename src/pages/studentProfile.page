@@ -1817,7 +1817,7 @@
                                 </h3>
                             </div>
                             <div class="col-sm-4">
-                                <apex:outputPanel>
+                                <apex:outputPanel >
                                     <a href="#"
                                        onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}','All Cases');return false"
                                        class="pull-right sideBoxMoreLink">

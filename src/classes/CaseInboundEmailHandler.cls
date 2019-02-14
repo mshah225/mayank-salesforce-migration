@@ -412,7 +412,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     insert c;
 
                     Contact insertedContact = [
-                        SELECT Id, AccountId
+                        SELECT Id, AccountId, FirstName, LastName, Email, RecordTypeId, Last_Case_Email_Used__c
                         FROM Contact
                         WHERE Id = :c.Id
                     ];

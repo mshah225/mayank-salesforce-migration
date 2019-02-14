@@ -5,7 +5,7 @@ public class SCImmediateAssistanceController {
     
     public SCImmediateAssistanceController() {
         financeChatButton = Live_Agent_Button__c.getInstance('Finances_Live_Chat');
-        studentServicesChatButton = Live_Agent_Button__c.getInstance('Student_Services_Live_Chat');
+        studentServicesChatButton = Live_Agent_Button__c.getInstance('ASU_Services_Live_Chat');
         technicalSupportChatButton = Live_Agent_Button__c.getInstance('Technical_Support_Live_Chat');
     }
 }
